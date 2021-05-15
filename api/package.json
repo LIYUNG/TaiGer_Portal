@@ -1,0 +1,32 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "ejs": "^3.1.6",
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.0",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "http-errors": "~1.6.3",
+    "https": "^1.0.0",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.12.5",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.6.0",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7"
+  }
+}

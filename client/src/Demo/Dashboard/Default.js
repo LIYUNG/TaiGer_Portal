@@ -22,7 +22,17 @@ class Dashboard extends React.Component {
         };
     }
     componentDidMount() {
-        fetch(Student_API)
+        const auth = localStorage.getItem('token');
+        fetch(Student_API,
+            {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+            }
+        )
             .then(res => res.json())
             .then(
                 (result) => {

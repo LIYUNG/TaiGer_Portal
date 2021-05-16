@@ -6,7 +6,8 @@ const schema = new mongoose.Schema({
 	emailaddress_ : String,
 	password_ : String,
 	role_: String,
-	agent_: [String]
+	agent_: [String],
+	editor_: [String]
 });
 
 module.exports = mongoose.model("Student", schema);

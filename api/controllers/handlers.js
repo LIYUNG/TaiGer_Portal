@@ -111,7 +111,7 @@ exports.signIn = async (req, res) => {
 					// return res.cookie("token", token, { httpOnly: true, maxAge: jwtExpirySeconds * 1000 }).sendStatus(200)
 					// console.log(token);
 
-					return res.send({token: token})
+					return res.send({ token: token })
 					// return res.redirect("/welcome");
 				} else {
 					console.log('wrong password !');
@@ -233,8 +233,8 @@ exports.programlist = async (req, res) => {
 
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
-		console.log(token);
-		console.log(req.headers.authorization);
+		// console.log(token);
+		// console.log(req.headers.authorization);
 		// var token = req.cookies.token
 		// //Extract user email info by token
 		var emailaddress = jwt_decode(token);
@@ -242,7 +242,7 @@ exports.programlist = async (req, res) => {
 		// //Get user email
 		emailaddress = emailaddress['emailaddress'];
 		console.log(emailaddress);
-		// const students_exists = await Student.findOne({ emailaddress_: emailaddress });
+		const students_exists = await Student.findOne({ emailaddress_: emailaddress });
 		// console.log(students_exists);
 		// Renew token again, entend expire time
 		// token = jwt.sign({ emailaddress }, jwtKey, {
@@ -251,14 +251,18 @@ exports.programlist = async (req, res) => {
 		// })
 		// Access all programs
 		// console.log("programlist");
-		const program_all = await Program.find();
-		// console.log(program_all);
-		// res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 }) // Update token
-		// res.render('startbootstrap-sb-admin-master/dist/programlist', {data: userInfo(students_exists)}); // index refers to index.ejs	
-		res.send({
-			data: program_all
-		})
+		if (students_exists.role_ === 'Agent') {
 
+			const program_all = await Program.find();
+			// console.log(program_all);
+			res.send({
+				data: program_all
+			})
+		}else{
+			res.send({
+				data: [students_exists]
+			})
+		}
 	} catch (err) {
 		console.log('error by programlist')
 		console.log(err)
@@ -288,17 +292,15 @@ exports.addprogramlist = async (req, res) => {
 exports.studentlist = async (req, res) => {
 
 	try {
-		// var token = req.cookies.token
-		var token = req
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
 		console.log(token);
-		console.log(req.headers);
 		// //Extract user email info by token
-		// var emailaddress = jwt_decode(token);
-		// var emailaddress = 'jwt_decode(token)';
+		var emailaddress = jwt_decode(token);
 		// //Get user email
-		// emailaddress = emailaddress['emailaddress'];
-		// console.log(emailaddress);
-		const students_exists = await Student.findOne({ emailaddress_: 'liyung.chen.leo@gmail.com' });//get email by token
+		emailaddress = emailaddress['emailaddress'];
+		console.log(emailaddress);
+		const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
 		// console.log(students_exists);
 		// Renew token again, entend expire time
 		// token = jwt.sign({ emailaddress }, jwtKey, {
@@ -310,18 +312,13 @@ exports.studentlist = async (req, res) => {
 		if (students_exists.role_ === 'Agent') {
 			const student_all = await Student.find({ role_: "Student", agent_: "david@gmail.com" });
 			// console.log(student_all);
-			// res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 }) // Update token
-			// res.render('startbootstrap-sb-admin-master/dist/programlist', {data: userInfo(students_exists)}); // index refers to index.ejs	
 			res.send({
 				data: student_all
 			})
 		}
-		else
-		{
-			const student_all = await Student.find({ role_: "Student", agent_: "david@gmail.com" });
+		else {
+			// const student_all = await Student.find({ role_: "Student", agent_: "david@gmail.com" });
 			// console.log(student_all);
-			// res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 }) // Update token
-			// res.render('startbootstrap-sb-admin-master/dist/programlist', {data: userInfo(students_exists)}); // index refers to index.ejs	
 			res.send({
 				data: [students_exists]
 			})

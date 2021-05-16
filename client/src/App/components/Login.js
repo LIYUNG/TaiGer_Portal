@@ -13,7 +13,7 @@ import Aux from "../../hoc/_Aux";
 // import Breadcrumb from "../../App/layout/AdminLayout/Breadcrumb";
 
 async function loginUser(credentials) {
-    return fetch('http://localhost/login', {
+    return fetch('http://localhost:2000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -21,6 +21,19 @@ async function loginUser(credentials) {
         body: JSON.stringify(credentials)
     })
         .then(data => data.json())
+    // .then(res => {
+    //     if(res.status === 200)
+    //     {
+    //         this.props.history.push('/');
+    //     }else{
+    //         const error = new Error(res.error);
+    //         throw error;
+    //     }
+    // })
+    // .catch(err => {
+    //     console.error(err);
+    //     alert('Error logging in please try again');
+    // })
 }
 
 export default function Login({ setToken }) {

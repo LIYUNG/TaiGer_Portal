@@ -41,7 +41,10 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 		app.get("/charts", auth, handlers.Charts);
 		app.get("/password", handlers.password);
 		app.post("/password", handlers.passwordPost);
-		app.get("/programlist", auth, handlers.programlist);
+		// app.get("/programlist", auth, handlers.programlist);
+		app.get("/programlist", handlers.programlist);
+		app.get("/addprogram", handlers.addprogramlist);
+		app.get("/studentlist", handlers.studentlist);
 		app.get("/upload", auth, handlers.Upload);
 		app.post("/upload", auth, handlers.UploadPost);
 		app.get("/settings", auth, handlers.settings);
@@ -66,8 +69,8 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 			key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
 			cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem')),
 		}, app);
-		httpServer.listen(80, () => {
-			console.log('HTTP Server running on port 80');
+		httpServer.listen(2000, () => {
+			console.log('HTTP Server running on port 2000');
 		});
 		httpsServer.listen(443, () => {
 			console.log('HTTPS Server running on port 443');

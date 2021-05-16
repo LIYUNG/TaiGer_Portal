@@ -12,15 +12,7 @@ export default {
                     type: 'item',
                     url: '/dashboard/default',
                     icon: 'feather icon-home',
-                }
-            ]
-        },
-        {
-            id: 'ui-element',
-            title: 'UI ELEMENT',
-            type: 'group',
-            icon: 'icon-ui',
-            children: [
+                },
                 {
                     id: 'basic',
                     title: 'Component',
@@ -64,15 +56,7 @@ export default {
                             url: '/basic/typography'
                         }
                     ]
-                }
-            ]
-        },
-        {
-            id: 'ui-forms',
-            title: 'Forms & Tables',
-            type: 'group',
-            icon: 'icon-group',
-            children: [
+                },
                 {
                     id: 'form-basic',
                     title: 'Form Elements',
@@ -82,19 +66,11 @@ export default {
                 },
                 {
                     id: 'bootstrap',
-                    title: 'Table',
+                    title: 'Program List',
                     type: 'item',
                     icon: 'feather icon-server',
                     url: '/tables/bootstrap'
-                }
-            ]
-        },
-        {
-            id: 'chart-maps',
-            title: 'Chart & Maps',
-            type: 'group',
-            icon: 'icon-charts',
-            children: [
+                },
                 {
                     id: 'charts',
                     title: 'Charts',
@@ -102,21 +78,13 @@ export default {
                     icon: 'feather icon-pie-chart',
                     url: '/charts/nvd3'
                 },
-                {
-                    id: 'maps',
-                    title: 'Map',
-                    type: 'item',
-                    icon: 'feather icon-map',
-                    url: '/maps/google-map'
-                }
-            ]
-        },
-        {
-            id: 'pages',
-            title: 'Pages',
-            type: 'group',
-            icon: 'icon-pages',
-            children: [
+                // {
+                //     id: 'maps',
+                //     title: 'Map',
+                //     type: 'item',
+                //     icon: 'feather icon-map',
+                //     url: '/maps/google-map'
+                // },
                 {
                     id: 'auth',
                     title: 'Authentication',
@@ -145,7 +113,6 @@ export default {
                         }
                     ]
                 },
-
                 {
                     id: 'sample-page',
                     title: 'Sample Page',
@@ -185,27 +152,8 @@ export default {
                                     type: 'item',
                                     url: '#',
                                 },
-                                {
-                                    id: 'menu-level-2.2',
-                                    title: 'Menu Level 2.2',
-                                    type: 'collapse',
-                                    children: [
-                                        {
-                                            id: 'menu-level-3.1',
-                                            title: 'Menu Level 3.1',
-                                            type: 'item',
-                                            url: '#',
-                                        },
-                                        {
-                                            id: 'menu-level-3.2',
-                                            title: 'Menu Level 3.2',
-                                            type: 'item',
-                                            url: '#',
-                                        }
-                                    ]
-                                }
                             ]
-                        }
+                        },
                     ]
                 },
                 {
@@ -231,6 +179,24 @@ export default {
                     }
                 }*/
             ]
-        }
+        },
+        // {
+        //     id: 'ui-forms',
+        //     title: 'Forms & Tables',
+        //     type: 'group',
+        //     icon: 'icon-group',
+        //     children: [
+
+        //     ]
+        // },
+        // {
+        //     id: 'pages',
+        //     title: 'Pages',
+        //     type: 'group',
+        //     icon: 'icon-pages',
+        //     children: [
+
+        //     ]
+        // }
     ]
 }

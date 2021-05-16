@@ -44,7 +44,7 @@ class Nvd3Chart extends React.Component {
                             </Card.Body>
                         </Card>
                     </Col>
-                    <Col md={6}>
+                    {/* <Col md={6}>
                         <Card>
                             <Card.Header>
                                 <Card.Title as="h5">Pie Basic Chart</Card.Title>
@@ -63,7 +63,7 @@ class Nvd3Chart extends React.Component {
                                 <PieDonutChart/>
                             </Card.Body>
                         </Card>
-                    </Col>
+                    </Col> */}
                 </Row>
             </Aux>
         );

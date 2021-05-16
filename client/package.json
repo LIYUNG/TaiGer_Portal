@@ -2,8 +2,9 @@
   "name": "datta-able-rv18.0.4",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://lite.codedthemes.com/datta-able/react/default/",
+  "homepage": "http://54.214.118.145/",
   "dependencies": {
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "font-awesome": "^4.7.0",
     "google-maps-react": "^2.0.6",

@@ -1,6 +1,6 @@
 import React, { Component, Suspense } from 'react';
-import {Route, Switch, Redirect} from 'react-router-dom';
-import {connect} from 'react-redux';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Fullscreen from "react-full-screen";
 import windowSize from 'react-window-size';
 
@@ -12,9 +12,49 @@ import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
 
+import routes2 from "../../../route";
+import useToken from '../../components/useToken';
+import Signin1 from '../../../Demo/Authentication/SignIn/SignIn1';
+import ScrollToTop from '../ScrollToTop';
+
 import './app.scss';
+import Login from '../../components/Login';
+// import useToken from '../../components/useToken';
 
 class AdminLayout extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            token: null
+        };
+
+        this.getToken = this.getToken.bind(this);
+        this.handleSetToken = this.handleSetToken.bind(this);
+        this.saveToken = this.saveToken.bind(this);
+        this.handleRemoveToken = this.handleRemoveToken.bind(this);
+    }
+
+    getToken () {
+        const tokenString = localStorage.getItem('token');
+        // console.log('tokenString  ' + tokenString)
+        try {
+            const userToken = JSON.parse(tokenString);
+            // console.log('userToken  ' + userToken)
+            // return userToken?.token
+            return userToken
+        }
+        catch (e) {
+            const userToken = JSON.parse("0");
+            // console.log('userToken  ' + userToken)
+            // return userToken?.token
+            return userToken
+        }
+    };
+    // console.log('getToken()  ' + getToken())
+    // const[token, setToken] = useState(getToken());
+    // console.log(' token  ' + token)
+
+
 
     fullScreenExitHandler = () => {
         if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
@@ -34,6 +74,25 @@ class AdminLayout extends Component {
         }
     }
 
+    handleSetToken(token) {
+        this.setState({
+            token: token
+        })
+    }
+
+    handleRemoveToken() {
+        this.setState({
+            token: null
+        })
+    }
+
+    saveToken = userToken => {
+        // localStorage.setItem('token', JSON.stringify(userToken.token));
+        // setToken(userToken.token);
+        localStorage.setItem('token', JSON.stringify(userToken.token));
+        this.handleSetToken(userToken.token);
+    };
+
     render() {
 
         /* full screen exit call */
@@ -41,6 +100,13 @@ class AdminLayout extends Component {
         document.addEventListener('webkitfullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('mozfullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('MSFullscreenChange', this.fullScreenExitHandler);
+
+        // const { token, setToken } = useToken();
+
+        if (!this.state.token) {
+            return <Login setToken={this.saveToken} />
+        }
+
 
         const menu = routes.map((route, index) => {
             return (route.component) ? (
@@ -55,11 +121,45 @@ class AdminLayout extends Component {
             ) : (null);
         });
 
+        // const { token, setToken } = useToken();
+        // // console.log('token value ' + token)
+
+        // const menu2 = routes2.map((route, index) => {
+        //     return (route.component) ? (
+        //         <Route
+        //             key={index}
+        //             path={route.path}
+        //             exact={route.exact}
+        //             name={route.name}
+        //             render={props => (
+        //                 <route.component {...props} />
+        //             )} />
+        //     ) : (null);
+        // });
+
+        // if (!token) {
+
+        //     // return <Login setToken={setToken} />
+        //     return (
+        //         <Aux>
+        //             <ScrollToTop>
+        //                 <Suspense fallback={<Loader />}>
+        //                     <Switch>
+        //                         {menu2}
+        //                         {/* <Route
+        //                             path="/" component={AdminLayout} /> */}
+        //                     </Switch>
+        //                     <Signin1 setToken={setToken} />
+        //                 </Suspense>
+        //             </ScrollToTop>
+        //         </Aux>
+        //     );
+        // }
         return (
             <Aux>
                 <Fullscreen enabled={this.props.isFullScreen}>
                     <Navigation />
-                    <NavBar />
+                    <NavBar handleRemoveToken = {this.handleRemoveToken} />
                     <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
                         <div className="pcoded-wrapper">
                             <div className="pcoded-content">
@@ -67,7 +167,7 @@ class AdminLayout extends Component {
                                     <Breadcrumb />
                                     <div className="main-body">
                                         <div className="page-wrapper">
-                                            <Suspense fallback={<Loader/>}>
+                                            <Suspense fallback={<Loader />}>
                                                 <Switch>
                                                     {menu}
                                                     <Redirect from="/" to={this.props.defaultPath} />
@@ -97,9 +197,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFullScreenExit: () => dispatch({type: actionTypes.FULL_SCREEN_EXIT}),
-        onComponentWillMount: () => dispatch({type: actionTypes.COLLAPSE_MENU})
+        onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
+        onComponentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU })
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (windowSize(AdminLayout));
+export default connect(mapStateToProps, mapDispatchToProps)(windowSize(AdminLayout));

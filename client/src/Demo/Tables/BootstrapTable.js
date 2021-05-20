@@ -50,6 +50,7 @@ class BootstrapTable extends React.Component {
     render() {
         const { error, isLoaded, data } = this.state;
         if (error) {
+            localStorage.removeItem('token')
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
@@ -79,7 +80,7 @@ class BootstrapTable extends React.Component {
                                         <tbody>
 
                                             {data.map(program => (
-                                                <tr>
+                                                <tr key={program._id}>
                                                     <th scope="row">{program.University}</th>
                                                     <td>{program.Program} </td>
                                                     <td>{program.TOEFL}</td>

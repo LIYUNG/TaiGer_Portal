@@ -42,9 +42,9 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 		app.get("/password", handlers.password);
 		app.post("/password", handlers.passwordPost);
 		// app.get("/programlist", auth, handlers.programlist);
-		app.get("/programlist", handlers.programlist);
+		app.get("/programlist", auth, handlers.programlist);
 		app.get("/addprogram", handlers.addprogramlist);
-		app.get("/studentlist", handlers.studentlist);
+		app.get("/studentlist", auth, handlers.studentlist);
 		app.get("/upload", auth, handlers.Upload);
 		app.post("/upload", auth, handlers.UploadPost);
 		app.get("/settings", auth, handlers.settings);
@@ -60,7 +60,7 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 
 			// render the error page
 			res.status(err.status || 500);
-			res.render('error');
+			res.send('error');
 		});
 
 

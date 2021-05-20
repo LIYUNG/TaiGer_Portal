@@ -258,13 +258,18 @@ exports.programlist = async (req, res) => {
 			res.send({
 				data: program_all
 			})
-		}else{
+		} else {
 			res.send({
 				data: [students_exists]
 			})
 		}
 	} catch (err) {
-		console.log('error by programlist')
+		if (e instanceof jwt.JsonWebTokenError) {
+			// 	// if the error thrown is because the JWT is unauthorized, return a 401 error
+			console.log(e)
+			console.log('error by programlist')
+			// 	// return res.status(401).end();
+		}
 		console.log(err)
 		// return res.redirect("/login");
 	}
@@ -325,7 +330,12 @@ exports.studentlist = async (req, res) => {
 		}
 
 	} catch (err) {
-		console.log('error by studentlist')
+		if (e instanceof jwt.JsonWebTokenError) {
+			// 	// if the error thrown is because the JWT is unauthorized, return a 401 error
+			console.log(e)
+			console.log('error by programlist')
+			// 	// return res.status(401).end();
+		} 
 		console.log(err)
 		// return res.redirect("/login");
 	}

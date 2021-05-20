@@ -115,7 +115,10 @@ class Dashboard extends React.Component {
 
         const { error, isLoaded, data } = this.state;
         if (error) {
-            return <div>Error: {error.message}</div>;
+            // return <div>Error: {error.message}</div>;
+            //TODO clean token
+            localStorage.removeItem('token')
+            return <div>Error: your session is timeout! Please Login</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
@@ -187,11 +190,10 @@ class Dashboard extends React.Component {
                                 <Card.Body className='px-0 py-2'>
                                     <Table responsive hover>
                                         <tbody>
-
-                                            {data.map(student => (
-                                                <tr className="unread">
+                                            {data.map(student =>
+                                                <tr className="unread" key={student._id}>
                                                     <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
-                                                    <td>
+                                                    <td >
                                                         <h6 className="mb-1">{student.firstname_} {student.lastname_}</h6>
                                                         <p className="m-0">{student.emailaddress_}</p>
                                                     </td>
@@ -200,7 +202,7 @@ class Dashboard extends React.Component {
                                                     </td>
                                                     <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a></td>
                                                 </tr>
-                                            ))}
+                                            )}
                                         </tbody>
                                     </Table>
                                 </Card.Body>

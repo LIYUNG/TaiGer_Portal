@@ -8,6 +8,11 @@ import DEMO from "../../../../store/constant";
 import * as actionTypes from "../../../../store/actions";
 
 class NavBar extends Component {
+    constructor(props) {
+        super(props);
+        this.handleRemoveToken = this.props.handleRemoveToken.bind(this)
+    }
+    
     render() {
         let headerClass = ['navbar', 'pcoded-header', 'navbar-expand-lg', this.props.headerBackColor];
         if (this.props.headerFixedLayout) {
@@ -34,7 +39,7 @@ class NavBar extends Component {
                     <a className="mobile-menu" id="mobile-header" href={DEMO.BLANK_LINK}><i className="feather icon-more-horizontal"/></a>
                     <div className="collapse navbar-collapse">
                         <NavLeft/>
-                        <NavRight rtlLayout={this.props.rtlLayout} />
+                        <NavRight handleRemoveToken={this.handleRemoveToken} rtlLayout={this.props.rtlLayout} />
                     </div>
                 </header>
             </Aux>

@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
@@ -9,9 +9,9 @@ import Aux from "../hoc/_Aux";
 import ScrollToTop from './layout/ScrollToTop';
 // import routes from "../route";
 
-import Login from './components/Login';
-import useToken from './components/useToken';
-import Signin1 from '../Demo/Authentication/SignIn/SignIn1';
+// import Login from './components/Login';
+// import useToken from './components/useToken';
+// import Signin1 from '../Demo/Authentication/SignIn/SignIn1';
 
 
 const AdminLayout = Loadable({

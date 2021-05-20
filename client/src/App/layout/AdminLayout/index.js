@@ -13,13 +13,12 @@ import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
 
 import routes2 from "../../../route";
-import useToken from '../../components/useToken';
+// import useToken from '../../components/useToken';
 import Signin1 from '../../../Demo/Authentication/SignIn/SignIn1';
 import ScrollToTop from '../ScrollToTop';
 
 import './app.scss';
-import Login from '../../components/Login';
-// import useToken from '../../components/useToken';
+// import Login from '../../components/Login';
 
 class AdminLayout extends Component {
     constructor(props) {
@@ -101,11 +100,6 @@ class AdminLayout extends Component {
         document.addEventListener('mozfullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('MSFullscreenChange', this.fullScreenExitHandler);
 
-        // const { token, setToken } = useToken();
-
-        if (!this.state.token) {
-            return <Login setToken={this.saveToken} />
-        }
 
 
         const menu = routes.map((route, index) => {
@@ -121,40 +115,38 @@ class AdminLayout extends Component {
             ) : (null);
         });
 
-        // const { token, setToken } = useToken();
-        // // console.log('token value ' + token)
+        const menu2 = routes2.map((route, index) => {
+            return (route.component) ? (
+                <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    name={route.name}
+                    render={props => (
+                        <route.component {...props} />
+                    )} />
+            ) : (null);
+        });
 
-        // const menu2 = routes2.map((route, index) => {
-        //     return (route.component) ? (
-        //         <Route
-        //             key={index}
-        //             path={route.path}
-        //             exact={route.exact}
-        //             name={route.name}
-        //             render={props => (
-        //                 <route.component {...props} />
-        //             )} />
-        //     ) : (null);
-        // });
+        if (!this.state.token) {
 
-        // if (!token) {
+            // return <Login setToken={setToken} />
+            return (
+                <Aux>
+                    <ScrollToTop>
+                        <Suspense fallback={<Loader />}>
+                            <Switch>
+                                {menu2}
+                                {/* <Route
+                                    path="/" component={AdminLayout} /> */}
+                            </Switch>
+                            <Signin1 setToken={this.saveToken} />
+                        </Suspense>
+                    </ScrollToTop>
+                </Aux>
+            );
+        }
 
-        //     // return <Login setToken={setToken} />
-        //     return (
-        //         <Aux>
-        //             <ScrollToTop>
-        //                 <Suspense fallback={<Loader />}>
-        //                     <Switch>
-        //                         {menu2}
-        //                         {/* <Route
-        //                             path="/" component={AdminLayout} /> */}
-        //                     </Switch>
-        //                     <Signin1 setToken={setToken} />
-        //                 </Suspense>
-        //             </ScrollToTop>
-        //         </Aux>
-        //     );
-        // }
         return (
             <Aux>
                 <Fullscreen enabled={this.props.isFullScreen}>

@@ -68,16 +68,16 @@ export default {
                     id: 'bootstrap',
                     title: 'Program List',
                     type: 'item',
-                    icon: 'feather icon-server',
+                    icon: 'feather icon-list',
                     url: '/tables/bootstrap'
                 },
-                {
-                    id: 'charts',
-                    title: 'Charts',
-                    type: 'item',
-                    icon: 'feather icon-pie-chart',
-                    url: '/charts/nvd3'
-                },
+                // {
+                //     id: 'charts',
+                //     title: 'Charts',
+                //     type: 'item',
+                //     icon: 'feather icon-pie-chart',
+                //     url: '/charts/nvd3'
+                // },
                 // {
                 //     id: 'maps',
                 //     title: 'Map',
@@ -85,49 +85,39 @@ export default {
                 //     icon: 'feather icon-map',
                 //     url: '/maps/google-map'
                 // },
+                // {
                 {
-                    id: 'auth',
-                    title: 'Authentication',
-                    type: 'collapse',
-                    icon: 'feather icon-lock',
-                    badge: {
-                        title: 'New',
-                        type: 'label-danger'
-                    },
-                    children: [
-                        {
-                            id: 'signup-1',
-                            title: 'Sign up',
-                            type: 'item',
-                            url: '/auth/signup-1',
-                            target: true,
-                            breadcrumbs: false
-                        },
-                        {
-                            id: 'signin-1',
-                            title: 'Sign in',
-                            type: 'item',
-                            url: '/auth/signin-1',
-                            target: true,
-                            breadcrumbs: false
-                        }
-                    ]
-                },
-                {
-                    id: 'sample-page',
-                    title: 'Sample Page',
+                    id: 'upload',
+                    title: 'Upload Documents',
                     type: 'item',
-                    url: '/sample-page',
+                    url: '/upload',
                     classes: 'nav-item',
-                    icon: 'feather icon-sidebar'
+                    icon: 'feather icon-upload'
                 },
                 {
                     id: 'docs',
                     title: 'Documentation',
-                    type: 'item',
-                    url: '/docs',
+                    type: 'collapse',
                     classes: 'nav-item',
-                    icon: 'feather icon-help-circle'
+                    icon: 'feather icon-help-circle',
+                    children: [
+                        {
+                            id: 'signup-1',
+                            title: 'Application',
+                            type: 'item',
+                            url: '/docs',
+                            target: false,
+                            breadcrumbs: false
+                        },
+                        {
+                            id: 'signin-1',
+                            title: 'Language',
+                            type: 'item',
+                            url: '/auth/signin-1',
+                            target: false,
+                            breadcrumbs: false
+                        }
+                    ]
                 },
                 {
                     id: 'menu-level',

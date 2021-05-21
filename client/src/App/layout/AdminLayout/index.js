@@ -33,7 +33,7 @@ class AdminLayout extends Component {
         this.handleRemoveToken = this.handleRemoveToken.bind(this);
     }
 
-    getToken () {
+    getToken() {
         const tokenString = localStorage.getItem('token');
         // console.log('tokenString  ' + tokenString)
         try {
@@ -49,11 +49,6 @@ class AdminLayout extends Component {
             return userToken
         }
     };
-    // console.log('getToken()  ' + getToken())
-    // const[token, setToken] = useState(getToken());
-    // console.log(' token  ' + token)
-
-
 
     fullScreenExitHandler = () => {
         if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
@@ -73,23 +68,55 @@ class AdminLayout extends Component {
         }
     }
 
-    handleSetToken(token) {
+    // handleSetToken(token) {
+    //     this.setState({
+    //         token: token
+    //     })
+    // }
+
+    handleSetToken = token => {
+        try {
         this.setState({
             token: token
         })
-    }
+        }
+        catch (e) {
+            console.log(e);
+        }
+    };
 
-    handleRemoveToken() {
+    // handleRemoveToken() {
+    //     this.setState({
+    //         token: null
+    //     })
+    // }
+
+    handleRemoveToken = () => {
+        try {
         this.setState({
             token: null
         })
-    }
+        }
+        catch (e) {
+            console.log(e);
+        }
+    };
 
     saveToken = userToken => {
         // localStorage.setItem('token', JSON.stringify(userToken.token));
         // setToken(userToken.token);
-        localStorage.setItem('token', JSON.stringify(userToken.token));
-        this.handleSetToken(userToken.token);
+        try {
+            if (userToken) {
+                localStorage.setItem('token', JSON.stringify(userToken.token));
+                this.handleSetToken(userToken.token);
+            }
+            else{
+                alert('Email or password not correct.');
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
     };
 
     render() {
@@ -99,8 +126,6 @@ class AdminLayout extends Component {
         document.addEventListener('webkitfullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('mozfullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('MSFullscreenChange', this.fullScreenExitHandler);
-
-
 
         const menu = routes.map((route, index) => {
             return (route.component) ? (
@@ -123,7 +148,7 @@ class AdminLayout extends Component {
                     exact={route.exact}
                     name={route.name}
                     render={props => (
-                        <route.component {...props} />
+                        <route.component {...props} setToken={this.saveToken} />
                     )} />
             ) : (null);
         });
@@ -140,7 +165,7 @@ class AdminLayout extends Component {
                                 {/* <Route
                                     path="/" component={AdminLayout} /> */}
                             </Switch>
-                            <Signin1 setToken={this.saveToken} />
+                            {/* <Signin1 setToken={this.saveToken} /> */}
                         </Suspense>
                     </ScrollToTop>
                 </Aux>
@@ -151,7 +176,7 @@ class AdminLayout extends Component {
             <Aux>
                 <Fullscreen enabled={this.props.isFullScreen}>
                     <Navigation />
-                    <NavBar handleRemoveToken = {this.handleRemoveToken} />
+                    <NavBar handleRemoveToken={this.handleRemoveToken} />
                     <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
                         <div className="pcoded-wrapper">
                             <div className="pcoded-content">

@@ -9,6 +9,7 @@ import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
 
 const Student_API = 'http://localhost:2000/studentlist';
+// const Student_API = 'https://54.214.118.145/studentlist';
 
 
 class Dashboard extends React.Component {
@@ -117,7 +118,7 @@ class Dashboard extends React.Component {
         if (error) {
             // return <div>Error: {error.message}</div>;
             //TODO clean token
-            localStorage.removeItem('token')
+            // localStorage.removeItem('token')
             return <div>Error: your session is timeout! Please Login</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;

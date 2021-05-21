@@ -12,6 +12,33 @@ const handlers = require("./controllers/handlers");
 const { auth } = require("./middlewares/auth");
 
 const studentController = require("./controllers/students");
+const multer = require("multer");
+
+
+const DIR = './public/';
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, DIR);
+    },
+    filename: (req, file, cb) => {
+        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        cb(null, fileName)
+    }
+});
+
+var upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+            cb(null, true);
+        } else {
+            cb(null, false);
+            return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+        }
+    }
+});
+
 
 mongoose.connect('mongodb://localhost:27017/TaiGer', {
 	useNewUrlParser: true
@@ -30,13 +57,12 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 		app.set("view engine", "ejs");
 		app.use(cookieParser());
 
-		app.get("/", handlers.logIn);
-		app.post("/", handlers.signIn);
-		app.get("/login", handlers.logIn);
+		// app.get("/", handlers.logIn);
+		// app.post("/", handlers.signIn);
+		// app.get("/login", handlers.logIn);
 		app.post("/login", handlers.signIn);
 		app.get("/logout", handlers.logOut);
 		app.get("/welcome", auth, handlers.welcome);
-		app.get("/register", studentController.Register);
 		app.post("/register", studentController.RegisterPost);
 		app.get("/charts", auth, handlers.Charts);
 		app.get("/password", handlers.password);
@@ -45,8 +71,8 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 		app.get("/programlist", auth, handlers.programlist);
 		app.get("/addprogram", handlers.addprogramlist);
 		app.get("/studentlist", auth, handlers.studentlist);
-		app.get("/upload", auth, handlers.Upload);
-		app.post("/upload", auth, handlers.UploadPost);
+		// app.get("/upload", auth, handlers.Upload);
+		app.post("/upload", auth, upload.single('profileImg'), handlers.UploadPost);
 		app.get("/settings", auth, handlers.settings);
 		app.post("/settings", auth, handlers.settingsPost);
 		app.use((req, res, next) => {
@@ -59,6 +85,7 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 			res.locals.error = req.app.get('env') === 'development' ? err : {};
 
 			// render the error page
+			res.send('render the error page');
 			res.status(err.status || 500);
 			res.send('error');
 		});

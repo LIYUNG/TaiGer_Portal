@@ -11,6 +11,7 @@ import { NavLink } from 'react-router-dom';
 // import Breadcrumb from "../../App/layout/AdminLayout/Breadcrumb";
 
 async function loginUser(credentials) {
+    // return fetch('https://54.214.118.145/login', {
     return fetch('http://localhost:2000/login', {
         method: 'POST',
         headers: {
@@ -18,32 +19,48 @@ async function loginUser(credentials) {
         },
         body: JSON.stringify(credentials)
     })
+        // .then(res => {
+        //     if (res.status === 401) {
+        //         console.error("unauthorized!");
+        //         const error = new Error(res.error);
+        //         throw error;
+        //     } 
+        // })
         .then(data => data.json())
-    // .then(res => {
-    //     if(res.status === 200)
-    //     {
-    //         this.props.history.push('/');
-    //     }else{
-    //         const error = new Error(res.error);
-    //         throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //     console.error(err);
-    //     alert('Error logging in please try again');
-    // })
+        // .then((data) => {
+        //     console.log(data)
+        //     Promise.resolve(data ? data : {})
+        // })
+        // .then(data => data.json())
+        .catch(err => {
+            // console.error(err);
+            // alert('Email or password not correct.');
+        })
 }
 
 export default function Signin1({ setToken }) {
+
     const [emailaddress, setEmailaddress] = useState();
     const [password, setPassword] = useState();
     const handleSubmit = async e => {
         e.preventDefault();
-        const token = await loginUser({
-            emailaddress,
-            password
-        });
-        setToken(token);
+
+        if (!emailaddress) {
+            alert('Email, please!');
+        } else {
+            if (!password) {
+                alert('Password please!');
+            } else {
+
+                const token = await loginUser({
+                    emailaddress,
+                    password
+                });
+                setToken(token);
+            }
+        }
+
+
     }
 
     return (
@@ -70,15 +87,15 @@ export default function Signin1({ setToken }) {
                             <div className="input-group mb-4">
                                 <input type="password" className="form-control" placeholder="password" onChange={e => setPassword(e.target.value)} />
                             </div>
-                            <div className="form-group text-left">
+                            {/* <div className="form-group text-left">
                                 <div className="checkbox checkbox-fill d-inline">
                                     <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" />
                                     <label htmlFor="checkbox-fill-a1" className="cr"> Save credentials</label>
                                 </div>
-                            </div>
+                            </div> */}
                             <button type="submit" className="btn btn-primary shadow-2 mb-4">Login</button>
                             <p className="mb-2 text-muted">Forgot password? <NavLink to="/auth/reset-password-1">Reset</NavLink></p>
-                            <p className="mb-0 text-muted">Don’t have an account? <NavLink to="/auth/signup-1">Signup</NavLink></p>
+                            <p className="mb-0 text-muted">Don’t have an account? <NavLink to="/auth/signup-1">Sign up</NavLink></p>
                         </div>
                     </form>
                 </div>

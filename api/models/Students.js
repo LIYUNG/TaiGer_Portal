@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const Program = require("./Programs");
 const schema = new mongoose.Schema({
 	firstname_ : String,
 	lastname_ : String,
@@ -10,4 +9,4 @@ const schema = new mongoose.Schema({
 	editor_: [String]
 });
 
-module.exports = mongoose.model("Student", schema);
+module.exports = mongoose.model("students", schema);

@@ -1,12 +1,12 @@
 const Student = require("../models/Students");
 const Program = require("../models/Programs");
+const User  = require("../models/User");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
 const path = require("path");
 const bcrypt = require("bcrypt");
 var nodemailer = require('nodemailer');
 const { Schema } = require("mongoose");
-
 
 
 const saltRounds = 10;
@@ -48,45 +48,48 @@ function userInfo(stud) {
 	return viewModel;
 }
 
+
+
+
 exports.logOut = async (req, res) => {
 	res.cookie("token", "abc", { maxAge: 100 }); //send random token, milliseconds
 	res.redirect("/login");
 }
 
-exports.logIn = async (req, res) => {
-	const token_init = req.cookies.token
-	// if the cookie is not set, return an unauthorized error
-	if (!token_init) {
-		return res.render("index_login"); // index refers to index.ejs
-	}
-	else {
-		var payload
-		try {
-			// Check token
-			payload = jwt.verify(token_init, jwtKey)
-		} catch (e) {
-			if (e instanceof jwt.JsonWebTokenError) {
-				// if the error thrown is because the JWT is unauthorized, return a 401 error
-				console.log("no valid token at login page")
-				res.render("index_login"); // index refers to index.ejs
-			}
-			// otherwise, return a bad request error
-			return res.status(400).end();
-		}
+// exports.logIn = async (req, res) => {
+// 	const token_init = req.cookies.token
+// 	// if the cookie is not set, return an unauthorized error
+// 	if (!token_init) {
+// 		return res.render("index_login"); // index refers to index.ejs
+// 	}
+// 	else {
+// 		var payload
+// 		try {
+// 			// Check token
+// 			payload = jwt.verify(token_init, jwtKey)
+// 		} catch (e) {
+// 			if (e instanceof jwt.JsonWebTokenError) {
+// 				// if the error thrown is because the JWT is unauthorized, return a 401 error
+// 				console.log("no valid token at login page")
+// 				res.render("index_login"); // index refers to index.ejs
+// 			}
+// 			// otherwise, return a bad request error
+// 			return res.status(400).end();
+// 		}
 
-		// Finally, return the welcome message to the user, along with their
-		return res.redirect("/welcome");
-	}
-}
+// 		// Finally, return the welcome message to the user, along with their
+// 		return res.redirect("/welcome");
+// 	}
+// }
 
 exports.signIn = async (req, res) => {
 
 	console.log(req.body);
 	const { emailaddress, password } = req.body;
-	console.log("here is ");
+	// console.log("here is ");
 	// Found existing users
 	const students_exists = await Student.findOne({ emailaddress_: req.body.emailaddress });
-	console.log(students_exists);
+	// console.log(students_exists);
 	try {
 
 		if (students_exists != null) {
@@ -115,7 +118,7 @@ exports.signIn = async (req, res) => {
 					// return res.redirect("/welcome");
 				} else {
 					console.log('wrong password !');
-					return res.redirect("/login");
+					return res.status(401).end();
 					// return res.status(401).json({ msg: "Invalid credencial" });
 				}
 			})
@@ -123,15 +126,13 @@ exports.signIn = async (req, res) => {
 		else {
 			//Error
 			console.log('User not existed !');
-			return res.redirect("/login");
+			return res.status(401).end();
 		}
 	} catch (err) {
 		console.log('error!')
 		console.log(err)
-		return res.redirect("/login");
+		return res.status(401).end();
 	}
-
-	// res.redirect("/welcome")
 }
 
 
@@ -315,7 +316,7 @@ exports.studentlist = async (req, res) => {
 		// Access all programs
 		// console.log("programlist");
 		if (students_exists.role_ === 'Agent') {
-			const student_all = await Student.find({ role_: "Student", agent_: "david@gmail.com" });
+			const student_all = await Student.find({ role_: "Student", agent_: emailaddress });
 			// console.log(student_all);
 			res.send({
 				data: student_all
@@ -342,26 +343,31 @@ exports.studentlist = async (req, res) => {
 }
 
 exports.Upload = async (req, res) => {
-	var token = req.cookies.token
-	var emailaddress = jwt_decode(token);
-	//Get user email
-	emailaddress = emailaddress['emailaddress'];
-	console.log(emailaddress);
-	const students_exists = await Student.findOne({ emailaddress_: emailaddress });
-	// console.log(students_exists);
-	// Renew token again, entend expire time
-	token = jwt.sign({ emailaddress }, jwtKey, {
-		algorithm: "HS256",
-		expiresIn: jwtExpirySeconds,
-	})
-
-	console.log(students_exists.firstname_);
-	res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 })
-	res.render('startbootstrap-sb-admin-master/dist/upload', { data: userInfo(students_exists) }); // index refers to index.ejs	
+	res.status(404).end()
 }
 
-exports.UploadPost = async (req, res) => {
-	res.redirect("/upload");
+exports.UploadPost = async(req, res, next) => {
+	console.log("cors: load success!")
+    const url = req.protocol + '://' + req.get('host')
+    const user = new User({
+        name: req.body.name,
+        profileImg: url + '/public/' + "file_name.pdf"
+    });
+    user.save().then(result => {
+        res.status(201).json({
+            message: "User registered successfully!",
+            userCreated: {
+                _id: result._id,
+                profileImg: result.profileImg
+            }
+        })
+		console.log("save success!")
+    }).catch(err => {
+        console.log(err),
+            res.status(500).json({
+                error: err
+            });
+    })
 }
 
 exports.e401 = async (req, res) => {

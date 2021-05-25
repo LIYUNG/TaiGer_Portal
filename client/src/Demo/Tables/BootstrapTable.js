@@ -51,7 +51,7 @@ class BootstrapTable extends React.Component {
     render() {
         const { error, isLoaded, data } = this.state;
         if (error) {
-            // localStorage.removeItem('token')
+            //TODO: put error page component for timeout
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;

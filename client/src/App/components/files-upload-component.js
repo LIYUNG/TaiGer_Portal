@@ -25,6 +25,7 @@ export default class FilesUploadComponent extends Component {
         const auth = localStorage.getItem('token');
         formData.append('profileImg', this.state.profileImg)
         axios.post("http://localhost:2000/upload", formData, {
+        // axios.post("https://54.214.118.145/upload", formData, {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',

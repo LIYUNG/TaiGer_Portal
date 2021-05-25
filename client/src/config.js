@@ -4,7 +4,7 @@ export default {
     layout: 'vertical', // vertical, horizontal (not available in lite version)
     preLayout: null, // (not available in lite version)
     collapseMenu: false, // mini-menu
-    layoutType: 'menu-light', // menu-dark, (menu-light, dark are not available in lite version)
+    layoutType: 'menu-dark', // menu-dark, (menu-light, dark are not available in lite version)
     navIconColor: false,
     headerBackColor: 'header-default', // header-default, (header-blue, header-red, header-purple, header-lightblue, header-dark are not available in lite version)
     navBackColor: 'navbar-default', // navbar-default, (navbar-blue, navbar-red, navbar-purple, navbar-lightblue, navbar-dark are not available in lite version)
@@ -14,7 +14,7 @@ export default {
     navFixedLayout: true,
     headerFixedLayout: false, // not available in lite version
     boxLayout: false,
-    navDropdownIcon: 'style1', // style1, (style2, style3 are not available in lite version)
+    navDropdownIcon: 'style2', // style1, (style2, style3 are not available in lite version)
     navListIcon: 'style1', // style1, (style2, style3, style4, style5, style6 are not available in lite version)
     navActiveListColor: 'active-default', // active-default, (active-blue, active-red, active-purple, active-lightblue, active-dark are not available in lite version)
     navListTitleColor: 'title-default', // title-default, (title-blue, title-red, title-purple, title-lightblue, title-dark are not available in lite version)

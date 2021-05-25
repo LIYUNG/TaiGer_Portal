@@ -12,22 +12,23 @@ const AdminLayout = Loadable({
     loading: Loader
 });
 
-
-function App() {
-    return (
-        <Aux>
-            <ScrollToTop>
-                <Suspense fallback={<Loader />}>
-                    <Switch>
-                        {/* {menu} */}
-                        <Route
-                            path="/" component={AdminLayout} />
-                    </Switch>
-                </Suspense>
-            </ScrollToTop>
-        </Aux>
-    );
-    // }
+// function App() {
+class App extends React.Component {
+    render() {
+        return (
+            <Aux>
+                <ScrollToTop>
+                    <Suspense fallback={<Loader />}>
+                        <Switch>
+                            {/* {menu} */}
+                            <Route
+                                path="/" component={AdminLayout} />
+                        </Switch>
+                    </Suspense>
+                </ScrollToTop>
+            </Aux >
+        );
+    }
 }
 
 export default App;

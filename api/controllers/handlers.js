@@ -1,11 +1,11 @@
 const Student = require("../models/Students");
 const Program = require("../models/Programs");
-const User  = require("../models/User");
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
-const path = require("path");
+// const path = require("path");
 const bcrypt = require("bcrypt");
-var nodemailer = require('nodemailer');
+// var nodemailer = require('nodemailer');
 const { Schema } = require("mongoose");
 
 
@@ -37,51 +37,6 @@ const jwtExpirySeconds = 60;
 //   }
 // });
 
-function userInfo(stud) {
-	const viewModel = {
-		user:
-		{
-			firstname: stud.firstname_,
-			lastname: stud.lastname_
-		}
-	}
-	return viewModel;
-}
-
-
-
-
-exports.logOut = async (req, res) => {
-	res.cookie("token", "abc", { maxAge: 100 }); //send random token, milliseconds
-	res.redirect("/login");
-}
-
-// exports.logIn = async (req, res) => {
-// 	const token_init = req.cookies.token
-// 	// if the cookie is not set, return an unauthorized error
-// 	if (!token_init) {
-// 		return res.render("index_login"); // index refers to index.ejs
-// 	}
-// 	else {
-// 		var payload
-// 		try {
-// 			// Check token
-// 			payload = jwt.verify(token_init, jwtKey)
-// 		} catch (e) {
-// 			if (e instanceof jwt.JsonWebTokenError) {
-// 				// if the error thrown is because the JWT is unauthorized, return a 401 error
-// 				console.log("no valid token at login page")
-// 				res.render("index_login"); // index refers to index.ejs
-// 			}
-// 			// otherwise, return a bad request error
-// 			return res.status(400).end();
-// 		}
-
-// 		// Finally, return the welcome message to the user, along with their
-// 		return res.redirect("/welcome");
-// 	}
-// }
-
 exports.signIn = async (req, res) => {
 
 	console.log(req.body);
@@ -112,10 +67,8 @@ exports.signIn = async (req, res) => {
 					console.log('Send token !');
 					// set the cookie as the token string, with a similar max age as the token
 					// return res.cookie("token", token, { httpOnly: true, maxAge: jwtExpirySeconds * 1000 }).sendStatus(200)
-					// console.log(token);
 
 					return res.send({ token: token })
-					// return res.redirect("/welcome");
 				} else {
 					console.log('wrong password !');
 					return res.status(401).end();
@@ -129,29 +82,10 @@ exports.signIn = async (req, res) => {
 			return res.status(401).end();
 		}
 	} catch (err) {
-		console.log('error!')
+		console.log('error at signIn!')
 		console.log(err)
 		return res.status(401).end();
 	}
-}
-
-
-exports.welcome = async (req, res) => {
-	// We can obtain the session token from the requests cookies, which come with every request
-
-	var token = req.cookies.token
-	var emailaddress = jwt_decode(token);
-	emailaddress = emailaddress['emailaddress'];
-
-	token = jwt.sign({ emailaddress }, jwtKey, {
-		algorithm: "HS256",
-		expiresIn: jwtExpirySeconds,
-	})
-
-	const students_exists = await Student.findOne({ emailaddress_: emailaddress });
-	console.log(students_exists);
-	res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 })
-	res.render('startbootstrap-sb-admin-master/dist/index', { data: userInfo(students_exists) }); // index refers to index.ejs
 }
 
 exports.Charts = async (req, res) => {
@@ -162,49 +96,11 @@ exports.Charts = async (req, res) => {
 	emailaddress = emailaddress['emailaddress'];
 	const students_exists = await Student.findOne({ emailaddress_: emailaddress });
 	// Renew token again, entend expire time
-	token = jwt.sign({ emailaddress }, jwtKey, {
-		algorithm: "HS256",
-		expiresIn: jwtExpirySeconds,
-	})
-	console.log(students_exists);
-	res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 })
-	res.render('startbootstrap-sb-admin-master/dist/charts', { data: userInfo(students_exists) }); // index refers to index.ejs	
-}
-
-exports.layout_static = async (req, res) => {
-	var token = req.cookies.token
-
-	//Extract user email info by token
-	var emailaddress = jwt_decode(token);
-	//Get user email
-	emailaddress = emailaddress['emailaddress'];
-	console.log(emailaddress);
-	const students_exists = await Student.findOne({ emailaddress_: emailaddress });
-	console.log(students_exists);
-	// Renew token again, entend expire time
-	token = jwt.sign({ emailaddress }, jwtKey, {
-		algorithm: "HS256",
-		expiresIn: jwtExpirySeconds,
-	})
-	// temporary store user's name to render in html
-	const viewModel = {
-		user:
-		{
-			firstname: students_exists.firstname_,
-			lastname: students_exists.lastname_
-		}
-	}
-	res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
-	res.render('startbootstrap-sb-admin-master/dist/layout-static'); // index refers to index.ejs	
-}
-
-
-exports.password = async (req, res) => {
-	res.render('startbootstrap-sb-admin-master/dist/password'); // index refers to index.ejs	
+	return res.status(401).end();
 }
 
 exports.passwordPost = async (req, res) => {
-	res.redirect("/login");
+	res.send.status(404).end();
 }
 
 exports.settings = async (req, res) => {
@@ -221,11 +117,10 @@ exports.settings = async (req, res) => {
 	})
 	console.log(students_exists);
 	res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
-	res.render('startbootstrap-sb-admin-master/dist/settings', { data: userInfo(students_exists) }); // index refers to index.ejs	
 }
 
 exports.settingsPost = async (req, res) => {
-	res.redirect("/settings");
+	res.send.status(404).end();
 }
 
 exports.programlist = async (req, res) => {
@@ -269,10 +164,9 @@ exports.programlist = async (req, res) => {
 			// 	// if the error thrown is because the JWT is unauthorized, return a 401 error
 			console.log(e)
 			console.log('error by programlist')
-			// 	// return res.status(401).end();
+			return res.status(401).end();
 		}
 		console.log(err)
-		// return res.redirect("/login");
 	}
 }
 
@@ -282,8 +176,6 @@ exports.addprogramlist = async (req, res) => {
 	try {
 		const program_all = await Program.find();
 		// console.log(program_all);
-		// res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 }) // Update token
-		// res.render('startbootstrap-sb-admin-master/dist/programlist', {data: userInfo(students_exists)}); // index refers to index.ejs	
 		res.send({
 			data: program_all
 		})
@@ -291,7 +183,6 @@ exports.addprogramlist = async (req, res) => {
 	} catch (err) {
 		console.log('error by programlist')
 		console.log(err)
-		// return res.redirect("/login");
 	}
 }
 
@@ -308,7 +199,7 @@ exports.studentlist = async (req, res) => {
 		console.log(emailaddress);
 		const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
 		// console.log(students_exists);
-		// Renew token again, entend expire time
+		//// Renew token again, entend expire time
 		// token = jwt.sign({ emailaddress }, jwtKey, {
 		// 	algorithm: "HS256",
 		// 	expiresIn: jwtExpirySeconds,
@@ -332,52 +223,42 @@ exports.studentlist = async (req, res) => {
 
 	} catch (err) {
 		if (e instanceof jwt.JsonWebTokenError) {
-			// 	// if the error thrown is because the JWT is unauthorized, return a 401 error
+			// if the error thrown is because the JWT is unauthorized, return a 401 error
 			console.log(e)
 			console.log('error by programlist')
-			// 	// return res.status(401).end();
-		} 
+			return res.status(401).end();
+		}
 		console.log(err)
-		// return res.redirect("/login");
 	}
 }
 
 exports.Upload = async (req, res) => {
+	//TODO: response the uploaded files.
+	// response the status of each document
 	res.status(404).end()
 }
 
-exports.UploadPost = async(req, res, next) => {
+exports.UploadPost = async (req, res, next) => {
 	console.log("cors: load success!")
-    const url = req.protocol + '://' + req.get('host')
-    const user = new User({
-        name: req.body.name,
-        profileImg: url + '/public/' + "file_name.pdf"
-    });
-    user.save().then(result => {
-        res.status(201).json({
-            message: "User registered successfully!",
-            userCreated: {
-                _id: result._id,
-                profileImg: result.profileImg
-            }
-        })
+	const url = req.protocol + '://' + req.get('host')
+	const user = new User({
+		name: req.body.name,
+		profileImg: url + '/public/' + "file_name.pdf"
+	});
+	user.save().then(result => {
+		res.status(201).json({
+			message: "User registered successfully!",
+			userCreated: {
+				_id: result._id,
+				profileImg: result.profileImg
+			}
+		})
 		console.log("save success!")
-    }).catch(err => {
-        console.log(err),
-            res.status(500).json({
-                error: err
-            });
-    })
+	}).catch(err => {
+		console.log(err),
+			res.status(500).json({
+				error: err
+			});
+	})
 }
 
-exports.e401 = async (req, res) => {
-	res.render('startbootstrap-sb-admin-master/dist/e401'); // index refers to index.ejs	
-}
-
-exports.e404 = async (req, res) => {
-	res.render('startbootstrap-sb-admin-master/dist/e404'); // index refers to index.ejs	
-}
-
-exports.e500 = async (req, res) => {
-	res.render('startbootstrap-sb-admin-master/dist/e500'); // index refers to index.ejs	
-}

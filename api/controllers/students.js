@@ -1,6 +1,5 @@
 const Student = require("../models/Students");
 const jwt = require("jsonwebtoken");
-const jwt_decode = require("jwt-decode");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 

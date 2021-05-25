@@ -57,24 +57,17 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 		app.set("view engine", "ejs");
 		app.use(cookieParser());
 
-		// app.get("/", handlers.logIn);
-		// app.post("/", handlers.signIn);
-		// app.get("/login", handlers.logIn);
 		app.post("/login", handlers.signIn);
-		app.get("/logout", handlers.logOut);
-		app.get("/welcome", auth, handlers.welcome);
 		app.post("/register", studentController.RegisterPost);
 		app.get("/charts", auth, handlers.Charts);
-		app.get("/password", handlers.password);
 		app.post("/password", handlers.passwordPost);
-		// app.get("/programlist", auth, handlers.programlist);
 		app.get("/programlist", auth, handlers.programlist);
 		app.get("/addprogram", handlers.addprogramlist);
 		app.get("/studentlist", auth, handlers.studentlist);
 		// app.get("/upload", auth, handlers.Upload);
 		app.post("/upload", auth, upload.single('profileImg'), handlers.UploadPost);
 		app.get("/settings", auth, handlers.settings);
-		app.post("/settings", auth, handlers.settingsPost);
+		// app.post("/settings", auth, handlers.settingsPost);
 		app.use((req, res, next) => {
 			res.render('startbootstrap-sb-admin-master/dist/e404'); // index refers to index.ejs	
 		})

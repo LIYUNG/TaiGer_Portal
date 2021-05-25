@@ -13,12 +13,9 @@ import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
 
 import routes2 from "../../../route";
-// import useToken from '../../components/useToken';
-import Signin1 from '../../../Demo/Authentication/SignIn/SignIn1';
 import ScrollToTop from '../ScrollToTop';
 
 import './app.scss';
-// import Login from '../../components/Login';
 
 class AdminLayout extends Component {
     constructor(props) {
@@ -165,7 +162,6 @@ class AdminLayout extends Component {
                                 {/* <Route
                                     path="/" component={AdminLayout} /> */}
                             </Switch>
-                            {/* <Signin1 setToken={this.saveToken} /> */}
                         </Suspense>
                     </ScrollToTop>
                 </Aux>

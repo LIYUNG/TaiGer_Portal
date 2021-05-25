@@ -116,9 +116,7 @@ class Dashboard extends React.Component {
 
         const { error, isLoaded, data } = this.state;
         if (error) {
-            // return <div>Error: {error.message}</div>;
-            //TODO clean token
-            // localStorage.removeItem('token')
+            //TODO: put error page component for timeout
             return <div>Error: your session is timeout! Please Login</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;

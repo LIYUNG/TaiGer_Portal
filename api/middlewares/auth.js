@@ -20,13 +20,17 @@ function auth(req, res, next) {
 		console.log("authentication success")
 		next()
 	} catch (e) {
-		// if (e instanceof jwt.JsonWebTokenError) {
-		// // if the error thrown is because the JWT is unauthorized, return a 401 error
-		// 	console.log(e)
-		// 	console.log('error by auth')
-		// return res.status(401).end();
-		// }
-		console.log(e)
+		if (e instanceof jwt.JsonWebTokenError) {
+			// // if the error thrown is because the JWT is unauthorized, return a 401 error
+			// 	console.log(e)
+			console.log('JsonWebTokenError')
+			return res.status(401).end();
+		}
+		if (e instanceof jwt.TokenExpiredError) {
+			console.log('jwt expired')
+			return res.status(401).end();
+
+		}
 		console.log('error by auth')
 		return res.status(401).end();
 		// res.send("invalid token");

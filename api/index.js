@@ -62,25 +62,27 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 		app.get("/charts", auth, handlers.Charts);
 		app.post("/password", handlers.passwordPost);
 		app.get("/programlist", auth, handlers.programlist);
-		app.get("/addprogram", handlers.addprogramlist);
+		app.post("/addprogram", auth, handlers.addprogram);
+		app.get("/getprogram/:id", auth, handlers.getprogram);
+		app.delete("/deleteprogram", auth, handlers.deleteprogram);
 		app.get("/studentlist", auth, handlers.studentlist);
 		// app.get("/upload", auth, handlers.Upload);
 		app.post("/upload", auth, upload.single('profileImg'), handlers.UploadPost);
 		app.get("/settings", auth, handlers.settings);
 		// app.post("/settings", auth, handlers.settingsPost);
-		app.use((req, res, next) => {
-			res.render('startbootstrap-sb-admin-master/dist/e404'); // index refers to index.ejs	
-		})
+		// app.use((req, res, next) => {
+		// 	res.render('startbootstrap-sb-admin-master/dist/e404'); // index refers to index.ejs	
+		// })
 		// error handler
 		app.use(function (err, req, res, next) {
 			// set locals, only providing error in development
 			res.locals.message = err.message;
 			res.locals.error = req.app.get('env') === 'development' ? err : {};
-
+			console.log(err)
 			// render the error page
-			res.send('render the error page');
+			// res.send('render the error page');
 			res.status(err.status || 500);
-			res.send('error');
+			res.send('render the error page error');
 		});
 
 

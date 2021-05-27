@@ -1,6 +1,14 @@
 import React from 'react';
 import { Row, Col, Card, Table, Tabs, Tab } from 'react-bootstrap';
-
+import {
+    Button,
+    OverlayTrigger,
+    Tooltip,
+    ButtonToolbar,
+    Dropdown,
+    DropdownButton,
+    SplitButton
+} from 'react-bootstrap';
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
 
@@ -82,33 +90,6 @@ class Dashboard extends React.Component {
                     <div className="media-body">
                         <h6 className="m-0 d-inline">Storm Hanse</h6>
                         <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />2739</span>
-                    </div>
-                </div>
-                <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                    <div className="m-r-10 photo-table">
-                        <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></a>
-                    </div>
-                    <div className="media-body">
-                        <h6 className="m-0 d-inline">Frida Thomse</h6>
-                        <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />1032</span>
-                    </div>
-                </div>
-                <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-                    <div className="m-r-10 photo-table">
-                        <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" /></a>
-                    </div>
-                    <div className="media-body">
-                        <h6 className="m-0 d-inline">Silje Larsen</h6>
-                        <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-up f-22 m-r-10 text-c-green" />8750</span>
-                    </div>
-                </div>
-                <div className="media friendlist-box align-items-center justify-content-center">
-                    <div className="m-r-10 photo-table">
-                        <a href={DEMO.BLANK_LINK}><img className="rounded-circle" style={{ width: '40px' }} src={avatar3} alt="activity-user" /></a>
-                    </div>
-                    <div className="media-body">
-                        <h6 className="m-0 d-inline">Storm Hanse</h6>
-                        <span className="float-right d-flex  align-items-center"><i className="fa fa-caret-down f-22 m-r-10 text-c-red" />8750</span>
                     </div>
                 </div>
             </Aux>
@@ -196,10 +177,34 @@ class Dashboard extends React.Component {
                                                         <h6 className="mb-1">{student.firstname_} {student.lastname_}</h6>
                                                         <p className="m-0">{student.emailaddress_}</p>
                                                     </td>
-                                                    <td>
+                                                    {/* <td>
                                                         <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />11 MAY 12:56</h6>
+                                                    </td> */}
+                                                    <td>
+                                                    <h5>Agent: {student.agent_.map(
+                                                        agent =>
+                                                        <h6> {agent}</h6>
+                                                    )}</h5>
+                                                    <h5>Editor: {student.editor_.map(
+                                                        editor =>
+                                                        <h6> {editor}</h6>
+                                                    )}
+                                                    </h5>
                                                     </td>
                                                     <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a></td>
+                                                    <th>
+                                                        <DropdownButton
+                                                            size='sm'
+                                                            title='Option'
+                                                            variant='primary'
+                                                            id={`dropdown-variants-${student._id}`}
+                                                            key={student._id}
+                                                        >
+                                                            <Dropdown.Item eventKey="1">Edit</Dropdown.Item>
+                                                            <Dropdown.Item eventKey="2">Save</Dropdown.Item>
+                                                            <Dropdown.Item eventKey="3">Delete</Dropdown.Item>
+                                                        </DropdownButton>
+                                                    </th>
                                                 </tr>
                                             )}
                                         </tbody>

@@ -12,7 +12,7 @@ const { Schema } = require("mongoose");
 const saltRounds = 10;
 
 const jwtKey = "my_secret_key";
-const jwtExpirySeconds = 60;
+const jwtExpirySeconds = 6000;
 
 // var transporter = nodemailer.createTransport({
 //   service: 'gmail',
@@ -126,7 +126,6 @@ exports.settingsPost = async (req, res) => {
 exports.programlist = async (req, res) => {
 
 	try {
-
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
 		// console.log(token);
@@ -170,18 +169,101 @@ exports.programlist = async (req, res) => {
 	}
 }
 
-exports.addprogramlist = async (req, res) => {
-	const userProgram = req.body;
-	const newProgram = new Program()
+
+exports.getprogram = async (req, res) => {
+
 	try {
-		const program_all = await Program.find();
-		// console.log(program_all);
+		console.log('req.params.id' + req.params.id)
+		const program_id = req.params.id
+		let program = await Program.findById(program_id)
+		console.log('program: ' + program)
+
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
+		// var token = req.cookies.token
+		// //Extract user email info by token
+		// var emailaddress = jwt_decode(token);
+		// emailaddress = emailaddress['emailaddress'];
+		// console.log(emailaddress);
+		// const students_exists = await Student.findOne({ emailaddress_: emailaddress });
+
+		// Renew token again, entend expire time
+		// token = jwt.sign({ emailaddress }, jwtKey, {
+		// 	algorithm: "HS256",
+		// 	expiresIn: jwtExpirySeconds,
+		// })
+		// Access all programs
+		// console.log("programlist");
 		res.send({
-			data: program_all
+			data: program_id
+		})
+		// if (students_exists.role_ === 'Agent') {
+
+		// 	const program_all = await Program.find();
+		// 	// console.log(program_all);
+		// 	res.send({
+		// 		data: program_all
+		// 	})
+		// } else {
+		// 	res.send({
+		// 		data: [students_exists]
+		// 	})
+		// }
+	} catch (e) {
+		if (e instanceof jwt.JsonWebTokenError) {
+			// 	// if the error thrown is because the JWT is unauthorized, return a 401 error
+			console.log(e)
+			console.log('error by programlist')
+			return res.status(401).end();
+		}
+		console.log(e)
+	}
+}
+
+
+exports.addprogram = async (req, res) => {
+	console.log(req.body)
+	try {
+		const New_Program = new Program({
+			University : req.body.university,
+			Program : req.body.program,
+			// degreeTitle_ : req.body.degreeTitle,
+			// TOEFL_ : req.body.toefl,
+			// IELTS_ : req.body.ielts,
+			// TestDaF_ : req.body.testdaf,
+			// GMAT_ : req.body.gmat,
+			// GRE_ : req.body.gre,
+			// applicationStart_ : req.body.applicationStart_,
+			// applicationDeadline_ : req.body.applicationDeadline_,
+			// weblink_ : req.body.weblink_,
+			// FPSOlink_ : req.body.FPSOlink_,
+			// lastUpdate : req.body.lastUpdate,
+		});
+
+		await New_Program.save();
+		return res.send({
+			data: New_Program
 		})
 
 	} catch (err) {
 		console.log('error by programlist')
+		console.log(err)
+	}
+}
+
+exports.deleteprogram = async (req, res) => {
+
+	try {
+		console.log('req.body.program_id = ' + req.body.program_id)
+		const program_id = req.body.program_id
+		await Program.findByIdAndDelete(program_id)
+				// console.log(program_all);
+		res.send({
+			data: 'success'
+		})
+
+	} catch (err) {
+		console.log('error by delete program')
 		console.log(err)
 	}
 }

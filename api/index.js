@@ -63,7 +63,7 @@ mongoose.connect('mongodb://localhost:27017/TaiGer', {
 		app.post("/password", handlers.passwordPost);
 		app.get("/programlist", auth, handlers.programlist);
 		app.post("/addprogram", auth, handlers.addprogram);
-		app.get("/getprogram/:id", auth, handlers.getprogram);
+		app.post("/editprogram/:id", auth, handlers.editprogram);
 		app.delete("/deleteprogram", auth, handlers.deleteprogram);
 		app.get("/studentlist", auth, handlers.studentlist);
 		// app.get("/upload", auth, handlers.Upload);

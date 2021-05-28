@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const schema = new mongoose.Schema({
 	University : String,
 	Program : String,
-	degreeTitle : String,
+	Degree : String,
 	TOEFL : String,
 	IELTS : String,
 	TestDaF : String,

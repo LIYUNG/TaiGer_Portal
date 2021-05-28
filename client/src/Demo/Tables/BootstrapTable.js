@@ -17,13 +17,8 @@ import Programlist from "./ProgramList";
 const program_list_API = 'http://localhost:2000/programlist';
 const delete_program_API = 'http://localhost:2000/deleteprogram';
 const add_program_API = 'http://localhost:2000/addprogram';
-const edit_program_API = 'http://localhost:2000/getprogram';
+const edit_program_API = 'http://localhost:2000/editprogram';
 // const program_list_API = 'https://54.214.118.145/programlist';
-
-// async function deleteprogram(program_id) {
-
-// }
-
 
 class BootstrapTable extends React.Component {
     constructor(props) {
@@ -148,13 +143,13 @@ class BootstrapTable extends React.Component {
             )
     }
 
-    editProgram = program_id => {
+    editProgram = edited_program => {
         console.log("click edit")
-        console.log(program_id)
+        console.log(edited_program)
         const auth = localStorage.getItem('token');
-        fetch(edit_program_API + "/" + program_id,
+        fetch(edit_program_API + "/" + edited_program._id,
             {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -163,7 +158,7 @@ class BootstrapTable extends React.Component {
                 // body: {
                 //     id: id
                 // }
-                // body: JSON.stringify(program_id)
+                body: JSON.stringify(edited_program)
             }
         )
             .then(res => res.json())
@@ -226,14 +221,24 @@ class BootstrapTable extends React.Component {
         }));
     };
 
-    startEditing = i => {
-        this.setState({ editIdx: i });
+    startEditing = (i, program_id )=> {
+        this.setState({ 
+            editIdx: i 
+        });
     };
 
-    stopEditing = () => {
+    stopEditing = (edited_program) => {
+        this.editProgram(edited_program)
         this.setState({ editIdx: -1 });
     };
 
+    cancelEditing = () => {
+        console.log("cancel edit")
+        this.setState({
+            editIdx: -1,
+            // isLoaded: false
+        });
+    }
     handleChange = (e, name, i) => {
         const { value } = e.target;
         this.setState(state => ({
@@ -252,14 +257,7 @@ class BootstrapTable extends React.Component {
             isLoaded: false,
         });
     }
-    EditProgramHandler1 = (program_id) => {
-        console.log("click edit")
-        console.log("program id" + program_id)
-        this.editProgram(program_id)
-        this.setState({
-            isLoaded: false,
-        });
-    }
+
     RemoveProgramHandler2 = (e) => {
         console.log("click save")
     }
@@ -273,50 +271,6 @@ class BootstrapTable extends React.Component {
 
     }
     render() {
-        const buttonVariants = [
-            'primary',
-            // 'secondary',
-            // 'success',
-            // 'danger',
-            // 'warning',
-            // 'info',
-            // 'light',
-            // 'dark',
-        ];
-
-        const buttonOptions = [
-            { variant: 'primary', icon: 'feather icon-thumbs-up' },
-            // { variant: 'secondary', icon: 'feather icon-camera' },
-            // { variant: 'success', icon: 'feather icon-check-circle' },
-            // { variant: 'danger', icon: 'feather icon-slash' },
-            // { variant: 'warning', icon: 'feather icon-alert-triangle' },
-            // { variant: 'info', icon: 'feather icon-info' }
-        ];
-
-        const basicButtons = buttonVariants.map((variant, idx) => (
-            <OverlayTrigger key={idx} overlay={<Tooltip>{variant}</Tooltip>}>
-                <Button variant={variant}><UcFirst text={variant} /></Button>
-            </OverlayTrigger>
-        ));
-
-        const basicDropdownButton = buttonOptions.map(
-            button => {
-                const title = <UcFirst text={button.variant} />;
-                return (
-                    <DropdownButton
-                        title='Option'
-                        variant='primary'
-                        id={`dropdown-variants-${button.variant}`}
-                        key={button.variant}
-                    >
-                        <Dropdown.Item eventKey="1">Edit</Dropdown.Item>
-                        <Dropdown.Item eventKey="2">Save</Dropdown.Item>
-                        <Dropdown.Item eventKey="3">Delete</Dropdown.Item>
-                    </DropdownButton>
-                );
-            });
-
-
         const { error, isLoaded, editIdx, data } = this.state;
         if (error) {
             //TODO: put error page component for timeout
@@ -350,36 +304,36 @@ class BootstrapTable extends React.Component {
                                         stopEditing={this.stopEditing}
                                         handleChange={this.handleChange}
                                         data={this.state.data}
-                                        EditProgramHandler1={this.EditProgramHandler1}
+                                        cancelEditing={this.cancelEditing}
                                         RemoveProgramHandler3={this.RemoveProgramHandler3}
                                         header={[
                                             {
                                                 name: "University",
-                                                prop: "university"
+                                                prop: "University"
                                             },
                                             {
                                                 name: "Program",
-                                                prop: "program"
+                                                prop: "Program"
                                             },
                                             {
                                                 name: "TOEFL",
-                                                prop: "toefl"
+                                                prop: "TOEFL"
                                             },
                                             {
                                                 name: "IELTS",
-                                                prop: "ielts"
+                                                prop: "IELTS"
                                             },
                                             {
                                                 name: "Degree",
-                                                prop: "degree"
+                                                prop: "Degree"
                                             },
                                             {
                                                 name: "GRE/GMAT",
-                                                prop: "gregmat"
+                                                prop: "GREGMAT"
                                             },
                                             {
                                                 name: "Application Deadline",
-                                                prop: "applicationdeadline"
+                                                prop: "applicationDeadline"
                                             }
                                         ]}
                                     />

@@ -5,8 +5,8 @@ import Aux from "../../../hoc/_Aux/index";
 import LineChart from "./LineChart";
 import BarDiscreteChart from "./BarDiscreteChart";
 import MultiBarChart from "./MultiBarChart";
-import PieBasicChart from "./PieBasicChart";
-import PieDonutChart from "./PieDonutChart";
+// import PieBasicChart from "./PieBasicChart";
+// import PieDonutChart from "./PieDonutChart";
 
 class Nvd3Chart extends React.Component {
 

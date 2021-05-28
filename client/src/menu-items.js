@@ -102,18 +102,34 @@ export default {
                     icon: 'feather icon-help-circle',
                     children: [
                         {
-                            id: 'signup-1',
+                            id: 'doc-application',
                             title: 'Application',
                             type: 'item',
-                            url: '/docs',
+                            url: '/docs/application',
                             target: false,
                             breadcrumbs: false
                         },
                         {
-                            id: 'signin-1',
-                            title: 'Language',
+                            id: 'doc-certification',
+                            title: 'Certification',
                             type: 'item',
-                            url: '/auth/signin-1',
+                            url: '/docs/certification',
+                            target: false,
+                            breadcrumbs: false
+                        },
+                        {
+                            id: 'doc-uniassist',
+                            title: 'Uni-Assist',
+                            type: 'item',
+                            url: '/docs/uniassist',
+                            target: false,
+                            breadcrumbs: false
+                        },
+                        {
+                            id: 'doc-visa',
+                            title: 'Visa',
+                            type: 'item',
+                            url: '/docs/visa',
                             target: false,
                             breadcrumbs: false
                         }

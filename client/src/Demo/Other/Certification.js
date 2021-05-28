@@ -4,13 +4,13 @@ import {Row, Col} from 'react-bootstrap';
 import Aux from "../../hoc/_Aux";
 import Card from "../../App/components/MainCard";
 
-class Docs extends Component {
+class Certification extends Component {
     render() {
         return (
             <Aux>
                 <Row>
                     <Col>
-                        <Card title='Quick Installation' isOption>
+                        <Card title='Certification' isOption>
                             <p> - First of all it's required to install latest Node and npm - <a href="https://nodejs.org/en/" target="_blank" rel="noopener noreferrer">nodejs</a></p>
                             <p> - Unzip <code>datta-able-react-lite.zip</code> file, Inside that directory you will find the <code>datta-able-react-lite/</code> folder</p>
                             <p> - Open your terminal/cmd then navigate to project directory <code>datta-able-react-lite/</code></p>
@@ -37,4 +37,4 @@ class Docs extends Component {
     }
 }
 
-export default Docs;
+export default Certification;

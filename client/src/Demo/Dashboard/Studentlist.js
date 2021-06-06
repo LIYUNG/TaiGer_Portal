@@ -45,21 +45,19 @@ const row = (
                     agent =>
                         <p className="m-0">{agent}</p>
                 )}
-
                 <h5>Editor:</h5>
                 {student.editor_.map(
                     editor =>
                         <p className="m-0">{editor}</p>
                 )}
-
             </td>
-            {/* <td>
-                <h5>Programs:{student.applying_program_.map(
+            <td>
+                <h5>Programs:</h5>
+                {student.applying_program_.map(
                     program =>
-                        <h6> {program}</h6>
+                        <h6>{program.University} {program.Program}</h6>
                 )}
-                </h5>
-            </td> */}
+            </td>
             <th>{currentlyEditing ? (
                 <div>
                     <Button className='btn-square' variant='danger' onClick={() => stopEditing(student)}><UcFirst text='Save' /></Button>

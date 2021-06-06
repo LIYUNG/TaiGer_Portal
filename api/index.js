@@ -103,11 +103,15 @@ try {
 	app.post("/addprogram", auth, handlers.addprogram);
 	app.post("/editprogram/:id", auth, handlers.editprogram);
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
+	app.post("/assignprogramtostudent/:id", auth, handlers.assignprogramtostudent);
 	app.get("/studentlist", auth, handlers.studentlist);
+	app.post("/editagent", auth, handlers.editagent);
+	app.post("/editstudentprogram", auth, handlers.editstudentprogram);
+	app.delete("/deleteprogram", auth, handlers.deleteprogram);
 	// app.get("/upload", auth, handlers.Upload);
 	// app.post("/upload", auth, upload2.single('file'), handlers.UploadPost);
 	app.post("/upload", auth, upload2.single('file'), (req, res) => {
-		res.json({file: req.file})
+		res.json({ file: req.file })
 	});
 	app.get("/settings", auth, handlers.settings);
 	// error handler

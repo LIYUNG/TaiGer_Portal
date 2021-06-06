@@ -22,6 +22,7 @@ const row = (
     editIdx,
     handleChange,
     stopEditing,
+    AssignProgramHandler2,
     RemoveProgramHandler3,
     cancelEditing
 ) => {
@@ -43,7 +44,8 @@ const row = (
                     key={x._id}
                 >
                     <Dropdown.Item eventKey="1" onSelect={() => startEditing(i)}>Edit</Dropdown.Item>
-                    <Dropdown.Item eventKey="2" onSelect={() => RemoveProgramHandler3(x._id)}>Delete</Dropdown.Item>
+                    <Dropdown.Item eventKey="2" onSelect={() => AssignProgramHandler2(x._id)}>Assign Program</Dropdown.Item>
+                    <Dropdown.Item eventKey="3" onSelect={() => RemoveProgramHandler3(x._id)}>Delete</Dropdown.Item>
                 </DropdownButton>
             )}
 
@@ -92,6 +94,7 @@ class Programlist extends React.Component {
                             this.props.editIdx,
                             this.props.handleChange,
                             this.props.stopEditing,
+                            this.props.AssignProgramHandler2,
                             this.props.RemoveProgramHandler3,
                             this.props.cancelEditing
                         )

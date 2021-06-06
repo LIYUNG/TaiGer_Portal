@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
 
-const schema = new mongoose.Schema({
+const programs = new mongoose.Schema({
 	University : String,
 	Program : String,
 	Degree : String,
+	Semester : String,
+	Want : String,
 	TOEFL : String,
 	IELTS : String,
 	TestDaF : String,
 	GMAT : String,
 	GRE : String,
-	applicationStart : String,
-	applicationDeadline : String,
-	weblink : String,
+	Application_start_date : String,
+	Application_end_date : String,
+	Website : String,
 	FPSOlink : String,
 	lastUpdate : String,
 	applicationDocu : {
@@ -31,4 +33,8 @@ const schema = new mongoose.Schema({
 	}
 });
 
-module.exports = mongoose.model("programs", schema);
+// const Program = mongoose.model('Program', 'programs', 'Program');
+// module.exports = { Program };
+
+
+module.exports = mongoose.model("programs", programs);

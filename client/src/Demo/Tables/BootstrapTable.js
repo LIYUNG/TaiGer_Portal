@@ -18,6 +18,7 @@ const program_list_API = 'http://localhost:2000/programlist';
 const delete_program_API = 'http://localhost:2000/deleteprogram';
 const add_program_API = 'http://localhost:2000/addprogram';
 const edit_program_API = 'http://localhost:2000/editprogram';
+const assign_program_API = 'http://localhost:2000/assignprogramtostudent';
 // const program_list_API = 'https://54.214.118.145/programlist';
 
 class BootstrapTable extends React.Component {
@@ -180,6 +181,40 @@ class BootstrapTable extends React.Component {
             )
     }
 
+    assignProgram = program_id => {
+        console.log("click assign Program")
+        console.log(program_id)
+        const auth = localStorage.getItem('token');
+        fetch(assign_program_API + "/" + program_id,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+                // body: JSON.stringify(program_id)
+            }
+        )
+            .then(res => res.json())
+            .then(
+                // (result) => {
+                //     this.setState({
+                //         isLoaded: false,
+                //     });
+                // },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    // this.setState({
+                    //     isLoaded: false,
+                    //     error
+                    // });
+                }
+            )
+    }
+
     addProgram = new_program => {
         console.log("click delete")
         console.log(new_program)
@@ -259,8 +294,9 @@ class BootstrapTable extends React.Component {
         });
     }
 
-    RemoveProgramHandler2 = (e) => {
-        console.log("click save")
+    AssignProgramHandler2 = (program_id) => {
+        console.log("click assign")
+        this.assignProgram( program_id )
     }
 
     RemoveProgramHandler3 = (program_id) => {
@@ -273,6 +309,44 @@ class BootstrapTable extends React.Component {
 
     }
 
+
+    validate = () => {
+        let isError = false;
+        const errors = {
+          firstName: "",
+          lastName: "",
+          username: "",
+          email: "",
+          password: ""
+        };
+    
+        const { username, email } = this.state.values;
+    
+        if (username.length < 5) {
+          isError = true;
+          errors.username = "Username needs to be atleast 5 characters long";
+        }
+    
+        if (email.indexOf("@") === -1) {
+          isError = true;
+          errors.email = "Requires valid email";
+        }
+    
+        this.setState({
+          errors
+        });
+    
+        return isError;
+      };
+
+
+    onSubmit = e => {
+        e.preventDefault();
+        const err = this.validate();
+        if (!err) {
+          this.props.handleSave(this.props.i, this.state.values);
+        }
+      };
     render() {
         const { error, isLoaded, editIdx, data } = this.state;
         if (error) {
@@ -305,6 +379,7 @@ class BootstrapTable extends React.Component {
                                         startEditing={this.startEditing}
                                         editIdx={this.state.editIdx}
                                         stopEditing={this.stopEditing}
+                                        AssignProgramHandler2={this.AssignProgramHandler2}
                                         handleChange={this.handleChange}
                                         data={this.state.data}
                                         cancelEditing={this.cancelEditing}

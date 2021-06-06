@@ -219,12 +219,10 @@ exports.editprogram = async (req, res) => {
 		// FPSOlink_ : req.body.FPSOlink_,
 		// lastUpdate : req.body.lastUpdate,
 		// });
-
 		await program.save();
 		return res.send({
 			data: program
 		})
-
 	} catch (err) {
 		console.log('error by programlist')
 		console.log(err)
@@ -232,7 +230,6 @@ exports.editprogram = async (req, res) => {
 }
 
 exports.deleteprogram = async (req, res) => {
-
 	try {
 		// console.log('req.body.program_id = ' + req.body.program_id)
 		console.log('delete ' + req.body.program_id)
@@ -241,9 +238,26 @@ exports.deleteprogram = async (req, res) => {
 		res.send({
 			data: 'success'
 		})
-
 	} catch (err) {
 		console.log('error by delete program')
+		console.log(err)
+	}
+}
+
+exports.assignprogramtostudent = async (req, res) => {
+	try {
+		console.log('edit req.params.id = ' + req.params.id)
+		const program_id = req.params.id
+		let program = await Program.findById(program_id)
+		var student1 = await Student.findOne({ emailaddress_: 'liyung.chen@tum.de' });//get email by token
+		student1.applying_program_.push(program);
+		student1.save();
+		console.log('program: ' + program)
+		res.send({
+			data: 'success'
+		})
+	} catch (err) {
+		console.log('error by assigning program')
 		console.log(err)
 	}
 }

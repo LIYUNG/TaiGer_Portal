@@ -31,9 +31,8 @@ function auth(req, res, next) {
 			return res.status(401).end();
 
 		}
-		console.log('error by auth')
+		console.log('Error by auth')
 		return res.status(401).end();
-		// res.send("invalid token");
 	}
 }
 

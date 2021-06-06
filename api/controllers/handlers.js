@@ -128,9 +128,6 @@ exports.programlist = async (req, res) => {
 	try {
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
-		// console.log(token);
-		// console.log(req.headers.authorization);
-		// var token = req.cookies.token
 		// //Extract user email info by token
 		var emailaddress = jwt_decode(token);
 		// var emailaddress = 'jwt_decode(token)';
@@ -138,29 +135,22 @@ exports.programlist = async (req, res) => {
 		emailaddress = emailaddress['emailaddress'];
 		console.log(emailaddress);
 		const students_exists = await Student.findOne({ emailaddress_: emailaddress });
-		// console.log(students_exists);
-		// Renew token again, entend expire time
-		// token = jwt.sign({ emailaddress }, jwtKey, {
-		// 	algorithm: "HS256",
-		// 	expiresIn: jwtExpirySeconds,
-		// })
 		// Access all programs
-		// console.log("programlist");
 		if (students_exists.role_ === 'Agent') {
 
 			const program_all = await Program.find();
-			// console.log(program_all);
 			res.send({
 				data: program_all
 			})
 		} else {
+			//TODO: show student's own program list
 			res.send({
 				data: [students_exists]
 			})
 		}
 	} catch (err) {
 		if (e instanceof jwt.JsonWebTokenError) {
-			// 	// if the error thrown is because the JWT is unauthorized, return a 401 error
+			// if the error thrown is because the JWT is unauthorized, return a 401 error
 			console.log(e)
 			console.log('error by programlist')
 			return res.status(401).end();
@@ -172,6 +162,7 @@ exports.programlist = async (req, res) => {
 exports.addprogram = async (req, res) => {
 	console.log(req.body)
 	try {
+		console.log('New program ')
 		const New_Program = new Program({
 			University: req.body.university,
 			Program: req.body.program,
@@ -209,7 +200,7 @@ exports.editprogram = async (req, res) => {
 
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
-		// await Program.findOneAndUpdate({
+		// update the program
 		program.University = req.body.University
 		program.Program = req.body.Program
 		program.TOEFL = req.body.TOEFL
@@ -243,10 +234,10 @@ exports.editprogram = async (req, res) => {
 exports.deleteprogram = async (req, res) => {
 
 	try {
-		console.log('req.body.program_id = ' + req.body.program_id)
+		// console.log('req.body.program_id = ' + req.body.program_id)
+		console.log('delete ' + req.body.program_id)
 		const program_id = req.body.program_id
 		await Program.findByIdAndDelete(program_id)
-		// console.log(program_all);
 		res.send({
 			data: 'success'
 		})
@@ -284,7 +275,13 @@ exports.studentlist = async (req, res) => {
 				data: student_all
 			})
 		}
-		else {
+		else if (students_exists.role_ === 'Admin') {
+			const student_all = await Student.find({ role_: "Student" });
+			// console.log(student_all);
+			res.send({
+				data: student_all
+			})
+		} else {
 			// const student_all = await Student.find({ role_: "Student", agent_: "david@gmail.com" });
 			// console.log(student_all);
 			res.send({
@@ -303,6 +300,16 @@ exports.studentlist = async (req, res) => {
 	}
 }
 
+exports.editagent = async (req, res, next) => {
+	console.log("editagent success!")
+	res.status(404).end()
+}
+
+exports.editstudentprogram = async (req, res, next) => {
+	console.log("editstudentprogram success!")
+	res.status(404).end()
+}
+
 exports.Upload = async (req, res) => {
 	//TODO: response the uploaded files.
 	// response the status of each document
@@ -311,25 +318,27 @@ exports.Upload = async (req, res) => {
 
 exports.UploadPost = async (req, res, next) => {
 	console.log("cors: load success!")
-	const url = req.protocol + '://' + req.get('host')
-	const user = new User({
-		name: req.body.name,
-		profileImg: url + '/public/' + "file_name.pdf"
-	});
-	user.save().then(result => {
-		res.status(201).json({
-			message: "User registered successfully!",
-			userCreated: {
-				_id: result._id,
-				profileImg: result.profileImg
-			}
-		})
-		console.log("save success!")
-	}).catch(err => {
-		console.log(err),
-			res.status(500).json({
-				error: err
-			});
-	})
+	res.json({ file: req.file })
+	// res.status(201).end()
+	// const url = req.protocol + '://' + req.get('host')
+	// const user = new User({
+	// 	name: req.body.name,
+	// 	profileImg: url + '/public/' + "file_name.pdf"
+	// });
+	// user.save().then(result => {
+	// 	res.status(201).json({
+	// 		message: "User registered successfully!",
+	// 		userCreated: {
+	// 			_id: result._id,
+	// 			profileImg: result.profileImg
+	// 		}
+	// 	})
+	// 	console.log("save success!")
+	// }).catch(err => {
+	// 	console.log(err),
+	// 		res.status(500).json({
+	// 			error: err
+	// 		});
+	// })
 }
 

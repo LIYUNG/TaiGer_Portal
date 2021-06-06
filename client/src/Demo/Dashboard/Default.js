@@ -15,10 +15,12 @@ import DEMO from "../../store/constant";
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
+import Studentlist from "./Studentlist";
 
 const Student_API = 'http://localhost:2000/studentlist';
 // const Student_API = 'https://54.214.118.145/studentlist';
-
+const edit_agent_API = 'http://localhost:2000/editagent';
+const edit_studentsprogram_API = 'http://localhost:2000/editstudentprogram';
 
 class Dashboard extends React.Component {
 
@@ -27,6 +29,7 @@ class Dashboard extends React.Component {
         this.state = {
             error: null,
             isLoaded: false,
+            editIdx: -1,
             data: []
         };
     }
@@ -60,6 +63,184 @@ class Dashboard extends React.Component {
                     });
                 }
             )
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.isLoaded === false) {
+            const auth = localStorage.getItem('token');
+            fetch(Student_API,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + JSON.parse(auth)
+                    },
+                }
+            )
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        this.setState({
+                            isLoaded: true,
+                            data: result.data
+                        });
+                    },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
+                        this.setState({
+                            isLoaded: true,
+                            error
+                        });
+                    }
+                )
+        }
+    }
+
+    editAgent = edited_program => {
+        console.log("click edit")
+        console.log(edited_program)
+        const auth = localStorage.getItem('token');
+        fetch(edit_agent_API + "/" + edited_program._id,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+                // body: {
+                //     id: id
+                // }
+                body: JSON.stringify(edited_program)
+            }
+        )
+            .then(res => res.json())
+            .then(
+                // (result) => {
+                //     this.setState({
+                //         isLoaded: false,
+                //     });
+                // },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    // this.setState({
+                    //     isLoaded: false,
+                    //     error
+                    // });
+                }
+            )
+    }
+
+    editStudentProgram = new_program => {
+        console.log("click delete")
+        console.log(new_program)
+        const auth = localStorage.getItem('token');
+        fetch(edit_studentsprogram_API,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+                body: JSON.stringify(new_program)
+            }
+        )
+            .then(res => res.json())
+            .then(
+                // (result) => {
+                //     this.setState({
+                //         isLoaded: false,
+                //     });
+                // },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    // this.setState({
+                    //     isLoaded: false,
+                    //     error
+                    // });
+                }
+            )
+    }
+
+
+    handleRemove = i => {
+        this.setState(state => ({
+            data: state.data.filter((row, j) => j !== i)
+        }));
+    };
+
+    startEditingAgent = (i, program_id )=> {
+        console.log("startEditingAgent")
+        // this.setState({ 
+        //     editIdx: i 
+        // });
+    };
+
+    startEditingEditor = (i, program_id )=> {
+        console.log("startEditingEditor")
+        // this.setState({ 
+        //     editIdx: i 
+        // });
+    };
+
+    startEditingProgram = (i, program_id )=> {
+        console.log("startEditingProgram")
+        // this.setState({ 
+        //     editIdx: i 
+        // });
+    };
+
+    stopEditing = (edited_program) => {
+        this.editAgent(edited_program)
+        this.setState({ editIdx: -1 });
+    };
+
+    cancelEditing = () => {
+        console.log("cancel edit")
+        this.setState({
+            editIdx: -1,
+            // isLoaded: false
+        });
+    }
+    handleChange = (e, name, i) => {
+        const { value } = e.target;
+        this.setState(state => ({
+            data: this.state.data.map(
+                (row, j) => (j === i ? { ...row, [name]: value } : row)
+            )
+        }));
+    };
+
+    NewStudentProgram = (new_program) => {
+        console.log("click NewProgram")
+        const university = 'RWTH Aachen'
+        const program = 'Economics'
+        this.editStudentProgram({ university, program })
+        this.setState({
+            isLoaded: false,
+        });
+    }
+
+    RemoveProgramHandler2 = (e) => {
+        console.log("click save")
+    }
+    
+    RemoveProgramHandler3 = (program_id) => {
+        console.log("click delete")
+        console.log("id = " + program_id)
+        this.deleteProgram({ program_id })
+        this.setState({
+            isLoaded: false,
+        });
+
     }
 
     render() {
@@ -111,7 +292,7 @@ class Dashboard extends React.Component {
                                     <Card.Title as='h5'>Student List</Card.Title>
                                 </Card.Header>
                                 <Card.Body className='px-0 py-2'>
-                                    <Table responsive hover>
+                                    {/* <Table responsive hover>
                                         <tbody>
                                             {data.map(student =>
                                                 <tr className="unread" key={student._id}>
@@ -120,9 +301,6 @@ class Dashboard extends React.Component {
                                                         <h6 className="mb-1">{student.firstname_} {student.lastname_}</h6>
                                                         <p className="m-0">{student.emailaddress_}</p>
                                                     </td>
-                                                    {/* <td>
-                                                        <h6 className="text-muted"><i className="fa fa-circle text-c-green f-10 m-r-15" />11 MAY 12:56</h6>
-                                                    </td> */}
                                                     <td>
                                                         <h5>Agent: {student.agent_.map(
                                                             agent =>
@@ -134,7 +312,6 @@ class Dashboard extends React.Component {
                                                         )}
                                                         </h5>
                                                     </td>
-                                                    <td><a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a></td>
                                                     <th>
                                                         <DropdownButton
                                                             size='sm'
@@ -143,14 +320,45 @@ class Dashboard extends React.Component {
                                                             id={`dropdown-variants-${student._id}`}
                                                             key={student._id}
                                                         >
-                                                            <Dropdown.Item eventKey="1">Edit</Dropdown.Item>
-                                                            <Dropdown.Item eventKey="2">Save</Dropdown.Item>
+                                                            <Dropdown.Item eventKey="1">Edit Agent</Dropdown.Item>
+                                                            <Dropdown.Item eventKey="2">Edit Editor</Dropdown.Item>
+                                                            <Dropdown.Item eventKey="3">Edit Program</Dropdown.Item>
                                                         </DropdownButton>
                                                     </th>
                                                 </tr>
                                             )}
                                         </tbody>
-                                    </Table>
+                                    </Table> */}
+                                    <Studentlist
+                                        handleRemove={this.handleRemove}
+                                        startEditingAgent={this.startEditingAgent}
+                                        startEditingEditor={this.startEditingEditor}
+                                        startEditingProgram={this.startEditingProgram}
+                                        editIdx={this.state.editIdx}
+                                        stopEditing={this.stopEditing}
+                                        handleChange={this.handleChange}
+                                        data={this.state.data}
+                                        cancelEditing={this.cancelEditing}
+                                        RemoveProgramHandler3={this.RemoveProgramHandler3}
+                                        header={[
+                                            {
+                                                name: "StudentName",
+                                                prop: "StudentName"
+                                            },
+                                            {
+                                                name: "Agent",
+                                                prop: "agent_"
+                                            },
+                                            {
+                                                name: "Editor",
+                                                prop: "editor_"
+                                            },
+                                            {
+                                                name: "Program",
+                                                prop: "Program"
+                                            }
+                                        ]}
+                                    />
                                 </Card.Body>
                             </Card>
                         </Col>

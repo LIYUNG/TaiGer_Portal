@@ -246,6 +246,7 @@ class BootstrapTable extends React.Component {
                 (row, j) => (j === i ? { ...row, [name]: value } : row)
             )
         }));
+        // this.cancelEditing();
     };
 
     NewProgram = (new_program) => {
@@ -261,6 +262,7 @@ class BootstrapTable extends React.Component {
     RemoveProgramHandler2 = (e) => {
         console.log("click save")
     }
+
     RemoveProgramHandler3 = (program_id) => {
         console.log("click delete")
         console.log("id = " + program_id)
@@ -270,6 +272,7 @@ class BootstrapTable extends React.Component {
         });
 
     }
+
     render() {
         const { error, isLoaded, editIdx, data } = this.state;
         if (error) {

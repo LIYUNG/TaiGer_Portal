@@ -11,19 +11,19 @@ export default class FilesUploadComponent extends Component {
         this.onSubmitFile = this.onSubmitFile.bind(this);
 
         this.state = {
-            profileImg: ''
+            file: ''
         }
     }
 
     onFileChange(e) {
-        this.setState({ profileImg: e.target.files[0] })
+        this.setState({ file: e.target.files[0] })
     }
 
     onSubmitFile(e) {
         e.preventDefault()
         const formData = new FormData()
         const auth = localStorage.getItem('token');
-        formData.append('profileImg', this.state.profileImg)
+        formData.append('file', this.state.file)
         axios.post("http://localhost:2000/upload", formData, {
         // axios.post("https://54.214.118.145/upload", formData, {
             headers: {
@@ -55,7 +55,7 @@ export default class FilesUploadComponent extends Component {
                 <Col md={6}>
                     <Form>
                         {/* <div className="form-control" id="customFile"> */}
-                        <input type="file" className="form-control" id="customFile" onChange={this.onFileChange} />
+                        <input type="file" name="file" className="form-control" id="customFile" onChange={this.onFileChange} />
                         {/* </div> */}
                     </Form>
                 </Col>

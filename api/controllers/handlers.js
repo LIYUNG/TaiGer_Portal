@@ -246,16 +246,25 @@ exports.deleteprogram = async (req, res) => {
 
 exports.assignprogramtostudent = async (req, res) => {
 	try {
-		console.log('edit req.params.id = ' + req.params.id)
-		const program_id = req.params.id
+		console.log('edit req.body.program_id = ' + req.body.program_id)
+		const program_id = req.body.program_id
 		let program = await Program.findById(program_id)
-		var student1 = await Student.findOne({ emailaddress_: 'liyung.chen@tum.de' });//get email by token
-		student1.applying_program_.push(program);
-		student1.save();
-		console.log('program: ' + program)
-		res.send({
-			data: 'success'
-		})
+		console.log('edit req.body.student_id = ' + req.body.student_id)
+		const student_id = req.body.student_id
+		var student1 = await Student.findById(student_id);
+		const exist_program = await student1.applying_program_.id(program_id)
+		if (exist_program === null) {
+			student1.applying_program_.push(program);
+			student1.save();
+			console.log('success: ' + program)
+			res.send({
+				data: 'success'
+			})
+		} else {
+			res.send({
+				data: 'failed'
+			})
+		}
 	} catch (err) {
 		console.log('error by assigning program')
 		console.log(err)

@@ -103,7 +103,7 @@ try {
 	app.post("/addprogram", auth, handlers.addprogram);
 	app.post("/editprogram/:id", auth, handlers.editprogram);
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
-	app.post("/assignprogramtostudent/:id", auth, handlers.assignprogramtostudent);
+	app.post("/assignprogramtostudent", auth, handlers.assignprogramtostudent);
 	app.get("/studentlist", auth, handlers.studentlist);
 	app.post("/editagent", auth, handlers.editagent);
 	app.post("/editstudentprogram", auth, handlers.editstudentprogram);

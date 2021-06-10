@@ -28,10 +28,29 @@ class BootstrapTable extends React.Component {
             error: null,
             isLoaded: false,
             editIdx: -1,
+            modalShow: false,
+            Uni: "",
+            Program: "",
+            ProgramId: "",
             data: []
         };
-
     }
+
+    setModalShow = (uni_name, program_name, programID) => {
+        this.setState({
+            modalShow: true,
+            Uni: uni_name,
+            Program: program_name,
+            ProgramId: programID
+        });
+    }
+
+    setModalHide = () => {
+        this.setState({
+            modalShow: false,
+        });
+    }
+
     componentDidMount() {
         const auth = localStorage.getItem('token');
         fetch(program_list_API,
@@ -181,11 +200,11 @@ class BootstrapTable extends React.Component {
             )
     }
 
-    assignProgram = program_id => {
+    assignProgram = (data) => {
         console.log("click assign Program")
-        console.log(program_id)
+        console.log(data)
         const auth = localStorage.getItem('token');
-        fetch(assign_program_API + "/" + program_id,
+        fetch(assign_program_API,
             {
                 method: 'POST',
                 headers: {
@@ -193,7 +212,7 @@ class BootstrapTable extends React.Component {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + JSON.parse(auth)
                 },
-                // body: JSON.stringify(program_id)
+                body: JSON.stringify(data)
             }
         )
             .then(res => res.json())
@@ -256,9 +275,9 @@ class BootstrapTable extends React.Component {
         }));
     };
 
-    startEditing = (i, program_id )=> {
-        this.setState({ 
-            editIdx: i 
+    startEditing = (i, program_id) => {
+        this.setState({
+            editIdx: i
         });
     };
 
@@ -274,6 +293,14 @@ class BootstrapTable extends React.Component {
             // isLoaded: false
         });
     }
+
+    handleSave = (i, x) => {
+        this.setState(state => ({
+            data: this.state.data.map((row, j) => (j === i ? x : row))
+        }));
+        this.stopEditing();
+    };
+
     handleChange = (e, name, i) => {
         const { value } = e.target;
         this.setState(state => ({
@@ -294,9 +321,14 @@ class BootstrapTable extends React.Component {
         });
     }
 
-    AssignProgramHandler2 = (program_id) => {
+    AssignProgramHandler2 = (student_id) => {
         console.log("click assign")
-        this.assignProgram( program_id )
+        console.log(student_id)
+        const program_id = this.state.ProgramId
+        this.assignProgram({ program_id, student_id })
+        this.setState({
+            modalShow: false,
+        });
     }
 
     RemoveProgramHandler3 = (program_id) => {
@@ -313,40 +345,40 @@ class BootstrapTable extends React.Component {
     validate = () => {
         let isError = false;
         const errors = {
-          firstName: "",
-          lastName: "",
-          username: "",
-          email: "",
-          password: ""
+            firstName: "",
+            lastName: "",
+            username: "",
+            email: "",
+            password: ""
         };
-    
+
         const { username, email } = this.state.values;
-    
+
         if (username.length < 5) {
-          isError = true;
-          errors.username = "Username needs to be atleast 5 characters long";
+            isError = true;
+            errors.username = "Username needs to be atleast 5 characters long";
         }
-    
+
         if (email.indexOf("@") === -1) {
-          isError = true;
-          errors.email = "Requires valid email";
+            isError = true;
+            errors.email = "Requires valid email";
         }
-    
+
         this.setState({
-          errors
+            errors
         });
-    
+
         return isError;
-      };
+    };
 
 
     onSubmit = e => {
         e.preventDefault();
         const err = this.validate();
         if (!err) {
-          this.props.handleSave(this.props.i, this.state.values);
+            this.props.handleSave(this.props.i, this.state.values);
         }
-      };
+    };
     render() {
         const { error, isLoaded, editIdx, data } = this.state;
         if (error) {
@@ -375,6 +407,12 @@ class BootstrapTable extends React.Component {
                                 </Card.Header>
                                 <Card.Body>
                                     <Programlist
+                                        ModalShow={this.state.modalShow}
+                                        ProgramID={this.state.ProgramId}
+                                        Uni_Name={this.state.Uni}
+                                        Program_Name={this.state.Program}
+                                        setModalShow={this.setModalShow}
+                                        setModalHide={this.setModalHide}
                                         handleRemove={this.handleRemove}
                                         startEditing={this.startEditing}
                                         editIdx={this.state.editIdx}

@@ -27,7 +27,7 @@ import FilesUploadComponent from "../../App/components/files-upload-component";
 // export default Upload;
 
 import React from 'react';
-import { Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 
 import Aux from "../../hoc/_Aux";
 

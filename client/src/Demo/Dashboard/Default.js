@@ -1,14 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Table, Tabs, Tab } from 'react-bootstrap';
-import {
-    Button,
-    OverlayTrigger,
-    Tooltip,
-    ButtonToolbar,
-    Dropdown,
-    DropdownButton,
-    SplitButton
-} from 'react-bootstrap';
+import { Row, Col, Card, Tabs, Tab } from 'react-bootstrap';
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
 
@@ -192,7 +183,7 @@ class Dashboard extends React.Component {
     };
 
     startEditingProgram = (i, program_id )=> {
-        console.log("startEditingProgram")
+        console.log("startEditingAnddeleteProgram")
         // this.setState({ 
         //     editIdx: i 
         // });
@@ -276,7 +267,7 @@ class Dashboard extends React.Component {
             </Aux>
         );
 
-        const { error, isLoaded, data } = this.state;
+        const { error, isLoaded } = this.state;
         if (error) {
             //TODO: put error page component for timeout
             return <div>Error: your session is timeout! Please Login</div>;

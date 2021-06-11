@@ -1,25 +1,28 @@
-import React, { useState } from 'react';
-import { Row, Col, Card, Table, Form, Modal } from 'react-bootstrap';
+import React from 'react';
+import { Table, Form, Modal } from 'react-bootstrap';
 import {
     Button,
-    OverlayTrigger,
-    Tooltip,
-    ButtonToolbar,
+    // OverlayTrigger,
+    // Tooltip,
+    // ButtonToolbar,
     Dropdown,
     DropdownButton,
-    SplitButton
+    // SplitButton
 } from 'react-bootstrap';
 
-import Aux from "../../hoc/_Aux";
+// import Aux from "../../hoc/_Aux";
 import UcFirst from "../../App/components/UcFirst";
 
 class MyVerticallyCenteredModal extends React.Component {
     constructor(props) {
         super(props);
-        this.AssignProgramHandler = this.props.AssignProgramHandler.bind(this)
+        this.handleChange2 = props.handleChange2.bind(this)
+        this.setModalHide = props.setModalHide.bind(this);
+        this.onSubmit2 = props.onSubmit2.bind(this);
         this.state = {
-            data: []
+            data: [],
         };
+
     }
 
     componentDidMount() {
@@ -38,7 +41,7 @@ class MyVerticallyCenteredModal extends React.Component {
             .then(
                 (result) => {
                     this.setState({
-                        isLoaded: true,
+                        // isLoaded: true,
                         data: result.data
                     });
                 },
@@ -59,24 +62,38 @@ class MyVerticallyCenteredModal extends React.Component {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        Assign {this.props.Uni_Name} - {this.props.Program_Name} to
+                        Assign {this.props.uni_name} - {this.props.program_name} to
           </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h4>Student:</h4>
                     {this.state.data.map(student => (
                         < tr key={student._id} >
+                            <th>
+                                <div>
+                                    <Form.Group>
+                                        <Form.Check
+                                            custom
+                                            type="radio"
+                                            name="student_id"
+                                            value={student._id}
+                                            id={student._id}
+                                            onChange={this.handleChange2}
+                                        />
+                                    </Form.Group>
+                                </div>
+                            </th>
                             <td >
-                                <h4 className="mb-1">{student.firstname_}, {student.lastname_}</h4>
+                                <h4 className="mb-1" >{student.firstname_}, {student.lastname_}</h4>
                             </td>
                         </tr>
                     ))}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => this.AssignProgramHandler('60a116ba6f221e768c0803c7')}>Assign</Button>
-                    <Button onClick={this.props.onHide}>Cancel</Button>
+                    <Button onClick={this.onSubmit2}>Assign</Button>
+                    <Button onClick={this.setModalHide}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
         );
@@ -92,7 +109,6 @@ const row = (
     editIdx,
     handleChange,
     stopEditing,
-    AssignProgramHandler2,
     RemoveProgramHandler3,
     cancelEditing,
     setModalShow,
@@ -141,10 +157,11 @@ const row = (
 };
 
 class Programlist extends React.Component {
-    constructor(props) {
-        super(props);
+    // constructor(props) {
+    //     super(props);
+    //     // this.setModalHide = this.props.setModalHide.bind(this);
+    // }
 
-    }
     render() {
         return (
             <>
@@ -168,7 +185,6 @@ class Programlist extends React.Component {
                                 this.props.editIdx,
                                 this.props.handleChange,
                                 this.props.stopEditing,
-                                this.props.AssignProgramHandler2,
                                 this.props.RemoveProgramHandler3,
                                 this.props.cancelEditing,
                                 this.props.setModalShow
@@ -179,11 +195,14 @@ class Programlist extends React.Component {
                 </Table >
                 <MyVerticallyCenteredModal
                     show={this.props.ModalShow}
-                    onHide={() => this.props.setModalHide()}
-                    AssignProgramHandler={this.props.AssignProgramHandler2}
-                    ProgramID={this.props.ProgramID}
-                    Uni_Name={this.props.Uni_Name}
-                    Program_Name={this.props.Program_Name}
+                    setModalHide={this.props.setModalHide}
+                    // assignprogramhandler={this.props.assignprogramhandler}
+                    // program_id={this.state.program_id}
+                    // student_id={this.state.student_id}
+                    uni_name={this.props.Uni_Name}
+                    program_name={this.props.Program_Name}
+                    handleChange2={this.props.handleChange2}
+                    onSubmit2={this.props.onSubmit2}
                 />
             </>
         )

@@ -246,6 +246,7 @@ exports.deleteprogram = async (req, res) => {
 
 exports.assignprogramtostudent = async (req, res) => {
 	try {
+		console.log('edit req.body = ' + req.body)
 		console.log('edit req.body.program_id = ' + req.body.program_id)
 		const program_id = req.body.program_id
 		let program = await Program.findById(program_id)
@@ -253,6 +254,8 @@ exports.assignprogramtostudent = async (req, res) => {
 		const student_id = req.body.student_id
 		var student1 = await Student.findById(student_id);
 		const exist_program = await student1.applying_program_.id(program_id)
+		// TO remove subdocument/subarray
+		// const exist_program = await student1.applying_program_.id(program_id).remove()
 		if (exist_program === null) {
 			student1.applying_program_.push(program);
 			student1.save();
@@ -276,7 +279,7 @@ exports.studentlist = async (req, res) => {
 	try {
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
-		console.log(token);
+		// console.log(token);
 		// //Extract user email info by token
 		var emailaddress = jwt_decode(token);
 		// //Get user email

@@ -1,16 +1,16 @@
 import React from 'react';
-import { Row, Col, Card, Table } from 'react-bootstrap';
+import { Row, Col, Card } from 'react-bootstrap';
 import {
-    Button,
-    OverlayTrigger,
-    Tooltip,
+    // Button,
+    // OverlayTrigger,
+    // Tooltip,
     ButtonToolbar,
-    Dropdown,
-    DropdownButton,
-    SplitButton
+    // Dropdown,
+    // DropdownButton,
+    // SplitButton
 } from 'react-bootstrap';
 import Aux from "../../hoc/_Aux";
-import UcFirst from "../../App/components/UcFirst";
+// import UcFirst from "../../App/components/UcFirst";
 import Programlist from "./ProgramList";
 // import axios from 'axios';
 
@@ -32,23 +32,15 @@ class BootstrapTable extends React.Component {
             Uni: "",
             Program: "",
             ProgramId: "",
+            StudentId: "",
             data: []
         };
-    }
-
-    setModalShow = (uni_name, program_name, programID) => {
-        this.setState({
-            modalShow: true,
-            Uni: uni_name,
-            Program: program_name,
-            ProgramId: programID
-        });
-    }
-
-    setModalHide = () => {
-        this.setState({
-            modalShow: false,
-        });
+        // this.setModalHide = this.setModalHide.bind(this);
+        // this.setModalShow = this.setModalShow.bind(this);
+        // this.handleChange = this.handleChange.bind(this);
+        // this.handleChange2 = this.handleChange2.bind(this);
+        // this.onSubmit = this.onSubmit.bind(this);
+        // this.onSubmit2 = this.onSubmit2.bind(this);
     }
 
     componentDidMount() {
@@ -138,9 +130,6 @@ class BootstrapTable extends React.Component {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + JSON.parse(auth)
                 },
-                // body: {
-                //     id: id
-                // }
                 body: JSON.stringify(program_id)
             }
         )
@@ -175,9 +164,6 @@ class BootstrapTable extends React.Component {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + JSON.parse(auth)
                 },
-                // body: {
-                //     id: id
-                // }
                 body: JSON.stringify(edited_program)
             }
         )
@@ -200,39 +186,6 @@ class BootstrapTable extends React.Component {
             )
     }
 
-    assignProgram = (data) => {
-        console.log("click assign Program")
-        console.log(data)
-        const auth = localStorage.getItem('token');
-        fetch(assign_program_API,
-            {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + JSON.parse(auth)
-                },
-                body: JSON.stringify(data)
-            }
-        )
-            .then(res => res.json())
-            .then(
-                // (result) => {
-                //     this.setState({
-                //         isLoaded: false,
-                //     });
-                // },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    // this.setState({
-                    //     isLoaded: false,
-                    //     error
-                    // });
-                }
-            )
-    }
 
     addProgram = new_program => {
         console.log("click delete")
@@ -321,15 +274,9 @@ class BootstrapTable extends React.Component {
         });
     }
 
-    AssignProgramHandler2 = (student_id) => {
-        console.log("click assign")
-        console.log(student_id)
-        const program_id = this.state.ProgramId
-        this.assignProgram({ program_id, student_id })
-        this.setState({
-            modalShow: false,
-        });
-    }
+    // AssignProgramHandler2 = () => {
+
+    // }
 
     RemoveProgramHandler3 = (program_id) => {
         console.log("click delete")
@@ -340,8 +287,6 @@ class BootstrapTable extends React.Component {
         });
 
     }
-
-
     validate = () => {
         let isError = false;
         const errors = {
@@ -372,6 +317,22 @@ class BootstrapTable extends React.Component {
     };
 
 
+    setModalShow = (uni_name, program_name, programID) => {
+        this.setState({
+            modalShow: true,
+            Uni: uni_name,
+            Program: program_name,
+            ProgramId: programID
+
+        });
+    }
+
+    setModalHide = () => {
+        this.setState({
+            modalShow: false
+        });
+    }
+
     onSubmit = e => {
         e.preventDefault();
         const err = this.validate();
@@ -379,8 +340,69 @@ class BootstrapTable extends React.Component {
             this.props.handleSave(this.props.i, this.state.values);
         }
     };
+
+    assignProgram = (assign_data) => {
+        console.log("click assign Program")
+        console.log(assign_data)
+        const auth = localStorage.getItem('token');
+        fetch(assign_program_API,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+                body: JSON.stringify(assign_data)
+            }
+        )
+            .then(res => res.json())
+            .then(
+                // (result) => {
+                //     this.setState({
+                //         isLoaded: false,
+                //     });
+                // },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    // this.setState({
+                    //     isLoaded: false,
+                    //     error
+                    // });
+                }
+            )
+    }
+
+    handleChange2 = (e) => {
+        const { value } = e.target;
+        // console.log("std_id " + value)
+        console.log("program_id " + this.state.ProgramId)
+        console.log("student_id " + value)
+        this.setState(state => ({
+            StudentId: value
+        }));
+
+    };
+
+    onSubmit2 = (e) => {
+        e.preventDefault();
+        const program_id = this.state.ProgramId;
+        const student_id = this.state.StudentId;
+        console.log("before submit")
+        console.log("program_id " + this.state.ProgramId)
+        console.log("student_id " + this.state.StudentId)
+        this.assignProgram({ student_id, program_id })
+        console.log("click assign")
+        this.setModalHide()
+        // this.setState({
+        //     modalShow: false
+        // });
+    }
+
     render() {
-        const { error, isLoaded, editIdx, data } = this.state;
+        const { error, isLoaded } = this.state;
         if (error) {
             //TODO: put error page component for timeout
             return <div>Error: {error.message}</div>;
@@ -409,6 +431,7 @@ class BootstrapTable extends React.Component {
                                     <Programlist
                                         ModalShow={this.state.modalShow}
                                         ProgramID={this.state.ProgramId}
+                                        StudentId={this.state.StudentId}
                                         Uni_Name={this.state.Uni}
                                         Program_Name={this.state.Program}
                                         setModalShow={this.setModalShow}
@@ -417,11 +440,12 @@ class BootstrapTable extends React.Component {
                                         startEditing={this.startEditing}
                                         editIdx={this.state.editIdx}
                                         stopEditing={this.stopEditing}
-                                        AssignProgramHandler2={this.AssignProgramHandler2}
                                         handleChange={this.handleChange}
+                                        handleChange2={this.handleChange2}
                                         data={this.state.data}
                                         cancelEditing={this.cancelEditing}
                                         RemoveProgramHandler3={this.RemoveProgramHandler3}
+                                        onSubmit2={this.onSubmit2}
                                         header={[
                                             {
                                                 name: "University",

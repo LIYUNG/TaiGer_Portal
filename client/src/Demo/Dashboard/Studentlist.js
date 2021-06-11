@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { Row, Col, Card, Table, Form } from 'react-bootstrap';
+import React from 'react';
+import { Table } from 'react-bootstrap';
 import {
     Button,
-    OverlayTrigger,
-    Tooltip,
-    ButtonToolbar,
+    // OverlayTrigger,
+    // Tooltip,
+    // ButtonToolbar,
     Dropdown,
     DropdownButton,
-    SplitButton
+    // SplitButton
 } from 'react-bootstrap';
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
-import avatar2 from '../../assets/images/user/avatar-2.jpg';
-import avatar3 from '../../assets/images/user/avatar-3.jpg';
-import Aux from "../../hoc/_Aux";
+// import avatar2 from '../../assets/images/user/avatar-2.jpg';
+// import avatar3 from '../../assets/images/user/avatar-3.jpg';
+// import Aux from "../../hoc/_Aux";
 import UcFirst from "../../App/components/UcFirst";
 
 const row = (
@@ -82,9 +82,9 @@ const row = (
 };
 
 class Studentlist extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
     render() {
         return (
             <Table responsive>

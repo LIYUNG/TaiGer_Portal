@@ -65,7 +65,6 @@ export default function Signin1({ setToken }) {
 
     return (
         <Aux>
-            {/* <Breadcrumb /> */}
             <div className="auth-wrapper">
                 <div className="auth-content">
                     <div className="auth-bg">

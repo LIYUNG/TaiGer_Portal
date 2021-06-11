@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
 import Aux from "../../../hoc/_Aux";
 import Breadcrumb from "../../../App/layout/AdminLayout/Breadcrumb";
-import DEMO from "../../../store/constant";
+// import DEMO from "../../../store/constant";
 
 async function registerUser(credentials) {
     // return fetch('https://54.214.118.145/login', {

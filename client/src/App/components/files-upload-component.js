@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 export default class FilesUploadComponent extends Component {

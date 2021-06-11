@@ -53,7 +53,8 @@ class AdminLayout extends Component {
         }
     };
 
-    componentWillMount() {
+    // componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.windowWidth > 992 && this.props.windowWidth <= 1024 && this.props.layout !== 'horizontal') {
             this.props.onComponentWillMount();
         }
@@ -73,9 +74,9 @@ class AdminLayout extends Component {
 
     handleSetToken = token => {
         try {
-        this.setState({
-            token: token
-        })
+            this.setState({
+                token: token
+            })
         }
         catch (e) {
             console.log(e);
@@ -90,9 +91,9 @@ class AdminLayout extends Component {
 
     handleRemoveToken = () => {
         try {
-        this.setState({
-            token: null
-        })
+            this.setState({
+                token: null
+            })
         }
         catch (e) {
             console.log(e);
@@ -107,7 +108,7 @@ class AdminLayout extends Component {
                 localStorage.setItem('token', JSON.stringify(userToken.token));
                 this.handleSetToken(userToken.token);
             }
-            else{
+            else {
                 alert('Email or password not correct.');
             }
         }

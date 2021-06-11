@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import friend from './friends';
 import Friend from './Friend';
@@ -11,20 +11,21 @@ class Friends extends Component {
         user: []
     };
 
-    componentWillReceiveProps = (nextProps) => {
+    // componentWillReceiveProps = (nextProps) => {
+    UNSAFE_componentWillReceiveProps = (nextProps) => {
         if (!nextProps.listOpen) {
-            this.setState({chatOpen: false, user: []});
+            this.setState({ chatOpen: false, user: [] });
         }
     };
 
     render() {
         const friendList = (friend).map(f => {
-            return <Friend key={f.id} data={f} activeId={this.state.user.id} clicked={() => this.setState({chatOpen: true, user: f})} />;
+            return <Friend key={f.id} data={f} activeId={this.state.user.id} clicked={() => this.setState({ chatOpen: true, user: f })} />;
         });
         return (
             <Aux>
                 {friendList}
-                <Chat user={this.state.user} chatOpen={this.state.chatOpen} listOpen={this.props.listOpen} closed={() => this.setState({chatOpen: false, user: []})}/>
+                <Chat user={this.state.user} chatOpen={this.state.chatOpen} listOpen={this.props.listOpen} closed={() => this.setState({ chatOpen: false, user: [] })} />
             </Aux>
         );
     }

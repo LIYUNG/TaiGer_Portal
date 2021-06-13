@@ -19,8 +19,10 @@ class Dashboard extends React.Component {
         super(props);
         this.state = {
             error: null,
+            modalShow: false,
             isLoaded: false,
             editIdx: -1,
+            StudentId: "",
             data: []
         };
     }
@@ -168,25 +170,26 @@ class Dashboard extends React.Component {
         }));
     };
 
-    startEditingAgent = (i, program_id )=> {
+    startEditingAgent = (i, program_id) => {
         console.log("startEditingAgent")
         // this.setState({ 
         //     editIdx: i 
         // });
     };
 
-    startEditingEditor = (i, program_id )=> {
+    startEditingEditor = (i, program_id) => {
         console.log("startEditingEditor")
         // this.setState({ 
         //     editIdx: i 
         // });
     };
 
-    startEditingProgram = (i, program_id )=> {
+    startEditingProgram = (student_id) => {
         console.log("startEditingAnddeleteProgram")
-        // this.setState({ 
-        //     editIdx: i 
-        // });
+        this.setState({
+            StudentId: student_id,
+            modalShow: true
+        });
     };
 
     stopEditing = (edited_program) => {
@@ -223,7 +226,7 @@ class Dashboard extends React.Component {
     RemoveProgramHandler2 = (e) => {
         console.log("click save")
     }
-    
+
     RemoveProgramHandler3 = (program_id) => {
         console.log("click delete")
         console.log("id = " + program_id)
@@ -232,6 +235,16 @@ class Dashboard extends React.Component {
             isLoaded: false,
         });
 
+    }
+
+    // setModalShow = () => {
+
+    // }
+
+    setModalHide = () => {
+        this.setState({
+            modalShow: false
+        });
     }
 
     render() {
@@ -321,6 +334,9 @@ class Dashboard extends React.Component {
                                         </tbody>
                                     </Table> */}
                                     <Studentlist
+                                        ModalShow={this.state.modalShow}
+                                        setModalShow={this.setModalShow}
+                                        setModalHide={this.setModalHide}
                                         handleRemove={this.handleRemove}
                                         startEditingAgent={this.startEditingAgent}
                                         startEditingEditor={this.startEditingEditor}

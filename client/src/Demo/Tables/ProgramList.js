@@ -13,6 +13,8 @@ import {
 // import Aux from "../../hoc/_Aux";
 import UcFirst from "../../App/components/UcFirst";
 
+
+
 class MyVerticallyCenteredModal extends React.Component {
     constructor(props) {
         super(props);
@@ -131,7 +133,6 @@ const row = (
                     key={x._id}
                 >
                     <Dropdown.Item eventKey="1" onSelect={() => startEditing(i)}>Edit</Dropdown.Item>
-                    {/* <Dropdown.Item eventKey="2" onSelect={() => AssignProgramHandler2(x._id)}>Assign Program</Dropdown.Item> */}
                     <Dropdown.Item eventKey="2" onSelect={() => setModalShow(x.University, x.Program, x._id)}>Assign to student...</Dropdown.Item>
                     <Dropdown.Item eventKey="3" onSelect={() => RemoveProgramHandler3(x._id)}>Delete</Dropdown.Item>
                 </DropdownButton>
@@ -196,9 +197,6 @@ class Programlist extends React.Component {
                 <MyVerticallyCenteredModal
                     show={this.props.ModalShow}
                     setModalHide={this.props.setModalHide}
-                    // assignprogramhandler={this.props.assignprogramhandler}
-                    // program_id={this.state.program_id}
-                    // student_id={this.state.student_id}
                     uni_name={this.props.Uni_Name}
                     program_name={this.props.Program_Name}
                     handleChange2={this.props.handleChange2}

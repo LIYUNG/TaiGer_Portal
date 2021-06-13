@@ -1,12 +1,12 @@
 import React from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import { Row, Col, Card, Form, Modal } from 'react-bootstrap';
 import {
-    // Button,
+    Button,
     // OverlayTrigger,
     // Tooltip,
     ButtonToolbar,
-    // Dropdown,
-    // DropdownButton,
+    Dropdown,
+    DropdownButton,
     // SplitButton
 } from 'react-bootstrap';
 import Aux from "../../hoc/_Aux";
@@ -21,6 +21,80 @@ const edit_program_API = 'http://localhost:2000/editprogram';
 const assign_program_API = 'http://localhost:2000/assignprogramtostudent';
 // const program_list_API = 'https://54.214.118.145/programlist';
 
+class NewProgramWindow extends React.Component {
+    constructor(props) {
+        super(props);
+        // this.handleChange2 = props.handleChange2.bind(this)
+        this.setModalHide2 = props.setModalHide2.bind(this);
+        this.onSubmitNewProgram = props.onSubmitNewProgram.bind(this);
+        this.handleChangeNewProgram = props.handleChangeNewProgram.bind(this);
+        this.state = {
+            data: [],
+        };
+
+    }
+
+    componentDidMount() {
+        const auth = localStorage.getItem('token');
+        // fetch('http://localhost:2000/studentlist',
+        //     {
+        //         method: 'GET',
+        //         headers: {
+        //             Accept: 'application/json',
+        //             'Content-Type': 'application/json',
+        //             'Authorization': 'Bearer ' + JSON.parse(auth)
+        //         },
+        //     }
+        // )
+        //     .then(res => res.json())
+        //     .then(
+        //         (result) => {
+        //             this.setState({
+        //                 // isLoaded: true,
+        //                 data: result.data
+        //             });
+        //         },
+        //         // Note: it's important to handle errors here
+        //         // instead of a catch() block so that we don't swallow
+        //         // exceptions from actual bugs in components.
+        //         (error) => {
+        //             console.log('Problem while getting studentlist');
+        //         }
+        //     )
+    }
+
+    render() {
+        return (
+            <Modal
+                {...this.props}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        New Program:
+          </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Student:</h4>
+                    <Form>
+                            <Form.Group>
+                                {this.props.header.map((prop, i) => (
+                                <Form.Control type="text" onChange={e => this.handleChangeNewProgram(e, prop, i)} value={this.props.newProgramData[prop]} />
+                                ))}
+                            </Form.Group>
+                        </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.setModalHide2}>Assign</Button>
+                    <Button onClick={this.setModalHide2}>Cancel</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+}
+
 class BootstrapTable extends React.Component {
     constructor(props) {
         super(props);
@@ -29,18 +103,14 @@ class BootstrapTable extends React.Component {
             isLoaded: false,
             editIdx: -1,
             modalShow: false,
+            modalShowNewProgram: false,
             Uni: "",
             Program: "",
             ProgramId: "",
             StudentId: "",
+            newProgramData: [],
             data: []
         };
-        // this.setModalHide = this.setModalHide.bind(this);
-        // this.setModalShow = this.setModalShow.bind(this);
-        // this.handleChange = this.handleChange.bind(this);
-        // this.handleChange2 = this.handleChange2.bind(this);
-        // this.onSubmit = this.onSubmit.bind(this);
-        // this.onSubmit2 = this.onSubmit2.bind(this);
     }
 
     componentDidMount() {
@@ -236,7 +306,10 @@ class BootstrapTable extends React.Component {
 
     stopEditing = (edited_program) => {
         this.editProgram(edited_program)
-        this.setState({ editIdx: -1 });
+        this.setState({
+            editIdx: -1,
+            isLoaded: false,
+        });
     };
 
     cancelEditing = () => {
@@ -264,14 +337,30 @@ class BootstrapTable extends React.Component {
         // this.cancelEditing();
     };
 
+    handleChangeNewProgram = (e, name, i) => {
+        const { value } = e.target;
+        this.setState(state => ({
+            newProgramData: this.state.newProgramData.map(
+                (row, j) => (j === i ? { ...row, [name]: value } : row)
+            )
+        }));
+        // this.cancelEditing();
+    };
+
     NewProgram = (new_program) => {
         console.log("click NewProgram")
-        const university = 'RWTH Aachen'
-        const program = 'Economics'
-        this.addProgram({ university, program })
+        const University = 'RWTH Aachen'
+        const Program = 'Economics'
+        const Degree = 'M.Sc'
+        const TOEFL = '88'
+        const IELTS = '6.5'
         this.setState({
-            isLoaded: false,
+            modalShowNewProgram: true
         });
+        // this.addProgram({ University, Program, Degree, TOEFL, IELTS })
+        // this.setState({
+        //     isLoaded: false,
+        // });
     }
 
     // AssignProgramHandler2 = () => {
@@ -327,9 +416,21 @@ class BootstrapTable extends React.Component {
         });
     }
 
+    setModalShow2 = () => {
+        this.setState({
+            modalShowNewProgram: true,
+        });
+    }
+
     setModalHide = () => {
         this.setState({
             modalShow: false
+        });
+    }
+
+    setModalHide2 = () => {
+        this.setState({
+            modalShowNewProgram: false
         });
     }
 
@@ -401,6 +502,21 @@ class BootstrapTable extends React.Component {
         // });
     }
 
+    onSubmitNewProgram = (e) => {
+        e.preventDefault();
+        const program_id = this.state.ProgramId;
+        const student_id = this.state.StudentId;
+        console.log("before submit")
+        console.log("program_id " + this.state.ProgramId)
+        console.log("student_id " + this.state.StudentId)
+        this.assignProgram({ student_id, program_id })
+        console.log("click assign")
+        this.setModalHide()
+        // this.setState({
+        //     modalShow: false
+        // });
+    }
+
     render() {
         const { error, isLoaded } = this.state;
         if (error) {
@@ -414,10 +530,13 @@ class BootstrapTable extends React.Component {
                     <Row>
                         <Col>
                             <Card>
-                                <Card.Header>
+                                {/* <Card.Header>
+                                    
+                                </Card.Header> */}
+                                <Card.Body>
                                     <Row>
                                         <Col>
-                                            <Card.Title as="h5">Program List</Card.Title>
+                                            <Card.Title as="h4">Program List</Card.Title>
                                         </Col>
                                         <Col>
                                             <ButtonToolbar className="float-right">
@@ -426,8 +545,6 @@ class BootstrapTable extends React.Component {
                                         </Col>
                                         {/* <span className="d-block m-t-5">use bootstrap <code>Table</code> component</span> */}
                                     </Row>
-                                </Card.Header>
-                                <Card.Body>
                                     <Programlist
                                         ModalShow={this.state.modalShow}
                                         ProgramID={this.state.ProgramId}
@@ -449,31 +566,72 @@ class BootstrapTable extends React.Component {
                                         header={[
                                             {
                                                 name: "University",
-                                                prop: "University"
+                                                prop: "University_"
                                             },
                                             {
                                                 name: "Program",
-                                                prop: "Program"
+                                                prop: "Program_"
                                             },
                                             {
                                                 name: "TOEFL",
-                                                prop: "TOEFL"
+                                                prop: "TOEFL_"
                                             },
                                             {
                                                 name: "IELTS",
-                                                prop: "IELTS"
+                                                prop: "IELTS_"
                                             },
                                             {
                                                 name: "Degree",
-                                                prop: "Degree"
+                                                prop: "Degree_"
                                             },
                                             {
                                                 name: "GRE/GMAT",
-                                                prop: "GREGMAT"
+                                                prop: "GREGMAT_"
                                             },
                                             {
                                                 name: "Application Deadline",
-                                                prop: "applicationDeadline"
+                                                prop: "Application_end_date_"
+                                            },
+                                            {
+                                                name: "Last Update",
+                                                prop: "LastUpdate_"
+                                            }
+                                        ]}
+                                    />
+                                    <NewProgramWindow
+                                        show={this.state.modalShowNewProgram}
+                                        setModalHide2={this.setModalHide2}
+                                        onSubmitNewProgram={this.onSubmitNewProgram}
+                                        handleChangeNewProgram={this.handleChangeNewProgram}
+                                        newProgramData={this.state.newProgramData}
+                                        header={[
+                                            {
+                                                name: "University",
+                                                prop: "University_"
+                                            },
+                                            {
+                                                name: "Program",
+                                                prop: "Program_"
+                                            },
+                                            {
+                                                name: "TOEFL",
+                                                prop: "TOEFL_"
+                                            },
+                                            {
+                                                name: "IELTS",
+                                                prop: "IELTS_"
+                                            },
+                                            {
+                                                name: "Degree",
+                                                prop: "Degree_"
+                                            },
+                                            {
+                                                name: "GRE/GMAT",
+                                                prop: "GREGMAT_"
+                                            },
+                                            {
+                                                name: "Application Deadline",
+                                                prop: "Application_end_date_"
                                             }
                                         ]}
                                     />

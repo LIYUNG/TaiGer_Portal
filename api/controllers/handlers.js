@@ -161,14 +161,15 @@ exports.programlist = async (req, res) => {
 
 exports.addprogram = async (req, res) => {
 	console.log(req.body)
+	const date_now = Date();
 	try {
 		console.log('New program ')
 		const New_Program = new Program({
-			University: req.body.university,
-			Program: req.body.program,
-			// degreeTitle_ : req.body.degreeTitle,
-			// TOEFL_ : req.body.toefl,
-			// IELTS_ : req.body.ielts,
+			University_: req.body.University,
+			Program_: req.body.Program,
+			Degree_ : req.body.Degree,
+			TOEFL_ : req.body.TOEFL,
+			IELTS_ : req.body.IELTS,
 			// TestDaF_ : req.body.testdaf,
 			// GMAT_ : req.body.gmat,
 			// GRE_ : req.body.gre,
@@ -176,7 +177,7 @@ exports.addprogram = async (req, res) => {
 			// applicationDeadline_ : req.body.applicationDeadline_,
 			// weblink_ : req.body.weblink_,
 			// FPSOlink_ : req.body.FPSOlink_,
-			// lastUpdate : req.body.lastUpdate,
+			LastUpdate_ : date_now,
 		});
 
 		await New_Program.save();
@@ -197,19 +198,17 @@ exports.editprogram = async (req, res) => {
 		let program = await Program.findById(program_id)
 		console.log('program: ' + program)
 		console.log('req.body: ' + req.body)
+		const date_now = Date();
 
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
 		// update the program
-		program.University = req.body.University
-		program.Program = req.body.Program
-		program.TOEFL = req.body.TOEFL
-		program.IELTS = req.body.IELTS
-		program.Degree = req.body.Degree
-		program.applicationDeadline = req.body.applicationDeadline
-		// degreeTitle_ : req.body.degreeTitle,
-		// TOEFL_ : req.body.toefl,
-		// IELTS_ : req.body.ielts,
+		program.University_ = req.body.University_
+		program.Program_ = req.body.Program_
+		program.TOEFL_ = req.body.TOEFL_
+		program.IELTS_ = req.body.IELTS_
+		program.Degree_ = req.body.Degree_
+		program.Application_end_date_ = req.body.Application_end_date_
 		// TestDaF_ : req.body.testdaf,
 		// GMAT_ : req.body.gmat,
 		// GRE_ : req.body.gre,
@@ -217,7 +216,8 @@ exports.editprogram = async (req, res) => {
 		// applicationDeadline_ : req.body.applicationDeadline_,
 		// weblink_ : req.body.weblink_,
 		// FPSOlink_ : req.body.FPSOlink_,
-		// lastUpdate : req.body.lastUpdate,
+		program.LastUpdate_ = date_now,
+
 		// });
 		await program.save();
 		return res.send({

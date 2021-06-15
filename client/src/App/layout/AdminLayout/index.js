@@ -36,13 +36,11 @@ class AdminLayout extends Component {
         try {
             const userToken = JSON.parse(tokenString);
             // console.log('userToken  ' + userToken)
-            // return userToken?.token
             return userToken
         }
         catch (e) {
             const userToken = JSON.parse("0");
             // console.log('userToken  ' + userToken)
-            // return userToken?.token
             return userToken
         }
     };
@@ -66,12 +64,6 @@ class AdminLayout extends Component {
         }
     }
 
-    // handleSetToken(token) {
-    //     this.setState({
-    //         token: token
-    //     })
-    // }
-
     handleSetToken = token => {
         try {
             this.setState({
@@ -82,12 +74,6 @@ class AdminLayout extends Component {
             console.log(e);
         }
     };
-
-    // handleRemoveToken() {
-    //     this.setState({
-    //         token: null
-    //     })
-    // }
 
     handleRemoveToken = () => {
         try {
@@ -102,7 +88,6 @@ class AdminLayout extends Component {
 
     saveToken = userToken => {
         // localStorage.setItem('token', JSON.stringify(userToken.token));
-        // setToken(userToken.token);
         try {
             if (userToken) {
                 localStorage.setItem('token', JSON.stringify(userToken.token));
@@ -152,8 +137,6 @@ class AdminLayout extends Component {
         });
 
         if (!this.state.token) {
-
-            // return <Login setToken={setToken} />
             return (
                 <Aux>
                     <ScrollToTop>

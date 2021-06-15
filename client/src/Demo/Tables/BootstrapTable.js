@@ -28,39 +28,11 @@ class NewProgramWindow extends React.Component {
         this.setModalHide2 = props.setModalHide2.bind(this);
         this.onSubmitNewProgram = props.onSubmitNewProgram.bind(this);
         this.handleChangeNewProgram = props.handleChangeNewProgram.bind(this);
+        this.submitNewProgram = props.submitNewProgram.bind(this);
         this.state = {
             data: [],
         };
 
-    }
-
-    componentDidMount() {
-        const auth = localStorage.getItem('token');
-        // fetch('http://localhost:2000/studentlist',
-        //     {
-        //         method: 'GET',
-        //         headers: {
-        //             Accept: 'application/json',
-        //             'Content-Type': 'application/json',
-        //             'Authorization': 'Bearer ' + JSON.parse(auth)
-        //         },
-        //     }
-        // )
-        //     .then(res => res.json())
-        //     .then(
-        //         (result) => {
-        //             this.setState({
-        //                 // isLoaded: true,
-        //                 data: result.data
-        //             });
-        //         },
-        //         // Note: it's important to handle errors here
-        //         // instead of a catch() block so that we don't swallow
-        //         // exceptions from actual bugs in components.
-        //         (error) => {
-        //             console.log('Problem while getting studentlist');
-        //         }
-        //     )
     }
 
     render() {
@@ -77,17 +49,20 @@ class NewProgramWindow extends React.Component {
           </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Student:</h4>
-                    <Form>
-                            <Form.Group>
-                                {this.props.header.map((prop, i) => (
-                                <Form.Control type="text" onChange={e => this.handleChangeNewProgram(e, prop, i)} value={this.props.newProgramData[prop]} />
-                                ))}
-                            </Form.Group>
-                        </Form>
+                    {this.props.header.map((head, i) => (
+                        <>
+                            <h5>{head.name}:</h5>
+                            <Form>
+                                <Form.Group>
+                                    {/* <p>{prop}:</p> */}
+                                    <Form.Control type="text" onChange={e => this.handleChangeNewProgram(e, head.prop, i)} value={this.props.newProgramData[head.prop]} />
+                                </Form.Group>
+                            </Form>
+                        </>
+                    ))}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={this.setModalHide2}>Assign</Button>
+                    <Button onClick={() => this.submitNewProgram()}>Assign</Button>
                     <Button onClick={this.setModalHide2}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
@@ -179,7 +154,6 @@ class BootstrapTable extends React.Component {
         }
     }
 
-
     // shouldComponentUpdate(nextProps) {
     //     if (nextProps.isLoaded !== this.state.isLoaded) { 
     //         return true; 
@@ -258,7 +232,7 @@ class BootstrapTable extends React.Component {
 
 
     addProgram = new_program => {
-        console.log("click delete")
+        console.log("click addProgram")
         console.log(new_program)
         const auth = localStorage.getItem('token');
         fetch(add_program_API,
@@ -339,30 +313,32 @@ class BootstrapTable extends React.Component {
 
     handleChangeNewProgram = (e, name, i) => {
         const { value } = e.target;
-        this.setState(state => ({
-            newProgramData: this.state.newProgramData.map(
-                (row, j) => (j === i ? { ...row, [name]: value } : row)
-            )
+        this.setState(prevState => ({
+            newProgramData: {
+                ...prevState.newProgramData,
+                [name]: value
+            }
+                    
         }));
-        // this.cancelEditing();
     };
 
     NewProgram = (new_program) => {
         console.log("click NewProgram")
-        const University = 'RWTH Aachen'
-        const Program = 'Economics'
-        const Degree = 'M.Sc'
-        const TOEFL = '88'
-        const IELTS = '6.5'
         this.setState({
             modalShowNewProgram: true
         });
-        // this.addProgram({ University, Program, Degree, TOEFL, IELTS })
-        // this.setState({
-        //     isLoaded: false,
-        // });
     }
 
+    submitNewProgram = () => {
+        console.log(this.state.newProgramData)
+        this.addProgram(this.state.newProgramData)
+        this.setState({
+            editIdx: -1,
+            newProgramData: [],
+            modalShowNewProgram: false,
+            isLoaded: false,
+        });
+    };
     // AssignProgramHandler2 = () => {
 
     // }
@@ -413,12 +389,6 @@ class BootstrapTable extends React.Component {
             Program: program_name,
             ProgramId: programID
 
-        });
-    }
-
-    setModalShow2 = () => {
-        this.setState({
-            modalShowNewProgram: true,
         });
     }
 
@@ -603,6 +573,7 @@ class BootstrapTable extends React.Component {
                                         setModalHide2={this.setModalHide2}
                                         onSubmitNewProgram={this.onSubmitNewProgram}
                                         handleChangeNewProgram={this.handleChangeNewProgram}
+                                        submitNewProgram={this.submitNewProgram}
                                         newProgramData={this.state.newProgramData}
                                         header={[
                                             {
@@ -632,6 +603,58 @@ class BootstrapTable extends React.Component {
                                             {
                                                 name: "Application Deadline",
                                                 prop: "Application_end_date_"
+                                            },
+                                            {
+                                                name: "CV Deadline",
+                                                prop: "CV_"
+                                            },
+                                            {
+                                                name: "ML",
+                                                prop: "ML_"
+                                            },
+                                            {
+                                                name: "RL",
+                                                prop: "RL_"
+                                            },
+                                            {
+                                                name: "Bachelor Certificate",
+                                                prop: "bachelorCertificate_"
+                                            },
+                                            {
+                                                name: "Bachelor Transcript",
+                                                prop: "bachelorTranscript_"
+                                            },
+                                            {
+                                                name: "High School Diploma",
+                                                prop: "highSchoolDiploma_"
+                                            },
+                                            {
+                                                name: "High School Transcript",
+                                                prop: "highSchoolTranscript_"
+                                            },
+                                            {
+                                                name: "GSAT(基測)",
+                                                prop: "GSAT_"
+                                            },
+                                            {
+                                                name: "English Certificate",
+                                                prop: "EnglischCertificate_"
+                                            },
+                                            {
+                                                name: "German Certificate",
+                                                prop: "GermanCertificate_"
+                                            },
+                                            {
+                                                name: "Essay",
+                                                prop: "Essay_"
+                                            },
+                                            {
+                                                name: "ECTS Conversion",
+                                                prop: "ECTS_coversion_"
+                                            },
+                                            {
+                                                name: "Course Description",
+                                                prop: "courseDescription_"
                                             }
                                         ]}
                                     />

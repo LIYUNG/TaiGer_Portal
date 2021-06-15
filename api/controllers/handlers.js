@@ -164,21 +164,25 @@ exports.addprogram = async (req, res) => {
 	const date_now = Date();
 	try {
 		console.log('New program ')
-		const New_Program = new Program({
-			University_: req.body.University,
-			Program_: req.body.Program,
-			Degree_ : req.body.Degree,
-			TOEFL_ : req.body.TOEFL,
-			IELTS_ : req.body.IELTS,
-			// TestDaF_ : req.body.testdaf,
-			// GMAT_ : req.body.gmat,
-			// GRE_ : req.body.gre,
-			// applicationStart_ : req.body.applicationStart_,
-			// applicationDeadline_ : req.body.applicationDeadline_,
-			// weblink_ : req.body.weblink_,
-			// FPSOlink_ : req.body.FPSOlink_,
-			LastUpdate_ : date_now,
-		});
+		const New_Program = new Program();
+		New_Program.University_ = req.body.University_;
+		New_Program.Program_ = req.body.Program_;
+		New_Program.TOEFL_ = req.body.TOEFL_;
+		New_Program.IELTS_ = req.body.IELTS_;
+		New_Program.Degree_ = req.body.Degree_;
+		New_Program.Application_end_date_ = req.body.Application_end_date_;
+		New_Program.LastUpdate_ = date_now;
+		New_Program.applicationDocu_ = {
+			CV_: {
+				needToBeUpload_: req.body.CV_
+			},
+			ML_: {
+				needToBeUpload_: req.body.CV_
+			},
+			RL_: {
+				needToBeUpload_: req.body.CV_
+			}
+		};
 
 		await New_Program.save();
 		return res.send({
@@ -218,8 +222,8 @@ exports.editprogram = async (req, res) => {
 		// FPSOlink_ : req.body.FPSOlink_,
 		program.LastUpdate_ = date_now,
 
-		// });
-		await program.save();
+			// });
+			await program.save();
 		return res.send({
 			data: program
 		})

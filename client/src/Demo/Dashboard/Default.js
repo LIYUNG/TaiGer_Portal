@@ -290,7 +290,8 @@ class Dashboard extends React.Component {
             return (
                 <Aux>
                     <Row>
-                        <Col md={6} xl={8}>
+                        {/* <Col md={6} xl={8}> */}
+                        <Col>
                             <Card className='Recent-Users'>
                                 <Card.Header>
                                     <Card.Title as='h5'>Student List</Card.Title>
@@ -369,7 +370,7 @@ class Dashboard extends React.Component {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={6} xl={4}>
+                        {/* <Col md={6} xl={4}>
                             <Card className='card-event'>
                                 <Card.Body>
                                     <div className="row align-items-center justify-content-center">
@@ -409,8 +410,11 @@ class Dashboard extends React.Component {
                                     </div>
                                 </Card.Body>
                             </Card>
-                        </Col>
-                        <Col md={6} xl={8} className='m-b-30'>
+                        </Col> */}
+                    </Row>
+                    <Row>
+                        {/* <Col md={6} xl={8} className='m-b-30'> */}
+                        <Col className='m-b-30'>
                             <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
                                 <Tab eventKey="today" title="Today">
                                     {tabContent}

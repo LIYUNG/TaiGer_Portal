@@ -141,7 +141,6 @@ const row = (
             </th>
             {header.map((y, k) => (
                 <td>
-                    {/* {x[y.prop]} */}
                     {currentlyEditing ? (
                         <Form>
                             <Form.Group>

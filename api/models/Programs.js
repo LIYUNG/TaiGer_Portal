@@ -10,16 +10,16 @@ const documents = new mongoose.Schema({
 	CV_: uploadedDocsInfo,
 	ML_: uploadedDocsInfo,
 	RL_: uploadedDocsInfo,
-	// bachelorCertificate_: [uploadedDocsInfo],
-	// bachelorTranscript_: [uploadedDocsInfo],
-	// highSchoolDiploma_: [uploadedDocsInfo],
-	// highSchoolTranscript_: [uploadedDocsInfo],
-	// GSAT_: [uploadedDocsInfo],
-	// EnglischCertificate_: [uploadedDocsInfo],
-	// GermanCertificate_: [uploadedDocsInfo],
-	// Essay_: [uploadedDocsInfo],
-	// ECTS_coversion_: [uploadedDocsInfo],
-	// courseDescription_: [uploadedDocsInfo]
+	bachelorCertificate_: uploadedDocsInfo,
+	bachelorTranscript_: uploadedDocsInfo,
+	highSchoolDiploma_: uploadedDocsInfo,
+	highSchoolTranscript_: uploadedDocsInfo,
+	GSAT_: uploadedDocsInfo,
+	EnglischCertificate_: uploadedDocsInfo,
+	GermanCertificate_: uploadedDocsInfo,
+	Essay_: uploadedDocsInfo,
+	ECTS_coversion_: uploadedDocsInfo,
+	courseDescription_: uploadedDocsInfo
 });
 
 const programs = new mongoose.Schema({

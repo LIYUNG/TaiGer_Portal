@@ -153,8 +153,9 @@ const row = (
                     <h5>Programs:</h5>
                     {student.applying_program_.map(
                         program =>
-                            <h6>{program.University_} {program.Program_}</h6>
-                    )}
+                        <h6>{program.University_} {program.Program_} </h6>
+                        // <h6>{program.University_} {program.Program_} {program.applicationDocu_.CV_.needToBeUpload_}</h6>
+                        )}
                 </td>
                 <th>{currentlyEditing ? (
                     <div>

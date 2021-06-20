@@ -177,10 +177,40 @@ exports.addprogram = async (req, res) => {
 				needToBeUpload_: req.body.CV_
 			},
 			ML_: {
-				needToBeUpload_: req.body.CV_
+				needToBeUpload_: req.body.ML_
 			},
 			RL_: {
-				needToBeUpload_: req.body.CV_
+				needToBeUpload_: req.body.RL_
+			},
+			bachelorCertificate_: {
+				needToBeUpload_: req.body.bachelorCertificate_
+			},
+			bachelorTranscript_: {
+				needToBeUpload_: req.body.bachelorTranscript_
+			},
+			highSchoolDiploma_: {
+				needToBeUpload_: req.body.highSchoolDiploma_
+			},
+			highSchoolTranscript_: {
+				needToBeUpload_: req.body.highSchoolTranscript_
+			},
+			GSAT_: {
+				needToBeUpload_: req.body.GSAT_
+			},
+			EnglischCertificate_: {
+				needToBeUpload_: req.body.EnglischCertificate_
+			},
+			GermanCertificate_: {
+				needToBeUpload_: req.body.GermanCertificate_
+			},
+			Essay_: {
+				needToBeUpload_: req.body.Essay_
+			},
+			ECTS_coversion_: {
+				needToBeUpload_: req.body.ECTS_coversion_
+			},
+			courseDescription_: {
+				needToBeUpload_: req.body.courseDescription_
 			}
 		};
 

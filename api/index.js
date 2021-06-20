@@ -20,7 +20,7 @@ const methodOverride = require("method-override");
 
 
 const DIR = './public/';
-
+global.__basedir = __dirname;
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, DIR);
@@ -57,28 +57,28 @@ const connection = mongoose.connect('mongodb://localhost:27017/TaiGer', {
 // })
 // const storage2 = new GridFsStorage({ db: connection });
 
-const storage2 = new GridFsStorage({
-	// db: connection,
-	url: 'mongodb://localhost:27017/TaiGer',
-	file: (req, file) => {
-		return new Promise((resolve, reject) => {
-			crypto.randomBytes(16, (err, buf) => {
-				if (err) {
-					console.log("reject: ")
-					return reject(err);
-				}
-				const filename = buf.toString('hex') + path.extname(file.originalname);
-				const fileInfo = {
-					filename: filename,
-					bucketName: 'uploads'
-				};
-				console.log("filename: " + filename)
-				resolve(fileInfo);
-			});
-		});
-	}
-});
-const upload2 = multer({ storage2 });
+// const storage2 = new GridFsStorage({
+// 	// db: connection,
+// 	url: 'mongodb://localhost:27017/TaiGer',
+// 	file: (req, file) => {
+// 		return new Promise((resolve, reject) => {
+// 			crypto.randomBytes(16, (err, buf) => {
+// 				if (err) {
+// 					console.log("reject: ")
+// 					return reject(err);
+// 				}
+// 				const filename = buf.toString('hex') + path.extname(file.originalname);
+// 				const fileInfo = {
+// 					filename: filename,
+// 					bucketName: 'uploads'
+// 				};
+// 				console.log("filename: " + filename)
+// 				resolve(fileInfo);
+// 			});
+// 		});
+// 	}
+// });
+// const upload2 = multer({ storage2 });
 
 try {
 	const app = express();
@@ -109,10 +109,11 @@ try {
 	app.post("/editstudentprogram", auth, handlers.editstudentprogram);
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
 	// app.get("/upload", auth, handlers.Upload);
-	// app.post("/upload", auth, upload2.single('file'), handlers.UploadPost);
-	app.post("/upload", auth, upload2.single('file'), (req, res) => {
-		res.json({ file: req.file })
-	});
+	app.post("/upload", auth, upload.single('file'), handlers.UploadPost);
+	app.get("/upload/:filename", auth, handlers.filedownload);
+	// app.post("/upload", auth, upload2.single('file'), (req, res) => {
+		// res.json({ file: req.file })
+	// });
 	app.get("/settings", auth, handlers.settings);
 	// error handler
 	app.use(function (err, req, res, next) {

@@ -31,10 +31,8 @@ import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 
 import Aux from "../../hoc/_Aux";
 
-class FormsElements extends React.Component {
-
+class UploadPage extends React.Component {
     render() {
-
         return (
             <Aux>
                 <Row>
@@ -368,4 +366,4 @@ class FormsElements extends React.Component {
     }
 }
 
-export default FormsElements;
+export default UploadPage;

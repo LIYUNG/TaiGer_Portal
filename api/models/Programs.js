@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const uploadedDocsInfo = new mongoose.Schema({
 	uploadStatus_: String,
 	needToBeUpload_: String,
-	uploadPlace_: String
+	filePath_: String
 });
 
 const documents = new mongoose.Schema({

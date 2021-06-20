@@ -378,27 +378,42 @@ exports.Upload = async (req, res) => {
 
 exports.UploadPost = async (req, res, next) => {
 	console.log("cors: load success!")
-	res.json({ file: req.file })
+	console.log(req.file)
 	// res.status(201).end()
-	// const url = req.protocol + '://' + req.get('host')
-	// const user = new User({
-	// 	name: req.body.name,
-	// 	profileImg: url + '/public/' + "file_name.pdf"
-	// });
-	// user.save().then(result => {
-	// 	res.status(201).json({
-	// 		message: "User registered successfully!",
-	// 		userCreated: {
-	// 			_id: result._id,
-	// 			profileImg: result.profileImg
-	// 		}
-	// 	})
-	// 	console.log("save success!")
-	// }).catch(err => {
-	// 	console.log(err),
-	// 		res.status(500).json({
-	// 			error: err
-	// 		});
-	// })
+	const url = req.protocol + '://' + req.get('host')
+	const user = new User({
+		name: "XCPO",
+		profileImg: url + '/public/' + req.file.filename
+	});
+	user.save().then(result => {
+		res.status(201).json({
+			message: "User registered successfully!",
+			userCreated: {
+				_id: result._id,
+				profileImg: result.profileImg
+			}
+		})
+		console.log("save success!")
+	}).catch(err => {
+		console.log(err),
+			res.status(500).json({
+				error: err
+			});
+	})
 }
 
+exports.filedownload = async (req, res, next) => {
+	console.log("filedownload success!")
+	console.log('filedownload req.params.filename = ' + req.params.filename)
+	const fileName = req.params.filename;
+	// const fileName = "dd-ddd.png";
+	const directoryPath = __basedir + "/public/";
+	//TODO: can access only the student's document, not others
+	res.download(directoryPath + fileName, fileName, (err) => {
+		if (err) {
+			res.status(500).send({
+				message: "Could not download the file. " + err,
+			});
+		}
+	});
+}

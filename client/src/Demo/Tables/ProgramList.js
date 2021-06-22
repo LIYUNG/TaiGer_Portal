@@ -157,11 +157,6 @@ const row = (
 };
 
 class Programlist extends React.Component {
-    // constructor(props) {
-    //     super(props);
-    //     // this.setModalHide = this.props.setModalHide.bind(this);
-    // }
-
     render() {
         return (
             <>

@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const uploadedDocsInfo = new mongoose.Schema({
 	uploadStatus_: String,
 	needToBeUpload_: String,
-	filePath_: String
+	filePath_: String,
+	LastUploadDate_: String
 });
 
 const documents = new mongoose.Schema({
@@ -50,7 +51,7 @@ const schema = new mongoose.Schema({
 	agent_: [String],
 	editor_: [String],
 	applying_program_: [programs],
-	uploadedDocs_: [documents]
+	uploadedDocs_: documents
 });
 
 module.exports = mongoose.model("students", schema);

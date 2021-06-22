@@ -24,9 +24,7 @@ const assign_program_API = 'http://localhost:2000/assignprogramtostudent';
 class NewProgramWindow extends React.Component {
     constructor(props) {
         super(props);
-        // this.handleChange2 = props.handleChange2.bind(this)
         this.setModalHide2 = props.setModalHide2.bind(this);
-        this.onSubmitNewProgram = props.onSubmitNewProgram.bind(this);
         this.handleChangeNewProgram = props.handleChangeNewProgram.bind(this);
         this.submitNewProgram = props.submitNewProgram.bind(this);
         this.state = {
@@ -339,9 +337,6 @@ class BootstrapTable extends React.Component {
             isLoaded: false,
         });
     };
-    // AssignProgramHandler2 = () => {
-
-    // }
 
     RemoveProgramHandler3 = (program_id) => {
         console.log("click delete")
@@ -467,24 +462,6 @@ class BootstrapTable extends React.Component {
         this.assignProgram({ student_id, program_id })
         console.log("click assign")
         this.setModalHide()
-        // this.setState({
-        //     modalShow: false
-        // });
-    }
-
-    onSubmitNewProgram = (e) => {
-        e.preventDefault();
-        const program_id = this.state.ProgramId;
-        const student_id = this.state.StudentId;
-        console.log("before submit")
-        console.log("program_id " + this.state.ProgramId)
-        console.log("student_id " + this.state.StudentId)
-        this.assignProgram({ student_id, program_id })
-        console.log("click assign")
-        this.setModalHide()
-        // this.setState({
-        //     modalShow: false
-        // });
     }
 
     render() {
@@ -571,7 +548,6 @@ class BootstrapTable extends React.Component {
                                     <NewProgramWindow
                                         show={this.state.modalShowNewProgram}
                                         setModalHide2={this.setModalHide2}
-                                        onSubmitNewProgram={this.onSubmitNewProgram}
                                         handleChangeNewProgram={this.handleChangeNewProgram}
                                         submitNewProgram={this.submitNewProgram}
                                         newProgramData={this.state.newProgramData}

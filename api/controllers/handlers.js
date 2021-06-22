@@ -378,9 +378,83 @@ exports.Upload = async (req, res) => {
 
 exports.UploadPost = async (req, res, next) => {
 	console.log("cors: load success!")
+	// console.log("whie file? " + req.body)
 	console.log(req.file)
 	// res.status(201).end()
+	const bearer = req.headers.authorization.split(' ');
+	const token = bearer[1]
+	// //Extract user email info by token
+	var emailaddress = jwt_decode(token);
+	// //Get user email
+	emailaddress = emailaddress['emailaddress'];
+	const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
 	const url = req.protocol + '://' + req.get('host')
+	//TODO: update the filePath_ and uploadStatus_ accordingly.
+	const date_now = Date();
+	students_exists.uploadedDocs_ = {
+		CV_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		ML_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		RL_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		bachelorCertificate_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		bachelorTranscript_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		highSchoolDiploma_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		highSchoolTranscript_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		GSAT_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		EnglischCertificate_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		Essay_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		ECTS_coversion_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		},
+		courseDescription_: {
+			uploadStatus_: "uploaded",
+			filePath_: url + '/public/' + req.file.filename,
+			LastUploadDate_: date_now
+		}
+	}
+	console.log(students_exists)
+	students_exists.save()
 	const user = new User({
 		name: "XCPO",
 		profileImg: url + '/public/' + req.file.filename

@@ -10,6 +10,8 @@ var morgan = require('morgan');
 var cookieParser = require("cookie-parser")
 const handlers = require("./controllers/handlers");
 const { auth } = require("./middlewares/auth");
+const { movefile } = require("./middlewares/movefile");
+const { checkuserfolder } = require("./middlewares/checkuserfolder");
 
 const studentController = require("./controllers/students");
 const multer = require("multer");
@@ -21,6 +23,8 @@ const methodOverride = require("method-override");
 
 const DIR = './public/';
 global.__basedir = __dirname;
+global.jwtExpirySeconds = 6000;
+
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, DIR);
@@ -29,10 +33,14 @@ const storage = multer.diskStorage({
 		const fileName = file.originalname.toLowerCase().split(' ').join('-');
 		cb(null, fileName)
 	}
+	
 });
 //TODO: upload pdf/docx/image
 var upload = multer({
 	storage: storage,
+	limits:{
+		fileSize : 5*1024*1024 // Maximum file size: 5 MB
+	},
 	fileFilter: (req, file, cb) => {
 		if (file.mimetype == "application/pdf" || file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
 			cb(null, true);
@@ -109,10 +117,10 @@ try {
 	app.post("/editstudentprogram", auth, handlers.editstudentprogram);
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
 	// app.get("/upload", auth, handlers.Upload);
-	app.post("/upload", auth, upload.single('file'), handlers.UploadPost);
+	app.post("/upload", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);
 	app.get("/upload/:filename", auth, handlers.filedownload);
 	// app.post("/upload", auth, upload2.single('file'), (req, res) => {
-		// res.json({ file: req.file })
+	// res.json({ file: req.file })
 	// });
 	app.get("/settings", auth, handlers.settings);
 	// error handler

@@ -67,7 +67,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Modal.Header>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Assign {this.props.uni_name} - {this.props.program_name} to
-          </Modal.Title>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h4>Student:</h4>
@@ -130,12 +130,11 @@ const row = (
                 <td >
                     <h6 className="mb-1">{student.firstname_} {student.lastname_}</h6>
                     <p className="m-0">{student.emailaddress_}</p>
-                    {student.uploadedDocs_.map(doc =>
-                        <>
-                            <p>Upload Status: {doc.uploadStatus_}</p>
-                            <p>Uploaded Document: {doc.uploadPlace_}</p>
-                        </>
-                    )}
+
+                    {/* <p>CV Status: {student.uploadedDocs_.CV_.uploadStatus_}, uploaded on {student.uploadedDocs_.CV_.LastUploadDate_}</p>
+                    <p>ML Status: {student.uploadedDocs_.ML_.uploadStatus_}, uploaded on {student.uploadedDocs_.ML_.LastUploadDate_}</p>
+                    <p>Bachelor Certificate_ Status: {student.uploadedDocs_.bachelorCertificate_.uploadStatus_}, uploaded on {student.uploadedDocs_.bachelorCertificate_.LastUploadDate_}</p> */}
+
                 </td>
                 <td>
                     <h5>Agent:</h5>
@@ -153,9 +152,9 @@ const row = (
                     <h5>Programs:</h5>
                     {student.applying_program_.map(
                         program =>
-                        <h6>{program.University_} {program.Program_} </h6>
+                            <h6>{program.University_} {program.Program_} </h6>
                         // <h6>{program.University_} {program.Program_} {program.applicationDocu_.CV_.needToBeUpload_}</h6>
-                        )}
+                    )}
                 </td>
                 <th>{currentlyEditing ? (
                     <div>

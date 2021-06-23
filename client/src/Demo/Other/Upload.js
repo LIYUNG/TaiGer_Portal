@@ -6,27 +6,6 @@
 import FilesUploadComponent from "../../App/components/files-upload-component";
 import axios from 'axios';
 
-// class Upload extends Component {
-//     render() {
-//         return (
-//             <Aux>
-//                 <Row>
-//                     <Col>
-//                         <Card title='Upload Your Application Materials'>
-//                             <FilesUploadComponent/>
-//                         </Card>
-//                         <Card title='Upload Your Application Materials'>
-//                             <FilesUploadComponent title='ML'/>
-//                         </Card>
-//                     </Col>
-//                 </Row>
-//             </Aux>
-//         );
-//     }
-// }
-
-// export default Upload;
-
 import React from 'react';
 import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 
@@ -44,9 +23,9 @@ class UploadPage extends React.Component {
         };
     }
 
-    // componentDidMount(){
-
-    // }
+    componentDidMount() {
+        this.setState({ file: '' })
+    }
 
     onFileChange(e) {
         console.log(e.target.files)
@@ -55,7 +34,7 @@ class UploadPage extends React.Component {
     }
 
     onSubmitFile(e) {
-        e.preventDefault()
+
         const formData = new FormData()
         const auth = localStorage.getItem('token');
         formData.append('file', this.state.file)
@@ -69,20 +48,26 @@ class UploadPage extends React.Component {
         })
             .then(res => {
                 console.log(res)
-                alert("upload image successful")
+
             })
     }
 
     submitFile = (e) => {
-        this.onSubmitFile(e)
-        this.setState({ file: '' })
+        if (this.state.file === '') {
+            e.preventDefault()
+            alert('Please select file')
+        } else {
+            this.onSubmitFile(e)
+            this.setState({ file: '' })
+            alert('Upload success')
+        }
     };
 
     onDownloadFile(e) {
         e.preventDefault()
         const auth = localStorage.getItem('token');
         //TODO: replace the file name
-        fetch('http://localhost:2000/upload/dd-ddd.png',
+        fetch('http://localhost:2000/upload/filename-(2)d.png',
             {
                 method: 'GET',
                 headers: {
@@ -92,7 +77,7 @@ class UploadPage extends React.Component {
                 },
             }
         )
-            .then(res => res.blob())
+            .then(res => res.blob()) // TODO: handle the case when the file not existed
             .then((blob) => {
                 const url = window.URL.createObjectURL(
                     new Blob([blob]),
@@ -101,7 +86,7 @@ class UploadPage extends React.Component {
                 link.href = url;
                 link.setAttribute(
                     'download',
-                    `FileName.png`,
+                    `FileNamex.png`, //TODO: replace file name
                 );
                 // Append to html link element page
                 document.body.appendChild(link);

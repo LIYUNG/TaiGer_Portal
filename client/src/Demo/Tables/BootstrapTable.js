@@ -468,7 +468,8 @@ class BootstrapTable extends React.Component {
         const { error, isLoaded } = this.state;
         if (error) {
             //TODO: put error page component for timeout
-            return <div>Error: {error.message}</div>;
+            localStorage.removeItem('token');
+            return <div>Error: your session is timeout! Please refresh the page and Login</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {

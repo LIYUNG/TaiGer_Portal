@@ -7,12 +7,12 @@ const jwt_decode = require("jwt-decode");
 const bcrypt = require("bcrypt");
 // var nodemailer = require('nodemailer');
 const { Schema } = require("mongoose");
-
+const fs = require('fs')
 
 const saltRounds = 10;
 
 const jwtKey = "my_secret_key";
-const jwtExpirySeconds = 6000;
+// const jwtExpirySeconds = 6000;
 
 // var transporter = nodemailer.createTransport({
 //   service: 'gmail',
@@ -56,7 +56,7 @@ exports.signIn = async (req, res) => {
 					console.log(err);
 					throw err;
 				}
-				console.log(data);
+				// console.log(data);
 				//if both match than you can do anything
 				if (data) {
 					console.log('Passwords match !');
@@ -383,13 +383,14 @@ exports.UploadPost = async (req, res, next) => {
 	// res.status(201).end()
 	const bearer = req.headers.authorization.split(' ');
 	const token = bearer[1]
-	// //Extract user email info by token
+	// Extract user email info by token
 	var emailaddress = jwt_decode(token);
-	// //Get user email
+	// Get user email
 	emailaddress = emailaddress['emailaddress'];
 	const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
 	const url = req.protocol + '://' + req.get('host')
-	//TODO: update the filePath_ and uploadStatus_ accordingly.
+
+	//TODO: update the filePath_ and uploadStatus_ accordingly by files.
 	const date_now = Date();
 	students_exists.uploadedDocs_ = {
 		CV_: {
@@ -460,19 +461,13 @@ exports.UploadPost = async (req, res, next) => {
 		profileImg: url + '/public/' + req.file.filename
 	});
 	user.save().then(result => {
-		res.status(201).json({
-			message: "User registered successfully!",
-			userCreated: {
-				_id: result._id,
-				profileImg: result.profileImg
-			}
-		})
 		console.log("save success!")
+		res.status(200).end()
 	}).catch(err => {
-		console.log(err),
-			res.status(500).json({
-				error: err
-			});
+		// console.log(err),
+		res.status(500).json({
+			error: err
+		});
 	})
 }
 
@@ -483,11 +478,21 @@ exports.filedownload = async (req, res, next) => {
 	// const fileName = "dd-ddd.png";
 	const directoryPath = __basedir + "/public/";
 	//TODO: can access only the student's document, not others
-	res.download(directoryPath + fileName, fileName, (err) => {
-		if (err) {
-			res.status(500).send({
-				message: "Could not download the file. " + err,
-			});
-		}
-	});
+	if (fs.existsSync(directoryPath + fileName)) {
+		console.log("file existed!")
+		res.download(directoryPath + fileName, fileName, (err) => {
+			if (err) {
+				res.status(500).send({
+					message: "Could not download the file. " + err,
+				});
+			}
+		});
+	}
+	else {
+		console.log("file not existed!")
+		res.status(500).send({
+			message: "Could not download the file. ",
+		});
+	}
+
 }

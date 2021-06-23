@@ -29,7 +29,11 @@ class AdminLayout extends Component {
         this.saveToken = this.saveToken.bind(this);
         this.handleRemoveToken = this.handleRemoveToken.bind(this);
     }
-
+    componentDidMount() {
+        this.setState({
+            token: localStorage.getItem('token')
+        })
+    }
     getToken() {
         const tokenString = localStorage.getItem('token');
         // console.log('tokenString  ' + tokenString)

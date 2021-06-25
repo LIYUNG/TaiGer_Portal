@@ -220,8 +220,9 @@ exports.addprogram = async (req, res) => {
 		})
 
 	} catch (err) {
-		console.log('error by programlist')
+		console.log('error by adding programlist')
 		console.log(err)
+		return res.status(401).end();
 	}
 }
 
@@ -251,15 +252,14 @@ exports.editprogram = async (req, res) => {
 		// weblink_ : req.body.weblink_,
 		// FPSOlink_ : req.body.FPSOlink_,
 		program.LastUpdate_ = date_now,
-
-			// });
 			await program.save();
 		return res.send({
 			data: program
 		})
 	} catch (err) {
-		console.log('error by programlist')
+		console.log('error by edit programlist')
 		console.log(err)
+		return res.status(401).end();
 	}
 }
 
@@ -275,6 +275,7 @@ exports.deleteprogram = async (req, res) => {
 	} catch (err) {
 		console.log('error by delete program')
 		console.log(err)
+		return res.status(401).end();
 	}
 }
 
@@ -305,6 +306,7 @@ exports.assignprogramtostudent = async (req, res) => {
 	} catch (err) {
 		console.log('error by assigning program')
 		console.log(err)
+		return res.status(401).end();
 	}
 }
 
@@ -357,6 +359,7 @@ exports.studentlist = async (req, res) => {
 			return res.status(401).end();
 		}
 		console.log(err)
+		return res.status(401).end();
 	}
 }
 
@@ -370,105 +373,107 @@ exports.editstudentprogram = async (req, res, next) => {
 	res.status(404).end()
 }
 
-exports.Upload = async (req, res) => {
-	//TODO: response the uploaded files.
-	// response the status of each document
-	res.status(404).end()
-}
+exports.UploadPost = async (req, res) => {
+	try {
+		console.log("cors: load success!")
+		// console.log("whie file? " + req.body)
+		console.log(req.file)
+		// res.status(201).end()
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
+		// Extract user email info by token
+		var emailaddress = jwt_decode(token);
+		// Get user email
+		emailaddress = emailaddress['emailaddress'];
+		const students_exists = await Student.findOne({ emailaddress_: emailaddress });
+		// const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
+		const url = req.protocol + '://' + req.get('host')
 
-exports.UploadPost = async (req, res, next) => {
-	console.log("cors: load success!")
-	// console.log("whie file? " + req.body)
-	console.log(req.file)
-	// res.status(201).end()
-	const bearer = req.headers.authorization.split(' ');
-	const token = bearer[1]
-	// Extract user email info by token
-	var emailaddress = jwt_decode(token);
-	// Get user email
-	emailaddress = emailaddress['emailaddress'];
-	const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
-	const url = req.protocol + '://' + req.get('host')
-
-	//TODO: update the filePath_ and uploadStatus_ accordingly by files.
-	const date_now = Date();
-	students_exists.uploadedDocs_ = {
-		CV_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		ML_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		RL_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		bachelorCertificate_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		bachelorTranscript_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		highSchoolDiploma_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		highSchoolTranscript_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		GSAT_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		EnglischCertificate_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		Essay_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		ECTS_coversion_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
-		},
-		courseDescription_: {
-			uploadStatus_: "uploaded",
-			filePath_: url + '/public/' + req.file.filename,
-			LastUploadDate_: date_now
+		//TODO: update the filePath_ and uploadStatus_ accordingly by files.
+		const date_now = Date();
+		students_exists.uploadedDocs_ = {
+			CV_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			ML_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			RL_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			bachelorCertificate_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			bachelorTranscript_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			highSchoolDiploma_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			highSchoolTranscript_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			GSAT_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			EnglischCertificate_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			Essay_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			ECTS_coversion_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			},
+			courseDescription_: {
+				uploadStatus_: "uploaded",
+				filePath_: url + '/public/' + req.file.filename,
+				LastUploadDate_: date_now
+			}
 		}
-	}
-	console.log(students_exists)
-	students_exists.save()
-	const user = new User({
-		name: "XCPO",
-		profileImg: url + '/public/' + req.file.filename
-	});
-	user.save().then(result => {
+		// console.log(students_exists)
+		await students_exists.save()
 		console.log("save success!")
-		res.status(200).end()
-	}).catch(err => {
-		// console.log(err),
-		res.status(500).json({
-			error: err
-		});
-	})
+		return res.status(200).end()
+	} catch (err) {
+		console.log('error UploadPost: ' + err)
+		return res.status(401).end();
+	}
+	// const user = new User({
+	// 	name: "XCPO",
+	// 	profileImg: url + '/public/' + req.file.filename
+	// });
+	// user.save().then(result => {
+	// 	console.log("save success!")
+	// 	res.status(200).end()
+	// }).catch(err => {
+	// 	// console.log(err),
+	// 	res.status(500).json({
+	// 		error: err
+	// 	});
+	// })
 }
 
 exports.filedownload = async (req, res, next) => {

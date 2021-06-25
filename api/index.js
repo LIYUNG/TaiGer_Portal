@@ -45,7 +45,7 @@ var upload = multer({
 		if (file.mimetype == "application/pdf" || file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
 			cb(null, true);
 		} else {
-			cb(null, false);
+			// cb(null, false);
 			return cb(new Error('Only .pdf .png, .jpg and .jpeg format allowed!'));
 		}
 	}
@@ -116,12 +116,8 @@ try {
 	app.post("/editagent", auth, handlers.editagent);
 	app.post("/editstudentprogram", auth, handlers.editstudentprogram);
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
-	// app.get("/upload", auth, handlers.Upload);
 	app.post("/upload", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);
 	app.get("/upload/:filename", auth, handlers.filedownload);
-	// app.post("/upload", auth, upload2.single('file'), (req, res) => {
-	// res.json({ file: req.file })
-	// });
 	app.get("/settings", auth, handlers.settings);
 	// error handler
 	app.use(function (err, req, res, next) {

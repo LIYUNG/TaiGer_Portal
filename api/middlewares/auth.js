@@ -2,13 +2,12 @@ const jwt = require("jsonwebtoken");
 
 const jwtKey = "my_secret_key";
 // Athuentication
-function auth(req, res, next) {
-
-	const bearer = req.headers.authorization.split(' ');
-	const token = bearer[1]
-	// var token = req.cookies.token
-	var payload
+async function auth(req, res, next) {
 	try {
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
+		// var token = req.cookies.token
+		var payload
 		if (!token) {
 			console.log('no token')
 		}
@@ -29,7 +28,6 @@ function auth(req, res, next) {
 		if (e instanceof jwt.TokenExpiredError) {
 			console.log('jwt expired')
 			return res.status(401).end();
-
 		}
 		console.log('Error by auth')
 		return res.status(401).end();

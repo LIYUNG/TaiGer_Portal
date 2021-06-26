@@ -16,36 +16,36 @@ async function checkuserfolder(req, res, next) {
         const directoryPath = __basedir + "/public/" + FolderName;
 
         console.log("directoryPath: " + directoryPath)
-        // if (fs.existsSync(directoryPath)) {
-        //     // The check succeeded
-        //     console.log("checkuserfolder success")
-        //     next()
-        // } else {
-        //     console.log("checkuserfolder : create folder")
-        //     fs.mkdirSync(directoryPath);
-        //     next()
-        //     // The check failed
-        // }
-        fs.access(directoryPath, fs.constants.F_OK, (err) => {
-            console.log('\n> Checking if the Folder exists');
-            if (err) {
-                console.error('Folder does not exist');
-                // Create the Folder
-                console.log('\nCreating the Folder');
-                fs.mkdirSync(directoryPath);
-                // Test the if the Folder exists again
-                next()
-            }
-            else {
-                console.log('Folder does exist');
-                next()
-            }
-        });
+        if (fs.existsSync(directoryPath)) {
+            // The check succeeded
+            console.log("checkuserfolder success")
+            next()
+        } else {
+            console.log("checkuserfolder : create folder")
+            fs.mkdirSync(directoryPath);
+            next()
+            // The check failed
+        }
+        // fs.access(directoryPath, fs.constants.F_OK, (err) => {
+        //     console.log('\n> Checking if the Folder exists');
+        //     if (err) {
+        //         console.error('Folder does not exist');
+        //         // Create the Folder
+        //         console.log('\nCreating the Folder');
+        //         fs.mkdirSync(directoryPath);
+        //         // Test the if the Folder exists again
+        //         next()
+        //     }
+        //     else {
+        //         console.log('Folder does exist');
+        //         next()
+        //     }
+        // });
 
 
     } catch (e) {
         console.log('checkuserfolder error: ' + e)
-        return res.status(401).end();
+        return res.status(500).end(); // 500 Internal Server Error
     }
 }
 

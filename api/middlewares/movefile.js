@@ -22,49 +22,58 @@ async function movefile(req, res, next) {
         console.log('directoryPath : ' + directoryPath)
         const filePath = __basedir + "/public/" + req.file.filename;
 
-        fs.access(filePath, fs.constants.F_OK, (err) => {
-            console.log('\n> Checking if the old path file exists');
-            const newfilePath = directoryPath + req.file.filename
-            if (err) {
-                console.error('file does not exist');
+
+        console.log('\n> Checking if the old path file exists');
+        if (fs.existsSync(filePath)) {
+            // The check succeeded
+            const categoryPath = directoryPath + req.params.category
+            if (!fs.existsSync(categoryPath)) {
+                fs.mkdirSync(categoryPath);
+            }
+            const newfilePath = categoryPath + '/' + req.file.filename
+            if (fs.existsSync(newfilePath)) {
+                //TODO: store multiple file?
+                fs.unlinkSync(filePath) // delete file on old path, no moving
+                console.log("The file already uploaded! Delete the uploaded file.")
                 next()
+            } else {
+                fs.renameSync(filePath, newfilePath)
+                console.log("Successfully moved the file!")
+                next()
+                // The check failed
             }
-            else {
-                fs.access(newfilePath, fs.constants.F_OK, (err) => {
-                    if (err) {
-                        fs.renameSync(filePath, newfilePath)
-                        console.log("Successfully moved the file!")
-                        next()
-                    }
-                    else {
-                        console.log("The file already uploaded!")
-                        next()
-                    }
-                });
-            }
-        });
+        } else {
+            console.error('file does not exist');
+            next()
+        }
 
-
-        // if (fs.existsSync(filePath)) {
-        //     //TODO: Moving the file just uploaded in /public to user own folder
+        // fs.access(filePath, fs.constants.F_OK, (err) => {
+        //     console.log('\n> Checking if the old path file exists');
         //     const newfilePath = directoryPath + req.file.filename
-        //     if (fs.existsSync(newfilePath)) {
-        //         console.log("The file already uploaded!")
-        //         return res.status(401).end();
-        //     }
-        //     else {
-        //         fs.renameSync(filePath, newfilePath)
-        //         console.log("Successfully moved the file!")
+        //     if (err) {
+        //         console.error('file does not exist');
         //         next()
         //     }
-        // }
-        // else {
-        //     console.log("Faild moved the file!")
-        //     return res.status(401).end();
-        // }
+        //     else {
+        //         fs.access(newfilePath, fs.constants.F_OK, (err) => {
+        //             if (err) {
+        //                 fs.renameSync(filePath, newfilePath)
+        //                 console.log("Successfully moved the file!")
+        //                 next()
+        //             }
+        //             else {
+        //                 //TODO: store multiple file?
+        //                 fs.unlinkSync(filePath) // delete file on old path, no moving
+        //                 console.log("The file already uploaded! Delete the uploaded file.")
+        //                 next()
+        //             }
+        //         });
+        //     }
+        // });
+
     } catch (err) {
         console.log('moving file error: ' + err)
-        return res.status(401).end();
+        return res.status(500).end(); // 500 Internal Server Error
     }
 
 

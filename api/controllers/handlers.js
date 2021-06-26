@@ -222,7 +222,7 @@ exports.addprogram = async (req, res) => {
 	} catch (err) {
 		console.log('error by adding programlist')
 		console.log(err)
-		return res.status(401).end();
+		return res.status(500).end();  // 500 Internal Server Error
 	}
 }
 
@@ -259,7 +259,7 @@ exports.editprogram = async (req, res) => {
 	} catch (err) {
 		console.log('error by edit programlist')
 		console.log(err)
-		return res.status(401).end();
+		return res.status(500).end();  // 500 Internal Server Error
 	}
 }
 
@@ -275,7 +275,7 @@ exports.deleteprogram = async (req, res) => {
 	} catch (err) {
 		console.log('error by delete program')
 		console.log(err)
-		return res.status(401).end();
+		return res.status(500).end(); // 500 Internal Server Error
 	}
 }
 
@@ -306,7 +306,7 @@ exports.assignprogramtostudent = async (req, res) => {
 	} catch (err) {
 		console.log('error by assigning program')
 		console.log(err)
-		return res.status(401).end();
+		return res.status(500).end();  // 500 Internal Server Error
 	}
 }
 
@@ -356,10 +356,10 @@ exports.studentlist = async (req, res) => {
 			// if the error thrown is because the JWT is unauthorized, return a 401 error
 			console.log(e)
 			console.log('error by programlist')
-			return res.status(401).end();
+			return res.status(500).end(); // 500 Internal Server Error
 		}
 		console.log(err)
-		return res.status(401).end();
+		return res.status(500).end(); // 500 Internal Server Error
 	}
 }
 
@@ -454,12 +454,12 @@ exports.UploadPost = async (req, res) => {
 			}
 		}
 		// console.log(students_exists)
-		await students_exists.save()
+		await students_exists.save();
 		console.log("save success!")
-		return res.status(200).end()
+		return res.send({message: "NOOK!"}).end();
 	} catch (err) {
 		console.log('error UploadPost: ' + err)
-		return res.status(401).end();
+		return res.status(500).end(); // 500 Internal Server Error
 	}
 	// const user = new User({
 	// 	name: "XCPO",
@@ -478,10 +478,22 @@ exports.UploadPost = async (req, res) => {
 
 exports.filedownload = async (req, res, next) => {
 	console.log("filedownload success!")
-	console.log('filedownload req.params.filename = ' + req.params.filename)
+	console.log('filedownload req.params.filename = ' + req.params.category)
+	const categoryName = req.params.category;
 	const fileName = req.params.filename;
+	const bearer = req.headers.authorization.split(' ');
+	const token = bearer[1]
+	// Extract user email info by token
+	var emailaddress = jwt_decode(token);
+	emailaddress = emailaddress['emailaddress'];
+	const students_exists = await Student.findOne({ emailaddress_: emailaddress });
+	const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
+	const directoryPath = __basedir + "/public/" + FolderName + '/' + categoryName + '/';
+
+
+	
 	// const fileName = "dd-ddd.png";
-	const directoryPath = __basedir + "/public/";
+	// const directoryPath = __basedir + "/public/"+ categoryName + "/";
 	//TODO: can access only the student's document, not others
 	if (fs.existsSync(directoryPath + fileName)) {
 		console.log("file existed!")
@@ -489,7 +501,7 @@ exports.filedownload = async (req, res, next) => {
 			if (err) {
 				res.status(500).send({
 					message: "Could not download the file. " + err,
-				});
+				});  // 500 Internal Server Error
 			}
 		});
 	}
@@ -497,7 +509,7 @@ exports.filedownload = async (req, res, next) => {
 		console.log("file not existed!")
 		res.status(500).send({
 			message: "Could not download the file. ",
-		});
+		});  // 500 Internal Server Error
 	}
 
 }

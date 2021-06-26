@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 		cb(null, DIR);
 	},
 	filename: (req, file, cb) => {
-		const fileName = file.originalname.toLowerCase().split(' ').join('-');
+		const fileName = Date.now() + file.originalname.toLowerCase().split(' ').join('-');
 		cb(null, fileName)
 	}
 	
@@ -43,6 +43,7 @@ var upload = multer({
 	},
 	fileFilter: (req, file, cb) => {
 		if (file.mimetype == "application/pdf" || file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+			console.log("multer middleware: " + req.params.category)
 			cb(null, true);
 		} else {
 			// cb(null, false);
@@ -116,8 +117,9 @@ try {
 	app.post("/editagent", auth, handlers.editagent);
 	app.post("/editstudentprogram", auth, handlers.editstudentprogram);
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
-	app.post("/upload", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);
-	app.get("/upload/:filename", auth, handlers.filedownload);
+	app.post("/upload/:category", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);
+	// app.post("/upload", auth, upload.single('file'), handlers.UploadPost);
+	app.get("/upload/:category/:filename", auth, handlers.filedownload);
 	app.get("/settings", auth, handlers.settings);
 	// error handler
 	app.use(function (err, req, res, next) {

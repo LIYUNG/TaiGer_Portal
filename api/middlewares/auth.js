@@ -30,7 +30,7 @@ async function auth(req, res, next) {
 			return res.status(401).end();
 		}
 		console.log('Error by auth')
-		return res.status(401).end();
+		return res.status(401).end();  // 401 Unauthorized response
 	}
 }
 

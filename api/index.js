@@ -55,7 +55,8 @@ var upload = multer({
 
 
 const connection = mongoose.connect('mongodb://localhost:27017/TaiGer', {
-	useNewUrlParser: true
+	useNewUrlParser: true,
+	useFindAndModify: false
 })
 // const connection = mongoose.createConnection('mongodb://localhost:27017/TaiGer')
 // let gfs;
@@ -91,7 +92,7 @@ const connection = mongoose.connect('mongodb://localhost:27017/TaiGer', {
 
 try {
 	const app = express();
-	app.use(cors());
+	app.use(cors({exposedHeaders: ['Content-Disposition']}));
 
 	app.use(morgan('dev'));
 	app.use(bodyParser.urlencoded({
@@ -119,7 +120,7 @@ try {
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
 	app.post("/upload/:category", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);
 	// app.post("/upload", auth, upload.single('file'), handlers.UploadPost);
-	app.get("/upload/:category/:filename", auth, handlers.filedownload);
+	app.get("/upload/:category", auth, handlers.filedownload);
 	app.get("/settings", auth, handlers.settings);
 	// error handler
 	app.use(function (err, req, res, next) {

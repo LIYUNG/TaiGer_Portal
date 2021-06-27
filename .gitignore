@@ -4,6 +4,7 @@
 /api/node_modules
 /client/node_modules
 /api/.pnp
+/api/public
 /client/.pnp
 .pnp.js
 

@@ -19,7 +19,7 @@ const documents = new mongoose.Schema({
 	EnglischCertificate_: uploadedDocsInfo,
 	GermanCertificate_: uploadedDocsInfo,
 	Essay_: uploadedDocsInfo,
-	ECTS_coversion_: uploadedDocsInfo,
+	ECTS_conversion_: uploadedDocsInfo,
 	courseDescription_: uploadedDocsInfo
 });
 

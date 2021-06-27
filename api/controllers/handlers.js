@@ -251,8 +251,8 @@ exports.editprogram = async (req, res) => {
 		// applicationDeadline_ : req.body.applicationDeadline_,
 		// weblink_ : req.body.weblink_,
 		// FPSOlink_ : req.body.FPSOlink_,
-		program.LastUpdate_ = date_now,
-			await program.save();
+		program.LastUpdate_ = date_now
+		await program.save();
 		return res.send({
 			data: program
 		})
@@ -388,75 +388,134 @@ exports.UploadPost = async (req, res) => {
 		const students_exists = await Student.findOne({ emailaddress_: emailaddress });
 		// const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
 		const url = req.protocol + '://' + req.get('host')
+		const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
+		const directoryPath = __basedir + "\\public\\" + FolderName + '\\';
 
 		//TODO: update the filePath_ and uploadStatus_ accordingly by files.
 		const date_now = Date();
-		students_exists.uploadedDocs_ = {
-			CV_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			ML_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			RL_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			bachelorCertificate_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			bachelorTranscript_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			highSchoolDiploma_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			highSchoolTranscript_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			GSAT_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			EnglischCertificate_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			Essay_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			ECTS_coversion_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			},
-			courseDescription_: {
-				uploadStatus_: "uploaded",
-				filePath_: url + '/public/' + req.file.filename,
-				LastUploadDate_: date_now
-			}
+
+		const categoryPath = directoryPath + req.params.category + '\\'
+		console.log(req.file.filename)
+		if (req.params.category === 'bachelorCertificate') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.bachelorCertificate_.uploadStatus_": "uploaded",
+					"uploadedDocs_.bachelorCertificate_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.bachelorCertificate_.LastUploadDate_": date_now
+				}
+			});
+
+			// students_exists.uploadedDocs_ = {
+			// 	bachelorCertificate_: {
+			// 		uploadStatus_: "uploaded",
+			// 		filePath_: categoryPath + req.file.filename,
+			// 		LastUploadDate_: date_now
+			// 	}
+			// }
+
+		} else if (req.params.category === 'bachelorTranscript') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.bachelorTranscript_.uploadStatus_": "uploaded",
+					"uploadedDocs_.bachelorTranscript_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.bachelorTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'englishCertiifcate') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.EnglischCertificate_.uploadStatus_": "uploaded",
+					"uploadedDocs_.EnglischCertificate_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.EnglischCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'germanCertiifcate') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.GermanCertificate_.uploadStatus_": "uploaded",
+					"uploadedDocs_.GermanCertificate_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.GermanCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolDiploma') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.highSchoolDiploma_.uploadStatus_": "uploaded",
+					"uploadedDocs_.highSchoolDiploma_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.highSchoolDiploma_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolTranscript') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.highSchoolTranscript_.uploadStatus_": "uploaded",
+					"uploadedDocs_.highSchoolTranscript_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.highSchoolTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'universityEntranceExamination') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.GSAT_.uploadStatus_": "uploaded",
+					"uploadedDocs_.GSAT_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.GSAT_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'ML') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.ML_.uploadStatus_": "uploaded",
+					"uploadedDocs_.ML_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.ML_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'CV') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.CV_.uploadStatus_": "uploaded",
+					"uploadedDocs_.CV_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.CV_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'RL') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.RL_.uploadStatus_": "uploaded",
+					"uploadedDocs_.RL_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.RL_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'ECTS_conversion') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.ECTS_conversion_.uploadStatus_": "uploaded",
+					"uploadedDocs_.ECTS_conversion_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.ECTS_conversion_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'CourseDescription') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.courseDescription_.uploadStatus_": "uploaded",
+					"uploadedDocs_.courseDescription_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.courseDescription_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'Essay_') {
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.Essay_.uploadStatus_": "uploaded",
+					"uploadedDocs_.Essay_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.Essay_.LastUploadDate_": date_now
+				}
+			});
 		}
-		// console.log(students_exists)
 		await students_exists.save();
 		console.log("save success!")
-		return res.send({message: "NOOK!"}).end();
+		return res.send({ message: "NOOK!" }).end();
 	} catch (err) {
 		console.log('error UploadPost: ' + err)
 		return res.status(500).end(); // 500 Internal Server Error
@@ -477,39 +536,94 @@ exports.UploadPost = async (req, res) => {
 }
 
 exports.filedownload = async (req, res, next) => {
-	console.log("filedownload success!")
-	console.log('filedownload req.params.filename = ' + req.params.category)
-	const categoryName = req.params.category;
-	const fileName = req.params.filename;
-	const bearer = req.headers.authorization.split(' ');
-	const token = bearer[1]
-	// Extract user email info by token
-	var emailaddress = jwt_decode(token);
-	emailaddress = emailaddress['emailaddress'];
-	const students_exists = await Student.findOne({ emailaddress_: emailaddress });
-	const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
-	const directoryPath = __basedir + "/public/" + FolderName + '/' + categoryName + '/';
+	try {
+		// console.log('filedownload req.params.filename = ' + req.params.category)
+		const categoryName = req.params.category;
+		// const fileName = req.params.filename;
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
+		// Extract user email info by token
+		var emailaddress = jwt_decode(token);
+		emailaddress = emailaddress['emailaddress'];
+		const students_exists = await Student.findOne({ emailaddress_: emailaddress });
+		const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
+		const directoryPath = __basedir + "/public/" + FolderName + '/' + categoryName + '/';
+		var downloadPath = ''
+		if (req.params.category === 'bachelorCertificate') {
+			downloadPath = students_exists.uploadedDocs_.bachelorCertificate_.filePath_
+		} else if (req.params.category === 'bachelorTranscript') {
+			downloadPath = students_exists.uploadedDocs_.bachelorTranscript_.filePath_
+		} else if (req.params.category === 'englishCertiifcate') {
+			downloadPath = students_exists.uploadedDocs_.EnglischCertificate_.filePath_
+		} else if (req.params.category === 'germanCertiifcate') {
+			downloadPath = students_exists.uploadedDocs_.GermanCertificate_.filePath_
+		} else if (req.params.category === 'highschoolDiploma') {
+			downloadPath = students_exists.uploadedDocs_.highSchoolDiploma_.filePath_
+		} else if (req.params.category === 'highschoolTranscript') {
+			downloadPath = students_exists.uploadedDocs_.highSchoolTranscript_.filePath_
+		} else if (req.params.category === 'universityEntranceExamination') {
+			downloadPath = students_exists.uploadedDocs_.GSAT_.filePath_
+		} else if (req.params.category === 'ML') {
+			downloadPath = students_exists.uploadedDocs_.ML_.filePath_
+		} else if (req.params.category === 'CV') {
+			downloadPath = students_exists.uploadedDocs_.CV_.filePath_
+		} else if (req.params.category === 'RL') {
+			downloadPath = students_exists.uploadedDocs_.RL_.filePath_
+		} else if (req.params.category === 'ECTS_conversion') {
+			downloadPath = students_exists.uploadedDocs_.ECTS_conversion_.filePath_
+		} else if (req.params.category === 'CourseDescription') {
+			downloadPath = students_exists.uploadedDocs_.courseDescription_.filePath_
+		} else if (req.params.category === 'Essay_') {
+			downloadPath = students_exists.uploadedDocs_.Essay_.filePath_
+		}
+		filename = downloadPath.split('\\');
+		console.log("filename: " + filename)
+		filename = filename.pop()  // Get the last element (file name)
+		console.log("filename: " + filename)
+		if (fs.existsSync(downloadPath)) {
+			console.log("file existed!")
+			res.download(downloadPath, filename, (err) => {
+				if (err) {
+					res.status(500).send({
+						message: "Could not download the file. " + err,
+					});  // 500 Internal Server Error
+				}
+				else {
+					// console.log("filedownload success!")
+					// res.status(200).end(); // 200 success
+				}
+			});
+		}
+		else {
+			console.log("file not existed!")
+			res.status(500).send({
+				message: "Could not download the file. ",
+			});  // 500 Internal Server Error
+		}
 
 
-	
-	// const fileName = "dd-ddd.png";
-	// const directoryPath = __basedir + "/public/"+ categoryName + "/";
-	//TODO: can access only the student's document, not others
-	if (fs.existsSync(directoryPath + fileName)) {
-		console.log("file existed!")
-		res.download(directoryPath + fileName, fileName, (err) => {
-			if (err) {
-				res.status(500).send({
-					message: "Could not download the file. " + err,
-				});  // 500 Internal Server Error
-			}
-		});
+
+		// const fileName = "dd-ddd.png";
+		// const directoryPath = __basedir + "/public/"+ categoryName + "/";
+		//TODO: can access only the student's document, not others
+		// if (fs.existsSync(directoryPath + fileName)) {
+		// 	console.log("file existed!")
+		// 	res.download(directoryPath + fileName, fileName, (err) => {
+		// 		if (err) {
+		// 			res.status(500).send({
+		// 				message: "Could not download the file. " + err,
+		// 			});  // 500 Internal Server Error
+		// 		}
+		// 	}).end();
+		// }
+		// else {
+		// 	console.log("file not existed!")
+		// 	res.status(500).send({
+		// 		message: "Could not download the file. ",
+		// 	});  // 500 Internal Server Error
+		// }
+	} catch (err) {
+		console.log('error UploadPost: ' + err)
+		return res.status(500).end(); // 500 Internal Server Error
 	}
-	else {
-		console.log("file not existed!")
-		res.status(500).send({
-			message: "Could not download the file. ",
-		});  // 500 Internal Server Error
-	}
-
 }

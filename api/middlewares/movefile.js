@@ -18,9 +18,9 @@ async function movefile(req, res, next) {
         emailaddress = emailaddress['emailaddress'];
         const students_exists = await Student.findOne({ emailaddress_: emailaddress });
         const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
-        const directoryPath = __basedir + "/public/" + FolderName + '/';
+        const directoryPath = __basedir + "\\public\\" + FolderName + '\\';
         console.log('directoryPath : ' + directoryPath)
-        const filePath = __basedir + "/public/" + req.file.filename;
+        const filePath = __basedir + "\\public\\" + req.file.filename;
 
 
         console.log('\n> Checking if the old path file exists');

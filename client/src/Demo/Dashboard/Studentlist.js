@@ -1,4 +1,6 @@
 import React from 'react';
+import { FaBeer } from 'react-icons/fa';
+import { AiFillCheckCircle, AiOutlineLoading3Quarters, AiOutlineCheck, AiOutlineClose, AiFillStop } from "react-icons/ai";
 import { Row, Col, Table, Form, Modal } from 'react-bootstrap';
 import {
     Button,
@@ -118,7 +120,8 @@ const row = (
     handleChange,
     stopEditing,
     RemoveProgramHandler3,
-    cancelEditing
+    cancelEditing,
+    documentslist
 ) => {
     const currentlyEditing = editIdx === i;
     return (
@@ -129,7 +132,26 @@ const row = (
                 </td>
                 <td >
                     <h6 className="mb-1">{student.firstname_} {student.lastname_}</h6>
-                    <p className="m-0">{student.emailaddress_}</p>
+                    <p className="m-1">{student.emailaddress_}</p>
+                    <h6 className="m-0">Document status</h6>
+                    {
+                        student.uploadedDocs_ ?
+                            (
+                                documentslist.map((doc) => (
+                                    student.uploadedDocs_[doc.prop] ?
+                                        (
+                                            <p className="m-0"><AiOutlineCheck /> <AiOutlineLoading3Quarters/> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
+                                        ) :
+                                        (
+                                            <p className="m-0"><b><AiOutlineClose /> {doc.name} </b></p>
+                                        )
+                                ))
+                            ) :
+                            (
+                                <p>So far no uploaded file!</p>
+                            )
+
+                    }
 
                     {/* <p>CV Status: {student.uploadedDocs_.CV_.uploadStatus_}, uploaded on {student.uploadedDocs_.CV_.LastUploadDate_}</p>
                     <p>ML Status: {student.uploadedDocs_.ML_.uploadStatus_}, uploaded on {student.uploadedDocs_.ML_.LastUploadDate_}</p>
@@ -202,7 +224,8 @@ class Studentlist extends React.Component {
                                 this.props.handleChange,
                                 this.props.stopEditing,
                                 this.props.RemoveProgramHandler3,
-                                this.props.cancelEditing
+                                this.props.cancelEditing,
+                                this.props.documentslist
                             )
                         )
                         )}

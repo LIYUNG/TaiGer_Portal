@@ -367,6 +367,60 @@ class Dashboard extends React.Component {
                                                 prop: "Program"
                                             }
                                         ]}
+                                        documentslist={[
+                                            {
+                                                name: "CV",
+                                                prop: "CV_"
+                                            },
+                                            {
+                                                name: "ML",
+                                                prop: "ML_"
+                                            },
+                                            {
+                                                name: "RL",
+                                                prop: "RL_"
+                                            },
+                                            {
+                                                name: "Bachelor Certificate",
+                                                prop: "bachelorCertificate_"
+                                            },
+                                            {
+                                                name: "Bachelor Transcript",
+                                                prop: "bachelorTranscript_"
+                                            },
+                                            {
+                                                name: "High School Diploma",
+                                                prop: "highSchoolDiploma_"
+                                            },
+                                            {
+                                                name: "High School Transcript",
+                                                prop: "highSchoolTranscript_"
+                                            },
+                                            {
+                                                name: "University Entrance Exam",
+                                                prop: "GSAT_"
+                                            },
+                                            {
+                                                name: "English Certificate",
+                                                prop: "EnglischCertificate_"
+                                            },
+                                            {
+                                                name: "German Certififcate",
+                                                prop: "GermanCertificate_"
+                                            },
+                                            {
+                                                name: "Essay",
+                                                prop: "Essay_"
+                                            },
+                                            {
+                                                name: "ECTS Conversion",
+                                                prop: "ECTS_conversion_"
+                                            },
+                                            {
+                                                name: "Course Description",
+                                                prop: "courseDescription_"
+                                            }
+                                        ]}
                                     />
                                 </Card.Body>
                             </Card>

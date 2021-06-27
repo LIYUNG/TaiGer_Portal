@@ -40,7 +40,6 @@ class UploadPage extends React.Component {
         // console.log(e.target.files[0])
         this.setState({
             file: e.target.files[0],
-
         })
     }
 
@@ -88,23 +87,46 @@ class UploadPage extends React.Component {
             this.onSubmitFile(e, id)
         }
     };
+    // downloadFile = async (response/*: AxiosResponse*/, filename/*: string*/ = 'download') => {
+    //     const data = get(response, 'payload.data', null) || getProp(response, 'data', null);
+    //     if (!(data instanceof Blob)) return;
+
+    //     const blob = new Blob([data], { type: 'application/pdf' });
+    //     const link = document.createElement('a');
+    //     link.href = window.URL.createObjectURL(blob);
+    //     link.download = `${filename}-${+new Date()}.pdf`;
+    //     link.click();
+    // };
+    getFileNameFromContentDisposition(contentDisposition) {
+        if (!contentDisposition) return null;
+
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+
+        return match ? match[1] : null;
+    };
 
     onDownloadFile(e, id) {
         e.preventDefault()
         const auth = localStorage.getItem('token');
-        //TODO: replace the file name
-        fetch('http://localhost:2000/upload/' + id + '/' + '1624664481232yu-hung_tsai_passport.pdf',
+        var actualFileName
+        fetch('http://localhost:2000/upload/' + id,
             {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
-                    'Content-Type': 'application/image',
+                    'Content-Type': 'application',
                     'Authorization': 'Bearer ' + JSON.parse(auth)
                 },
             }
         )
-            .then(res => res.blob()) // TODO: handle the case when the file not existed
+            .then((res) => {
+                actualFileName = res.headers.get("Content-Disposition").split('"')[1]
+                return res.blob()
+            }
+            )
             .then((blob) => {
+                console.log(actualFileName)
+                if (blob.size === 0) return
                 const url = window.URL.createObjectURL(
                     new Blob([blob]),
                 );
@@ -112,14 +134,12 @@ class UploadPage extends React.Component {
                 link.href = url;
                 link.setAttribute(
                     'download',
-                    `1624664481232yu-hung_tsai_passport.pdf`, //TODO: replace file name
+                    actualFileName, 
                 );
                 // Append to html link element page
                 document.body.appendChild(link);
-
                 // Start download
                 link.click();
-
                 // Clean up and remove the link
                 link.parentNode.removeChild(link);
             },

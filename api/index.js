@@ -12,6 +12,7 @@ const handlers = require("./controllers/handlers");
 const { auth } = require("./middlewares/auth");
 const { movefile } = require("./middlewares/movefile");
 const { checkuserfolder } = require("./middlewares/checkuserfolder");
+const { deletefile } = require("./middlewares/deletefile");
 
 const studentController = require("./controllers/students");
 const multer = require("multer");
@@ -121,6 +122,7 @@ try {
 	app.post("/upload/:category", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);
 	// app.post("/upload", auth, upload.single('file'), handlers.UploadPost);
 	app.get("/upload/:category", auth, handlers.filedownload);
+	app.delete("/deletefile/:category", auth, handlers.deletefile);
 	app.get("/settings", auth, handlers.settings);
 	// error handler
 	app.use(function (err, req, res, next) {

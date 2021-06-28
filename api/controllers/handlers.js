@@ -549,6 +549,7 @@ exports.filedownload = async (req, res, next) => {
 		const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
 		const directoryPath = __basedir + "/public/" + FolderName + '/' + categoryName + '/';
 		var downloadPath = ''
+		//TODO: what if students_exists.uploadedDocs_.bachelorCertificate_ undefined?
 		if (req.params.category === 'bachelorCertificate') {
 			downloadPath = students_exists.uploadedDocs_.bachelorCertificate_.filePath_
 		} else if (req.params.category === 'bachelorTranscript') {
@@ -589,8 +590,8 @@ exports.filedownload = async (req, res, next) => {
 					});  // 500 Internal Server Error
 				}
 				else {
-					// console.log("filedownload success!")
-					// res.status(200).end(); // 200 success
+					console.log("filedownload success!")
+					res.status(200).end(); // 200 success
 				}
 			});
 		}
@@ -623,7 +624,230 @@ exports.filedownload = async (req, res, next) => {
 		// 	});  // 500 Internal Server Error
 		// }
 	} catch (err) {
-		console.log('error UploadPost: ' + err)
+		console.log('error download file: ' + err)
+		return res.status(500).end(); // 500 Internal Server Error
+	}
+}
+
+
+
+
+exports.deletefile = async (req, res, next) => {
+	try {
+		// console.log('filedownload req.params.filename = ' + req.params.category)
+		const categoryName = req.params.category;
+		// const fileName = req.params.filename;
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
+		// Extract user email info by token
+		var emailaddress = jwt_decode(token);
+		emailaddress = emailaddress['emailaddress'];
+		let students_exists = await Student.findOne({ emailaddress_: emailaddress });
+
+		if (req.params.category === 'bachelorCertificate') {
+			if (fs.existsSync(students_exists.uploadedDocs_.bachelorCertificate_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.bachelorCertificate_.filePath_) // delete file on old path, no moving
+				console.log("delete bachelorCertificate_ success")
+			} else {
+				console.log("delete bachelorCertificate_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.bachelorCertificate_.uploadStatus_": '',
+					"uploadedDocs_.bachelorCertificate_.filePath_": categoryPath + req.file.filename,
+					"uploadedDocs_.bachelorCertificate_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'bachelorTranscript') {
+			if (fs.existsSync(students_exists.uploadedDocs_.bachelorTranscript_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.bachelorTranscript_.filePath_) // delete file on old path, no moving
+				console.log("delete bachelorTranscript_ success")
+			} else {
+				console.log("delete bachelorTranscript_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.bachelorTranscript_.uploadStatus_": '',
+					"uploadedDocs_.bachelorTranscript_.filePath_": '',
+					"uploadedDocs_.bachelorTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'englishCertiifcate') {
+			if (fs.existsSync(students_exists.uploadedDocs_.EnglischCertificate_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.EnglischCertificate_.filePath_) // delete file on old path, no moving
+				console.log("delete EnglischCertificate_ success")
+			} else {
+				console.log("delete EnglischCertificate_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.EnglischCertificate_.uploadStatus_": '',
+					"uploadedDocs_.EnglischCertificate_.filePath_": '',
+					"uploadedDocs_.EnglischCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'germanCertiifcate') {
+			if (fs.existsSync(students_exists.uploadedDocs_.GermanCertificate_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.GermanCertificate_.filePath_) // delete file on old path, no moving
+				console.log("delete GermanCertificate_ success")
+			} else {
+				console.log("delete GermanCertificate_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.GermanCertificate_.uploadStatus_": '',
+					"uploadedDocs_.GermanCertificate_.filePath_": '',
+					"uploadedDocs_.GermanCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolDiploma') {
+			if (fs.existsSync(students_exists.uploadedDocs_.highSchoolDiploma_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.highSchoolDiploma_.filePath_) // delete file on old path, no moving
+				console.log("delete highSchoolDiploma_ success")
+			} else {
+				console.log("delete highSchoolDiploma_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.highSchoolDiploma_.uploadStatus_": '',
+					"uploadedDocs_.highSchoolDiploma_.filePath_": '',
+					"uploadedDocs_.highSchoolDiploma_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolTranscript') {
+			if (fs.existsSync(students_exists.uploadedDocs_.highSchoolTranscript_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.highSchoolTranscript_.filePath_) // delete file on old path, no moving
+				console.log("delete highSchoolTranscript_ success")
+			} else {
+				console.log("delete highSchoolTranscript_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.highSchoolTranscript_.uploadStatus_": '',
+					"uploadedDocs_.highSchoolTranscript_.filePath_": '',
+					"uploadedDocs_.highSchoolTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'universityEntranceExamination') {
+			if (fs.existsSync(students_exists.uploadedDocs_.GSAT_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.GSAT_.filePath_) // delete file on old path, no moving
+				console.log("delete GSAT_ success")
+			} else {
+				console.log("delete GSAT_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.GSAT_.uploadStatus_": '',
+					"uploadedDocs_.GSAT_.filePath_": '',
+					"uploadedDocs_.GSAT_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'ML') {
+			if (fs.existsSync(students_exists.uploadedDocs_.ML_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.ML_.filePath_) // delete file on old path, no moving
+				console.log("delete ML_ success")
+			} else {
+				console.log("delete ML_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.ML_.uploadStatus_": '',
+					"uploadedDocs_.ML_.filePath_": '',
+					"uploadedDocs_.ML_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'CV') {
+			if (fs.existsSync(students_exists.uploadedDocs_.CV_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.CV_.filePath_) // delete file on old path, no moving
+				console.log("delete CV_ success")
+			} else {
+				console.log("delete CV_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.CV_.uploadStatus_": '',
+					"uploadedDocs_.CV_.filePath_": '',
+					"uploadedDocs_.CV_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'RL') {
+			if (fs.existsSync(students_exists.uploadedDocs_.RL_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.RL_.filePath_) // delete file on old path, no moving
+				console.log("delete RL_ success")
+			} else {
+				console.log("delete RL_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.RL_.uploadStatus_": '',
+					"uploadedDocs_.RL_.filePath_": '',
+					"uploadedDocs_.RL_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'ECTS_conversion') {
+			if (fs.existsSync(students_exists.uploadedDocs_.ECTS_conversion_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.ECTS_conversion_.filePath_) // delete file on old path, no moving
+				console.log("delete ECTS_conversion_ success")
+			} else {
+				console.log("delete ECTS_conversion_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.ECTS_conversion_.uploadStatus_": '',
+					"uploadedDocs_.ECTS_conversion_.filePath_": '',
+					"uploadedDocs_.ECTS_conversion_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'CourseDescription') {
+			if (fs.existsSync(students_exists.uploadedDocs_.courseDescription_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.courseDescription_.filePath_) // delete file on old path, no moving
+				console.log("delete courseDescription_ success")
+			} else {
+				console.log("delete courseDescription_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.courseDescription_.uploadStatus_": '',
+					"uploadedDocs_.courseDescription_.filePath_": '',
+					"uploadedDocs_.courseDescription_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'Essay_') {
+			if (fs.existsSync(students_exists.uploadedDocs_.Essay_.filePath_)) {
+				// TODO:To delete file here: Path not correct
+				fs.unlinkSync(students_exists.uploadedDocs_.Essay_.filePath_) // delete file on old path, no moving
+				console.log("delete Essay_ success")
+			} else {
+				console.log("delete Essay_ failed")
+			}
+			await Student.findOneAndUpdate({ emailaddress_: emailaddress }, {
+				"$set": {
+					"uploadedDocs_.Essay_.uploadStatus_": '',
+					"uploadedDocs_.Essay_.filePath_": '',
+					"uploadedDocs_.Essay_.LastUploadDate_": date_now
+				}
+			});
+		}
+		await students_exists.save();
+		res.status(200).end(); // 200 success
+	} catch (err) {
+		console.log('error delete file: ' + err)
 		return res.status(500).end(); // 500 Internal Server Error
 	}
 }

@@ -18,7 +18,9 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            student_i: -1,
             error: null,
+            subPage: -1,
             modalShow: false,
             isLoaded: false,
             editIdx: -1,
@@ -170,24 +172,41 @@ class Dashboard extends React.Component {
         }));
     };
 
-    startEditingAgent = (i, program_id) => {
+    startEditingAgent = (i) => {
         console.log("startEditingAgent")
-        // this.setState({ 
-        //     editIdx: i 
-        // });
+        this.setState({
+            student_i: i,
+            subPage: 1,
+            modalShow: true
+        });
     };
 
-    startEditingEditor = (i, program_id) => {
+    startEditingEditor = (i) => {
         console.log("startEditingEditor")
-        // this.setState({ 
-        //     editIdx: i 
-        // });
+        this.setState({
+            student_i: i,
+            subPage: 2,
+            modalShow: true
+        });
     };
 
-    startEditingProgram = (student_id) => {
+    startEditingProgram = (i) => {
         console.log("startEditingAnddeleteProgram")
         this.setState({
-            StudentId: student_id,
+            student_i: i,
+            // StudentId: student_id,
+            subPage: 3,
+            modalShow: true
+        });
+    };
+
+    startUploadfile = (i) => {
+        console.log("startUploadfile")
+        console.log(i)
+        this.setState({
+            student_i: i,
+            // StudentId: student_id,
+            subPage: 4,
             modalShow: true
         });
     };
@@ -237,12 +256,10 @@ class Dashboard extends React.Component {
 
     }
 
-    // setModalShow = () => {
-
-    // }
-
-    setModalHide = () => {
+    setmodalhide = () => {
         this.setState({
+            student_i: -1,
+            subPage: -1,
             modalShow: false
         });
     }
@@ -338,7 +355,7 @@ class Dashboard extends React.Component {
                                     <Studentlist
                                         ModalShow={this.state.modalShow}
                                         setModalShow={this.setModalShow}
-                                        setModalHide={this.setModalHide}
+                                        setmodalhide={this.setmodalhide}
                                         handleRemove={this.handleRemove}
                                         startEditingAgent={this.startEditingAgent}
                                         startEditingEditor={this.startEditingEditor}
@@ -421,6 +438,9 @@ class Dashboard extends React.Component {
                                                 prop: "courseDescription_"
                                             }
                                         ]}
+                                        startUploadfile={this.startUploadfile}
+                                        subPage={this.state.subPage}
+                                        student_i={this.state.student_i}
                                     />
                                 </Card.Body>
                             </Card>

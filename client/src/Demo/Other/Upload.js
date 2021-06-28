@@ -65,6 +65,13 @@ class UploadPage extends React.Component {
                         isLoaded: false
                     })
                 }
+                else{
+                    alert('Upload failed')
+                    this.setState({
+                        file: '',
+                        isLoaded: false
+                    })
+                }
 
             },
                 // Note: it's important to handle errors here
@@ -149,10 +156,10 @@ class UploadPage extends React.Component {
                 (error) => {
                     console.log(error);
                     console.log('Problem while getting document');
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
+                    // this.setState({
+                    //     isLoaded: true,
+                    //     error
+                    // });
                 }
             )
     }

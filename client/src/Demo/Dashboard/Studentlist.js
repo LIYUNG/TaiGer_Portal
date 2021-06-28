@@ -21,89 +21,282 @@ class MyVerticallyCenteredModal extends React.Component {
     constructor(props) {
         super(props);
         // this.handleChange2 = props.handleChange2.bind(this)
-        this.setModalHide = props.setModalHide.bind(this);
+        this.setmodalhide = props.setmodalhide.bind(this);
         // this.onSubmit2 = props.onSubmit2.bind(this);
-        this.state = {
-            data: [],
-        };
-
+        // this.state = {
+        //     data: [],
+        // };
     }
 
-    componentDidMount() {
-        const auth = localStorage.getItem('token');
-        fetch('http://localhost:2000/studentlist',
-            {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + JSON.parse(auth)
-                },
-            }
-        )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        // isLoaded: true,
-                        data: result.data
-                    });
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log('Problem while getting studentlist');
-                }
-            )
-    }
+    // componentDidMount() {
+    //     const auth = localStorage.getItem('token');
+    //     fetch('http://localhost:2000/studentlist',
+    //         {
+    //             method: 'GET',
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': 'Bearer ' + JSON.parse(auth)
+    //             },
+    //         }
+    //     )
+    //         .then(res => res.json())
+    //         .then(
+    //             (result) => {
+    //                 this.setState({
+    //                     // isLoaded: true,
+    //                     data: result.data
+    //                 });
+    //             },
+    //             // Note: it's important to handle errors here
+    //             // instead of a catch() block so that we don't swallow
+    //             // exceptions from actual bugs in components.
+    //             (error) => {
+    //                 console.log('Problem while getting studentlist');
+    //             }
+    //         )
+    // }
 
     render() {
-        return (
-            <Modal
-                {...this.props}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-            >
-                <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                        Assign {this.props.uni_name} - {this.props.program_name} to
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <h4>Student:</h4>
-                    {this.state.data.map(student => (
-                        < tr key={student._id} >
-                            <th>
-                                <div>
-                                    <Form.Group>
-                                        <Form.Check
-                                            custom
-                                            type="radio"
-                                            name="student_id"
-                                            value={student._id}
-                                            id={student._id}
-                                        // onChange={this.handleChange2}
-                                        />
-                                    </Form.Group>
+        if (this.props.subPage === 1) {
+            return (
+                <Modal
+                    {...this.props}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Agent for {this.props.data[this.props.student_i].firstname_} - {this.props.data[this.props.student_i].lastname_} to
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Agent:</h4>
+                        {this.props.data[this.props.student_i].agent_ ? (
+                            this.props.data[this.props.student_i].agent_.map((agent, i) => (
+                                <div key={i + 1}>
+                                    <td>
+                                        <Form.Group>
+                                            <Form.Check
+                                                custom
+                                                type="checkbox"
+                                                name="student_id"
+                                                value={i + 1}
+                                                id={i + 1}
+                                            />
+                                        </Form.Group>
+                                    </td>
+                                    <td>
+                                        <h4 className="mb-1" >{agent}</h4>
+                                    </td>
                                 </div>
-                            </th>
-                            <td >
-                                <h4 className="mb-1" >{student.emailaddress_}, {student.applying_program_.map(program => (
-                                    program.University_, program.Program_
-                                ))}
-                                </h4>
-                            </td>
-                        </tr>
-                    ))}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={this.setModalHide}>Assign</Button>
-                    <Button onClick={this.setModalHide}>Cancel</Button>
-                </Modal.Footer>
-            </Modal>
-        );
+                            ))
+                        ) : (
+                            <div>
+                                <h4 className="mb-1" > No Agent</h4>
+                            </div>
+                        )}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.setmodalhide}>Assign</Button>
+                        <Button onClick={this.setmodalhide}>Cancel</Button>
+                    </Modal.Footer>
+                </Modal>
+            );
+        } else if (this.props.subPage === 2) {
+            return (
+                <Modal
+                    {...this.props}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Editor for {this.props.data[this.props.student_i].firstname_} - {this.props.data[this.props.student_i].lastname_}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Editor:</h4>
+                        {this.props.data[this.props.student_i].editor_ ? (
+                            this.props.data[this.props.student_i].editor_.map((editor, i) => (
+                                < tr key={i + 1} >
+                                    <th>
+                                        <Form.Group>
+                                            <Form.Check
+                                                custom
+                                                type="checkbox"
+                                                name="student_id"
+                                                value={i + 1}
+                                                id={i + 1}
+                                            />
+                                        </Form.Group>
+                                    </th>
+                                    <td >
+                                        <h4 className="mb-1" >{editor}
+                                        </h4>
+                                    </td>
+                                </tr>
+                            ))) : (
+                            <tr>
+                                <td>
+                                    <h4 className="mb-1" > No Editor</h4>
+                                </td>
+                            </tr>)
+                        }
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.setmodalhide}>Assign</Button>
+                        <Button onClick={this.setmodalhide}>Cancel</Button>
+                    </Modal.Footer>
+                </Modal>
+            );
+        } else if (this.props.subPage === 3) { // Edit Program
+            return (
+                <Modal
+                    {...this.props}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Program for {this.props.data[this.props.student_i].firstname_} - {this.props.data[this.props.student_i].lastname_}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Program:</h4>
+                        {this.props.data[this.props.student_i].applying_program_ ? (
+                            this.props.data[this.props.student_i].applying_program_.map((program, i) => (
+                                < tr key={i} >
+                                    <th>
+                                        <Form.Group>
+                                            <Form.Check
+                                                custom
+                                                type="checkbox"
+                                                name="student_id"
+                                                value={i}
+                                                id={i + 1}
+                                            />
+                                        </Form.Group>
+                                    </th>
+                                    <td >
+                                        <h4 className="mb-1" >{program.University_}, {program.Program_}
+                                        </h4>
+                                    </td>
+                                </tr>
+                            ))) : (
+                            <tr>
+                                <td>
+                                    <h4 className="mb-1" > No Program</h4>
+                                </td>
+                            </tr>
+                        )
+                        }
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.setmodalhide}>Assign</Button>
+                        <Button onClick={this.setmodalhide}>Cancel</Button>
+                    </Modal.Footer>
+                </Modal>
+            );
+        } else if (this.props.subPage === 4) {
+            return (
+                <Modal
+                    {...this.props}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            {/* Uploaded files for {this.props.data[this.props.student_i].firstname_} - {this.props.data[this.props.student_i].lastname_} */}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Files:</h4>
+                        {
+                            this.props.data[this.props.student_i].uploadedDocs_ ?
+                                (
+                                    this.props.documentslist.map((doc, i) => (
+                                        this.props.data[this.props.student_i].uploadedDocs_[doc.prop] ?
+                                            (
+                                                <tr key={i + 1}>
+                                                    <th>
+                                                        <Form.Group>
+                                                            <Form.Check
+                                                                custom
+                                                                type="checkbox"
+                                                                name={doc.name}
+                                                                // value='value'
+                                                                id={i + 1}
+                                                            />
+                                                        </Form.Group>
+                                                    </th>
+                                                    <td >
+                                                        <p className="m-0"><AiOutlineCheck /> <AiOutlineLoading3Quarters /> {doc.name} : {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_}</p>
+                                                    </td>
+                                                </tr>
+                                            ) :
+                                            (
+                                                < tr key={i + 1}>
+                                                    <th>
+                                                        <div>
+                                                            <Form.Group>
+                                                                <Form.Check
+                                                                    custom
+                                                                    type="checkbox"
+                                                                    name={doc.name}
+                                                                    // value='value'
+                                                                    id={i + 1}
+                                                                />
+                                                            </Form.Group>
+                                                        </div>
+                                                    </th>
+                                                    <td >
+                                                        <p className="m-0"><b><AiOutlineClose /> {doc.name} </b></p>
+                                                    </td>
+                                                </tr>
+                                            )
+                                    ))
+                                ) :
+                                (
+                                    <p>So far no selected program!</p>
+                                )
+
+                        }
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.setmodalhide}>Assign</Button>
+                        <Button onClick={this.setmodalhide}>Cancel</Button>
+                    </Modal.Footer>
+                </Modal>
+            );
+        }
+        else {
+            return (
+                <Modal
+                    {...this.props}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            {/* Uploaded files for {this.props.data[this.props.student_i].firstname_} - {this.props.data[this.props.student_i].lastname_} */}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>other:</h4>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.setmodalhide}>Assign</Button>
+                        <Button onClick={this.setmodalhide}>Cancel</Button>
+                    </Modal.Footer>
+                </Modal>
+            )
+        }
     }
 }
 
@@ -121,7 +314,8 @@ const row = (
     stopEditing,
     RemoveProgramHandler3,
     cancelEditing,
-    documentslist
+    documentslist,
+    startUploadfile
 ) => {
     const currentlyEditing = editIdx === i;
     return (
@@ -137,13 +331,13 @@ const row = (
                     {
                         student.uploadedDocs_ ?
                             (
-                                documentslist.map((doc) => (
+                                documentslist.map((doc, i) => (
                                     student.uploadedDocs_[doc.prop] ?
                                         (
-                                            <p className="m-0"><AiOutlineCheck /> <AiOutlineLoading3Quarters/> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
+                                            <p className="m-0" key={i} ><AiOutlineCheck /> <AiOutlineLoading3Quarters /> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
                                         ) :
                                         (
-                                            <p className="m-0"><b><AiOutlineClose /> {doc.name} </b></p>
+                                            <p className="m-0" key={i} ><b><AiOutlineClose /> {doc.name} </b></p>
                                         )
                                 ))
                             ) :
@@ -161,20 +355,20 @@ const row = (
                 <td>
                     <h5>Agent:</h5>
                     {student.agent_.map(
-                        agent =>
-                            <p className="m-0">{agent}</p>
+                        (agent, i) =>
+                            <p className="m-0" key={i}>{agent}</p>
                     )}
                     <h5>Editor:</h5>
                     {student.editor_.map(
-                        editor =>
-                            <p className="m-0">{editor}</p>
+                        (editor, i) =>
+                            <p className="m-0" key={i}>{editor}</p>
                     )}
                 </td>
                 <td>
                     <h5>Programs:</h5>
                     {student.applying_program_.map(
-                        program =>
-                            <h6>{program.University_} {program.Program_} </h6>
+                        (program, i) =>
+                            <h6 key={i}>{program.University_} {program.Program_} </h6>
                         // <h6>{program.University_} {program.Program_} {program.applicationDocu_.CV_.needToBeUpload_}</h6>
                     )}
                 </td>
@@ -193,7 +387,8 @@ const row = (
                     >
                         <Dropdown.Item eventKey="1" onSelect={() => startEditingAgent(i)}>Edit Agent</Dropdown.Item>
                         <Dropdown.Item eventKey="2" onSelect={() => startEditingEditor(i)}>Edit Editor</Dropdown.Item>
-                        <Dropdown.Item eventKey="3" onSelect={() => startEditingProgram(student._id)}>Edit Program</Dropdown.Item>
+                        <Dropdown.Item eventKey="3" onSelect={() => startEditingProgram(i)}>Edit Program</Dropdown.Item>
+                        <Dropdown.Item eventKey="4" onSelect={() => startUploadfile(i)}>Upload files</Dropdown.Item>
                     </DropdownButton>
                 )}
                 </th>
@@ -225,7 +420,8 @@ class Studentlist extends React.Component {
                                 this.props.stopEditing,
                                 this.props.RemoveProgramHandler3,
                                 this.props.cancelEditing,
-                                this.props.documentslist
+                                this.props.documentslist,
+                                this.props.startUploadfile
                             )
                         )
                         )}
@@ -235,8 +431,11 @@ class Studentlist extends React.Component {
                     show={this.props.ModalShow}
                     uni_name='RWTH'
                     program_name='Automotive'
-                    setModalHide={this.props.setModalHide}
-                    startEditingProgram={this.props.startEditingProgram}
+                    setmodalhide={this.props.setmodalhide}
+                    subPage={this.props.subPage}
+                    student_i={this.props.student_i} // student order
+                    data={this.props.data}
+                    documentslist={this.props.documentslist}
                 />
             </>
         )

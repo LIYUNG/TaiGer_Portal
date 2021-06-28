@@ -30,7 +30,7 @@ async function movefile(req, res, next) {
             if (!fs.existsSync(categoryPath)) {
                 fs.mkdirSync(categoryPath);
             }
-            const newfilePath = categoryPath + '/' + req.file.filename
+            const newfilePath = categoryPath + '\\' + req.file.filename
             if (fs.existsSync(newfilePath)) {
                 //TODO: store multiple file?
                 fs.unlinkSync(filePath) // delete file on old path, no moving

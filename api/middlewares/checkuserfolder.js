@@ -13,7 +13,12 @@ async function checkuserfolder(req, res, next) {
         //get email by token
         const students_exists = await Student.findOne({ emailaddress_: emailaddress });
         const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
-        const directoryPath = __basedir + "/public/" + FolderName;
+        if (!fs.existsSync(__basedir + "\\public\\")) {
+            fs.mkdirSync(__basedir + "\\public\\");
+            console.log("create public folder")
+            next()
+        }
+        const directoryPath = __basedir + "\\public\\" + FolderName;
 
         console.log("directoryPath: " + directoryPath)
         if (fs.existsSync(directoryPath)) {

@@ -36,7 +36,8 @@ class NewProgramWindow extends React.Component {
     render() {
         return (
             <Modal
-                {...this.props}
+                show={this.props.show}
+                onHide={this.props.setModalHide2}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
@@ -44,12 +45,12 @@ class NewProgramWindow extends React.Component {
                 <Modal.Header>
                     <Modal.Title id="contained-modal-title-vcenter">
                         New Program:
-          </Modal.Title>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {this.props.header.map((head, i) => (
                         <>
-                            <h5>{head.name}:</h5>
+                            <h5 key={i}>{head.name}:</h5>
                             <Form>
                                 <Form.Group>
                                     {/* <p>{prop}:</p> */}
@@ -316,7 +317,7 @@ class BootstrapTable extends React.Component {
                 ...prevState.newProgramData,
                 [name]: value
             }
-                    
+
         }));
     };
 
@@ -631,7 +632,7 @@ class BootstrapTable extends React.Component {
                                             },
                                             {
                                                 name: "Course Description",
-                                                prop: "courseDescription_"
+                                                prop: "CourseDescription_"
                                             }
                                         ]}
                                     />

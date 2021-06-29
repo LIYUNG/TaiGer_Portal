@@ -14,10 +14,8 @@ import Aux from "../../hoc/_Aux";
 class UploadPage extends React.Component {
     constructor(props) {
         super(props);
-
         this.onFileChange = this.onFileChange.bind(this);
         this.onSubmitFile = this.onSubmitFile.bind(this);
-
         this.state = {
             error: null,
             file: '',
@@ -154,8 +152,9 @@ class UploadPage extends React.Component {
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
                 (error) => {
-                    console.log(error);
-                    console.log('Problem while getting document');
+                    // console.log(error);
+                    // console.log();
+                    alert("The file is not available.")
                     // this.setState({
                     //     isLoaded: true,
                     //     error
@@ -187,7 +186,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="bachelorCertificate"
+                                        id="bachelorCertificate_"
                                         checkboxid="bachelorCertificateCheckbox"
                                     />
                                     <h5 className="mt-5">Bachelor's Transcript</h5>
@@ -196,7 +195,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="bachelorTranscript"
+                                        id="bachelorTranscript_"
                                         checkboxid="bachelorTranscriptCheckbox"
                                     />
                                 </Card.Body>
@@ -212,7 +211,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="englishCertiifcate"
+                                        id="EnglischCertificate_"
                                         checkboxid="englishCertiifcateCheckbox"
                                     />
                                     <h6 className="mt-5">German: TestDaF/DSH/Goethe B2</h6>
@@ -221,7 +220,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="germanCertiifcate"
+                                        id="GermanCertificate_"
                                         checkboxid="germanCertiifcateCheckbox"
                                     />
                                 </Card.Body>
@@ -237,7 +236,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="highschoolDiploma"
+                                        id="highschoolDiploma_"
                                         checkboxid="highschoolDiplomaCheckbox"
                                     />
                                     <h5 className="mt-5">High School Transcript</h5>
@@ -246,7 +245,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="highschoolTranscript"
+                                        id="highschoolTranscript_"
                                         checkboxid="highschoolTranscriptCheckbox"
                                     />
                                     <h5 className="mt-5">University Entrance Examination</h5>
@@ -255,10 +254,63 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="universityEntranceExamination"
+                                        id="universityEntranceExamination_"
                                         checkboxid="universityEntranceExaminationCheckbox"
                                     />
-                                    <Row>
+                                    
+                                </Card.Body>
+                            </Card>
+                            <Card>
+                                <Card.Header>
+                                    <Card.Title as="h5">Others</Card.Title>
+                                </Card.Header>
+                                <Card.Body>
+                                    <h6>CV</h6>
+                                    <hr />
+                                    <FilesUploadComponent
+                                        onFileChange={this.onFileChange}
+                                        submitFile={this.submitFile}
+                                        onDownloadFile={this.onDownloadFile}
+                                        id="CV_"
+                                        checkboxid="CVCheckbox"
+                                    />
+                                    <h6 className="mt-5">Recommendation Letter 1</h6>
+                                    <hr />
+                                    <FilesUploadComponent
+                                        onFileChange={this.onFileChange}
+                                        submitFile={this.submitFile}
+                                        onDownloadFile={this.onDownloadFile}
+                                        id="RL_"
+                                        checkboxid="RLCheckbox"
+                                    />
+                                    <h6 className="mt-5">Recommendation Letter 2</h6>
+                                    <hr />
+                                    <FilesUploadComponent
+                                        onFileChange={this.onFileChange}
+                                        submitFile={this.submitFile}
+                                        onDownloadFile={this.onDownloadFile}
+                                        id="RL2_"
+                                        checkboxid="RL2Checkbox"
+                                    />
+                                    <h6 className="mt-5">ECTS-Credits Conversion</h6>
+                                    <hr />
+                                    <FilesUploadComponent
+                                        onFileChange={this.onFileChange}
+                                        submitFile={this.submitFile}
+                                        onDownloadFile={this.onDownloadFile}
+                                        id="ECTS_conversion_"
+                                        checkboxid="ECTS_conversionCheckbox"
+                                    />
+                                    <h6 className="mt-5">Course description</h6>
+                                    <hr />
+                                    <FilesUploadComponent
+                                        onFileChange={this.onFileChange}
+                                        submitFile={this.submitFile}
+                                        onDownloadFile={this.onDownloadFile}
+                                        id="CourseDescription_"
+                                        checkboxid="CourseDescriptionCheckbox"
+                                    />
+                                    {/* <Row>
                                         <Col>
                                             <Form inline>
                                                 <Form.Group className="mb-2">
@@ -274,10 +326,10 @@ class UploadPage extends React.Component {
                                                 </Form.Group>
                                             </Form>
                                         </Col>
-                                    </Row>
+                                    </Row> */}
                                     <h3 className="mt-5">Checkboxes and Radios</h3>
                                     <Row>
-                                        <Col md={6}>
+                                        {/* <Col md={6}>
                                             <h5 className="mt-5">Radios</h5>
                                             <hr />
                                             <Form.Group>
@@ -316,7 +368,7 @@ class UploadPage extends React.Component {
                                                     id="supportedRadio22"
                                                 />
                                             </Form.Group>
-                                        </Col>
+                                        </Col> */}
                                         <Col md={6}>
                                             <h5 className="mt-5">Range</h5>
                                             <hr />

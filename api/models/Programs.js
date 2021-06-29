@@ -20,7 +20,7 @@ const documents = new mongoose.Schema({
 	GermanCertificate_: uploadedDocsInfo,
 	Essay_: uploadedDocsInfo,
 	ECTS_conversion_: uploadedDocsInfo,
-	courseDescription_: uploadedDocsInfo
+	CourseDescription_: uploadedDocsInfo
 });
 
 const programs = new mongoose.Schema({

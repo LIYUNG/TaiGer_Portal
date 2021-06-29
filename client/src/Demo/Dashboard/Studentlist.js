@@ -21,7 +21,9 @@ class MyVerticallyCenteredModal extends React.Component {
     constructor(props) {
         super(props);
         // this.handleChange2 = props.handleChange2.bind(this)
-        this.setmodalhide = props.setmodalhide.bind(this);
+        this.setmodalhide = this.props.setmodalhide.bind(this);
+        this.onDeleteFilefromstudent = this.props.onDeleteFilefromstudent.bind(this);
+        this.onDownloadFilefromstudent = this.props.onDownloadFilefromstudent.bind(this);
         // this.onSubmit2 = props.onSubmit2.bind(this);
         // this.state = {
         //     data: [],
@@ -58,10 +60,11 @@ class MyVerticallyCenteredModal extends React.Component {
     // }
 
     render() {
-        if (this.props.subPage === 1) {
+        if (this.props.subpage === 1) {
             return (
                 <Modal
-                    {...this.props}
+                    show={this.props.show}
+                    onHide={this.props.onHide}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
@@ -104,10 +107,11 @@ class MyVerticallyCenteredModal extends React.Component {
                     </Modal.Footer>
                 </Modal>
             );
-        } else if (this.props.subPage === 2) {
+        } else if (this.props.subpage === 2) {
             return (
                 <Modal
-                    {...this.props}
+                    show={this.props.show}
+                    onHide={this.props.onHide}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
@@ -152,10 +156,11 @@ class MyVerticallyCenteredModal extends React.Component {
                     </Modal.Footer>
                 </Modal>
             );
-        } else if (this.props.subPage === 3) { // Edit Program
+        } else if (this.props.subpage === 3) { // Edit Program
             return (
                 <Modal
-                    {...this.props}
+                    show={this.props.show}
+                    onHide={this.props.onHide}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
@@ -167,33 +172,38 @@ class MyVerticallyCenteredModal extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <h4>Program:</h4>
-                        {this.props.data[this.props.student_i].applying_program_ ? (
-                            this.props.data[this.props.student_i].applying_program_.map((program, i) => (
-                                < tr key={i} >
-                                    <th>
-                                        <Form.Group>
-                                            <Form.Check
-                                                custom
-                                                type="checkbox"
-                                                name="student_id"
-                                                value={i}
-                                                id={i + 1}
-                                            />
-                                        </Form.Group>
-                                    </th>
-                                    <td >
-                                        <h4 className="mb-1" >{program.University_}, {program.Program_}
-                                        </h4>
-                                    </td>
-                                </tr>
-                            ))) : (
-                            <tr>
-                                <td>
-                                    <h4 className="mb-1" > No Program</h4>
-                                </td>
-                            </tr>
-                        )
-                        }
+                        <table>
+                            <tbody>
+                                {this.props.data[this.props.student_i].applying_program_ ? (
+                                    this.props.data[this.props.student_i].applying_program_.map((program, i) => (
+                                        < tr key={i} >
+                                            {/* <th> */}
+                                            <Form.Group>
+                                                <Form.Check
+                                                    custom
+                                                    type="checkbox"
+                                                    name="student_id"
+
+                                                    value={i}
+                                                    id={i + 1}
+                                                />
+                                            </Form.Group>
+                                            {/* </th> */}
+                                            <td >
+                                                <h4 className="mb-1" >{program.University_}, {program.Program_}
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                    ))) : (
+                                    <tr>
+                                        <td>
+                                            <h4 className="mb-1" > No Program</h4>
+                                        </td>
+                                    </tr>
+                                )
+                                }
+                            </tbody>
+                        </table>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.setmodalhide}>Assign</Button>
@@ -201,17 +211,18 @@ class MyVerticallyCenteredModal extends React.Component {
                     </Modal.Footer>
                 </Modal>
             );
-        } else if (this.props.subPage === 4) {
+        } else if (this.props.subpage === 4) {
             return (
                 <Modal
-                    {...this.props}
+                    show={this.props.show}
+                    onHide={this.props.onHide}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
                     <Modal.Header>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            {/* Uploaded files for {this.props.data[this.props.student_i].firstname_} - {this.props.data[this.props.student_i].lastname_} */}
+                            Uploaded files for {this.props.data[this.props.student_i].firstname_} - {this.props.data[this.props.student_i].lastname_}
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -222,22 +233,72 @@ class MyVerticallyCenteredModal extends React.Component {
                                     this.props.documentslist.map((doc, i) => (
                                         this.props.data[this.props.student_i].uploadedDocs_[doc.prop] ?
                                             (
-                                                <tr key={i + 1}>
-                                                    <th>
-                                                        <Form.Group>
-                                                            <Form.Check
-                                                                custom
-                                                                type="checkbox"
-                                                                name={doc.name}
-                                                                // value='value'
-                                                                id={i + 1}
-                                                            />
-                                                        </Form.Group>
-                                                    </th>
-                                                    <td >
-                                                        <p className="m-0"><AiOutlineCheck /> <AiOutlineLoading3Quarters /> {doc.name} : {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_}</p>
-                                                    </td>
-                                                </tr>
+                                                this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_ === "uploaded" ?
+                                                    (
+                                                        <tr key={i + 1}>
+                                                            <th>
+                                                                <Form.Group>
+                                                                    <Form.Check
+                                                                        custom
+                                                                        type="checkbox"
+                                                                        name={doc.name}
+                                                                        defaultChecked={true}
+                                                                        // value='value'
+                                                                        id={i + 1}
+                                                                    />
+                                                                </Form.Group>
+                                                            </th>
+                                                            <td >
+                                                                <p className="m-0"> {doc.name} : {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_}</p>
+                                                            </td>
+                                                            <td>
+                                                                <Col md={2}>
+                                                                    <Form onSubmit={(e) => this.onDownloadFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                                                            <div className="form-group">
+                                                                                <button type="submit">Download</button>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                    </Form>
+                                                                </Col>
+                                                            </td>
+                                                            <td>
+                                                                <Col md={2}>
+                                                                    <Form onSubmit={(e) => this.onDeleteFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                                                            <div className="form-group">
+                                                                                <button type="submit">Delete</button>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                    </Form>
+                                                                </Col>
+                                                            </td>
+                                                            <td>
+                                                                <p className="m-0"> {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].LastUploadDate_}</p>
+                                                            </td>
+                                                        </tr>
+                                                    ) : (
+                                                        < tr key={i + 1}>
+                                                            <th>
+                                                                <div>
+                                                                    <Form.Group>
+                                                                        <Form.Check
+                                                                            custom
+                                                                            type="checkbox"
+                                                                            name={doc.name}
+                                                                            defaultChecked={false}
+                                                                            // value='value'
+                                                                            id={i + 1}
+                                                                        />
+                                                                    </Form.Group>
+                                                                </div>
+                                                            </th>
+                                                            <td >
+                                                                <p className="m-0"><b> {doc.name} </b></p>
+                                                            </td>
+                                                        </tr>
+                                                    )
+
                                             ) :
                                             (
                                                 < tr key={i + 1}>
@@ -248,6 +309,7 @@ class MyVerticallyCenteredModal extends React.Component {
                                                                     custom
                                                                     type="checkbox"
                                                                     name={doc.name}
+                                                                    defaultChecked={false}
                                                                     // value='value'
                                                                     id={i + 1}
                                                                 />
@@ -255,7 +317,7 @@ class MyVerticallyCenteredModal extends React.Component {
                                                         </div>
                                                     </th>
                                                     <td >
-                                                        <p className="m-0"><b><AiOutlineClose /> {doc.name} </b></p>
+                                                        <p className="m-0"><b> {doc.name} </b></p>
                                                     </td>
                                                 </tr>
                                             )
@@ -268,8 +330,7 @@ class MyVerticallyCenteredModal extends React.Component {
                         }
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.setmodalhide}>Assign</Button>
-                        <Button onClick={this.setmodalhide}>Cancel</Button>
+                        <Button onClick={this.setmodalhide}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             );
@@ -277,7 +338,8 @@ class MyVerticallyCenteredModal extends React.Component {
         else {
             return (
                 <Modal
-                    {...this.props}
+                    show={this.props.show}
+                    onHide={this.props.onHide}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
@@ -334,7 +396,13 @@ const row = (
                                 documentslist.map((doc, i) => (
                                     student.uploadedDocs_[doc.prop] ?
                                         (
-                                            <p className="m-0" key={i} ><AiOutlineCheck /> <AiOutlineLoading3Quarters /> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
+                                            student.uploadedDocs_[doc.prop].uploadStatus_ === "uploaded" ?
+                                                (
+                                                    <p className="m-0" key={i} ><AiOutlineCheck /> <AiOutlineLoading3Quarters /> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
+
+                                                ) : (
+                                                    <p className="m-0" key={i} ><b><AiOutlineClose /> {doc.name} </b></p>
+                                                )
                                         ) :
                                         (
                                             <p className="m-0" key={i} ><b><AiOutlineClose /> {doc.name} </b></p>
@@ -429,13 +497,16 @@ class Studentlist extends React.Component {
                 </Table >
                 <MyVerticallyCenteredModal
                     show={this.props.ModalShow}
+                    onHide={this.props.setmodalhide}
                     uni_name='RWTH'
                     program_name='Automotive'
                     setmodalhide={this.props.setmodalhide}
-                    subPage={this.props.subPage}
+                    subpage={this.props.subpage}
                     student_i={this.props.student_i} // student order
                     data={this.props.data}
                     documentslist={this.props.documentslist}
+                    onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+                    onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
             </>
         )

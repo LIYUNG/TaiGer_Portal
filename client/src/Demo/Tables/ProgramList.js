@@ -60,7 +60,7 @@ class MyVerticallyCenteredModal extends React.Component {
     render() {
         return (
             <Modal
-                {...this.props}
+                show={this.props.show}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
@@ -68,7 +68,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Modal.Header>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Assign {this.props.uni_name} - {this.props.program_name} to
-          </Modal.Title>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h4>Student:</h4>
@@ -141,7 +141,7 @@ const row = (
 
             </th>
             {header.map((y, k) => (
-                <td>
+                <td key={k}>
                     {currentlyEditing ? (
                         <Form>
                             <Form.Group>
@@ -166,7 +166,7 @@ class Programlist extends React.Component {
                         <tr>
                             <th> </th>
                             {this.props.header.map((x, i) => (
-                                <th>{x.name}</th>
+                                <th  key={i}>{x.name}</th>
                             ))}
                         </tr>
                     </thead>

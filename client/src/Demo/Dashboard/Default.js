@@ -14,13 +14,12 @@ const edit_agent_API = 'http://localhost:2000/editagent';
 const edit_studentsprogram_API = 'http://localhost:2000/editstudentprogram';
 
 class Dashboard extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
             student_i: -1,
             error: null,
-            subPage: -1,
+            subpage: -1,
             modalShow: false,
             isLoaded: false,
             editIdx: -1,
@@ -92,6 +91,118 @@ class Dashboard extends React.Component {
                     }
                 )
         }
+    }
+
+    onDownloadFilefromstudent(e, category, id) {
+        e.preventDefault()
+        const auth = localStorage.getItem('token');
+        var actualFileName
+        var download_url = 'http://localhost:2000/download/' + category + '/' + id;  // id === student id
+        fetch(download_url,
+            {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+            }
+        )
+            .then((res) => {
+                actualFileName = res.headers.get("Content-Disposition").split('"')[1]
+                return res.blob()
+            }
+            )
+            .then((blob) => {
+                console.log(actualFileName)
+                if (blob.size === 0) return
+                const url = window.URL.createObjectURL(
+                    new Blob([blob]),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute(
+                    'download',
+                    actualFileName,
+                );
+                // Append to html link element page
+                document.body.appendChild(link);
+                // Start download
+                link.click();
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+            },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    // console.log(error);
+                    // console.log();
+                    alert("The file is not available.")
+                    // this.setState({
+                    //     isLoaded: true,
+                    //     error
+                    // });
+                }
+            )
+    }
+
+    onDeleteFilefromstudent(e, category, id) {
+        e.preventDefault()
+        const auth = localStorage.getItem('token');
+        var download_url = 'http://localhost:2000/deletefile/' + category + '/' + id;  // id === student id
+        fetch(download_url,
+            {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+            }
+        )
+            .then(res => {
+                // this.setState({ // problem!
+                //     isLoaded: false,
+                // })
+                if (res.status === 200) {
+                    alert('Delete file success')
+                    this.setState({
+                        isLoaded: false
+                    })
+                }
+                else {
+                    alert('Delete file failed')
+                    this.setState({
+                        isLoaded: false
+                    })
+                }
+            },
+                // (error) => {
+                //     // console.log(error);
+                //     // console.log();
+                //     alert("The file is not available.")
+                //     // this.setState({
+                //     //     isLoaded: true,
+                //     //     error
+                //     // });
+                // }
+            )
+            .then(
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+
+                // (error) => {
+                //     // console.log(error);
+                //     // console.log();
+                //     alert("Delete file error2.")
+                //     // this.setState({
+                //     //     isLoaded: true,
+                //     //     error
+                //     // });
+                // }
+            )
     }
 
     editAgent = edited_program => {
@@ -176,7 +287,7 @@ class Dashboard extends React.Component {
         console.log("startEditingAgent")
         this.setState({
             student_i: i,
-            subPage: 1,
+            subpage: 1,
             modalShow: true
         });
     };
@@ -185,7 +296,7 @@ class Dashboard extends React.Component {
         console.log("startEditingEditor")
         this.setState({
             student_i: i,
-            subPage: 2,
+            subpage: 2,
             modalShow: true
         });
     };
@@ -195,7 +306,7 @@ class Dashboard extends React.Component {
         this.setState({
             student_i: i,
             // StudentId: student_id,
-            subPage: 3,
+            subpage: 3,
             modalShow: true
         });
     };
@@ -206,7 +317,7 @@ class Dashboard extends React.Component {
         this.setState({
             student_i: i,
             // StudentId: student_id,
-            subPage: 4,
+            subpage: 4,
             modalShow: true
         });
     };
@@ -259,7 +370,7 @@ class Dashboard extends React.Component {
     setmodalhide = () => {
         this.setState({
             student_i: -1,
-            subPage: -1,
+            subpage: -1,
             modalShow: false
         });
     }
@@ -435,12 +546,14 @@ class Dashboard extends React.Component {
                                             },
                                             {
                                                 name: "Course Description",
-                                                prop: "courseDescription_"
+                                                prop: "CourseDescription_"
                                             }
                                         ]}
                                         startUploadfile={this.startUploadfile}
-                                        subPage={this.state.subPage}
+                                        subpage={this.state.subpage}
                                         student_i={this.state.student_i}
+                                        onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                                        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
                                     />
                                 </Card.Body>
                             </Card>

@@ -122,7 +122,8 @@ try {
 	app.post("/upload/:category", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);
 	// app.post("/upload", auth, upload.single('file'), handlers.UploadPost);
 	app.get("/upload/:category", auth, handlers.filedownload);
-	app.delete("/deletefile/:category", auth, handlers.deletefile);
+	app.get("/download/:category/:student_id", auth, handlers.filedownloadfromstudent);
+	app.delete("/deletefile/:category/:student_id", auth, handlers.deletefile);
 	app.get("/settings", auth, handlers.settings);
 	// error handler
 	app.use(function (err, req, res, next) {

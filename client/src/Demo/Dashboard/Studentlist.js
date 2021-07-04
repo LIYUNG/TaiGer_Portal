@@ -183,7 +183,6 @@ class MyVerticallyCenteredModal extends React.Component {
                                                     custom
                                                     type="checkbox"
                                                     name="student_id"
-
                                                     value={i}
                                                     id={i + 1}
                                                 />
@@ -193,6 +192,18 @@ class MyVerticallyCenteredModal extends React.Component {
                                                 <h4 className="mb-1" >{program.University_}, {program.Program_}
                                                 </h4>
                                             </td>
+                                            <td>
+                                                <Col md={2}>
+                                                    <Form>
+                                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                                            <div className="form-group">
+                                                                <button type="submit">Delete</button>
+                                                            </div>
+                                                        </Form.Group>
+                                                    </Form>
+                                                </Col>
+                                            </td>
+
                                         </tr>
                                     ))) : (
                                     <tr>

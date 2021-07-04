@@ -42,6 +42,7 @@ class Dashboard extends React.Component {
             .then(res => res.json())
             .then(
                 (result) => {
+                    // console.log(result.data)
                     this.setState({
                         isLoaded: true,
                         data: result.data

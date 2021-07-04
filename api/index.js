@@ -12,7 +12,6 @@ const handlers = require("./controllers/handlers");
 const { auth } = require("./middlewares/auth");
 const { movefile } = require("./middlewares/movefile");
 const { checkuserfolder } = require("./middlewares/checkuserfolder");
-const { deletefile } = require("./middlewares/deletefile");
 
 const studentController = require("./controllers/students");
 const multer = require("multer");

@@ -39,11 +39,10 @@ const jwtKey = "my_secret_key";
 
 exports.signIn = async (req, res) => {
 
-	console.log(req.body);
+	// console.log(req.body);
 	const { emailaddress, password } = req.body;
-	// console.log("here is ");
 	// Found existing users
-	const students_exists = await Student.findOne({ emailaddress_: req.body.emailaddress });
+	const students_exists = await Student.findOne({ emailaddress_: req.body.emailaddress }).select("+password_");
 	// console.log(students_exists);
 	try {
 
@@ -56,7 +55,6 @@ exports.signIn = async (req, res) => {
 					console.log(err);
 					throw err;
 				}
-				// console.log(data);
 				//if both match than you can do anything
 				if (data) {
 					console.log('Passwords match !');
@@ -137,7 +135,6 @@ exports.programlist = async (req, res) => {
 		const students_exists = await Student.findOne({ emailaddress_: emailaddress });
 		// Access all programs
 		if (students_exists.role_ === 'Agent') {
-
 			const program_all = await Program.find();
 			res.send({
 				data: program_all
@@ -209,8 +206,8 @@ exports.addprogram = async (req, res) => {
 			ECTS_coversion_: {
 				needToBeUpload_: req.body.ECTS_coversion_
 			},
-			courseDescription_: {
-				needToBeUpload_: req.body.courseDescription_
+			CourseDescription_: {
+				needToBeUpload_: req.body.CourseDescription_
 			}
 		};
 
@@ -232,9 +229,7 @@ exports.editprogram = async (req, res) => {
 		const program_id = req.params.id
 		let program = await Program.findById(program_id)
 		console.log('program: ' + program)
-		console.log('req.body: ' + req.body)
 		const date_now = Date();
-
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
 		// update the program
@@ -244,13 +239,13 @@ exports.editprogram = async (req, res) => {
 		program.IELTS_ = req.body.IELTS_
 		program.Degree_ = req.body.Degree_
 		program.Application_end_date_ = req.body.Application_end_date_
-		// TestDaF_ : req.body.testdaf,
-		// GMAT_ : req.body.gmat,
-		// GRE_ : req.body.gre,
-		// applicationStart_ : req.body.applicationStart_,
-		// applicationDeadline_ : req.body.applicationDeadline_,
-		// weblink_ : req.body.weblink_,
-		// FPSOlink_ : req.body.FPSOlink_,
+		// program.TestDaF_ : req.body.testdaf,
+		// program.GMAT_ : req.body.gmat,
+		// program.GRE_ : req.body.gre,
+		// program.applicationStart_ : req.body.applicationStart_,
+		// program.applicationDeadline_ : req.body.applicationDeadline_,
+		// program.weblink_ : req.body.weblink_,
+		// program.FPSOlink_ : req.body.FPSOlink_,
 		program.LastUpdate_ = date_now
 		await program.save();
 		return res.send({
@@ -315,44 +310,37 @@ exports.studentlist = async (req, res) => {
 	try {
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
-		// console.log(token);
 		// //Extract user email info by token
 		var emailaddress = jwt_decode(token);
 		// //Get user email
 		emailaddress = emailaddress['emailaddress'];
 		console.log(emailaddress);
 		const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
-		// console.log(students_exists);
-		//// Renew token again, entend expire time
-		// token = jwt.sign({ emailaddress }, jwtKey, {
-		// 	algorithm: "HS256",
-		// 	expiresIn: jwtExpirySeconds,
-		// })
-		// Access all programs
-		// console.log("programlist");
+		// console.log(students_exists.password_);
+
 		if (students_exists.role_ === 'Agent') {
+			const Agent = await Student.findOne({ emailaddress_: emailaddress });//get email by token
 			const student_all = await Student.find({ role_: "Student", agent_: emailaddress });
-			// console.log(student_all);
+			console.log("Agent  " + Agent.firstname_ + " " + Agent.lastname_ + " log in");
 			res.send({
 				data: student_all
 			})
 		}
 		else if (students_exists.role_ === 'Admin') {
 			const student_all = await Student.find({ role_: "Student" });
-			// console.log(student_all);
+			console.log("Admin log in");
 			res.send({
 				data: student_all
 			})
 		} else {
-			// const student_all = await Student.find({ role_: "Student", agent_: "david@gmail.com" });
-			// console.log(student_all);
+			console.log("Student " + students_exists.firstname_ + " " + students_exists.lastname_ + " log in");
 			res.send({
 				data: [students_exists]
 			})
 		}
 
 	} catch (err) {
-		if (e instanceof jwt.JsonWebTokenError) {
+		if (err instanceof jwt.JsonWebTokenError) {
 			// if the error thrown is because the JWT is unauthorized, return a 401 error
 			console.log(e)
 			console.log('error by programlist')
@@ -378,7 +366,6 @@ exports.UploadPost = async (req, res) => {
 		console.log("cors: load success!")
 		// console.log("whie file? " + req.body)
 		console.log(req.file)
-		// res.status(201).end()
 		const bearer = req.headers.authorization.split(' ');
 		const token = bearer[1]
 		// Extract user email info by token
@@ -640,7 +627,6 @@ exports.filedownloadfromstudent = async (req, res, next) => {
 			downloadPath = students_exists.uploadedDocs_.Essay_.filePath_
 		}
 		var filename = downloadPath.split('\\');
-		console.log("filename: " + filename)
 		filename = filename.pop()  // Get the last element (file name)
 		console.log("filename: " + filename)
 		if (fs.existsSync(downloadPath)) {

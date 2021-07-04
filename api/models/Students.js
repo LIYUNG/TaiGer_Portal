@@ -46,7 +46,7 @@ const schema = new mongoose.Schema({
 	firstname_: String,
 	lastname_: String,
 	emailaddress_: String,
-	password_: String,
+	password_: { type: String, select: false },
 	role_: String,
 	agent_: [String],
 	editor_: [String],

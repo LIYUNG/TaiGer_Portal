@@ -11,7 +11,8 @@ import Studentlist from "./Studentlist";
 const Student_API = 'http://localhost:2000/studentlist';
 // const Student_API = 'https://54.214.118.145/studentlist';
 const edit_agent_API = 'http://localhost:2000/editagent';
-const edit_studentsprogram_API = 'http://localhost:2000/editstudentprogram';
+const edit_editor_API = 'http://localhost:2000/editeditor';
+// const edit_studentsprogram_API = 'http://localhost:2000/editstudentprogram';
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -21,6 +22,8 @@ class Dashboard extends React.Component {
             error: null,
             subpage: -1,
             modalShow: false,
+            agent_list: [],
+            editor_list: [],
             isLoaded: false,
             editIdx: -1,
             StudentId: "",
@@ -163,9 +166,6 @@ class Dashboard extends React.Component {
             }
         )
             .then(res => {
-                // this.setState({ // problem!
-                //     isLoaded: false,
-                // })
                 if (res.status === 200) {
                     alert('Delete file success')
                     this.setState({
@@ -206,31 +206,27 @@ class Dashboard extends React.Component {
             )
     }
 
-    editAgent = edited_program => {
-        console.log("click edit")
-        console.log(edited_program)
+    editAgent() {
+        console.log("click editAgent")
         const auth = localStorage.getItem('token');
-        fetch(edit_agent_API + "/" + edited_program._id,
+        fetch(edit_agent_API,
             {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + JSON.parse(auth)
                 },
-                // body: {
-                //     id: id
-                // }
-                body: JSON.stringify(edited_program)
             }
         )
             .then(res => res.json())
             .then(
-                // (result) => {
-                //     this.setState({
-                //         isLoaded: false,
-                //     });
-                // },
+                (result) => {
+                    console.log(result.data)
+                    return this.setState({
+                        agent_list: result.data
+                    });
+                },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
@@ -243,28 +239,29 @@ class Dashboard extends React.Component {
             )
     }
 
-    editStudentProgram = new_program => {
-        console.log("click delete")
-        console.log(new_program)
+    editEditor() {
+        console.log("click edit")
         const auth = localStorage.getItem('token');
-        fetch(edit_studentsprogram_API,
+        fetch(edit_editor_API,
             {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + JSON.parse(auth)
                 },
-                body: JSON.stringify(new_program)
+                // body: JSON.stringify(edit_editor)
             }
         )
-            .then(res => res.json())
+            .then(res => res.json()
+            )
             .then(
-                // (result) => {
-                //     this.setState({
-                //         isLoaded: false,
-                //     });
-                // },
+                (result) => {
+                    console.log(result.data)
+                    return this.setState({
+                        editor_list: result.data
+                    });
+                },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
@@ -276,6 +273,40 @@ class Dashboard extends React.Component {
                 }
             )
     }
+
+    // editStudentProgram = new_program => {
+    //     console.log("click delete")
+    //     console.log(new_program)
+    //     const auth = localStorage.getItem('token');
+    //     fetch(edit_studentsprogram_API,
+    //         {
+    //             method: 'POST',
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': 'Bearer ' + JSON.parse(auth)
+    //             },
+    //             body: JSON.stringify(new_program)
+    //         }
+    //     )
+    //         .then(res => res.json())
+    //         .then(
+    //             // (result) => {
+    //             //     this.setState({
+    //             //         isLoaded: false,
+    //             //     });
+    //             // },
+    //             // Note: it's important to handle errors here
+    //             // instead of a catch() block so that we don't swallow
+    //             // exceptions from actual bugs in components.
+    //             (error) => {
+    //                 // this.setState({
+    //                 //     isLoaded: false,
+    //                 //     error
+    //                 // });
+    //             }
+    //         )
+    // }
 
 
     handleRemove = i => {
@@ -286,6 +317,7 @@ class Dashboard extends React.Component {
 
     startEditingAgent = (i) => {
         console.log("startEditingAgent")
+        this.editAgent()
         this.setState({
             student_i: i,
             subpage: 1,
@@ -295,6 +327,7 @@ class Dashboard extends React.Component {
 
     startEditingEditor = (i) => {
         console.log("startEditingEditor")
+        this.editEditor()
         this.setState({
             student_i: i,
             subpage: 2,
@@ -323,18 +356,18 @@ class Dashboard extends React.Component {
         });
     };
 
-    stopEditing = (edited_program) => {
-        this.editAgent(edited_program)
-        this.setState({ editIdx: -1 });
-    };
+    // stopEditing = (edited_program) => {
+    //     this.editAgent(edited_program)
+    //     this.setState({ editIdx: -1 });
+    // };
 
-    cancelEditing = () => {
-        console.log("cancel edit")
-        this.setState({
-            editIdx: -1,
-            // isLoaded: false
-        });
-    }
+    // cancelEditing = () => {
+    //     console.log("cancel edit")
+    //     this.setState({
+    //         editIdx: -1,
+    //         // isLoaded: false
+    //     });
+    // }
     handleChange = (e, name, i) => {
         const { value } = e.target;
         this.setState(state => ({
@@ -343,16 +376,6 @@ class Dashboard extends React.Component {
             )
         }));
     };
-
-    NewStudentProgram = (new_program) => {
-        console.log("click NewProgram")
-        const university = 'RWTH Aachen'
-        const program = 'Economics'
-        this.editStudentProgram({ university, program })
-        this.setState({
-            isLoaded: false,
-        });
-    }
 
     RemoveProgramHandler2 = (e) => {
         console.log("click save")
@@ -465,6 +488,8 @@ class Dashboard extends React.Component {
                                         </tbody>
                                     </Table> */}
                                     <Studentlist
+                                        agent_list={this.state.agent_list}
+                                        editor_list={this.state.editor_list}
                                         ModalShow={this.state.modalShow}
                                         setModalShow={this.setModalShow}
                                         setmodalhide={this.setmodalhide}
@@ -472,11 +497,11 @@ class Dashboard extends React.Component {
                                         startEditingAgent={this.startEditingAgent}
                                         startEditingEditor={this.startEditingEditor}
                                         startEditingProgram={this.startEditingProgram}
-                                        editIdx={this.state.editIdx}
-                                        stopEditing={this.stopEditing}
+                                        // editIdx={this.state.editIdx}
+                                        // stopEditing={this.stopEditing}
                                         handleChange={this.handleChange}
                                         data={this.state.data}
-                                        cancelEditing={this.cancelEditing}
+                                        // cancelEditing={this.cancelEditing}
                                         RemoveProgramHandler3={this.RemoveProgramHandler3}
                                         header={[
                                             {

@@ -316,7 +316,6 @@ exports.studentlist = async (req, res) => {
 		emailaddress = emailaddress['emailaddress'];
 		console.log(emailaddress);
 		const students_exists = await Student.findOne({ emailaddress_: emailaddress });//get email by token
-		// console.log(students_exists.password_);
 
 		if (students_exists.role_ === 'Agent') {
 			const Agent = await Student.findOne({ emailaddress_: emailaddress });//get email by token
@@ -329,6 +328,13 @@ exports.studentlist = async (req, res) => {
 		else if (students_exists.role_ === 'Admin') {
 			const student_all = await Student.find({ role_: "Student" });
 			console.log("Admin log in");
+			res.send({
+				data: student_all
+			})
+		} else if (students_exists.role_ === 'Editor') {
+			const Editor = await Student.findOne({ emailaddress_: emailaddress });//get email by token
+			const student_all = await Student.find({ role_: "Student", editor_: emailaddress });
+			console.log("Editor  " + Editor.firstname_ + " " + Editor.lastname_ + " log in");
 			res.send({
 				data: student_all
 			})
@@ -352,8 +358,41 @@ exports.studentlist = async (req, res) => {
 }
 
 exports.editagent = async (req, res, next) => {
-	console.log("editagent success!")
-	res.status(404).end()
+	try {
+		const Agent_all = await Student.find({ role_: "Agent" });
+		console.log("get agent list success!")
+		res.send({
+			data: Agent_all
+		})
+	} catch (err) {
+		if (err instanceof jwt.JsonWebTokenError) {
+			// if the error thrown is because the JWT is unauthorized, return a 401 error
+			console.log(e)
+			console.log('error by editagent')
+			return res.status(500).end(); // 500 Internal Server Error
+		}
+		console.log(err)
+		return res.status(500).end(); // 500 Internal Server Error
+	}
+}
+
+exports.editeditor = async (req, res, next) => {
+	try {
+		const Editor_all = await Student.find({ role_: "Editor" });
+		console.log("get editor list success!")
+		res.send({
+			data: Editor_all
+		})
+	} catch (err) {
+		if (err instanceof jwt.JsonWebTokenError) {
+			// if the error thrown is because the JWT is unauthorized, return a 401 error
+			console.log(e)
+			console.log('error by editeditor')
+			return res.status(500).end(); // 500 Internal Server Error
+		}
+		console.log(err)
+		return res.status(500).end(); // 500 Internal Server Error
+	}
 }
 
 exports.editstudentprogram = async (req, res, next) => {

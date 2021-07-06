@@ -5,8 +5,8 @@ import {
     // OverlayTrigger,
     // Tooltip,
     ButtonToolbar,
-    Dropdown,
-    DropdownButton,
+    // Dropdown,
+    // DropdownButton,
     // SplitButton
 } from 'react-bootstrap';
 import Aux from "../../hoc/_Aux";

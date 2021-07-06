@@ -115,7 +115,8 @@ try {
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
 	app.post("/assignprogramtostudent", auth, handlers.assignprogramtostudent);
 	app.get("/studentlist", auth, handlers.studentlist);
-	app.post("/editagent", auth, handlers.editagent);
+	app.get("/editagent", auth, handlers.editagent);
+	app.get("/editeditor", auth, handlers.editeditor);
 	app.post("/editstudentprogram", auth, handlers.editstudentprogram);
 	app.delete("/deleteprogram", auth, handlers.deleteprogram);
 	app.post("/upload/:category", auth, upload.single('file'), checkuserfolder, movefile, handlers.UploadPost);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaBeer } from 'react-icons/fa';
+// import { FaBeer } from 'react-icons/fa';
 import { AiFillCheckCircle, AiOutlineLoading3Quarters, AiOutlineCheck, AiOutlineClose, AiFillStop } from "react-icons/ai";
 import { Row, Col, Table, Form, Modal } from 'react-bootstrap';
 import {
@@ -75,7 +75,7 @@ class MyVerticallyCenteredModal extends React.Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <h4>Agent:</h4>
+                        {/* <h4>Agent:</h4>
                         {this.props.data[this.props.student_i].agent_ ? (
                             this.props.data[this.props.student_i].agent_.map((agent, i) => (
                                 <div key={i + 1}>
@@ -92,6 +92,32 @@ class MyVerticallyCenteredModal extends React.Component {
                                     </td>
                                     <td>
                                         <h4 className="mb-1" >{agent}</h4>
+                                    </td>
+                                </div>
+                            ))
+                        ) : (
+                            <div>
+                                <h4 className="mb-1" > No Agent</h4>
+                            </div>
+                        )} */}
+                        <h4>Agent:</h4>
+                        {this.props.agent_list ? (
+                            this.props.agent_list.map((agent, i) => (
+                                <div key={i + 1}>
+                                    <td>
+                                        <Form.Group>
+                                            <Form.Check
+                                                custom
+                                                type="checkbox"
+                                                name="student_id"
+                                                defaultChecked={true}
+                                                value={i + 1}
+                                                id={i + 1}
+                                            />
+                                        </Form.Group>
+                                    </td>
+                                    <td>
+                                        <h4 className="mb-1" >{agent.lastname_} {agent.firstname_}</h4>
                                     </td>
                                 </div>
                             ))
@@ -122,7 +148,7 @@ class MyVerticallyCenteredModal extends React.Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <h4>Editor:</h4>
+                        {/* <h4>Editor:</h4>
                         {this.props.data[this.props.student_i].editor_ ? (
                             this.props.data[this.props.student_i].editor_.map((editor, i) => (
                                 < tr key={i + 1} >
@@ -139,6 +165,34 @@ class MyVerticallyCenteredModal extends React.Component {
                                     </th>
                                     <td >
                                         <h4 className="mb-1" >{editor}
+                                        </h4>
+                                    </td>
+                                </tr>
+                            ))) : (
+                            <tr>
+                                <td>
+                                    <h4 className="mb-1" > No Editor</h4>
+                                </td>
+                            </tr>)
+                        } */}
+                        <h4>Editor:</h4>
+                        {this.props.editor_list ? (
+                            this.props.editor_list.map((editor, i) => (
+                                < tr key={i + 1} >
+                                    <th>
+                                        <Form.Group>
+                                            <Form.Check
+                                                custom
+                                                type="checkbox"
+                                                name="student_id"
+                                                defaultChecked={true}
+                                                value={i + 1}
+                                                id={i + 1}
+                                            />
+                                        </Form.Group>
+                                    </th>
+                                    <td >
+                                        <h4 className="mb-1" >{editor.firstname_} {editor.lastname_}
                                         </h4>
                                     </td>
                                 </tr>
@@ -382,15 +436,15 @@ const row = (
     startEditingAgent,
     startEditingEditor,
     startEditingProgram,
-    editIdx,
+    // editIdx,
     handleChange,
-    stopEditing,
+    // stopEditing,
     RemoveProgramHandler3,
-    cancelEditing,
+    // cancelEditing,
     documentslist,
     startUploadfile
 ) => {
-    const currentlyEditing = editIdx === i;
+    // const currentlyEditing = editIdx === i;
     return (
         < tr key={student._id} >
             <>
@@ -451,12 +505,7 @@ const row = (
                         // <h6>{program.University_} {program.Program_} {program.applicationDocu_.CV_.needToBeUpload_}</h6>
                     )}
                 </td>
-                <th>{currentlyEditing ? (
-                    <div>
-                        <Button className='btn-square' variant='danger' onClick={() => stopEditing(student)}><UcFirst text='Save' /></Button>
-                        <Button className='btn-square' variant='info' onClick={() => cancelEditing()}><UcFirst text='Cancel' /></Button>
-                    </div>
-                ) : (
+                <th>
                     <DropdownButton
                         size='sm'
                         title='Option'
@@ -469,7 +518,6 @@ const row = (
                         <Dropdown.Item eventKey="3" onSelect={() => startEditingProgram(i)}>Edit Program</Dropdown.Item>
                         <Dropdown.Item eventKey="4" onSelect={() => startUploadfile(i)}>Upload files</Dropdown.Item>
                     </DropdownButton>
-                )}
                 </th>
                 {/* <Row>
                     <h4>{student._id}</h4>
@@ -494,11 +542,11 @@ class Studentlist extends React.Component {
                                 this.props.startEditingAgent,
                                 this.props.startEditingEditor,
                                 this.props.startEditingProgram,
-                                this.props.editIdx,
+                                // this.props.editIdx,
                                 this.props.handleChange,
-                                this.props.stopEditing,
+                                // this.props.stopEditing,
                                 this.props.RemoveProgramHandler3,
-                                this.props.cancelEditing,
+                                // this.props.cancelEditing,
                                 this.props.documentslist,
                                 this.props.startUploadfile
                             )
@@ -507,6 +555,8 @@ class Studentlist extends React.Component {
                     </tbody>
                 </Table >
                 <MyVerticallyCenteredModal
+                    agent_list={this.props.agent_list}
+                    editor_list={this.props.editor_list}
                     show={this.props.ModalShow}
                     onHide={this.props.setmodalhide}
                     uni_name='RWTH'

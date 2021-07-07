@@ -1,6 +1,6 @@
 import React from 'react';
 // import { FaBeer } from 'react-icons/fa';
-import { AiFillCheckCircle, AiOutlineLoading3Quarters, AiOutlineCheck, AiOutlineClose, AiFillStop } from "react-icons/ai";
+import { AiFillCheckCircle, AiOutlineLoading3Quarters, AiOutlineCheck, AiOutlineClose, AiOutlineStop } from "react-icons/ai";
 import { Row, Col, Table, Form, Modal } from 'react-bootstrap';
 import {
     Button,
@@ -15,7 +15,7 @@ import avatar1 from '../../assets/images/user/avatar-1.jpg';
 // import avatar2 from '../../assets/images/user/avatar-2.jpg';
 // import avatar3 from '../../assets/images/user/avatar-3.jpg';
 // import Aux from "../../hoc/_Aux";
-import UcFirst from "../../App/components/UcFirst";
+// import UcFirst from "../../App/components/UcFirst";
 
 class MyVerticallyCenteredModal extends React.Component {
     constructor(props) {
@@ -24,7 +24,8 @@ class MyVerticallyCenteredModal extends React.Component {
         this.setmodalhide = this.props.setmodalhide.bind(this);
         this.onDeleteFilefromstudent = this.props.onDeleteFilefromstudent.bind(this);
         this.onDownloadFilefromstudent = this.props.onDownloadFilefromstudent.bind(this);
-        // this.onSubmit2 = props.onSubmit2.bind(this);
+        this.onRejectFilefromstudent = this.props.onRejectFilefromstudent.bind(this);
+        this.onAcceptFilefromstudent = this.props.onAcceptFilefromstudent.bind(this);
         // this.state = {
         //     data: [],
         // };
@@ -61,6 +62,31 @@ class MyVerticallyCenteredModal extends React.Component {
 
     render() {
         if (this.props.subpage === 1) {
+            let agentlist = this.props.agent_list ? (
+                this.props.agent_list.map((agent, i) => (
+                    <div key={i + 1}>
+                        <td>
+                            <Form.Group>
+                                <Form.Check
+                                    custom
+                                    type="checkbox"
+                                    name="student_id"
+                                    defaultChecked={true}
+                                    value={i + 1}
+                                    id={i + 1}
+                                />
+                            </Form.Group>
+                        </td>
+                        <td>
+                            <h4 className="mb-1" >{agent.lastname_} {agent.firstname_}</h4>
+                        </td>
+                    </div>
+                ))
+            ) : (
+                <div>
+                    <h4 className="mb-1" > No Agent</h4>
+                </div>
+            )
             return (
                 <Modal
                     show={this.props.show}
@@ -75,57 +101,8 @@ class MyVerticallyCenteredModal extends React.Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {/* <h4>Agent:</h4>
-                        {this.props.data[this.props.student_i].agent_ ? (
-                            this.props.data[this.props.student_i].agent_.map((agent, i) => (
-                                <div key={i + 1}>
-                                    <td>
-                                        <Form.Group>
-                                            <Form.Check
-                                                custom
-                                                type="checkbox"
-                                                name="student_id"
-                                                value={i + 1}
-                                                id={i + 1}
-                                            />
-                                        </Form.Group>
-                                    </td>
-                                    <td>
-                                        <h4 className="mb-1" >{agent}</h4>
-                                    </td>
-                                </div>
-                            ))
-                        ) : (
-                            <div>
-                                <h4 className="mb-1" > No Agent</h4>
-                            </div>
-                        )} */}
                         <h4>Agent:</h4>
-                        {this.props.agent_list ? (
-                            this.props.agent_list.map((agent, i) => (
-                                <div key={i + 1}>
-                                    <td>
-                                        <Form.Group>
-                                            <Form.Check
-                                                custom
-                                                type="checkbox"
-                                                name="student_id"
-                                                defaultChecked={true}
-                                                value={i + 1}
-                                                id={i + 1}
-                                            />
-                                        </Form.Group>
-                                    </td>
-                                    <td>
-                                        <h4 className="mb-1" >{agent.lastname_} {agent.firstname_}</h4>
-                                    </td>
-                                </div>
-                            ))
-                        ) : (
-                            <div>
-                                <h4 className="mb-1" > No Agent</h4>
-                            </div>
-                        )}
+                        {agentlist}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.setmodalhide}>Assign</Button>
@@ -148,33 +125,6 @@ class MyVerticallyCenteredModal extends React.Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {/* <h4>Editor:</h4>
-                        {this.props.data[this.props.student_i].editor_ ? (
-                            this.props.data[this.props.student_i].editor_.map((editor, i) => (
-                                < tr key={i + 1} >
-                                    <th>
-                                        <Form.Group>
-                                            <Form.Check
-                                                custom
-                                                type="checkbox"
-                                                name="student_id"
-                                                value={i + 1}
-                                                id={i + 1}
-                                            />
-                                        </Form.Group>
-                                    </th>
-                                    <td >
-                                        <h4 className="mb-1" >{editor}
-                                        </h4>
-                                    </td>
-                                </tr>
-                            ))) : (
-                            <tr>
-                                <td>
-                                    <h4 className="mb-1" > No Editor</h4>
-                                </td>
-                            </tr>)
-                        } */}
                         <h4>Editor:</h4>
                         {this.props.editor_list ? (
                             this.props.editor_list.map((editor, i) => (
@@ -211,6 +161,44 @@ class MyVerticallyCenteredModal extends React.Component {
                 </Modal>
             );
         } else if (this.props.subpage === 3) { // Edit Program
+            let programstatus;
+            if (this.props.data[this.props.student_i].applying_program_) {
+                programstatus = this.props.data[this.props.student_i].applying_program_.map((program, i) => (
+                    < tr key={i} >
+                        <Form.Group>
+                            <Form.Check
+                                custom
+                                type="checkbox"
+                                name="student_id"
+                                value={i}
+                                id={i + 1}
+                            />
+                        </Form.Group>
+                        <td >
+                            <h4 className="mb-1" >{program.University_}, {program.Program_}
+                            </h4>
+                        </td>
+                        <td>
+                            <Col md={2}>
+                                <Form>
+                                    <Form.Group controlId="exampleForm.ControlSelect1">
+                                        <div className="form-group">
+                                            <button type="submit">Delete</button>
+                                        </div>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
+                        </td>
+
+                    </tr>
+                ))
+            } else {
+                programstatus = <tr>
+                    <td>
+                        <h4 className="mb-1" > No Program</h4>
+                    </td>
+                </tr>
+            }
             return (
                 <Modal
                     show={this.props.show}
@@ -228,45 +216,7 @@ class MyVerticallyCenteredModal extends React.Component {
                         <h4>Program:</h4>
                         <table>
                             <tbody>
-                                {this.props.data[this.props.student_i].applying_program_ ? (
-                                    this.props.data[this.props.student_i].applying_program_.map((program, i) => (
-                                        < tr key={i} >
-                                            {/* <th> */}
-                                            <Form.Group>
-                                                <Form.Check
-                                                    custom
-                                                    type="checkbox"
-                                                    name="student_id"
-                                                    value={i}
-                                                    id={i + 1}
-                                                />
-                                            </Form.Group>
-                                            {/* </th> */}
-                                            <td >
-                                                <h4 className="mb-1" >{program.University_}, {program.Program_}
-                                                </h4>
-                                            </td>
-                                            <td>
-                                                <Col md={2}>
-                                                    <Form>
-                                                        <Form.Group controlId="exampleForm.ControlSelect1">
-                                                            <div className="form-group">
-                                                                <button type="submit">Delete</button>
-                                                            </div>
-                                                        </Form.Group>
-                                                    </Form>
-                                                </Col>
-                                            </td>
-
-                                        </tr>
-                                    ))) : (
-                                    <tr>
-                                        <td>
-                                            <h4 className="mb-1" > No Program</h4>
-                                        </td>
-                                    </tr>
-                                )
-                                }
+                                {programstatus}
                             </tbody>
                         </table>
                     </Modal.Body>
@@ -277,6 +227,189 @@ class MyVerticallyCenteredModal extends React.Component {
                 </Modal>
             );
         } else if (this.props.subpage === 4) {
+            let documentlist
+            if (this.props.data[this.props.student_i].uploadedDocs_) {
+                documentlist = this.props.documentslist.map((doc, i) => {
+                    if ((this.props.data[this.props.student_i].uploadedDocs_[doc.prop]) && (this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_ === "uploaded")) {
+                        return <tr key={i + 1}>
+                            <th>
+                                <Form.Group>
+                                    <Form.Check
+                                        custom
+                                        type="checkbox"
+                                        name={doc.name}
+                                        defaultChecked={true}
+                                        id={i + 1}
+                                    />
+                                </Form.Group>
+                            </th>
+                            <td >
+                                <p className="m-0"> {doc.name} : {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_}</p>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onDownloadFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Download</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onRejectFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Reject</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onAcceptFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Accept</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onDeleteFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Delete</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <p className="m-0"> {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].LastUploadDate_}</p>
+                            </td>
+                        </tr>
+                    }
+                    else if ((this.props.data[this.props.student_i].uploadedDocs_[doc.prop]) && (this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_ === "checked")) {
+                        return <tr key={i + 1}>
+                            <th>
+                                <Form.Group>
+                                    <Form.Check
+                                        custom
+                                        type="checkbox"
+                                        name={doc.name}
+                                        defaultChecked={true}
+                                        id={i + 1}
+                                    />
+                                </Form.Group>
+                            </th>
+                            <td >
+                                <p className="m-0"> {doc.name} : {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_}</p>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onDownloadFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Download</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onDeleteFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Delete</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <p className="m-0"> {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].LastUploadDate_}</p>
+                            </td>
+                        </tr>
+                    }
+                    else if ((this.props.data[this.props.student_i].uploadedDocs_[doc.prop]) && (this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_ === "unaccepted")) {
+                        return <tr key={i + 1}>
+                            <th>
+                                <Form.Group>
+                                    <Form.Check
+                                        custom
+                                        type="checkbox"
+                                        name={doc.name}
+                                        defaultChecked={true}
+                                        id={i + 1}
+                                    />
+                                </Form.Group>
+                            </th>
+                            <td >
+                                <p className="m-0"> {doc.name} : {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_}</p>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onDownloadFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Download</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <Col md={2}>
+                                    <Form onSubmit={(e) => this.onDeleteFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <div className="form-group">
+                                                <button type="submit">Delete</button>
+                                            </div>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </td>
+                            <td>
+                                <p className="m-0"> {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].LastUploadDate_}</p>
+                            </td>
+                        </tr>
+                    }
+                    else {
+                        return < tr key={i + 1}>
+                            <th>
+                                <div>
+                                    <Form.Group>
+                                        <Form.Check
+                                            custom
+                                            type="checkbox"
+                                            name={doc.name}
+                                            defaultChecked={false}
+                                            // value='value'
+                                            id={i + 1}
+                                        />
+                                    </Form.Group>
+                                </div>
+                            </th>
+                            <td >
+                                <p className="m-0"><b> {doc.name} </b></p>
+                            </td>
+                        </tr>
+                    }
+                })
+
+
+            } else {
+                documentlist = <p>So far no selected program!</p>
+            }
+
+
             return (
                 <Modal
                     show={this.props.show}
@@ -292,107 +425,8 @@ class MyVerticallyCenteredModal extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <h4>Files:</h4>
-                        {
-                            this.props.data[this.props.student_i].uploadedDocs_ ?
-                                (
-                                    this.props.documentslist.map((doc, i) => (
-                                        this.props.data[this.props.student_i].uploadedDocs_[doc.prop] ?
-                                            (
-                                                this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_ === "uploaded" ?
-                                                    (
-                                                        <tr key={i + 1}>
-                                                            <th>
-                                                                <Form.Group>
-                                                                    <Form.Check
-                                                                        custom
-                                                                        type="checkbox"
-                                                                        name={doc.name}
-                                                                        defaultChecked={true}
-                                                                        // value='value'
-                                                                        id={i + 1}
-                                                                    />
-                                                                </Form.Group>
-                                                            </th>
-                                                            <td >
-                                                                <p className="m-0"> {doc.name} : {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].uploadStatus_}</p>
-                                                            </td>
-                                                            <td>
-                                                                <Col md={2}>
-                                                                    <Form onSubmit={(e) => this.onDownloadFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
-                                                                        <Form.Group controlId="exampleForm.ControlSelect1">
-                                                                            <div className="form-group">
-                                                                                <button type="submit">Download</button>
-                                                                            </div>
-                                                                        </Form.Group>
-                                                                    </Form>
-                                                                </Col>
-                                                            </td>
-                                                            <td>
-                                                                <Col md={2}>
-                                                                    <Form onSubmit={(e) => this.onDeleteFilefromstudent(e, doc.prop, this.props.data[this.props.student_i]._id)}>
-                                                                        <Form.Group controlId="exampleForm.ControlSelect1">
-                                                                            <div className="form-group">
-                                                                                <button type="submit">Delete</button>
-                                                                            </div>
-                                                                        </Form.Group>
-                                                                    </Form>
-                                                                </Col>
-                                                            </td>
-                                                            <td>
-                                                                <p className="m-0"> {this.props.data[this.props.student_i].uploadedDocs_[doc.prop].LastUploadDate_}</p>
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        < tr key={i + 1}>
-                                                            <th>
-                                                                <div>
-                                                                    <Form.Group>
-                                                                        <Form.Check
-                                                                            custom
-                                                                            type="checkbox"
-                                                                            name={doc.name}
-                                                                            defaultChecked={false}
-                                                                            // value='value'
-                                                                            id={i + 1}
-                                                                        />
-                                                                    </Form.Group>
-                                                                </div>
-                                                            </th>
-                                                            <td >
-                                                                <p className="m-0"><b> {doc.name} </b></p>
-                                                            </td>
-                                                        </tr>
-                                                    )
+                        {documentlist}
 
-                                            ) :
-                                            (
-                                                < tr key={i + 1}>
-                                                    <th>
-                                                        <div>
-                                                            <Form.Group>
-                                                                <Form.Check
-                                                                    custom
-                                                                    type="checkbox"
-                                                                    name={doc.name}
-                                                                    defaultChecked={false}
-                                                                    // value='value'
-                                                                    id={i + 1}
-                                                                />
-                                                            </Form.Group>
-                                                        </div>
-                                                    </th>
-                                                    <td >
-                                                        <p className="m-0"><b> {doc.name} </b></p>
-                                                    </td>
-                                                </tr>
-                                            )
-                                    ))
-                                ) :
-                                (
-                                    <p>So far no selected program!</p>
-                                )
-
-                        }
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.setmodalhide}>Close</Button>
@@ -445,6 +479,23 @@ const row = (
     startUploadfile
 ) => {
     // const currentlyEditing = editIdx === i;
+    let studentDocOverview
+    if (student.uploadedDocs_) {
+        studentDocOverview = documentslist.map((doc, i) => {
+            if ((student.uploadedDocs_[doc.prop]) && (student.uploadedDocs_[doc.prop].uploadStatus_ === "uploaded")) {
+                return <p className="m-0" key={i} > <AiOutlineLoading3Quarters /> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
+            } else if ((student.uploadedDocs_[doc.prop]) && (student.uploadedDocs_[doc.prop].uploadStatus_ === "checked")) {
+                return <p className="m-0" key={i} ><AiOutlineCheck /> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
+            } else if ((student.uploadedDocs_[doc.prop]) && (student.uploadedDocs_[doc.prop].uploadStatus_ === "unaccepted")) {
+                return <p className="m-0" key={i} ><AiOutlineStop /> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
+            } else {
+                return <p className="m-0" key={i} ><b><AiOutlineClose /> {doc.name} </b></p>
+            }
+        }
+        )
+    } else {
+        studentDocOverview = <p>So far no uploaded file!</p>
+    }
     return (
         < tr key={student._id} >
             <>
@@ -455,35 +506,7 @@ const row = (
                     <h6 className="mb-1">{student.firstname_} {student.lastname_}</h6>
                     <p className="m-1">{student.emailaddress_}</p>
                     <h6 className="m-0">Document status</h6>
-                    {
-                        student.uploadedDocs_ ?
-                            (
-                                documentslist.map((doc, i) => (
-                                    student.uploadedDocs_[doc.prop] ?
-                                        (
-                                            student.uploadedDocs_[doc.prop].uploadStatus_ === "uploaded" ?
-                                                (
-                                                    <p className="m-0" key={i} ><AiOutlineCheck /> <AiOutlineLoading3Quarters /> {doc.name} : {student.uploadedDocs_[doc.prop].uploadStatus_}</p>
-
-                                                ) : (
-                                                    <p className="m-0" key={i} ><b><AiOutlineClose /> {doc.name} </b></p>
-                                                )
-                                        ) :
-                                        (
-                                            <p className="m-0" key={i} ><b><AiOutlineClose /> {doc.name} </b></p>
-                                        )
-                                ))
-                            ) :
-                            (
-                                <p>So far no uploaded file!</p>
-                            )
-
-                    }
-
-                    {/* <p>CV Status: {student.uploadedDocs_.CV_.uploadStatus_}, uploaded on {student.uploadedDocs_.CV_.LastUploadDate_}</p>
-                    <p>ML Status: {student.uploadedDocs_.ML_.uploadStatus_}, uploaded on {student.uploadedDocs_.ML_.LastUploadDate_}</p>
-                    <p>Bachelor Certificate_ Status: {student.uploadedDocs_.bachelorCertificate_.uploadStatus_}, uploaded on {student.uploadedDocs_.bachelorCertificate_.LastUploadDate_}</p> */}
-
+                    {studentDocOverview}
                 </td>
                 <td>
                     <h5>Agent:</h5>
@@ -567,6 +590,8 @@ class Studentlist extends React.Component {
                     data={this.props.data}
                     documentslist={this.props.documentslist}
                     onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+                    onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+                    onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
                     onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
             </>

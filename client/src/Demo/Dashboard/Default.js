@@ -12,6 +12,8 @@ const Student_API = 'http://localhost:2000/studentlist';
 // const Student_API = 'https://54.214.118.145/studentlist';
 const edit_agent_API = 'http://localhost:2000/editagent';
 const edit_editor_API = 'http://localhost:2000/editeditor';
+const accept_document_API = 'http://localhost:2000/acceptdoc';
+const reject_document_API = 'http://localhost:2000/rejectdoc';
 // const edit_studentsprogram_API = 'http://localhost:2000/editstudentprogram';
 
 class Dashboard extends React.Component {
@@ -123,6 +125,10 @@ class Dashboard extends React.Component {
                 const url = window.URL.createObjectURL(
                     new Blob([blob]),
                 );
+
+                // //Open the URL on new Window
+                // window.open(url);
+
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute(
@@ -147,6 +153,73 @@ class Dashboard extends React.Component {
                     //     isLoaded: true,
                     //     error
                     // });
+                }
+            )
+    }
+    onRejectFilefromstudent(e, category, id) {  //id == student id
+        e.preventDefault()
+        const auth = localStorage.getItem('token');
+        var rejectdoc_url = reject_document_API + '/' + category + '/' + id;  // id === student id
+        fetch(rejectdoc_url,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+            }
+        )
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    // this.setState({
+                    //     isLoaded: true,
+                    //     data: result.data
+                    // });
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }
+
+    onAcceptFilefromstudent(e, category, id) {  //id == student id
+        e.preventDefault()
+        const auth = localStorage.getItem('token');
+        var acceptdoc_url = accept_document_API + '/' + category + '/' + id;  // id === student id
+        fetch(acceptdoc_url,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+            }
+        )
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    // this.setState({
+                    //     isLoaded: true,
+                    //     data: result.data
+                    // });
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
                 }
             )
     }
@@ -273,41 +346,6 @@ class Dashboard extends React.Component {
                 }
             )
     }
-
-    // editStudentProgram = new_program => {
-    //     console.log("click delete")
-    //     console.log(new_program)
-    //     const auth = localStorage.getItem('token');
-    //     fetch(edit_studentsprogram_API,
-    //         {
-    //             method: 'POST',
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': 'Bearer ' + JSON.parse(auth)
-    //             },
-    //             body: JSON.stringify(new_program)
-    //         }
-    //     )
-    //         .then(res => res.json())
-    //         .then(
-    //             // (result) => {
-    //             //     this.setState({
-    //             //         isLoaded: false,
-    //             //     });
-    //             // },
-    //             // Note: it's important to handle errors here
-    //             // instead of a catch() block so that we don't swallow
-    //             // exceptions from actual bugs in components.
-    //             (error) => {
-    //                 // this.setState({
-    //                 //     isLoaded: false,
-    //                 //     error
-    //                 // });
-    //             }
-    //         )
-    // }
-
 
     handleRemove = i => {
         this.setState(state => ({
@@ -450,43 +488,6 @@ class Dashboard extends React.Component {
                                     <Card.Title as='h5'>Student List</Card.Title>
                                 </Card.Header>
                                 <Card.Body className='px-0 py-2'>
-                                    {/* <Table responsive hover>
-                                        <tbody>
-                                            {data.map(student =>
-                                                <tr className="unread" key={student._id}>
-                                                    <td><img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" /></td>
-                                                    <td >
-                                                        <h6 className="mb-1">{student.firstname_} {student.lastname_}</h6>
-                                                        <p className="m-0">{student.emailaddress_}</p>
-                                                    </td>
-                                                    <td>
-                                                        <h5>Agent: {student.agent_.map(
-                                                            agent =>
-                                                                <h6> {agent}</h6>
-                                                        )}</h5>
-                                                        <h5>Editor: {student.editor_.map(
-                                                            editor =>
-                                                                <h6> {editor}</h6>
-                                                        )}
-                                                        </h5>
-                                                    </td>
-                                                    <th>
-                                                        <DropdownButton
-                                                            size='sm'
-                                                            title='Option'
-                                                            variant='primary'
-                                                            id={`dropdown-variants-${student._id}`}
-                                                            key={student._id}
-                                                        >
-                                                            <Dropdown.Item eventKey="1">Edit Agent</Dropdown.Item>
-                                                            <Dropdown.Item eventKey="2">Edit Editor</Dropdown.Item>
-                                                            <Dropdown.Item eventKey="3">Edit Program</Dropdown.Item>
-                                                        </DropdownButton>
-                                                    </th>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </Table> */}
                                     <Studentlist
                                         agent_list={this.state.agent_list}
                                         editor_list={this.state.editor_list}
@@ -579,6 +580,8 @@ class Dashboard extends React.Component {
                                         subpage={this.state.subpage}
                                         student_i={this.state.student_i}
                                         onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                                        onRejectFilefromstudent={this.onRejectFilefromstudent}
+                                        onAcceptFilefromstudent={this.onAcceptFilefromstudent}
                                         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
                                     />
                                 </Card.Body>

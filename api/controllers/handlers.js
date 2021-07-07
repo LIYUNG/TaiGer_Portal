@@ -63,6 +63,8 @@ exports.signIn = async (req, res) => {
 						expiresIn: jwtExpirySeconds,
 					})
 					console.log('Send token !');
+					console.log(students_exists.role_ + " " + students_exists.firstname_ + " " + students_exists.lastname_ + " log in");
+
 					// set the cookie as the token string, with a similar max age as the token
 					// return res.cookie("token", token, { httpOnly: true, maxAge: jwtExpirySeconds * 1000 }).sendStatus(200)
 
@@ -320,14 +322,14 @@ exports.studentlist = async (req, res) => {
 		if (students_exists.role_ === 'Agent') {
 			const Agent = await Student.findOne({ emailaddress_: emailaddress });//get email by token
 			const student_all = await Student.find({ role_: "Student", agent_: emailaddress });
-			console.log("Agent  " + Agent.firstname_ + " " + Agent.lastname_ + " log in");
+			console.log("Agent  " + Agent.firstname_ + " " + Agent.lastname_ + " get her/his student list");
 			res.send({
 				data: student_all
 			})
 		}
 		else if (students_exists.role_ === 'Admin') {
 			const student_all = await Student.find({ role_: "Student" });
-			console.log("Admin log in");
+			console.log("Admin get all student list");
 			res.send({
 				data: student_all
 			})
@@ -339,7 +341,7 @@ exports.studentlist = async (req, res) => {
 				data: student_all
 			})
 		} else {
-			console.log("Student " + students_exists.firstname_ + " " + students_exists.lastname_ + " log in");
+			console.log("Student " + students_exists.firstname_ + " " + students_exists.lastname_ + " get her/his personal dashboard");
 			res.send({
 				data: [students_exists]
 			})
@@ -716,7 +718,243 @@ exports.filedownloadfromstudent = async (req, res, next) => {
 	}
 }
 
+exports.rejectdoc = async (req, res, next) => {
+	try {
+		// console.log('filedownload req.params.filename = ' + req.params.category)
+		const categoryName = req.params.category;
+		const student_id = req.params.student_id;
+		console.log('student id: ' + student_id)
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
+		// Extract user email info by token
+		var emailaddress = jwt_decode(token);
+		emailaddress = emailaddress['emailaddress'];
+		// const students_exists = await Student.findById(student_id);
+		const date_now = Date();
 
+		//TODO: what if students_exists.uploadedDocs_.bachelorCertificate_ undefined?
+		if (req.params.category === 'bachelorCertificate_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.bachelorCertificate_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.bachelorCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'bachelorTranscript_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.bachelorTranscript_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.bachelorTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'EnglischCertificate_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.EnglischCertificate_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.EnglischCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'GermanCertificate_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.GermanCertificate_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.GermanCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolDiploma_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.highSchoolDiploma_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.highSchoolDiploma_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolTranscript_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.highSchoolTranscript_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.highSchoolTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'universityEntranceExamination_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.GSAT_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.GSAT_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'ML_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.ML_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.ML_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'CV_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.CV_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.CV_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'RL_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.RL_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.RL_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'ECTS_conversion_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.ECTS_conversion_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.ECTS_conversion_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'CourseDescription_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.courseDescription_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.courseDescription_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'Essay_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.Essay_.uploadStatus_": "unaccepted",
+					"uploadedDocs_.Essay_.LastUploadDate_": date_now
+				}
+			});
+		}
+		// await students_exists.save();
+		console.log("reject file success!")
+		res.status(200).end(); // 200 success
+	} catch (err) {
+		console.log('error download file: ' + err)
+		return res.status(500).end(); // 500 Internal Server Error
+	}
+}
+
+exports.acceptdoc = async (req, res, next) => {
+	try {
+		// console.log('filedownload req.params.filename = ' + req.params.category)
+		const categoryName = req.params.category;
+		const student_id = req.params.student_id;
+		console.log('student id: ' + student_id)
+		const bearer = req.headers.authorization.split(' ');
+		const token = bearer[1]
+		// Extract user email info by token
+		var emailaddress = jwt_decode(token);
+		emailaddress = emailaddress['emailaddress'];
+		// const students_exists = await Student.findById(student_id);
+		const date_now = Date();
+
+		//TODO: what if students_exists.uploadedDocs_.bachelorCertificate_ undefined?
+		if (req.params.category === 'bachelorCertificate_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.bachelorCertificate_.uploadStatus_": "checked",
+					"uploadedDocs_.bachelorCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'bachelorTranscript_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.bachelorTranscript_.uploadStatus_": "checked",
+					"uploadedDocs_.bachelorTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'EnglischCertificate_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.EnglischCertificate_.uploadStatus_": "checked",
+					"uploadedDocs_.EnglischCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'GermanCertificate_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.GermanCertificate_.uploadStatus_": "checked",
+					"uploadedDocs_.GermanCertificate_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolDiploma_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.highSchoolDiploma_.uploadStatus_": "checked",
+					"uploadedDocs_.highSchoolDiploma_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'highschoolTranscript_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.highSchoolTranscript_.uploadStatus_": "checked",
+					"uploadedDocs_.highSchoolTranscript_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'universityEntranceExamination_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.GSAT_.uploadStatus_": "checked",
+					"uploadedDocs_.GSAT_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'ML_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.ML_.uploadStatus_": "checked",
+					"uploadedDocs_.ML_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'CV_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.CV_.uploadStatus_": "checked",
+					"uploadedDocs_.CV_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'RL_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.RL_.uploadStatus_": "checked",
+					"uploadedDocs_.RL_.LastUploadDate_": date_now
+				}
+			});
+
+		} else if (req.params.category === 'ECTS_conversion_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.ECTS_conversion_.uploadStatus_": "checked",
+					"uploadedDocs_.ECTS_conversion_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'CourseDescription_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.courseDescription_.uploadStatus_": "checked",
+					"uploadedDocs_.courseDescription_.LastUploadDate_": date_now
+				}
+			});
+		} else if (req.params.category === 'Essay_') {
+			await Student.findByIdAndUpdate(student_id, {
+				"$set": {
+					"uploadedDocs_.Essay_.uploadStatus_": "checked",
+					"uploadedDocs_.Essay_.LastUploadDate_": date_now
+				}
+			});
+		}
+		// await students_exists.save();
+		console.log("accept file success!")
+		res.status(200).end(); // 200 success
+	} catch (err) {
+		console.log('error download file: ' + err)
+		return res.status(500).end(); // 500 Internal Server Error
+	}
+}
 
 
 
@@ -802,6 +1040,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.highSchoolDiploma_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.highSchoolDiploma_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete highSchoolDiploma_ success")
 			} else {
 				console.log("delete highSchoolDiploma_ failed")
@@ -818,6 +1057,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.highSchoolTranscript_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.highSchoolTranscript_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete highSchoolTranscript_ success")
 			} else {
 				console.log("delete highSchoolTranscript_ failed")
@@ -834,6 +1074,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.GSAT_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.GSAT_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete GSAT_ success")
 			} else {
 				console.log("delete GSAT_ failed")
@@ -850,6 +1091,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.ML_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.ML_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete ML_ success")
 			} else {
 				console.log("delete ML_ failed")
@@ -867,6 +1109,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.CV_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.CV_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete CV_ success")
 			} else {
 				console.log("delete CV_ failed")
@@ -884,6 +1127,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.RL_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.RL_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete RL_ success")
 			} else {
 				console.log("delete RL_ failed")
@@ -900,6 +1144,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.ECTS_conversion_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.ECTS_conversion_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete ECTS_conversion_ success")
 			} else {
 				console.log("delete ECTS_conversion_ failed")
@@ -915,6 +1160,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.CourseDescription_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.CourseDescription_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete CourseDescription_ success")
 			} else {
 				console.log("delete CourseDescription_ failed")
@@ -930,6 +1176,7 @@ exports.deletefile = async (req, res, next) => {
 			if (fs.existsSync(students_exists.uploadedDocs_.Essay_.filePath_)) {
 				// TODO:To delete file here: Path not correct
 				fs.unlinkSync(students_exists.uploadedDocs_.Essay_.filePath_) // delete file on old path, no moving
+				// await students_exists.save();
 				console.log("delete Essay_ success")
 			} else {
 				console.log("delete Essay_ failed")
@@ -942,7 +1189,6 @@ exports.deletefile = async (req, res, next) => {
 				}
 			});
 		}
-		await students_exists.save();
 		return res.status(200).end(); // 200 success
 	} catch (err) {
 		console.log('error delete file: ' + err)

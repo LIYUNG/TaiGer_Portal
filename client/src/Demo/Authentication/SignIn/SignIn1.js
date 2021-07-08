@@ -12,7 +12,7 @@ import { NavLink } from 'react-router-dom';
 
 async function loginUser(credentials) {
     // return fetch('https://54.214.118.145/login', {
-    return fetch('http://localhost:2000/login', {
+    return fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

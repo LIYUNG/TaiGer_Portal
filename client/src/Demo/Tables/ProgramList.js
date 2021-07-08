@@ -29,7 +29,7 @@ class MyVerticallyCenteredModal extends React.Component {
 
     componentDidMount() {
         const auth = localStorage.getItem('token');
-        fetch('http://localhost:2000/studentlist',
+        fetch('http://localhost:3000/studentlist',
             {
                 method: 'GET',
                 headers: {

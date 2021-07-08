@@ -10,15 +10,13 @@ import {
     // SplitButton
 } from 'react-bootstrap';
 import Aux from "../../hoc/_Aux";
-// import UcFirst from "../../App/components/UcFirst";
 import Programlist from "./ProgramList";
-// import axios from 'axios';
 
-const program_list_API = 'http://localhost:2000/programlist';
-const delete_program_API = 'http://localhost:2000/deleteprogram';
-const add_program_API = 'http://localhost:2000/addprogram';
-const edit_program_API = 'http://localhost:2000/editprogram';
-const assign_program_API = 'http://localhost:2000/assignprogramtostudent';
+const program_list_API = 'http://localhost:3000/programlist';
+const delete_program_API = 'http://localhost:3000/deleteprogram';
+const add_program_API = 'http://localhost:3000/addprogram';
+const edit_program_API = 'http://localhost:3000/editprogram';
+const assign_program_API = 'http://localhost:3000/assignprogramtostudent';
 // const program_list_API = 'https://54.214.118.145/programlist';
 
 class NewProgramWindow extends React.Component {

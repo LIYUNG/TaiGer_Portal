@@ -46,7 +46,7 @@ class UploadPage extends React.Component {
         const auth = localStorage.getItem('token');
         formData.append('file', this.state.file)
         console.log(id)
-        axios.post("http://localhost:2000/upload/" + id, formData, {
+        axios.post("http://localhost:3000/upload/" + id, formData, {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ class UploadPage extends React.Component {
         e.preventDefault()
         const auth = localStorage.getItem('token');
         var actualFileName
-        fetch('http://localhost:2000/upload/' + id,
+        fetch('http://localhost:3000/upload/' + id,
             {
                 method: 'GET',
                 headers: {
@@ -236,7 +236,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="highschoolDiploma_"
+                                        id="highSchoolDiploma_"
                                         checkboxid="highschoolDiplomaCheckbox"
                                     />
                                     <h5 className="mt-5">High School Transcript</h5>
@@ -245,7 +245,7 @@ class UploadPage extends React.Component {
                                         onFileChange={this.onFileChange}
                                         submitFile={this.submitFile}
                                         onDownloadFile={this.onDownloadFile}
-                                        id="highschoolTranscript_"
+                                        id="highSchoolTranscript_"
                                         checkboxid="highschoolTranscriptCheckbox"
                                     />
                                     <h5 className="mt-5">University Entrance Examination</h5>

@@ -7,7 +7,7 @@ import FilesUploadComponent from "../../App/components/files-upload-component";
 import axios from 'axios';
 
 import React from 'react';
-import { Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Row, Col, Card, Form } from 'react-bootstrap';
 
 import Aux from "../../hoc/_Aux";
 
@@ -92,16 +92,7 @@ class UploadPage extends React.Component {
             this.onSubmitFile(e, id)
         }
     };
-    // downloadFile = async (response/*: AxiosResponse*/, filename/*: string*/ = 'download') => {
-    //     const data = get(response, 'payload.data', null) || getProp(response, 'data', null);
-    //     if (!(data instanceof Blob)) return;
 
-    //     const blob = new Blob([data], { type: 'application/pdf' });
-    //     const link = document.createElement('a');
-    //     link.href = window.URL.createObjectURL(blob);
-    //     link.download = `${filename}-${+new Date()}.pdf`;
-    //     link.click();
-    // };
     getFileNameFromContentDisposition(contentDisposition) {
         if (!contentDisposition) return null;
 

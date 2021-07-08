@@ -65,11 +65,11 @@ export default {
                     icon: 'feather icon-file-text'
                 },
                 {
-                    id: 'bootstrap',
+                    id: 'program-talbe',
                     title: 'Program List',
                     type: 'item',
                     icon: 'feather icon-list',
-                    url: '/tables/bootstrap'
+                    url: '/programs'
                 },
                 // {
                 //     id: 'charts',

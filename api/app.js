@@ -13,6 +13,7 @@ const { movefile } = require("./middlewares/movefile");
 const { checkuserfolder } = require("./middlewares/checkuserfolder");
 
 const handlers = require("./controllers/handlers");
+const file_handler = require("./controllers/file_handler");
 const studentController = require("./controllers/students");
 
 const DIR = "./public/";
@@ -78,19 +79,22 @@ app.post(
   upload.single("file"),
   checkuserfolder,
   movefile,
-  handlers.UploadPost
+  file_handler.UploadPost
 );
-// app.post("/upload", auth, upload.single('file'), handlers.UploadPost);
-app.get("/upload/:category", auth, handlers.filedownload);
+app.get("/upload/:category", auth, file_handler.filedownload);
 app.get(
   "/download/:category/:student_id",
   auth,
-  handlers.filedownloadfromstudent
+  file_handler.filedownloadfromstudent
 );
-app.post("/rejectdoc/:category/:student_id", auth, handlers.rejectdoc);
-app.post("/acceptdoc/:category/:student_id", auth, handlers.acceptdoc);
-app.delete("/deletefile/:category/:student_id", auth, handlers.deletefile);
-app.delete("/deleteprogramfromstudent/:program_id/:student_id", auth, handlers.deleteprogramfromstudent);
+app.post("/rejectdoc/:category/:student_id", auth, file_handler.rejectdoc);
+app.post("/acceptdoc/:category/:student_id", auth, file_handler.acceptdoc);
+app.delete("/deletefile/:category/:student_id", auth, file_handler.deletefile);
+app.delete(
+  "/deleteprogramfromstudent/:program_id/:student_id",
+  auth,
+  handlers.deleteprogramfromstudent
+);
 app.get("/settings", auth, handlers.settings);
 // error handler
 app.use(function (err, req, res, next) {

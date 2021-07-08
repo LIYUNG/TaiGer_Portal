@@ -8,19 +8,19 @@ const uploadedDocsInfo = new mongoose.Schema({
 });
 
 const documents = new mongoose.Schema({
-	CV_: uploadedDocsInfo,
-	ML_: uploadedDocsInfo,
-	RL_: uploadedDocsInfo,
-	bachelorCertificate_: uploadedDocsInfo,
-	bachelorTranscript_: uploadedDocsInfo,
-	highSchoolDiploma_: uploadedDocsInfo,
-	highSchoolTranscript_: uploadedDocsInfo,
-	GSAT_: uploadedDocsInfo,
-	EnglischCertificate_: uploadedDocsInfo,
-	GermanCertificate_: uploadedDocsInfo,
-	Essay_: uploadedDocsInfo,
-	ECTS_conversion_: uploadedDocsInfo,
-	CourseDescription_: uploadedDocsInfo
+  CV_: uploadedDocsInfo,
+  ML_: uploadedDocsInfo,
+  RL_: uploadedDocsInfo,
+  bachelorCertificate_: uploadedDocsInfo,
+  bachelorTranscript_: uploadedDocsInfo,
+  highSchoolDiploma_: uploadedDocsInfo,
+  highSchoolTranscript_: uploadedDocsInfo,
+  universityEntranceExamination_: uploadedDocsInfo,
+  EnglischCertificate_: uploadedDocsInfo,
+  GermanCertificate_: uploadedDocsInfo,
+  Essay_: uploadedDocsInfo,
+  ECTS_conversion_: uploadedDocsInfo,
+  CourseDescription_: uploadedDocsInfo,
 });
 
 const programs = new mongoose.Schema({

@@ -67,7 +67,7 @@ class NewProgramWindow extends React.Component {
     }
 }
 
-class BootstrapTable extends React.Component {
+class ProgramTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -473,175 +473,181 @@ class BootstrapTable extends React.Component {
             return <div>Loading...</div>;
         } else {
             return (
-                <Aux>
-                    <Row>
-                        <Col>
-                            <Card>
-                                {/* <Card.Header>
+              <Aux>
+                <Row>
+                  <Col>
+                    <Card>
+                      {/* <Card.Header>
                                     
                                 </Card.Header> */}
-                                <Card.Body>
-                                    <Row>
-                                        <Col>
-                                            <Card.Title as="h4">Program List</Card.Title>
-                                        </Col>
-                                        <Col>
-                                            <ButtonToolbar className="float-right">
-                                                <button className="btn btn-primary" type="submit" onClick={() => this.NewProgram()}>New Program</button>
-                                            </ButtonToolbar>
-                                        </Col>
-                                        {/* <span className="d-block m-t-5">use bootstrap <code>Table</code> component</span> */}
-                                    </Row>
-                                    <Programlist
-                                        ModalShow={this.state.modalShow}
-                                        ProgramID={this.state.ProgramId}
-                                        StudentId={this.state.StudentId}
-                                        Uni_Name={this.state.Uni}
-                                        Program_Name={this.state.Program}
-                                        setModalShow={this.setModalShow}
-                                        setModalHide={this.setModalHide}
-                                        handleRemove={this.handleRemove}
-                                        startEditing={this.startEditing}
-                                        editIdx={this.state.editIdx}
-                                        stopEditing={this.stopEditing}
-                                        handleChange={this.handleChange}
-                                        handleChange2={this.handleChange2}
-                                        data={this.state.data}
-                                        cancelEditing={this.cancelEditing}
-                                        RemoveProgramHandler3={this.RemoveProgramHandler3}
-                                        onSubmit2={this.onSubmit2}
-                                        header={[
-                                            {
-                                                name: "University",
-                                                prop: "University_"
-                                            },
-                                            {
-                                                name: "Program",
-                                                prop: "Program_"
-                                            },
-                                            {
-                                                name: "TOEFL",
-                                                prop: "TOEFL_"
-                                            },
-                                            {
-                                                name: "IELTS",
-                                                prop: "IELTS_"
-                                            },
-                                            {
-                                                name: "Degree",
-                                                prop: "Degree_"
-                                            },
-                                            {
-                                                name: "GRE/GMAT",
-                                                prop: "GREGMAT_"
-                                            },
-                                            {
-                                                name: "Application Deadline",
-                                                prop: "Application_end_date_"
-                                            },
-                                            {
-                                                name: "Last Update",
-                                                prop: "LastUpdate_"
-                                            }
-                                        ]}
-                                    />
-                                    <NewProgramWindow
-                                        show={this.state.modalShowNewProgram}
-                                        setModalHide2={this.setModalHide2}
-                                        handleChangeNewProgram={this.handleChangeNewProgram}
-                                        submitNewProgram={this.submitNewProgram}
-                                        newProgramData={this.state.newProgramData}
-                                        header={[
-                                            {
-                                                name: "University",
-                                                prop: "University_"
-                                            },
-                                            {
-                                                name: "Program",
-                                                prop: "Program_"
-                                            },
-                                            {
-                                                name: "TOEFL",
-                                                prop: "TOEFL_"
-                                            },
-                                            {
-                                                name: "IELTS",
-                                                prop: "IELTS_"
-                                            },
-                                            {
-                                                name: "Degree",
-                                                prop: "Degree_"
-                                            },
-                                            {
-                                                name: "GRE/GMAT",
-                                                prop: "GREGMAT_"
-                                            },
-                                            {
-                                                name: "Application Deadline",
-                                                prop: "Application_end_date_"
-                                            },
-                                            {
-                                                name: "CV Deadline",
-                                                prop: "CV_"
-                                            },
-                                            {
-                                                name: "ML",
-                                                prop: "ML_"
-                                            },
-                                            {
-                                                name: "RL",
-                                                prop: "RL_"
-                                            },
-                                            {
-                                                name: "Bachelor Certificate",
-                                                prop: "bachelorCertificate_"
-                                            },
-                                            {
-                                                name: "Bachelor Transcript",
-                                                prop: "bachelorTranscript_"
-                                            },
-                                            {
-                                                name: "High School Diploma",
-                                                prop: "highSchoolDiploma_"
-                                            },
-                                            {
-                                                name: "High School Transcript",
-                                                prop: "highSchoolTranscript_"
-                                            },
-                                            {
-                                                name: "GSAT(基測)",
-                                                prop: "GSAT_"
-                                            },
-                                            {
-                                                name: "English Certificate",
-                                                prop: "EnglischCertificate_"
-                                            },
-                                            {
-                                                name: "German Certificate",
-                                                prop: "GermanCertificate_"
-                                            },
-                                            {
-                                                name: "Essay",
-                                                prop: "Essay_"
-                                            },
-                                            {
-                                                name: "ECTS Conversion",
-                                                prop: "ECTS_coversion_"
-                                            },
-                                            {
-                                                name: "Course Description",
-                                                prop: "CourseDescription_"
-                                            }
-                                        ]}
-                                    />
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Aux>
-            )
+                      <Card.Body>
+                        <Row>
+                          <Col>
+                            <Card.Title as="h4">Program List</Card.Title>
+                          </Col>
+                          <Col>
+                            <ButtonToolbar className="float-right">
+                              <button
+                                className="btn btn-primary"
+                                type="submit"
+                                onClick={() => this.NewProgram()}
+                              >
+                                New Program
+                              </button>
+                            </ButtonToolbar>
+                          </Col>
+                          {/* <span className="d-block m-t-5">use bootstrap <code>Table</code> component</span> */}
+                        </Row>
+                        <Programlist
+                          ModalShow={this.state.modalShow}
+                          ProgramID={this.state.ProgramId}
+                          StudentId={this.state.StudentId}
+                          Uni_Name={this.state.Uni}
+                          Program_Name={this.state.Program}
+                          setModalShow={this.setModalShow}
+                          setModalHide={this.setModalHide}
+                          handleRemove={this.handleRemove}
+                          startEditing={this.startEditing}
+                          editIdx={this.state.editIdx}
+                          stopEditing={this.stopEditing}
+                          handleChange={this.handleChange}
+                          handleChange2={this.handleChange2}
+                          data={this.state.data}
+                          cancelEditing={this.cancelEditing}
+                          RemoveProgramHandler3={this.RemoveProgramHandler3}
+                          onSubmit2={this.onSubmit2}
+                          header={[
+                            {
+                              name: "University",
+                              prop: "University_",
+                            },
+                            {
+                              name: "Program",
+                              prop: "Program_",
+                            },
+                            {
+                              name: "TOEFL",
+                              prop: "TOEFL_",
+                            },
+                            {
+                              name: "IELTS",
+                              prop: "IELTS_",
+                            },
+                            {
+                              name: "Degree",
+                              prop: "Degree_",
+                            },
+                            {
+                              name: "GRE/GMAT",
+                              prop: "GREGMAT_",
+                            },
+                            {
+                              name: "Application Deadline",
+                              prop: "Application_end_date_",
+                            },
+                            {
+                              name: "Last Update",
+                              prop: "LastUpdate_",
+                            },
+                          ]}
+                        />
+                        <NewProgramWindow
+                          show={this.state.modalShowNewProgram}
+                          setModalHide2={this.setModalHide2}
+                          handleChangeNewProgram={this.handleChangeNewProgram}
+                          submitNewProgram={this.submitNewProgram}
+                          newProgramData={this.state.newProgramData}
+                          header={[
+                            {
+                              name: "University",
+                              prop: "University_",
+                            },
+                            {
+                              name: "Program",
+                              prop: "Program_",
+                            },
+                            {
+                              name: "TOEFL",
+                              prop: "TOEFL_",
+                            },
+                            {
+                              name: "IELTS",
+                              prop: "IELTS_",
+                            },
+                            {
+                              name: "Degree",
+                              prop: "Degree_",
+                            },
+                            {
+                              name: "GRE/GMAT",
+                              prop: "GREGMAT_",
+                            },
+                            {
+                              name: "Application Deadline",
+                              prop: "Application_end_date_",
+                            },
+                            {
+                              name: "CV Deadline",
+                              prop: "CV_",
+                            },
+                            {
+                              name: "ML",
+                              prop: "ML_",
+                            },
+                            {
+                              name: "RL",
+                              prop: "RL_",
+                            },
+                            {
+                              name: "Bachelor Certificate",
+                              prop: "bachelorCertificate_",
+                            },
+                            {
+                              name: "Bachelor Transcript",
+                              prop: "bachelorTranscript_",
+                            },
+                            {
+                              name: "High School Diploma",
+                              prop: "highSchoolDiploma_",
+                            },
+                            {
+                              name: "High School Transcript",
+                              prop: "highSchoolTranscript_",
+                            },
+                            {
+                              name: "GSAT(基測)",
+                              prop: "universityEntranceExamination_",
+                            },
+                            {
+                              name: "English Certificate",
+                              prop: "EnglischCertificate_",
+                            },
+                            {
+                              name: "German Certificate",
+                              prop: "GermanCertificate_",
+                            },
+                            {
+                              name: "Essay",
+                              prop: "Essay_",
+                            },
+                            {
+                              name: "ECTS Conversion",
+                              prop: "ECTS_coversion_",
+                            },
+                            {
+                              name: "Course Description",
+                              prop: "CourseDescription_",
+                            },
+                          ]}
+                        />
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Row>
+              </Aux>
+            );
         }
     }
 }
 
-export default BootstrapTable;
+export default ProgramTable;

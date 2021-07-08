@@ -91,7 +91,7 @@ class Breadcrumb extends Component {
 
         }
 
-        document.title = title + ' | Datta Able Free React + Redux Admin Template';
+        document.title = title + ' | TaiGer Consultancy Portal';
 
         return (
             <Aux>

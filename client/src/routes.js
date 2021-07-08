@@ -17,7 +17,7 @@ const UIBasicBasicTypography = React.lazy(() => import('./Demo/UIElements/Basic/
 
 const FormsElements = React.lazy(() => import('./Demo/Forms/FormsElements'));
 
-const BootstrapTable = React.lazy(() => import('./Demo/Tables/BootstrapTable'));
+const ProgramTable = React.lazy(() => import('./Demo/Program/ProgramTable'));
 
 const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
 
@@ -39,7 +39,7 @@ const routes = [
     { path: '/basic/tabs-pills', exact: true, name: 'Basic Tabs & Pills', component: UIBasicTabsPills },
     { path: '/basic/typography', exact: true, name: 'Basic Typography', component: UIBasicBasicTypography },
     { path: '/forms/form-basic', exact: true, name: 'Forms Elements', component: FormsElements },
-    { path: '/tables/bootstrap', exact: true, name: 'Bootstrap Table', component: BootstrapTable },
+    { path: '/programs', exact: true, name: 'Program Table', component: ProgramTable },
     { path: '/charts/nvd3', exact: true, name: 'Nvd3 Chart', component: Nvd3Chart },
     { path: '/maps/google-map', exact: true, name: 'Google Map', component: GoogleMap },
     { path: '/sample-page', exact: true, name: 'Sample Page', component: OtherSamplePage },

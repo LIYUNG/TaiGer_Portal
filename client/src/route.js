@@ -8,7 +8,6 @@ const route = [
     { path: '/auth/signup-1', exact: true, name: 'Signup 1', component: SignUp1 },
     { path: '/auth/reset-password-1', exact: true, name: 'ResetPassword 1', component: ResetPassword },
     { path: '/', component: Signin1 },
-    // { path: '/auth/signin-1', exact: true, name: 'Signin 1', component: Signin1 }
 ];
 
 export default route;

@@ -10,6 +10,7 @@ import Studentlist from "./Studentlist";
 
 const Student_API = 'http://localhost:2000/studentlist';
 // const Student_API = 'https://54.214.118.145/studentlist';
+const del_prog_std_API = 'http://localhost:2000/deleteprogramfromstudent'
 const edit_agent_API = 'http://localhost:2000/editagent';
 const edit_editor_API = 'http://localhost:2000/editeditor';
 const accept_document_API = 'http://localhost:2000/acceptdoc';
@@ -120,27 +121,39 @@ class Dashboard extends React.Component {
             }
             )
             .then((blob) => {
-                console.log(actualFileName)
                 if (blob.size === 0) return
-                const url = window.URL.createObjectURL(
-                    new Blob([blob]),
-                );
 
-                // //Open the URL on new Window
-                // window.open(url);
+                var filetype = actualFileName.split('.'); //split file name
+                filetype = filetype.pop() //get the file type
 
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute(
-                    'download',
-                    actualFileName,
-                );
-                // Append to html link element page
-                document.body.appendChild(link);
-                // Start download
-                link.click();
-                // Clean up and remove the link
-                link.parentNode.removeChild(link);
+                if (filetype === 'pdf') {
+                    console.log(blob)
+                    const url = window.URL.createObjectURL(
+                        new Blob([blob], { type: 'application/pdf' }),
+                    );
+
+                    //Open the URL on new Window
+                    console.log(url)
+                    window.open(url); //TODO: having a reasonable file name, pdf viewer
+                } else { //if not pdf, download instead.
+
+                    const url = window.URL.createObjectURL(
+                        new Blob([blob]),
+                    );
+
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute(
+                        'download',
+                        actualFileName,
+                    );
+                    // Append to html link element page
+                    document.body.appendChild(link);
+                    // Start download
+                    link.click();
+                    // Clean up and remove the link
+                    link.parentNode.removeChild(link);
+                }
             },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
@@ -200,6 +213,39 @@ class Dashboard extends React.Component {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application',
+                    'Authorization': 'Bearer ' + JSON.parse(auth)
+                },
+            }
+        )
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    // this.setState({
+                    //     isLoaded: true,
+                    //     data: result.data
+                    // });
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }
+    onDeleteProgram(e, student_id, program_id) { //program id
+        e.preventDefault()
+        const auth = localStorage.getItem('token');
+        var del_prog_std_url = del_prog_std_API + '/' + program_id + '/' + student_id;  // id === student id
+        fetch(del_prog_std_url,
+            {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + JSON.parse(auth)
                 },
             }
@@ -579,6 +625,7 @@ class Dashboard extends React.Component {
                                         startUploadfile={this.startUploadfile}
                                         subpage={this.state.subpage}
                                         student_i={this.state.student_i}
+                                        onDeleteProgram={this.onDeleteProgram}
                                         onDownloadFilefromstudent={this.onDownloadFilefromstudent}
                                         onRejectFilefromstudent={this.onRejectFilefromstudent}
                                         onAcceptFilefromstudent={this.onAcceptFilefromstudent}

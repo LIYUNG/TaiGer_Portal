@@ -22,6 +22,7 @@ class MyVerticallyCenteredModal extends React.Component {
         super(props);
         // this.handleChange2 = props.handleChange2.bind(this)
         this.setmodalhide = this.props.setmodalhide.bind(this);
+        this.onDeleteProgram = this.props.onDeleteProgram.bind(this);
         this.onDeleteFilefromstudent = this.props.onDeleteFilefromstudent.bind(this);
         this.onDownloadFilefromstudent = this.props.onDownloadFilefromstudent.bind(this);
         this.onRejectFilefromstudent = this.props.onRejectFilefromstudent.bind(this);
@@ -91,7 +92,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Modal
                     show={this.props.show}
                     onHide={this.props.onHide}
-                    size="lg"
+                    size="xl"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
@@ -115,7 +116,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Modal
                     show={this.props.show}
                     onHide={this.props.onHide}
-                    size="lg"
+                    size="xl"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
@@ -180,7 +181,7 @@ class MyVerticallyCenteredModal extends React.Component {
                         </td>
                         <td>
                             <Col md={2}>
-                                <Form>
+                                <Form onSubmit={(e) => this.onDeleteProgram(e, this.props.data[this.props.student_i]._id, program._id)}>
                                     <Form.Group controlId="exampleForm.ControlSelect1">
                                         <div className="form-group">
                                             <button type="submit">Delete</button>
@@ -203,7 +204,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Modal
                     show={this.props.show}
                     onHide={this.props.onHide}
-                    size="lg"
+                    size="xl"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
@@ -414,7 +415,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Modal
                     show={this.props.show}
                     onHide={this.props.onHide}
-                    size="lg"
+                    size="xl"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
@@ -439,7 +440,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Modal
                     show={this.props.show}
                     onHide={this.props.onHide}
-                    size="lg"
+                    size="xl"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
@@ -589,6 +590,7 @@ class Studentlist extends React.Component {
                     student_i={this.props.student_i} // student order
                     data={this.props.data}
                     documentslist={this.props.documentslist}
+                    onDeleteProgram={this.props.onDeleteProgram}
                     onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
                     onRejectFilefromstudent={this.props.onRejectFilefromstudent}
                     onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}

@@ -126,6 +126,7 @@ try {
 	app.post("/rejectdoc/:category/:student_id", auth, handlers.rejectdoc);
 	app.post("/acceptdoc/:category/:student_id", auth, handlers.acceptdoc);
 	app.delete("/deletefile/:category/:student_id", auth, handlers.deletefile);
+	app.delete("/deleteprogramfromstudent/:program_id/:student_id", auth, handlers.deleteprogramfromstudent);
 	app.get("/settings", auth, handlers.settings);
 	// error handler
 	app.use(function (err, req, res, next) {

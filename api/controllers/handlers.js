@@ -956,8 +956,6 @@ exports.acceptdoc = async (req, res, next) => {
 	}
 }
 
-
-
 exports.deletefile = async (req, res, next) => {
 	try {
 		// console.log('filedownload req.params.filename = ' + req.params.category)
@@ -1190,6 +1188,28 @@ exports.deletefile = async (req, res, next) => {
 			});
 		}
 		return res.status(200).end(); // 200 success
+	} catch (err) {
+		console.log('error delete file: ' + err)
+		return res.status(500).end(); // 500 Internal Server Error
+	}
+}
+
+
+exports.deleteprogramfromstudent = async (req, res, next) => {
+	try {
+		// console.log('filedownload req.params.filename = ' + req.params.category)
+		const categoryName = req.params.category;
+		const student_id = req.params.student_id;
+		const program_id = req.params.program_id;
+		console.log('student id: ' + student_id)
+		console.log('program id: ' + program_id)
+		await Student.findByIdAndUpdate(student_id, { $pull: { "applying_program_": { _id: program_id } } }, { safe: true, upsert: true },
+			function (err, node) {
+				if (err) {
+					return res.status(500).end(); // 500 Internal Server Error		
+				}
+				return res.status(200).end();
+			});
 	} catch (err) {
 		console.log('error delete file: ' + err)
 		return res.status(500).end(); // 500 Internal Server Error

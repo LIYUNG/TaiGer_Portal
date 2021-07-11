@@ -1,6 +1,5 @@
 const Student = require("../models/Students");
 const Program = require("../models/Programs");
-const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
 // const path = require("path");

@@ -1,5 +1,7 @@
 const multer = require("multer");
 
+const authRouter = require('./auth')
+
 const { auth } = require("../middlewares/auth");
 const { movefile } = require("../middlewares/movefile");
 const { checkuserfolder } = require("../middlewares/checkuserfolder");
@@ -43,7 +45,9 @@ var upload = multer({
 });
 
 const router = (app) => {
-  // TODO: organize auth/api routes
+  app.use('/auth', authRouter)
+
+  // TODO: organize below routes
   app.post("/login", handlers.signIn);
   app.post("/register", studentController.RegisterPost);
   app.post("/password", handlers.passwordPost);

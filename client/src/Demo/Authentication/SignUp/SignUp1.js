@@ -8,9 +8,8 @@ import Breadcrumb from "../../../App/layout/AdminLayout/Breadcrumb";
 // import DEMO from "../../../store/constant";
 
 async function registerUser(credentials) {
-  // return fetch('https://54.214.118.145/login', {
   return (
-    fetch("http://localhost:3000/register", {
+    fetch(window.register, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

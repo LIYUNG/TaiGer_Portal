@@ -42,35 +42,6 @@ class MyVerticallyCenteredModal extends React.Component {
     // };
   }
 
-  // componentDidMount() {
-  //     const auth = localStorage.getItem('token');
-  //     fetch('http://localhost:3000/studentlist',
-  //         {
-  //             method: 'GET',
-  //             headers: {
-  //                 Accept: 'application/json',
-  //                 'Content-Type': 'application/json',
-  //                 'Authorization': 'Bearer ' + JSON.parse(auth)
-  //             },
-  //         }
-  //     )
-  //         .then(res => res.json())
-  //         .then(
-  //             (result) => {
-  //                 this.setState({
-  //                     // isLoaded: true,
-  //                     data: result.data
-  //                 });
-  //             },
-  //             // Note: it's important to handle errors here
-  //             // instead of a catch() block so that we don't swallow
-  //             // exceptions from actual bugs in components.
-  //             (error) => {
-  //                 console.log('Problem while getting studentlist');
-  //             }
-  //         )
-  // }
-
   render() {
     if (this.props.subpage === 1) {
       let agentlist = this.props.agent_list ? (
@@ -428,6 +399,44 @@ class MyVerticallyCenteredModal extends React.Component {
                   <Col md={2}>
                     <Form
                       onSubmit={(e) =>
+                        this.onRejectFilefromstudent(
+                          e,
+                          doc.prop,
+                          this.props.data[this.props.student_i]._id
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <div className="form-group">
+                          <button type="submit">Reject</button>
+                        </div>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col md={2}>
+                    <Form
+                      onSubmit={(e) =>
+                        this.onAcceptFilefromstudent(
+                          e,
+                          doc.prop,
+                          this.props.data[this.props.student_i]._id
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <div className="form-group">
+                          <button type="submit">Accept</button>
+                        </div>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col md={2}>
+                    <Form
+                      onSubmit={(e) =>
                         this.onDeleteFilefromstudent(
                           e,
                           doc.prop,
@@ -498,6 +507,44 @@ class MyVerticallyCenteredModal extends React.Component {
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <div className="form-group">
                           <button type="submit">Download</button>
+                        </div>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col md={2}>
+                    <Form
+                      onSubmit={(e) =>
+                        this.onRejectFilefromstudent(
+                          e,
+                          doc.prop,
+                          this.props.data[this.props.student_i]._id
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <div className="form-group">
+                          <button type="submit">Reject</button>
+                        </div>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col md={2}>
+                    <Form
+                      onSubmit={(e) =>
+                        this.onAcceptFilefromstudent(
+                          e,
+                          doc.prop,
+                          this.props.data[this.props.student_i]._id
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <div className="form-group">
+                          <button type="submit">Accept</button>
                         </div>
                       </Form.Group>
                     </Form>
@@ -740,7 +787,7 @@ const row = (
               Edit Program
             </Dropdown.Item>
             <Dropdown.Item eventKey="4" onSelect={() => startUploadfile(i)}>
-              Upload files
+              Edit File Status
             </Dropdown.Item>
           </DropdownButton>
         </th>

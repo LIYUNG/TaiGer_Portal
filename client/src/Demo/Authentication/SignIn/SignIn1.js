@@ -1,5 +1,3 @@
-// import {NavLink} from 'react-router-dom';
-
 import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
 
@@ -11,9 +9,8 @@ import { NavLink } from "react-router-dom";
 // import Breadcrumb from "../../App/layout/AdminLayout/Breadcrumb";
 
 async function loginUser(credentials) {
-  // return fetch('https://54.214.118.145/login', {
   return (
-    fetch("http://localhost:3000/login", {
+    fetch(window.login, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

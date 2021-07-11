@@ -8,14 +8,7 @@ import avatar2 from "../../assets/images/user/avatar-2.jpg";
 import avatar3 from "../../assets/images/user/avatar-3.jpg";
 import Studentlist from "./Studentlist";
 
-const Student_API = "http://localhost:3000/studentlist";
-// const Student_API = 'https://54.214.118.145/studentlist';
-const del_prog_std_API = "http://localhost:3000/deleteprogramfromstudent";
-const edit_agent_API = "http://localhost:3000/editagent";
-const edit_editor_API = "http://localhost:3000/editeditor";
-const accept_document_API = "http://localhost:3000/acceptdoc";
-const reject_document_API = "http://localhost:3000/rejectdoc";
-// const edit_studentsprogram_API = 'http://localhost:3000/editstudentprogram';
+
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -34,7 +27,7 @@ class Dashboard extends React.Component {
   }
   componentDidMount() {
     const auth = localStorage.getItem("token");
-    fetch(Student_API, {
+    fetch(window.window.Student_API, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -66,7 +59,7 @@ class Dashboard extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
       const auth = localStorage.getItem("token");
-      fetch(Student_API, {
+      fetch(window.Student_API, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -99,7 +92,7 @@ class Dashboard extends React.Component {
     e.preventDefault();
     const auth = localStorage.getItem("token");
     var actualFileName;
-    var download_url = "http://localhost:3000/download/" + category + "/" + id; // id === student id
+    var download_url = window.download + "/" + category + "/" + id; // id === student id
     fetch(download_url, {
       method: "GET",
       headers: {
@@ -162,7 +155,7 @@ class Dashboard extends React.Component {
     //id == student id
     e.preventDefault();
     const auth = localStorage.getItem("token");
-    var rejectdoc_url = reject_document_API + "/" + category + "/" + id; // id === student id
+    var rejectdoc_url = window.reject_document_API + "/" + category + "/" + id; // id === student id
     fetch(rejectdoc_url, {
       method: "POST",
       headers: {
@@ -195,7 +188,7 @@ class Dashboard extends React.Component {
     //id == student id
     e.preventDefault();
     const auth = localStorage.getItem("token");
-    var acceptdoc_url = accept_document_API + "/" + category + "/" + id; // id === student id
+    var acceptdoc_url = window.accept_document_API + "/" + category + "/" + id; // id === student id
     fetch(acceptdoc_url, {
       method: "POST",
       headers: {
@@ -228,7 +221,7 @@ class Dashboard extends React.Component {
     e.preventDefault();
     const auth = localStorage.getItem("token");
     var del_prog_std_url =
-      del_prog_std_API + "/" + program_id + "/" + student_id; // id === student id
+      window.del_prog_std_API + "/" + program_id + "/" + student_id; // id === student id
     fetch(del_prog_std_url, {
       method: "DELETE",
       headers: {
@@ -260,8 +253,7 @@ class Dashboard extends React.Component {
   onDeleteFilefromstudent(e, category, id) {
     e.preventDefault();
     const auth = localStorage.getItem("token");
-    var download_url =
-      "http://localhost:3000/deletefile/" + category + "/" + id; // id === student id
+    var download_url = window.delete + "/" + category + "/" + id; // id === student id
     fetch(download_url, {
       method: "DELETE",
       headers: {
@@ -299,7 +291,7 @@ class Dashboard extends React.Component {
   editAgent() {
     console.log("click editAgent");
     const auth = localStorage.getItem("token");
-    fetch(edit_agent_API, {
+    fetch(window.edit_agent_API, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -330,7 +322,7 @@ class Dashboard extends React.Component {
   editEditor() {
     console.log("click edit");
     const auth = localStorage.getItem("token");
-    fetch(edit_editor_API, {
+    fetch(window.edit_editor_API, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -550,60 +542,7 @@ class Dashboard extends React.Component {
                         prop: "Program",
                       },
                     ]}
-                    documentslist={[
-                      {
-                        name: "CV",
-                        prop: "CV_",
-                      },
-                      {
-                        name: "ML",
-                        prop: "ML_",
-                      },
-                      {
-                        name: "RL",
-                        prop: "RL_",
-                      },
-                      {
-                        name: "Bachelor Certificate",
-                        prop: "bachelorCertificate_",
-                      },
-                      {
-                        name: "Bachelor Transcript",
-                        prop: "bachelorTranscript_",
-                      },
-                      {
-                        name: "High School Diploma",
-                        prop: "highSchoolDiploma_",
-                      },
-                      {
-                        name: "High School Transcript",
-                        prop: "highSchoolTranscript_",
-                      },
-                      {
-                        name: "University Entrance Exam",
-                        prop: "universityEntranceExamination_",
-                      },
-                      {
-                        name: "English Certificate",
-                        prop: "EnglischCertificate_",
-                      },
-                      {
-                        name: "German Certififcate",
-                        prop: "GermanCertificate_",
-                      },
-                      {
-                        name: "Essay",
-                        prop: "Essay_",
-                      },
-                      {
-                        name: "ECTS Conversion",
-                        prop: "ECTS_conversion_",
-                      },
-                      {
-                        name: "Course Description",
-                        prop: "CourseDescription_",
-                      },
-                    ]}
+                    documentslist={window.documentlist}
                     startUploadfile={this.startUploadfile}
                     subpage={this.state.subpage}
                     student_i={this.state.student_i}

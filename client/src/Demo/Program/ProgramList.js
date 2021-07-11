@@ -26,7 +26,7 @@ class MyVerticallyCenteredModal extends React.Component {
 
   componentDidMount() {
     const auth = localStorage.getItem("token");
-    fetch("http://localhost:3000/studentlist", {
+    fetch(window.Student_API, {
       method: "GET",
       headers: {
         Accept: "application/json",

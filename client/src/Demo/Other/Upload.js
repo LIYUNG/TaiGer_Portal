@@ -1,6 +1,3 @@
-// import React, { Component } from 'react';
-// import { Row, Col } from 'react-bootstrap';
-
 // import Aux from "../../hoc/_Aux";
 // import Card from "../../App/components/MainCard";
 import FilesUploadComponent from "../../App/components/files-upload-component";
@@ -46,41 +43,42 @@ class UploadPage extends React.Component {
         const auth = localStorage.getItem('token');
         formData.append('file', this.state.file)
         console.log(id)
-        axios.post("http://localhost:3000/upload/" + id, formData, {
+        axios
+          .post(window.upload + "/" + id, formData, {
             headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + JSON.parse(auth)
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + JSON.parse(auth),
             },
             // body: JSON.stringify()
-        })
-            .then(res => {
-                // console.log(res)
-                if (res.status === 200) {
-                    alert('Upload success')
-                    this.setState({
-                        file: '',
-                        isLoaded: false
-                    })
-                }
-                else{
-                    alert('Upload failed')
-                    this.setState({
-                        file: '',
-                        isLoaded: false
-                    })
-                }
-
+          })
+          .then(
+            (res) => {
+              // console.log(res)
+              if (res.status === 200) {
+                alert("Upload success");
+                this.setState({
+                  file: "",
+                  isLoaded: false,
+                });
+              } else {
+                alert("Upload failed");
+                this.setState({
+                  file: "",
+                  isLoaded: false,
+                });
+              }
             },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                })
+            // Note: it's important to handle errors here
+            // instead of a catch() block so that we don't swallow
+            // exceptions from actual bugs in components.
+            (error) => {
+              this.setState({
+                isLoaded: true,
+                error,
+              });
+            }
+          );
     }
 
     submitFile = (e, id) => {
@@ -105,53 +103,48 @@ class UploadPage extends React.Component {
         e.preventDefault()
         const auth = localStorage.getItem('token');
         var actualFileName
-        fetch('http://localhost:3000/upload/' + id,
-            {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application',
-                    'Authorization': 'Bearer ' + JSON.parse(auth)
-                },
-            }
-        )
-            .then((res) => {
-                actualFileName = res.headers.get("Content-Disposition").split('"')[1]
-                return res.blob()
-            }
-            )
-            .then((blob) => {
-                console.log(actualFileName)
-                if (blob.size === 0) return
-                const url = window.URL.createObjectURL(
-                    new Blob([blob]),
-                );
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute(
-                    'download',
-                    actualFileName, 
-                );
-                // Append to html link element page
-                document.body.appendChild(link);
-                // Start download
-                link.click();
-                // Clean up and remove the link
-                link.parentNode.removeChild(link);
+        fetch(window.upload + "/" + id, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application",
+            Authorization: "Bearer " + JSON.parse(auth),
+          },
+        })
+          .then((res) => {
+            actualFileName = res.headers
+              .get("Content-Disposition")
+              .split('"')[1];
+            return res.blob();
+          })
+          .then(
+            (blob) => {
+              console.log(actualFileName);
+              if (blob.size === 0) return;
+              const url = window.URL.createObjectURL(new Blob([blob]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", actualFileName);
+              // Append to html link element page
+              document.body.appendChild(link);
+              // Start download
+              link.click();
+              // Clean up and remove the link
+              link.parentNode.removeChild(link);
             },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    // console.log(error);
-                    // console.log();
-                    alert("The file is not available.")
-                    // this.setState({
-                    //     isLoaded: true,
-                    //     error
-                    // });
-                }
-            )
+            // Note: it's important to handle errors here
+            // instead of a catch() block so that we don't swallow
+            // exceptions from actual bugs in components.
+            (error) => {
+              // console.log(error);
+              // console.log();
+              alert("The file is not available.");
+              // this.setState({
+              //     isLoaded: true,
+              //     error
+              // });
+            }
+          );
     }
     render() {
         const { error, isLoaded } = this.state;

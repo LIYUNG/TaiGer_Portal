@@ -72,9 +72,16 @@ exports.filedownload = async (req, res, next) => {
     const students_exists = await Student.findOne({
       emailaddress_: emailaddress,
     });
-    var downloadPath = "";
+    const example_file = category_name + "Example.pdf";
+    const template_file = category_name + "Template.docx";
+
+    const directoryPath =
+      __basedir + "\\public\\" + "TaiGer_Template_2021_02" + "\\";
+    // var downloadPath = directoryPath + category_name + "\\" + example_file;
+    var downloadPath = directoryPath + category_name + "\\" + template_file;
     //TODO: what if students_exists.uploadedDocs_.bachelorCertificate_ undefined?
-    downloadPath = students_exists.uploadedDocs_[category_name].filePath_;
+
+    // downloadPath = students_exists.uploadedDocs_[category_name].filePath_;
 
     var filename = downloadPath.split("\\");
     console.log("filename: " + filename);

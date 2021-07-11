@@ -1,6 +1,10 @@
 // FIXME: use dotenv
+const isProd = () => process.env.NODE_ENV === 'production'
+const isDev = () => process.env.NODE_ENV === 'development'
 
 module.exports = {
+  isProd,
+  isDev,
   PORT: 3000,
   MONGODB_URI: 'mongodb://localhost:27017/TaiGer',
   JWT_SECRET: 'topsecret',

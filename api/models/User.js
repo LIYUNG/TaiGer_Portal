@@ -1,4 +1,8 @@
-const { model, Schema } = require("mongoose");
+const {
+  model,
+  Schema,
+  Types: { ObjectId },
+} = require("mongoose");
 const bcrypt = require("bcryptjs");
 const isEmail = require("validator/lib/isEmail");
 
@@ -9,6 +13,8 @@ const Role = {
   Editor: "Editor",
   Student: "Student",
 };
+
+const options = { discriminatorKey: "role", timestamps: true };
 
 const UserSchema = new Schema(
   {
@@ -27,13 +33,8 @@ const UserSchema = new Schema(
       trim: true,
       minlength: [8, "Password must contain at least 8 characters"],
     },
-    role: {
-      type: String,
-      enum: Object.values(Role),
-      default: Role.Guest,
-    },
   },
-  { timestamps: true }
+  options
 );
 
 UserSchema.pre("save", async function (next) {
@@ -63,4 +64,30 @@ UserSchema.methods.toJSON = function () {
 
 const User = model("User", UserSchema);
 
-module.exports = { User, Role };
+const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
+
+const Agent = User.discriminator(
+  "Agent",
+  new Schema(
+    {
+      students: [{ type: ObjectId, ref: "User" }],
+    },
+    options
+  ),
+  Role.Agent
+);
+
+const Editor = User.discriminator(
+  "Editor",
+  new Schema(
+    {
+      students: [{ type: ObjectId, ref: "User" }],
+    },
+    options
+  ),
+  Role.Editor
+);
+
+const Admin = User.discriminator("Admin", new Schema({}, options), Role.Admin);
+
+module.exports = { Role, User, Guest, Agent, Editor, Admin };

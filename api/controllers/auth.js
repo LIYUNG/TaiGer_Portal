@@ -90,11 +90,14 @@ const activateAccount = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: token.userId, email });
   if (!user) throw new ErrorResponse(400, "Invalid email or token");
 
-  if (user.role !== Role.Guest)
+  if (user.role !== undefined)
     throw new ErrorResponse(400, "User account already activated");
 
-  user.role = Role.User;
-  await user.save();
+  await User.findOneAndUpdate(
+    { _id: token.userId },
+    { $set: { role: Role.Guest } },
+    { new: true }
+  );
   await token.deleteOne();
 
   res.status(200).json({ success: true });
@@ -108,7 +111,7 @@ const resendActivation = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw new ErrorResponse(400, "Email not found");
 
-  if (user.role !== Role.Guest)
+  if (user.role !== undefined)
     throw new ErrorResponse(400, "User account already activated");
 
   const activationToken = generateRandomToken();

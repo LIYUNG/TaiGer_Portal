@@ -14,11 +14,11 @@ const {
 const { asyncHandler } = require("../middlewares/error-handler");
 const { User, Role } = require("../models/User");
 const Token = require("../models/Token");
-// const {
-//   sendConfirmationEmail,
-//   sendForgotPasswordEmail,
-//   sendPasswordResetEmail,
-// } = require('../services/email')
+const {
+  sendConfirmationEmail,
+  sendForgotPasswordEmail,
+  sendPasswordResetEmail,
+} = require("../services/email");
 
 const generateAuthToken = (user) => {
   const payload = { id: user._id };
@@ -48,7 +48,7 @@ const signup = asyncHandler(async (req, res) => {
   const activationToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(activationToken) });
 
-  // await sendConfirmationEmail({ name, address: email }, activationToken);
+  await sendConfirmationEmail({ name, address: email }, activationToken);
 
   const authToken = generateAuthToken(user);
   res
@@ -117,10 +117,10 @@ const resendActivation = asyncHandler(async (req, res) => {
     value: hashToken(activationToken),
   });
 
-  // await sendConfirmationEmail(
-  //   { name: user.name, address: email },
-  //   activationToken
-  // );
+  await sendConfirmationEmail(
+    { name: user.name, address: email },
+    activationToken
+  );
 
   res.status(200).json({ success: true });
 });
@@ -136,10 +136,10 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const resetToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(resetToken) });
 
-  // await sendForgotPasswordEmail(
-  //   { name: user.name, address: email },
-  //   resetToken
-  // );
+  await sendForgotPasswordEmail(
+    { name: user.name, address: email },
+    resetToken
+  );
 
   res.status(200).json({ success: true });
 });
@@ -158,7 +158,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.password = password;
   await user.save();
 
-  // await sendPasswordResetEmail({ name: user.name, address: email });
+  await sendPasswordResetEmail({ name: user.name, address: email });
   await token.deleteOne();
 
   res.status(200).json({ success: true });

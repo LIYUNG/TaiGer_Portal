@@ -8,8 +8,6 @@ import avatar2 from "../../assets/images/user/avatar-2.jpg";
 import avatar3 from "../../assets/images/user/avatar-3.jpg";
 import Studentlist from "./Studentlist";
 
-
-
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -22,12 +20,14 @@ class Dashboard extends React.Component {
       editor_list: [],
       isLoaded: false,
       StudentId: "",
-      data: [],
+      students: [],
+      updateAgentList: {},
+      updateEditorList: {},
     };
   }
   componentDidMount() {
     const auth = localStorage.getItem("token");
-    fetch(window.window.Student_API, {
+    fetch(window.Student_API, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -38,10 +38,10 @@ class Dashboard extends React.Component {
       .then((res) => res.json())
       .then(
         (result) => {
-          // console.log(result.data)
+          console.log(result.data);
           this.setState({
             isLoaded: true,
-            data: result.data,
+            students: result.data,
           });
         },
         // Note: it's important to handle errors here
@@ -72,7 +72,7 @@ class Dashboard extends React.Component {
           (result) => {
             this.setState({
               isLoaded: true,
-              data: result.data,
+              students: result.data,
             });
           },
           // Note: it's important to handle errors here
@@ -166,12 +166,7 @@ class Dashboard extends React.Component {
     })
       .then((res) => res.json())
       .then(
-        (result) => {
-          // this.setState({
-          //     isLoaded: true,
-          //     data: result.data
-          // });
-        },
+        (result) => {},
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
@@ -199,12 +194,7 @@ class Dashboard extends React.Component {
     })
       .then((res) => res.json())
       .then(
-        (result) => {
-          // this.setState({
-          //     isLoaded: true,
-          //     data: result.data
-          // });
-        },
+        (result) => {},
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
@@ -232,12 +222,7 @@ class Dashboard extends React.Component {
     })
       .then((res) => res.json())
       .then(
-        (result) => {
-          // this.setState({
-          //     isLoaded: true,
-          //     data: result.data
-          // });
-        },
+        (result) => {},
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
@@ -261,34 +246,33 @@ class Dashboard extends React.Component {
         "Content-Type": "application/json",
         Authorization: "Bearer " + JSON.parse(auth),
       },
-    })
-      .then(
-        (res) => {
-          if (res.status === 200) {
-            alert("Delete file success");
-            this.setState({
-              isLoaded: false,
-            });
-          } else {
-            alert("Delete file failed");
-            this.setState({
-              isLoaded: false,
-            });
-          }
+    }).then(
+      (res) => {
+        if (res.status === 200) {
+          alert("Delete file success");
+          this.setState({
+            isLoaded: false,
+          });
+        } else {
+          alert("Delete file failed");
+          this.setState({
+            isLoaded: false,
+          });
         }
-        // (error) => {
-        //     // console.log(error);
-        //     // console.log();
-        //     alert("The file is not available.")
-        //     // this.setState({
-        //     //     isLoaded: true,
-        //     //     error
-        //     // });
-        // }
-      );
+      }
+      // (error) => {
+      //     // console.log(error);
+      //     // console.log();
+      //     alert("The file is not available.")
+      //     // this.setState({
+      //     //     isLoaded: true,
+      //     //     error
+      //     // });
+      // }
+    );
   }
 
-  editAgent() {
+  editAgent(i) {
     console.log("click editAgent");
     const auth = localStorage.getItem("token");
     fetch(window.edit_agent_API, {
@@ -303,8 +287,23 @@ class Dashboard extends React.Component {
       .then(
         (result) => {
           console.log(result.data);
+          var tempAgentList = {};
+          result.data.map((agent, i) => {
+            if (
+              this.state.students[this.state.student_i].agent_.indexOf(
+                agent.emailaddress_
+              ) > -1
+            ) {
+              console.log("true");
+              tempAgentList[agent.emailaddress_] = true;
+            } else {
+              console.log("false");
+              tempAgentList[agent.emailaddress_] = false;
+            }
+          });
           return this.setState({
             agent_list: result.data,
+            updateAgentList: tempAgentList,
           });
         },
         // Note: it's important to handle errors here
@@ -319,8 +318,8 @@ class Dashboard extends React.Component {
       );
   }
 
-  editEditor() {
-    console.log("click edit");
+  editEditor(i) {
+    console.log("click editEditor");
     const auth = localStorage.getItem("token");
     fetch(window.edit_editor_API, {
       method: "GET",
@@ -329,14 +328,28 @@ class Dashboard extends React.Component {
         "Content-Type": "application/json",
         Authorization: "Bearer " + JSON.parse(auth),
       },
-      // body: JSON.stringify(edit_editor)
     })
       .then((res) => res.json())
       .then(
         (result) => {
           console.log(result.data);
+          var tempEditorList = {};
+          result.data.map((editor, i) => {
+            if (
+              this.state.students[this.state.student_i].editor_.indexOf(
+                editor.emailaddress_
+              ) > -1
+            ) {
+              console.log("true");
+              tempEditorList[editor.emailaddress_] = true;
+            } else {
+              console.log("false");
+              tempEditorList[editor.emailaddress_] = false;
+            }
+          });
           return this.setState({
             editor_list: result.data,
+            updateEditorList: tempEditorList,
           });
         },
         // Note: it's important to handle errors here
@@ -351,15 +364,123 @@ class Dashboard extends React.Component {
       );
   }
 
+  handleChangeAgentlist = (e) => {
+    const { value, checked } = e.target;
+    console.log(value + " " + checked);
+    this.setState((prevState) => ({
+      updateAgentList: {
+        ...prevState.updateAgentList,
+        [value]: checked,
+      },
+    }));
+  };
+
+  handleChangeEditorlist = (e) => {
+    const { value, checked } = e.target;
+    console.log(value + " " + checked);
+    this.setState((prevState) => ({
+      updateEditorList: {
+        ...prevState.updateEditorList,
+        [value]: checked,
+      },
+    }));
+  };
+
+  submitUpdateAgentlist = (updateAgentList, student_id) => {
+    console.log(updateAgentList + " " + student_id);
+    this.UpdateAgentlist(updateAgentList, student_id);
+    this.setState({
+      student_i: -1,
+      subpage: -1,
+      modalShow: false,
+      isLoaded: false,
+    });
+  };
+
+  submitUpdateEditorlist = (updateEditorList, student_id) => {
+    console.log(updateEditorList + " " + student_id);
+    this.UpdateEditorlist(updateEditorList, student_id);
+    this.setState({
+      student_i: -1,
+      subpage: -1,
+      modalShow: false,
+      isLoaded: false,
+    });
+  };
+
+  UpdateAgentlist = (updateAgentList, student_id) => {
+    console.log("click updateAgentList");
+    console.log(updateAgentList);
+    const auth = localStorage.getItem("token");
+    fetch(window.update_agent_API + "/" + student_id, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth),
+      },
+      body: JSON.stringify(updateAgentList),
+    })
+      // .then((res) => res.json())
+      .then(
+        (res) => {
+          this.setState({
+            updateAgentList: [],
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          // this.setState({
+          //     isLoaded: false,
+          //     error
+          // });
+        }
+      );
+  };
+
+  UpdateEditorlist = (updateEditorList, student_id) => {
+    console.log("click updateEditorList");
+    console.log(updateEditorList);
+    const auth = localStorage.getItem("token");
+    fetch(window.update_editor_API + "/" + student_id, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth),
+      },
+      body: JSON.stringify(updateEditorList),
+    })
+      // .then((res) => res.json())
+      .then(
+        (res) => {
+          this.setState({
+            updateEditorList: [],
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          // this.setState({
+          //     isLoaded: false,
+          //     error
+          // });
+        }
+      );
+  };
+
   handleRemove = (i) => {
     this.setState((state) => ({
-      data: state.data.filter((row, j) => j !== i),
+      students: state.students.filter((row, j) => j !== i),
     }));
   };
 
   startEditingAgent = (i) => {
     console.log("startEditingAgent");
-    this.editAgent();
+    this.editAgent(i);
     this.setState({
       student_i: i, // i = student array index
       subpage: 1,
@@ -369,7 +490,7 @@ class Dashboard extends React.Component {
 
   startEditingEditor = (i) => {
     console.log("startEditingEditor");
-    this.editEditor();
+    this.editEditor(i);
     this.setState({
       student_i: i, // i = student array index
       subpage: 2,
@@ -399,7 +520,7 @@ class Dashboard extends React.Component {
   handleChange = (e, name, i) => {
     const { value } = e.target;
     this.setState((state) => ({
-      data: this.state.data.map((row, j) =>
+      students: this.state.students.map((row, j) =>
         j === i ? { ...row, [name]: value } : row
       ),
     }));
@@ -522,7 +643,7 @@ class Dashboard extends React.Component {
                     startEditingEditor={this.startEditingEditor}
                     startEditingProgram={this.startEditingProgram}
                     handleChange={this.handleChange}
-                    data={this.state.data}
+                    students={this.state.students}
                     RemoveProgramHandler3={this.RemoveProgramHandler3}
                     header={[
                       {
@@ -551,6 +672,12 @@ class Dashboard extends React.Component {
                     onRejectFilefromstudent={this.onRejectFilefromstudent}
                     onAcceptFilefromstudent={this.onAcceptFilefromstudent}
                     onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                    updateAgentList={this.state.updateAgentList}
+                    handleChangeAgentlist={this.handleChangeAgentlist}
+                    submitUpdateAgentlist={this.submitUpdateAgentlist}
+                    updateEditorList={this.state.updateEditorList}
+                    handleChangeEditorlist={this.handleChangeEditorlist}
+                    submitUpdateEditorlist={this.submitUpdateEditorlist}
                   />
                 </Card.Body>
               </Card>

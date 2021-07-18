@@ -11,59 +11,7 @@ import {
 } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import Programlist from "./ProgramList";
-
-class NewProgramWindow extends React.Component {
-  constructor(props) {
-    super(props);
-    this.setModalHide2 = props.setModalHide2.bind(this);
-    this.handleChangeNewProgram = props.handleChangeNewProgram.bind(this);
-    this.submitNewProgram = props.submitNewProgram.bind(this);
-    this.state = {
-      data: [],
-    };
-  }
-
-  render() {
-    return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.setModalHide2}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            New Program:
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {this.props.header.map((head, i) => (
-            <>
-              <h5 key={i}>{head.name}:</h5>
-              <Form>
-                <Form.Group>
-                  {/* <p>{prop}:</p> */}
-                  <Form.Control
-                    type="text"
-                    onChange={(e) =>
-                      this.handleChangeNewProgram(e, head.prop, i)
-                    }
-                    value={this.props.newProgramData[head.prop]}
-                  />
-                </Form.Group>
-              </Form>
-            </>
-          ))}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => this.submitNewProgram()}>Assign</Button>
-          <Button onClick={this.setModalHide2}>Cancel</Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-}
+import NewProgramWindow from "./NewProgramWindow";
 
 class ProgramTable extends React.Component {
   constructor(props) {
@@ -499,40 +447,7 @@ class ProgramTable extends React.Component {
                     cancelEditing={this.cancelEditing}
                     RemoveProgramHandler3={this.RemoveProgramHandler3}
                     onSubmit2={this.onSubmit2}
-                    header={[
-                      {
-                        name: "University",
-                        prop: "University_",
-                      },
-                      {
-                        name: "Program",
-                        prop: "Program_",
-                      },
-                      {
-                        name: "TOEFL",
-                        prop: "TOEFL_",
-                      },
-                      {
-                        name: "IELTS",
-                        prop: "IELTS_",
-                      },
-                      {
-                        name: "Degree",
-                        prop: "Degree_",
-                      },
-                      {
-                        name: "GRE/GMAT",
-                        prop: "GREGMAT_",
-                      },
-                      {
-                        name: "Application Deadline",
-                        prop: "Application_end_date_",
-                      },
-                      {
-                        name: "Last Update",
-                        prop: "LastUpdate_",
-                      },
-                    ]}
+                    header={window.ProgramlistHeader}
                   />
                   <NewProgramWindow
                     show={this.state.modalShowNewProgram}
@@ -540,88 +455,7 @@ class ProgramTable extends React.Component {
                     handleChangeNewProgram={this.handleChangeNewProgram}
                     submitNewProgram={this.submitNewProgram}
                     newProgramData={this.state.newProgramData}
-                    header={[
-                      {
-                        name: "University",
-                        prop: "University_",
-                      },
-                      {
-                        name: "Program",
-                        prop: "Program_",
-                      },
-                      {
-                        name: "TOEFL",
-                        prop: "TOEFL_",
-                      },
-                      {
-                        name: "IELTS",
-                        prop: "IELTS_",
-                      },
-                      {
-                        name: "Degree",
-                        prop: "Degree_",
-                      },
-                      {
-                        name: "GRE/GMAT",
-                        prop: "GREGMAT_",
-                      },
-                      {
-                        name: "Application Deadline",
-                        prop: "Application_end_date_",
-                      },
-                      {
-                        name: "CV Deadline",
-                        prop: "CV_",
-                      },
-                      {
-                        name: "ML",
-                        prop: "ML_",
-                      },
-                      {
-                        name: "RL",
-                        prop: "RL_",
-                      },
-                      {
-                        name: "Bachelor Certificate",
-                        prop: "bachelorCertificate_",
-                      },
-                      {
-                        name: "Bachelor Transcript",
-                        prop: "bachelorTranscript_",
-                      },
-                      {
-                        name: "High School Diploma",
-                        prop: "highSchoolDiploma_",
-                      },
-                      {
-                        name: "High School Transcript",
-                        prop: "highSchoolTranscript_",
-                      },
-                      {
-                        name: "GSAT(基測)",
-                        prop: "universityEntranceExamination_",
-                      },
-                      {
-                        name: "English Certificate",
-                        prop: "EnglischCertificate_",
-                      },
-                      {
-                        name: "German Certificate",
-                        prop: "GermanCertificate_",
-                      },
-                      {
-                        name: "Essay",
-                        prop: "Essay_",
-                      },
-                      {
-                        name: "ECTS Conversion",
-                        prop: "ECTS_coversion_",
-                      },
-                      {
-                        name: "Course Description",
-                        prop: "CourseDescription_",
-                      },
-                    ]}
+                    header={window.NewProgramHeader}
                   />
                 </Card.Body>
               </Card>

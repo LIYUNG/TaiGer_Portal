@@ -399,6 +399,43 @@ exports.editagent = async (req, res, next) => {
   }
 };
 
+exports.updateagent = async (req, res, next) => {
+  console.log(req.body);
+  // console.log(req.params.student_id);
+  try {
+    // req.body;
+    const Agent_all = await Student.find({ role_: "Agent" });
+    const student = await Student.findById(req.params.student_id);
+    console.log(student._id);
+    let temp_updateAgentlist = [];
+    Agent_all.map((agent) =>
+      // console.log(agent.emailaddress_)
+      req.body[agent.emailaddress_] === undefined
+        ? console.log("undefined")
+        : req.body[agent.emailaddress_]
+        ? temp_updateAgentlist.push(agent.emailaddress_)
+        : //  var indx = await student.agent_.indexOf(agent.emailaddress_);
+          // add agent student's database
+          // remove agent student's database
+          console.log("false")
+    );
+    student.agent_ = temp_updateAgentlist;
+    await student.save();
+    console.log("temp_updateAgentlist: " + temp_updateAgentlist);
+    console.log("update agent list success!");
+    res.status(200).end();
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      // if the error thrown is because the JWT is unauthorized, return a 401 error
+      console.log(e);
+      console.log("error by update agent");
+      return res.status(500).end(); // 500 Internal Server Error
+    }
+    console.log(err);
+    return res.status(500).end(); // 500 Internal Server Error
+  }
+};
+
 exports.editeditor = async (req, res, next) => {
   try {
     const Editor_all = await Student.find({ role_: "Editor" });
@@ -418,12 +455,43 @@ exports.editeditor = async (req, res, next) => {
   }
 };
 
+exports.updateeditor = async (req, res, next) => {
+  console.log(req.body);
+
+  try {
+    // req.body;
+    const Editor_All = await Student.find({ role_: "Editor" });
+    const student = await Student.findById(req.params.student_id);
+    console.log(student._id);
+    let temp_updateEditorlist = [];
+    Editor_All.map((editor) =>
+      req.body[editor.emailaddress_] === undefined
+        ? console.log("undefined")
+        : req.body[editor.emailaddress_]
+        ? temp_updateEditorlist.push(editor.emailaddress_)
+        : console.log("false")
+    );
+    student.editor_ = temp_updateEditorlist;
+    await student.save();
+    console.log("temp_updateEditorlist: " + temp_updateEditorlist);
+    console.log("update editor list success!");
+    res.status(200).end();
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      // if the error thrown is because the JWT is unauthorized, return a 401 error
+      console.log(e);
+      console.log("error by update editor");
+      return res.status(500).end(); // 500 Internal Server Error
+    }
+    console.log(err);
+    return res.status(500).end(); // 500 Internal Server Error
+  }
+};
+
 exports.editstudentprogram = async (req, res, next) => {
   console.log("editstudentprogram success!");
   res.status(404).end();
 };
-
-
 
 exports.deleteprogramfromstudent = async (req, res, next) => {
   try {

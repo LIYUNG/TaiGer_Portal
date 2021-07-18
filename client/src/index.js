@@ -15,7 +15,9 @@ if (is_Dev) {
   window.Student_API = "http://localhost:3000/studentlist";
   window.del_prog_std_API = "http://localhost:3000/deleteprogramfromstudent";
   window.edit_agent_API = "http://localhost:3000/editagent";
+  window.update_agent_API = "http://localhost:3000/updateagent";
   window.edit_editor_API = "http://localhost:3000/editeditor";
+  window.update_editor_API = "http://localhost:3000/updateeditor";
   window.accept_document_API = "http://localhost:3000/acceptdoc";
   window.reject_document_API = "http://localhost:3000/rejectdoc";
   window.login = "http://localhost:3000/login";
@@ -32,7 +34,9 @@ if (is_Dev) {
   window.Student_API = "http://54.214.118.145:3000/studentlist";
   window.del_prog_std_API = "http://54.214.118.145:3000/deleteprogramfromstudent";
   window.edit_agent_API = "http://54.214.118.145:3000/editagent";
+  window.update_agent_API = "http://54.214.118.145:3000/updateagent";
   window.edit_editor_API = "http://54.214.118.145:3000/editeditor";
+  window.update_editor_API = "http://54.214.118.145:3000/updateeditor";
   window.accept_document_API = "http://54.214.118.145:3000/acceptdoc";
   window.reject_document_API = "http://54.214.118.145:3000/rejectdoc";
   window.login = "http://54.214.118.145:3000/login";
@@ -101,6 +105,125 @@ window.documentlist = [
     prop: "CourseDescription_",
   },
 ];
+
+window.ProgramlistHeader = [
+  {
+    name: "University",
+    prop: "University_",
+  },
+  {
+    name: "Program",
+    prop: "Program_",
+  },
+  {
+    name: "TOEFL",
+    prop: "TOEFL_",
+  },
+  {
+    name: "IELTS",
+    prop: "IELTS_",
+  },
+  {
+    name: "Degree",
+    prop: "Degree_",
+  },
+  {
+    name: "GRE/GMAT",
+    prop: "GREGMAT_",
+  },
+  {
+    name: "Application Deadline",
+    prop: "Application_end_date_",
+  },
+  {
+    name: "Last Update",
+    prop: "LastUpdate_",
+  },
+];
+
+window.NewProgramHeader = [
+  {
+    name: "University",
+    prop: "University_",
+  },
+  {
+    name: "Program",
+    prop: "Program_",
+  },
+  {
+    name: "TOEFL",
+    prop: "TOEFL_",
+  },
+  {
+    name: "IELTS",
+    prop: "IELTS_",
+  },
+  {
+    name: "Degree",
+    prop: "Degree_",
+  },
+  {
+    name: "GRE/GMAT",
+    prop: "GREGMAT_",
+  },
+  {
+    name: "Application Deadline",
+    prop: "Application_end_date_",
+  },
+  {
+    name: "CV Deadline",
+    prop: "CV_",
+  },
+  {
+    name: "ML",
+    prop: "ML_",
+  },
+  {
+    name: "RL",
+    prop: "RL_",
+  },
+  {
+    name: "Bachelor Certificate",
+    prop: "bachelorCertificate_",
+  },
+  {
+    name: "Bachelor Transcript",
+    prop: "bachelorTranscript_",
+  },
+  {
+    name: "High School Diploma",
+    prop: "highSchoolDiploma_",
+  },
+  {
+    name: "High School Transcript",
+    prop: "highSchoolTranscript_",
+  },
+  {
+    name: "GSAT(基測)",
+    prop: "universityEntranceExamination_",
+  },
+  {
+    name: "English Certificate",
+    prop: "EnglischCertificate_",
+  },
+  {
+    name: "German Certificate",
+    prop: "GermanCertificate_",
+  },
+  {
+    name: "Essay",
+    prop: "Essay_",
+  },
+  {
+    name: "ECTS Conversion",
+    prop: "ECTS_coversion_",
+  },
+  {
+    name: "Course Description",
+    prop: "CourseDescription_",
+  },
+];
+
 const app = (
   <Provider store={store}>
     <BrowserRouter basename={config.basename}>

@@ -145,11 +145,14 @@ exports.programlist = async (req, res) => {
       const program_all = await Program.find();
       res.send({
         data: program_all,
+        role: "Agent"
       });
     } else {
       //TODO: show student's own program list
       res.send({
-        data: [students_exists],
+        // send the student's selected program
+        data: students_exists.applying_program_,
+        role: "Student",
       });
     }
   } catch (err) {
@@ -337,12 +340,14 @@ exports.studentlist = async (req, res) => {
       );
       res.send({
         data: student_all,
+        role: "Agent"
       });
     } else if (students_exists.role_ === "Admin") {
       const student_all = await Student.find({ role_: "Student" });
       console.log("Admin get all student list");
       res.send({
         data: student_all,
+        role: "Admin",
       });
     } else if (students_exists.role_ === "Editor") {
       const Editor = await Student.findOne({ emailaddress_: emailaddress }); //get email by token
@@ -355,6 +360,7 @@ exports.studentlist = async (req, res) => {
       );
       res.send({
         data: student_all,
+        role: "Editor",
       });
     } else {
       console.log(
@@ -366,6 +372,7 @@ exports.studentlist = async (req, res) => {
       );
       res.send({
         data: [students_exists],
+        role: "Student",
       });
     }
   } catch (err) {
@@ -403,7 +410,7 @@ exports.updateagent = async (req, res, next) => {
   console.log(req.body);
   // console.log(req.params.student_id);
   try {
-    // req.body;
+    //TODO: only admin can update agent
     const Agent_all = await Student.find({ role_: "Agent" });
     const student = await Student.findById(req.params.student_id);
     console.log(student._id);
@@ -460,6 +467,7 @@ exports.updateeditor = async (req, res, next) => {
 
   try {
     // req.body;
+    //TODO: only admin can update editor
     const Editor_All = await Student.find({ role_: "Editor" });
     const student = await Student.findById(req.params.student_id);
     console.log(student._id);

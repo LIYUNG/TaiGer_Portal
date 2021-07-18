@@ -18,6 +18,7 @@ class ProgramTable extends React.Component {
     super(props);
     this.state = {
       error: null,
+      role: "",
       isLoaded: false,
       editIdx: -1,
       modalShow: false,
@@ -47,6 +48,7 @@ class ProgramTable extends React.Component {
           this.setState({
             isLoaded: true,
             data: result.data,
+            role: result.role,
           });
         },
         // Note: it's important to handle errors here
@@ -92,14 +94,6 @@ class ProgramTable extends React.Component {
         );
     }
   }
-
-  // shouldComponentUpdate(nextProps) {
-  //     if (nextProps.isLoaded !== this.state.isLoaded) {
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-  // }
 
   deleteProgram = (program_id) => {
     console.log("click delete");
@@ -418,18 +412,23 @@ class ProgramTable extends React.Component {
                     </Col>
                     <Col>
                       <ButtonToolbar className="float-right">
-                        <button
-                          className="btn btn-primary"
-                          type="submit"
-                          onClick={() => this.NewProgram()}
-                        >
-                          New Program
-                        </button>
+                        {this.state.role === "Student" ? (
+                          <></>
+                        ) : (
+                          <button
+                            className="btn btn-primary"
+                            type="submit"
+                            onClick={() => this.NewProgram()}
+                          >
+                            New Program
+                          </button>
+                        )}
                       </ButtonToolbar>
                     </Col>
                     {/* <span className="d-block m-t-5">use bootstrap <code>Table</code> component</span> */}
                   </Row>
                   <Programlist
+                    role={this.state.role}
                     ModalShow={this.state.modalShow}
                     ProgramID={this.state.ProgramId}
                     StudentId={this.state.StudentId}

@@ -57,13 +57,13 @@ export default {
                         }
                     ]
                 },
-                {
-                    id: 'form-basic',
-                    title: 'Form Elements',
-                    type: 'item',
-                    url: '/forms/form-basic',
-                    icon: 'feather icon-file-text'
-                },
+                // {
+                //     id: 'form-basic',
+                //     title: 'Form Elements',
+                //     type: 'item',
+                //     url: '/forms/form-basic',
+                //     icon: 'feather icon-file-text'
+                // },
                 {
                     id: 'program-talbe',
                     title: 'Program List',

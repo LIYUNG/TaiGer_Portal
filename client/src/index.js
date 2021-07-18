@@ -104,6 +104,10 @@ window.documentlist = [
     name: "Course Description",
     prop: "CourseDescription_",
   },
+  {
+    name: "Passport",
+    prop: "Passport_",
+  },
 ];
 
 window.ProgramlistHeader = [
@@ -221,6 +225,10 @@ window.NewProgramHeader = [
   {
     name: "Course Description",
     prop: "CourseDescription_",
+  },
+  {
+    name: "Passport",
+    prop: "Passport_",
   },
 ];
 

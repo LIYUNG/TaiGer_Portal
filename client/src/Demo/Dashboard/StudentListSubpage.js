@@ -33,79 +33,10 @@ class StudentListSubpage extends React.Component {
     this.onAcceptFilefromstudent =
       this.props.onAcceptFilefromstudent.bind(this);
   }
-  //   componentDidUpdate() {
-  //     if (this.props.show) {
-  //       var tempAgentList = {};
-  //       this.props.agent_list.map((agent, i) => {
-  //         if (
-  //           this.props.students[this.props.student_i].agent_.indexOf(
-  //             agent.emailaddress_
-  //           ) > -1
-  //         ) {
-  //           console.log("true");
-  //           tempAgentList[agent.emailaddress_] = true;
-  //         } else {
-  //           console.log("false");
-  //           tempAgentList[agent.emailaddress_] = false;
-  //         }
-  //       });
-  //       console.log("default tempAgentList " + JSON.stringify(tempAgentList));
-  //       this.state.updateAgentList = tempAgentList;
-  //     }
-  //   }
-
-  //   componentDidMount() {
-  //     if (this.props.show) {
-  //       var tempAgentList = {};
-  //       this.props.agent_list.map((agent, i) => {
-  //         if (
-  //           this.props.students[this.props.student_i].agent_.indexOf(
-  //             agent.emailaddress_
-  //           ) > -1
-  //         ) {
-  //           console.log("true");
-  //           tempAgentList[agent.emailaddress_] = true;
-  //         } else {
-  //           console.log("false");
-  //           tempAgentList[agent.emailaddress_] = false;
-  //         }
-  //       });
-  //       console.log("default tempAgentList " + JSON.stringify(tempAgentList));
-  //       this.state.updateAgentList = tempAgentList;
-  //     }
-  //   }
-
-  //   handleInitAgentChecked = () => {
-  //     console.log(this.state.updateAgentList);
-
-  //     // this.setState({
-  //     //   updateAgentList: "a",
-  //     // });
-
-  //     // this.setState((prevState) => ({
-  //     //   updateAgentList: {
-  //     //     ...prevState.updateAgentList,
-  //     //     this.props.agent_list.map((agent, i) =>
-  //     //   [agent.emailaddress_]: (this.props.students[this.props.student_i].agent_.indexOf(
-  //     //     agent.emailaddress_
-  //     //   ) > -1
-  //     //     ? true
-  //     //     : false
-  //     // ))
-  //     //     // [value]: defaultChecked,
-  //     //   },
-  //     // }));
-  //   };
-
-//   handleSubmitUpdateAgentlist = (updateAgentList) => {
-//     this.props.submitUpdateAgentlist(updateAgentList);
-//   };
 
   render() {
     if (this.props.subpage === 1) {
       // edit Agent subpage
-
-      // console.log("agent list : " + this.props.agent_list);
       let agentlist = this.props.agent_list ? (
         this.props.agent_list.map((agent, i) => (
           <div key={i + 1}>

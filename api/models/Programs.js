@@ -21,6 +21,7 @@ const documents = new mongoose.Schema({
   Essay_: uploadedDocsInfo,
   ECTS_conversion_: uploadedDocsInfo,
   CourseDescription_: uploadedDocsInfo,
+  Passport_: uploadedDocsInfo,
 });
 
 const programs = new mongoose.Schema({

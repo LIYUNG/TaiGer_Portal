@@ -13,6 +13,7 @@ class Dashboard extends React.Component {
     super(props);
     this.state = {
       student_i: -1,
+      role: "",
       error: null,
       subpage: -1,
       modalShow: false,
@@ -42,6 +43,7 @@ class Dashboard extends React.Component {
           this.setState({
             isLoaded: true,
             students: result.data,
+            role: result.role,
           });
         },
         // Note: it's important to handle errors here
@@ -633,6 +635,7 @@ class Dashboard extends React.Component {
                 </Card.Header>
                 <Card.Body className="px-0 py-2">
                   <Studentlist
+                    role={this.state.role}
                     agent_list={this.state.agent_list}
                     editor_list={this.state.editor_list}
                     ModalShow={this.state.modalShow}
@@ -682,64 +685,23 @@ class Dashboard extends React.Component {
                 </Card.Body>
               </Card>
             </Col>
-            {/* <Col md={6} xl={4}>
-                            <Card className='card-event'>
-                                <Card.Body>
-                                    <div className="row align-items-center justify-content-center">
-                                        <div className="col">
-                                            <h5 className="m-0">Upcoming Event</h5>
-                                        </div>
-                                        <div className="col-auto">
-                                            <label className="label theme-bg2 text-white f-14 f-w-400 float-right">34%</label>
-                                        </div>
-                                    </div>
-                                    <h2 className="mt-2 f-w-300">45<sub className="text-muted f-14">Competitors</sub></h2>
-                                    <h6 className="text-muted mt-3 mb-0">You can participate in event </h6>
-                                    <i className="fa fa-angellist text-c-purple f-50" />
-                                </Card.Body>
-                            </Card>
-                            <Card>
-                                <Card.Body className='border-bottom'>
-                                    <div className="row d-flex align-items-center">
-                                        <div className="col-auto">
-                                            <i className="feather icon-zap f-30 text-c-green" />
-                                        </div>
-                                        <div className="col">
-                                            <h3 className="f-w-300">235</h3>
-                                            <span className="d-block text-uppercase">total ideas</span>
-                                        </div>
-                                    </div>
-                                </Card.Body>
-                                <Card.Body>
-                                    <div className="row d-flex align-items-center">
-                                        <div className="col-auto">
-                                            <i className="feather icon-map-pin f-30 text-c-blue" />
-                                        </div>
-                                        <div className="col">
-                                            <h3 className="f-w-300">26</h3>
-                                            <span className="d-block text-uppercase">total locations</span>
-                                        </div>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col> */}
           </Row>
-          <Row>
-            {/* <Col md={6} xl={8} className='m-b-30'> */}
-            <Col className="m-b-30">
-              <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
-                <Tab eventKey="today" title="Today">
-                  {tabContent}
-                </Tab>
-                <Tab eventKey="week" title="This Week">
-                  {tabContent}
-                </Tab>
-                <Tab eventKey="all" title="All">
-                  {tabContent}
-                </Tab>
-              </Tabs>
-            </Col>
-          </Row>
+          {this.state.role === "Student" ? (
+            <></>
+          ) : (
+            <Row>
+              <Col className="m-b-30">
+                <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
+                  <Tab eventKey="today" title="To Do list:">
+                    {tabContent}
+                  </Tab>
+                  <Tab eventKey="week" title="Deadline overview">
+                    {tabContent}
+                  </Tab>
+                </Tabs>
+              </Col>
+            </Row>
+          )}
         </Aux>
       );
     }

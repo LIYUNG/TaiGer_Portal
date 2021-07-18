@@ -25,74 +25,137 @@ const row = (
   stopEditing,
   RemoveProgramHandler3,
   cancelEditing,
-  setModalShow
+  setModalShow,
+  role
 ) => {
   const currentlyEditing = editIdx === i;
-  return (
-    <tr key={x._id}>
-      <th>
-        {currentlyEditing ? (
-          <div>
-            <Button
-              className="btn-square"
-              variant="danger"
-              onClick={() => stopEditing(x)}
-            >
-              <UcFirst text="Save" />
-            </Button>
-            <Button
-              className="btn-square"
-              variant="info"
-              onClick={() => cancelEditing()}
-            >
-              <UcFirst text="Cancel" />
-            </Button>
-          </div>
-        ) : (
-          <DropdownButton
-            size="sm"
-            title="Option"
-            variant="primary"
-            id={`dropdown-variants-${x._id}`}
-            key={x._id}
-          >
-            <Dropdown.Item eventKey="1" onSelect={() => startEditing(i)}>
-              Edit
-            </Dropdown.Item>
-            <Dropdown.Item
-              eventKey="2"
-              onSelect={() => setModalShow(x.University, x.Program, x._id)}
-            >
-              Assign to student...
-            </Dropdown.Item>
-            <Dropdown.Item
-              eventKey="3"
-              onSelect={() => RemoveProgramHandler3(x._id)}
-            >
-              Delete
-            </Dropdown.Item>
-          </DropdownButton>
-        )}
-      </th>
-      {header.map((y, k) => (
-        <td key={k}>
+  if (role === "Agent" || role === "Editor" || role === "Admin") {
+    return (
+      <tr key={x._id}>
+        <th>
           {currentlyEditing ? (
-            <Form>
-              <Form.Group>
-                <Form.Control
-                  type="text"
-                  onChange={(e) => handleChange(e, y.prop, i)}
-                  value={x[y.prop]}
-                />
-              </Form.Group>
-            </Form>
+            <div>
+              <Button
+                className="btn-square"
+                variant="danger"
+                onClick={() => stopEditing(x)}
+              >
+                <UcFirst text="Save" />
+              </Button>
+              <Button
+                className="btn-square"
+                variant="info"
+                onClick={() => cancelEditing()}
+              >
+                <UcFirst text="Cancel" />
+              </Button>
+            </div>
           ) : (
-            x[y.prop]
+            <DropdownButton
+              size="sm"
+              title="Option"
+              variant="primary"
+              id={`dropdown-variants-${x._id}`}
+              key={x._id}
+            >
+              <Dropdown.Item eventKey="1" onSelect={() => startEditing(i)}>
+                Edit
+              </Dropdown.Item>
+              <Dropdown.Item
+                eventKey="2"
+                onSelect={() => setModalShow(x.University, x.Program, x._id)}
+              >
+                Assign to student...
+              </Dropdown.Item>
+              <Dropdown.Item
+                eventKey="3"
+                onSelect={() => RemoveProgramHandler3(x._id)}
+              >
+                Delete
+              </Dropdown.Item>
+            </DropdownButton>
           )}
-        </td>
-      ))}
-    </tr>
-  );
+        </th>
+        {header.map((y, k) => (
+          <td key={k}>
+            {currentlyEditing ? (
+              <Form>
+                <Form.Group>
+                  <Form.Control
+                    type="text"
+                    onChange={(e) => handleChange(e, y.prop, i)}
+                    value={x[y.prop]}
+                  />
+                </Form.Group>
+              </Form>
+            ) : (
+              x[y.prop]
+            )}
+          </td>
+        ))}
+      </tr>
+    );
+  } else {
+    return (
+      <tr key={x._id}>
+        <th>
+          {currentlyEditing ? (
+            <div>
+              <Button
+                className="btn-square"
+                variant="danger"
+                onClick={() => stopEditing(x)}
+              >
+                <UcFirst text="Save" />
+              </Button>
+              <Button
+                className="btn-square"
+                variant="info"
+                onClick={() => cancelEditing()}
+              >
+                <UcFirst text="Cancel" />
+              </Button>
+            </div>
+          ) : (
+            <DropdownButton
+              size="sm"
+              title="Option"
+              variant="primary"
+              id={`dropdown-variants-${x._id}`}
+              key={x._id}
+            >
+              <Dropdown.Item eventKey="1" >
+                See details
+              </Dropdown.Item>
+              {/* <Dropdown.Item
+                eventKey="2"
+                // onSelect={() => setModalShow(x.University, x.Program, x._id)}
+              >
+                Assign to student...
+              </Dropdown.Item> */}
+            </DropdownButton>
+          )}
+        </th>
+        {header.map((y, k) => (
+          <td key={k}>
+            {currentlyEditing ? (
+              <Form>
+                <Form.Group>
+                  <Form.Control
+                    type="text"
+                    onChange={(e) => handleChange(e, y.prop, i)}
+                    value={x[y.prop]}
+                  />
+                </Form.Group>
+              </Form>
+            ) : (
+              x[y.prop]
+            )}
+          </td>
+        ))}
+      </tr>
+    );
+  }
 };
 
 class Programlist extends React.Component {
@@ -121,7 +184,8 @@ class Programlist extends React.Component {
                 this.props.stopEditing,
                 this.props.RemoveProgramHandler3,
                 this.props.cancelEditing,
-                this.props.setModalShow
+                this.props.setModalShow,
+                this.props.role
               )
             )}
           </tbody>

@@ -1,16 +1,14 @@
 import React from "react";
-import { Row, Col, Card, Form, Modal } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import {
   Button,
   // OverlayTrigger,
   // Tooltip,
-  ButtonToolbar,
   // Dropdown,
   // DropdownButton,
   // SplitButton
 } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
-import Programlist from "./ProgramList";
+
 
 class NewProgramWindow extends React.Component {
   constructor(props) {

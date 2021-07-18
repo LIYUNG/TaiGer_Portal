@@ -1,40 +1,65 @@
-import React, {Component} from 'react';
-import {Row, Col} from 'react-bootstrap';
+import React, { Component } from "react";
+import { Row, Col } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
-import Card from "../../App/components/MainCard";
+import ApplicationArticleList from "./ApplicationArticleList";
+import ToggleableArticleForm from "./ToggleableArticleForm";
 
 class Application extends Component {
-    render() {
-        return (
-            <Aux>
-                <Row>
-                    <Col>
-                        <Card title='Application' isOption>
-                            <p> - First of all it's required to install latest Node and npm - <a href="https://nodejs.org/en/" target="_blank" rel="noopener noreferrer">nodejs</a></p>
-                            <p> - Unzip <code>datta-able-react-lite.zip</code> file, Inside that directory you will find the <code>datta-able-react-lite/</code> folder</p>
-                            <p> - Open your terminal/cmd then navigate to project directory <code>datta-able-react-lite/</code></p>
-                            <p> - Install npm packages using command <code>'npm install'</code>,  this will install required node.js third-party plugins into the <code>node_modules/</code> folder.</p>
-                            <p> - Compile/Run project using  command  <code>'npm start'</code>, this will compile app in development mode.</p>
-                            <p> - Open <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a> to view it on browser.</p>
-                            <p> - Now, You can use Datta Able React Admin Template for your application development. </p>
-                            <div className='theme-bg2 text-white p-3'>
-                                <p>The project was built assuming it is hosted at the server root folder of domain/platform i.e http://demo.com.</p>
+  state = {
+    articles: [
+      {
+        id: 123,
+        Titel_: "Application",
+        Content_: "Content",
+        LastUpdate_: "12/06/2021",
+      },
+      {
+        id: 1234,
+        Titel_: "Application2",
+        Content_: "Content2",
+        LastUpdate_: "13/06/2021",
+      },
+      {
+        id: 12345,
+        Titel_: "Application3",
+        Content_: "Content3",
+        LastUpdate_: "14/06/2021",
+      },
+    ],
+    editFormOpen: false,
+  };
+  handleCreateFormSubmit = (timer) => {
+    this.createTimer(timer);
+  };
 
-                                <p>You can control this with the homepage field in your package.json.</p>
-                                <p>To deploy build for sub-folder i.e http://demo.com/project-folder-name/ than "homepage" : "http://demo.com/project-folder-name/".</p>
+  createTimer = (article) => {
+    this.setState({
+      articles: this.state.articles.concat(article),
+    });
+    //TODO update article to database.
+    // fetch("/api/timers/start", {
+    //   method: "post",
+    //   body: JSON.stringify(article),
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    // }).then(checkStatus);
+  };
 
-                                <p>You  also need to set basename in ../src/config.js file.</p>
-                                <p>like, basename: '/project-folder-name'</p>
-                            </div>
-                            <p> - Build project using command <code>'npm run build'</code>, It will create <code>build/</code> folder inside datta-able-react-lite/ folder. </p>
-                            <p> - Your app is ready to be deployed. </p>
-                        </Card>
-                    </Col>
-                </Row>
-            </Aux>
-        );
-    }
+  render() {
+    return (
+      <Aux>
+        <Row>
+          <Col>
+            <ApplicationArticleList articles={this.state.articles} />
+            <ToggleableArticleForm onFormSubmit={this.handleCreateFormSubmit} />
+          </Col>
+        </Row>
+      </Aux>
+    );
+  }
 }
 
 export default Application;

@@ -1,8 +1,6 @@
 const Student = require("../models/Students");
-const Program = require("../models/Programs");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
-const bcrypt = require("bcrypt");
 const fs = require("fs");
 
 const jwtKey = "my_secret_key";

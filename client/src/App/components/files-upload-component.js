@@ -1,4 +1,4 @@
-import React, { Component, useRef } from "react";
+import React, { Component } from "react";
 import { Row, Col, Form } from "react-bootstrap";
 
 export default class FilesUploadComponent extends Component {

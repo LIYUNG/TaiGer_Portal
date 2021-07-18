@@ -1,15 +1,13 @@
 import React from "react";
 // import { FaBeer } from 'react-icons/fa';
 import {
-  AiFillCheckCircle,
   AiOutlineLoading3Quarters,
   AiOutlineCheck,
   AiOutlineClose,
   AiOutlineStop,
 } from "react-icons/ai";
-import { Row, Col, Table, Form, Modal } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import {
-  Button,
   // OverlayTrigger,
   // Tooltip,
   // ButtonToolbar,

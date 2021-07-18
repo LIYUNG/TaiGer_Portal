@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Form, Modal } from "react-bootstrap";
+import { Table, Form } from "react-bootstrap";
 import {
   Button,
   // OverlayTrigger,
@@ -10,7 +10,6 @@ import {
   // SplitButton
 } from "react-bootstrap";
 
-// import Aux from "../../hoc/_Aux";
 import UcFirst from "../../App/components/UcFirst";
 import ProgramListSubpage from "./ProgramListSubpage";
 

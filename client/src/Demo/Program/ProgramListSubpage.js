@@ -1,17 +1,14 @@
 import React from "react";
-import { Table, Form, Modal } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import {
   Button,
   // OverlayTrigger,
   // Tooltip,
   // ButtonToolbar,
-  Dropdown,
-  DropdownButton,
   // SplitButton
 } from "react-bootstrap";
 
 // import Aux from "../../hoc/_Aux";
-import UcFirst from "../../App/components/UcFirst";
 
 class ProgramListSubpage extends React.Component {
   constructor(props) {

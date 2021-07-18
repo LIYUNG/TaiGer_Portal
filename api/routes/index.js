@@ -1,6 +1,6 @@
 const multer = require("multer");
 
-const authRouter = require('./auth')
+const authRouter = require("./auth");
 
 const { auth } = require("../middlewares/auth");
 const { movefile } = require("../middlewares/movefile");
@@ -9,6 +9,7 @@ const { checkuserfolder } = require("../middlewares/checkuserfolder");
 const handlers = require("../controllers/handlers");
 const file_handler = require("../controllers/file_handler");
 const studentController = require("../controllers/students");
+const documentation_handler = require("../controllers/documentation_handler");
 
 const DIR = "./public/";
 
@@ -33,19 +34,21 @@ var upload = multer({
       file.mimetype == "application/pdf" ||
       file.mimetype == "image/png" ||
       file.mimetype == "image/jpg" ||
-      file.mimetype == "image/jpeg"
+      file.mimetype == "image/jpeg" ||
+      file.mimetype ==
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
       console.log("multer middleware: " + req.params.category);
       cb(null, true);
     } else {
       // cb(null, false);
-      return cb(new Error("Only .pdf .png, .jpg and .jpeg format allowed!"));
+      return cb(new Error("Only .pdf .png, .jpg and .jpeg .docx format allowed!"));
     }
   },
 });
 
 const router = (app) => {
-  app.use('/auth', authRouter)
+  app.use("/auth", authRouter);
 
   // TODO: organize below routes
   app.post("/login", handlers.signIn);

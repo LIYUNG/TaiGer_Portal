@@ -1,7 +1,6 @@
 import React from "react";
-import { Row, Col, Card, Form, Modal } from "react-bootstrap";
+import { Row, Col, Card } from "react-bootstrap";
 import {
-  Button,
   // OverlayTrigger,
   // Tooltip,
   ButtonToolbar,
@@ -425,7 +424,6 @@ class ProgramTable extends React.Component {
                         )}
                       </ButtonToolbar>
                     </Col>
-                    {/* <span className="d-block m-t-5">use bootstrap <code>Table</code> component</span> */}
                   </Row>
                   <Programlist
                     role={this.state.role}

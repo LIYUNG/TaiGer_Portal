@@ -29,11 +29,16 @@ class Application extends Component {
     ],
     editFormOpen: false,
   };
-  handleCreateFormSubmit = (timer) => {
-    this.createTimer(timer);
+  //   componentDidMount() {
+  //       // TODO: fetch articles from server to this.state.articles
+  //     this.setState({ file: "" });
+  //   }
+
+  handleCreateFormSubmit = (article) => {
+    this.createArticle(article);
   };
 
-  createTimer = (article) => {
+  createArticle = (article) => {
     this.setState({
       articles: this.state.articles.concat(article),
     });
@@ -48,12 +53,32 @@ class Application extends Component {
     // }).then(checkStatus);
   };
 
+  handleEditFormSubmit = (attrs) => {
+    this.updateTimer(attrs);
+  };
+
+  handleTrashClick = (articleId) => {
+    this.deleteArticle(articleId);
+  };
+
+  deleteArticle = (articleId) => {
+    this.setState({
+      articles: this.state.articles.filter(
+        (article) => article.id !== articleId
+      ),
+    });
+  };
+
   render() {
     return (
       <Aux>
         <Row>
           <Col>
-            <ApplicationArticleList articles={this.state.articles} />
+            <ApplicationArticleList
+              articles={this.state.articles}
+              onFormSubmit={this.handleEditFormSubmit}
+              onTrashClick={this.handleTrashClick}
+            />
             <ToggleableArticleForm onFormSubmit={this.handleCreateFormSubmit} />
           </Col>
         </Row>

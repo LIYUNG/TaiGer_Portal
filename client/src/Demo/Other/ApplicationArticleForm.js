@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "../../App/components/MainCard";
+import uuid from "react-uuid";
 
 class ApplicationArticleForm extends React.Component {
   state = {
@@ -17,16 +18,16 @@ class ApplicationArticleForm extends React.Component {
 
   handleSubmit = () => {
     this.props.onFormSubmit({
-      id: this.props.id,
+      id: uuid(),
       Titel_: this.state.Titel_,
       Content_: this.state.Content_,
     });
   };
 
   render() {
-    const submitText = this.props.title ? "Update" : "Create";
+    const submitText = this.props.id ? "Update" : "Create";
     return (
-      <Card title={this.props.title} isOption>
+      <Card title={this.props.title} >
         <div className="content">
           <div className="ui form">
             <div className="field">
@@ -41,7 +42,7 @@ class ApplicationArticleForm extends React.Component {
               <label>Project</label>
               <input
                 type="text"
-                defaultValue={this.props.project}
+                defaultValue={this.props.content}
                 onChange={this.handleProjectChange}
               />
             </div>

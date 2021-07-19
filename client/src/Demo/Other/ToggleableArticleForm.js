@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ApplicationArticleForm from "./ApplicationArticleForm";
+import { IoMdAdd } from "react-icons/io";
 
 class ToggleableArticleForm extends Component {
   // TODO: replace by database
@@ -34,7 +35,7 @@ class ToggleableArticleForm extends Component {
             className="ui basic button icon"
             onClick={this.handleFormOpen}
           >
-            <i className="plus icon" />
+            <IoMdAdd />
           </button>
         </div>
       );

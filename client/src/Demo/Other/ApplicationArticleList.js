@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ApplicationArticle from "./ApplicationArticle";
+import EditableApplicationArticle from "./EditableApplicationArticle";
 
 class ApplicationArticleList extends Component {
   // TODO: replace by database
@@ -7,11 +7,13 @@ class ApplicationArticleList extends Component {
 
   render() {
     const articles = this.props.articles.map((article) => (
-      <ApplicationArticle
+      <EditableApplicationArticle
         key={article.id}
         id={article.id}
         title={article.Titel_}
         content={article.Content_}
+        onFormSubmit={this.props.onFormSubmit}
+        onTrashClick={this.props.onTrashClick}
       />
     ));
     return <div>{articles}</div>;

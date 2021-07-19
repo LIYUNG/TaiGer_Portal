@@ -1,24 +1,26 @@
 import React, { Component } from "react";
 import Card from "../../App/components/MainCard";
+import { AiFillEdit } from "react-icons/ai";
 
+import { BsTrash } from "react-icons/bs";
 class ApplicationArticle extends Component {
-  state = {
-    editFormOpen: false,
+  handleTrashClick = () => {
+    this.props.onTrashClick(this.props.id);
   };
-
   render() {
-    if (this.state.editFormOpen) {
-      return (
-        <></>
-        // <TimerForm title={this.props.title} project={this.props.project} />
-      );
-    } else {
-      return (
-      <Card title={this.props.title} isOption>
+    return (
+      <Card title={this.props.title} >
         <p>{this.props.content}</p>
+        <div>
+          <span className="right">
+            <AiFillEdit onClick={this.props.onEditClick} />
+          </span>
+          <span className="right">
+            <BsTrash onClick={this.handleTrashClick} />
+          </span>
+        </div>
       </Card>
-      );
-    }
+    );
   }
 }
 

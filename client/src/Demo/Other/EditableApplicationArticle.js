@@ -46,6 +46,7 @@ class EditableApplicationArticle extends Component {
           content={this.props.content}
           onEditClick={this.handleEditClick}
           onTrashClick={this.props.onTrashClick}
+          lastupdate={this.props.lastupdate}
         />
       );
     }

@@ -4,21 +4,23 @@ import uuid from "react-uuid";
 
 class ApplicationArticleForm extends React.Component {
   state = {
-    Titel_: this.props.Titel_ || "",
-    Content_: this.props.Content_ || "",
+    Titel_: this.props.title || "",
+    Content_: this.props.content || "",
   };
 
   handleTitleChange = (e) => {
     this.setState({ Titel_: e.target.value });
   };
 
-  handleProjectChange = (e) => {
+  handleContentChange = (e) => {
     this.setState({ Content_: e.target.value });
   };
 
   handleSubmit = () => {
     this.props.onFormSubmit({
-      id: uuid(),
+      _id: uuid(),
+      LastUpdate_: Date(),
+      Category_: "Application",
       Titel_: this.state.Titel_,
       Content_: this.state.Content_,
     });
@@ -27,7 +29,7 @@ class ApplicationArticleForm extends React.Component {
   render() {
     const submitText = this.props.id ? "Update" : "Create";
     return (
-      <Card title={this.props.title} >
+      <Card title={this.props.title}>
         <div className="content">
           <div className="ui form">
             <div className="field">
@@ -39,11 +41,11 @@ class ApplicationArticleForm extends React.Component {
               />
             </div>
             <div className="field">
-              <label>Project</label>
+              <label>Content</label>
               <input
                 type="text"
                 defaultValue={this.props.content}
-                onChange={this.handleProjectChange}
+                onChange={this.handleContentChange}
               />
             </div>
             <div className="ui two bottom attached buttons">

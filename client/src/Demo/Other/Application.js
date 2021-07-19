@@ -7,32 +7,34 @@ import ToggleableArticleForm from "./ToggleableArticleForm";
 
 class Application extends Component {
   state = {
-    articles: [
-      {
-        id: 123,
-        Titel_: "Application",
-        Content_: "Content",
-        LastUpdate_: "12/06/2021",
-      },
-      {
-        id: 1234,
-        Titel_: "Application2",
-        Content_: "Content2",
-        LastUpdate_: "13/06/2021",
-      },
-      {
-        id: 12345,
-        Titel_: "Application3",
-        Content_: "Content3",
-        LastUpdate_: "14/06/2021",
-      },
-    ],
+    articles: [],
     editFormOpen: false,
   };
-  //   componentDidMount() {
-  //       // TODO: fetch articles from server to this.state.articles
-  //     this.setState({ file: "" });
-  //   }
+  componentDidMount() {
+    // TODO: fetch articles from server to this.state.articles
+    // this.setState({ file: "" });
+    console.log("get article");
+    const auth = localStorage.getItem("token");
+    fetch(window.Get_Article, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth),
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+            console.log(JSON.stringify(result.documents));
+          this.setState({
+            articles: result.documents,
+          });
+        },
+        (error) => {}
+      );
+      
+  }
 
   handleCreateFormSubmit = (article) => {
     this.createArticle(article);
@@ -43,18 +45,64 @@ class Application extends Component {
       articles: this.state.articles.concat(article),
     });
     //TODO update article to database.
-    // fetch("/api/timers/start", {
-    //   method: "post",
+    console.log("click submit article");
+    console.log(article);
+    const auth = localStorage.getItem("token");
+    fetch(window.New_Article, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth),
+      },
+      body: JSON.stringify(article),
+    })
+      .then((res) => res.json())
+      .then((error) => {});
+    // fetch(window.New_Article, {
+    //   method: "POST",
     //   body: JSON.stringify(article),
     //   headers: {
     //     Accept: "application/json",
     //     "Content-Type": "application/json",
     //   },
-    // }).then(checkStatus);
+    // });
+    // .then(checkStatus);
   };
 
-  handleEditFormSubmit = (attrs) => {
-    this.updateTimer(attrs);
+  handleEditFormSubmit = (update_article) => {
+    this.updateArticle(update_article);
+  };
+
+  updateArticle = (attrs) => {
+    this.setState({
+      articles: this.state.articles.map((article) => {
+        if (article.id === attrs.id) {
+          return Object.assign({}, article, {
+            Titel_: attrs.Titel_,
+            Content_: attrs.Content_,
+          });
+        } else {
+          return article;
+        }
+      }),
+    });
+    //update article
+    // client.updateTimer(attrs);
+    console.log("click update article");
+    console.log(attrs);
+    const auth = localStorage.getItem("token");
+    fetch(window.Update_Article, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth),
+      },
+      body: JSON.stringify(attrs),
+    })
+      .then((res) => res.json())
+      .then((error) => {});
   };
 
   handleTrashClick = (articleId) => {
@@ -64,9 +112,23 @@ class Application extends Component {
   deleteArticle = (articleId) => {
     this.setState({
       articles: this.state.articles.filter(
-        (article) => article.id !== articleId
+        (article) => article._id !== articleId
       ),
     });
+
+    console.log("click submit article");
+    console.log(articleId);
+    const auth = localStorage.getItem("token");
+    fetch(window.New_Article + "/" + articleId, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth),
+      },
+    })
+      .then((res) => res.json())
+      .then((error) => {});
   };
 
   render() {

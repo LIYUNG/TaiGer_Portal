@@ -9,9 +9,10 @@ class ApplicationArticle extends Component {
   };
   render() {
     return (
-      <Card title={this.props.title} >
+      <Card title={this.props.title}>
         <p>{this.props.content}</p>
         <div>
+          <p>Last Update: {this.props.lastupdate}</p>
           <span className="right">
             <AiFillEdit onClick={this.props.onEditClick} />
           </span>

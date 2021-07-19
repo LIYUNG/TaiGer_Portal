@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const documentation = new mongoose.Schema({
+const documentations = new mongoose.Schema({
   Titel_: String,
   Category_: String,
   Content_: String,
@@ -7,4 +7,4 @@ const documentation = new mongoose.Schema({
   Content_: String,
 });
 
-module.exports = mongoose.model("documentation", documentation);
+module.exports = mongoose.model("documentations", documentations);

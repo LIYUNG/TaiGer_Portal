@@ -18,7 +18,7 @@ class ApplicationArticleForm extends React.Component {
 
   handleSubmit = () => {
     this.props.onFormSubmit({
-      _id: uuid(),
+      _id: this.props.id,
       LastUpdate_: Date(),
       Category_: "Application",
       Titel_: this.state.Titel_,

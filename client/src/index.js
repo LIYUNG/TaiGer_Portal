@@ -53,6 +53,8 @@ if (is_Dev) {
   window.delete = "http://54.214.118.145:3000/deletefile";
   window.download = "http://54.214.118.145:3000/download";
   window.New_Article = "http://54.214.118.145:3000/docs";
+  window.Get_Article = "http://54.214.118.145:3000/docs";
+  window.Update_Article = "http://54.214.118.145:3000/docs";
 }
 
 window.documentlist = [

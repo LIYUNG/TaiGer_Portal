@@ -7,6 +7,8 @@ import ToggleableArticleForm from "./ToggleableArticleForm";
 
 class Application extends Component {
   state = {
+    error: null,
+    isLoaded: false,
     articles: [],
     editFormOpen: false,
   };
@@ -26,14 +28,14 @@ class Application extends Component {
       .then((res) => res.json())
       .then(
         (result) => {
-            console.log(JSON.stringify(result.documents));
+          console.log(JSON.stringify(result.documents));
           this.setState({
             articles: result.documents,
+            isLoaded: true
           });
         },
         (error) => {}
       );
-      
   }
 
   handleCreateFormSubmit = (article) => {
@@ -41,12 +43,21 @@ class Application extends Component {
   };
 
   createArticle = (article) => {
-    this.setState({
-      articles: this.state.articles.concat(article),
-    });
+    // this.setState({
+    //   articles: this.state.articles.concat(article),
+    // });
     //TODO update article to database.
-    console.log("click submit article");
+    console.log("click create new article");
     console.log(article);
+    let article_temp = {};
+    Object.assign(article_temp, {
+      Titel_: article.Titel_,
+      Content_: article.Content_,
+      Category_: article.Category_,
+      LastUpdate_: article.LastUpdate_,
+    });
+    // delete article_temp._id;
+
     const auth = localStorage.getItem("token");
     fetch(window.New_Article, {
       method: "POST",
@@ -55,19 +66,19 @@ class Application extends Component {
         "Content-Type": "application/json",
         Authorization: "Bearer " + JSON.parse(auth),
       },
-      body: JSON.stringify(article),
+      body: JSON.stringify(article_temp),
     })
       .then((res) => res.json())
-      .then((error) => {});
-    // fetch(window.New_Article, {
-    //   method: "POST",
-    //   body: JSON.stringify(article),
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-    // .then(checkStatus);
+      .then(
+        (result) => {
+          console.log(JSON.stringify(result.documents));
+          this.setState({
+            articles: this.state.articles.concat(result.documents),
+          });
+          console.log(this.state.articles);
+        },
+        (error) => {}
+      );
   };
 
   handleEditFormSubmit = (update_article) => {
@@ -77,10 +88,13 @@ class Application extends Component {
   updateArticle = (attrs) => {
     this.setState({
       articles: this.state.articles.map((article) => {
-        if (article.id === attrs.id) {
+        if (article._id === attrs._id) {
           return Object.assign({}, article, {
+            _id: attrs._id,
             Titel_: attrs.Titel_,
             Content_: attrs.Content_,
+            Category_: attrs.Category_,
+            LastUpdate_: attrs.LastUpdate_,
           });
         } else {
           return article;
@@ -88,18 +102,27 @@ class Application extends Component {
       }),
     });
     //update article
-    // client.updateTimer(attrs);
     console.log("click update article");
     console.log(attrs);
+    let article_temp = {};
+    Object.assign(article_temp, {
+      //remove _id
+      Titel_: attrs.Titel_,
+      Content_: attrs.Content_,
+      Category_: attrs.Category_,
+      LastUpdate_: attrs.LastUpdate_,
+    });
     const auth = localStorage.getItem("token");
-    fetch(window.Update_Article, {
+    console.log(article_temp);
+
+    fetch(window.Update_Article + "/" + attrs._id, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + JSON.parse(auth),
       },
-      body: JSON.stringify(attrs),
+      body: JSON.stringify(article_temp),
     })
       .then((res) => res.json())
       .then((error) => {});
@@ -132,20 +155,35 @@ class Application extends Component {
   };
 
   render() {
-    return (
-      <Aux>
-        <Row>
-          <Col>
-            <ApplicationArticleList
-              articles={this.state.articles}
-              onFormSubmit={this.handleEditFormSubmit}
-              onTrashClick={this.handleTrashClick}
-            />
-            <ToggleableArticleForm onFormSubmit={this.handleCreateFormSubmit} />
-          </Col>
-        </Row>
-      </Aux>
-    );
+    const { error, isLoaded } = this.state;
+    if (error) {
+      //TODO: put error page component for timeout
+      localStorage.removeItem("token");
+      return (
+        <div>
+          Error: your session is timeout! Please refresh the page and Login
+        </div>
+      );
+    } else if (!isLoaded) {
+      return <div>Loading...</div>;
+    } else {
+      return (
+        <Aux>
+          <Row>
+            <Col>
+              <ApplicationArticleList
+                articles={this.state.articles}
+                onFormSubmit={this.handleEditFormSubmit}
+                onTrashClick={this.handleTrashClick}
+              />
+              <ToggleableArticleForm
+                onFormSubmit={this.handleCreateFormSubmit}
+              />
+            </Col>
+          </Row>
+        </Aux>
+      );
+    }
   }
 }
 

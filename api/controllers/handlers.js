@@ -503,7 +503,6 @@ exports.editstudentprogram = async (req, res, next) => {
 
 exports.deleteprogramfromstudent = async (req, res, next) => {
   try {
-    // console.log('filedownload req.params.filename = ' + req.params.category)
     const categoryName = req.params.category;
     const student_id = req.params.student_id;
     const program_id = req.params.program_id;

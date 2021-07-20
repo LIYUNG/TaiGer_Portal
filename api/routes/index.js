@@ -1,7 +1,6 @@
 const multer = require("multer");
 
 const authRouter = require("./auth");
-
 const { auth } = require("../middlewares/auth");
 const { movefile } = require("../middlewares/movefile");
 const { checkuserfolder } = require("../middlewares/checkuserfolder");
@@ -10,6 +9,7 @@ const handlers = require("../controllers/handlers");
 const file_handler = require("../controllers/file_handler");
 const studentController = require("../controllers/students");
 const documentation_handler = require("../controllers/documentation_handler");
+require("dotenv").config();
 
 const DIR = "./public/";
 
@@ -96,7 +96,7 @@ const router = (app) => {
   );
   app.get("/docs", auth, documentation_handler.ReadDocumentation);
   app.post("/docs", auth, documentation_handler.AddNewDocumentation);
-  app.post("/docs", auth, documentation_handler.UpdateDocumentation);
+  app.post("/docs/:article_id", auth, documentation_handler.UpdateDocumentation);
   app.delete("/docs/:article_id", auth, documentation_handler.DeleteDocumentation);
   app.get("/settings", auth, handlers.settings);
 };

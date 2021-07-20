@@ -19,7 +19,6 @@ exports.RegisterPost = async (req, res) => {
 			algorithm: "HS256",
 			expiresIn: jwtExpirySeconds,
 		})
-		// res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 })
 		// Hashing password
 		console.log("token: " + token);
 

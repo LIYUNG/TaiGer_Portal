@@ -91,7 +91,6 @@ class AdminLayout extends Component {
     };
 
     saveToken = userToken => {
-        // localStorage.setItem('token', JSON.stringify(userToken.token));
         try {
             if (userToken) {
                 localStorage.setItem('token', JSON.stringify(userToken.token));

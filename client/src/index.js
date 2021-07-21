@@ -9,7 +9,7 @@ import * as serviceWorker from "./serviceWorker";
 import reducer from "./store/reducer";
 import config from "./config";
 
-const store = createStore(reducer);
+const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 const is_Dev = true;
 if (is_Dev) {
   window.Student_API = "http://localhost:3000/studentlist";

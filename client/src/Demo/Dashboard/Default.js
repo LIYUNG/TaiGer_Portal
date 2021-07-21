@@ -8,6 +8,14 @@ import avatar2 from "../../assets/images/user/avatar-2.jpg";
 import avatar3 from "../../assets/images/user/avatar-3.jpg";
 import Studentlist from "./Studentlist";
 
+import {
+  getStudents,
+  updateAgents,
+  updateEditors,
+  acceptDocument,
+  download,
+} from "../../api";
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -27,28 +35,29 @@ class Dashboard extends React.Component {
     };
   }
   componentDidMount() {
-    const auth = localStorage.getItem("token");
-    fetch(window.Student_API, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    getStudents().then(
+      (resp) => {
+        const { data: students, role } = resp.data;
+        this.setState({ isLoaded: true, students, role });
       },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log(result.data);
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.isLoaded === false) {
+      getStudents().then(
+        (resp) => {
           this.setState({
             isLoaded: true,
-            students: result.data,
-            role: result.role,
+            students: resp.data.data,
           });
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           this.setState({
             isLoaded: true,
@@ -56,37 +65,6 @@ class Dashboard extends React.Component {
           });
         }
       );
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      const auth = localStorage.getItem("token");
-      fetch(window.Student_API, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + JSON.parse(auth),
-        },
-      })
-        .then((res) => res.json())
-        .then(
-          (result) => {
-            this.setState({
-              isLoaded: true,
-              students: result.data,
-            });
-          },
-          // Note: it's important to handle errors here
-          // instead of a catch() block so that we don't swallow
-          // exceptions from actual bugs in components.
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error,
-            });
-          }
-        );
     }
   }
 
@@ -94,8 +72,7 @@ class Dashboard extends React.Component {
     e.preventDefault();
     const auth = localStorage.getItem("token");
     var actualFileName;
-    var download_url = window.download + "/" + category + "/" + id; // id === student id
-    fetch(download_url, {
+    fetch(`${window.download}/${category}/${id}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -185,28 +162,18 @@ class Dashboard extends React.Component {
     //id == student id
     e.preventDefault();
     const auth = localStorage.getItem("token");
-    var acceptdoc_url = window.accept_document_API + "/" + category + "/" + id; // id === student id
-    fetch(acceptdoc_url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {},
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
+    acceptDocument(category, id).then(
+      (result) => {},
+      // Note: it's important to handle errors here
+      // instead of a catch() block so that we don't swallow
+      // exceptions from actual bugs in components.
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
   }
   onDeleteProgram(e, student_id, program_id) {
     //program id
@@ -411,67 +378,15 @@ class Dashboard extends React.Component {
   };
 
   UpdateAgentlist = (updateAgentList, student_id) => {
-    console.log("click updateAgentList");
-    console.log(updateAgentList);
-    const auth = localStorage.getItem("token");
-    fetch(window.update_agent_API + "/" + student_id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(updateAgentList),
-    })
-      // .then((res) => res.json())
-      .then(
-        (res) => {
-          this.setState({
-            updateAgentList: [],
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+    updateAgents(student_id, updateAgentList).then((resp) =>
+      this.setState({ updateAgentList: [] })
+    );
   };
 
   UpdateEditorlist = (updateEditorList, student_id) => {
-    console.log("click updateEditorList");
-    console.log(updateEditorList);
-    const auth = localStorage.getItem("token");
-    fetch(window.update_editor_API + "/" + student_id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(updateEditorList),
-    })
-      // .then((res) => res.json())
-      .then(
-        (res) => {
-          this.setState({
-            updateEditorList: [],
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+    updateEditors(student_id, updateEditorList).then((resp) =>
+      this.setState({ updateEditorList: [] })
+    );
   };
 
   handleRemove = (i) => {

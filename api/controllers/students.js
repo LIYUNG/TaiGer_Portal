@@ -1,6 +1,6 @@
 const Student = require("../models/Students");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 
 const path = require("path");

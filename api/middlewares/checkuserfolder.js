@@ -21,7 +21,9 @@ async function checkuserfolder(req, res, next) {
       "_" +
       students_exists._id;
     if (!fs.existsSync(process.env.BASE_PATH + process.env.PATH_DELIMITER)) {
-      fs.mkdirSync(process.env.BASE_PATH + process.env.PATH_DELIMITER);
+      fs.mkdirSync(process.env.BASE_PATH + process.env.PATH_DELIMITER, {
+        recursive: true,
+      });
       console.log("create public folder");
       next();
     }
@@ -35,25 +37,12 @@ async function checkuserfolder(req, res, next) {
       next();
     } else {
       console.log("checkuserfolder : create folder");
-      fs.mkdirSync(directoryPath);
+      fs.mkdirSync(directoryPath, {
+        recursive: true,
+      });
       next();
       // The check failed
     }
-    // fs.access(directoryPath, fs.constants.F_OK, (err) => {
-    //     console.log('\n> Checking if the Folder exists');
-    //     if (err) {
-    //         console.error('Folder does not exist');
-    //         // Create the Folder
-    //         console.log('\nCreating the Folder');
-    //         fs.mkdirSync(directoryPath);
-    //         // Test the if the Folder exists again
-    //         next()
-    //     }
-    //     else {
-    //         console.log('Folder does exist');
-    //         next()
-    //     }
-    // });
   } catch (e) {
     console.log("checkuserfolder error: " + e);
     return res.status(500).end(); // 500 Internal Server Error

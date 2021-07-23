@@ -3,7 +3,7 @@ const Program = require("../models/Programs");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
 // const path = require("path");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 // var nodemailer = require('nodemailer');
 
 

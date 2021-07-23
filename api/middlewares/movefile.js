@@ -35,7 +35,7 @@ async function movefile(req, res, next) {
             // The check succeeded
             const categoryPath = directoryPath + req.params.category
             if (!fs.existsSync(categoryPath)) {
-                fs.mkdirSync(categoryPath);
+                fs.mkdirSync(categoryPath, { recursive: true });
             }
             const newfilePath =
               categoryPath + process.env.PATH_DELIMITER + req.file.filename;

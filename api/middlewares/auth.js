@@ -2,6 +2,7 @@ const passport = require("passport");
 const { ErrorResponse } = require("../common/errors");
 
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 // TODO: remove this function
 async function auth(req, res, next) {

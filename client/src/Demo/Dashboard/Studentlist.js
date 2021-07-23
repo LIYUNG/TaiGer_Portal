@@ -87,11 +87,7 @@ const row = (
   } else {
     studentDocOverview = <p>So far no uploaded file!</p>;
   }
-  if (
-    role === "Agent" ||
-    role === "Editor" ||
-    role === "Admin"
-  ) {
+  if (role === "Agent" || role === "Editor" || role === "Admin") {
     return (
       <tr key={student._id}>
         <>

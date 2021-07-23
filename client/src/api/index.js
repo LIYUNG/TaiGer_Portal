@@ -1,27 +1,31 @@
-import request from './request'
+import request  from "./request";
 
 // Student_API
-export const getStudents = () => request.get('/studentlist')
+export const getStudents = () => request.get("/studentlist");
 
-export const download = (category, id) => request.get(`/download/${category}/${id}`)
+export const download = (category, id) =>
+  request.get(`/download/${category}/${id}`);
 
 // del_prog_std_API
-export const deleteProgram = () => request.delete('/deleteprogramfromstudent')
+export const deleteProgram = () => request.delete("/deleteprogramfromstudent");
 
 // edit_agent_API
-export const getAgents = () => request.get('/editagent')
+export const getAgents = () => request.get("/editagent");
 
 // update_agent_API
-export const updateAgents = (id, agents) => request.post(`/updateagent/${id}`, agents)
+export const updateAgents = (id, agents) =>
+  request.post(`/updateagent/${id}`, agents);
 
 // edit_editor_API
-export const getEditors = () => request.get('/editeditor')
+export const getEditors = () => request.get("/editeditor");
 
 // update_editor_API
-export const updateEditors = (id, editors) => request.post(`/updateeditor/${id}`, editors)
+export const updateEditors = (id, editors) =>
+  request.post(`/updateeditor/${id}`, editors);
 
 // accept_document_API, post data?
-export const acceptDocument = (category, id) => request.post(`/acceptdoc/${category}/${id}`)
+export const acceptDocument = (category, id) =>
+  request.post(`/acceptdoc/${category}/${id}`);
 
 // window.reject_document_API = "http://localhost:3000/rejectdoc";
 // window.login = "http://localhost:3000/login";

@@ -18,9 +18,16 @@ async function movefile(req, res, next) {
         emailaddress = emailaddress['emailaddress'];
         const students_exists = await Student.findOne({ emailaddress_: emailaddress });
         const FolderName = students_exists.firstname_ + '_' + students_exists.lastname_ + '_' + students_exists._id;
-        const directoryPath = __basedir + "\\public\\" + FolderName + '\\';
+        const directoryPath =
+          process.env.BASE_PATH +
+          process.env.PATH_DELIMITER +
+          FolderName +
+          process.env.PATH_DELIMITER;
         console.log('directoryPath : ' + directoryPath)
-        const filePath = __basedir + "\\public\\" + req.file.filename;
+        const filePath =
+          process.env.BASE_PATH +
+          process.env.PATH_DELIMITER +
+          req.file.filename;
 
 
         console.log('\n> Checking if the old path file exists');
@@ -30,7 +37,8 @@ async function movefile(req, res, next) {
             if (!fs.existsSync(categoryPath)) {
                 fs.mkdirSync(categoryPath);
             }
-            const newfilePath = categoryPath + '\\' + req.file.filename
+            const newfilePath =
+              categoryPath + process.env.PATH_DELIMITER + req.file.filename;
             if (fs.existsSync(newfilePath)) {
                 //TODO: store multiple file?
                 fs.unlinkSync(filePath) // delete file on old path, no moving

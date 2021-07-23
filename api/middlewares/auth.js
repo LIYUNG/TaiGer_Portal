@@ -3,8 +3,6 @@ const { ErrorResponse } = require("../common/errors");
 
 const jwt = require("jsonwebtoken");
 
-const jwtKey = "my_secret_key";
-
 // TODO: remove this function
 async function auth(req, res, next) {
   try {
@@ -19,7 +17,7 @@ async function auth(req, res, next) {
     // Note that we are passing the key in this method as well. This method will throw an error
     // if the token is invalid (if it has expired according to the expiry time we set on sign in),
     // or if the signature does not match
-    payload = jwt.verify(token, jwtKey);
+    payload = jwt.verify(token, process.env.JWT_KEY);
     console.log("authentication success");
     next();
   } catch (e) {

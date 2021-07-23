@@ -10,10 +10,13 @@ import Studentlist from "./Studentlist";
 
 import {
   getStudents,
+  download,
+  deleteProgram,
+  getAgents,
   updateAgents,
+  getEditors,
   updateEditors,
   acceptDocument,
-  download,
 } from "../../api";
 
 class Dashboard extends React.Component {
@@ -41,9 +44,11 @@ class Dashboard extends React.Component {
         this.setState({ isLoaded: true, students, role });
       },
       (error) => {
+        console.log(error);
+        console.log(": " + error);
         this.setState({
           isLoaded: true,
-          error,
+          error: true,
         });
       }
     );
@@ -53,6 +58,7 @@ class Dashboard extends React.Component {
     if (this.state.isLoaded === false) {
       getStudents().then(
         (resp) => {
+          console.log(resp.data.data);
           this.setState({
             isLoaded: true,
             students: resp.data.data,
@@ -61,7 +67,7 @@ class Dashboard extends React.Component {
         (error) => {
           this.setState({
             isLoaded: true,
-            error,
+            error: true,
           });
         }
       );
@@ -72,6 +78,7 @@ class Dashboard extends React.Component {
     e.preventDefault();
     const auth = localStorage.getItem("token");
     var actualFileName;
+
     fetch(`${window.download}/${category}/${id}`, {
       method: "GET",
       headers: {
@@ -80,6 +87,7 @@ class Dashboard extends React.Component {
         Authorization: "Bearer " + JSON.parse(auth),
       },
     })
+      // download(category, id)
       .then((res) => {
         actualFileName = res.headers.get("Content-Disposition").split('"')[1];
         return res.blob();
@@ -302,6 +310,7 @@ class Dashboard extends React.Component {
       .then(
         (result) => {
           console.log(result.data);
+          // init updateEditorList value, which editors are already selected
           var tempEditorList = {};
           result.data.map((editor, i) => {
             if (
@@ -359,6 +368,7 @@ class Dashboard extends React.Component {
     console.log(updateAgentList + " " + student_id);
     this.UpdateAgentlist(updateAgentList, student_id);
     this.setState({
+      updateAgentList: [],
       student_i: -1,
       subpage: -1,
       modalShow: false,
@@ -370,6 +380,7 @@ class Dashboard extends React.Component {
     console.log(updateEditorList + " " + student_id);
     this.UpdateEditorlist(updateEditorList, student_id);
     this.setState({
+      updateEditorList: [],
       student_i: -1,
       subpage: -1,
       modalShow: false,
@@ -378,15 +389,11 @@ class Dashboard extends React.Component {
   };
 
   UpdateAgentlist = (updateAgentList, student_id) => {
-    updateAgents(student_id, updateAgentList).then((resp) =>
-      this.setState({ updateAgentList: [] })
-    );
+    updateAgents(student_id, updateAgentList);
   };
 
   UpdateEditorlist = (updateEditorList, student_id) => {
-    updateEditors(student_id, updateEditorList).then((resp) =>
-      this.setState({ updateEditorList: [] })
-    );
+    updateEditors(student_id, updateEditorList);
   };
 
   handleRemove = (i) => {
@@ -539,86 +546,101 @@ class Dashboard extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      return (
-        <Aux>
-          <Row>
-            {/* <Col md={6} xl={8}> */}
-            <Col>
-              <Card className="Recent-Users">
-                <Card.Header>
-                  <Card.Title as="h5">Student List</Card.Title>
-                </Card.Header>
-                <Card.Body className="px-0 py-2">
-                  <Studentlist
-                    role={this.state.role}
-                    agent_list={this.state.agent_list}
-                    editor_list={this.state.editor_list}
-                    ModalShow={this.state.modalShow}
-                    setModalShow={this.setModalShow}
-                    setmodalhide={this.setmodalhide}
-                    handleRemove={this.handleRemove}
-                    startEditingAgent={this.startEditingAgent}
-                    startEditingEditor={this.startEditingEditor}
-                    startEditingProgram={this.startEditingProgram}
-                    handleChange={this.handleChange}
-                    students={this.state.students}
-                    RemoveProgramHandler3={this.RemoveProgramHandler3}
-                    header={[
-                      {
-                        name: "StudentName",
-                        prop: "StudentName",
-                      },
-                      {
-                        name: "Agent",
-                        prop: "agent_",
-                      },
-                      {
-                        name: "Editor",
-                        prop: "editor_",
-                      },
-                      {
-                        name: "Program",
-                        prop: "Program",
-                      },
-                    ]}
-                    documentslist={window.documentlist}
-                    startUploadfile={this.startUploadfile}
-                    subpage={this.state.subpage}
-                    student_i={this.state.student_i}
-                    onDeleteProgram={this.onDeleteProgram}
-                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                    onRejectFilefromstudent={this.onRejectFilefromstudent}
-                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                    updateAgentList={this.state.updateAgentList}
-                    handleChangeAgentlist={this.handleChangeAgentlist}
-                    submitUpdateAgentlist={this.submitUpdateAgentlist}
-                    updateEditorList={this.state.updateEditorList}
-                    handleChangeEditorlist={this.handleChangeEditorlist}
-                    submitUpdateEditorlist={this.submitUpdateEditorlist}
-                  />
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-          {this.state.role === "Student" ? (
-            <></>
-          ) : (
+      if (this.state.students) {
+        return (
+          <Aux>
             <Row>
-              <Col className="m-b-30">
-                <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
-                  <Tab eventKey="today" title="To Do list:">
-                    {tabContent}
-                  </Tab>
-                  <Tab eventKey="week" title="Deadline overview">
-                    {tabContent}
-                  </Tab>
-                </Tabs>
+              {/* <Col md={6} xl={8}> */}
+              <Col>
+                <Card className="Recent-Users">
+                  <Card.Header>
+                    <Card.Title as="h5">Student List</Card.Title>
+                  </Card.Header>
+                  <Card.Body className="px-0 py-2">
+                    <Studentlist
+                      role={this.state.role}
+                      agent_list={this.state.agent_list}
+                      editor_list={this.state.editor_list}
+                      ModalShow={this.state.modalShow}
+                      setModalShow={this.setModalShow}
+                      setmodalhide={this.setmodalhide}
+                      handleRemove={this.handleRemove}
+                      startEditingAgent={this.startEditingAgent}
+                      startEditingEditor={this.startEditingEditor}
+                      startEditingProgram={this.startEditingProgram}
+                      handleChange={this.handleChange}
+                      students={this.state.students}
+                      RemoveProgramHandler3={this.RemoveProgramHandler3}
+                      header={[
+                        {
+                          name: "StudentName",
+                          prop: "StudentName",
+                        },
+                        {
+                          name: "Agent",
+                          prop: "agent_",
+                        },
+                        {
+                          name: "Editor",
+                          prop: "editor_",
+                        },
+                        {
+                          name: "Program",
+                          prop: "Program",
+                        },
+                      ]}
+                      documentslist={window.documentlist}
+                      startUploadfile={this.startUploadfile}
+                      subpage={this.state.subpage}
+                      student_i={this.state.student_i}
+                      onDeleteProgram={this.onDeleteProgram}
+                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                      onRejectFilefromstudent={this.onRejectFilefromstudent}
+                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                      updateAgentList={this.state.updateAgentList}
+                      handleChangeAgentlist={this.handleChangeAgentlist}
+                      submitUpdateAgentlist={this.submitUpdateAgentlist}
+                      updateEditorList={this.state.updateEditorList}
+                      handleChangeEditorlist={this.handleChangeEditorlist}
+                      submitUpdateEditorlist={this.submitUpdateEditorlist}
+                    />
+                  </Card.Body>
+                </Card>
               </Col>
             </Row>
-          )}
-        </Aux>
-      );
+            {this.state.role === "Student" ? (
+              <></>
+            ) : (
+              <Row>
+                <Col className="m-b-30">
+                  <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
+                    <Tab eventKey="today" title="To Do list:">
+                      {tabContent}
+                    </Tab>
+                    <Tab eventKey="week" title="Deadline overview">
+                      {tabContent}
+                    </Tab>
+                  </Tabs>
+                </Col>
+              </Row>
+            )}
+          </Aux>
+        );
+      } else {
+        return (
+          <Aux>
+            <Row>
+              <Col>
+                <div>
+                  {" "}
+                  Error: Can not get data. Please refresh the page again!{" "}
+                </div>
+              </Col>
+            </Row>
+          </Aux>
+        );
+      }
     }
   }
 }

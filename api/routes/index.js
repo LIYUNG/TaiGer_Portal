@@ -38,6 +38,7 @@ var upload = multer({
       file.mimetype ==
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
+      console.log("multer middleware: ");
       console.log("multer middleware: " + req.params.category);
       cb(null, true);
     } else {

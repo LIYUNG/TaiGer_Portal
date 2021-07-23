@@ -1,6 +1,6 @@
 // FIXME: remove global variable
 global.__basedir = __dirname;
-global.jwtExpirySeconds = 6000;
+// global.jwtExpirySeconds = 6000;
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");

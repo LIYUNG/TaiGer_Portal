@@ -1,9 +1,6 @@
 const Student = require("../models/Students");
-const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
 const fs = require("fs");
-
-const jwtKey = "my_secret_key";
 
 exports.UploadPost = async (req, res) => {
   try {
@@ -23,10 +20,15 @@ exports.UploadPost = async (req, res) => {
       students_exists.lastname_ +
       "_" +
       students_exists._id;
-    const directoryPath = __basedir + "\\public\\" + FolderName + "\\";
+    const directoryPath =
+      process.env.BASE_PATH +
+      process.env.PATH_DELIMITER +
+      FolderName +
+      process.env.PATH_DELIMITER;
     const date_now = Date();
     // Dont worry the category path not exist, because it is generated from the middleware movefile.js
-    const categoryPath = directoryPath + req.params.category + "\\";
+    const categoryPath =
+      directoryPath + req.params.category + process.env.PATH_DELIMITER;
     console.log(req.file.filename);
     const category_name = req.params.category;
 
@@ -73,14 +75,20 @@ exports.filedownload = async (req, res, next) => {
     const template_file = category_name + "Template.docx";
 
     const directoryPath =
-      __basedir + "\\public\\" + "TaiGer_Template_2021_02" + "\\";
-    // var downloadPath = directoryPath + category_name + "\\" + example_file;
-    var downloadPath = directoryPath + category_name + "\\" + template_file;
+      process.env.BASE_PATH +
+      process.env.PATH_DELIMITER +
+      "TaiGer_Template_2021_02" +
+      process.env.PATH_DELIMITER;
+    var downloadPath =
+      directoryPath +
+      category_name +
+      process.env.PATH_DELIMITER +
+      template_file;
     //TODO: what if students_exists.uploadedDocs_.bachelorCertificate_ undefined?
 
     // downloadPath = students_exists.uploadedDocs_[category_name].filePath_;
 
-    var filename = downloadPath.split("\\");
+    var filename = downloadPath.split(process.env.PATH_DELIMITER);
     console.log("filename: " + filename);
     filename = filename.pop(); // Get the last element (file name)
     console.log("filename: " + filename);

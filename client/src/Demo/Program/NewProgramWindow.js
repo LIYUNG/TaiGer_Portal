@@ -41,7 +41,6 @@ class NewProgramWindow extends React.Component {
               <h5 key={i}>{head.name}:</h5>
               <Form>
                 <Form.Group>
-                  {/* <p>{prop}:</p> */}
                   <Form.Control
                     type="text"
                     onChange={(e) =>

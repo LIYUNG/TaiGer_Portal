@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "../../App/components/MainCard";
-import uuid from "react-uuid";
+import { Form, Button } from "react-bootstrap";
 
 class ApplicationArticleForm extends React.Component {
   state = {
@@ -29,60 +29,29 @@ class ApplicationArticleForm extends React.Component {
   render() {
     const submitText = this.props.id ? "Update" : "Create";
     return (
-      <Card title={this.props.title}>
-        <div className="content">
-          <div className="ui form">
-            <div className="field">
-              <label>Title</label>
-              <input
-                type="text"
-                defaultValue={this.props.title}
-                onChange={this.handleTitleChange}
-              />
-            </div>
-            <div className="field">
-              <label>Content</label>
-              <input
-                type="text"
-                defaultValue={this.props.content}
-                onChange={this.handleContentChange}
-              />
-            </div>
-            <div className="ui two bottom attached buttons">
-              <button
-                className="ui basic blue button"
-                onClick={this.handleSubmit}
-              >
-                {submitText}
-              </button>
-              <button
-                className="ui basic red button"
-                onClick={this.props.onFormClose}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </Card>
-      // <div className="ui centered card">
-      //   <div className="content">
-      //     <div className="ui form">
-      //       <div className="field">
-      //         <label>Title</label>
-      //         <input type="text" defaultValue={this.props.title} />
-      //       </div>
-      //       <div className="field">
-      //         <label>Project</label>
-      //         <input type="text" defaultValue={this.props.project} />
-      //       </div>
-      //       <div className="ui two bottom attached buttons">
-      //         <button className="ui basic blue button">{submitText}</button>
-      //         <button className="ui basic red button">Cancel</button>
-      //       </div>
-      //     </div>
-      //   </div>
-      // </div>
+      <Form>
+        <Card>
+          <Form.Group className="mb-3">
+            <Form.Control
+              type="test"
+              onChange={this.handleTitleChange}
+              defaultValue={this.props.title}
+              placeholder="Title"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Control
+              as="textarea"
+              rows="10"
+              onChange={this.handleContentChange}
+              defaultValue={this.props.content}
+              placeholder="Content"
+            />
+          </Form.Group>
+          <Button onClick={this.handleSubmit}>{submitText}</Button>
+          <Button onClick={this.props.onFormClose}>Cancel</Button>
+        </Card>
+      </Form>
     );
   }
 }

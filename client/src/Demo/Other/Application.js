@@ -57,7 +57,7 @@ class Application extends Component {
       LastUpdate_: article.LastUpdate_,
     });
     // delete article_temp._id;
-
+    // console.log("article_temp : " + JSON.stringify(article_temp));
     const auth = localStorage.getItem("token");
     fetch(window.New_Article, {
       method: "POST",

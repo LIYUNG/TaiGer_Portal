@@ -33,12 +33,6 @@ class ApplicationArticle extends Component {
     return parts;
   }
   render() {
-    const textarea = this.props.content.split("\n").map((item) => (
-      <span>
-        {item}
-        <br />
-      </span>
-    ));
     let text2 = this.renderText();
     return (
       <Card title={this.props.title}>

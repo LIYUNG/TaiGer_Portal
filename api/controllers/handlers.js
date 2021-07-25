@@ -130,7 +130,6 @@ exports.programlist = async (req, res) => {
     const token = bearer[1];
     // //Extract user email info by token
     var emailaddress = jwt_decode(token);
-    // var emailaddress = 'jwt_decode(token)';
     // //Get user email
     emailaddress = emailaddress["emailaddress"];
     console.log(emailaddress);
@@ -264,7 +263,6 @@ exports.editprogram = async (req, res) => {
 
 exports.deleteprogram = async (req, res) => {
   try {
-    // console.log('req.body.program_id = ' + req.body.program_id)
     console.log("delete " + req.body.program_id);
     const program_id = req.body.program_id;
     await Program.findByIdAndDelete(program_id);

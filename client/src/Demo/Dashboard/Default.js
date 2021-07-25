@@ -169,7 +169,6 @@ class Dashboard extends React.Component {
   onAcceptFilefromstudent(e, category, id) {
     //id == student id
     e.preventDefault();
-    const auth = localStorage.getItem("token");
     acceptDocument(category, id).then(
       (result) => {},
       // Note: it's important to handle errors here

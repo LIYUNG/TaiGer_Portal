@@ -1,7 +1,8 @@
 const Documentation = require("../models/Documentation");
+const Student = require("../models/Students");
+const jwt_decode = require("jwt-decode");
 
 exports.ReadDocumentation = async (req, res) => {
-  //TODO: Check user if they are able to access (Student/Agent)
   const Get_Documentation = await Documentation.find({
     Category_: "Application",
   });
@@ -14,43 +15,82 @@ exports.ReadDocumentation = async (req, res) => {
 };
 
 exports.AddNewDocumentation = async (req, res) => {
-  //TODO: Check user if they are able to modify (Student/Agent)
-  console.log(req.body);
-  let New_Documentation = new Documentation(req.body);
-  await New_Documentation.save();
-  console.log("add article success");
-
-  return res.send({
-    documents: New_Documentation,
+  const bearer = req.headers.authorization.split(" ");
+  const token = bearer[1];
+  // Extract user email info by token
+  var emailaddress = jwt_decode(token);
+  // Get user email
+  emailaddress = emailaddress["emailaddress"];
+  console.log(emailaddress);
+  const students_exists = await Student.findOne({
+    emailaddress_: emailaddress,
   });
+  // Check user if they are able to modify (Student/Agent)
+  if (students_exists.role_ === "Agent" || students_exists.role_ === "Admin") {
+    let New_doc = req.body;
+    delete New_doc._id;
+    console.log("New_doc: " + JSON.stringify(New_doc));
+
+    let New_Documentation = new Documentation(New_doc);
+    console.log("New_Documentation: " + JSON.stringify(New_Documentation));
+    await New_Documentation.save();
+    console.log("add article success");
+    return res.send({
+      documents: New_Documentation,
+    });
+  } else {
+    console.log("add article failed: Not authorized permission");
+    return res.status(401).end();
+  }
 };
 exports.UpdateDocumentation = async (req, res) => {
-  //TODO: Check user if they are able to modify (Student/Agent)
 
-  console.log("req.params.article_id = " + req.params.article_id);
-  await Documentation.findByIdAndUpdate(req.params.article_id, req.body);
-  // let ToBeUpdatedDoc = await Documentation.findById(req.params.article_id);
-  // ToBeUpdatedDoc = req.body;
-  // await ToBeUpdatedDoc.save();
-  console.log("update article success");
-
-  return res.send({
-    success: true,
+  const bearer = req.headers.authorization.split(" ");
+  const token = bearer[1];
+  // Extract user email info by token
+  var emailaddress = jwt_decode(token);
+  //Get user email
+  emailaddress = emailaddress["emailaddress"];
+  console.log(emailaddress);
+  const students_exists = await Student.findOne({
+    emailaddress_: emailaddress,
   });
+  // Check user if they are able to modify (Student/Agent)
+  if (students_exists.role_ === "Agent" || students_exists.role_ === "Admin") {
+    console.log("req.params.article_id = " + req.params.article_id);
+    await Documentation.findByIdAndUpdate(req.params.article_id, req.body);
+    console.log("update article success");
+    return res.send({
+      success: true,
+    });
+  } else {
+    console.log("update article failed: Not authorized permission");
+    return res.status(401).end();
+  }
 };
 
 exports.DeleteDocumentation = async (req, res) => {
-  //TODO: Check user if they are able to modify (Student/Agent)
 
-  console.log(req.params.article_id);
-  await Documentation.findByIdAndDelete(req.params.article_id);
-  //   const date_now = Date();
-  //   let New_Documentation = new Documentation(req.body);
-  //   New_Documentation.LastUpdate_ = date_now;
-  //   await New_Documentation.save();
-  console.log("delete article success");
-
-  return res.send({
-    success: true,
+  const bearer = req.headers.authorization.split(" ");
+  const token = bearer[1];
+  // Extract user email info by token
+  var emailaddress = jwt_decode(token);
+  // Get user email
+  emailaddress = emailaddress["emailaddress"];
+  console.log(emailaddress);
+  const students_exists = await Student.findOne({
+    emailaddress_: emailaddress,
   });
+  // Check user if they are able to modify (Student/Agent)
+  if (students_exists.role_ === "Agent" || students_exists.role_ === "Admin") {
+    console.log(req.params.article_id);
+    await Documentation.findByIdAndDelete(req.params.article_id);
+    console.log("delete article success");
+    return res.send({
+      success: true,
+    });
+  } else {
+    console.log("delete article failed: Not authorized permission");
+    return res.status(401).end();
+  }
 };

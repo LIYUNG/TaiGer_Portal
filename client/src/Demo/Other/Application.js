@@ -31,10 +31,15 @@ class Application extends Component {
           console.log(JSON.stringify(result.documents));
           this.setState({
             articles: result.documents,
-            isLoaded: true
+            isLoaded: true,
           });
         },
-        (error) => {}
+        (error) => {
+          this.setState({
+            isLoaded: false,
+            error,
+          });
+        }
       );
   }
 
@@ -43,10 +48,7 @@ class Application extends Component {
   };
 
   createArticle = (article) => {
-    // this.setState({
-    //   articles: this.state.articles.concat(article),
-    // });
-    //TODO update article to database.
+ 
     console.log("click create new article");
     console.log(article);
     let article_temp = {};
@@ -77,7 +79,12 @@ class Application extends Component {
           });
           console.log(this.state.articles);
         },
-        (error) => {}
+        (error) => {
+          this.setState({
+            isLoaded: false,
+            error,
+          });
+        }
       );
   };
 
@@ -125,7 +132,15 @@ class Application extends Component {
       body: JSON.stringify(article_temp),
     })
       .then((res) => res.json())
-      .then((error) => {});
+      .then(
+        (result) => {},
+        (error) => {
+          this.setState({
+            isLoaded: false,
+            error,
+          });
+        }
+      );
   };
 
   handleTrashClick = (articleId) => {
@@ -151,7 +166,15 @@ class Application extends Component {
       },
     })
       .then((res) => res.json())
-      .then((error) => {});
+      .then(
+        (result) => {},
+        (error) => {
+          this.setState({
+            isLoaded: false,
+            error,
+          });
+        }
+      );
   };
 
   render() {

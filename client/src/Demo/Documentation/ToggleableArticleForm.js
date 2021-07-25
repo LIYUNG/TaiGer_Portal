@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ApplicationArticleForm from "./ApplicationArticleForm";
+import ArticleForm from "./ArticleForm";
 import { IoMdAdd } from "react-icons/io";
 
 class ToggleableArticleForm extends Component {
@@ -23,7 +23,8 @@ class ToggleableArticleForm extends Component {
   render() {
     if (this.state.isOpen) {
       return (
-        <ApplicationArticleForm
+        <ArticleForm
+          category={this.props.category}
           onFormSubmit={this.handleFormSubmit}
           onFormClose={this.handleFormClose}
         />

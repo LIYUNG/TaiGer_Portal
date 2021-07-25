@@ -9,7 +9,10 @@ import * as serviceWorker from "./serviceWorker";
 import reducer from "./store/reducer";
 import config from "./config";
 
-const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = createStore(
+  reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 const is_Dev = true;
 if (is_Dev) {
   window.Student_API = "http://localhost:3000/studentlist";
@@ -31,11 +34,15 @@ if (is_Dev) {
   window.delete = "http://localhost:3000/deletefile";
   window.download = "http://localhost:3000/download";
   window.New_Article = "http://localhost:3000/docs";
-  window.Get_Article = "http://localhost:3000/docs";
+  window.Get_Application_Article = "http://localhost:3000/docs/application";
+  window.Get_Visa_Article = "http://localhost:3000/docs/visa";
+  window.Get_Uniassist_Article = "http://localhost:3000/docs/uniassist";
+  window.Get_Certification_Article = "http://localhost:3000/docs/certification";
   window.Update_Article = "http://localhost:3000/docs";
 } else {
   window.Student_API = "http://54.214.118.145:3000/studentlist";
-  window.del_prog_std_API = "http://54.214.118.145:3000/deleteprogramfromstudent";
+  window.del_prog_std_API =
+    "http://54.214.118.145:3000/deleteprogramfromstudent";
   window.edit_agent_API = "http://54.214.118.145:3000/editagent";
   window.update_agent_API = "http://54.214.118.145:3000/updateagent";
   window.edit_editor_API = "http://54.214.118.145:3000/editeditor";
@@ -48,12 +55,17 @@ if (is_Dev) {
   window.delete_program_API = "http://54.214.118.145:3000/deleteprogram";
   window.add_program_API = "http://54.214.118.145:3000/addprogram";
   window.edit_program_API = "http://54.214.118.145:3000/editprogram";
-  window.assign_program_API = "http://54.214.118.145:3000/assignprogramtostudent";
+  window.assign_program_API =
+    "http://54.214.118.145:3000/assignprogramtostudent";
   window.upload = "http://54.214.118.145:3000/upload";
   window.delete = "http://54.214.118.145:3000/deletefile";
   window.download = "http://54.214.118.145:3000/download";
   window.New_Article = "http://54.214.118.145:3000/docs";
-  window.Get_Article = "http://54.214.118.145:3000/docs";
+  window.Get_Application_Article =
+    "http://54.214.118.145:3000/docs/application";
+  window.Get_Visa_Article = "http://54.214.118.145:3000/docs/visa";
+  window.Get_Uniassist_Article = "http://54.214.118.145:3000/docs/uniassist";
+  window.Get_Uniassist_Article = "http://54.214.118.145:3000/docs/certification";
   window.Update_Article = "http://54.214.118.145:3000/docs";
 }
 

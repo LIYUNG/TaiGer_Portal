@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import ApplicationArticleForm from "./ApplicationArticleForm";
-import ApplicationArticle from "./ApplicationArticle";
+import ArticleForm from "./ArticleForm";
+import Article from "./Article";
 
-class EditableApplicationArticle extends Component {
+class EditableArticle extends Component {
   state = {
     editFormOpen: false,
   };
@@ -30,17 +30,18 @@ class EditableApplicationArticle extends Component {
   render() {
     if (this.state.editFormOpen) {
       return (
-        <ApplicationArticleForm
+        <ArticleForm
           id={this.props.id}
           title={this.props.title}
           content={this.props.content}
+          category={this.props.category}
           onFormSubmit={this.handleSubmit}
           onFormClose={this.handleFormClose}
         />
       );
     } else {
       return (
-        <ApplicationArticle
+        <Article
           id={this.props.id}
           title={this.props.title}
           content={this.props.content}
@@ -53,4 +54,4 @@ class EditableApplicationArticle extends Component {
   }
 }
 
-export default EditableApplicationArticle;
+export default EditableArticle;

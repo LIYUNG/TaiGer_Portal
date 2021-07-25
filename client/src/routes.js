@@ -23,12 +23,13 @@ const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
 
 const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 
-const OtherSamplePage = React.lazy(() => import('./Demo/Other/SamplePage'));
-const DocsApplication = React.lazy(() => import('./Demo/Other/Application'));
-const DocsCertification = React.lazy(() => import('./Demo/Other/Certification'));
-const DocsUniassist = React.lazy(() => import('./Demo/Other/Uniassist'));
-const DocsVisa = React.lazy(() => import('./Demo/Other/Visa'));
-const Upload = React.lazy(() => import('./Demo/Other/Upload'));
+const DocsApplication = React.lazy(() => import('./Demo/Documentation/Application/Application'));
+const DocsCertification = React.lazy(() =>
+  import("./Demo/Documentation/Certification/Certification")
+);
+const DocsUniassist = React.lazy(() => import('./Demo/Documentation/Uniassist/Uniassist'));
+const DocsVisa = React.lazy(() => import('./Demo/Documentation/Visa/Visa'));
+const Upload = React.lazy(() => import('./Demo/Documentation/Upload'));
 
 const routes = [
     { path: '/dashboard/default', exact: true, name: 'Default', component: DashboardDefault },
@@ -42,7 +43,6 @@ const routes = [
     { path: '/programs', exact: true, name: 'Program Table', component: ProgramTable },
     { path: '/charts/nvd3', exact: true, name: 'Nvd3 Chart', component: Nvd3Chart },
     { path: '/maps/google-map', exact: true, name: 'Google Map', component: GoogleMap },
-    { path: '/sample-page', exact: true, name: 'Sample Page', component: OtherSamplePage },
     { path: '/docs/application', exact: true, name: 'Documentation', component: DocsApplication },
     { path: '/docs/certification', exact: true, name: 'Documentation', component: DocsCertification },
     { path: '/docs/uniassist', exact: true, name: 'Documentation', component: DocsUniassist },

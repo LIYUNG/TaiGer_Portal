@@ -3,8 +3,9 @@ const Student = require("../models/Students");
 const jwt_decode = require("jwt-decode");
 
 exports.ReadDocumentation = async (req, res) => {
+  console.log(req.params.article_category)
   const Get_Documentation = await Documentation.find({
-    Category_: "Application",
+    Category_: req.params.article_category,
   });
   console.log(Get_Documentation);
   console.log("read articles success");

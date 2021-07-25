@@ -95,7 +95,7 @@ const router = (app) => {
     auth,
     handlers.deleteprogramfromstudent
   );
-  app.get("/docs", auth, documentation_handler.ReadDocumentation);
+  app.get("/docs/:article_category", auth, documentation_handler.ReadDocumentation);
   app.post("/docs", auth, documentation_handler.AddNewDocumentation);
   app.post("/docs/:article_id", auth, documentation_handler.UpdateDocumentation);
   app.delete("/docs/:article_id", auth, documentation_handler.DeleteDocumentation);

@@ -2,7 +2,7 @@ import React from "react";
 import Card from "../../App/components/MainCard";
 import { Form, Button } from "react-bootstrap";
 
-class ApplicationArticleForm extends React.Component {
+class ArticleForm extends React.Component {
   state = {
     Titel_: this.props.title || "",
     Content_: this.props.content || "",
@@ -20,7 +20,7 @@ class ApplicationArticleForm extends React.Component {
     this.props.onFormSubmit({
       _id: this.props.id,
       LastUpdate_: Date(),
-      Category_: "Application",
+      Category_: this.props.category,
       Titel_: this.state.Titel_,
       Content_: this.state.Content_,
     });
@@ -56,4 +56,4 @@ class ApplicationArticleForm extends React.Component {
   }
 }
 
-export default ApplicationArticleForm;
+export default ArticleForm;

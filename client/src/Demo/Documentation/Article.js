@@ -3,7 +3,7 @@ import Card from "../../App/components/MainCard";
 import { AiFillEdit } from "react-icons/ai";
 
 import { BsTrash } from "react-icons/bs";
-class ApplicationArticle extends Component {
+class Article extends Component {
   handleTrashClick = () => {
     this.props.onTrashClick(this.props.id);
   };
@@ -52,4 +52,4 @@ class ApplicationArticle extends Component {
   }
 }
 
-export default ApplicationArticle;
+export default Article;

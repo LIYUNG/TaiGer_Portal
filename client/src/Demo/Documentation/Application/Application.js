@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Row, Col } from "react-bootstrap";
 
-import Aux from "../../hoc/_Aux";
-import ApplicationArticleList from "./ApplicationArticleList";
-import ToggleableArticleForm from "./ToggleableArticleForm";
+import Aux from "../../../hoc/_Aux";
+import ApplicationArticleList from "../ArticleList";
+import ToggleableArticleForm from "../ToggleableArticleForm";
 
 class Application extends Component {
   state = {
@@ -17,7 +17,7 @@ class Application extends Component {
     // this.setState({ file: "" });
     console.log("get article");
     const auth = localStorage.getItem("token");
-    fetch(window.Get_Article, {
+    fetch(window.Get_Application_Article, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -196,10 +196,12 @@ class Application extends Component {
             <Col>
               <ApplicationArticleList
                 articles={this.state.articles}
+                category="application"
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
               />
               <ToggleableArticleForm
+                category="application"
                 onFormSubmit={this.handleCreateFormSubmit}
               />
             </Col>

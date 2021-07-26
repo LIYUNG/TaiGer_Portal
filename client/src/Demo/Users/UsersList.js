@@ -62,7 +62,7 @@ const row = (
               </Dropdown.Item>
               <Dropdown.Item
                 eventKey="2"
-                //onSelect={() => setModalShow(user.University, user.Program, user._id)}
+                onSelect={() => setModalShow(user.firstname_, user.lastname_, user.role_, user._id)}
               >
                 Set User as...
               </Dropdown.Item>
@@ -132,8 +132,10 @@ class Userslist extends React.Component {
           <UsersListSubpage
             show={this.props.ModalShow}
             setModalHide={this.props.setModalHide}
-            uni_name={this.props.Uni_Name}
-            program_name={this.props.Program_Name}
+            firstname={this.props.firstname}
+            lastname={this.props.lastname}
+            selected_user_role={this.props.selected_user_role}
+            selected_user_id={this.props.selected_user_id}
             handleChange2={this.props.handleChange2}
             onSubmit2={this.props.onSubmit2}
           />

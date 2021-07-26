@@ -21,72 +21,117 @@ class UsersListSubpage extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const auth = localStorage.getItem("token");
-    fetch(window.Student_API, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log(result);
-          this.setState({
-            // isLoaded: true,
-            data: result.data,
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          console.log("Problem while getting studentlist");
-        }
-      );
-  }
-
   render() {
     return (
       <Modal
         show={this.props.show}
+        onHide={this.props.setModalHide}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Assign {this.props.uni_name} - {this.props.program_name} to
+            Assign {this.props.firstname} - {this.props.lastname} as
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Student:</h4>
-          {this.state.data.map((student) => (
-            <tr key={student._id}>
-              <th>
-                <div>
-                  <Form.Group>
-                    <Form.Check
-                      custom
-                      type="radio"
-                      name="student_id"
-                      value={student._id}
-                      id={student._id}
-                      onChange={this.handleChange2}
-                    />
-                  </Form.Group>
-                </div>
-              </th>
+          <tr>
+            <th>
+              <div>
+                <Form.Group>
+                  <Form.Check
+                    custom
+                    type="radio"
+                    name="user_role"
+                    defaultChecked={
+                      this.props.selected_user_role === "Student" ? true : false
+                    }
+                    id="Student"
+                    value="Student"
+                    onChange={this.handleChange2}
+                  />
+                </Form.Group>
+              </div>
+            </th>
+            <td>
               <td>
-                <h4 className="mb-1">
-                  {student.firstname_}, {student.lastname_}
-                </h4>
+                <h4 className="mb-1">Student</h4>
               </td>
-            </tr>
-          ))}
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <div>
+                <Form.Group>
+                  <Form.Check
+                    custom
+                    type="radio"
+                    name="user_role"
+                    defaultChecked={
+                      this.props.selected_user_role === "Editor" ? true : false
+                    }
+                    id="Editor"
+                    value="Editor"
+                    onChange={this.handleChange2}
+                  />
+                </Form.Group>
+              </div>
+            </th>
+            <td>
+              <td>
+                <h4 className="mb-1">Editor</h4>
+              </td>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <div>
+                <Form.Group>
+                  <Form.Check
+                    custom
+                    type="radio"
+                    name="user_role"
+                    defaultChecked={
+                      this.props.selected_user_role === "Agent" ? true : false
+                    }
+                    id="Agent"
+                    value="Agent"
+                    onChange={this.handleChange2}
+                  />
+                </Form.Group>
+              </div>
+            </th>
+            <td>
+              <td>
+                <h4 className="mb-1">Agent</h4>
+              </td>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <div>
+                <Form.Group>
+                  <Form.Check
+                    custom
+                    type="radio"
+                    name="user_role"
+                    defaultChecked={
+                      this.props.selected_user_role === "Admin" ? true : false
+                    }
+                    id="Admin"
+                    value="Admin"
+                    onChange={this.handleChange2}
+                  />
+                </Form.Group>
+              </div>
+            </th>
+            <td>
+              <td>
+                <h4 className="mb-1">Admin</h4>
+              </td>
+            </td>
+          </tr>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.onSubmit2}>Assign</Button>

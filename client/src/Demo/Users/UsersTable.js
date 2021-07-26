@@ -17,6 +17,10 @@ class UsersTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      firstname: "",
+      lastname: "",
+      selected_user_role: "",
+      selected_user_id: "",
       error: null,
       role: "",
       isLoaded: false,
@@ -120,7 +124,7 @@ class UsersTable extends React.Component {
       isLoaded: false,
     });
   };
-  
+
   validate = () => {
     let isError = false;
     const errors = {
@@ -150,12 +154,13 @@ class UsersTable extends React.Component {
     return isError;
   };
 
-  setModalShow = (uni_name, program_name, programID) => {
+  setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
     this.setState({
       modalShow: true,
-      Uni: uni_name,
-      Program: program_name,
-      ProgramId: programID,
+      firstname: user_firstname,
+      lastname: user_lastname,
+      selected_user_role: user_role,
+      selected_user_id: user_id
     });
   };
 
@@ -179,26 +184,26 @@ class UsersTable extends React.Component {
     }
   };
 
-  assignUserAs = (assign_data) => {
-    console.log("click assign Program");
-    console.log(assign_data);
+  assignUserAs = (user_data) => {
+    console.log("click assign user role");
+    console.log(user_data);
     const auth = localStorage.getItem("token");
-    fetch(window.assign_program_API, {
+    fetch(window.update_user_role_API, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + JSON.parse(auth),
       },
-      body: JSON.stringify(assign_data),
+      body: JSON.stringify(user_data),
     })
       .then((res) => res.json())
       .then(
-        // (result) => {
-        //     this.setState({
-        //         isLoaded: false,
-        //     });
-        // },
+        (result) => {
+            this.setState({
+                isLoaded: false,
+            });
+        },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
@@ -213,22 +218,20 @@ class UsersTable extends React.Component {
 
   handleChange2 = (e) => {
     const { value } = e.target;
-    // console.log("std_id " + value)
-    console.log("program_id " + this.state.ProgramId);
-    console.log("student_id " + value);
+    console.log("name  " + value);
     this.setState((state) => ({
-      StudentId: value,
+      selected_user_role: value,
     }));
   };
 
   onSubmit2 = (e) => {
     e.preventDefault();
-    const program_id = this.state.ProgramId;
-    const student_id = this.state.StudentId;
+    const user_role = this.state.selected_user_role;
+    const user_id = this.state.selected_user_id;
     console.log("before submit");
-    console.log("program_id " + this.state.ProgramId);
-    console.log("student_id " + this.state.StudentId);
-    this.assignUserAs({ student_id, program_id });
+    console.log("selected_user_role " + this.state.selected_user_role);
+    console.log("selected_user_id " + this.state.selected_user_id);
+    this.assignUserAs({ user_role, user_id });
     console.log("click assign");
     this.setModalHide();
   };
@@ -265,8 +268,10 @@ class UsersTable extends React.Component {
                     ModalShow={this.state.modalShow}
                     ProgramID={this.state.ProgramId}
                     StudentId={this.state.StudentId}
-                    Uni_Name={this.state.Uni}
-                    Program_Name={this.state.Program}
+                    firstname={this.state.firstname}
+                    lastname={this.state.lastname}
+                    selected_user_role={this.state.selected_user_role}
+                    selected_user_id={this.state.selected_user_id}
                     setModalShow={this.setModalShow}
                     setModalHide={this.setModalHide}
                     handleRemove={this.handleRemove}

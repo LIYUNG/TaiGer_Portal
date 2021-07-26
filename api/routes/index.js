@@ -64,6 +64,7 @@ const router = (app) => {
   app.post("/edituser/:id", auth, handlers.edituser);
   app.delete("/deleteprogram/:program_id", auth, handlers.deleteprogram);
   app.delete("/deleteuser/:user_id", auth, handlers.deleteuser);
+  app.post("/changeuserrole", auth, handlers.changeuserrole);
   app.post("/assignprogramtostudent", auth, handlers.assignprogramtostudent);
   app.get("/studentlist", auth, handlers.studentlist);
   app.get("/editagent", auth, handlers.editagent);

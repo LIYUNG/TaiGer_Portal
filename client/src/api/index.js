@@ -60,6 +60,8 @@ export const deleteUser = (id) => request.delete(`/deleteuser/${id}`);
 
 export const updateUser = (user) => request.post(`/edituser/${user._id}`, user);
 
+export const changeUserRole = (role) => request.post("/changeuserrole", role);
+
 
 // window.upload = "http://localhost:3000/upload";
 // window.download = "http://localhost:3000/download";

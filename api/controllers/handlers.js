@@ -6,7 +6,6 @@ const jwt_decode = require("jwt-decode");
 const bcrypt = require("bcryptjs");
 // var nodemailer = require('nodemailer');
 
-
 // var transporter = nodemailer.createTransport({
 //   service: 'gmail',
 //   auth: {
@@ -144,10 +143,9 @@ exports.programlist = async (req, res) => {
       const program_all = await Program.find();
       res.send({
         data: program_all,
-        role: "Agent"
+        role: "Agent",
       });
     } else {
-      //TODO: show student's own program list
       res.send({
         // send the student's selected program
         data: students_exists.applying_program_,
@@ -175,22 +173,20 @@ exports.userslist = async (req, res) => {
     emailaddress = emailaddress["emailaddress"];
     console.log(emailaddress);
     const user_me = await Student.findOne({
-      emailaddress_: emailaddress , // get current user.
+      emailaddress_: emailaddress, // get current user.
     });
-    const user_exists = await Student.find({ 
+    const user_exists = await Student.find({
       emailaddress_: { $ne: emailaddress }, // get all users excluding the current user.
     });
     console.log(" user:" + user_me.role_);
     // Access all users
     if (user_me.role_ === "Agent" || user_me.role_ === "Admin") {
       res.send({
-        data: user_exists,
+        data: user_exists, //TODO: Check that no credential data sent
         role: "Agent",
       });
     } else {
-      //TODO: show student's own program list
       res.send({
-        // send the student's selected program
         data: {},
         role: "Student",
       });
@@ -322,14 +318,13 @@ exports.edituser = async (req, res) => {
     // user.LastUpdate_ = date_now;
     await user.save();
     return res.send({
-      data: user,
+      data: user, //TODO: Check that no credential data sent
     });
   } catch (err) {
     console.log("error by edit user: " + err);
     return res.status(500).end(); // 500 Internal Server Error
   }
 };
-
 
 exports.deleteprogram = async (req, res) => {
   try {
@@ -356,6 +351,28 @@ exports.deleteuser = async (req, res) => {
     });
   } catch (err) {
     console.log("error by delete program");
+    console.log(err);
+    return res.status(500).end(); // 500 Internal Server Error
+  }
+};
+
+exports.changeuserrole = async (req, res) => {
+  try {
+    console.log("edit req.body = " + req.body);
+    console.log("edit req.body.user_id = " + req.body.user_id);
+    console.log("edit req.body.user_role = " + req.body.user_role);
+    const user_id = req.body.user_id;
+    const user_role = req.body.user_role;
+    var student1 = await Student.findById(user_id);
+    // TODO: update student1s user role_
+    student1.role_ = user_role;
+    await student1.save();
+      console.log("success: " + student1);
+      res.send({
+        data: "success",
+      });
+  } catch (err) {
+    console.log("error by assigning user role");
     console.log(err);
     return res.status(500).end(); // 500 Internal Server Error
   }
@@ -420,7 +437,7 @@ exports.studentlist = async (req, res) => {
       );
       res.send({
         data: student_all,
-        role: "Agent"
+        role: "Agent",
       });
     } else if (students_exists.role_ === "Admin") {
       const student_all = await Student.find({ role_: "Student" });
@@ -459,7 +476,7 @@ exports.studentlist = async (req, res) => {
     if (err instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
       console.log(e);
-      console.log("error by programlist");
+      console.log("error by studentlist");
       return res.status(500).end(); // 500 Internal Server Error
     }
     console.log(err);

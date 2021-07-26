@@ -8,7 +8,10 @@ import {
   // SplitButton
 } from "react-bootstrap";
 
-// import Aux from "../../hoc/_Aux";
+import {
+  getStudents,
+} from "../../api";
+
 
 class ProgramListSubpage extends React.Component {
   constructor(props) {
@@ -20,39 +23,23 @@ class ProgramListSubpage extends React.Component {
       data: [],
     };
   }
-
   componentDidMount() {
-    const auth = localStorage.getItem("token");
-    fetch(window.Student_API, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    getStudents().then(
+      (resp) => {
+        const { data: students, role } = resp.data;
+        this.setState({ data: students });
       },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log(result);
-          this.setState({
-            // isLoaded: true,
-            data: result.data,
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          console.log("Problem while getting studentlist");
-        }
-      );
+      (error) => {
+        console.log("Problem while getting studentlist");
+      }
+    );
   }
 
   render() {
     return (
       <Modal
         show={this.props.show}
+        onHide={this.props.setModalHide}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered

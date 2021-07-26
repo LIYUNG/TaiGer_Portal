@@ -11,6 +11,8 @@ import {
 import Aux from "../../hoc/_Aux";
 import UsersList from "./UsersList";
 
+import { getUsers, deleteUser, updateUser } from "../../api";
+
 class UsersTable extends React.Component {
   constructor(props) {
     super(props);
@@ -31,130 +33,39 @@ class UsersTable extends React.Component {
   }
 
   componentDidMount() {
-    const auth = localStorage.getItem("token");
-    fetch(window.users_list_API, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    getUsers().then(
+      (resp) => {
+        const { data, role } = resp.data;
+        this.setState({ isLoaded: true, data, role });
       },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            data: result.data,
-            role: result.role,
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
+      (error) => this.setState({ isLoaded: true, error })
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
-      const auth = localStorage.getItem("token");
-      fetch(window.users_list_API, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + JSON.parse(auth),
+      getUsers().then(
+        (resp) => {
+          const { data } = resp.data;
+          this.setState({ isLoaded: true, data });
         },
-      })
-        .then((res) => res.json())
-        .then(
-          (result) => {
-            this.setState({
-              isLoaded: true,
-              data: result.data,
-            });
-          },
-          // Note: it's important to handle errors here
-          // instead of a catch() block so that we don't swallow
-          // exceptions from actual bugs in components.
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error,
-            });
-          }
-        );
+        (error) => this.setState({ isLoaded: true, error })
+      );
     }
   }
 
   deleteUser = (user_id) => {
-    console.log("click user delete");
-    console.log(user_id);
-    const auth = localStorage.getItem("token");
-    fetch(window.delete_user_API, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(user_id),
-    })
-      .then((res) => res.json())
-      .then(
-        // (result) => {
-        //     this.setState({
-        //         isLoaded: false,
-        //     });
-        // },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+    deleteUser(user_id).then(
+      (resp) => {},
+      (error) => {}
+    );
   };
 
-  editProgram = (edited_program) => {
-    console.log("click edit");
-    console.log(edited_program);
-    const auth = localStorage.getItem("token");
-    fetch(window.edit_program_API + "/" + edited_program._id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(edited_program),
-    })
-      .then((res) => res.json())
-      .then(
-        // (result) => {
-        //     this.setState({
-        //         isLoaded: false,
-        //     });
-        // },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+  editUser = (edited_user) => {
+    updateUser(edited_user).then(
+      (resp) => {},
+      (error) => {}
+    );
   };
 
   handleRemove = (i) => {
@@ -169,8 +80,8 @@ class UsersTable extends React.Component {
     });
   };
 
-  stopEditing = (edited_program) => {
-    this.editProgram(edited_program);
+  stopEditing = (edited_user) => {
+    this.editUser(edited_user);
     this.setState({
       editIdx: -1,
       isLoaded: false,
@@ -204,11 +115,12 @@ class UsersTable extends React.Component {
   RemoveUserHandler3 = (user_id) => {
     console.log("click delete user");
     console.log("id = " + user_id);
-    this.deleteUser({ user_id });
+    this.deleteUser(user_id);
     this.setState({
       isLoaded: false,
     });
   };
+  
   validate = () => {
     let isError = false;
     const errors = {

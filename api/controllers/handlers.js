@@ -300,15 +300,41 @@ exports.editprogram = async (req, res) => {
       data: program,
     });
   } catch (err) {
-    console.log("error by edit programlist: " + err);
+    console.log("error by edit program: " + err);
     return res.status(500).end(); // 500 Internal Server Error
   }
 };
 
+exports.edituser = async (req, res) => {
+  try {
+    // TODO: only Admin/Agent can access this API
+    console.log("edit req.params.id = " + req.params.id);
+    const user_id = req.params.id;
+    let user = await Student.findById(user_id);
+    console.log("user: " + user);
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    // TODO update the program
+    user.firstname_ = req.body.firstname_;
+    user.lastname_ = req.body.lastname_;
+    user.emailaddress_ = req.body.emailaddress_;
+    user.role_ = req.body.role_;
+    // user.LastUpdate_ = date_now;
+    await user.save();
+    return res.send({
+      data: user,
+    });
+  } catch (err) {
+    console.log("error by edit user: " + err);
+    return res.status(500).end(); // 500 Internal Server Error
+  }
+};
+
+
 exports.deleteprogram = async (req, res) => {
   try {
-    console.log("delete " + req.body.program_id);
-    const program_id = req.body.program_id;
+    console.log("delete " + req.params.program_id);
+    const program_id = req.params.program_id;
     await Program.findByIdAndDelete(program_id);
     res.send({
       data: "success",
@@ -322,8 +348,8 @@ exports.deleteprogram = async (req, res) => {
 
 exports.deleteuser = async (req, res) => {
   try {
-    console.log("delete " + req.body.user_id);
-    const user_id = req.body.user_id;
+    console.log("delete " + req.params.user_id);
+    const user_id = req.params.user_id;
     await Student.findByIdAndDelete(user_id);
     res.send({
       data: "success",
@@ -557,7 +583,6 @@ exports.editstudentprogram = async (req, res, next) => {
 
 exports.deleteprogramfromstudent = async (req, res, next) => {
   try {
-    const categoryName = req.params.category;
     const student_id = req.params.student_id;
     const program_id = req.params.program_id;
     console.log("student id: " + student_id);

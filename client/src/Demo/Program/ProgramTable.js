@@ -158,7 +158,7 @@ class ProgramTable extends React.Component {
   RemoveProgramHandler3 = (program_id) => {
     console.log("click delete");
     console.log("id = " + program_id);
-    this.deleteProgram({ program_id });
+    this.deleteProgram( program_id );
     this.setState({
       isLoaded: false,
     });

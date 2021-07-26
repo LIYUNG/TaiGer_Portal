@@ -41,16 +41,25 @@ export const deleteFile = (category, id) =>
 export const getPrograms = () => request.get("/programlist");
 
 // delete_program_API
-export const deleteProgram = (id) => request.delete("/deleteprogram", id);
+export const deleteProgram = (id) => request.delete(`/deleteprogram/${id}`);
 
 // add_program_API
 export const createProgram = (program) => request.post("/addprogram", program);
 
 // edit_program_API
-export const updateProgram = (program) => request.post(`/editprogram/${program._id}`, program);
+export const updateProgram = (program) =>
+  request.post(`/editprogram/${program._id}`, program);
 
 // assign_program_API
 export const assignProgramToStudent = (data) => request.post("/assignprogramtostudent", data);
+
+
+export const getUsers = () => request.get("/userslist");
+
+export const deleteUser = (id) => request.delete(`/deleteuser/${id}`);
+
+export const updateUser = (user) => request.post(`/edituser/${user._id}`, user);
+
 
 // window.upload = "http://localhost:3000/upload";
 // window.download = "http://localhost:3000/download";

@@ -6,8 +6,6 @@ import PropTypes from "prop-types";
 
 import { NavLink } from "react-router-dom";
 
-// import Breadcrumb from "../../App/layout/AdminLayout/Breadcrumb";
-
 async function loginUser(credentials) {
   return (
     fetch(window.login, {
@@ -49,11 +47,11 @@ export default function Signin1({ setToken }) {
       if (!password) {
         alert("Password please!");
       } else {
-        const token = await loginUser({
+        const data = await loginUser({
           emailaddress,
           password,
         });
-        setToken(token);
+        setToken(data);
       }
     }
   };

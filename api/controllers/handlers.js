@@ -64,7 +64,10 @@ exports.signIn = async (req, res) => {
               students_exists.lastname_ +
               " log in"
           );
-          return res.send({ token: token });
+          return res.send({
+            token: token,
+            role: students_exists.role_,
+          });
         } else {
           console.log("wrong password !");
           return res.status(401).end();
@@ -156,6 +159,47 @@ exports.programlist = async (req, res) => {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
       console.log(e);
       console.log("error by programlist");
+      return res.status(401).end();
+    }
+    console.log(err);
+  }
+};
+
+exports.userslist = async (req, res) => {
+  try {
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    // //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    // //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    console.log(emailaddress);
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress , // get current user.
+    });
+    const user_exists = await Student.find({ 
+      emailaddress_: { $ne: emailaddress }, // get all users excluding the current user.
+    });
+    console.log(" user:" + user_me.role_);
+    // Access all users
+    if (user_me.role_ === "Agent" || user_me.role_ === "Admin") {
+      res.send({
+        data: user_exists,
+        role: "Agent",
+      });
+    } else {
+      //TODO: show student's own program list
+      res.send({
+        // send the student's selected program
+        data: {},
+        role: "Student",
+      });
+    }
+  } catch (err) {
+    if (e instanceof jwt.JsonWebTokenError) {
+      // if the error thrown is because the JWT is unauthorized, return a 401 error
+      console.log(e);
+      console.log("error by userslist");
       return res.status(401).end();
     }
     console.log(err);
@@ -266,6 +310,21 @@ exports.deleteprogram = async (req, res) => {
     console.log("delete " + req.body.program_id);
     const program_id = req.body.program_id;
     await Program.findByIdAndDelete(program_id);
+    res.send({
+      data: "success",
+    });
+  } catch (err) {
+    console.log("error by delete program");
+    console.log(err);
+    return res.status(500).end(); // 500 Internal Server Error
+  }
+};
+
+exports.deleteuser = async (req, res) => {
+  try {
+    console.log("delete " + req.body.user_id);
+    const user_id = req.body.user_id;
+    await Student.findByIdAndDelete(user_id);
     res.send({
       data: "success",
     });

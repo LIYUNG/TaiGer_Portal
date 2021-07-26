@@ -58,9 +58,11 @@ const router = (app) => {
 
   app.get("/charts", auth, handlers.Charts);
   app.get("/programlist", auth, handlers.programlist);
+  app.get("/userslist", auth, handlers.userslist);
   app.post("/addprogram", auth, handlers.addprogram);
   app.post("/editprogram/:id", auth, handlers.editprogram);
   app.delete("/deleteprogram", auth, handlers.deleteprogram);
+  app.delete("/deleteuser", auth, handlers.deleteuser);
   app.post("/assignprogramtostudent", auth, handlers.assignprogramtostudent);
   app.get("/studentlist", auth, handlers.studentlist);
   app.get("/editagent", auth, handlers.editagent);

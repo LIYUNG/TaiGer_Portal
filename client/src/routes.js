@@ -17,7 +17,8 @@ const UIBasicBasicTypography = React.lazy(() => import('./Demo/UIElements/Basic/
 
 const FormsElements = React.lazy(() => import('./Demo/Forms/FormsElements'));
 
-const ProgramTable = React.lazy(() => import('./Demo/Program/ProgramTable'));
+const ProgramTable = React.lazy(() => import("./Demo/Program/ProgramTable"));
+const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
 
 const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
 
@@ -32,22 +33,103 @@ const DocsVisa = React.lazy(() => import('./Demo/Documentation/Visa/Visa'));
 const Upload = React.lazy(() => import('./Demo/Documentation/Upload'));
 
 const routes = [
-    { path: '/dashboard/default', exact: true, name: 'Default', component: DashboardDefault },
-    { path: '/basic/button', exact: true, name: 'Basic Button', component: UIBasicButton },
-    { path: '/basic/badges', exact: true, name: 'Basic Badges', component: UIBasicBadges },
-    { path: '/basic/breadcrumb-paging', exact: true, name: 'Basic Breadcrumb Pagination', component: UIBasicBreadcrumbPagination },
-    { path: '/basic/collapse', exact: true, name: 'Basic Collapse', component: UIBasicCollapse },
-    { path: '/basic/tabs-pills', exact: true, name: 'Basic Tabs & Pills', component: UIBasicTabsPills },
-    { path: '/basic/typography', exact: true, name: 'Basic Typography', component: UIBasicBasicTypography },
-    { path: '/forms/form-basic', exact: true, name: 'Forms Elements', component: FormsElements },
-    { path: '/programs', exact: true, name: 'Program Table', component: ProgramTable },
-    { path: '/charts/nvd3', exact: true, name: 'Nvd3 Chart', component: Nvd3Chart },
-    { path: '/maps/google-map', exact: true, name: 'Google Map', component: GoogleMap },
-    { path: '/docs/application', exact: true, name: 'Documentation', component: DocsApplication },
-    { path: '/docs/certification', exact: true, name: 'Documentation', component: DocsCertification },
-    { path: '/docs/uniassist', exact: true, name: 'Documentation', component: DocsUniassist },
-    { path: '/docs/visa', exact: true, name: 'Documentation', component: DocsVisa },
-    { path: '/upload', exact: true, name: 'Documentation', component: Upload },
+  {
+    path: "/dashboard/default",
+    exact: true,
+    name: "Default",
+    component: DashboardDefault,
+  },
+  {
+    path: "/basic/button",
+    exact: true,
+    name: "Basic Button",
+    component: UIBasicButton,
+  },
+  {
+    path: "/basic/badges",
+    exact: true,
+    name: "Basic Badges",
+    component: UIBasicBadges,
+  },
+  {
+    path: "/basic/breadcrumb-paging",
+    exact: true,
+    name: "Basic Breadcrumb Pagination",
+    component: UIBasicBreadcrumbPagination,
+  },
+  {
+    path: "/basic/collapse",
+    exact: true,
+    name: "Basic Collapse",
+    component: UIBasicCollapse,
+  },
+  {
+    path: "/basic/tabs-pills",
+    exact: true,
+    name: "Basic Tabs & Pills",
+    component: UIBasicTabsPills,
+  },
+  {
+    path: "/basic/typography",
+    exact: true,
+    name: "Basic Typography",
+    component: UIBasicBasicTypography,
+  },
+  {
+    path: "/forms/form-basic",
+    exact: true,
+    name: "Forms Elements",
+    component: FormsElements,
+  },
+  {
+    path: "/programs",
+    exact: true,
+    name: "Program Table",
+    component: ProgramTable,
+  },
+  {
+    path: "/users",
+    exact: true,
+    name: "Users Table",
+    component: UsersTable,
+  },
+  {
+    path: "/charts/nvd3",
+    exact: true,
+    name: "Nvd3 Chart",
+    component: Nvd3Chart,
+  },
+  {
+    path: "/maps/google-map",
+    exact: true,
+    name: "Google Map",
+    component: GoogleMap,
+  },
+  {
+    path: "/docs/application",
+    exact: true,
+    name: "Documentation",
+    component: DocsApplication,
+  },
+  {
+    path: "/docs/certification",
+    exact: true,
+    name: "Documentation",
+    component: DocsCertification,
+  },
+  {
+    path: "/docs/uniassist",
+    exact: true,
+    name: "Documentation",
+    component: DocsUniassist,
+  },
+  {
+    path: "/docs/visa",
+    exact: true,
+    name: "Documentation",
+    component: DocsVisa,
+  },
+  { path: "/upload", exact: true, name: "Documentation", component: Upload },
 ];
 
 export default routes;

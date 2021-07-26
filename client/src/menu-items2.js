@@ -1,0 +1,102 @@
+export default {
+  items: [
+    {
+      id: "navigation2",
+      title: "Navigation2",
+      type: "group",
+      icon: "icon-navigation",
+      children: [
+        {
+          id: "dashboard",
+          title: "Dashboard",
+          type: "item",
+          url: "/dashboard/default",
+          icon: "feather icon-home",
+        },
+        {
+          id: "program-table",
+          title: "Program List",
+          type: "item",
+          icon: "feather icon-list",
+          url: "/programs",
+        },
+        {
+          id: "upload",
+          title: "Upload Documents",
+          type: "item",
+          url: "/upload",
+          classes: "nav-item",
+          icon: "feather icon-upload",
+        },
+        {
+          id: "docs",
+          title: "Documentation",
+          type: "collapse",
+          classes: "nav-item",
+          icon: "feather icon-help-circle",
+          children: [
+            {
+              id: "doc-application",
+              title: "Application",
+              type: "item",
+              url: "/docs/application",
+              target: false,
+              breadcrumbs: false,
+            },
+            {
+              id: "doc-certification",
+              title: "Certification",
+              type: "item",
+              url: "/docs/certification",
+              target: false,
+              breadcrumbs: false,
+            },
+            {
+              id: "doc-uniassist",
+              title: "Uni-Assist",
+              type: "item",
+              url: "/docs/uniassist",
+              target: false,
+              breadcrumbs: false,
+            },
+            {
+              id: "doc-visa",
+              title: "Visa",
+              type: "item",
+              url: "/docs/visa",
+              target: false,
+              breadcrumbs: false,
+            },
+          ],
+        },
+        {
+          id: "menu-level",
+          title: "Menu Levels",
+          type: "collapse",
+          icon: "feather icon-menu",
+          children: [
+            {
+              id: "menu-level-1.1",
+              title: "Menu Level 1.1",
+              type: "item",
+              url: "#!",
+            },
+            {
+              id: "menu-level-1.2",
+              title: "Menu Level 2.2",
+              type: "collapse",
+              children: [
+                {
+                  id: "menu-level-2.1",
+                  title: "Menu Level 2.1",
+                  type: "item",
+                  url: "#",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};

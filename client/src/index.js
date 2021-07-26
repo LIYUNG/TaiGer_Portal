@@ -26,7 +26,9 @@ if (is_Dev) {
   window.login = "http://localhost:3000/login";
   window.register = "http://localhost:3000/register";
   window.program_list_API = "http://localhost:3000/programlist";
+  window.users_list_API = "http://localhost:3000/userslist";
   window.delete_program_API = "http://localhost:3000/deleteprogram";
+  window.delete_user_API = "http://localhost:3000/deleteuser";
   window.add_program_API = "http://localhost:3000/addprogram";
   window.edit_program_API = "http://localhost:3000/editprogram";
   window.assign_program_API = "http://localhost:3000/assignprogramtostudent";
@@ -52,7 +54,9 @@ if (is_Dev) {
   window.login = "http://54.214.118.145:3000/login";
   window.register = "http://54.214.118.145:3000/register";
   window.program_list_API = "http://54.214.118.145:3000/programlist";
+  window.users_list_API = "http://54.214.118.145:3000/userslist";
   window.delete_program_API = "http://54.214.118.145:3000/deleteprogram";
+  window.delete_user_API = "http://54.214.118.145:3000/deleteuser";
   window.add_program_API = "http://54.214.118.145:3000/addprogram";
   window.edit_program_API = "http://54.214.118.145:3000/editprogram";
   window.assign_program_API =
@@ -247,6 +251,25 @@ window.NewProgramHeader = [
   {
     name: "Passport",
     prop: "Passport_",
+  },
+];
+
+window.UserlistHeader = [
+  {
+    name: "First Name",
+    prop: "firstname_",
+  },
+  {
+    name: "Last Name",
+    prop: "lastname_",
+  },
+  {
+    name: "Email Address",
+    prop: "emailaddress_",
+  },
+  {
+    name: "User Type",
+    prop: "role_",
   },
 ];
 

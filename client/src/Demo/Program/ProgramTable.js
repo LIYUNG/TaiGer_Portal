@@ -12,6 +12,14 @@ import Aux from "../../hoc/_Aux";
 import Programlist from "./ProgramList";
 import NewProgramWindow from "./NewProgramWindow";
 
+import {
+  getPrograms,
+  createProgram,
+  updateProgram,
+  deleteProgram,
+  assignProgramToStudent,
+} from "../../api";
+
 class ProgramTable extends React.Component {
   constructor(props) {
     super(props);
@@ -32,162 +40,46 @@ class ProgramTable extends React.Component {
   }
 
   componentDidMount() {
-    const auth = localStorage.getItem("token");
-    fetch(window.program_list_API, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    getPrograms().then(
+      (resp) => {
+        const { data, role } = resp.data;
+        this.setState({ isLoaded: true, data, role });
       },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            data: result.data,
-            role: result.role,
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
+      (error) => this.setState({ isLoaded: true, error })
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
-      const auth = localStorage.getItem("token");
-      fetch(window.program_list_API, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + JSON.parse(auth),
+      getPrograms().then(
+        (resp) => {
+          const { data } = resp.data;
+          this.setState({ isLoaded: true, data });
         },
-      })
-        .then((res) => res.json())
-        .then(
-          (result) => {
-            this.setState({
-              isLoaded: true,
-              data: result.data,
-            });
-          },
-          // Note: it's important to handle errors here
-          // instead of a catch() block so that we don't swallow
-          // exceptions from actual bugs in components.
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error,
-            });
-          }
-        );
+        (error) => this.setState({ isLoaded: true, error })
+      );
     }
   }
 
   deleteProgram = (program_id) => {
-    console.log("click delete");
-    console.log(program_id);
-    const auth = localStorage.getItem("token");
-    fetch(window.delete_program_API, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(program_id),
-    })
-      .then((res) => res.json())
-      .then(
-        // (result) => {
-        //     this.setState({
-        //         isLoaded: false,
-        //     });
-        // },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+    deleteProgram(program_id).then(
+      (resp) => {},
+      (error) => {}
+    );
   };
 
   editProgram = (edited_program) => {
-    console.log("click edit");
-    console.log(edited_program);
-    const auth = localStorage.getItem("token");
-    fetch(window.edit_program_API + "/" + edited_program._id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(edited_program),
-    })
-      .then((res) => res.json())
-      .then(
-        // (result) => {
-        //     this.setState({
-        //         isLoaded: false,
-        //     });
-        // },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+    updateProgram(edited_program).then(
+      (resp) => {},
+      (error) => {}
+    );
   };
 
   addProgram = (new_program) => {
-    console.log("click addProgram");
-    console.log(new_program);
-    const auth = localStorage.getItem("token");
-    fetch(window.add_program_API, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(new_program),
-    })
-      .then((res) => res.json())
-      .then(
-        // (result) => {
-        //     this.setState({
-        //         isLoaded: false,
-        //     });
-        // },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+    createProgram(new_program).then(
+      (resp) => {},
+      (error) => {}
+    );
   };
 
   handleRemove = (i) => {
@@ -330,35 +222,10 @@ class ProgramTable extends React.Component {
   };
 
   assignProgram = (assign_data) => {
-    console.log("click assign Program");
-    console.log(assign_data);
-    const auth = localStorage.getItem("token");
-    fetch(window.assign_program_API, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(assign_data),
-    })
-      .then((res) => res.json())
-      .then(
-        // (result) => {
-        //     this.setState({
-        //         isLoaded: false,
-        //     });
-        // },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+    assignProgramToStudent(assign_data).then(
+      (resp) => {},
+      (error) => {}
+    );
   };
 
   handleChange2 = (e) => {
@@ -402,7 +269,7 @@ class ProgramTable extends React.Component {
             <Col>
               <Card>
                 {/* <Card.Header>
-                                    
+
                                 </Card.Header> */}
                 <Card.Body>
                   <Row>

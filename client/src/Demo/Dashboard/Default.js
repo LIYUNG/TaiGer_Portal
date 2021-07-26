@@ -11,12 +11,14 @@ import Studentlist from "./Studentlist";
 import {
   getStudents,
   download,
-  deleteProgram,
+  removeProgramFromStudent,
   getAgents,
   updateAgents,
   getEditors,
   updateEditors,
   acceptDocument,
+  rejectDocument,
+  deleteFile,
 } from "../../api";
 
 class Dashboard extends React.Component {
@@ -141,29 +143,15 @@ class Dashboard extends React.Component {
   onRejectFilefromstudent(e, category, id) {
     //id == student id
     e.preventDefault();
-    const auth = localStorage.getItem("token");
-    var rejectdoc_url = window.reject_document_API + "/" + category + "/" + id; // id === student id
-    fetch(rejectdoc_url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {},
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: false,
-            error,
-          });
-        }
-      );
+    rejectDocument(category, id).then(
+      (result) => {},
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error,
+        });
+      }
+    );
   }
 
   onAcceptFilefromstudent(e, category, id) {
@@ -171,9 +159,6 @@ class Dashboard extends React.Component {
     e.preventDefault();
     acceptDocument(category, id).then(
       (result) => {},
-      // Note: it's important to handle errors here
-      // instead of a catch() block so that we don't swallow
-      // exceptions from actual bugs in components.
       (error) => {
         this.setState({
           isLoaded: true,
@@ -185,160 +170,71 @@ class Dashboard extends React.Component {
   onDeleteProgram(e, student_id, program_id) {
     //program id
     e.preventDefault();
-    const auth = localStorage.getItem("token");
-    var del_prog_std_url =
-      window.del_prog_std_API + "/" + program_id + "/" + student_id; // id === student id
-    fetch(del_prog_std_url, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {},
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
+    removeProgramFromStudent(program_id, student_id).then(
+      (result) => {},
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
   }
 
   onDeleteFilefromstudent(e, category, id) {
     e.preventDefault();
-    const auth = localStorage.getItem("token");
-    var download_url = window.delete + "/" + category + "/" + id; // id === student id
-    fetch(download_url, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    }).then(
-      (res) => {
-        if (res.status === 200) {
+    deleteFile().then(
+      (resp) => {
+        // TODO: remove alert
+        if (resp.status === 200) {
           alert("Delete file success");
-          this.setState({
-            isLoaded: false,
-          });
         } else {
           alert("Delete file failed");
-          this.setState({
-            isLoaded: false,
-          });
         }
-      }
-      // (error) => {
-      //     // console.log(error);
-      //     // console.log();
-      //     alert("The file is not available.")
-      //     // this.setState({
-      //     //     isLoaded: true,
-      //     //     error
-      //     // });
-      // }
+        this.setState({ isLoaded: false });
+      },
+      (error) => {}
     );
   }
 
   editAgent(i) {
-    console.log("click editAgent");
-    const auth = localStorage.getItem("token");
-    fetch(window.edit_agent_API, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    getAgents().then(
+      (resp) => {
+        const { data: agents } = resp.data;
+        const { students, student_i } = this.state;
+        const { agent_ } = students[student_i];
+        const updateAgentList = agents.reduce(
+          (prev, { emailaddress_ }) => ({
+            ...prev,
+            [emailaddress_]: agent_.indexOf(emailaddress_) > -1,
+          }),
+          {}
+        );
+
+        this.setState({ agent_list: agents, updateAgentList });
       },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log(result.data);
-          var tempAgentList = {};
-          result.data.map((agent, i) => {
-            if (
-              this.state.students[this.state.student_i].agent_.indexOf(
-                agent.emailaddress_
-              ) > -1
-            ) {
-              console.log("true");
-              tempAgentList[agent.emailaddress_] = true;
-            } else {
-              console.log("false");
-              tempAgentList[agent.emailaddress_] = false;
-            }
-          });
-          return this.setState({
-            agent_list: result.data,
-            updateAgentList: tempAgentList,
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+      (error) => {}
+    );
   }
 
   editEditor(i) {
-    console.log("click editEditor");
-    const auth = localStorage.getItem("token");
-    fetch(window.edit_editor_API, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    getEditors().then(
+      (resp) => {
+        const { data: editors } = resp.data;
+        const { students, student_i } = this.state;
+        const { editor_ } = students[student_i];
+        const updateEditorList = editors.reduce(
+          (prev, { emailaddress_ }) => ({
+            ...prev,
+            [emailaddress_]: editor_.indexOf(emailaddress_) > -1,
+          }),
+          {}
+        );
+
+        this.setState({ editor_list: editors, updateEditorList });
       },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log(result.data);
-          // init updateEditorList value, which editors are already selected
-          var tempEditorList = {};
-          result.data.map((editor, i) => {
-            if (
-              this.state.students[this.state.student_i].editor_.indexOf(
-                editor.emailaddress_
-              ) > -1
-            ) {
-              console.log("true");
-              tempEditorList[editor.emailaddress_] = true;
-            } else {
-              console.log("false");
-              tempEditorList[editor.emailaddress_] = false;
-            }
-          });
-          return this.setState({
-            editor_list: result.data,
-            updateEditorList: tempEditorList,
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // this.setState({
-          //     isLoaded: false,
-          //     error
-          // });
-        }
-      );
+      (error) => {}
+    );
   }
 
   handleChangeAgentlist = (e) => {
@@ -456,6 +352,7 @@ class Dashboard extends React.Component {
   RemoveProgramHandler3 = (program_id) => {
     console.log("click delete");
     console.log("id = " + program_id);
+    // FIXME: this.deleteProgram is not defined
     this.deleteProgram({ program_id });
     this.setState({
       isLoaded: false,

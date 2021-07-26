@@ -15,14 +15,6 @@ const store = createStore(
 );
 const is_Dev = true;
 if (is_Dev) {
-  window.Student_API = "http://localhost:3000/studentlist";
-  window.del_prog_std_API = "http://localhost:3000/deleteprogramfromstudent";
-  window.edit_agent_API = "http://localhost:3000/editagent";
-  window.update_agent_API = "http://localhost:3000/updateagent";
-  window.edit_editor_API = "http://localhost:3000/editeditor";
-  window.update_editor_API = "http://localhost:3000/updateeditor";
-  window.accept_document_API = "http://localhost:3000/acceptdoc";
-  window.reject_document_API = "http://localhost:3000/rejectdoc";
   window.login = "http://localhost:3000/login";
   window.register = "http://localhost:3000/register";
   window.program_list_API = "http://localhost:3000/programlist";
@@ -33,7 +25,6 @@ if (is_Dev) {
   window.edit_program_API = "http://localhost:3000/editprogram";
   window.assign_program_API = "http://localhost:3000/assignprogramtostudent";
   window.upload = "http://localhost:3000/upload";
-  window.delete = "http://localhost:3000/deletefile";
   window.download = "http://localhost:3000/download";
   window.New_Article = "http://localhost:3000/docs";
   window.Get_Application_Article = "http://localhost:3000/docs/application";
@@ -42,15 +33,6 @@ if (is_Dev) {
   window.Get_Certification_Article = "http://localhost:3000/docs/certification";
   window.Update_Article = "http://localhost:3000/docs";
 } else {
-  window.Student_API = "http://54.214.118.145:3000/studentlist";
-  window.del_prog_std_API =
-    "http://54.214.118.145:3000/deleteprogramfromstudent";
-  window.edit_agent_API = "http://54.214.118.145:3000/editagent";
-  window.update_agent_API = "http://54.214.118.145:3000/updateagent";
-  window.edit_editor_API = "http://54.214.118.145:3000/editeditor";
-  window.update_editor_API = "http://54.214.118.145:3000/updateeditor";
-  window.accept_document_API = "http://54.214.118.145:3000/acceptdoc";
-  window.reject_document_API = "http://54.214.118.145:3000/rejectdoc";
   window.login = "http://54.214.118.145:3000/login";
   window.register = "http://54.214.118.145:3000/register";
   window.program_list_API = "http://54.214.118.145:3000/programlist";
@@ -62,7 +44,6 @@ if (is_Dev) {
   window.assign_program_API =
     "http://54.214.118.145:3000/assignprogramtostudent";
   window.upload = "http://54.214.118.145:3000/upload";
-  window.delete = "http://54.214.118.145:3000/deletefile";
   window.download = "http://54.214.118.145:3000/download";
   window.New_Article = "http://54.214.118.145:3000/docs";
   window.Get_Application_Article =

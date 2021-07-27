@@ -16,9 +16,9 @@ import {
 class ProgramListSubpage extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange2 = props.handleChange2.bind(this);
-    this.setModalHide = props.setModalHide.bind(this);
-    this.onSubmit2 = props.onSubmit2.bind(this);
+    // this.handleChange2 = props.handleChange2.bind(this);
+    // this.setModalHide = props.setModalHide.bind(this);
+    // this.onSubmit2 = props.onSubmit2.bind(this);
     this.state = {
       data: [],
     };
@@ -62,7 +62,7 @@ class ProgramListSubpage extends React.Component {
                       name="student_id"
                       value={student._id}
                       id={student._id}
-                      onChange={this.handleChange2}
+                      onChange={this.props.handleChange2}
                     />
                   </Form.Group>
                 </div>
@@ -76,8 +76,8 @@ class ProgramListSubpage extends React.Component {
           ))}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.onSubmit2}>Assign</Button>
-          <Button onClick={this.setModalHide}>Cancel</Button>
+          <Button onClick={(e) => this.props.onSubmit2(e)}>Assign</Button>
+          <Button onClick={this.props.setModalHide}>Cancel</Button>
         </Modal.Footer>
       </Modal>
     );

@@ -1,5 +1,6 @@
 import React from "react";
-import { Table, Form } from "react-bootstrap";
+import { Table, Row, Col, Card, Form, ButtonToolbar } from "react-bootstrap";
+
 import {
   Button,
   // OverlayTrigger,
@@ -12,193 +13,206 @@ import {
 
 import UcFirst from "../../App/components/UcFirst";
 import ProgramListSubpage from "./ProgramListSubpage";
-
-const row = (
-  x,
-  i,
-  header,
-  handleRemove,
-  startEditing,
-  editIdx,
-  handleChange,
-  stopEditing,
-  RemoveProgramHandler3,
-  cancelEditing,
-  setModalShow,
-  role
-) => {
-  const currentlyEditing = editIdx === i;
-  if (role === "Agent" || role === "Editor" || role === "Admin") {
-    return (
-      <tr key={x._id}>
-        <th>
-          {currentlyEditing ? (
-            <div>
-              <Button
-                className="btn-square"
-                variant="danger"
-                onClick={() => stopEditing(x)}
-              >
-                <UcFirst text="Save" />
-              </Button>
-              <Button
-                className="btn-square"
-                variant="info"
-                onClick={() => cancelEditing()}
-              >
-                <UcFirst text="Cancel" />
-              </Button>
-            </div>
-          ) : (
-            <DropdownButton
-              size="sm"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${x._id}`}
-              key={x._id}
-            >
-              <Dropdown.Item eventKey="1" onSelect={() => startEditing(i)}>
-                Edit
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="2"
-                onSelect={() => setModalShow(x.University, x.Program, x._id)}
-              >
-                Assign to student...
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="3"
-                onSelect={() => RemoveProgramHandler3(x._id)}
-              >
-                Delete
-              </Dropdown.Item>
-            </DropdownButton>
-          )}
-        </th>
-        {header.map((y, k) => (
-          <td key={k}>
-            {currentlyEditing ? (
-              <Form>
-                <Form.Group>
-                  <Form.Control
-                    type="text"
-                    onChange={(e) => handleChange(e, y.prop, i)}
-                    value={x[y.prop]}
-                  />
-                </Form.Group>
-              </Form>
-            ) : (
-              x[y.prop]
-            )}
-          </td>
-        ))}
-      </tr>
-    );
-  } else {
-    return (
-      <tr key={x._id}>
-        <th>
-          {currentlyEditing ? (
-            <div>
-              <Button
-                className="btn-square"
-                variant="danger"
-                onClick={() => stopEditing(x)}
-              >
-                <UcFirst text="Save" />
-              </Button>
-              <Button
-                className="btn-square"
-                variant="info"
-                onClick={() => cancelEditing()}
-              >
-                <UcFirst text="Cancel" />
-              </Button>
-            </div>
-          ) : (
-            <DropdownButton
-              size="sm"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${x._id}`}
-              key={x._id}
-            >
-              <Dropdown.Item eventKey="1" >
-                See details
-              </Dropdown.Item>
-              {/* <Dropdown.Item
-                eventKey="2"
-                // onSelect={() => setModalShow(x.University, x.Program, x._id)}
-              >
-                Assign to student...
-              </Dropdown.Item> */}
-            </DropdownButton>
-          )}
-        </th>
-        {header.map((y, k) => (
-          <td key={k}>
-            {currentlyEditing ? (
-              <Form>
-                <Form.Group>
-                  <Form.Control
-                    type="text"
-                    onChange={(e) => handleChange(e, y.prop, i)}
-                    value={x[y.prop]}
-                  />
-                </Form.Group>
-              </Form>
-            ) : (
-              x[y.prop]
-            )}
-          </td>
-        ))}
-      </tr>
-    );
-  }
-};
+import EditableProgram from "./EditableProgram";
+import NewProgramWindow from "./NewProgramWindow";
 
 class Programlist extends React.Component {
+  state = {
+    modalShow: false,
+    uni_name: "",
+    program_name: "",
+    program_id: "",
+
+    modalShowNewProgram: false,
+  };
+
+  handleChange2 = (e) => {
+    const { value } = e.target;
+    // console.log("std_id " + value)
+    console.log("program_id " + this.state.program_id);
+    console.log("student_id " + value);
+    this.setState((state) => ({
+      StudentId: value,
+    }));
+  };
+
+  onSubmit2 = (e) => {
+    e.preventDefault();
+    const program_id = this.state.program_id;
+    const student_id = this.state.StudentId;
+    console.log("before submit");
+    console.log("program_id " + this.state.program_id);
+    console.log("student_id " + this.state.StudentId);
+    this.props.assignProgram({ student_id, program_id });
+    console.log("click assign");
+    this.setState({
+      modalShow: false,
+    });
+  };
+
+  setModalShow = (uni_name, program_name, programID) => {
+    this.setState({
+      modalShow: true,
+      uni_name: uni_name,
+      program_name: program_name,
+      program_id: programID,
+    });
+  };
+
+  setModalHide = () => {
+    this.setState({
+      modalShow: false,
+    });
+  };
+
+  NewProgram = (new_program) => {
+    console.log("click NewProgram");
+    this.setState({
+      modalShowNewProgram: true,
+    });
+  };
+
+  onSubmitNewProgram = (newProgramData) => {
+    console.log(this.state.newProgramData);
+    this.props.submitNewProgram(newProgramData);
+    this.setModalHide2();
+  };
+
+  setModalHide2 = () => {
+    this.setState({
+      modalShowNewProgram: false,
+    });
+  };
+
   render() {
-    return (
-      <>
-        <Table responsive>
-          <thead>
-            <tr>
-              <th> </th>
-              {this.props.header.map((x, i) => (
-                <th key={i}>{x.name}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.data.map((program, i) =>
-              row(
-                program,
-                i,
-                this.props.header,
-                this.props.handleRemove,
-                this.props.startEditing,
-                this.props.editIdx,
-                this.props.handleChange,
-                this.props.stopEditing,
-                this.props.RemoveProgramHandler3,
-                this.props.cancelEditing,
-                this.props.setModalShow,
-                this.props.role
-              )
-            )}
-          </tbody>
-        </Table>
-        <ProgramListSubpage
-          show={this.props.ModalShow}
-          setModalHide={this.props.setModalHide}
-          uni_name={this.props.Uni_Name}
-          program_name={this.props.Program_Name}
-          handleChange2={this.props.handleChange2}
-          onSubmit2={this.props.onSubmit2}
-        />
-      </>
+    const headers = (
+      <tr>
+        <th> </th>
+        {this.props.header.map((x, i) => (
+          <th key={i}>{x.name}</th>
+        ))}
+      </tr>
     );
+
+    const programs = this.props.data.map((program) => (
+      <EditableProgram
+        key={program._id}
+        program={program}
+        header={this.props.header}
+        editIdx={this.props.editIdx}
+        handleChange={this.props.handleChange}
+        onFormSubmit={this.props.onFormSubmit}
+        RemoveProgramHandler3={this.props.RemoveProgramHandler3}
+        cancelEditing={this.props.cancelEditing}
+        setModalShow={this.setModalShow}
+        role={this.props.role}
+      />
+    ));
+
+    if (this.state.modalShow) {
+      return (
+        <>
+          <Row>
+            <Col>
+              <Card.Title as="h4">Program List</Card.Title>
+            </Col>
+            <Col>
+              <ButtonToolbar className="float-right">
+                {this.props.role === "Student" ? (
+                  <></>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    type="submit"
+                    onClick={() => this.NewProgram()}
+                  >
+                    New Program
+                  </button>
+                )}
+              </ButtonToolbar>
+            </Col>
+          </Row>
+          <Table responsive>
+            <thead>{headers}</thead>
+            <tbody>{programs}</tbody>
+          </Table>
+          <ProgramListSubpage
+            show={this.state.modalShow}
+            setModalHide={this.setModalHide}
+            uni_name={this.state.uni_name}
+            program_name={this.state.program_name}
+            handleChange2={this.handleChange2}
+            onSubmit2={this.onSubmit2}
+          />
+        </>
+      );
+    } else if (this.state.modalShowNewProgram) {
+      return (
+        <>
+          <Row>
+            <Col>
+              <Card.Title as="h4">Program List</Card.Title>
+            </Col>
+            <Col>
+              <ButtonToolbar className="float-right">
+                {this.props.role === "Student" ? (
+                  <></>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    type="submit"
+                    onClick={() => this.NewProgram()}
+                  >
+                    New Program
+                  </button>
+                )}
+              </ButtonToolbar>
+            </Col>
+          </Row>
+          <Table responsive>
+            <thead>{headers}</thead>
+            <tbody>{programs}</tbody>
+          </Table>
+          <NewProgramWindow
+            show={this.state.modalShowNewProgram}
+            setModalHide2={this.setModalHide2}
+            // handleChangeNewProgram={this.handleChangeNewProgram}
+            submitNewProgram={this.onSubmitNewProgram}
+            newProgramData={this.state.newProgramData}
+            header={window.NewProgramHeader}
+          />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Row>
+            <Col>
+              <Card.Title as="h4">Program List</Card.Title>
+            </Col>
+            <Col>
+              <ButtonToolbar className="float-right">
+                {this.props.role === "Student" ? (
+                  <></>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    type="submit"
+                    onClick={() => this.NewProgram()}
+                  >
+                    New Program
+                  </button>
+                )}
+              </ButtonToolbar>
+            </Col>
+          </Row>
+          <Table responsive>
+            <thead>{headers}</thead>
+            <tbody>{programs}</tbody>
+          </Table>
+        </>
+      );
+    }
   }
 }
 

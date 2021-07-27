@@ -27,13 +27,8 @@ class ProgramTable extends React.Component {
       error: null,
       role: "",
       isLoaded: false,
-      editIdx: -1,
-      modalShow: false,
       modalShowNewProgram: false,
-      Uni: "",
       Program: "",
-      ProgramId: "",
-      StudentId: "",
       newProgramData: [],
       data: [],
     };
@@ -42,6 +37,9 @@ class ProgramTable extends React.Component {
   componentDidMount() {
     getPrograms().then(
       (resp) => {
+        if (resp.status === 401) {
+          return this.setState({ error: resp.status });
+        }
         const { data, role } = resp.data;
         this.setState({ isLoaded: true, data, role });
       },
@@ -70,42 +68,38 @@ class ProgramTable extends React.Component {
 
   editProgram = (edited_program) => {
     updateProgram(edited_program).then(
-      (resp) => {},
+      (resp) => {
+        this.setState({
+          isLoaded: false,
+        });
+      },
       (error) => {}
     );
   };
 
   addProgram = (new_program) => {
-    createProgram(new_program).then(
-      (resp) => {},
-      (error) => {}
-    );
+    createProgram(new_program)
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          console.log(JSON.stringify(result.data));
+          this.setState({
+            data: this.state.data.concat(result.data),
+            isLoaded: false,
+          });
+          console.log(this.state.data);
+        },
+        (error) => {}
+      );
   };
 
-  handleRemove = (i) => {
-    this.setState((state) => ({
-      data: state.data.filter((row, j) => j !== i),
-    }));
-  };
-
-  startEditing = (i, program_id) => {
-    this.setState({
-      editIdx: i,
-    });
-  };
-
-  stopEditing = (edited_program) => {
+  onFormSubmit = (edited_program) => {
     this.editProgram(edited_program);
-    this.setState({
-      editIdx: -1,
-      isLoaded: false,
-    });
   };
 
   cancelEditing = () => {
     console.log("cancel edit");
     this.setState({
-      editIdx: -1,
       // isLoaded: false
     });
   };
@@ -114,17 +108,7 @@ class ProgramTable extends React.Component {
     this.setState((state) => ({
       data: this.state.data.map((row, j) => (j === i ? x : row)),
     }));
-    this.stopEditing();
-  };
-
-  handleChange = (e, name, i) => {
-    const { value } = e.target;
-    this.setState((state) => ({
-      data: this.state.data.map((row, j) =>
-        j === i ? { ...row, [name]: value } : row
-      ),
-    }));
-    // this.cancelEditing();
+    this.onFormSubmit();
   };
 
   handleChangeNewProgram = (e, name, i) => {
@@ -144,25 +128,23 @@ class ProgramTable extends React.Component {
     });
   };
 
-  submitNewProgram = () => {
+  submitNewProgram = (newProgramData) => {
     console.log(this.state.newProgramData);
-    this.addProgram(this.state.newProgramData);
-    this.setState({
-      editIdx: -1,
-      newProgramData: [],
-      modalShowNewProgram: false,
-      isLoaded: false,
-    });
+    this.addProgram(newProgramData);
   };
 
   RemoveProgramHandler3 = (program_id) => {
     console.log("click delete");
     console.log("id = " + program_id);
-    this.deleteProgram( program_id );
+    this.setState({
+      data: this.state.data.filter((data) => data._id !== program_id),
+    });
+    this.deleteProgram(program_id);
     this.setState({
       isLoaded: false,
     });
   };
+
   validate = () => {
     let isError = false;
     const errors = {
@@ -192,21 +174,6 @@ class ProgramTable extends React.Component {
     return isError;
   };
 
-  setModalShow = (uni_name, program_name, programID) => {
-    this.setState({
-      modalShow: true,
-      Uni: uni_name,
-      Program: program_name,
-      ProgramId: programID,
-    });
-  };
-
-  setModalHide = () => {
-    this.setState({
-      modalShow: false,
-    });
-  };
-
   setModalHide2 = () => {
     this.setState({
       modalShowNewProgram: false,
@@ -226,28 +193,6 @@ class ProgramTable extends React.Component {
       (resp) => {},
       (error) => {}
     );
-  };
-
-  handleChange2 = (e) => {
-    const { value } = e.target;
-    // console.log("std_id " + value)
-    console.log("program_id " + this.state.ProgramId);
-    console.log("student_id " + value);
-    this.setState((state) => ({
-      StudentId: value,
-    }));
-  };
-
-  onSubmit2 = (e) => {
-    e.preventDefault();
-    const program_id = this.state.ProgramId;
-    const student_id = this.state.StudentId;
-    console.log("before submit");
-    console.log("program_id " + this.state.ProgramId);
-    console.log("student_id " + this.state.StudentId);
-    this.assignProgram({ student_id, program_id });
-    console.log("click assign");
-    this.setModalHide();
   };
 
   render() {
@@ -272,55 +217,24 @@ class ProgramTable extends React.Component {
 
                                 </Card.Header> */}
                 <Card.Body>
-                  <Row>
-                    <Col>
-                      <Card.Title as="h4">Program List</Card.Title>
-                    </Col>
-                    <Col>
-                      <ButtonToolbar className="float-right">
-                        {this.state.role === "Student" ? (
-                          <></>
-                        ) : (
-                          <button
-                            className="btn btn-primary"
-                            type="submit"
-                            onClick={() => this.NewProgram()}
-                          >
-                            New Program
-                          </button>
-                        )}
-                      </ButtonToolbar>
-                    </Col>
-                  </Row>
                   <Programlist
                     role={this.state.role}
-                    ModalShow={this.state.modalShow}
-                    ProgramID={this.state.ProgramId}
-                    StudentId={this.state.StudentId}
-                    Uni_Name={this.state.Uni}
-                    Program_Name={this.state.Program}
-                    setModalShow={this.setModalShow}
-                    setModalHide={this.setModalHide}
-                    handleRemove={this.handleRemove}
-                    startEditing={this.startEditing}
-                    editIdx={this.state.editIdx}
-                    stopEditing={this.stopEditing}
-                    handleChange={this.handleChange}
-                    handleChange2={this.handleChange2}
+                    onFormSubmit={this.onFormSubmit}
                     data={this.state.data}
                     cancelEditing={this.cancelEditing}
                     RemoveProgramHandler3={this.RemoveProgramHandler3}
-                    onSubmit2={this.onSubmit2}
+                    assignProgram={this.assignProgram}
                     header={window.ProgramlistHeader}
+                    submitNewProgram={this.submitNewProgram}
                   />
-                  <NewProgramWindow
+                  {/* <NewProgramWindow
                     show={this.state.modalShowNewProgram}
                     setModalHide2={this.setModalHide2}
                     handleChangeNewProgram={this.handleChangeNewProgram}
                     submitNewProgram={this.submitNewProgram}
                     newProgramData={this.state.newProgramData}
                     header={window.NewProgramHeader}
-                  />
+                  /> */}
                 </Card.Body>
               </Card>
             </Col>

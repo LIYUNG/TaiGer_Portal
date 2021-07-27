@@ -7,10 +7,6 @@ class EditableArticle extends Component {
     editFormOpen: false,
   };
 
-  handleFormClose = () => {
-    this.setState({ editFormOpen: false });
-  };
-
   handleEditClick = () => {
     this.openForm();
   };

@@ -39,6 +39,9 @@ class UsersTable extends React.Component {
   componentDidMount() {
     getUsers().then(
       (resp) => {
+        if (resp.status === 401) {
+          return this.setState({ error: resp.status });
+        }
         const { data, role } = resp.data;
         this.setState({ isLoaded: true, data, role });
       },
@@ -67,7 +70,12 @@ class UsersTable extends React.Component {
 
   editUser = (edited_user) => {
     updateUser(edited_user).then(
-      (resp) => {},
+      (resp) => {
+        this.setState({
+          editIdx: -1,
+          isLoaded: false,
+        });
+      },
       (error) => {}
     );
   };
@@ -86,10 +94,6 @@ class UsersTable extends React.Component {
 
   stopEditing = (edited_user) => {
     this.editUser(edited_user);
-    this.setState({
-      editIdx: -1,
-      isLoaded: false,
-    });
   };
 
   cancelEditing = () => {
@@ -160,7 +164,7 @@ class UsersTable extends React.Component {
       firstname: user_firstname,
       lastname: user_lastname,
       selected_user_role: user_role,
-      selected_user_id: user_id
+      selected_user_id: user_id,
     });
   };
 
@@ -200,9 +204,9 @@ class UsersTable extends React.Component {
       .then((res) => res.json())
       .then(
         (result) => {
-            this.setState({
-                isLoaded: false,
-            });
+          this.setState({
+            isLoaded: false,
+          });
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow

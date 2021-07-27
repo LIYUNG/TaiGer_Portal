@@ -14,13 +14,22 @@ class NewProgramWindow extends React.Component {
   constructor(props) {
     super(props);
     this.setModalHide2 = props.setModalHide2.bind(this);
-    this.handleChangeNewProgram = props.handleChangeNewProgram.bind(this);
-    this.submitNewProgram = props.submitNewProgram.bind(this);
+    // this.handleChangeNewProgram = props.handleChangeNewProgram.bind(this);
+    // this.submitNewProgram = props.submitNewProgram.bind(this);
     this.state = {
       data: [],
+      newProgramData: [],
     };
   }
-
+  handleChangeNewProgram = (e, name, i) => {
+    const { value } = e.target;
+    this.setState((prevState) => ({
+      newProgramData: {
+        ...prevState.newProgramData,
+        [name]: value,
+      },
+    }));
+  };
   render() {
     return (
       <Modal
@@ -46,7 +55,7 @@ class NewProgramWindow extends React.Component {
                     onChange={(e) =>
                       this.handleChangeNewProgram(e, head.prop, i)
                     }
-                    value={this.props.newProgramData[head.prop]}
+                    // value={this.state.newProgramData[head.prop]}
                   />
                 </Form.Group>
               </Form>
@@ -54,7 +63,11 @@ class NewProgramWindow extends React.Component {
           ))}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => this.submitNewProgram()}>Assign</Button>
+          <Button
+            onClick={() => this.props.submitNewProgram(this.state.newProgramData)}
+          >
+            Assign
+          </Button>
           <Button onClick={this.setModalHide2}>Cancel</Button>
         </Modal.Footer>
       </Modal>

@@ -65,7 +65,7 @@ class Programlist extends React.Component {
     });
   };
 
-  NewProgram = (new_program) => {
+  NewProgram = () => {
     console.log("click NewProgram");
     this.setState({
       modalShowNewProgram: true,
@@ -73,7 +73,6 @@ class Programlist extends React.Component {
   };
 
   onSubmitNewProgram = (newProgramData) => {
-    console.log(this.state.newProgramData);
     this.props.submitNewProgram(newProgramData);
     this.setModalHide2();
   };
@@ -176,9 +175,7 @@ class Programlist extends React.Component {
           <NewProgramWindow
             show={this.state.modalShowNewProgram}
             setModalHide2={this.setModalHide2}
-            // handleChangeNewProgram={this.handleChangeNewProgram}
             submitNewProgram={this.onSubmitNewProgram}
-            newProgramData={this.state.newProgramData}
             header={window.NewProgramHeader}
           />
         </>

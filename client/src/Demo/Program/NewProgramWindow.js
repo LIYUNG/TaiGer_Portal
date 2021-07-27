@@ -21,7 +21,7 @@ class NewProgramWindow extends React.Component {
       newProgramData: [],
     };
   }
-  handleChangeNewProgram = (e, name, i) => {
+  handleChangeNewProgram = (e, name) => {
     const { value } = e.target;
     this.setState((prevState) => ({
       newProgramData: {
@@ -45,21 +45,21 @@ class NewProgramWindow extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {this.props.header.map((head, i) => (
-            <>
-              <h5 key={i}>{head.name}:</h5>
+          {this.props.header.map((head) => (
+            <div key={head.prop}>
+              <h5 >{head.name}:</h5>
               <Form>
                 <Form.Group>
                   <Form.Control
                     type="text"
                     onChange={(e) =>
-                      this.handleChangeNewProgram(e, head.prop, i)
+                      this.handleChangeNewProgram(e, head.prop)
                     }
                     // value={this.state.newProgramData[head.prop]}
                   />
                 </Form.Group>
               </Form>
-            </>
+            </div>
           ))}
         </Modal.Body>
         <Modal.Footer>

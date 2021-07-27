@@ -62,7 +62,9 @@ class ProgramTable extends React.Component {
   deleteProgram = (program_id) => {
     deleteProgram(program_id).then(
       (resp) => {},
-      (error) => {}
+      (error) => {
+        console.log("deleteProgram error:" + error);
+      }
     );
   };
 
@@ -73,13 +75,15 @@ class ProgramTable extends React.Component {
           isLoaded: false,
         });
       },
-      (error) => {}
+      (error) => {
+        console.log("editProgram error:" + error);
+      }
     );
   };
 
   addProgram = (new_program) => {
+    console.log("enter addProgram");
     createProgram(new_program)
-      .then((res) => res.json())
       .then(
         (result) => {
           console.log(JSON.stringify(result.data));
@@ -87,9 +91,10 @@ class ProgramTable extends React.Component {
             data: this.state.data.concat(result.data),
             isLoaded: false,
           });
-          console.log(this.state.data);
         },
-        (error) => {}
+        (error) => {
+          console.log("addProgram error:" + error);
+        }
       );
   };
 
@@ -111,15 +116,15 @@ class ProgramTable extends React.Component {
     this.onFormSubmit();
   };
 
-  handleChangeNewProgram = (e, name, i) => {
-    const { value } = e.target;
-    this.setState((prevState) => ({
-      newProgramData: {
-        ...prevState.newProgramData,
-        [name]: value,
-      },
-    }));
-  };
+  // handleChangeNewProgram = (e, name, i) => {
+  //   const { value } = e.target;
+  //   this.setState((prevState) => ({
+  //     newProgramData: {
+  //       ...prevState.newProgramData,
+  //       [name]: value,
+  //     },
+  //   }));
+  // };
 
   NewProgram = (new_program) => {
     console.log("click NewProgram");
@@ -129,7 +134,7 @@ class ProgramTable extends React.Component {
   };
 
   submitNewProgram = (newProgramData) => {
-    console.log(this.state.newProgramData);
+    // console.log(this.state.newProgramData);
     this.addProgram(newProgramData);
   };
 
@@ -226,6 +231,8 @@ class ProgramTable extends React.Component {
                     assignProgram={this.assignProgram}
                     header={window.ProgramlistHeader}
                     submitNewProgram={this.submitNewProgram}
+                    modalShowNewProgram={this.state.modalShowNewProgram}
+                    setModalHide2={this.setModalHide2}
                   />
                   {/* <NewProgramWindow
                     show={this.state.modalShowNewProgram}

@@ -14,8 +14,6 @@ class NewProgramWindow extends React.Component {
   constructor(props) {
     super(props);
     this.setModalHide2 = props.setModalHide2.bind(this);
-    // this.handleChangeNewProgram = props.handleChangeNewProgram.bind(this);
-    // this.submitNewProgram = props.submitNewProgram.bind(this);
     this.state = {
       data: [],
       newProgramData: [],

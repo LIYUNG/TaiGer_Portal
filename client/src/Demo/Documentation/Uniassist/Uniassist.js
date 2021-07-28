@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import VisaArticleList from "../ArticleList";
 import ToggleableArticleForm from "../ToggleableArticleForm";
+import { updateDoc, deleteDoc } from "../../../api";
 
 class Uniassist extends Component {
   state = {
@@ -119,16 +120,7 @@ class Uniassist extends Component {
     const auth = localStorage.getItem("token");
     console.log(article_temp);
 
-    fetch(window.Update_Article + "/" + attrs._id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(article_temp),
-    })
-      .then((res) => res.json())
+    updateDoc(attrs._id, article_temp)
       .then(
         (result) => {},
         (error) => {
@@ -154,24 +146,15 @@ class Uniassist extends Component {
     console.log("click submit article");
     console.log(articleId);
     const auth = localStorage.getItem("token");
-    fetch(window.New_Article + "/" + articleId, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {},
-        (error) => {
-          this.setState({
-            isLoaded: false,
-            error,
-          });
-        }
-      );
+    deleteDoc(articleId).then(
+      (result) => {},
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error,
+        });
+      }
+    );
   };
 
   render() {

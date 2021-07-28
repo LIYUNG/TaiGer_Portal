@@ -3,20 +3,20 @@ import { Form } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import UcFirst from "../../App/components/UcFirst";
 
-class ProgramForm extends React.Component {
+class UserForm extends React.Component {
   state = {
-    program: this.props.program || "",
+    user: this.props.user || "",
   };
 
   handleChange = (e, name) => {
     const { value } = e.target;
     this.setState((state) => ({
-      program: { ...state.program, [name]: value },
+      user: { ...state.user, [name]: value },
     }));
   };
 
   handleSubmit = () => {
-    this.props.onFormSubmit(this.state.program);
+    this.props.onFormSubmit(this.state.user);
   };
 
   render() {
@@ -26,7 +26,7 @@ class ProgramForm extends React.Component {
       this.props.role === "Admin"
     ) {
       return (
-        <tr key={this.state.program._id}>
+        <tr key={this.state.user._id}>
           <th>
             <div>
               <Button
@@ -52,7 +52,7 @@ class ProgramForm extends React.Component {
                   <Form.Control
                     type="text"
                     onChange={(e) => this.handleChange(e, y.prop)}
-                    value={this.state.program[y.prop]}
+                    value={this.state.user[y.prop]}
                   />
                 </Form.Group>
               </Form>
@@ -62,7 +62,7 @@ class ProgramForm extends React.Component {
       );
     } else {
       return (
-        <tr key={this.state.program._id}>
+        <tr key={this.state.user._id}>
           <th>
             <div>
               <Button
@@ -88,7 +88,7 @@ class ProgramForm extends React.Component {
                   <Form.Control
                     type="text"
                     onChange={(e) => this.handleChange(e, y.prop)}
-                    value={this.state.program[y.prop]}
+                    value={this.state.user[y.prop]}
                   />
                 </Form.Group>
               </Form>
@@ -100,4 +100,4 @@ class ProgramForm extends React.Component {
   }
 }
 
-export default ProgramForm;
+export default UserForm;

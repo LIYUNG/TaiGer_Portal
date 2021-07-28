@@ -1,7 +1,5 @@
 import React from "react";
-import { Table, Form } from "react-bootstrap";
-import { Button, Dropdown, DropdownButton } from "react-bootstrap";
-import UcFirst from "../../App/components/UcFirst";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 
 class ProgramForm extends React.Component {
   state = {
@@ -46,7 +44,11 @@ class ProgramForm extends React.Component {
               <Dropdown.Item
                 eventKey="3"
                 onSelect={() =>
-                  this.props.RemoveProgramHandler3(this.props.program._id)
+                  this.props.setModalShowDelete(
+                    this.props.program.University_,
+                    this.props.program.Program_,
+                    this.props.program._id
+                  )
                 }
               >
                 Delete

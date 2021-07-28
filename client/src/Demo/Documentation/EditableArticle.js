@@ -10,19 +10,24 @@ class EditableArticle extends Component {
   handleEditClick = () => {
     this.openForm();
   };
+
   handleFormClose = () => {
     this.closeForm();
   };
+
   handleSubmit = (article) => {
     this.props.onFormSubmit(article);
     this.closeForm();
   };
+
   closeForm = () => {
     this.setState({ editFormOpen: false });
   };
+
   openForm = () => {
     this.setState({ editFormOpen: true });
   };
+  
   render() {
     if (this.state.editFormOpen) {
       return (

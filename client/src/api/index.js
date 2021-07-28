@@ -53,7 +53,6 @@ export const updateProgram = (program) =>
 // assign_program_API
 export const assignProgramToStudent = (data) => request.post("/assignprogramtostudent", data);
 
-
 export const getUsers = () => request.get("/userslist");
 
 export const deleteUser = (id) => request.delete(`/deleteuser/${id}`);
@@ -61,6 +60,10 @@ export const deleteUser = (id) => request.delete(`/deleteuser/${id}`);
 export const updateUser = (user) => request.post(`/edituser/${user._id}`, user);
 
 export const changeUserRole = (role) => request.post("/changeuserrole", role);
+
+export const deleteDoc = (id) => request.delete(`/docs/${id}`);
+export const addDoc = (id) => request.post(`/docs/${id}`);
+export const updateDoc = (id, doc_temp) => request.post(`/docs/${id}`, doc_temp);
 
 
 // window.upload = "http://localhost:3000/upload";

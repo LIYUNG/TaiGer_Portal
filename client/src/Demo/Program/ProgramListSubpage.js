@@ -2,27 +2,21 @@ import React from "react";
 import { Form, Modal } from "react-bootstrap";
 import {
   Button,
-  // OverlayTrigger,
-  // Tooltip,
-  // ButtonToolbar,
-  // SplitButton
 } from "react-bootstrap";
 
 import {
   getStudents,
 } from "../../api";
 
-
 class ProgramListSubpage extends React.Component {
+
   constructor(props) {
     super(props);
-    // this.handleChange2 = props.handleChange2.bind(this);
-    // this.setModalHide = props.setModalHide.bind(this);
-    // this.onSubmit2 = props.onSubmit2.bind(this);
     this.state = {
       data: [],
     };
   }
+
   componentDidMount() {
     getStudents().then(
       (resp) => {

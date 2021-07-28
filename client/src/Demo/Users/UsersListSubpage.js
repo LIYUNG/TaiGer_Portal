@@ -1,14 +1,6 @@
 import React from "react";
 import { Form, Modal } from "react-bootstrap";
-import {
-  Button,
-  // OverlayTrigger,
-  // Tooltip,
-  // ButtonToolbar,
-  // SplitButton
-} from "react-bootstrap";
-
-// import Aux from "../../hoc/_Aux";
+import { Button } from "react-bootstrap";
 
 class UsersListSubpage extends React.Component {
   constructor(props) {

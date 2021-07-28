@@ -5,6 +5,8 @@ import Aux from "../../../hoc/_Aux";
 import ApplicationArticleList from "../ArticleList";
 import ToggleableArticleForm from "../ToggleableArticleForm";
 
+import { updateDoc, deleteDoc } from "../../../api";
+
 class Application extends Component {
   state = {
     error: null,
@@ -13,8 +15,6 @@ class Application extends Component {
     editFormOpen: false,
   };
   componentDidMount() {
-    // TODO: fetch articles from server to this.state.articles
-    // this.setState({ file: "" });
     console.log("get article");
     const auth = localStorage.getItem("token");
     fetch(window.Get_Application_Article, {
@@ -48,7 +48,6 @@ class Application extends Component {
   };
 
   createArticle = (article) => {
- 
     console.log("click create new article");
     console.log(article);
     let article_temp = {};
@@ -96,18 +95,13 @@ class Application extends Component {
     this.setState({
       articles: this.state.articles.map((article) => {
         if (article._id === attrs._id) {
-          return Object.assign({}, article, {
-            _id: attrs._id,
-            Titel_: attrs.Titel_,
-            Content_: attrs.Content_,
-            Category_: attrs.Category_,
-            LastUpdate_: attrs.LastUpdate_,
-          });
+          return Object.assign(article, attrs);
         } else {
           return article;
         }
       }),
     });
+
     //update article
     console.log("click update article");
     console.log(attrs);
@@ -119,28 +113,16 @@ class Application extends Component {
       Category_: attrs.Category_,
       LastUpdate_: attrs.LastUpdate_,
     });
-    const auth = localStorage.getItem("token");
-    console.log(article_temp);
-
-    fetch(window.Update_Article + "/" + attrs._id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(article_temp),
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {},
-        (error) => {
-          this.setState({
-            isLoaded: false,
-            error,
-          });
-        }
-      );
+    updateDoc(attrs._id, article_temp).then(
+      (result) => {},
+      (error) => {
+        console.log(" error at updateArticle" + error);
+        this.setState({
+          isLoaded: false,
+          error,
+        });
+      }
+    );
   };
 
   handleTrashClick = (articleId) => {
@@ -156,16 +138,7 @@ class Application extends Component {
 
     console.log("click submit article");
     console.log(articleId);
-    const auth = localStorage.getItem("token");
-    fetch(window.New_Article + "/" + articleId, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => res.json())
+    deleteDoc(articleId)
       .then(
         (result) => {},
         (error) => {

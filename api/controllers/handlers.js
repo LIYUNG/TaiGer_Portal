@@ -367,10 +367,10 @@ exports.changeuserrole = async (req, res) => {
     // TODO: update student1s user role_
     student1.role_ = user_role;
     await student1.save();
-      console.log("success: " + student1);
-      res.send({
-        data: "success",
-      });
+    console.log("success: " + student1);
+    res.send({
+      data: "success",
+    });
   } catch (err) {
     console.log("error by assigning user role");
     console.log(err);

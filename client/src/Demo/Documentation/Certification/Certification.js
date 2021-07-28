@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import VisaArticleList from "../ArticleList";
 import ToggleableArticleForm from "../ToggleableArticleForm";
+import { updateDoc, deleteDoc } from "../../../api";
 
 class Certification extends Component {
   state = {
@@ -119,16 +120,7 @@ class Certification extends Component {
     const auth = localStorage.getItem("token");
     console.log(article_temp);
 
-    fetch(window.Update_Article + "/" + attrs._id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-      body: JSON.stringify(article_temp),
-    })
-      .then((res) => res.json())
+    updateDoc(attrs._id, article_temp)
       .then(
         (result) => {},
         (error) => {
@@ -153,16 +145,7 @@ class Certification extends Component {
 
     console.log("click submit article");
     console.log(articleId);
-    const auth = localStorage.getItem("token");
-    fetch(window.New_Article + "/" + articleId, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => res.json())
+    deleteDoc(articleId)
       .then(
         (result) => {},
         (error) => {

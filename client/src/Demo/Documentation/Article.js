@@ -12,7 +12,7 @@ class Article extends Component {
     for (let i = 0; i < parts.length; i += 1) {
       if (parts[i].includes("http")) {
         parts[i] = (
-          <span>
+          <span key={i}>
             <span>
               <a key={"link" + i} href={parts[i]}>
                 {parts[i]}
@@ -23,7 +23,7 @@ class Article extends Component {
         );
       } else {
         parts[i] = (
-          <span>
+          <span key={i}>
             <span>{parts[i]}</span>
             <br />
           </span>
@@ -35,7 +35,7 @@ class Article extends Component {
   render() {
     let text2 = this.renderText();
     return (
-      <Card title={this.props.title}>
+      <Card title={this.props.title} key={this.props.id}>
         <div>{text2}</div>
 
         <div>

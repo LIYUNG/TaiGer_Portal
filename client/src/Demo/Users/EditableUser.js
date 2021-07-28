@@ -1,8 +1,8 @@
 import React from "react";
-import ProgramForm from "./ProgramForm";
-import Program from "./Program";
+import UserForm from "./UserForm";
+import User from "./User";
 
-class EditableProgram extends React.Component {
+class EditableUser extends React.Component {
   state = {
     editFormOpen: false,
   };
@@ -30,10 +30,11 @@ class EditableProgram extends React.Component {
   render() {
     if (this.state.editFormOpen) {
       return (
-        <ProgramForm
-          program={this.props.program}
+        <UserForm
+          user={this.props.user}
           header={this.props.header}
           onFormSubmit={this.handleSubmit}
+          RemoveProgramHandler3={this.props.RemoveProgramHandler3}
           handleFormClose={this.handleFormClose}
           openForm={this.openForm}
           setModalShow={this.props.setModalShow}
@@ -42,11 +43,10 @@ class EditableProgram extends React.Component {
       );
     } else {
       return (
-        <Program
-          program={this.props.program}
+        <User
+          user={this.props.user}
           header={this.props.header}
           onFormSubmit={this.props.onFormSubmit}
-          setModalShowDelete={this.props.setModalShowDelete}
           RemoveProgramHandler3={this.props.RemoveProgramHandler3}
           onEditClick={this.handleEditClick}
           setModalShow={this.props.setModalShow}
@@ -57,4 +57,4 @@ class EditableProgram extends React.Component {
   }
 }
 
-export default EditableProgram;
+export default EditableUser;

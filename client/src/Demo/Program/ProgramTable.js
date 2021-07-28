@@ -1,16 +1,7 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
-import {
-  // OverlayTrigger,
-  // Tooltip,
-  ButtonToolbar,
-  // Dropdown,
-  // DropdownButton,
-  // SplitButton
-} from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import Programlist from "./ProgramList";
-import NewProgramWindow from "./NewProgramWindow";
 
 import {
   getPrograms,
@@ -28,8 +19,6 @@ class ProgramTable extends React.Component {
       role: "",
       isLoaded: false,
       modalShowNewProgram: false,
-      Program: "",
-      newProgramData: [],
       data: [],
     };
   }
@@ -69,12 +58,19 @@ class ProgramTable extends React.Component {
   };
 
   editProgram = (edited_program) => {
+    // Upldate local program list
+    this.setState({
+      data: this.state.data.map((program) => {
+        if (program._id === edited_program._id) {
+          return Object.assign(program, edited_program);
+        } else {
+          return program;
+        }
+      }),
+    });
+    // Upload remote program list, without fetching data from remote again.
     updateProgram(edited_program).then(
-      (resp) => {
-        this.setState({
-          isLoaded: false,
-        });
-      },
+      (resp) => {},
       (error) => {
         console.log("editProgram error:" + error);
       }
@@ -83,48 +79,23 @@ class ProgramTable extends React.Component {
 
   addProgram = (new_program) => {
     console.log("enter addProgram");
-    createProgram(new_program)
-      .then(
-        (result) => {
-          console.log(JSON.stringify(result.data));
-          this.setState({
-            data: this.state.data.concat(result.data),
-            isLoaded: false,
-          });
-        },
-        (error) => {
-          console.log("addProgram error:" + error);
-        }
-      );
+    createProgram(new_program).then(
+      (result) => {
+        console.log(JSON.stringify(result.data));
+        this.setState({
+          data: this.state.data.concat(result.data),
+          isLoaded: false,
+        });
+      },
+      (error) => {
+        console.log("addProgram error:" + error);
+      }
+    );
   };
 
   onFormSubmit = (edited_program) => {
     this.editProgram(edited_program);
   };
-
-  cancelEditing = () => {
-    console.log("cancel edit");
-    this.setState({
-      // isLoaded: false
-    });
-  };
-
-  handleSave = (i, x) => {
-    this.setState((state) => ({
-      data: this.state.data.map((row, j) => (j === i ? x : row)),
-    }));
-    this.onFormSubmit();
-  };
-
-  // handleChangeNewProgram = (e, name, i) => {
-  //   const { value } = e.target;
-  //   this.setState((prevState) => ({
-  //     newProgramData: {
-  //       ...prevState.newProgramData,
-  //       [name]: value,
-  //     },
-  //   }));
-  // };
 
   NewProgram = (new_program) => {
     console.log("click NewProgram");
@@ -185,15 +156,9 @@ class ProgramTable extends React.Component {
     });
   };
 
-  onSubmit = (e) => {
-    e.preventDefault();
-    const err = this.validate();
-    if (!err) {
-      this.props.handleSave(this.props.i, this.state.values);
-    }
-  };
-
   assignProgram = (assign_data) => {
+    // TODO: update state.data to prevent fetch request again
+
     assignProgramToStudent(assign_data).then(
       (resp) => {},
       (error) => {}
@@ -219,14 +184,12 @@ class ProgramTable extends React.Component {
             <Col>
               <Card>
                 {/* <Card.Header>
-
                                 </Card.Header> */}
                 <Card.Body>
                   <Programlist
                     role={this.state.role}
                     onFormSubmit={this.onFormSubmit}
                     data={this.state.data}
-                    cancelEditing={this.cancelEditing}
                     RemoveProgramHandler3={this.RemoveProgramHandler3}
                     assignProgram={this.assignProgram}
                     header={window.ProgramlistHeader}

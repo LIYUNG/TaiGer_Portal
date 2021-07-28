@@ -1,20 +1,16 @@
 import React from "react";
-import { Table, Row, Col, Card, Form, ButtonToolbar } from "react-bootstrap";
-
 import {
-  Button,
-  // OverlayTrigger,
-  // Tooltip,
-  // ButtonToolbar,
-  Dropdown,
-  DropdownButton,
-  // SplitButton
+  Table,
+  Row,
+  Col,
+  Card,
+  ButtonToolbar,
 } from "react-bootstrap";
 
-import UcFirst from "../../App/components/UcFirst";
 import ProgramListSubpage from "./ProgramListSubpage";
 import EditableProgram from "./EditableProgram";
 import NewProgramWindow from "./NewProgramWindow";
+import ProgramDeleteWarning from "./ProgramDeleteWarning";
 
 class Programlist extends React.Component {
   state = {
@@ -24,6 +20,8 @@ class Programlist extends React.Component {
     program_id: "",
 
     modalShowNewProgram: false,
+
+    deleteProgramWarning: false,
   };
 
   handleChange2 = (e) => {
@@ -65,6 +63,21 @@ class Programlist extends React.Component {
     });
   };
 
+  setModalShowDelete = (uni_name, program_name, programID) => {
+    this.setState({
+      deleteProgramWarning: true,
+      uni_name: uni_name,
+      program_name: program_name,
+      program_id: programID,
+    });
+  };
+
+  setModalHideDDelete = () => {
+    this.setState({
+      deleteProgramWarning: false,
+    });
+  };
+
   NewProgram = () => {
     console.log("click NewProgram");
     this.setState({
@@ -98,11 +111,10 @@ class Programlist extends React.Component {
         key={program._id}
         program={program}
         header={this.props.header}
-        editIdx={this.props.editIdx}
-        handleChange={this.props.handleChange}
+        // handleChange={this.props.handleChange}
         onFormSubmit={this.props.onFormSubmit}
+        setModalShowDelete={this.setModalShowDelete}
         RemoveProgramHandler3={this.props.RemoveProgramHandler3}
-        cancelEditing={this.props.cancelEditing}
         setModalShow={this.setModalShow}
         role={this.props.role}
       />
@@ -177,6 +189,43 @@ class Programlist extends React.Component {
             setModalHide2={this.setModalHide2}
             submitNewProgram={this.onSubmitNewProgram}
             header={window.NewProgramHeader}
+          />
+        </>
+      );
+    } else if (this.state.deleteProgramWarning) {
+      return (
+        <>
+          <Row>
+            <Col>
+              <Card.Title as="h4">Program List</Card.Title>
+            </Col>
+            <Col>
+              <ButtonToolbar className="float-right">
+                {this.props.role === "Student" ? (
+                  <></>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    type="submit"
+                    onClick={() => this.NewProgram()}
+                  >
+                    New Program
+                  </button>
+                )}
+              </ButtonToolbar>
+            </Col>
+          </Row>
+          <Table responsive>
+            <thead>{headers}</thead>
+            <tbody>{programs}</tbody>
+          </Table>
+          <ProgramDeleteWarning
+            deleteProgramWarning={this.state.deleteProgramWarning}
+            setModalHideDDelete={this.setModalHideDDelete}
+            program_id={this.state.program_id}
+            program_name={this.state.program_name}
+            uni_name={this.state.uni_name}
+            RemoveProgramHandler3={this.props.RemoveProgramHandler3}
           />
         </>
       );

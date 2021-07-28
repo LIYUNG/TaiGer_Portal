@@ -47,6 +47,7 @@ class EditableUser extends React.Component {
           user={this.props.user}
           header={this.props.header}
           onFormSubmit={this.props.onFormSubmit}
+          setModalShowDelete={this.props.setModalShowDelete}
           RemoveProgramHandler3={this.props.RemoveProgramHandler3}
           onEditClick={this.handleEditClick}
           setModalShow={this.props.setModalShow}

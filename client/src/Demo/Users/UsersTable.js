@@ -6,15 +6,12 @@ import UsersList from "./UsersList";
 import { getUsers, deleteUser, updateUser, changeUserRole } from "../../api";
 
 class UsersTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      role: "",
-      isLoaded: false,
-      data: [],
-    };
-  }
+  state = {
+    error: null,
+    role: "",
+    isLoaded: false,
+    data: [],
+  };
 
   componentDidMount() {
     getUsers().then(
@@ -42,43 +39,33 @@ class UsersTable extends React.Component {
   }
 
   deleteUser = (user_id) => {
+    // TODO: also delete files in file system
     deleteUser(user_id).then(
       (resp) => {},
-      (error) => {}
+      (error) => {
+        console.log("error at deleteUser: " + deleteUser);
+      }
     );
   };
 
   editUser = (edited_user) => {
-    // TODO: modify the following comment and delete resp setState to prevent update Fetch
-    // this.setState({
-    //   articles: this.state.articles.map((article) => {
-    //     if (article._id === attrs._id) {
-    //       return Object.assign({}, article, {
-    //         _id: attrs._id,
-    //         Titel_: attrs.Titel_,
-    //         Content_: attrs.Content_,
-    //         Category_: attrs.Category_,
-    //         LastUpdate_: attrs.LastUpdate_,
-    //       });
-    //     } else {
-    //       return article;
-    //     }
-    //   }),
-    // });
+    // update local
+    this.setState({
+      data: this.state.data.map((user) => {
+        if (user._id === edited_user._id) {
+          return Object.assign(user, edited_user);
+        } else {
+          return user;
+        }
+      }),
+    });
+    // update remote
     updateUser(edited_user).then(
-      (resp) => {
-        this.setState({
-          isLoaded: false,
-        });
-      },
-      (error) => {}
+      (resp) => {},
+      (error) => {
+        console.log("error at editUser: " + error);
+      }
     );
-  };
-
-  handleRemove = (i) => {
-    this.setState((state) => ({
-      data: state.data.filter((row, j) => j !== i),
-    }));
   };
 
   onFormSubmit = (edited_user) => {
@@ -134,7 +121,7 @@ class UsersTable extends React.Component {
       }),
     });
     console.log("click assign user role");
-    console.log(this.state.data);
+    console.log(user_data);
     changeUserRole(user_data)
       // .then((res) => res.json())
       .then(
@@ -173,12 +160,7 @@ class UsersTable extends React.Component {
                   </Row>
                   <UsersList
                     role={this.state.role}
-                    ModalShow={this.state.modalShow}
-                    setModalShow={this.setModalShow}
-                    setModalHide={this.setModalHide}
                     onFormSubmit={this.onFormSubmit}
-                    handleRemove={this.handleRemove}
-                    handleChange2={this.handleChange2}
                     assignUserAs={this.assignUserAs}
                     data={this.state.data}
                     RemoveUserHandler3={this.RemoveUserHandler3}

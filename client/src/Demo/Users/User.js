@@ -46,7 +46,12 @@ class User extends React.Component {
               <Dropdown.Item
                 eventKey="3"
                 onSelect={() =>
-                  this.props.RemoveUserHandler3(this.props.user._id)
+                  // this.props.RemoveUserHandler3(this.props.user._id)
+                  this.props.setModalShowDelete(
+                    this.props.user.firstname_,
+                    this.props.user.lastname_,
+                    this.props.user._id,
+                  )
                 }
               >
                 Delete

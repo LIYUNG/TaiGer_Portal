@@ -359,12 +359,13 @@ exports.deleteuser = async (req, res) => {
 exports.changeuserrole = async (req, res) => {
   try {
     console.log("edit req.body = " + req.body);
-    console.log("edit req.body.user_id = " + req.body.user_id);
-    console.log("edit req.body.user_role = " + req.body.user_role);
-    const user_id = req.body.user_id;
-    const user_role = req.body.user_role;
+    console.log("edit req.body.user_id = " + req.body._id);
+    console.log("edit req.body.user_role = " + req.body.role_);
+    const user_id = req.body._id;
+    const user_role = req.body.role_;
     var student1 = await Student.findById(user_id);
     // TODO: update student1s user role_
+    console.log("student1: " + student1);
     student1.role_ = user_role;
     await student1.save();
     console.log("success: " + student1);

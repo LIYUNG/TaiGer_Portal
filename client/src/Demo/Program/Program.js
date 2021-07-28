@@ -76,7 +76,7 @@ class ProgramForm extends React.Component {
                 eventKey="2"
                 // onSelect={() => setModalShow(program.University, program.Program, program._id)}
               >
-                Assign to student...
+                Others...
               </Dropdown.Item> */}
             </DropdownButton>
           </th>

@@ -3,15 +3,9 @@ import { Form, Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 
 class UsersListSubpage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange2 = props.handleChange2.bind(this);
-    this.setModalHide = props.setModalHide.bind(this);
-    this.onSubmit2 = props.onSubmit2.bind(this);
-    this.state = {
-      data: [],
-    };
-  }
+  state = {
+    data: [],
+  };
 
   render() {
     return (
@@ -41,7 +35,7 @@ class UsersListSubpage extends React.Component {
                     }
                     id="Student"
                     value="Student"
-                    onChange={this.handleChange2}
+                    onChange={this.props.handleChange2}
                   />
                 </Form.Group>
               </div>
@@ -65,7 +59,7 @@ class UsersListSubpage extends React.Component {
                     }
                     id="Editor"
                     value="Editor"
-                    onChange={this.handleChange2}
+                    onChange={this.props.handleChange2}
                   />
                 </Form.Group>
               </div>
@@ -89,7 +83,7 @@ class UsersListSubpage extends React.Component {
                     }
                     id="Agent"
                     value="Agent"
-                    onChange={this.handleChange2}
+                    onChange={this.props.handleChange2}
                   />
                 </Form.Group>
               </div>
@@ -113,7 +107,7 @@ class UsersListSubpage extends React.Component {
                     }
                     id="Admin"
                     value="Admin"
-                    onChange={this.handleChange2}
+                    onChange={this.props.handleChange2}
                   />
                 </Form.Group>
               </div>
@@ -126,8 +120,8 @@ class UsersListSubpage extends React.Component {
           </tr>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.onSubmit2}>Assign</Button>
-          <Button onClick={this.setModalHide}>Cancel</Button>
+          <Button onClick={(e) => this.props.onSubmit2(e)}>Assign</Button>
+          <Button onClick={this.props.setModalHide}>Cancel</Button>
         </Modal.Footer>
       </Modal>
     );

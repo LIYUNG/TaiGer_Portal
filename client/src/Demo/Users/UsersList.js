@@ -2,6 +2,7 @@ import React from "react";
 import { Table } from "react-bootstrap";
 import EditableUser from "./EditableUser";
 import UsersListSubpage from "./UsersListSubpage";
+import UserDeleteWarning from "./UserDeleteWarning";
 
 class Userslist extends React.Component {
   state = {
@@ -13,7 +14,7 @@ class Userslist extends React.Component {
 
     modalShowNewProgram: false,
 
-    deleteProgramWarning: false,
+    deleteUserWarning: false,
   };
   setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
     this.setState({
@@ -28,6 +29,21 @@ class Userslist extends React.Component {
   setModalHide = () => {
     this.setState({
       modalShow: false,
+    });
+  };
+
+  setModalHideDDelete = () => {
+    this.setState({
+      deleteUserWarning: false,
+    });
+  };
+
+  setModalShowDelete = (user_firstname, user_lastname, user_id) => {
+    this.setState({
+      deleteUserWarning: true,
+      firstname: user_firstname,
+      lastname: user_lastname,
+      selected_user_id: user_id,
     });
   };
 
@@ -46,7 +62,7 @@ class Userslist extends React.Component {
     console.log("before submit");
     console.log("selected_user_role " + this.state.selected_user_role);
     console.log("selected_user_id " + this.state.selected_user_id);
-    this.props.assignUserAs({ role_ : user_role, _id: user_id });
+    this.props.assignUserAs({ role_: user_role, _id: user_id });
     console.log("click assign");
     this.setState({
       modalShow: false,
@@ -67,9 +83,8 @@ class Userslist extends React.Component {
         key={user._id}
         user={user}
         header={this.props.header}
-        // handleChange={this.props.handleChange}
         onFormSubmit={this.props.onFormSubmit}
-        RemoveUserHandler3={this.props.RemoveUserHandler3}
+        setModalShowDelete={this.setModalShowDelete}
         setModalShow={this.setModalShow}
         role={this.props.role}
       />
@@ -90,6 +105,14 @@ class Userslist extends React.Component {
             selected_user_id={this.state.selected_user_id}
             handleChange2={this.handleChange2}
             onSubmit2={this.onSubmit2}
+          />
+          <UserDeleteWarning
+            deleteUserWarning={this.state.deleteUserWarning}
+            setModalHideDDelete={this.setModalHideDDelete}
+            firstname={this.state.firstname}
+            lastname={this.state.lastname}
+            selected_user_id={this.state.selected_user_id}
+            RemoveUserHandler3={this.props.RemoveUserHandler3}
           />
         </>
       );

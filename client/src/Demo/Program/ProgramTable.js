@@ -12,16 +12,12 @@ import {
 } from "../../api";
 
 class ProgramTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      role: "",
-      isLoaded: false,
-      modalShowNewProgram: false,
-      data: [],
-    };
-  }
+  state = {
+    error: null,
+    role: "",
+    isLoaded: false,
+    data: [],
+  };
 
   componentDidMount() {
     getPrograms().then(
@@ -97,13 +93,6 @@ class ProgramTable extends React.Component {
     this.editProgram(edited_program);
   };
 
-  NewProgram = (new_program) => {
-    console.log("click NewProgram");
-    this.setState({
-      modalShowNewProgram: true,
-    });
-  };
-
   submitNewProgram = (newProgramData) => {
     // console.log(this.state.newProgramData);
     this.addProgram(newProgramData);
@@ -150,15 +139,7 @@ class ProgramTable extends React.Component {
     return isError;
   };
 
-  setModalHide2 = () => {
-    this.setState({
-      modalShowNewProgram: false,
-    });
-  };
-
   assignProgram = (assign_data) => {
-    // TODO: update state.data to prevent fetch request again
-
     assignProgramToStudent(assign_data).then(
       (resp) => {},
       (error) => {}
@@ -195,16 +176,7 @@ class ProgramTable extends React.Component {
                     header={window.ProgramlistHeader}
                     submitNewProgram={this.submitNewProgram}
                     modalShowNewProgram={this.state.modalShowNewProgram}
-                    setModalHide2={this.setModalHide2}
                   />
-                  {/* <NewProgramWindow
-                    show={this.state.modalShowNewProgram}
-                    setModalHide2={this.setModalHide2}
-                    handleChangeNewProgram={this.handleChangeNewProgram}
-                    submitNewProgram={this.submitNewProgram}
-                    newProgramData={this.state.newProgramData}
-                    header={window.NewProgramHeader}
-                  /> */}
                 </Card.Body>
               </Card>
             </Col>

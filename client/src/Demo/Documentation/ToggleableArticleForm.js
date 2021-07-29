@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ArticleForm from "./ArticleForm";
 import { IoMdAdd } from "react-icons/io";
+import { Button } from "react-bootstrap";
 
 class ToggleableArticleForm extends Component {
   // TODO: replace by database
@@ -32,12 +33,12 @@ class ToggleableArticleForm extends Component {
     } else {
       return (
         <div className="ui basic content center aligned segment">
-          <button
+          <Button
             className="ui basic button icon"
             onClick={this.handleFormOpen}
           >
             <IoMdAdd />
-          </button>
+          </Button>
         </div>
       );
     }

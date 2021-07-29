@@ -1,13 +1,12 @@
 import React from "react";
-import { Form, Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 
 class UsersListSubpage extends React.Component {
   state = {
     data: [],
   };
-
   render() {
+    let user_roles = ["Student", "Editor", "Agent", "Admin"];
     return (
       <Modal
         show={this.props.show}
@@ -22,102 +21,32 @@ class UsersListSubpage extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <tr>
-            <th>
-              <div>
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="radio"
-                    name="user_role"
-                    defaultChecked={
-                      this.props.selected_user_role === "Student" ? true : false
-                    }
-                    id="Student"
-                    value="Student"
-                    onChange={this.props.handleChange2}
-                  />
-                </Form.Group>
-              </div>
-            </th>
-            <td>
-              <td>
-                <h4 className="mb-1">Student</h4>
-              </td>
-            </td>
-          </tr>
-          <tr>
-            <th>
-              <div>
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="radio"
-                    name="user_role"
-                    defaultChecked={
-                      this.props.selected_user_role === "Editor" ? true : false
-                    }
-                    id="Editor"
-                    value="Editor"
-                    onChange={this.props.handleChange2}
-                  />
-                </Form.Group>
-              </div>
-            </th>
-            <td>
-              <td>
-                <h4 className="mb-1">Editor</h4>
-              </td>
-            </td>
-          </tr>
-          <tr>
-            <th>
-              <div>
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="radio"
-                    name="user_role"
-                    defaultChecked={
-                      this.props.selected_user_role === "Agent" ? true : false
-                    }
-                    id="Agent"
-                    value="Agent"
-                    onChange={this.props.handleChange2}
-                  />
-                </Form.Group>
-              </div>
-            </th>
-            <td>
-              <td>
-                <h4 className="mb-1">Agent</h4>
-              </td>
-            </td>
-          </tr>
-          <tr>
-            <th>
-              <div>
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="radio"
-                    name="user_role"
-                    defaultChecked={
-                      this.props.selected_user_role === "Admin" ? true : false
-                    }
-                    id="Admin"
-                    value="Admin"
-                    onChange={this.props.handleChange2}
-                  />
-                </Form.Group>
-              </div>
-            </th>
-            <td>
-              <td>
-                <h4 className="mb-1">Admin</h4>
-              </td>
-            </td>
-          </tr>
+          <table>
+            <tbody>
+              {user_roles.map((role, i) => (
+                <tr key={i + 1}>
+                  <th>
+                    <Form.Group>
+                      <Form.Check
+                        custom
+                        type="radio"
+                        name="user_role"
+                        defaultChecked={
+                          this.props.selected_user_role === role ? true : false
+                        }
+                        id={role}
+                        value={role}
+                        onChange={this.props.handleChange2}
+                      />
+                    </Form.Group>
+                  </th>
+                  <td>
+                    <h4 className="mb-1">{role}</h4>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={(e) => this.props.onSubmit2(e)}>Assign</Button>

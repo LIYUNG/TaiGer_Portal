@@ -70,26 +70,26 @@ class Userslist extends React.Component {
   };
 
   render() {
-    const headers = (
-      <tr>
-        <th> </th>
-        {this.props.header.map((x, i) => (
-          <th key={i}>{x.name}</th>
-        ))}
-      </tr>
-    );
-    const users = this.props.data.map((user) => (
-      <EditableUser
-        key={user._id}
-        user={user}
-        header={this.props.header}
-        onFormSubmit={this.props.onFormSubmit}
-        setModalShowDelete={this.setModalShowDelete}
-        setModalShow={this.setModalShow}
-        role={this.props.role}
-      />
-    ));
     if (this.props.role === "Agent" || this.props.role === "Admin") {
+      const headers = (
+        <tr>
+          <th> </th>
+          {this.props.header.map((x, i) => (
+            <th key={i}>{x.name}</th>
+          ))}
+        </tr>
+      );
+      const users = this.props.data.map((user) => (
+        <EditableUser
+          key={user._id}
+          user={user}
+          header={this.props.header}
+          onFormSubmit={this.props.onFormSubmit}
+          setModalShowDelete={this.setModalShowDelete}
+          setModalShow={this.setModalShow}
+          role={this.props.role}
+        />
+      ));
       return (
         <>
           <Table responsive>

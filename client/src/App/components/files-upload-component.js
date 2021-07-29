@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col, Form } from "react-bootstrap";
+import { Button, Row, Col, Form } from "react-bootstrap";
 
 export default class FilesUploadComponent extends Component {
   render() {
@@ -32,9 +32,9 @@ export default class FilesUploadComponent extends Component {
           <Form onSubmit={(e) => this.props.submitFile(e, this.props.id)}>
             <Form.Group controlId="exampleForm.ControlSelect1">
               <div className="form-group">
-                <button className="btn btn-primary" type="submit">
+                <Button className="btn btn-primary" type="submit">
                   Upload
-                </button>
+                </Button>
               </div>
             </Form.Group>
           </Form>
@@ -46,9 +46,9 @@ export default class FilesUploadComponent extends Component {
           <Form onSubmit={(e) => this.props.onDownloadFile(e, this.props.id)}>
             <Form.Group controlId="exampleForm.ControlSelect1">
               <div className="form-group">
-                <button className="btn btn-primary" type="submit">
+                <Button className="btn btn-primary" type="submit">
                   Download
-                </button>
+                </Button>
               </div>
             </Form.Group>
           </Form>

@@ -22,23 +22,19 @@ import {
 } from "../../api";
 
 class Dashboard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      student_i: -1,
-      role: "",
-      error: null,
-      subpage: -1,
-      modalShow: false,
-      agent_list: [],
-      editor_list: [],
-      isLoaded: false,
-      StudentId: "",
-      students: [],
-      updateAgentList: {},
-      updateEditorList: {},
-    };
-  }
+  state = {
+    student_i: -1,
+    role: "",
+    error: null,
+    modalShow: false,
+    agent_list: [],
+    editor_list: [],
+    isLoaded: false,
+    students: [],
+    updateAgentList: {},
+    updateEditorList: {},
+  };
+
   componentDidMount() {
     getStudents().then(
       (resp) => {
@@ -126,21 +122,12 @@ class Dashboard extends React.Component {
             link.parentNode.removeChild(link);
           }
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
-          // console.log(error);
-          // console.log();
           alert("The file is not available.");
-          // this.setState({
-          //     isLoaded: true,
-          //     error
-          // });
         }
       );
   }
-  onRejectFilefromstudent(e, category, id) {
+  onRejectFilefromstudent = (e, category, id) => {
     //id == student id
     e.preventDefault();
     rejectDocument(category, id).then(
@@ -152,9 +139,9 @@ class Dashboard extends React.Component {
         });
       }
     );
-  }
+  };
 
-  onAcceptFilefromstudent(e, category, id) {
+  onAcceptFilefromstudent = (e, category, id) => {
     //id == student id
     e.preventDefault();
     acceptDocument(category, id).then(
@@ -166,7 +153,7 @@ class Dashboard extends React.Component {
         });
       }
     );
-  }
+  };
   onDeleteProgram(e, student_id, program_id) {
     //program id
     e.preventDefault();
@@ -181,28 +168,20 @@ class Dashboard extends React.Component {
     );
   }
 
-  onDeleteFilefromstudent(e, category, id) {
+  onDeleteFilefromstudent = (e, category, id) => {
     e.preventDefault();
-    deleteFile().then(
-      (resp) => {
-        // TODO: remove alert
-        if (resp.status === 200) {
-          alert("Delete file success");
-        } else {
-          alert("Delete file failed");
-        }
-        this.setState({ isLoaded: false });
-      },
+    deleteFile(category, id).then(
+      (resp) => {},
       (error) => {}
     );
-  }
+  };
 
-  editAgent(i) {
+  editAgent = (student) => {
     getAgents().then(
       (resp) => {
-        const { data: agents } = resp.data;
-        const { students, student_i } = this.state;
-        const { agent_ } = students[student_i];
+        const { data: agents } = resp.data; //get all agent
+        // const { students, student_i } = this.state;
+        const { agent_ } = student;
         const updateAgentList = agents.reduce(
           (prev, { emailaddress_ }) => ({
             ...prev,
@@ -215,14 +194,14 @@ class Dashboard extends React.Component {
       },
       (error) => {}
     );
-  }
+  };
 
-  editEditor(i) {
+  editEditor = (student) => {
     getEditors().then(
       (resp) => {
         const { data: editors } = resp.data;
-        const { students, student_i } = this.state;
-        const { editor_ } = students[student_i];
+        // const { students, student_i } = this.state;
+        const { editor_ } = student;
         const updateEditorList = editors.reduce(
           (prev, { emailaddress_ }) => ({
             ...prev,
@@ -235,7 +214,7 @@ class Dashboard extends React.Component {
       },
       (error) => {}
     );
-  }
+  };
 
   handleChangeAgentlist = (e) => {
     const { value, checked } = e.target;
@@ -264,9 +243,6 @@ class Dashboard extends React.Component {
     this.UpdateAgentlist(updateAgentList, student_id);
     this.setState({
       updateAgentList: [],
-      student_i: -1,
-      subpage: -1,
-      modalShow: false,
       isLoaded: false,
     });
   };
@@ -276,9 +252,6 @@ class Dashboard extends React.Component {
     this.UpdateEditorlist(updateEditorList, student_id);
     this.setState({
       updateEditorList: [],
-      student_i: -1,
-      subpage: -1,
-      modalShow: false,
       isLoaded: false,
     });
   };
@@ -289,82 +262,6 @@ class Dashboard extends React.Component {
 
   UpdateEditorlist = (updateEditorList, student_id) => {
     updateEditors(student_id, updateEditorList);
-  };
-
-  handleRemove = (i) => {
-    this.setState((state) => ({
-      students: state.students.filter((row, j) => j !== i),
-    }));
-  };
-
-  startEditingAgent = (i) => {
-    console.log("startEditingAgent");
-    this.editAgent(i);
-    this.setState({
-      student_i: i, // i = student array index
-      subpage: 1,
-      modalShow: true,
-    });
-  };
-
-  startEditingEditor = (i) => {
-    console.log("startEditingEditor");
-    this.editEditor(i);
-    this.setState({
-      student_i: i, // i = student array index
-      subpage: 2,
-      modalShow: true,
-    });
-  };
-
-  startEditingProgram = (i) => {
-    console.log("startEditingAnddeleteProgram");
-    this.setState({
-      student_i: i, // i = student array index
-      subpage: 3,
-      modalShow: true,
-    });
-  };
-
-  startUploadfile = (i) => {
-    console.log("startUploadfile");
-    console.log(i);
-    this.setState({
-      student_i: i,
-      subpage: 4,
-      modalShow: true,
-    });
-  };
-
-  handleChange = (e, name, i) => {
-    const { value } = e.target;
-    this.setState((state) => ({
-      students: this.state.students.map((row, j) =>
-        j === i ? { ...row, [name]: value } : row
-      ),
-    }));
-  };
-
-  RemoveProgramHandler2 = (e) => {
-    console.log("click save");
-  };
-
-  RemoveProgramHandler3 = (program_id) => {
-    console.log("click delete");
-    console.log("id = " + program_id);
-    // FIXME: this.deleteProgram is not defined
-    this.deleteProgram({ program_id });
-    this.setState({
-      isLoaded: false,
-    });
-  };
-
-  setmodalhide = () => {
-    this.setState({
-      student_i: -1,
-      subpage: -1,
-      modalShow: false,
-    });
   };
 
   render() {
@@ -455,18 +352,15 @@ class Dashboard extends React.Component {
                   <Card.Body className="px-0 py-2">
                     <Studentlist
                       role={this.state.role}
+                      editAgent={this.editAgent}
+                      editEditor={this.editEditor}
                       agent_list={this.state.agent_list}
                       editor_list={this.state.editor_list}
-                      ModalShow={this.state.modalShow}
-                      setModalShow={this.setModalShow}
-                      setmodalhide={this.setmodalhide}
-                      handleRemove={this.handleRemove}
                       startEditingAgent={this.startEditingAgent}
+                      UpdateAgentlist={this.UpdateAgentlist}
                       startEditingEditor={this.startEditingEditor}
                       startEditingProgram={this.startEditingProgram}
-                      handleChange={this.handleChange}
                       students={this.state.students}
-                      RemoveProgramHandler3={this.RemoveProgramHandler3}
                       header={[
                         {
                           name: "StudentName",
@@ -487,8 +381,6 @@ class Dashboard extends React.Component {
                       ]}
                       documentslist={window.documentlist}
                       startUploadfile={this.startUploadfile}
-                      subpage={this.state.subpage}
-                      student_i={this.state.student_i}
                       onDeleteProgram={this.onDeleteProgram}
                       onDownloadFilefromstudent={this.onDownloadFilefromstudent}
                       onRejectFilefromstudent={this.onRejectFilefromstudent}

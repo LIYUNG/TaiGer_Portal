@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Row, Col, Card, ButtonToolbar } from "react-bootstrap";
+import { Button, Table, Row, Col, Card, ButtonToolbar } from "react-bootstrap";
 
 import ProgramListSubpage from "./ProgramListSubpage";
 import EditableProgram from "./EditableProgram";
@@ -122,13 +122,13 @@ class Programlist extends React.Component {
               {this.props.role === "Student" ? (
                 <></>
               ) : (
-                <button
+                <Button
                   className="btn btn-primary"
                   type="submit"
                   onClick={() => this.NewProgram()}
                 >
                   New Program
-                </button>
+                </Button>
               )}
             </ButtonToolbar>
           </Col>

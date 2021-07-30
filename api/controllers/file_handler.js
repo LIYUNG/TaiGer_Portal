@@ -2,6 +2,8 @@ const Student = require("../models/Students");
 const jwt_decode = require("jwt-decode");
 const fs = require("fs");
 
+const { BASE_PATH, PATH_DELIMITER } = require("../config");
+
 exports.UploadPost = async (req, res) => {
   try {
     console.log("UploadPost: Which file? " + req.file);
@@ -20,15 +22,12 @@ exports.UploadPost = async (req, res) => {
       students_exists.lastname_ +
       "_" +
       students_exists._id;
+    // FIXME: `path.join` should do the job for creating paths
     const directoryPath =
-      process.env.BASE_PATH +
-      process.env.PATH_DELIMITER +
-      FolderName +
-      process.env.PATH_DELIMITER;
+      BASE_PATH + PATH_DELIMITER + FolderName + PATH_DELIMITER;
     const date_now = Date();
     // Dont worry the category path not exist, because it is generated from the middleware movefile.js
-    const categoryPath =
-      directoryPath + req.params.category + process.env.PATH_DELIMITER;
+    const categoryPath = directoryPath + req.params.category + PATH_DELIMITER;
     console.log(req.file.filename);
     const category_name = req.params.category;
 
@@ -75,20 +74,14 @@ exports.filedownload = async (req, res, next) => {
     const template_file = category_name + "Template.docx";
 
     const directoryPath =
-      process.env.BASE_PATH +
-      process.env.PATH_DELIMITER +
-      "TaiGer_Template_2021_02" +
-      process.env.PATH_DELIMITER;
+      BASE_PATH + PATH_DELIMITER + "TaiGer_Template_2021_02" + PATH_DELIMITER;
     var downloadPath =
-      directoryPath +
-      category_name +
-      process.env.PATH_DELIMITER +
-      template_file;
+      directoryPath + category_name + PATH_DELIMITER + template_file;
     //TODO: what if students_exists.uploadedDocs_.bachelorCertificate_ undefined?
 
     // downloadPath = students_exists.uploadedDocs_[category_name].filePath_;
 
-    var filename = downloadPath.split(process.env.PATH_DELIMITER);
+    var filename = downloadPath.split(PATH_DELIMITER);
     console.log("filename: " + filename);
     filename = filename.pop(); // Get the last element (file name)
     console.log("filename: " + filename);

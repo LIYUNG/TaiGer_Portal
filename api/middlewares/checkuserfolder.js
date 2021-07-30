@@ -2,6 +2,8 @@ const Student = require("../models/Students");
 const jwt_decode = require("jwt-decode");
 const fs = require("fs");
 
+const { BASE_PATH, PATH_DELIMITER } = require("../config");
+
 async function checkuserfolder(req, res, next) {
   try {
     const bearer = req.headers.authorization.split(" ");
@@ -20,15 +22,14 @@ async function checkuserfolder(req, res, next) {
       students_exists.lastname_ +
       "_" +
       students_exists._id;
-    if (!fs.existsSync(process.env.BASE_PATH + process.env.PATH_DELIMITER)) {
-      fs.mkdirSync(process.env.BASE_PATH + process.env.PATH_DELIMITER, {
+    if (!fs.existsSync(BASE_PATH + PATH_DELIMITER)) {
+      fs.mkdirSync(BASE_PATH + PATH_DELIMITER, {
         recursive: true,
       });
       console.log("create public folder");
       next();
     }
-    const directoryPath =
-      process.env.BASE_PATH + process.env.PATH_DELIMITER + FolderName;
+    const directoryPath = BASE_PATH + PATH_DELIMITER + FolderName;
 
     console.log("directoryPath: " + directoryPath);
     if (fs.existsSync(directoryPath)) {

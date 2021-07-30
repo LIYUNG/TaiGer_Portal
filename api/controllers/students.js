@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 
+const { JWT_KEY, JWT_EXPIRY_SECONDS } = require('../config')
+
 exports.RegisterPost = async (req, res) => {
   console.log(req.body);
   const students_exists = await Student.findOne({
@@ -11,9 +13,9 @@ exports.RegisterPost = async (req, res) => {
   try {
     const { emailaddress, password } = req.body;
     console.log(emailaddress);
-    const token = jwt.sign({ emailaddress }, process.env.JWT_KEY, {
+    const token = jwt.sign({ emailaddress }, JWT_KEY, {
       algorithm: "HS256",
-      expiresIn: parseInt(process.env.JWT_EXPIRY_SECONDS),
+      expiresIn: JWT_EXPIRY_SECONDS,
     });
     // Hashing password
     console.log("token: " + token);

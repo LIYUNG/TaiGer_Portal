@@ -6,6 +6,8 @@ const jwt_decode = require("jwt-decode");
 const bcrypt = require("bcryptjs");
 // var nodemailer = require('nodemailer');
 
+const { JWT_KEY, JWT_EXPIRY_SECONDS } = require('../config')
+
 // var transporter = nodemailer.createTransport({
 //   service: 'gmail',
 //   auth: {
@@ -50,9 +52,9 @@ exports.signIn = async (req, res) => {
         //if both match than you can do anything
         if (data) {
           console.log("Passwords match !");
-          const token = jwt.sign({ emailaddress }, process.env.JWT_KEY, {
+          const token = jwt.sign({ emailaddress }, JWT_KEY, {
             algorithm: "HS256",
-            expiresIn: parseInt(process.env.JWT_EXPIRY_SECONDS),
+            expiresIn: JWT_EXPIRY_SECONDS,
           });
           console.log("Send token !");
           console.log(
@@ -112,13 +114,13 @@ exports.settings = async (req, res) => {
     emailaddress_: emailaddress,
   });
   // Renew token again, entend expire time
-  token = jwt.sign({ emailaddress }, process.env.JWT_KEY, {
+  token = jwt.sign({ emailaddress }, JWT_KEY, {
     algorithm: "HS256",
-    expiresIn: parseInt(process.env.JWT_EXPIRY_SECONDS),
+    expiresIn: JWT_EXPIRY_SECONDS,
   });
   console.log(students_exists);
   res.cookie("token", token, {
-    maxAge: parseInt(process.env.JWT_EXPIRY_SECONDS) * 1000,
+    maxAge: JWT_EXPIRY_SECONDS * 1000,
   });
 };
 

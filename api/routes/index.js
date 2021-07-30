@@ -9,7 +9,6 @@ const handlers = require("../controllers/handlers");
 const file_handler = require("../controllers/file_handler");
 const studentController = require("../controllers/students");
 const documentation_handler = require("../controllers/documentation_handler");
-require("dotenv").config();
 
 const DIR = "./public/";
 

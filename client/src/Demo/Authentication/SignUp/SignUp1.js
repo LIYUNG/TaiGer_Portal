@@ -5,32 +5,9 @@ import PropTypes from "prop-types";
 import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
 import Breadcrumb from "../../../App/layout/AdminLayout/Breadcrumb";
-// import DEMO from "../../../store/constant";
+import { register } from "../../../api";
 
-async function registerUser(credentials) {
-  return (
-    fetch(window.register, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    })
-      .then((data) => data.json())
-      // .then(res => {
-      //     if (res.status === 200) {
-      //         this.props.history.push('/');
-      //     } else {
-      //         const error = new Error(res.error);
-      //         throw error;
-      //     }
-      // })
-      .catch((err) => {
-        console.error(err);
-        alert("Error at registration!");
-      })
-  );
-}
+// import DEMO from "../../../store/constant";
 
 // class SignUp1 extends React.Component {
 export default function SignUp1({ setToken }) {
@@ -42,32 +19,22 @@ export default function SignUp1({ setToken }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!firstname) {
-      alert("First name, please!");
-    } else {
-      if (!lastname) {
-        alert("Last name, please!");
-      } else {
-        if (!emailaddress) {
-          alert("Email, please!");
-        } else {
-          if (password && passwordconfirm) {
-            if (password === passwordconfirm) {
-              const token = await registerUser({
-                firstname,
-                lastname,
-                emailaddress,
-                password,
-              });
-              setToken(token);
-            } else {
-              alert("Password not matched!");
-            }
-          } else {
-            alert("Please enter passwords");
-          }
-        }
-      }
+    if (!firstname) return alert("First name, please!");
+    if (!lastname) return alert("Last name, please!");
+    if (!emailaddress) return alert("Email, please!");
+    if (!password || !passwordconfirm) return alert("Please enter passwords");
+    if (password !== passwordconfirm) return alert("Password not matched!");
+
+    try {
+      const resp = await register({
+        firstname,
+        lastname,
+        emailaddress,
+        password,
+      })
+      setToken(resp.data);
+    } catch (err) {
+      // TODO: handle error
     }
   };
 

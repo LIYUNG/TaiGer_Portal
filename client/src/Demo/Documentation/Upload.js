@@ -5,6 +5,7 @@ import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
+import { upload } from "../../api";
 
 class UploadPage extends React.Component {
   constructor(props) {
@@ -36,45 +37,33 @@ class UploadPage extends React.Component {
 
   onSubmitFile(e, id) {
     const formData = new FormData();
-    const auth = localStorage.getItem("token");
     formData.append("file", this.state.file);
-    console.log(id);
-    axios
-      .post(window.upload + "/" + id, formData, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + JSON.parse(auth),
-        },
-        // body: JSON.stringify()
-      })
-      .then(
-        (res) => {
-          // console.log(res)
-          if (res.status === 200) {
-            alert("Upload success");
-            this.setState({
-              file: "",
-              isLoaded: false,
-            });
-          } else {
-            alert("Upload failed");
-            this.setState({
-              file: "",
-              isLoaded: false,
-            });
-          }
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
+    upload(id, formData).then(
+      (res) => {
+        if (res.status === 200) {
+          alert("Upload success");
           this.setState({
-            isLoaded: true,
-            error,
+            file: "",
+            isLoaded: false,
+          });
+        } else {
+          alert("Upload failed");
+          this.setState({
+            file: "",
+            isLoaded: false,
           });
         }
-      );
+      },
+      // Note: it's important to handle errors here
+      // instead of a catch() block so that we don't swallow
+      // exceptions from actual bugs in components.
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
   }
 
   submitFile = (e, id) => {

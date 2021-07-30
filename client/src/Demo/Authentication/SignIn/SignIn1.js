@@ -5,35 +5,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { NavLink } from "react-router-dom";
-
-async function loginUser(credentials) {
-  return (
-    fetch(window.login, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    })
-      // .then(res => {
-      //     if (res.status === 401) {
-      //         console.error("unauthorized!");
-      //         const error = new Error(res.error);
-      //         throw error;
-      //     }
-      // })
-      .then((data) => data.json())
-      // .then((data) => {
-      //     console.log(data)
-      //     Promise.resolve(data ? data : {})
-      // })
-      // .then(data => data.json())
-      .catch((err) => {
-        // console.error(err);
-        // alert('Email or password not correct.');
-      })
-  );
-}
+import { login } from "../../../api";
 
 export default function Signin1({ setToken }) {
   const [emailaddress, setEmailaddress] = useState();
@@ -47,11 +19,12 @@ export default function Signin1({ setToken }) {
       if (!password) {
         alert("Password please!");
       } else {
-        const data = await loginUser({
-          emailaddress,
-          password,
-        });
-        setToken(data);
+        try {
+          const resp = await login({ emailaddress, password })
+          setToken(resp.data);
+        } catch (err) {
+          // TODO: handle error
+        }
       }
     }
   };

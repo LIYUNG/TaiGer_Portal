@@ -5,7 +5,12 @@ import Aux from "../../../hoc/_Aux";
 import ApplicationArticleList from "../ArticleList";
 import ToggleableArticleForm from "../ToggleableArticleForm";
 
-import { updateDoc, deleteDoc } from "../../../api";
+import {
+  updateDoc,
+  deleteDoc,
+  createArticle,
+  getApplicationArticle,
+} from "../../../api";
 
 class Application extends Component {
   state = {
@@ -17,30 +22,24 @@ class Application extends Component {
   componentDidMount() {
     console.log("get article");
     const auth = localStorage.getItem("token");
-    fetch(window.Get_Application_Article, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    getApplicationArticle().then(
+      (resp) => {
+        const {
+          data: { documents },
+        } = resp;
+        console.log(JSON.stringify(documents));
+        this.setState({
+          articles: documents,
+          isLoaded: true,
+        });
       },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log(JSON.stringify(result.documents));
-          this.setState({
-            articles: result.documents,
-            isLoaded: true,
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: false,
-            error,
-          });
-        }
-      );
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error,
+        });
+      }
+    );
   }
 
   handleCreateFormSubmit = (article) => {
@@ -59,32 +58,24 @@ class Application extends Component {
     });
     // delete article_temp._id;
     // console.log("article_temp : " + JSON.stringify(article_temp));
-    const auth = localStorage.getItem("token");
-    fetch(window.New_Article, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth),
+    createArticle(article_temp).then(
+      (resp) => {
+        const {
+          data: { documents },
+        } = resp;
+        console.log(JSON.stringify(documents));
+        this.setState({
+          articles: this.state.articles.concat(documents),
+        });
+        console.log(this.state.articles);
       },
-      body: JSON.stringify(article_temp),
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          console.log(JSON.stringify(result.documents));
-          this.setState({
-            articles: this.state.articles.concat(result.documents),
-          });
-          console.log(this.state.articles);
-        },
-        (error) => {
-          this.setState({
-            isLoaded: false,
-            error,
-          });
-        }
-      );
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error,
+        });
+      }
+    );
   };
 
   handleEditFormSubmit = (update_article) => {
@@ -138,16 +129,15 @@ class Application extends Component {
 
     console.log("click submit article");
     console.log(articleId);
-    deleteDoc(articleId)
-      .then(
-        (result) => {},
-        (error) => {
-          this.setState({
-            isLoaded: false,
-            error,
-          });
-        }
-      );
+    deleteDoc(articleId).then(
+      (result) => {},
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error,
+        });
+      }
+    );
   };
 
   render() {

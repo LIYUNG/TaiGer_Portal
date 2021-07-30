@@ -13,49 +13,6 @@ const store = createStore(
   reducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
-const is_Dev = true;
-if (is_Dev) {
-  window.login = "http://localhost:3000/login";
-  window.register = "http://localhost:3000/register";
-  window.program_list_API = "http://localhost:3000/programlist";
-  window.users_list_API = "http://localhost:3000/userslist";
-  window.delete_program_API = "http://localhost:3000/deleteprogram";
-  window.delete_user_API = "http://localhost:3000/deleteuser";
-  window.add_program_API = "http://localhost:3000/addprogram";
-  window.edit_program_API = "http://localhost:3000/editprogram";
-  window.assign_program_API = "http://localhost:3000/assignprogramtostudent";
-  window.update_user_role_API = "http://localhost:3000/changeuserrole";
-  window.upload = "http://localhost:3000/upload";
-  window.download = "http://localhost:3000/download";
-  window.New_Article = "http://localhost:3000/docs";
-  window.Get_Application_Article = "http://localhost:3000/docs/application";
-  window.Get_Visa_Article = "http://localhost:3000/docs/visa";
-  window.Get_Uniassist_Article = "http://localhost:3000/docs/uniassist";
-  window.Get_Certification_Article = "http://localhost:3000/docs/certification";
-  window.Update_Article = "http://localhost:3000/docs";
-} else {
-  window.login = "http://54.214.118.145:3000/login";
-  window.register = "http://54.214.118.145:3000/register";
-  window.program_list_API = "http://54.214.118.145:3000/programlist";
-  window.users_list_API = "http://54.214.118.145:3000/userslist";
-  window.delete_program_API = "http://54.214.118.145:3000/deleteprogram";
-  window.delete_user_API = "http://54.214.118.145:3000/deleteuser";
-  window.add_program_API = "http://54.214.118.145:3000/addprogram";
-  window.edit_program_API = "http://54.214.118.145:3000/editprogram";
-  window.assign_program_API =
-    "http://54.214.118.145:3000/assignprogramtostudent";
-  window.update_user_role_API = "http://54.214.118.145:3000/changeuserrole";
-  window.upload = "http://54.214.118.145:3000/upload";
-  window.download = "http://54.214.118.145:3000/download";
-  window.New_Article = "http://54.214.118.145:3000/docs";
-  window.Get_Application_Article =
-    "http://54.214.118.145:3000/docs/application";
-  window.Get_Visa_Article = "http://54.214.118.145:3000/docs/visa";
-  window.Get_Uniassist_Article = "http://54.214.118.145:3000/docs/uniassist";
-  window.Get_Uniassist_Article =
-    "http://54.214.118.145:3000/docs/certification";
-  window.Update_Article = "http://54.214.118.145:3000/docs";
-}
 
 window.documentlist = [
   {

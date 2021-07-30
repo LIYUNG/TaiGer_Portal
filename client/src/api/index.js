@@ -3,9 +3,6 @@ import request from "./request";
 // Student_API
 export const getStudents = () => request.get("/studentlist");
 
-export const download = (category, id) =>
-  request.get(`/download/${category}/${id}`);
-
 // del_prog_std_API
 export const removeProgramFromStudent = (programId, studentId) =>
   request.delete(`/deleteprogramfromstudent/${programId}/${studentId}`);
@@ -51,7 +48,8 @@ export const updateProgram = (program) =>
   request.post(`/editprogram/${program._id}`, program);
 
 // assign_program_API
-export const assignProgramToStudent = (data) => request.post("/assignprogramtostudent", data);
+export const assignProgramToStudent = (data) =>
+  request.post("/assignprogramtostudent", data);
 
 export const getUsers = () => request.get("/userslist");
 
@@ -63,14 +61,37 @@ export const changeUserRole = (role) => request.post("/changeuserrole", role);
 
 export const deleteDoc = (id) => request.delete(`/docs/${id}`);
 export const addDoc = (id) => request.post(`/docs/${id}`);
-export const updateDoc = (id, doc_temp) => request.post(`/docs/${id}`, doc_temp);
+export const updateDoc = (id, doc_temp) =>
+  request.post(`/docs/${id}`, doc_temp);
 
+// New_Article
+export const createArticle = (article) => request.post("/docs", article);
 
-// window.upload = "http://localhost:3000/upload";
-// window.download = "http://localhost:3000/download";
-// window.New_Article = "http://localhost:3000/docs";
-// window.Get_Article = "http://localhost:3000/docs";
-// window.Update_Article = "http://localhost:3000/docs";
+// Update_Article
+export const updateArticle = (id, article) => request.post(`/docs/${id}`, article);
 
-// window.login = "http://localhost:3000/login";
-// window.register = "http://localhost:3000/register";
+const getArticle = (type) => request.get(`/docs/${type}`);
+
+// Get_Application_Article
+export const getApplicationArticle = () => getArticle("application");
+
+// Get_Visa_Article
+export const getVisaArticle = () => getArticle("visa");
+
+// Get_Uniassist_Article
+export const getUniassistArticle = () => getArticle("uniassist");
+
+// Get_Certification_Article
+export const getCertificationArticle = () => getArticle("certification");
+
+// download
+export const download = (category, id) =>
+  request.get(`/download/${category}/${id}`, { responseType: 'blob' });
+
+// upload
+export const upload = (id, data) => request.post(`/upload/${id}`, data);
+
+// TODO: replace below auth APIs
+export const login = (credentials) => request.post("/login", credentials);
+
+export const register = (credentials) => request.post("/register", credentials);

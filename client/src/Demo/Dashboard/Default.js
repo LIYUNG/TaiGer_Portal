@@ -74,58 +74,46 @@ class Dashboard extends React.Component {
 
   onDownloadFilefromstudent(e, category, id) {
     e.preventDefault();
-    const auth = localStorage.getItem("token");
-    var actualFileName;
+    download(category, id).then(
+      (resp) => {
+        const actualFileName = resp.headers
+          .get("Content-Disposition")
+          .split('"')[1];
+        const { data: blob } = resp;
+        if (blob.size === 0) return;
 
-    fetch(`${window.download}/${category}/${id}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      // download(category, id)
-      .then((res) => {
-        actualFileName = res.headers.get("Content-Disposition").split('"')[1];
-        return res.blob();
-      })
-      .then(
-        (blob) => {
-          if (blob.size === 0) return;
+        var filetype = actualFileName.split("."); //split file name
+        filetype = filetype.pop(); //get the file type
 
-          var filetype = actualFileName.split("."); //split file name
-          filetype = filetype.pop(); //get the file type
+        if (filetype === "pdf") {
+          console.log(blob);
+          const url = window.URL.createObjectURL(
+            new Blob([blob], { type: "application/pdf" })
+          );
 
-          if (filetype === "pdf") {
-            console.log(blob);
-            const url = window.URL.createObjectURL(
-              new Blob([blob], { type: "application/pdf" })
-            );
+          //Open the URL on new Window
+          console.log(url);
+          window.open(url); //TODO: having a reasonable file name, pdf viewer
+        } else {
+          //if not pdf, download instead.
 
-            //Open the URL on new Window
-            console.log(url);
-            window.open(url); //TODO: having a reasonable file name, pdf viewer
-          } else {
-            //if not pdf, download instead.
+          const url = window.URL.createObjectURL(new Blob([blob]));
 
-            const url = window.URL.createObjectURL(new Blob([blob]));
-
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", actualFileName);
-            // Append to html link element page
-            document.body.appendChild(link);
-            // Start download
-            link.click();
-            // Clean up and remove the link
-            link.parentNode.removeChild(link);
-          }
-        },
-        (error) => {
-          alert("The file is not available.");
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", actualFileName);
+          // Append to html link element page
+          document.body.appendChild(link);
+          // Start download
+          link.click();
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
         }
-      );
+      },
+      (error) => {
+        alert("The file is not available.");
+      }
+    );
   }
   onRejectFilefromstudent = (e, category, id) => {
     //id == student id

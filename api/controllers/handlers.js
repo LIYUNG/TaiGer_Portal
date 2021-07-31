@@ -65,7 +65,7 @@ exports.signIn = async (req, res) => {
               students_exists.lastname_ +
               " log in"
           );
-          return res.send({
+          return res.status(200).send({
             token: token,
             role: students_exists.role_,
           });

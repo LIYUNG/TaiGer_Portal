@@ -80,7 +80,7 @@ const router = (app) => {
     movefile,
     file_handler.UploadPost
   );
-  app.get("/upload/:category", auth, file_handler.filedownload);
+  app.get("/download/:category", auth, file_handler.templatefiledownload);
   app.get(
     "/download/:category/:student_id",
     auth,

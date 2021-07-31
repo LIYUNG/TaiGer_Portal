@@ -57,7 +57,7 @@ exports.UploadPost = async (req, res) => {
   }
 };
 
-exports.filedownload = async (req, res, next) => {
+exports.templatefiledownload = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)
     const category_name = req.params.category;

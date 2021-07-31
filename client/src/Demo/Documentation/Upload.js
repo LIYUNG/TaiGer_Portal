@@ -5,7 +5,7 @@ import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
-import { upload } from "../../api";
+import { upload, templateDownload } from "../../api";
 
 class UploadPage extends React.Component {
   constructor(props) {
@@ -83,28 +83,32 @@ class UploadPage extends React.Component {
 
     return match ? match[1] : null;
   }
-
-  onDownloadFile(e, id) {
+  // FIXME: id is template
+  onDownloadFile(e, category) {
     e.preventDefault();
     const auth = localStorage.getItem("token");
     var actualFileName;
-    fetch(window.upload + "/" + id, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application",
-        Authorization: "Bearer " + JSON.parse(auth),
-      },
-    })
-      .then((res) => {
-        actualFileName = res.headers.get("Content-Disposition").split('"')[1];
-        return res.blob();
-      })
-      .then(
-        (blob) => {
-          console.log(actualFileName);
-          if (blob.size === 0) return;
+    templateDownload(category).then(
+      (resp) => {
+        actualFileName = resp.headers["content-disposition"].split('"')[1];
+        const { data: blob } = resp;
+        if (blob.size === 0) return;
+        var filetype = actualFileName.split("."); //split file name
+        filetype = filetype.pop(); //get the file type
+        if (filetype === "pdf") {
+          console.log(blob);
+          const url = window.URL.createObjectURL(
+            new Blob([blob], { type: "application/pdf" })
+          );
+
+          //Open the URL on new Window
+          console.log(url);
+          window.open(url); //TODO: having a reasonable file name, pdf viewer
+        } else {
+          //if not pdf, download instead.
+
           const url = window.URL.createObjectURL(new Blob([blob]));
+
           const link = document.createElement("a");
           link.href = url;
           link.setAttribute("download", actualFileName);
@@ -114,20 +118,12 @@ class UploadPage extends React.Component {
           link.click();
           // Clean up and remove the link
           link.parentNode.removeChild(link);
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          // console.log(error);
-          // console.log();
-          alert("The file is not available.");
-          // this.setState({
-          //     isLoaded: true,
-          //     error
-          // });
         }
-      );
+      },
+      (error) => {
+        alert("The file is not available.");
+      }
+    );
   }
   render() {
     const { error, isLoaded } = this.state;

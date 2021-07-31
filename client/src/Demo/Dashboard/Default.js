@@ -76,9 +76,8 @@ class Dashboard extends React.Component {
     e.preventDefault();
     download(category, id).then(
       (resp) => {
-        const actualFileName = resp.headers
-          .get("Content-Disposition")
-          .split('"')[1];
+        const actualFileName =
+          resp.headers["content-disposition"].split('"')[1];
         const { data: blob } = resp;
         if (blob.size === 0) return;
 

@@ -22,7 +22,7 @@ async function movefile(req, res, next) {
       emailaddress_: emailaddress,
     });
     const { firstname_, lastname_, _id } = students_exists
-    const FolderName = `${firstname_}-${lastname_}-${_id}`;
+    const FolderName = `${firstname_}_${lastname_}_${_id}`;
     const directoryPath =
       BASE_PATH + PATH_DELIMITER + FolderName + PATH_DELIMITER;
     console.log("directoryPath : " + directoryPath);

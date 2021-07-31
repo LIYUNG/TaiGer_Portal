@@ -68,7 +68,8 @@ export const updateDoc = (id, doc_temp) =>
 export const createArticle = (article) => request.post("/docs", article);
 
 // Update_Article
-export const updateArticle = (id, article) => request.post(`/docs/${id}`, article);
+export const updateArticle = (id, article) =>
+  request.post(`/docs/${id}`, article);
 
 const getArticle = (type) => request.get(`/docs/${type}`);
 
@@ -86,7 +87,10 @@ export const getCertificationArticle = () => getArticle("certification");
 
 // download
 export const download = (category, id) =>
-  request.get(`/download/${category}/${id}`, { responseType: 'blob' });
+  request.get(`/download/${category}/${id}`, { responseType: "blob" });
+
+export const templateDownload = (category) =>
+  request.get(`/download/${category}`, { responseType: "blob" });
 
 // upload
 export const upload = (id, data) => request.post(`/upload/${id}`, data);

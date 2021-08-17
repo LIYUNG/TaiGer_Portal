@@ -30,7 +30,10 @@ const DocsCertification = React.lazy(() =>
 );
 const DocsUniassist = React.lazy(() => import('./Demo/Documentation/Uniassist/Uniassist'));
 const DocsVisa = React.lazy(() => import('./Demo/Documentation/Visa/Visa'));
-const Upload = React.lazy(() => import('./Demo/Documentation/Upload'));
+const Upload = React.lazy(() => import("./Demo/Documentation/Upload"));
+const TaiGerAI = React.lazy(() =>
+  import("./Demo/TaiGerAI/Application/CoursesAnalyser")
+);
 
 const routes = [
   {
@@ -130,6 +133,12 @@ const routes = [
     component: DocsVisa,
   },
   { path: "/upload", exact: true, name: "Documentation", component: Upload },
+  {
+    path: "/taigerai",
+    exact: true,
+    name: "TaiGer AI",
+    component: TaiGerAI,
+  },
 ];
 
 export default routes;

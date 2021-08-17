@@ -34,6 +34,7 @@ var upload = multer({
       file.mimetype == "image/png" ||
       file.mimetype == "image/jpg" ||
       file.mimetype == "image/jpeg" ||
+      file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
       file.mimetype ==
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
@@ -103,6 +104,20 @@ const router = (app) => {
   app.post("/docs/:article_id", auth, documentation_handler.UpdateDocumentation);
   app.delete("/docs/:article_id", auth, documentation_handler.DeleteDocumentation);
   app.get("/settings", auth, handlers.settings);
+  app.post(
+    "/transcriptanalyzer/:category/:programgroup",
+    auth,
+    upload.single("file"),
+    checkuserfolder,
+    movefile,
+    file_handler.Upload_Transcript_XLSX
+  );
+  app.get(
+    "/generatedfiledownload/:category/:filename",
+    auth,
+    file_handler.generated_XLSX_download
+  );
+  
 };
 
 module.exports = router;

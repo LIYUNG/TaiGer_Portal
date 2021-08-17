@@ -95,6 +95,14 @@ export default {
           icon: "feather icon-upload",
         },
         {
+          id: "taigerai",
+          title: "TaiGer AI",
+          type: "item",
+          url: "/taigerai",
+          classes: "nav-item",
+          icon: "feather icon-code",
+        },
+        {
           id: "docs",
           title: "Documentation",
           type: "collapse",

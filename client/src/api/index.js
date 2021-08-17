@@ -95,6 +95,16 @@ export const templateDownload = (category) =>
 // upload
 export const upload = (id, data) => request.post(`/upload/${id}`, data);
 
+// transcript analyser
+export const transcriptanalyser = (category, id, data) =>
+  request.post(`/transcriptanalyzer/${category}/${id}`, data);
+
+  export const generatedFileDownload = (category, filename) =>
+    request.get(`/generatedfiledownload/${category}/${filename}`, {
+      responseType: "blob",
+    });
+
+
 // TODO: replace below auth APIs
 export const login = (credentials) => request.post("/login", credentials);
 

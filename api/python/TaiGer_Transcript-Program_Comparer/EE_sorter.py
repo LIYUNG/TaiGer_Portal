@@ -1,15 +1,15 @@
+import xlsxwriter
+import gc
+from alogrithms import *
+from util import *
+from EE_KEYWORDS import *
+from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
+import pandas as pd
 from numpy import nan
 import sys
 import os
 env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
-import pandas as pd
-from cell_formatter import red_out_failed_subject
-from EE_KEYWORDS import *
-from util import *
-from alogrithms import *
-import gc
-import xlsxwriter
 
 # Global variable:
 column_len_array = []
@@ -117,6 +117,12 @@ def RWTH_EI(transcript_sorted_group_map, df_transcript_array, df_category_course
     df_PROG_SPEC_CATES = AppendCreditsCount(
         df_PROG_SPEC_CATES, program_category)
 
+    # drop the Others, 建議修課
+    for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
+        if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
+            df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
+                columns=['Others', '建議修課'], inplace=True)
+
     # Write to Excel
     start_row = 0
     for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
@@ -131,7 +137,11 @@ def RWTH_EI(transcript_sorted_group_map, df_transcript_array, df_category_course
     workbook = writer.book
     worksheet = writer.sheets[program_name]
     red_out_failed_subject(workbook, worksheet, 1, start_row)
-
+    red_out_insufficient_credit(workbook, worksheet)
+    # print("writer")
+    # print(writer['A1'])
+    # print("worksheet")
+    # print(worksheet)
     for df in df_PROG_SPEC_CATES:
         # print(df)
         for i, col in enumerate(df.columns):
@@ -235,6 +245,12 @@ def TUM_MSCE(transcript_sorted_group_map, df_transcript_array, df_category_cours
     df_PROG_SPEC_CATES = AppendCreditsCount(
         df_PROG_SPEC_CATES, program_category)
 
+    # drop the Others, 建議修課
+    for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
+        if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
+            df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
+                columns=['Others', '建議修課'], inplace=True)
+
     # Write to Excel
     start_row = 0
     for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
@@ -278,13 +294,13 @@ def TUM_MSPE(transcript_sorted_group_map, df_transcript_array, df_category_cours
     PROG_SPEC_MATH_PARAM = {
         'Program_Category': 'Höhere_Mathematik', 'Required_CP': 30}
     # Grundlagen der Elektrotechnik, Vertiefung Energietechnik
-    # Schaltungstechnik, Elektrische Felder und Wellen,Festkörperphysik und 
-    # Bauelemente, Hochspannungstechnik und Energie-übertragungstechnik, 
+    # Schaltungstechnik, Elektrische Felder und Wellen,Festkörperphysik und
+    # Bauelemente, Hochspannungstechnik und Energie-übertragungstechnik,
     # elektrische Maschinen, etc.
     PROG_SPEC_GRUNDLAGE_ELEKTROTECHNIK_PARAM = {
         'Program_Category': 'Grundlagen_Elektrotechnik', 'Required_CP': 45}
-    # Grundlagen des Maschinenwesens, Vertiefung Energietechnik 
-    # (Technische Mechanik, Thermodynamik, Strömungsmechanik, 
+    # Grundlagen des Maschinenwesens, Vertiefung Energietechnik
+    # (Technische Mechanik, Thermodynamik, Strömungsmechanik,
     # Wärme-und Stoffübertragung, Maschinendynamik, etc.)
     PROG_SPEC_GRUNDLAGE_MASCHINEN_PARAM = {
         'Program_Category': 'Grundlagen_Maschinenwesen', 'Required_CP': 45}
@@ -346,6 +362,12 @@ def TUM_MSPE(transcript_sorted_group_map, df_transcript_array, df_category_cours
     df_PROG_SPEC_CATES = AppendCreditsCount(
         df_PROG_SPEC_CATES, program_category)
 
+    # drop the Others, 建議修課
+    for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
+        if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
+            df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
+                columns=['Others', '建議修課'], inplace=True)
+
     # Write to Excel
     start_row = 0
     for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
@@ -385,7 +407,7 @@ def EE_sorter(program_idx, file_path):
     if not os.path.exists(Output_Path):
         print("create output folder")
         os.makedirs(Output_Path)
-        
+
     Database_file_name = 'EE_Course_database.xlsx'
     input_file_name = os.path.split(file_path)
     input_file_name = input_file_name[1]

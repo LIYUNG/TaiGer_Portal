@@ -11,3 +11,7 @@ def red_out_failed_subject(workbook, worksheet, row_begin, row_end):
                                             'minimum': 0,
                                             'maximum': 59,
                                             'format': fmt1})
+
+
+def red_out_insufficient_credit(workbook, worksheet):
+    print("red_out_insufficient_credit")

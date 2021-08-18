@@ -2,7 +2,7 @@ import xlsxwriter
 import gc
 from alogrithms import *
 from util import *
-from CS_KEYWORDS import *
+from ME_KEYWORDS import *
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
 from numpy import nan
@@ -11,14 +11,11 @@ import os
 env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
 
-
 # Global variable:
 column_len_array = []
 
-
-def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    # TODO: modify the course name
-    program_name = 'TUM_CS'
+def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'RWTH_Aachen_AUTO'
     print("Create " + program_name + " sheet")
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
@@ -31,70 +28,53 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
     #####################################################################
 
     # Create transcript_sorted_group to program_category mapping
-    PROG_SPEC_INTRO_INFO_PARAM = {
-        'Program_Category': 'Introduction_to_Informatics', 'Required_CP': 12}  # Computer Architecture: Organization and Technology
-    PROG_SPEC_COMP_ARCH_PARAM = {
-        'Program_Category': 'Computer Architecture', 'Required_CP': 16}  # Computer Architecture: Organization and Technology
-    PROG_SPEC_SWE_PARAM = {
-        'Program_Category': 'Software_Engineering', 'Required_CP': 6}
-    PROG_SPEC_DB_PARAM = {
-        'Program_Category': 'Databases', 'Required_CP': 6}
-    PROG_SPEC_OS_PARAM = {
-        'Program_Category': 'Operating_Systems', 'Required_CP': 6}  # Operating Systems and System Software
-    PROG_SPEC_COMP_NETW_MODULE_PARAM = {
-        'Program_Category': 'Computer Network', 'Required_CP': 6}   # Computer Networks, Distributed Systems
-    PROG_SPEC_FUNC_PROG_MODULE_PARAM = {
-        'Program_Category': 'Functional_Programming', 'Required_CP': 5}
-    PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM = {
-        'Program_Category': 'Algorithms_Data_Structures', 'Required_CP': 6}
-    PROG_SPEC_THEORY_COMP_MODULE_PARAM = {
-        'Program_Category': 'Theory_of_Computation', 'Required_CP': 8}
-    PROG_SPEC_DISCRETE_STRUCTURE_MODULE_PARAM = {
-        'Program_Category': 'Discrete_Structures', 'Required_CP': 8}
-    PROG_SPEC_LINEAR_ALGEBRA_MODULE_PARAM = {
-        'Program_Category': 'Linear_Algebra', 'Required_CP': 8}
-    PROG_SPEC_CALCULUS_MODULE_PARAM = {
-        'Program_Category': 'Analysis_Calculus', 'Required_CP': 8}
-    PROG_SPEC_DISCRETE_PROB_MODULE_PARAM = {
-        'Program_Category': 'Discrete_Probability_Theory', 'Required_CP': 6}
+    
+    PROG_SPEC_MECHANIK_PARAM = {
+        'Program_Category': 'Mechanik', 'Required_CP': 18}
+    PROG_SPEC_MASCHINENGESTALTUNG_PARAM = {
+        'Program_Category': 'Maschinengestaltung', 'Required_CP': 13}
+    PROG_SPEC_THERMODYNAMIK_PARAM = {
+        'Program_Category': 'Thermodynamik', 'Required_CP': 7}
+    PROG_SPEC_WARMSTOFFUBERTRAGUNG_PARAM = {
+        'Program_Category': 'Wärm_und_Stoffübertragung', 'Required_CP': 6}
+    PROG_SPEC_WERKSTOFFKUNDE_PARAM = {
+        'Program_Category': 'Werkstoffkunde', 'Required_CP': 8}
+    PROG_SPEC_CONTROL_TECHNIQUE_PARAM = {
+        'Program_Category': 'Regelungstechnik', 'Required_CP': 6}
+    PROG_SPEC_STROEMUNGSMECHANIK_PARAM = {
+        'Program_Category': 'Strömungsmechanik I', 'Required_CP': 6}
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Höhere Mathematik', 'Required_CP': 17}
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_CP': 0}
 
     # This fixed to program course category.
     program_category = [
-        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
-        PROG_SPEC_COMP_ARCH_PARAM,  # computer architecture
-        PROG_SPEC_SWE_PARAM,  # software engineering
-        PROG_SPEC_DB_PARAM,  # database
-        PROG_SPEC_OS_PARAM,  # OS
-        PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
-        PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 函數程式
-        PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
-        PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 運算
-        PROG_SPEC_DISCRETE_STRUCTURE_MODULE_PARAM,  # 離散
-        PROG_SPEC_LINEAR_ALGEBRA_MODULE_PARAM,  # 線性代數
-        PROG_SPEC_CALCULUS_MODULE_PARAM,  # 微積分 分析
-        PROG_SPEC_DISCRETE_PROB_MODULE_PARAM,  # 機率
+        PROG_SPEC_MECHANIK_PARAM,  # 數學
+        PROG_SPEC_MASCHINENGESTALTUNG_PARAM,  # 機械繪圖
+        PROG_SPEC_THERMODYNAMIK_PARAM,  # 熱力學
+        PROG_SPEC_WARMSTOFFUBERTRAGUNG_PARAM,  # 熱 物質傳導
+        PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
+        PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
+        PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
+        PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
-    # TODO: modify the original sorting list for IT
     program_category_map = [
-        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
-        PROG_SPEC_COMP_ARCH_PARAM,  # computer architecture
-        PROG_SPEC_SWE_PARAM,  # software engineering
-        PROG_SPEC_DB_PARAM,  # 資料庫
-        PROG_SPEC_OS_PARAM,  # 作業系統
-        PROG_SPEC_COMP_NETW_MODULE_PARAM,  #
-        PROG_SPEC_FUNC_PROG_MODULE_PARAM,  #
-        PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
-        PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 運算
-        PROG_SPEC_DISCRETE_STRUCTURE_MODULE_PARAM,  # 離散
-        PROG_SPEC_LINEAR_ALGEBRA_MODULE_PARAM,  # 線性代數
-        PROG_SPEC_CALCULUS_MODULE_PARAM,  # 微積分 分析
-        PROG_SPEC_DISCRETE_PROB_MODULE_PARAM,  # 機率
-        PROG_SPEC_OTHERS,  # 其他
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_MECHANIK_PARAM,  # 物理
+        PROG_SPEC_MECHANIK_PARAM,  # 物理實驗
+        PROG_SPEC_MASCHINENGESTALTUNG_PARAM,  # 機械設計
+        PROG_SPEC_THERMODYNAMIK_PARAM,  # 熱力學
+        PROG_SPEC_WARMSTOFFUBERTRAGUNG_PARAM,  # 熱 物質傳導
+        PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
+        PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
+        PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
+        PROG_SPEC_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_OTHERS  # 其他
     ]
 
     # Development check
@@ -124,7 +104,7 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
     # append 總學分 for each program category
     df_PROG_SPEC_CATES = AppendCreditsCount(
         df_PROG_SPEC_CATES, program_category)
-
+    
     # drop the Others, 建議修課
     for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
         if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
@@ -145,19 +125,22 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
     workbook = writer.book
     worksheet = writer.sheets[program_name]
     red_out_failed_subject(workbook, worksheet, 1, start_row)
+    red_out_insufficient_credit(workbook, worksheet)
 
     for df in df_PROG_SPEC_CATES:
+        # print(df)
         for i, col in enumerate(df.columns):
+            # print(i)
             # set the column length
             worksheet.set_column(i, i, column_len_array[i] * 2)
     gc.collect()  # Forced GC
-    print("Save to "+program_name)
+    print("Save to " + program_name)
 
 
-program_sort_function = [TUM_CS]
+program_sort_function = [RWTH_AUTO]
 
 
-def CS_sorter(program_idx, file_path):
+def ME_sorter(program_idx, file_path):
 
     Database_Path = env_file_path + '\\database\\'
     Output_Path = os.path.split(file_path)
@@ -169,7 +152,7 @@ def CS_sorter(program_idx, file_path):
         print("create output folder")
         os.makedirs(Output_Path)
 
-    Database_file_name = 'CS_Course_database.xlsx'
+    Database_file_name = 'ME_Course_database.xlsx'
     input_file_name = os.path.split(file_path)
     input_file_name = input_file_name[1]
     print("input file name " + input_file_name)
@@ -183,47 +166,44 @@ def CS_sorter(program_idx, file_path):
         sys.exit()
 
     df_database = pd.read_excel(Database_Path+Database_file_name,
-                                sheet_name='All_CS_Courses')
-    # Verify the format of CS_Course_database.xlsx
+                                sheet_name='All_ME_Courses')
+    # Verify the format of ME_Course_database.xlsx
     if df_database.columns[0] != '所有科目':
-        print("Error: Please check the CS database xlsx file format.")
+        print("Error: Please check the ME database xlsx file.")
         sys.exit()
     df_database['所有科目'] = df_database['所有科目'].fillna('-')
 
+    # unify course naming convention
     Naming_Convention(df_transcript)
 
     sorted_courses = []
-    # Computer Science
+    # ME
     transcript_sorted_group_map = {
-        '基礎資工': [CS_INTRO_INFO_KEY_WORDS, CS_INTRO_INFO_ANTI_KEY_WORDS, ['一', '二']],
-        '電腦結構': [CS_COMP_ARCH_KEY_WORDS, CS_COMP_ARCH_ANTI_KEY_WORDS, ['一', '二']],
-        '軟體工程': [CS_SWE_KEY_WORDS, CS_SWE_ANTI_KEY_WORDS],
-        '資料庫': [CS_DB_KEY_WORDS, CS_DB_ANTI_KEY_WORDS],
-        '作業系統': [CS_OS_KEY_WORDS, CS_OS_ANTI_KEY_WORDS],
-        '電腦網絡': [CS_COMP_NETW_KEY_WORDS, CS_COMP_NETW_ANTI_KEY_WORDS],
-        '函式程式': [CS_FUNC_PROG_KEY_WORDS, CS_FUNC_PROG_ANTI_KEY_WORDS],
-        '資料結構演算法': [CS_ALGO_DATA_STRUCT_KEY_WORDS, CS_ALGO_DATA_STRUCT_ANTI_KEY_WORDS],
-        '理論資工': [CS_THEORY_COMP_KEY_WORDS, CS_THEORY_COMP_ANTI_KEY_WORDS],
-        '離散': [CS_MATH_DISCRETE_KEY_WORDS, CS_MATH_DISCRETE_ANTI_KEY_WORDS],
-        '線性代數': [CS_MATH_LIN_ALGE_KEY_WORDS, CS_MATH_LIN_ALGE_ANTI_KEY_WORDS],
-        '微積分': [CS_CALCULUS_KEY_WORDS, CS_CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
-        '機率': [CS_MATH_PROB_KEY_WORDS, CS_MATH_PROB_ANTI_KEY_WORDS],
+        '微積分': [ME_CALCULUS_KEY_WORDS, ME_CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
+        '數學': [ME_MATH_KEY_WORDS, ME_MATH_ANTI_KEY_WORDS],
+        '物理': [ME_PHYSICS_KEY_WORDS, ME_PHYSICS_ANTI_KEY_WORDS, ['一', '二']],
+        '物理實驗': [ME_PHYSICS_EXP_KEY_WORDS, ME_PHYSICS_EXP_ANTI_KEY_WORDS, ['一', '二']],
+        '機械設計': [ME_MASCHINENGESTALTUNG_KEY_WORDS, ME_MASCHINENGESTALTUNG_ANTI_KEY_WORDS, ['一', '二']],
+        '熱力學': [ME_THERMODYN_KEY_WORDS, ME_THERMODYN_ANTI_KEY_WORDS, ['一', '二']],
+        '熱傳導': [ME_WARMTRANSPORT_KEY_WORDS, ME_WARMTRANSPORT_ANTI_KEY_WORDS, ['一', '二']],
+        '材料': [ME_WERKSTOFFKUNDE_KEY_WORDS, ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS, ['一', '二']],
+        '控制系統': [ME_CONTROL_THEORY_KEY_WORDS, ME_CONTROL_THEORY_ANTI_KEY_WORDS, ['一', '二']],
+        '流體': [ME_FLUIDDYN_KEY_WORDS, ME_FLUIDDYN_ANTI_KEY_WORDS, ['一', '二']],
+        '力學': [ME_MECHANIK_KEY_WORDS, ME_MECHANIK_ANTI_KEY_WORDS],
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     suggestion_courses_sorted_group_map = {
-        '基礎資工': [[], CS_INTRO_INFO_ANTI_KEY_WORDS],
-        '電腦結構': [[], CS_COMP_ARCH_ANTI_KEY_WORDS, ['一', '二']],
-        '軟體工程': [[], CS_SWE_ANTI_KEY_WORDS, ['一', '二']],
-        '資料庫': [[], CS_DB_ANTI_KEY_WORDS],
-        '作業系統': [[], CS_OS_ANTI_KEY_WORDS],
-        '電腦網絡': [[], CS_COMP_NETW_ANTI_KEY_WORDS],
-        '函式程式': [[], CS_FUNC_PROG_ANTI_KEY_WORDS],
-        '資料結構演算法': [[], CS_ALGO_DATA_STRUCT_ANTI_KEY_WORDS],
-        '理論資工': [[], CS_THEORY_COMP_ANTI_KEY_WORDS],
-        '離散': [[], CS_MATH_DISCRETE_ANTI_KEY_WORDS],
-        '線性代數': [[], CS_MATH_LIN_ALGE_ANTI_KEY_WORDS],
-        '微積分': [[], CS_CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
-        '機率': [[], CS_MATH_PROB_ANTI_KEY_WORDS],
+        '微積分': [[], ME_CALCULUS_ANTI_KEY_WORDS],
+        '數學': [[], ME_MATH_ANTI_KEY_WORDS],
+        '物理': [[], ME_PHYSICS_ANTI_KEY_WORDS],
+        '物理實驗': [[], ME_CONTROL_THEORY_ANTI_KEY_WORDS],
+        '機械設計': [[], ME_MASCHINENGESTALTUNG_ANTI_KEY_WORDS],
+        '熱力學': [[], ME_CONTROL_THEORY_ANTI_KEY_WORDS],
+        '熱傳導': [[], ME_WARMTRANSPORT_ANTI_KEY_WORDS],
+        '材料': [[], ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS],
+        '控制系統': [[], ME_CONTROL_THEORY_ANTI_KEY_WORDS],
+        '流體': [[], ME_FLUIDDYN_ANTI_KEY_WORDS],
+        '力學': [[], ME_MECHANIK_ANTI_KEY_WORDS],
         '其他': [[], USELESS_COURSES_ANTI_KEY_WORDS], }
 
     category_data = []
@@ -236,27 +216,26 @@ def CS_sorter(program_idx, file_path):
         df_category_courses_sugesstion_data.append(
             pd.DataFrame(data=category_courses_sugesstion_data, columns=['建議修課']))
 
+    # 基本分類課程 (與學程無關)
     df_category_data = CourseSorting(
         df_transcript, df_category_data, transcript_sorted_group_map)
 
-    # 基本分類資工課程資料庫
+    # 基本分類機械課程資料庫
     df_category_courses_sugesstion_data = DatabaseCourseSorting(
         df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map)
-
-    # print(df_category_courses_sugesstion_data)
 
     for idx, cat in enumerate(df_category_data):
         df_category_courses_sugesstion_data[idx]['建議修課'] = df_category_courses_sugesstion_data[idx]['建議修課'].str.replace(
             '(', '', regex=False)
         df_category_courses_sugesstion_data[idx]['建議修課'] = df_category_courses_sugesstion_data[idx]['建議修課'].str.replace(
             ')', '', regex=False)
-    # 樹狀篩選 >> 微積分:[一,二] 同時有含 微積分、一  的，就從recommendation拿掉
+
+    # 樹狀篩選 微積分:[一,二] 同時有含 微積分、一  的，就從recommendation拿掉
     # algorithm :
     df_category_courses_sugesstion_data = SuggestionCourseAlgorithm(
         df_category_data, transcript_sorted_group_map, df_category_courses_sugesstion_data)
 
     output_file_name = 'generated_' + input_file_name
-
     writer = pd.ExcelWriter(
         Output_Path+output_file_name, engine='xlsxwriter')
 
@@ -293,4 +272,4 @@ def CS_sorter(program_idx, file_path):
             writer)
 
     writer.save()
-    print("Students' courses analysis and courses suggestion in CS area finished! ")
+    print("Students' courses analysis and courses suggestion in EE area finished! ")

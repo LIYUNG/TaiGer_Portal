@@ -14,7 +14,7 @@ MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
 PROGRAMMING_KEY_WORDS = ['計算機', '演算', '資料', '物件', '運算',
                          '資電', '作業系統', '資料結構', '軟體', '編譯器', '程式設計', '程式語言', 'Python', 'C++', 'C語言']
 PROGRAMMING_ANTI_KEY_WORDS = ['倫理']
-CONTROL_THEORY_KEY_WORDS = ['控制']
+CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統']
 CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l']
 PHYSICS_KEY_WORDS = ['物理']
 PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '實驗']
@@ -33,7 +33,7 @@ COMMUNICATION_KEY_WORDS = ['高頻', '天線', '微波',
 COMMUNICATION_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
 SEMICONDUCTOR_KEY_WORDS = ['半導體', '元件', '固態']
 SEMICONDUCTOR_ANTI_KEY_WORDS = ['專題', '倫理', '素養']
-ADVANCED_ELECTRO_KEY_WORDS = ['積體電路', '自動化',  '藍芽', '晶片', '類比', '數位訊號',
+ADVANCED_ELECTRO_KEY_WORDS = ['積體電路', '自動化',  '藍芽', '晶片', '類比', '數位訊號', '數位信號',
                               '微算機', '微處理', 'VLSI', '嵌入式', '人工智慧', '機器學習']
 ADVANCED_ELECTRO_ANTI_KEY_WORDS = ['倫理', '素養']
 APPLICATION_ORIENTED_KEY_WORDS = ['生醫', '光機電', '電腦', '微系統', '物聯網', '密碼學', '聲學',

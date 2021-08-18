@@ -228,27 +228,45 @@ class Dashboard extends React.Component {
   submitUpdateAgentlist = (updateAgentList, student_id) => {
     console.log(updateAgentList + " " + student_id);
     this.UpdateAgentlist(updateAgentList, student_id);
-    this.setState({
-      updateAgentList: [],
-      isLoaded: false,
-    });
+    // this.setState({
+    //   updateAgentList: [],
+    //   isLoaded: false,
+    // });
   };
 
   submitUpdateEditorlist = (updateEditorList, student_id) => {
     console.log(updateEditorList + " " + student_id);
     this.UpdateEditorlist(updateEditorList, student_id);
-    this.setState({
-      updateEditorList: [],
-      isLoaded: false,
-    });
   };
 
   UpdateAgentlist = (updateAgentList, student_id) => {
-    updateAgents(student_id, updateAgentList);
+    // updateAgents(student_id, updateAgentList);
+    updateAgents(student_id, updateAgentList).then(
+      (resp) => {
+        this.setState({
+          updateAgentList: [],
+          isLoaded: false,
+        });
+      },
+      (error) => {
+        alert("UpdateAgentlist is failed.");
+      }
+    );
   };
 
   UpdateEditorlist = (updateEditorList, student_id) => {
-    updateEditors(student_id, updateEditorList);
+    // updateEditors(student_id, updateEditorList);
+    updateEditors(student_id, updateEditorList).then(
+      (resp) => {
+        this.setState({
+          updateEditorList: [],
+          isLoaded: false,
+        });
+      },
+      (error) => {
+        alert("UpdateEditorlist is failed.");
+      }
+    );
   };
 
   render() {

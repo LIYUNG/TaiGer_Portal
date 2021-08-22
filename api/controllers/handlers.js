@@ -141,7 +141,10 @@ exports.programlist = async (req, res) => {
       emailaddress_: emailaddress,
     });
     // Access all programs
-    if (students_exists.role_ === "Agent") {
+    if (
+      students_exists.role_ === "Agent" ||
+      students_exists.role_ === "Admin"
+    ) {
       const program_all = await Program.find();
       res.send({
         data: program_all,
@@ -330,6 +333,7 @@ exports.edituser = async (req, res) => {
 
 exports.deleteprogram = async (req, res) => {
   try {
+    // TODO: only Admin / Agent can delete.
     console.log("delete " + req.params.program_id);
     const program_id = req.params.program_id;
     await Program.findByIdAndDelete(program_id);
@@ -345,6 +349,7 @@ exports.deleteprogram = async (req, res) => {
 
 exports.deleteuser = async (req, res) => {
   try {
+    // TODO: only Admin can delete.
     console.log("delete " + req.params.user_id);
     const user_id = req.params.user_id;
     await Student.findByIdAndDelete(user_id);
@@ -360,6 +365,7 @@ exports.deleteuser = async (req, res) => {
 
 exports.changeuserrole = async (req, res) => {
   try {
+    // TODO: only Admin can delete.
     console.log("edit req.body = " + req.body);
     console.log("edit req.body.user_id = " + req.body._id);
     console.log("edit req.body.user_role = " + req.body.role_);
@@ -383,6 +389,7 @@ exports.changeuserrole = async (req, res) => {
 
 exports.assignprogramtostudent = async (req, res) => {
   try {
+    // TODO: only Admin can assign.
     console.log("edit req.body = " + req.body);
     console.log("edit req.body.program_id = " + req.body.program_id);
     const program_id = req.body.program_id;
@@ -489,6 +496,7 @@ exports.studentlist = async (req, res) => {
 
 exports.editagent = async (req, res, next) => {
   try {
+    // TODO: only Admin can edit.
     const Agent_all = await Student.find({ role_: "Agent" });
     console.log("get agent list success!");
     res.send({
@@ -545,6 +553,7 @@ exports.updateagent = async (req, res, next) => {
 
 exports.editeditor = async (req, res, next) => {
   try {
+    // TODO: only Admin can edit.
     const Editor_all = await Student.find({ role_: "Editor" });
     console.log("get editor list success!");
     res.send({
@@ -566,7 +575,6 @@ exports.updateeditor = async (req, res, next) => {
   console.log(req.body);
 
   try {
-    // req.body;
     //TODO: only admin can update editor
     const Editor_All = await Student.find({ role_: "Editor" });
     const student = await Student.findById(req.params.student_id);
@@ -597,12 +605,14 @@ exports.updateeditor = async (req, res, next) => {
 };
 
 exports.editstudentprogram = async (req, res, next) => {
+  //TODO: only agent can update
   console.log("editstudentprogram success!");
   res.status(404).end();
 };
 
 exports.deleteprogramfromstudent = async (req, res, next) => {
   try {
+    //TODO: only agent can delete
     const student_id = req.params.student_id;
     const program_id = req.params.program_id;
     console.log("student id: " + student_id);

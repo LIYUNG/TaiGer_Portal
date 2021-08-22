@@ -74,6 +74,10 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
         PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
         PROG_SPEC_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_OTHERS,  # 基礎電機電子
+        PROG_SPEC_OTHERS,  # 製造
+        PROG_SPEC_OTHERS,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 機電
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -88,64 +92,248 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
     ####################### End #########################################
     #####################################################################
 
-    df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION = ProgramCategoryInit(
-        program_category)
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
-    transcript_sorted_group_list = list(transcript_sorted_group_map)
+#TODO
+def TUHH_MECHATRONICS(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUHH_MECHATRONICS'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
 
-    # Courses: mapping the students' courses to program-specific category
-    df_PROG_SPEC_CATES = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp)
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_CALCULUS_PARAM = {
+        'Program_Category': 'Calculus', 'Required_CP': 12}
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Mathematics', 'Required_CP': 18}
+    PROG_SPEC_MECHANICS_PARAM = {
+        'Program_Category': 'Mechanics', 'Required_CP': 21}
+    PROG_SPEC_CONTROL_THEORY_PARAM = {
+        'Program_Category': 'Control Theory', 'Required_CP': 6}
+    PROG_SPEC_MECHATRONICS_PARAM = {
+        'Program_Category': 'Mechatronics', 'Required_CP': 6}
+    PROG_SPEC_MATERIAL_PROPERTIES_TESTING_PARAM = {
+        'Program_Category': 'Materials Science', 'Required_CP': 6}
+    PROG_SPEC_MANUFACTURING_PARAM = {
+        'Program_Category': 'Manufacturing Porcesses', 'Required_CP': 6}
+    PROG_SPEC_MEASUREMENT_PARAM = {
+        'Program_Category': 'Measurement Technology', 'Required_CP': 6}
+    PROG_SPEC_THERMODYNAMICS_PARAM = {
+        'Program_Category': 'Thermodynamics', 'Required_CP': 6}
+    PROG_SPEC_COMPUTER_SCIENCE_PARAM = {
+        'Program_Category': 'Computer Science', 'Required_CP': 6}
+    PROG_SPEC_MECHANICAL_DESIGN_PARAM = {
+        'Program_Category': 'Mechanical Engineering Design', 'Required_CP': 12}
+    PROG_SPEC_ELECTRICAL_ENG_PARAM = {
+        'Program_Category': 'Electrical Engineering', 'Required_CP': 12}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_CP': 0}
 
-    # Suggestion courses: mapping the sugesstion courses to program-specific category
-    df_PROG_SPEC_CATES_COURSES_SUGGESTION = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES_COURSES_SUGGESTION, program_category_map, transcript_sorted_group_list, df_category_courses_sugesstion_data_temp)
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_CALCULUS_PARAM, # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_MECHANICS_PARAM,  # 力學
+        PROG_SPEC_CONTROL_THEORY_PARAM,  # 控制理論
+        PROG_SPEC_MECHATRONICS_PARAM,  # 機電
+        PROG_SPEC_MATERIAL_PROPERTIES_TESTING_PARAM,  # 材料
+        PROG_SPEC_MANUFACTURING_PARAM,  # 製造
+        PROG_SPEC_MEASUREMENT_PARAM,  # 測量
+        PROG_SPEC_THERMODYNAMICS_PARAM,  # 熱力
+        PROG_SPEC_COMPUTER_SCIENCE_PARAM,  # 計算機概論
+        PROG_SPEC_MECHANICAL_DESIGN_PARAM,  # 機械設計
+        PROG_SPEC_ELECTRICAL_ENG_PARAM, # 基礎電機電子
+        PROG_SPEC_OTHERS  # 其他
+    ]
 
-    # append 總學分 for each program category
-    df_PROG_SPEC_CATES = AppendCreditsCount(
-        df_PROG_SPEC_CATES, program_category)
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_CALCULUS_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_MECHANICS_PARAM,  # 物理
+        PROG_SPEC_MECHANICS_PARAM,  # 物理實驗
+        PROG_SPEC_MECHANICAL_DESIGN_PARAM,  # 機械設計
+        PROG_SPEC_THERMODYNAMICS_PARAM,  # 熱力學
+        PROG_SPEC_OTHERS,  # 熱 物質傳導
+        PROG_SPEC_MATERIAL_PROPERTIES_TESTING_PARAM,  # 材料
+        PROG_SPEC_CONTROL_THEORY_PARAM,  # 控制工程
+        PROG_SPEC_OTHERS,  # 流體
+        PROG_SPEC_MECHANICS_PARAM,  # 力學,機械
+        PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機電子
+        PROG_SPEC_MANUFACTURING_PARAM,  # 製造
+        PROG_SPEC_COMPUTER_SCIENCE_PARAM,  # 計算機概論
+        PROG_SPEC_MECHATRONICS_PARAM,  # 機電
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
+def UNI_HANNOVER_INTER_MECHATRONICS(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'UNI_HANNOVER_INTER_MECHATRONICS'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Mathematics', 'Required_CP': 15}
+    PROG_SPEC_ELECTRICAL_ENG_PARAM = {
+        'Program_Category': 'Electricl Engineering', 'Required_CP': 20}
+    PROG_SPEC_MECHANICS_PARAM = {
+        'Program_Category': 'Technical Mechanics', 'Required_CP': 15}
+    PROG_SPEC_CONTROL_MEASUREMENT_PARAM = {
+        'Program_Category': 'Control Engineeringv/ Measuring Technology', 'Required_CP': 10}
     
-    # drop the Others, 建議修課
-    for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
-        if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
-            df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
-                columns=['Others', '建議修課'], inplace=True)
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_CP': 0}
 
-    # Write to Excel
-    start_row = 0
-    for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
-        sortedcourses.to_excel(
-            writer, sheet_name=program_name, startrow=start_row, header=True, index=False)
-        df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].to_excel(
-            writer, sheet_name=program_name, startrow=start_row, startcol=5, header=True, index=False)
-        start_row += max(len(sortedcourses.index),
-                         len(df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].index)) + 2
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機
+        PROG_SPEC_MECHANICS_PARAM,  # 力學
+        PROG_SPEC_CONTROL_MEASUREMENT_PARAM,  # 控制理論
+        PROG_SPEC_OTHERS  # 其他
+    ]
 
-    # Formatting
-    workbook = writer.book
-    worksheet = writer.sheets[program_name]
-    red_out_failed_subject(workbook, worksheet, 1, start_row)
-    red_out_insufficient_credit(workbook, worksheet)
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
+        PROG_SPEC_MECHANICS_PARAM,  # 機械設計
+        PROG_SPEC_MECHANICS_PARAM,  # 熱力學
+        PROG_SPEC_OTHERS,  # 熱 物質傳導
+        PROG_SPEC_OTHERS,  # 材料
+        PROG_SPEC_CONTROL_MEASUREMENT_PARAM,  # 控制工程
+        PROG_SPEC_OTHERS,  # 流體
+        PROG_SPEC_MECHANICS_PARAM,  # 力學,機械
+        PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機電子
+        PROG_SPEC_OTHERS,  # 製造
+        PROG_SPEC_OTHERS,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_OTHERS  # 其他
+    ]
 
-    for df in df_PROG_SPEC_CATES:
-        # print(df)
-        for i, col in enumerate(df.columns):
-            # print(i)
-            # set the column length
-            worksheet.set_column(i, i, column_len_array[i] * 2)
-    gc.collect()  # Forced GC
-    print("Save to " + program_name)
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
-program_sort_function = [RWTH_AUTO]
+def TU_DORTMUND_MASTER_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TU_DORTMUND_MASTER_MANUFAC_TECH'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    
+    PROG_SPEC_ELECTRICAL_ENG_PARAM = {
+        'Program_Category': 'Electricl Engineering', 'Required_CP': 12}
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Mathematics', 'Required_CP': 18}
+    PROG_SPEC_MANUFACTURE_PARAM = {
+        'Program_Category': 'Manufacturing Subjects', 'Required_CP': 20}  # materials engineering, production engineering, theory of de­sign, and/or metallurgy and feedback control
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_CP': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機
+        PROG_SPEC_MANUFACTURE_PARAM,  # 製造工程
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
+        PROG_SPEC_MANUFACTURE_PARAM,  # 機械設計
+        PROG_SPEC_OTHERS,  # 熱力學
+        PROG_SPEC_OTHERS,  # 熱 物質傳導
+        PROG_SPEC_MANUFACTURE_PARAM,  # 材料
+        PROG_SPEC_MANUFACTURE_PARAM,  # 控制工程
+        PROG_SPEC_OTHERS,  # 流體
+        PROG_SPEC_OTHERS,  # 力學,機械
+        PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機電子
+        PROG_SPEC_MANUFACTURE_PARAM,  # 製造
+        PROG_SPEC_OTHERS,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+program_sort_function = [RWTH_AUTO, TUHH_MECHATRONICS, UNI_HANNOVER_INTER_MECHATRONICS, TU_DORTMUND_MASTER_MANUFAC_TECH]
 
 
 def ME_sorter(program_idx, file_path):
 
-    Database_Path = env_file_path + '\\database\\'
+    Database_Path = env_file_path + '/database/'
     Output_Path = os.path.split(file_path)
     Output_Path = Output_Path[0]
-    Output_Path = Output_Path + '\\output\\'
+    Output_Path = Output_Path + '/output/'
     print("output file path " + Output_Path)
 
     if not os.path.exists(Output_Path):
@@ -190,6 +378,10 @@ def ME_sorter(program_idx, file_path):
         '控制系統': [ME_CONTROL_THEORY_KEY_WORDS, ME_CONTROL_THEORY_ANTI_KEY_WORDS, ['一', '二']],
         '流體': [ME_FLUIDDYN_KEY_WORDS, ME_FLUIDDYN_ANTI_KEY_WORDS, ['一', '二']],
         '力學': [ME_MECHANIK_KEY_WORDS, ME_MECHANIK_ANTI_KEY_WORDS],
+        '基礎電機電子': [ME_ELECTRICAL_ENG_KEY_WORDS, ME_ELECTRICAL_ENG_ANTI_KEY_WORDS],
+        '製造工程': [ME_MANUFACTURE_ENG_KEY_WORDS, ME_MANUFACTURE_ENG_ANTI_KEY_WORDS],
+        '計算機概論': [ME_COMPUTER_SCIENCE_KEY_WORDS, ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS],
+        '機電': [ME_MECHATRONICS_KEY_WORDS, ME_MECHATRONICS_ANTI_KEY_WORDS],
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     suggestion_courses_sorted_group_map = {
@@ -204,6 +396,10 @@ def ME_sorter(program_idx, file_path):
         '控制系統': [[], ME_CONTROL_THEORY_ANTI_KEY_WORDS],
         '流體': [[], ME_FLUIDDYN_ANTI_KEY_WORDS],
         '力學': [[], ME_MECHANIK_ANTI_KEY_WORDS],
+        '基礎電機電子': [[], ME_ELECTRICAL_ENG_ANTI_KEY_WORDS],
+        '製造工程': [[], ME_MANUFACTURE_ENG_ANTI_KEY_WORDS],
+        '計算機概論': [[], ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS],
+        '機電': [[], ME_MECHATRONICS_ANTI_KEY_WORDS],
         '其他': [[], USELESS_COURSES_ANTI_KEY_WORDS], }
 
     category_data = []
@@ -235,7 +431,7 @@ def ME_sorter(program_idx, file_path):
     df_category_courses_sugesstion_data = SuggestionCourseAlgorithm(
         df_category_data, transcript_sorted_group_map, df_category_courses_sugesstion_data)
 
-    output_file_name = 'generated_' + input_file_name
+    output_file_name = 'analyzed_' + input_file_name
     writer = pd.ExcelWriter(
         Output_Path+output_file_name, engine='xlsxwriter')
 
@@ -272,4 +468,5 @@ def ME_sorter(program_idx, file_path):
             writer)
 
     writer.save()
+    print("output data at: " + Output_Path + output_file_name)
     print("Students' courses analysis and courses suggestion in EE area finished! ")

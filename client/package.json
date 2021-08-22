@@ -2,7 +2,7 @@
   "name": "datta-able-rv18.0.4",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://54.214.118.145/",
+  "homepage": "http://taigerportal.s3-website.us-east-2.amazonaws.com/",
   "dependencies": {
     "@material-ui/core": "^4.9.2",
     "@material-ui/icons": "^4.11.2",

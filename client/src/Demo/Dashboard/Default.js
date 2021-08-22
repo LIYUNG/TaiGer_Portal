@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Tabs, Tab } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
 
@@ -228,10 +228,6 @@ class Dashboard extends React.Component {
   submitUpdateAgentlist = (updateAgentList, student_id) => {
     console.log(updateAgentList + " " + student_id);
     this.UpdateAgentlist(updateAgentList, student_id);
-    // this.setState({
-    //   updateAgentList: [],
-    //   isLoaded: false,
-    // });
   };
 
   submitUpdateEditorlist = (updateEditorList, student_id) => {
@@ -240,7 +236,6 @@ class Dashboard extends React.Component {
   };
 
   UpdateAgentlist = (updateAgentList, student_id) => {
-    // updateAgents(student_id, updateAgentList);
     updateAgents(student_id, updateAgentList).then(
       (resp) => {
         this.setState({
@@ -255,7 +250,6 @@ class Dashboard extends React.Component {
   };
 
   UpdateEditorlist = (updateEditorList, student_id) => {
-    // updateEditors(student_id, updateEditorList);
     updateEditors(student_id, updateEditorList).then(
       (resp) => {
         this.setState({
@@ -349,57 +343,50 @@ class Dashboard extends React.Component {
           <Aux>
             <Row>
               {/* <Col md={6} xl={8}> */}
-              <Col>
-                <Card className="Recent-Users">
-                  <Card.Header>
-                    <Card.Title as="h5">Student List</Card.Title>
-                  </Card.Header>
-                  <Card.Body className="px-0 py-2">
-                    <Studentlist
-                      role={this.state.role}
-                      editAgent={this.editAgent}
-                      editEditor={this.editEditor}
-                      agent_list={this.state.agent_list}
-                      editor_list={this.state.editor_list}
-                      startEditingAgent={this.startEditingAgent}
-                      UpdateAgentlist={this.UpdateAgentlist}
-                      startEditingEditor={this.startEditingEditor}
-                      startEditingProgram={this.startEditingProgram}
-                      students={this.state.students}
-                      header={[
-                        {
-                          name: "StudentName",
-                          prop: "StudentName",
-                        },
-                        {
-                          name: "Agent",
-                          prop: "agent_",
-                        },
-                        {
-                          name: "Editor",
-                          prop: "editor_",
-                        },
-                        {
-                          name: "Program",
-                          prop: "Program",
-                        },
-                      ]}
-                      documentslist={window.documentlist}
-                      startUploadfile={this.startUploadfile}
-                      onDeleteProgram={this.onDeleteProgram}
-                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                      onRejectFilefromstudent={this.onRejectFilefromstudent}
-                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                      updateAgentList={this.state.updateAgentList}
-                      handleChangeAgentlist={this.handleChangeAgentlist}
-                      submitUpdateAgentlist={this.submitUpdateAgentlist}
-                      updateEditorList={this.state.updateEditorList}
-                      handleChangeEditorlist={this.handleChangeEditorlist}
-                      submitUpdateEditorlist={this.submitUpdateEditorlist}
-                    />
-                  </Card.Body>
-                </Card>
+              <Col sm={12}>
+                <Studentlist
+                  role={this.state.role}
+                  editAgent={this.editAgent}
+                  editEditor={this.editEditor}
+                  agent_list={this.state.agent_list}
+                  editor_list={this.state.editor_list}
+                  startEditingAgent={this.startEditingAgent}
+                  UpdateAgentlist={this.UpdateAgentlist}
+                  startEditingEditor={this.startEditingEditor}
+                  startEditingProgram={this.startEditingProgram}
+                  students={this.state.students}
+                  header={[
+                    {
+                      name: "StudentName",
+                      prop: "StudentName",
+                    },
+                    {
+                      name: "Agent",
+                      prop: "agent_",
+                    },
+                    {
+                      name: "Editor",
+                      prop: "editor_",
+                    },
+                    {
+                      name: "Program",
+                      prop: "Program",
+                    },
+                  ]}
+                  documentslist={window.documentlist}
+                  startUploadfile={this.startUploadfile}
+                  onDeleteProgram={this.onDeleteProgram}
+                  onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                  onRejectFilefromstudent={this.onRejectFilefromstudent}
+                  onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                  onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                  updateAgentList={this.state.updateAgentList}
+                  handleChangeAgentlist={this.handleChangeAgentlist}
+                  submitUpdateAgentlist={this.submitUpdateAgentlist}
+                  updateEditorList={this.state.updateEditorList}
+                  handleChangeEditorlist={this.handleChangeEditorlist}
+                  submitUpdateEditorlist={this.submitUpdateEditorlist}
+                />
               </Col>
             </Row>
             {this.state.role === "Student" ? (

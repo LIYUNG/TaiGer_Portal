@@ -108,50 +108,8 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
     ####################### End #########################################
     #####################################################################
 
-    df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION = ProgramCategoryInit(
-        program_category)
-
-    transcript_sorted_group_list = list(transcript_sorted_group_map)
-
-    # Courses: mapping the students' courses to program-specific category
-    df_PROG_SPEC_CATES = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp)
-
-    # Suggestion courses: mapping the sugesstion courses to program-specific category
-    df_PROG_SPEC_CATES_COURSES_SUGGESTION = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES_COURSES_SUGGESTION, program_category_map, transcript_sorted_group_list, df_category_courses_sugesstion_data_temp)
-
-    # append 總學分 for each program category
-    df_PROG_SPEC_CATES = AppendCreditsCount(
-        df_PROG_SPEC_CATES, program_category)
-
-    # drop the Others, 建議修課
-    for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
-        if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
-            df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
-                columns=['Others', '建議修課'], inplace=True)
-
-    # Write to Excel
-    start_row = 0
-    for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
-        sortedcourses.to_excel(
-            writer, sheet_name=program_name, startrow=start_row, header=True, index=False)
-        df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].to_excel(
-            writer, sheet_name=program_name, startrow=start_row, startcol=5, header=True, index=False)
-        start_row += max(len(sortedcourses.index),
-                         len(df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].index)) + 2
-
-    # Formatting
-    workbook = writer.book
-    worksheet = writer.sheets[program_name]
-    red_out_failed_subject(workbook, worksheet, 1, start_row)
-
-    for df in df_PROG_SPEC_CATES:
-        for i, col in enumerate(df.columns):
-            # set the column length
-            worksheet.set_column(i, i, column_len_array[i] * 2)
-    gc.collect()  # Forced GC
-    print("Save to "+program_name)
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
 program_sort_function = [TUM_CS]
@@ -159,10 +117,10 @@ program_sort_function = [TUM_CS]
 
 def CS_sorter(program_idx, file_path):
 
-    Database_Path = env_file_path + '\\database\\'
+    Database_Path = env_file_path + '/database/'
     Output_Path = os.path.split(file_path)
     Output_Path = Output_Path[0]
-    Output_Path = Output_Path + '\\output\\'
+    Output_Path = Output_Path + '/output/'
     print("output file path " + Output_Path)
 
     if not os.path.exists(Output_Path):
@@ -255,7 +213,7 @@ def CS_sorter(program_idx, file_path):
     df_category_courses_sugesstion_data = SuggestionCourseAlgorithm(
         df_category_data, transcript_sorted_group_map, df_category_courses_sugesstion_data)
 
-    output_file_name = 'generated_' + input_file_name
+    output_file_name = 'analyzed_' + input_file_name
 
     writer = pd.ExcelWriter(
         Output_Path+output_file_name, engine='xlsxwriter')
@@ -293,4 +251,5 @@ def CS_sorter(program_idx, file_path):
             writer)
 
     writer.save()
+    print("output data at: " + Output_Path + output_file_name)
     print("Students' courses analysis and courses suggestion in CS area finished! ")

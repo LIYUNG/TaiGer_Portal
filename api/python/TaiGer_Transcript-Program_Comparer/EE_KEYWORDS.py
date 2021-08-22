@@ -14,7 +14,7 @@ MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
 PROGRAMMING_KEY_WORDS = ['計算機', '演算', '資料', '物件', '運算',
                          '資電', '作業系統', '資料結構', '軟體', '編譯器', '程式設計', '程式語言', 'Python', 'C++', 'C語言']
 PROGRAMMING_ANTI_KEY_WORDS = ['倫理']
-CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統']
+CONTROL_THEORY_KEY_WORDS = ['控制','線性系統','非線性系統']
 CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l']
 PHYSICS_KEY_WORDS = ['物理']
 PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '實驗']

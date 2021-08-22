@@ -5,8 +5,6 @@ import { Button, Table, Col, Form, Modal } from "react-bootstrap";
 class EditFilesSubpage extends React.Component {
   // edit File subpage
 
-
-
   render() {
     let documentlist;
     if (this.props.student.uploadedDocs_) {
@@ -37,7 +35,7 @@ class EditFilesSubpage extends React.Component {
                 </p>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onDownloadFilefromstudent(
@@ -48,15 +46,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Download</Button>
-                      </div>
+                      <Button type="submit">Download</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onRejectFilefromstudent(
@@ -67,15 +63,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Reject</Button>
-                      </div>
+                      <Button type="submit">Reject</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onAcceptFilefromstudent(
@@ -86,15 +80,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Accept</Button>
-                      </div>
+                      <Button type="submit">Accept</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onDeleteFilefromstudent(
@@ -105,9 +97,7 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Delete</Button>
-                      </div>
+                      <Button type="submit">Delete</Button>
                     </Form.Group>
                   </Form>
                 </Col>
@@ -145,7 +135,7 @@ class EditFilesSubpage extends React.Component {
                 </p>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onDownloadFilefromstudent(
@@ -156,15 +146,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Download</Button>
-                      </div>
+                      <Button type="submit">Download</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onRejectFilefromstudent(
@@ -175,15 +163,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Reject</Button>
-                      </div>
+                      <Button type="submit">Reject</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onAcceptFilefromstudent(
@@ -194,15 +180,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Accept</Button>
-                      </div>
+                      <Button type="submit">Accept</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onDeleteFilefromstudent(
@@ -213,9 +197,7 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Delete</Button>
-                      </div>
+                      <Button type="submit">Delete</Button>
                     </Form.Group>
                   </Form>
                 </Col>
@@ -254,7 +236,7 @@ class EditFilesSubpage extends React.Component {
                 </p>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onDownloadFilefromstudent(
@@ -265,15 +247,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Download</Button>
-                      </div>
+                      <Button type="submit">Download</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onRejectFilefromstudent(
@@ -284,15 +264,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Reject</Button>
-                      </div>
+                      <Button type="submit">Reject</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onAcceptFilefromstudent(
@@ -303,15 +281,13 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Accept</Button>
-                      </div>
+                      <Button type="submit">Accept</Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
               <td>
-                <Col md={2}>
+                <Col>
                   <Form
                     onSubmit={(e) =>
                       this.props.onDeleteFilefromstudent(
@@ -322,9 +298,7 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <div className="form-group">
-                        <Button type="submit">Delete</Button>
-                      </div>
+                      <Button type="submit">Delete</Button>
                     </Form.Group>
                   </Form>
                 </Col>
@@ -341,18 +315,17 @@ class EditFilesSubpage extends React.Component {
           return (
             <tr key={i + 1}>
               <th>
-                <div>
-                  <Form.Group>
-                    <Form.Check
-                      custom
-                      type="checkbox"
-                      name={doc.name}
-                      defaultChecked={false}
-                      // value='value'
-                      id={i + 1}
-                    />
-                  </Form.Group>
-                </div>
+                {/* <div> */}
+                <Form.Group>
+                  <Form.Check
+                    custom
+                    type="checkbox"
+                    name={doc.name}
+                    defaultChecked={false}
+                    // value='value'
+                    id={i + 1}
+                  />
+                </Form.Group>
               </th>
               <td>
                 <p className="m-0">

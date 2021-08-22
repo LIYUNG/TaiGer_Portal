@@ -1,4 +1,6 @@
 import pandas as pd
+from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
+import gc
 
 KEY_WORDS = 0
 ANTI_KEY_WORDS = 1
@@ -125,3 +127,56 @@ def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
         df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(
             category_credits_sum, ignore_index=True)
     return df_PROG_SPEC_CATES
+
+
+def WriteToExcel(writer, program_name, program_category, program_category_map, transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array):
+    df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION = ProgramCategoryInit(
+        program_category)
+
+    transcript_sorted_group_list = list(transcript_sorted_group_map)
+
+    # Courses: mapping the students' courses to program-specific category
+    df_PROG_SPEC_CATES = CoursesToProgramCategoryMapping(
+        df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp)
+
+    # Suggestion courses: mapping the sugesstion courses to program-specific category
+    df_PROG_SPEC_CATES_COURSES_SUGGESTION = CoursesToProgramCategoryMapping(
+        df_PROG_SPEC_CATES_COURSES_SUGGESTION, program_category_map, transcript_sorted_group_list, df_category_courses_sugesstion_data_temp)
+
+    # append 總學分 for each program category
+    df_PROG_SPEC_CATES = AppendCreditsCount(
+        df_PROG_SPEC_CATES, program_category)
+
+    # drop the Others, 建議修課
+    for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
+        if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
+            df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
+                columns=['Others', '建議修課'], inplace=True)
+
+    # Write to Excel
+    start_row = 0
+    for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
+        sortedcourses.to_excel(
+            writer, sheet_name=program_name, startrow=start_row, header=True, index=False)
+        df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].to_excel(
+            writer, sheet_name=program_name, startrow=start_row, startcol=5, header=True, index=False)
+        start_row += max(len(sortedcourses.index),
+                         len(df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].index)) + 2
+
+    # Formatting
+    workbook = writer.book
+    worksheet = writer.sheets[program_name]
+    red_out_failed_subject(workbook, worksheet, 1, start_row)
+    red_out_insufficient_credit(workbook, worksheet)
+    # print("writer")
+    # print(writer['A1'])
+    # print("worksheet")
+    # print(worksheet)
+    for df in df_PROG_SPEC_CATES:
+        # print(df)
+        for i, col in enumerate(df.columns):
+            # print(i)
+            # set the column length
+            worksheet.set_column(i, i, column_len_array[i] * 2)
+    gc.collect()  # Forced GC
+    print("Save to " + program_name)

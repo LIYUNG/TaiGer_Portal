@@ -99,11 +99,10 @@ export const upload = (id, data) => request.post(`/upload/${id}`, data);
 export const transcriptanalyser = (category, id, data) =>
   request.post(`/transcriptanalyzer/${category}/${id}`, data);
 
-  export const generatedFileDownload = (category, filename) =>
-    request.get(`/generatedfiledownload/${category}/${filename}`, {
-      responseType: "blob",
-    });
-
+export const generatedFileDownload = (category, filename) =>
+  request.get(`/generatedfiledownload/${category}/${filename}`, {
+    responseType: "blob",
+  });
 
 // TODO: replace below auth APIs
 export const login = (credentials) => request.post("/login", credentials);

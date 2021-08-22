@@ -129,6 +129,4 @@ dmypy.json
 .pyre/
 
 # data / generated data
-*.xlsx
-/output
 /train_data

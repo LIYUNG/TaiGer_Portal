@@ -21,13 +21,13 @@ if __name__ == "__main__":
     program_idx = []
     program_selection_path = ''
     if sys.argv[2] == 'cs':
-        program_selection_path = file_path + '\CS_Programs.xlsx'
+        program_selection_path = file_path + '/CS_Programs.xlsx'
         print(file_path)
     elif sys.argv[2] == 'ee':
-        program_selection_path = file_path + '\EE_Programs.xlsx'
+        program_selection_path = file_path + '/EE_Programs.xlsx'
         print(file_path)
     elif sys.argv[2] == 'me':
-        program_selection_path = file_path + '\ME_Programs.xlsx'
+        program_selection_path = file_path + '/ME_Programs.xlsx'
         print(file_path)
     else:
         print("Please specify program group: cs ee me")

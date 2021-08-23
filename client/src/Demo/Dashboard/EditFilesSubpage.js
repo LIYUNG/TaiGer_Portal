@@ -365,6 +365,34 @@ class EditFilesSubpage extends React.Component {
                   <b> {doc.name} </b>
                 </p>
               </td>
+              <td>
+                <Col>
+                  <Form
+                    onChange={(e) => this.props.onFileChange(e)}
+                    onClick={(e) => (e.target.value = null)}
+                  >
+                    <Form.File id={this.props.id}>
+                      {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                      <Form.File.Input />
+                    </Form.File>
+                  </Form>
+                </Col>
+              </td>
+              <td>
+                <Col md={2}>
+                  <Form
+                    onSubmit={(e) =>
+                      this.props.submitFile(e, doc.prop, this.props.student._id)
+                    }
+                  >
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                      <Button size="sm" type="submit">
+                        Upload
+                      </Button>
+                    </Form.Group>
+                  </Form>
+                </Col>
+              </td>
             </tr>
           );
         }

@@ -3,6 +3,7 @@ const multer = require("multer");
 const authRouter = require("./auth");
 const { auth } = require("../middlewares/auth");
 const { movefile } = require("../middlewares/movefile");
+const { movefileforstudent } = require("../middlewares/movefileforstudent");
 const { checkuserfolder } = require("../middlewares/checkuserfolder");
 
 const handlers = require("../controllers/handlers");
@@ -81,6 +82,14 @@ const router = (app) => {
     checkuserfolder,
     movefile,
     file_handler.UploadPost
+  );
+  app.post(
+    "/upload/:student_id/:category",
+    auth,
+    upload.single("file"),
+    checkuserfolder,
+    movefileforstudent,
+    file_handler.UploadForStudentPost
   );
   app.get("/download/:category", auth, file_handler.templatefiledownload);
   app.get(

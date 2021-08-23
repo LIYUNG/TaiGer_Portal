@@ -125,6 +125,55 @@ exports.UploadPost = async (req, res) => {
   }
 };
 
+exports.UploadForStudentPost = async (req, res) => {
+  try {
+    console.log("UploadForStudentPost: Which file? " + req.file);
+    // const bearer = req.headers.authorization.split(" ");
+    // const token = bearer[1];
+    // // Extract user email info by token
+    // var emailaddress = jwt_decode(token);
+    // // Get user email
+    // emailaddress = emailaddress["emailaddress"];
+    const student_id = req.params.student_id;
+
+    const students_exists = await Student.findById(student_id);
+    const FolderName =
+      students_exists.firstname_ +
+      "_" +
+      students_exists.lastname_ +
+      "_" +
+      students_exists._id;
+    // FIXME: `path.join` should do the job for creating paths
+    const directoryPath =
+      BASE_PATH + PATH_DELIMITER + FolderName + PATH_DELIMITER;
+    const date_now = Date();
+    // Dont worry the category path not exist, because it is generated from the middleware movefile.js
+    const categoryPath = directoryPath + req.params.category + PATH_DELIMITER;
+    console.log(req.file.filename);
+    const category_name = req.params.category;
+    var uploadStatus_ = "";
+    var filePath_ = "";
+    var LastUploadDate_ = "";
+    uploadStatus_ = "uploadedDocs_." + category_name + ".uploadStatus_";
+    filePath_ = "uploadedDocs_." + category_name + ".filePath_";
+    LastUploadDate_ = "uploadedDocs_." + category_name + ".LastUploadDate_";
+    var obj = {};
+    obj[uploadStatus_] = "uploaded";
+    obj[filePath_] = categoryPath + req.file.filename;
+    obj[LastUploadDate_] = date_now;
+    await Student.findByIdAndUpdate(student_id, {
+      $set: obj,
+    });
+
+    await students_exists.save();
+    console.log("save success!");
+    return res.status(200).end();
+  } catch (err) {
+    console.log("error UploadPost: " + err);
+    return res.status(500).end(); // 500 Internal Server Error
+  }
+};
+
 exports.templatefiledownload = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)

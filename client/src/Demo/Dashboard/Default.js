@@ -10,6 +10,7 @@ import Studentlist from "./Studentlist";
 
 import {
   getStudents,
+  uploadforstudent,
   download,
   removeProgramFromStudent,
   getAgents,
@@ -113,6 +114,7 @@ class Dashboard extends React.Component {
       }
     );
   }
+
   onRejectFilefromstudent = (e, category, id) => {
     //id == student id
     e.preventDefault();

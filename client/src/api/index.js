@@ -95,7 +95,8 @@ export const templateDownload = (category) =>
 
 // upload
 export const upload = (id, data) => request.post(`/upload/${id}`, data);
-
+export const uploadforstudent = (id, student_id, data) =>
+  request.post(`/upload/${student_id}/${id}`, data);
 // transcript analyser
 export const transcriptanalyser = (category, id, data) =>
   request.post(`/transcriptanalyzer/${category}/${id}`, data);

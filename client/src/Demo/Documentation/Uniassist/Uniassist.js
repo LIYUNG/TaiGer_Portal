@@ -17,6 +17,7 @@ class Uniassist extends Component {
     isLoaded: false,
     articles: [],
     editFormOpen: false,
+    isAbleToSee: false,
   };
   componentDidMount() {
     getUniassistArticle().then(
@@ -28,6 +29,7 @@ class Uniassist extends Component {
         this.setState({
           articles: documents,
           isLoaded: true,
+          isAbleToSee: resp.isAbleToSee,
         });
       },
       (error) => {
@@ -168,10 +170,14 @@ class Uniassist extends Component {
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
               />
-              <ToggleableArticleForm
-                category="uniassist"
-                onFormSubmit={this.handleCreateFormSubmit}
-              />
+              {this.state.isAbleToSee ? (
+                <ToggleableArticleForm
+                  category="application"
+                  onFormSubmit={this.handleCreateFormSubmit}
+                />
+              ) : (
+                <></>
+              )}
             </Col>
           </Row>
         </Aux>

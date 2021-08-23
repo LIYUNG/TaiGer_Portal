@@ -73,6 +73,7 @@ const router = (app) => {
   app.post("/updateeditor/:student_id", auth, handlers.updateeditor);
   app.post("/editstudentprogram", auth, handlers.editstudentprogram);
   app.delete("/deleteprogram", auth, handlers.deleteprogram);
+  app.get("/upload", auth, file_handler.UploadPage);
   app.post(
     "/upload/:category",
     auth,

@@ -2,6 +2,7 @@ import request from "./request";
 
 // Student_API
 export const getStudents = () => request.get("/studentlist");
+export const getMyfiles = () => request.get("/upload");
 
 // del_prog_std_API
 export const removeProgramFromStudent = (programId, studentId) =>

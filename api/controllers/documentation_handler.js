@@ -4,6 +4,22 @@ const jwt_decode = require("jwt-decode");
 
 exports.ReadDocumentation = async (req, res) => {
   console.log(req.params.article_category)
+  const bearer = req.headers.authorization.split(" ");
+  const token = bearer[1];
+  // Extract user email info by token
+  var emailaddress = jwt_decode(token);
+  // Get user email
+  emailaddress = emailaddress["emailaddress"];
+  console.log(emailaddress);
+  const students_exists = await Student.findOne({
+    emailaddress_: emailaddress,
+  });
+  if (students_exists.role_ === "Guest") {
+    return res.send({
+      documents: [],
+      isAbleToSee: false,
+    });
+  }
   const Get_Documentation = await Documentation.find({
     Category_: req.params.article_category,
   });
@@ -12,6 +28,7 @@ exports.ReadDocumentation = async (req, res) => {
 
   return res.send({
     documents: Get_Documentation,
+    isAbleToSee: true,
   });
 };
 

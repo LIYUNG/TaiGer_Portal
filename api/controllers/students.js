@@ -28,8 +28,8 @@ exports.RegisterPost = async (req, res) => {
       lastname_: req.body.lastname,
       emailaddress_: req.body.emailaddress,
       password_: hashedpassword,
-      role_: "Student",
-      agent_: ["liyung.chen.leo@gmail.com", "taiger.davidl@gmail.com"],
+      role_: "Guest",
+      agent_: [],
     });
     console.log(student);
     await student.save();

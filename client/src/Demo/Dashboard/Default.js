@@ -23,7 +23,6 @@ import {
 
 class Dashboard extends React.Component {
   state = {
-    student_i: -1,
     role: "",
     error: null,
     modalShow: false,
@@ -167,7 +166,6 @@ class Dashboard extends React.Component {
     getAgents().then(
       (resp) => {
         const { data: agents } = resp.data; //get all agent
-        // const { students, student_i } = this.state;
         const { agent_ } = student;
         const updateAgentList = agents.reduce(
           (prev, { emailaddress_ }) => ({
@@ -187,7 +185,6 @@ class Dashboard extends React.Component {
     getEditors().then(
       (resp) => {
         const { data: editors } = resp.data;
-        // const { students, student_i } = this.state;
         const { editor_ } = student;
         const updateEditorList = editors.reduce(
           (prev, { emailaddress_ }) => ({

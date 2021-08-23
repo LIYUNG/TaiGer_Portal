@@ -172,8 +172,8 @@ class EditableStudent extends React.Component {
         <Card key={this.props.student._id}>
           <Card.Header>
             <Card.Title as="h5">
-                {this.props.student.firstname_} {this.props.student.lastname_}
-                Email: {this.props.student.emailaddress_}
+              {this.props.student.firstname_} {this.props.student.lastname_}
+              Email: {this.props.student.emailaddress_}
               <DropdownButton
                 size="sm"
                 title="Option"
@@ -287,6 +287,12 @@ class EditableStudent extends React.Component {
     } else if (this.props.role === "Student") {
       return (
         <Card>
+          <Card.Header>
+            <Card.Title as="h5">
+              {this.props.student.firstname_} {this.props.student.lastname_}
+              Email: {this.props.student.emailaddress_}
+            </Card.Title>
+          </Card.Header>
           <tr key={this.state.student._id}>
             <td>
               <img
@@ -328,6 +334,12 @@ class EditableStudent extends React.Component {
     } else {
       return (
         <Card>
+          <Card.Header>
+            <Card.Title as="h5">
+              {this.props.student.firstname_} {this.props.student.lastname_}
+              Email: {this.props.student.emailaddress_}
+            </Card.Title>
+          </Card.Header>
           <tr key={this.state.student._id}>
             <td>
               <img

@@ -4,6 +4,74 @@ const fs = require("fs");
 const spawn = require("child_process").spawn;
 const { BASE_PATH, PATH_DELIMITER, PYTHON_BASE_PATH } = require("../config");
 
+exports.UploadPage = async (req, res) => {
+  try {
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    // //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    // //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    console.log(emailaddress);
+    const students_exists = await Student.findOne({
+      emailaddress_: emailaddress,
+    }); //get email by token
+
+    if (students_exists.role_ === "Agent") {
+      console.log("Agent gets myself data");
+      res.send({
+        data: students_exists,
+        role: "Agent",
+      });
+    } else if (students_exists.role_ === "Admin") {
+      console.log("Admin gets myself data");
+      res.send({
+        data: students_exists,
+        role: "Admin",
+      });
+    } else if (students_exists.role_ === "Editor") {
+      console.log("Editor gets myself data");
+      res.send({
+        data: students_exists,
+        role: "Editor",
+      });
+    } else if (students_exists.role_ === "Student") {
+      console.log(
+        "Student " +
+          students_exists.firstname_ +
+          " " +
+          students_exists.lastname_ +
+          " get her/his personal dashboard"
+      );
+      res.send({
+        data: students_exists,
+        role: "Student",
+      });
+    } else {
+      console.log(
+        "Guest " +
+          students_exists.firstname_ +
+          " " +
+          students_exists.lastname_ +
+          " get her/his personal dashboard"
+      );
+      res.send({
+        data: students_exists,
+        role: "Guest",
+      });
+    }
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      // if the error thrown is because the JWT is unauthorized, return a 401 error
+      console.log(e);
+      console.log("error by studentlist");
+      return res.status(500).end(); // 500 Internal Server Error
+    }
+    console.log(err);
+    return res.status(500).end(); // 500 Internal Server Error
+  }
+};
+
 exports.UploadPost = async (req, res) => {
   try {
     console.log("UploadPost: Which file? " + req.file);

@@ -6,7 +6,7 @@ class UsersListSubpage extends React.Component {
     data: [],
   };
   render() {
-    let user_roles = ["Student", "Editor", "Agent", "Admin"];
+    let user_roles = ["Guest", "Student", "Editor", "Agent", "Admin"];
     return (
       <Modal
         show={this.props.show}

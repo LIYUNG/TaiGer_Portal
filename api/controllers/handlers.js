@@ -469,7 +469,7 @@ exports.studentlist = async (req, res) => {
         data: student_all,
         role: "Editor",
       });
-    } else {
+    } else if (students_exists.role_ === "Student") {
       console.log(
         "Student " +
           students_exists.firstname_ +
@@ -480,6 +480,18 @@ exports.studentlist = async (req, res) => {
       res.send({
         data: [students_exists],
         role: "Student",
+      });
+    } else {
+      console.log(
+        "Guest " +
+          students_exists.firstname_ +
+          " " +
+          students_exists.lastname_ +
+          " get her/his personal dashboard"
+      );
+      res.send({
+        data: [students_exists],
+        role: "Guest",
       });
     }
   } catch (err) {

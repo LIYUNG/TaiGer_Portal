@@ -5,8 +5,25 @@ import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
-import { upload, templateDownload } from "../../api";
-
+import {
+  getMyfiles,
+  deleteFile,
+  upload,
+  download,
+  templateDownload,
+} from "../../api";
+import EditUploadFilesSubpage from "./EditUploadFilesSubpage";
+// import {
+//   ,
+//   removeProgramFromStudent,
+//   getAgents,
+//   updateAgents,
+//   getEditors,
+//   updateEditors,
+//   acceptDocument,
+//   rejectDocument,
+//   ,
+// } from "../../api";
 class UploadPage extends React.Component {
   constructor(props) {
     super(props);
@@ -16,19 +33,54 @@ class UploadPage extends React.Component {
       error: null,
       file: "",
       isLoaded: false,
+      student: [],
+      role: "",
     };
   }
-
   componentDidMount() {
-    this.setState({ file: "" });
+    getMyfiles().then(
+      (resp) => {
+        const { data: student, role: role } = resp.data;
+        console.log("role: " + role);
+        this.setState({
+          file: "",
+          isLoaded: true,
+          student: student,
+          role: role,
+        });
+      },
+      (error) => {
+        console.log(error);
+        console.log(": " + error);
+        this.setState({
+          isLoaded: true,
+          error: true,
+        });
+      }
+    );
   }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
-      this.setState({
-        isLoaded: true,
-      });
+      getMyfiles().then(
+        (resp) => {
+          const { data: student, role: role } = resp.data;
+          console.log(resp.data.data);
+          this.setState({
+            isLoaded: true,
+            student: student,
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error: true,
+          });
+        }
+      );
     }
   }
+
   onFileChange(e) {
     this.setState({
       file: e.target.files[0],
@@ -41,13 +93,13 @@ class UploadPage extends React.Component {
     upload(id, formData).then(
       (res) => {
         if (res.status === 200) {
-          alert("Upload success");
+          // alert("Upload success");
           this.setState({
             file: "",
             isLoaded: false,
           });
         } else {
-          alert("Upload failed");
+          // alert("Upload failed");
           this.setState({
             file: "",
             isLoaded: false,
@@ -83,7 +135,60 @@ class UploadPage extends React.Component {
 
     return match ? match[1] : null;
   }
+
+  onDeleteFilefromstudent = (e, category, id) => {
+    // e.preventDefault();
+    deleteFile(category, id).then(
+      (resp) => {},
+      (error) => {}
+    );
+  };
+
+  onDownloadFilefromstudent(e, category, id) {
+    e.preventDefault();
+    download(category, id).then(
+      (resp) => {
+        const actualFileName =
+          resp.headers["content-disposition"].split('"')[1];
+        const { data: blob } = resp;
+        if (blob.size === 0) return;
+
+        var filetype = actualFileName.split("."); //split file name
+        filetype = filetype.pop(); //get the file type
+
+        if (filetype === "pdf") {
+          console.log(blob);
+          const url = window.URL.createObjectURL(
+            new Blob([blob], { type: "application/pdf" })
+          );
+
+          //Open the URL on new Window
+          console.log(url);
+          window.open(url); //TODO: having a reasonable file name, pdf viewer
+        } else {
+          //if not pdf, download instead.
+
+          const url = window.URL.createObjectURL(new Blob([blob]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", actualFileName);
+          // Append to html link element page
+          document.body.appendChild(link);
+          // Start download
+          link.click();
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+        }
+      },
+      (error) => {
+        alert("The file is not available.");
+      }
+    );
+  }
+
   // FIXME: id is template
+  // This is download template file.
   onDownloadFile(e, category) {
     e.preventDefault();
     const auth = localStorage.getItem("token");
@@ -138,165 +243,165 @@ class UploadPage extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      return (
-        <Aux>
-          <Row>
-            <Col>
-              <Card>
-                <Card.Header>
-                  <Card.Title as="h5">
-                    Upload Your University Documets
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <h5>Bachelor's Certificate</h5>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="bachelorCertificate_"
-                    checkboxid="bachelorCertificateCheckbox"
-                  />
-                  <h5 className="mt-5">Bachelor's Transcript</h5>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="bachelorTranscript_"
-                    checkboxid="bachelorTranscriptCheckbox"
-                  />
-                </Card.Body>
-              </Card>
-              <Card>
-                <Card.Header>
-                  <Card.Title as="h5">
-                    Upload Your Language Certificate
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <h6>English: IELTS/TOEFL</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="EnglischCertificate_"
-                    checkboxid="englishCertiifcateCheckbox"
-                  />
-                  <h6 className="mt-5">German: TestDaF/DSH/Goethe B2</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="GermanCertificate_"
-                    checkboxid="germanCertiifcateCheckbox"
-                  />
-                </Card.Body>
-              </Card>
-              <Card>
-                <Card.Header>
-                  <Card.Title as="h5">
-                    Upload Your High School Documets
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <h5>High School Diploma</h5>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="highSchoolDiploma_"
-                    checkboxid="highschoolDiplomaCheckbox"
-                  />
-                  <h5 className="mt-5">High School Transcript</h5>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="highSchoolTranscript_"
-                    checkboxid="highschoolTranscriptCheckbox"
-                  />
-                  <h5 className="mt-5">University Entrance Examination</h5>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="universityEntranceExamination_"
-                    checkboxid="universityEntranceExaminationCheckbox"
-                  />
-                </Card.Body>
-              </Card>
-              <Card>
-                <Card.Header>
-                  <Card.Title as="h5">Others</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <h6>CV</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="CV_"
-                    checkboxid="CVCheckbox"
-                  />
-                  <h6 className="mt-5">Recommendation Letter 1</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="RL_"
-                    checkboxid="RLCheckbox"
-                  />
-                  <h6 className="mt-5">Recommendation Letter 2</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="RL2_"
-                    checkboxid="RL2Checkbox"
-                  />
-                  <h6 className="mt-5">ECTS-Credits Conversion</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="ECTS_conversion_"
-                    checkboxid="ECTS_conversionCheckbox"
-                  />
-                  <h6 className="mt-5">Course description</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="CourseDescription_"
-                    checkboxid="CourseDescriptionCheckbox"
-                  />
-                  <h6 className="mt-5">Passport</h6>
-                  <hr />
-                  <FilesUploadComponent
-                    onFileChange={this.onFileChange}
-                    submitFile={this.submitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    id="Passport_"
-                    checkboxid="PassportCheckbox"
-                  />
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Aux>
-      );
+      if (this.state.role !== "Guest") {
+        return (
+          <Aux>
+            <Row>
+              <Col>
+                <Card>
+                  {/* <Card.Title> */}
+                    <Card.Header as="h5">
+                      {/* <Card.Title as="h5"> */}
+                        Upload Your Application Documets
+                      {/* </Card.Title> */}
+                    </Card.Header>
+                  {/* </Card.Title> */}
+                  {/* <Card.Body> */}
+                    <EditUploadFilesSubpage
+                      student={this.state.student}
+                      submitFile={this.submitFile}
+                      onFileChange={this.onFileChange}
+                      documentslist={window.documentlist}
+                      onDownloadFilefromstudent={this.onDownloadFile}
+                      onRejectFilefromstudent={this.onRejectFilefromstudent}
+                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                    />
+                    {/* <h5>Bachelor's Certificate</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="bachelorCertificate_"
+                      checkboxid="bachelorCertificateCheckbox"
+                    />
+                    <h5>Bachelor's Transcript</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="bachelorTranscript_"
+                      checkboxid="bachelorTranscriptCheckbox"
+                    />
+                    <h5>English: IELTS/TOEFL</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="EnglischCertificate_"
+                      checkboxid="englishCertiifcateCheckbox"
+                    />
+                    <h5>German: TestDaF/DSH/Goethe B2</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="GermanCertificate_"
+                      checkboxid="germanCertiifcateCheckbox"
+                    />
+                    <h5>High School Diploma</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="highSchoolDiploma_"
+                      checkboxid="highschoolDiplomaCheckbox"
+                    />
+                    <h5>High School Transcript</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="highSchoolTranscript_"
+                      checkboxid="highschoolTranscriptCheckbox"
+                    />
+                    <h5>University Entrance Examination</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="universityEntranceExamination_"
+                      checkboxid="universityEntranceExaminationCheckbox"
+                    />
+                    <h5>CV</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="CV_"
+                      checkboxid="CVCheckbox"
+                    />
+                    <h5>Recommendation Letter 1</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="RL_"
+                      checkboxid="RLCheckbox"
+                    />
+                    <h5>Recommendation Letter 2</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="RL2_"
+                      checkboxid="RL2Checkbox"
+                    />
+                    <h5>ECTS-Credits Conversion</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="ECTS_conversion_"
+                      checkboxid="ECTS_conversionCheckbox"
+                    />
+                    <h5>Course description</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="CourseDescription_"
+                      checkboxid="CourseDescriptionCheckbox"
+                    />
+                    <h5>Passport</h5>
+                    <hr />
+                    <FilesUploadComponent
+                      onFileChange={this.onFileChange}
+                      submitFile={this.submitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      id="Passport_"
+                      checkboxid="PassportCheckbox"
+                    /> */}
+                  {/* </Card.Body> */}
+                </Card>
+              </Col>
+            </Row>
+          </Aux>
+        );
+      } else {
+        return (
+          <Aux>
+            <Row>
+              <Col>
+                <div> This is for Premium only. Please contact our sales! </div>
+              </Col>
+            </Row>
+          </Aux>
+        );
+      }
     }
   }
 }

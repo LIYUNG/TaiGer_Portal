@@ -17,6 +17,7 @@ class Certification extends Component {
     isLoaded: false,
     articles: [],
     editFormOpen: false,
+    isAbleToSee: false,
   };
   componentDidMount() {
     getCertificationArticle().then(
@@ -28,6 +29,7 @@ class Certification extends Component {
         this.setState({
           articles: documents,
           isLoaded: true,
+          isAbleToSee: resp.isAbleToSee,
         });
       },
       (error) => {
@@ -167,10 +169,14 @@ class Certification extends Component {
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
               />
-              <ToggleableArticleForm
-                category="certification"
-                onFormSubmit={this.handleCreateFormSubmit}
-              />
+              {this.state.isAbleToSee ? (
+                <ToggleableArticleForm
+                  category="application"
+                  onFormSubmit={this.handleCreateFormSubmit}
+                />
+              ) : (
+                <></>
+              )}
             </Col>
           </Row>
         </Aux>

@@ -18,6 +18,7 @@ class Application extends Component {
     isLoaded: false,
     articles: [],
     editFormOpen: false,
+    isAbleToSee: false,
   };
   componentDidMount() {
     console.log("get article");
@@ -27,10 +28,14 @@ class Application extends Component {
         const {
           data: { documents },
         } = resp;
+        // const {
+        //   isAbleToSee: { isAbleToSee },
+        // } = resp;
         console.log(JSON.stringify(documents));
         this.setState({
           articles: documents,
           isLoaded: true,
+          isAbleToSee: resp.isAbleToSee,
         });
       },
       (error) => {
@@ -163,10 +168,13 @@ class Application extends Component {
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
               />
+              {this.state.isAbleToSee? (
               <ToggleableArticleForm
                 category="application"
                 onFormSubmit={this.handleCreateFormSubmit}
-              />
+              />):(
+                <></>
+              )}
             </Col>
           </Row>
         </Aux>

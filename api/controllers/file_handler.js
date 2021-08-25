@@ -398,7 +398,7 @@ exports.Upload_Transcript_XLSX = async (req, res) => {
       Transcript_Path,
       programgroup_arg,
     ]);
-    generated_filename = "generated_" + req.file.filename;
+    generated_filename = "analyzed_" + req.file.filename;
     flag = -1;
     python.stdout.on("data", function (data) {
       console.log(`stdout: ${data}`);

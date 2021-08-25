@@ -43,6 +43,11 @@ def SuggestionCourseAlgorithm(df_category_data, transcript_sorted_group_map, df_
                 if keyword != '-' and dif != '-':
                     df_category_courses_sugesstion_data[idx] = df_category_courses_sugesstion_data[idx][
                         ~(df_category_courses_sugesstion_data[idx]['建議修課'].str.contains(keyword) & df_category_courses_sugesstion_data[idx]['建議修課'].str.contains(dif))]
+                elif keyword != '-' and dif == '-': # if 修課課名 like 流體力學 (沒分 一或二)：要從建議修課的"一" 拿掉
+                    df_category_courses_sugesstion_data[idx] = df_category_courses_sugesstion_data[idx][
+                        ~(df_category_courses_sugesstion_data[idx]['建議修課'].str.contains(keyword) & df_category_courses_sugesstion_data[idx]['建議修課'].str.contains('一'))]
+                    df_category_courses_sugesstion_data[idx] = df_category_courses_sugesstion_data[idx][
+                        ~(df_category_courses_sugesstion_data[idx]['建議修課'].str.contains(course_name))]  # also remove the same course name from database
                 else:
                     df_category_courses_sugesstion_data[idx] = df_category_courses_sugesstion_data[idx][
                         ~(df_category_courses_sugesstion_data[idx]['建議修課'].str.contains(course_name))]  # also remove the same course name from database

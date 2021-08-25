@@ -45,6 +45,8 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
         'Program_Category': 'Strömungsmechanik I', 'Required_CP': 6}
     PROG_SPEC_MATH_PARAM = {
         'Program_Category': 'Höhere Mathematik', 'Required_CP': 17}
+    PROG_SPEC_FAHRZEUGTECHNIK_PARAM = {
+        'Program_Category': 'Fahrzeugtechnik', 'Required_CP': 22}
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_CP': 0}
 
@@ -58,6 +60,7 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
         PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
         PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_FAHRZEUGTECHNIK_PARAM, # 汽車
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -65,9 +68,10 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
         PROG_SPEC_MATH_PARAM,  # 數學
-        PROG_SPEC_MECHANIK_PARAM,  # 物理
-        PROG_SPEC_MECHANIK_PARAM,  # 物理實驗
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
         PROG_SPEC_MASCHINENGESTALTUNG_PARAM,  # 機械設計
+        PROG_SPEC_MASCHINENGESTALTUNG_PARAM,  # 機構
         PROG_SPEC_THERMODYNAMIK_PARAM,  # 熱力學
         PROG_SPEC_WARMSTOFFUBERTRAGUNG_PARAM,  # 熱 物質傳導
         PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
@@ -78,6 +82,81 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
         PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_FAHRZEUGTECHNIK_PARAM,  # 車輛
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+# FPSO: https://www.tum.de/fileadmin/w00bfo/www/Studium/Studienangebot/Lesbare_Fassung/Master/Maschinenwesen_MA_LB_3._AS_28052021.pdf
+def TUM_MW(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUM_MW'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Höhere Mathematik 1,2,3', 'Required_CP': 19}
+    PROG_SPEC_MECHANIK_PARAM = {
+        'Program_Category': 'Technische Mechanik 1,2,3', 'Required_CP': 19}
+    PROG_SPEC_MASCHINENELEMENTE_PARAM = {
+        'Program_Category': 'Maschinenelemente 1,2', 'Required_CP': 15}
+    PROG_SPEC_WERKSTOFFKUNDE_PARAM = {
+        'Program_Category': 'Werkstoffkunde 1,2', 'Required_CP': 10}
+    PROG_SPEC_THERMODYNAMIK_PARAM = {
+        'Program_Category': 'Thermodynamik', 'Required_CP': 6}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_CP': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_MECHANIK_PARAM,  # 力學
+        PROG_SPEC_MASCHINENELEMENTE_PARAM,  # 機械
+        PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
+        PROG_SPEC_THERMODYNAMIK_PARAM,  # 熱力學
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
+        PROG_SPEC_MASCHINENELEMENTE_PARAM,  # 機械設計
+        PROG_SPEC_MASCHINENELEMENTE_PARAM,  # 機構
+        PROG_SPEC_THERMODYNAMIK_PARAM,  # 熱力學
+        PROG_SPEC_OTHERS,  # 熱 物質傳導
+        PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
+        PROG_SPEC_OTHERS,  # 控制工程
+        PROG_SPEC_OTHERS,  # 流體
+        PROG_SPEC_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_OTHERS,  # 基礎電機電子
+        PROG_SPEC_OTHERS,  # 製造
+        PROG_SPEC_OTHERS,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_OTHERS,  # 車輛
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -158,9 +237,10 @@ def TUHH_MECHATRONICS(transcript_sorted_group_map, df_transcript_array, df_categ
     program_category_map = [
         PROG_SPEC_CALCULUS_PARAM,  # 微積分
         PROG_SPEC_MATH_PARAM,  # 數學
-        PROG_SPEC_MECHANICS_PARAM,  # 物理
-        PROG_SPEC_MECHANICS_PARAM,  # 物理實驗
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
         PROG_SPEC_MECHANICAL_DESIGN_PARAM,  # 機械設計
+        PROG_SPEC_MECHANICAL_DESIGN_PARAM,  # 機構
         PROG_SPEC_THERMODYNAMICS_PARAM,  # 熱力學
         PROG_SPEC_OTHERS,  # 熱 物質傳導
         PROG_SPEC_MATERIAL_PROPERTIES_TESTING_PARAM,  # 材料
@@ -171,6 +251,7 @@ def TUHH_MECHATRONICS(transcript_sorted_group_map, df_transcript_array, df_categ
         PROG_SPEC_MANUFACTURING_PARAM,  # 製造
         PROG_SPEC_COMPUTER_SCIENCE_PARAM,  # 計算機概論
         PROG_SPEC_MECHATRONICS_PARAM,  # 機電
+        PROG_SPEC_OTHERS,  # 車輛
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -231,6 +312,7 @@ def UNI_HANNOVER_INTER_MECHATRONICS(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
         PROG_SPEC_MECHANICS_PARAM,  # 機械設計
+        PROG_SPEC_MECHANICS_PARAM,  # 機構
         PROG_SPEC_MECHANICS_PARAM,  # 熱力學
         PROG_SPEC_OTHERS,  # 熱 物質傳導
         PROG_SPEC_OTHERS,  # 材料
@@ -241,6 +323,7 @@ def UNI_HANNOVER_INTER_MECHATRONICS(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
         PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_OTHERS,  # 車輛
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -259,8 +342,8 @@ def UNI_HANNOVER_INTER_MECHATRONICS(transcript_sorted_group_map, df_transcript_a
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
-def TU_DORTMUND_MASTER_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    program_name = 'TU_DORTMUND_MASTER_MANUFAC_TECH'
+def TU_DORTMUND_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TU_DORTMUND_MANUFAC_TECH'
     print("Create " + program_name + " sheet")
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
@@ -298,6 +381,7 @@ def TU_DORTMUND_MASTER_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
         PROG_SPEC_MANUFACTURE_PARAM,  # 機械設計
+        PROG_SPEC_MANUFACTURE_PARAM,  # 機構
         PROG_SPEC_OTHERS,  # 熱力學
         PROG_SPEC_OTHERS,  # 熱 物質傳導
         PROG_SPEC_MANUFACTURE_PARAM,  # 材料
@@ -308,6 +392,7 @@ def TU_DORTMUND_MASTER_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_MANUFACTURE_PARAM,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
         PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_OTHERS,  # 車輛
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -325,7 +410,83 @@ def TU_DORTMUND_MASTER_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_a
     WriteToExcel(writer, program_name, program_category, program_category_map,
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
-program_sort_function = [RWTH_AUTO, TUHH_MECHATRONICS, UNI_HANNOVER_INTER_MECHATRONICS, TU_DORTMUND_MASTER_MANUFAC_TECH]
+
+def TU_CHEMNITZ_AD_MANUFAC(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TU_CHEMNITZ_AD_MANUFAC'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_MATH_PARAM = {
+    'Program_Category': 'Mathematics', 'Required_CP': 18}
+    PROG_SPEC_ELECTRICAL_ENG_PARAM = {
+        'Program_Category': 'Electricl Engineering', 'Required_CP': 12}
+    PROG_SPEC_MANUFACTURE_PARAM = {
+        'Program_Category': 'Manufacturing Subjects', 'Required_CP': 20}  # materials engineering, production engineering, theory of de­sign, and/or metallurgy and feedback control
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_CP': 0}
+    #TODO:
+# 1. special mathematical methods of engineering, totalling at least 18 ECTS and including the topics of Fourier transforms, regression calculation, probability and mathematical statistics,
+# 2. scientific and engineering data processing, totalling at least 12 ECTS and including the topics CAD, CAS, numerical simulation and data acquisition as well as multiphysics simulation and practical experience,
+# 3. metrology and control engineering, totalling at least 8 ECTS and including the topics of sensors, actuators and digital methods of manufacturing,
+# 4. new materials for engineering, totalling at least 8 LP and including the topics of polymers, metals, composites, matrix systems and functional properties,
+# 5. in-depth theoretical basics of engineering, in a total of at least 12 ECTS and including the subjects of engineering mechanics, design, manufacturing and fluid dynamics,
+# 6. resource-efficient manufacturing concepts, totalling at least 8 ECTS and including the topics of technical and natural cycles and networks, system optimization and energy concepts,
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機
+        PROG_SPEC_MANUFACTURE_PARAM,  # 製造工程
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
+        PROG_SPEC_MANUFACTURE_PARAM,  # 機械設計
+        PROG_SPEC_MANUFACTURE_PARAM,  # 機構
+        PROG_SPEC_OTHERS,  # 熱力學
+        PROG_SPEC_OTHERS,  # 熱 物質傳導
+        PROG_SPEC_MANUFACTURE_PARAM,  # 材料
+        PROG_SPEC_MANUFACTURE_PARAM,  # 控制工程
+        PROG_SPEC_OTHERS,  # 流體
+        PROG_SPEC_OTHERS,  # 力學,機械
+        PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機電子
+        PROG_SPEC_MANUFACTURE_PARAM,  # 製造
+        PROG_SPEC_OTHERS,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_OTHERS,  # 車輛
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
+program_sort_function = [RWTH_AUTO, TUM_MW, TUHH_MECHATRONICS,
+                         UNI_HANNOVER_INTER_MECHATRONICS, TU_DORTMUND_MANUFAC_TECH, TU_CHEMNITZ_AD_MANUFAC]
 
 
 def ME_sorter(program_idx, file_path):
@@ -372,6 +533,7 @@ def ME_sorter(program_idx, file_path):
         '物理': [ME_PHYSICS_KEY_WORDS, ME_PHYSICS_ANTI_KEY_WORDS, ['一', '二']],
         '物理實驗': [ME_PHYSICS_EXP_KEY_WORDS, ME_PHYSICS_EXP_ANTI_KEY_WORDS, ['一', '二']],
         '機械設計': [ME_MASCHINENGESTALTUNG_KEY_WORDS, ME_MASCHINENGESTALTUNG_ANTI_KEY_WORDS, ['一', '二']],
+        '機構': [ME_MASCHINEN_ELEMENTE_KEY_WORDS, ME_MASCHINEN_ELEMENTE_ANTI_KEY_WORDS, ['一', '二']],
         '熱力學': [ME_THERMODYN_KEY_WORDS, ME_THERMODYN_ANTI_KEY_WORDS, ['一', '二']],
         '熱傳導': [ME_WARMTRANSPORT_KEY_WORDS, ME_WARMTRANSPORT_ANTI_KEY_WORDS, ['一', '二']],
         '材料': [ME_WERKSTOFFKUNDE_KEY_WORDS, ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS, ['一', '二']],
@@ -382,6 +544,7 @@ def ME_sorter(program_idx, file_path):
         '製造工程': [ME_MANUFACTURE_ENG_KEY_WORDS, ME_MANUFACTURE_ENG_ANTI_KEY_WORDS],
         '計算機概論': [ME_COMPUTER_SCIENCE_KEY_WORDS, ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS],
         '機電': [ME_MECHATRONICS_KEY_WORDS, ME_MECHATRONICS_ANTI_KEY_WORDS],
+        '車輛': [ME_VEHICLE_KEY_WORDS, ME_VEHICLE_ANTI_KEY_WORDS],
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     suggestion_courses_sorted_group_map = {
@@ -400,6 +563,7 @@ def ME_sorter(program_idx, file_path):
         '製造工程': [[], ME_MANUFACTURE_ENG_ANTI_KEY_WORDS],
         '計算機概論': [[], ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS],
         '機電': [[], ME_MECHATRONICS_ANTI_KEY_WORDS],
+        '車輛': [[], ME_VEHICLE_ANTI_KEY_WORDS],
         '其他': [[], USELESS_COURSES_ANTI_KEY_WORDS], }
 
     category_data = []

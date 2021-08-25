@@ -55,7 +55,7 @@ def Naming_Convention(df_course):
 
 
 # mapping courses to target programs category
-def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp):
+def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp, isSuggestionCourse):
     for idx, trans_cat in enumerate(df_transcript_array_temp):
         # append sorted courses to program's category
         categ = program_category_map[idx]['Program_Category']
@@ -65,9 +65,14 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
         idx_temp = -1
         for idx2, cat in enumerate(df_PROG_SPEC_CATES):
             if categ == cat.columns[0]:
-                print(cat.columns[0])
+                # print(cat.columns[0])
                 idx_temp = idx2
                 break
+        # remove the redundant suggestion courses mapping to "Others" because those categories in Others are not advanced courses.
+        if isSuggestionCourse:
+            if idx != len(df_transcript_array_temp) - 1 and idx_temp == len(df_PROG_SPEC_CATES) - 1:
+                continue
+
         df_PROG_SPEC_CATES[idx_temp] = df_PROG_SPEC_CATES[idx_temp].append(
             trans_cat, ignore_index=True)
     return df_PROG_SPEC_CATES
@@ -137,21 +142,21 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
 
     # Courses: mapping the students' courses to program-specific category
     df_PROG_SPEC_CATES = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp)
+        df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp, False)
 
     # Suggestion courses: mapping the sugesstion courses to program-specific category
     df_PROG_SPEC_CATES_COURSES_SUGGESTION = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES_COURSES_SUGGESTION, program_category_map, transcript_sorted_group_list, df_category_courses_sugesstion_data_temp)
+        df_PROG_SPEC_CATES_COURSES_SUGGESTION, program_category_map, transcript_sorted_group_list, df_category_courses_sugesstion_data_temp, True)
 
     # append 總學分 for each program category
     df_PROG_SPEC_CATES = AppendCreditsCount(
         df_PROG_SPEC_CATES, program_category)
 
     # drop the Others, 建議修課
-    for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
-        if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
-            df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
-                columns=['Others', '建議修課'], inplace=True)
+    # for idx, trans_cat in enumerate(df_PROG_SPEC_CATES_COURSES_SUGGESTION):
+    #     if(idx == len(df_PROG_SPEC_CATES_COURSES_SUGGESTION) - 1):
+    #         df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].drop(
+    #             columns=['Others', '建議修課'], inplace=True)
 
     # Write to Excel
     start_row = 0
@@ -167,7 +172,8 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
     workbook = writer.book
     worksheet = writer.sheets[program_name]
     red_out_failed_subject(workbook, worksheet, 1, start_row)
-    red_out_insufficient_credit(workbook, worksheet)
+    # red_out_insufficient_credit(workbook, worksheet)
+
     # print("writer")
     # print(writer['A1'])
     # print("worksheet")

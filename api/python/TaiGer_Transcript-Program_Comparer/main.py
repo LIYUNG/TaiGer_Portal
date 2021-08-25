@@ -29,6 +29,9 @@ if __name__ == "__main__":
     elif sys.argv[2] == 'me':
         program_selection_path = file_path + '/ME_Programs.xlsx'
         print(file_path)
+    elif sys.argv[2] == 'mgm':
+        program_selection_path = file_path + '/MGM_Programs.xlsx'
+        print(file_path)
     else:
         print("Please specify program group: cs ee me")
         sys.exit()

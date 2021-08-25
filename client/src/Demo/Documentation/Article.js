@@ -37,15 +37,20 @@ class Article extends Component {
     return (
       <Card title={this.props.title} key={this.props.id}>
         <div>{text2}</div>
-
         <div>
           <p>Last Update: {this.props.lastupdate}</p>
-          <span className="right">
-            <AiFillEdit onClick={this.props.onEditClick} />
-          </span>
-          <span className="right">
-            <BsTrash onClick={this.handleTrashClick} />
-          </span>
+          {this.props.role === "Admin" || this.props.role === "Agent" ? (
+            <>
+              <span className="right">
+                <AiFillEdit onClick={this.props.onEditClick} />
+              </span>
+              <span className="right">
+                <BsTrash onClick={this.handleTrashClick} />
+              </span>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </Card>
     );

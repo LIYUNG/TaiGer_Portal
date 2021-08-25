@@ -17,7 +17,7 @@ exports.ReadDocumentation = async (req, res) => {
   if (students_exists.role_ === "Guest") {
     return res.send({
       documents: [],
-      isAbleToSee: false,
+      role: students_exists.role_,
     });
   }
   const Get_Documentation = await Documentation.find({
@@ -28,7 +28,7 @@ exports.ReadDocumentation = async (req, res) => {
 
   return res.send({
     documents: Get_Documentation,
-    isAbleToSee: true,
+    role: students_exists.role_,
   });
 };
 

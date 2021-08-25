@@ -49,6 +49,7 @@ class EditableArticle extends Component {
           onEditClick={this.handleEditClick}
           onTrashClick={this.props.onTrashClick}
           lastupdate={this.props.lastupdate}
+          role={this.props.role}
         />
       );
     }

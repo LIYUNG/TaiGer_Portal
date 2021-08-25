@@ -6,7 +6,7 @@ const jwt_decode = require("jwt-decode");
 const bcrypt = require("bcryptjs");
 // var nodemailer = require('nodemailer');
 
-const { JWT_KEY, JWT_EXPIRY_SECONDS } = require('../config')
+const { JWT_KEY, JWT_EXPIRY_SECONDS } = require("../config");
 
 // var transporter = nodemailer.createTransport({
 //   service: 'gmail',
@@ -172,9 +172,9 @@ exports.userslist = async (req, res) => {
   try {
     const bearer = req.headers.authorization.split(" ");
     const token = bearer[1];
-    // //Extract user email info by token
+    //Extract user email info by token
     var emailaddress = jwt_decode(token);
-    // //Get user email
+    //Get user email
     emailaddress = emailaddress["emailaddress"];
     console.log(emailaddress);
     const user_me = await Student.findOne({
@@ -184,16 +184,16 @@ exports.userslist = async (req, res) => {
       emailaddress_: { $ne: emailaddress }, // get all users excluding the current user.
     });
     console.log(" user:" + user_me.role_);
-    // Access all users
-    if (user_me.role_ === "Agent" || user_me.role_ === "Admin") {
+    // Only Admin can access user
+    if (user_me.role_ === "Admin") {
       res.send({
         data: user_exists, //TODO: Check that no credential data sent
-        role: "Agent",
+        role: "Admin",
       });
     } else {
       res.send({
         data: {},
-        role: "Student",
+        role: user_me.role_,
       });
     }
   } catch (err) {
@@ -308,23 +308,36 @@ exports.editprogram = async (req, res) => {
 
 exports.edituser = async (req, res) => {
   try {
-    // TODO: only Admin/Agent can access this API
-    console.log("edit req.params.id = " + req.params.id);
-    const user_id = req.params.id;
-    let user = await Student.findById(user_id);
-    console.log("user: " + user);
+    // Only Admin can access this API
     const bearer = req.headers.authorization.split(" ");
     const token = bearer[1];
-    // TODO update the program
-    user.firstname_ = req.body.firstname_;
-    user.lastname_ = req.body.lastname_;
-    user.emailaddress_ = req.body.emailaddress_;
-    user.role_ = req.body.role_;
-    // user.LastUpdate_ = date_now;
-    await user.save();
-    return res.send({
-      data: user, //TODO: Check that no credential data sent
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
     });
+    if (user_me.role_ === "Admin") {
+      console.log("edit req.params.id = " + req.params.id);
+      const user_id = req.params.id;
+      let user = await Student.findById(user_id);
+      console.log("user: " + user);
+      const bearer = req.headers.authorization.split(" ");
+      const token = bearer[1];
+      // Update the user
+      user.firstname_ = req.body.firstname_;
+      user.lastname_ = req.body.lastname_;
+      user.emailaddress_ = req.body.emailaddress_;
+      user.role_ = req.body.role_;
+      // user.LastUpdate_ = date_now;
+      await user.save();
+      return res.send({
+        data: user, //TODO: Check that no credential data sent
+      });
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     console.log("error by edit user: " + err);
     return res.status(500).end(); // 500 Internal Server Error
@@ -333,13 +346,31 @@ exports.edituser = async (req, res) => {
 
 exports.deleteprogram = async (req, res) => {
   try {
-    // TODO: only Admin / Agent can delete.
-    console.log("delete " + req.params.program_id);
-    const program_id = req.params.program_id;
-    await Program.findByIdAndDelete(program_id);
-    res.send({
-      data: "success",
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
     });
+    if (user_me.role_ === "Admin" || user_me.role_ === "Agent") {
+      console.log("delete " + req.params.program_id);
+      const program_id = req.params.program_id;
+      await Program.findByIdAndDelete(program_id);
+      res.send({
+        data: "success",
+      });
+    } else {
+      console.log(
+        "delete " +
+          req.params.program_id +
+          " failed: " +
+          "only Admin and Agent can delete program"
+      );
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     console.log("error by delete program");
     console.log(err);
@@ -349,13 +380,25 @@ exports.deleteprogram = async (req, res) => {
 
 exports.deleteuser = async (req, res) => {
   try {
-    // TODO: only Admin can delete.
-    console.log("delete " + req.params.user_id);
-    const user_id = req.params.user_id;
-    await Student.findByIdAndDelete(user_id);
-    res.send({
-      data: "success",
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
     });
+    if (user_me.role_ === "Admin") {
+      console.log(user_me.role_ + " delete " + req.params.user_id);
+      const user_id = req.params.user_id;
+      await Student.findByIdAndDelete(user_id);
+      res.send({
+        data: "success",
+      });
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     console.log("error by delete program");
     console.log(err);
@@ -365,21 +408,34 @@ exports.deleteuser = async (req, res) => {
 
 exports.changeuserrole = async (req, res) => {
   try {
-    // TODO: only Admin can delete.
-    console.log("edit req.body = " + req.body);
-    console.log("edit req.body.user_id = " + req.body._id);
-    console.log("edit req.body.user_role = " + req.body.role_);
-    const user_id = req.body._id;
-    const user_role = req.body.role_;
-    var student1 = await Student.findById(user_id);
-    // TODO: update student1s user role_
-    console.log("student1: " + student1);
-    student1.role_ = user_role;
-    await student1.save();
-    console.log("success: " + student1);
-    res.send({
-      data: "success",
+    // Only Admin can change user role.
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
     });
+    if (user_me.role_ === "Admin") {
+      console.log("edit req.body = " + req.body);
+      console.log("edit req.body.user_id = " + req.body._id);
+      console.log("edit req.body.user_role = " + req.body.role_);
+      const user_id = req.body._id;
+      const user_role = req.body.role_;
+      var student1 = await Student.findById(user_id);
+      console.log("student1: " + student1);
+      // Update student1s user role_
+      student1.role_ = user_role;
+      await student1.save();
+      console.log("success: " + student1);
+      res.send({
+        data: "success",
+      });
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     console.log("error by assigning user role");
     console.log(err);
@@ -389,28 +445,39 @@ exports.changeuserrole = async (req, res) => {
 
 exports.assignprogramtostudent = async (req, res) => {
   try {
-    // TODO: only Admin can assign.
-    console.log("edit req.body = " + req.body);
-    console.log("edit req.body.program_id = " + req.body.program_id);
-    const program_id = req.body.program_id;
-    let program = await Program.findById(program_id);
-    console.log("edit req.body.student_id = " + req.body.student_id);
-    const student_id = req.body.student_id;
-    var student1 = await Student.findById(student_id);
-    const exist_program = await student1.applying_program_.id(program_id);
-    // TODO: remove subdocument/subarray
-    // const exist_program = await student1.applying_program_.id(program_id).remove()
-    if (exist_program === null) {
-      student1.applying_program_.push(program);
-      student1.save();
-      console.log("success: " + program);
-      res.send({
-        data: "success",
-      });
+    // Only Admin and Agent can assign.
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
+    });
+    if (user_me.role_ === "Admin" || user_me.role_ === "Agent") {
+      console.log("edit req.body = " + req.body);
+      console.log("edit req.body.program_id = " + req.body.program_id);
+      const program_id = req.body.program_id;
+      let program = await Program.findById(program_id);
+      console.log("edit req.body.student_id = " + req.body.student_id);
+      const student_id = req.body.student_id;
+      var student1 = await Student.findById(student_id);
+      const exist_program = await student1.applying_program_.id(program_id);
+      if (exist_program === null) {
+        student1.applying_program_.push(program);
+        student1.save();
+        console.log("success: " + program);
+        res.send({
+          data: "success",
+        });
+      } else {
+        res.send({
+          data: "failed",
+        });
+      }
     } else {
-      res.send({
-        data: "failed",
-      });
+      return res.status(401).end(); // 401 Unauthorized response
     }
   } catch (err) {
     console.log("error by assigning program");
@@ -423,9 +490,9 @@ exports.studentlist = async (req, res) => {
   try {
     const bearer = req.headers.authorization.split(" ");
     const token = bearer[1];
-    // //Extract user email info by token
+    //Extract user email info by token
     var emailaddress = jwt_decode(token);
-    // //Get user email
+    //Get user email
     emailaddress = emailaddress["emailaddress"];
     console.log(emailaddress);
     const students_exists = await Student.findOne({
@@ -439,7 +506,8 @@ exports.studentlist = async (req, res) => {
         agent_: emailaddress,
       });
       console.log(
-        "Agent  " +
+        students_exists.role_ +
+          " " +
           Agent.firstname_ +
           " " +
           Agent.lastname_ +
@@ -447,14 +515,14 @@ exports.studentlist = async (req, res) => {
       );
       res.send({
         data: student_all,
-        role: "Agent",
+        role: students_exists.role_,
       });
     } else if (students_exists.role_ === "Admin") {
       const student_all = await Student.find({ role_: "Student" });
       console.log("Admin get all student list");
       res.send({
         data: student_all,
-        role: "Admin",
+        role: students_exists.role_,
       });
     } else if (students_exists.role_ === "Editor") {
       const Editor = await Student.findOne({ emailaddress_: emailaddress }); //get email by token
@@ -463,15 +531,21 @@ exports.studentlist = async (req, res) => {
         editor_: emailaddress,
       });
       console.log(
-        "Editor  " + Editor.firstname_ + " " + Editor.lastname_ + " log in"
+        students_exists.role_ +
+          "  " +
+          Editor.firstname_ +
+          " " +
+          Editor.lastname_ +
+          " log in"
       );
       res.send({
         data: student_all,
-        role: "Editor",
+        role: students_exists.role_,
       });
     } else if (students_exists.role_ === "Student") {
       console.log(
-        "Student " +
+        students_exists.role_ +
+          " " +
           students_exists.firstname_ +
           " " +
           students_exists.lastname_ +
@@ -479,7 +553,7 @@ exports.studentlist = async (req, res) => {
       );
       res.send({
         data: [students_exists],
-        role: "Student",
+        role: students_exists.role_,
       });
     } else {
       console.log(
@@ -491,7 +565,7 @@ exports.studentlist = async (req, res) => {
       );
       res.send({
         data: [students_exists],
-        role: "Guest",
+        role: students_exists.role_,
       });
     }
   } catch (err) {
@@ -508,12 +582,25 @@ exports.studentlist = async (req, res) => {
 
 exports.editagent = async (req, res, next) => {
   try {
-    // TODO: only Admin can edit.
-    const Agent_all = await Student.find({ role_: "Agent" });
-    console.log("get agent list success!");
-    res.send({
-      data: Agent_all,
+    // Only Admin can edit.
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
     });
+    if (user_me.role_ === "Admin") {
+      const Agent_all = await Student.find({ role_: "Agent" });
+      console.log("get agent list success!");
+      res.send({
+        data: Agent_all,
+      });
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
@@ -530,27 +617,40 @@ exports.updateagent = async (req, res, next) => {
   console.log(req.body);
   // console.log(req.params.student_id);
   try {
-    //TODO: only admin can update agent
-    const Agent_all = await Student.find({ role_: "Agent" });
-    const student = await Student.findById(req.params.student_id);
-    console.log(student._id);
-    let temp_updateAgentlist = [];
-    Agent_all.map((agent) =>
-      // console.log(agent.emailaddress_)
-      req.body[agent.emailaddress_] === undefined
-        ? console.log("undefined")
-        : req.body[agent.emailaddress_]
-        ? temp_updateAgentlist.push(agent.emailaddress_)
-        : //  var indx = await student.agent_.indexOf(agent.emailaddress_);
-          // add agent student's database
-          // remove agent student's database
-          console.log("false")
-    );
-    student.agent_ = temp_updateAgentlist;
-    await student.save();
-    console.log("temp_updateAgentlist: " + temp_updateAgentlist);
-    console.log("update agent list success!");
-    res.status(200).end();
+    // Only admin can update agent// Only Admin can edit.
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
+    });
+    if (user_me.role_ === "Admin") {
+      const Agent_all = await Student.find({ role_: "Agent" });
+      const student = await Student.findById(req.params.student_id);
+      console.log(student._id);
+      let temp_updateAgentlist = [];
+      Agent_all.map((agent) =>
+        // console.log(agent.emailaddress_)
+        req.body[agent.emailaddress_] === undefined
+          ? console.log("undefined")
+          : req.body[agent.emailaddress_]
+          ? temp_updateAgentlist.push(agent.emailaddress_)
+          : //  var indx = await student.agent_.indexOf(agent.emailaddress_);
+            // add agent student's database
+            // remove agent student's database
+            console.log("false")
+      );
+      student.agent_ = temp_updateAgentlist;
+      await student.save();
+      console.log("temp_updateAgentlist: " + temp_updateAgentlist);
+      console.log("update agent list success!");
+      res.status(200).end();
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
@@ -565,12 +665,25 @@ exports.updateagent = async (req, res, next) => {
 
 exports.editeditor = async (req, res, next) => {
   try {
-    // TODO: only Admin can edit.
-    const Editor_all = await Student.find({ role_: "Editor" });
-    console.log("get editor list success!");
-    res.send({
-      data: Editor_all,
+    // Only Admin can edit.
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
     });
+    if (user_me.role_ === "Admin") {
+      const Editor_all = await Student.find({ role_: "Editor" });
+      console.log("get editor list success!");
+      res.send({
+        data: Editor_all,
+      });
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
@@ -587,23 +700,36 @@ exports.updateeditor = async (req, res, next) => {
   console.log(req.body);
 
   try {
-    //TODO: only admin can update editor
-    const Editor_All = await Student.find({ role_: "Editor" });
-    const student = await Student.findById(req.params.student_id);
-    console.log(student._id);
-    let temp_updateEditorlist = [];
-    Editor_All.map((editor) =>
-      req.body[editor.emailaddress_] === undefined
-        ? console.log("undefined")
-        : req.body[editor.emailaddress_]
-        ? temp_updateEditorlist.push(editor.emailaddress_)
-        : console.log("false")
-    );
-    student.editor_ = temp_updateEditorlist;
-    await student.save();
-    console.log("temp_updateEditorlist: " + temp_updateEditorlist);
-    console.log("update editor list success!");
-    res.status(200).end();
+    // Only Admin can update editor
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
+    });
+    if (user_me.role_ === "Admin") {
+      const Editor_All = await Student.find({ role_: "Editor" });
+      const student = await Student.findById(req.params.student_id);
+      console.log(student._id);
+      let temp_updateEditorlist = [];
+      Editor_All.map((editor) =>
+        req.body[editor.emailaddress_] === undefined
+          ? console.log("undefined")
+          : req.body[editor.emailaddress_]
+          ? temp_updateEditorlist.push(editor.emailaddress_)
+          : console.log("false")
+      );
+      student.editor_ = temp_updateEditorlist;
+      await student.save();
+      console.log("temp_updateEditorlist: " + temp_updateEditorlist);
+      console.log("update editor list success!");
+      res.status(200).end();
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
@@ -624,22 +750,35 @@ exports.editstudentprogram = async (req, res, next) => {
 
 exports.deleteprogramfromstudent = async (req, res, next) => {
   try {
-    //TODO: only agent can delete
-    const student_id = req.params.student_id;
-    const program_id = req.params.program_id;
-    console.log("student id: " + student_id);
-    console.log("program id: " + program_id);
-    await Student.findByIdAndUpdate(
-      student_id,
-      { $pull: { applying_program_: { _id: program_id } } },
-      { safe: true, upsert: true },
-      function (err, node) {
-        if (err) {
-          return res.status(500).end(); // 500 Internal Server Error
+    //Only Admin and Agent can delete
+    const bearer = req.headers.authorization.split(" ");
+    const token = bearer[1];
+    //Extract user email info by token
+    var emailaddress = jwt_decode(token);
+    //Get user email
+    emailaddress = emailaddress["emailaddress"];
+    const user_me = await Student.findOne({
+      emailaddress_: emailaddress, // get current user.
+    });
+    if (user_me.role_ === "Admin" || user_me.role_ === "Agent") {
+      const student_id = req.params.student_id;
+      const program_id = req.params.program_id;
+      console.log("student id: " + student_id);
+      console.log("program id: " + program_id);
+      await Student.findByIdAndUpdate(
+        student_id,
+        { $pull: { applying_program_: { _id: program_id } } },
+        { safe: true, upsert: true },
+        function (err, node) {
+          if (err) {
+            return res.status(500).end(); // 500 Internal Server Error
+          }
+          return res.status(200).end();
         }
-        return res.status(200).end();
-      }
-    );
+      );
+    } else {
+      return res.status(401).end(); // 401 Unauthorized response
+    }
   } catch (err) {
     console.log("error delete file: " + err);
     return res.status(500).end(); // 500 Internal Server Error

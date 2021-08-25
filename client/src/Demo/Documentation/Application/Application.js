@@ -18,24 +18,17 @@ class Application extends Component {
     isLoaded: false,
     articles: [],
     editFormOpen: false,
-    isAbleToSee: false,
+    role: "Guest",
   };
   componentDidMount() {
     console.log("get article");
-    const auth = localStorage.getItem("token");
+    // const auth = localStorage.getItem("token");
     getApplicationArticle().then(
       (resp) => {
-        const {
-          data: { documents },
-        } = resp;
-        // const {
-        //   isAbleToSee: { isAbleToSee },
-        // } = resp;
-        console.log(JSON.stringify(documents));
         this.setState({
-          articles: documents,
+          articles: resp.data.documents,
           isLoaded: true,
-          isAbleToSee: resp.isAbleToSee,
+          role: resp.data.role,
         });
       },
       (error) => {
@@ -167,12 +160,14 @@ class Application extends Component {
                 category="application"
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
+                role={this.state.role}
               />
-              {this.state.isAbleToSee? (
-              <ToggleableArticleForm
-                category="application"
-                onFormSubmit={this.handleCreateFormSubmit}
-              />):(
+              {this.state.role === "Admin" || this.state.role === "Agent" ? (
+                <ToggleableArticleForm
+                  category="application"
+                  onFormSubmit={this.handleCreateFormSubmit}
+                />
+              ) : (
                 <></>
               )}
             </Col>

@@ -350,7 +350,11 @@ class EditUploadFilesSubpage extends React.Component {
         }
       });
     } else {
-      documentlist = <p>So far no selected program!</p>;
+      documentlist = (
+        <Col md={2}>
+          <p>So far no selected program!</p>
+        </Col>
+      );
     }
 
     return (

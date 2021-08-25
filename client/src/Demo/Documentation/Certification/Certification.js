@@ -17,19 +17,15 @@ class Certification extends Component {
     isLoaded: false,
     articles: [],
     editFormOpen: false,
-    isAbleToSee: false,
+    role: "Guest",
   };
   componentDidMount() {
     getCertificationArticle().then(
       (resp) => {
-        const {
-          data: { documents },
-        } = resp;
-        console.log(JSON.stringify(documents));
         this.setState({
-          articles: documents,
+          articles: resp.data.documents,
           isLoaded: true,
-          isAbleToSee: resp.isAbleToSee,
+          role: resp.data.role,
         });
       },
       (error) => {
@@ -168,8 +164,9 @@ class Certification extends Component {
                 category="certification"
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
+                role={this.state.role}
               />
-              {this.state.isAbleToSee ? (
+              {this.state.role === "Admin" || this.state.role === "Agent" ? (
                 <ToggleableArticleForm
                   category="application"
                   onFormSubmit={this.handleCreateFormSubmit}

@@ -14,9 +14,7 @@ import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";
 import EditProgramsSubpage from "./EditProgramsSubpage";
 import EditFilesSubpage from "./EditFilesSubpage";
-import {
-  uploadforstudent,
-} from "../../api";
+import { uploadforstudent } from "../../api";
 
 class EditableStudent extends React.Component {
   state = {
@@ -218,39 +216,65 @@ class EditableStudent extends React.Component {
           <Card.Header>
             <Card.Title as="h5">
               {this.props.student.firstname_} {this.props.student.lastname_}
+              <br />
               Email: {this.props.student.emailaddress_}
-              <DropdownButton
-                size="sm"
-                title="Option"
-                variant="primary"
-                id={`dropdown-variants-${this.state.student._id}`}
-                key={this.state.student._id}
-              >
-                <Dropdown.Item
-                  eventKey="1"
-                  onSelect={() => this.startEditingAgent(this.state.student)}
+              {this.props.role === "Admin" ? (
+                <DropdownButton
+                  className="btn btn-success btn-lg ml-auto"
+                  size="sm"
+                  title="Option"
+                  variant="primary"
+                  id={`dropdown-variants-${this.state.student._id}`}
+                  key={this.state.student._id}
                 >
-                  Edit Agent
-                </Dropdown.Item>
-                <Dropdown.Item
-                  eventKey="2"
-                  onSelect={() => this.startEditingEditor(this.state.student)}
+                  <Dropdown.Item
+                    eventKey="1"
+                    onSelect={() => this.startEditingAgent(this.state.student)}
+                  >
+                    Edit Agent
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    eventKey="2"
+                    onSelect={() => this.startEditingEditor(this.state.student)}
+                  >
+                    Edit Editor
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    eventKey="3"
+                    onSelect={() => this.startEditingProgram()}
+                  >
+                    Edit Program
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    eventKey="4"
+                    onSelect={() => this.startUploadfile()}
+                  >
+                    Edit File Status
+                  </Dropdown.Item>
+                </DropdownButton>
+              ) : (
+                <DropdownButton
+                  className="btn ml-2"
+                  size="sm"
+                  title="Option"
+                  variant="primary"
+                  id={`dropdown-variants-${this.state.student._id}`}
+                  key={this.state.student._id}
                 >
-                  Edit Editor
-                </Dropdown.Item>
-                <Dropdown.Item
-                  eventKey="3"
-                  onSelect={() => this.startEditingProgram()}
-                >
-                  Edit Program
-                </Dropdown.Item>
-                <Dropdown.Item
-                  eventKey="4"
-                  onSelect={() => this.startUploadfile()}
-                >
-                  Edit File Status
-                </Dropdown.Item>
-              </DropdownButton>
+                  <Dropdown.Item
+                    eventKey="3"
+                    onSelect={() => this.startEditingProgram()}
+                  >
+                    Edit Program
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    eventKey="4"
+                    onSelect={() => this.startUploadfile()}
+                  >
+                    Edit File Status
+                  </Dropdown.Item>
+                </DropdownButton>
+              )}
             </Card.Title>
           </Card.Header>
           <tr key={this.state.student._id}>
@@ -337,6 +361,7 @@ class EditableStudent extends React.Component {
           <Card.Header>
             <Card.Title as="h5">
               {this.props.student.firstname_} {this.props.student.lastname_}
+              <br />
               Email: {this.props.student.emailaddress_}
             </Card.Title>
           </Card.Header>
@@ -384,6 +409,7 @@ class EditableStudent extends React.Component {
           <Card.Header>
             <Card.Title as="h5">
               {this.props.student.firstname_} {this.props.student.lastname_}
+              <br />
               Email: {this.props.student.emailaddress_}
             </Card.Title>
           </Card.Header>

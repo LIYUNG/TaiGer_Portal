@@ -16,50 +16,11 @@ exports.UploadPage = async (req, res) => {
     const students_exists = await Student.findOne({
       emailaddress_: emailaddress,
     }); //get email by token
+    res.send({
+      data: students_exists,
+      role: students_exists.role_,
+    });
 
-    if (students_exists.role_ === "Agent") {
-      console.log("Agent gets myself data");
-      res.send({
-        data: students_exists,
-        role: "Agent",
-      });
-    } else if (students_exists.role_ === "Admin") {
-      console.log("Admin gets myself data");
-      res.send({
-        data: students_exists,
-        role: "Admin",
-      });
-    } else if (students_exists.role_ === "Editor") {
-      console.log("Editor gets myself data");
-      res.send({
-        data: students_exists,
-        role: "Editor",
-      });
-    } else if (students_exists.role_ === "Student") {
-      console.log(
-        "Student " +
-          students_exists.firstname_ +
-          " " +
-          students_exists.lastname_ +
-          " get her/his personal dashboard"
-      );
-      res.send({
-        data: students_exists,
-        role: "Student",
-      });
-    } else {
-      console.log(
-        "Guest " +
-          students_exists.firstname_ +
-          " " +
-          students_exists.lastname_ +
-          " get her/his personal dashboard"
-      );
-      res.send({
-        data: students_exists,
-        role: "Guest",
-      });
-    }
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error

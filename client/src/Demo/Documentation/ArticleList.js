@@ -14,6 +14,7 @@ class ArticleList extends Component {
         category={this.props.category}
         onFormSubmit={this.props.onFormSubmit}
         onTrashClick={this.props.onTrashClick}
+        role={this.props.role}
       />
     ));
     return <div>{articles}</div>;

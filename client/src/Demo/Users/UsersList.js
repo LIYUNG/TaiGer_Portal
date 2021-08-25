@@ -70,7 +70,7 @@ class Userslist extends React.Component {
   };
 
   render() {
-    if (this.props.role === "Agent" || this.props.role === "Admin") {
+    if (this.props.role === "Admin") {
       const headers = (
         <tr>
           <th> </th>
@@ -117,7 +117,11 @@ class Userslist extends React.Component {
         </>
       );
     } else {
-      return <></>;
+      return (
+      <>
+      <p>This is for Admin only.</p>
+      </>
+      );
     }
   }
 }

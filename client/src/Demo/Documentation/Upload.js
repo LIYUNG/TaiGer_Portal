@@ -13,17 +13,7 @@ import {
   templateDownload,
 } from "../../api";
 import EditUploadFilesSubpage from "./EditUploadFilesSubpage";
-// import {
-//   ,
-//   removeProgramFromStudent,
-//   getAgents,
-//   updateAgents,
-//   getEditors,
-//   updateEditors,
-//   acceptDocument,
-//   rejectDocument,
-//   ,
-// } from "../../api";
+
 class UploadPage extends React.Component {
   constructor(props) {
     super(props);
@@ -243,7 +233,7 @@ class UploadPage extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      if (this.state.role !== "Guest") {
+      if (this.state.role === "Student") {
         return (
           <Aux>
             <Row>
@@ -387,6 +377,20 @@ class UploadPage extends React.Component {
                     /> */}
                   {/* </Card.Body> */}
                 </Card>
+              </Col>
+            </Row>
+          </Aux>
+        );
+      } else if (
+        this.state.role === "Agent" ||
+        this.state.role === "Editor" ||
+        this.state.role === "Admin"
+      ) {
+        return (
+          <Aux>
+            <Row>
+              <Col>
+                <div> This page is for paid Student only. </div>
               </Col>
             </Row>
           </Aux>

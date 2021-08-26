@@ -1,6 +1,12 @@
 import React from "react";
 // import { FaBeer } from 'react-icons/fa';
 import { Button, Table, Col, Form, Modal } from "react-bootstrap";
+import {
+  AiOutlineDownload,
+  AiFillCloseCircle,
+  AiFillQuestionCircle,
+} from "react-icons/ai";
+import { IoCheckmarkCircle } from "react-icons/io5";
 
 class EditUploadFilesSubpage extends React.Component {
   // edit File subpage
@@ -17,22 +23,14 @@ class EditUploadFilesSubpage extends React.Component {
           return (
             <tr key={i + 1}>
               <th>
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="checkbox"
-                    name={doc.name}
-                    defaultChecked={true}
-                    id={i + 1}
-                  />
-                </Form.Group>
+                <AiFillQuestionCircle
+                  size={24}
+                  color="lightgreen"
+                  title="Uploaded successfully"
+                />
               </th>
               <td>
-                <p className="m-0">
-                  {" "}
-                  {doc.name} :{" "}
-                  {this.props.student.uploadedDocs_[doc.prop].uploadStatus_}
-                </p>
+                <p className="m-0"> {doc.name}</p>
                 <p>
                   {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
                 </p>
@@ -92,19 +90,13 @@ class EditUploadFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
+                      <Button variant="danger" size="sm" type="submit">
                         Delete
                       </Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
-              {/* <td>
-                <p className="m-0">
-                  {" "}
-                  {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
-                </p>
-              </td> */}
             </tr>
           );
         } else if (
@@ -114,49 +106,26 @@ class EditUploadFilesSubpage extends React.Component {
           return (
             <tr key={i + 1}>
               <th>
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="checkbox"
-                    name={doc.name}
-                    defaultChecked={true}
-                    id={i + 1}
-                  />
-                </Form.Group>
+                <IoCheckmarkCircle
+                  size={24}
+                  color="limegreen"
+                  title="Valid Document"
+                />
               </th>
               <td>
-                <p className="m-0">
-                  {" "}
-                  {doc.name} :{" "}
-                  {this.props.student.uploadedDocs_[doc.prop].uploadStatus_}
-                </p>
+                <p className="m-0"> {doc.name}</p>
                 <p>
                   {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
                 </p>
               </td>
-              {/* <td>
+              <td>
                 <Col>
-                  <Form
-                    onChange={(e) => this.props.onFileChange(e)}
-                    onClick={(e) => (e.target.value = null)}
-                  >
-                    <Form.File id={this.props.id}>
-                      <Form.File.Input />
-                    </Form.File>
-                  </Form>
                 </Col>
               </td>
               <td>
                 <Col>
-                  <Form onSubmit={(e) => this.props.submitFile(e, doc.prop)}>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Upload
-                      </Button>
-                    </Form.Group>
-                  </Form>
                 </Col>
-              </td> */}
+              </td>
               <td>
                 <Col>
                   <Form
@@ -176,30 +145,6 @@ class EditUploadFilesSubpage extends React.Component {
                   </Form>
                 </Col>
               </td>
-              {/* <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.onDeleteFilefromstudent(
-                        e,
-                        doc.prop,
-                        this.props.student._id
-                      )
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Delete
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td> */}
-              {/* <td>
-                <Col>
-                  {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
-                </Col>
-              </td> */}
             </tr>
           );
         } else if (
@@ -210,21 +155,16 @@ class EditUploadFilesSubpage extends React.Component {
           return (
             <tr key={i + 1}>
               <th>
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="checkbox"
-                    name={doc.name}
-                    defaultChecked={true}
-                    id={i + 1}
-                  />
-                </Form.Group>
+                <AiFillCloseCircle
+                  size={24}
+                  color="red"
+                  title="Invalid Document"
+                />
               </th>
               <td>
                 <p className="m-0">
                   {" "}
-                  {doc.name} :{" "}
-                  {this.props.student.uploadedDocs_[doc.prop].uploadStatus_}
+                  {doc.name}
                 </p>
                 <p>
                   {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
@@ -285,36 +225,24 @@ class EditUploadFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
+                      <Button variant="danger" size="sm" type="submit">
                         Delete
                       </Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
-              {/* <td>
-                <p className="m-0">
-                  {" "}
-                  {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
-                </p>
-              </td> */}
             </tr>
           );
         } else {
           return (
             <tr key={i + 1}>
               <th>
-                {/* <div> */}
-                <Form.Group>
-                  <Form.Check
-                    custom
-                    type="checkbox"
-                    name={doc.name}
-                    defaultChecked={false}
-                    // value='value'
-                    id={i + 1}
-                  />
-                </Form.Group>
+                <AiFillQuestionCircle
+                  size={24}
+                  color="lightgray"
+                  title="No Document uploaded"
+                />
               </th>
               <td>
                 <p className="m-0">

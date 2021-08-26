@@ -1,11 +1,11 @@
 import React from "react";
 // import { FaBeer } from 'react-icons/fa';
 import {
-  AiOutlineLoading3Quarters,
-  AiOutlineCheck,
-  AiOutlineClose,
-  AiOutlineStop,
+  AiFillCloseCircle,
+  AiFillQuestionCircle,
 } from "react-icons/ai";
+import { IoCheckmarkCircle } from "react-icons/io5";
+
 import { Card, Col, Row } from "react-bootstrap";
 
 import { Dropdown, DropdownButton } from "react-bootstrap";
@@ -168,8 +168,7 @@ class EditableStudent extends React.Component {
           return (
             <p className="m-0" key={i}>
               {" "}
-              <AiOutlineLoading3Quarters /> {doc.name} :{" "}
-              {this.state.student.uploadedDocs_[doc.prop].uploadStatus_}
+              <AiFillQuestionCircle size={24} color="lightgreen" title="Uploaded successfully"/> {doc.name}
             </p>
           );
         } else if (
@@ -178,8 +177,7 @@ class EditableStudent extends React.Component {
         ) {
           return (
             <p className="m-0" key={i}>
-              <AiOutlineCheck /> {doc.name} :{" "}
-              {this.state.student.uploadedDocs_[doc.prop].uploadStatus_}
+              <IoCheckmarkCircle size={24} color="limegreen" title="Valid Document"/> {doc.name} 
             </p>
           );
         } else if (
@@ -189,15 +187,14 @@ class EditableStudent extends React.Component {
         ) {
           return (
             <p className="m-0" key={i}>
-              <AiOutlineStop /> {doc.name} :{" "}
-              {this.state.student.uploadedDocs_[doc.prop].uploadStatus_}
+              <AiFillCloseCircle size={24} color="red" title="Invalid Document"/> {doc.name}
             </p>
           );
         } else {
           return (
             <p className="m-0" key={i}>
               <b>
-                <AiOutlineClose /> {doc.name}{" "}
+                <AiFillQuestionCircle size={24} color="lightgray" title="No Document uploaded"/> {doc.name}{" "}
               </b>
             </p>
           );
@@ -220,7 +217,7 @@ class EditableStudent extends React.Component {
               Email: {this.props.student.emailaddress_}
               {this.props.role === "Admin" ? (
                 <DropdownButton
-                  className="btn btn-success btn-lg ml-auto"
+                  className="btn ml-2"
                   size="sm"
                   title="Option"
                   variant="primary"

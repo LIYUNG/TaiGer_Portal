@@ -25,11 +25,18 @@ class Application extends Component {
     // const auth = localStorage.getItem("token");
     getApplicationArticle().then(
       (resp) => {
-        this.setState({
-          articles: resp.data.documents,
-          isLoaded: true,
-          role: resp.data.role,
-        });
+        if (resp.status == 200) {
+          this.setState({
+            articles: resp.data.documents,
+            isLoaded: true,
+            role: resp.data.role,
+          });
+        }
+        else{
+          this.setState({
+            isLoaded: false,
+          });
+        }
       },
       (error) => {
         this.setState({

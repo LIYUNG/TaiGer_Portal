@@ -7,7 +7,7 @@ import EditableStudent from "./EditableStudent";
 class Studentlist extends React.Component {
   render() {
     const stdlist = this.props.students.map((student, i) => (
-      <Table responsive>
+      <Table responsive key={i}>
         <tbody>
           <EditableStudent
             student={student}

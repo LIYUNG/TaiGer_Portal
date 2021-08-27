@@ -1,11 +1,14 @@
 import React from "react";
 import Card from "../../App/components/MainCard";
 import { Form, Button } from "react-bootstrap";
+import ReactQuill from 'react-quill'; // ES6
+import TextEditor from "./TextEditor";
 
 class ArticleForm extends React.Component {
   state = {
     Titel_: this.props.title || "",
     Content_: this.props.content || "",
+    text:""
   };
 
   handleTitleChange = (e) => {
@@ -14,6 +17,10 @@ class ArticleForm extends React.Component {
 
   handleContentChange = (e) => {
     this.setState({ Content_: e.target.value });
+  };
+
+  handleChange = (value) => {
+    this.setState({ text: value });
   };
 
   handleSubmit = () => {
@@ -28,10 +35,11 @@ class ArticleForm extends React.Component {
 
   render() {
     const submitText = this.props.id ? "Update" : "Create";
+    
     return (
       <Form>
         <Card>
-          <Form.Group className="mb-3">
+          {/* <Form.Group className="mb-3">
             <Form.Control
               type="test"
               onChange={this.handleTitleChange}
@@ -47,7 +55,8 @@ class ArticleForm extends React.Component {
               defaultValue={this.props.content}
               placeholder="Content"
             />
-          </Form.Group>
+          </Form.Group> */}
+          <TextEditor defaultContent={this.props.content} />
           <Button onClick={this.handleSubmit}>{submitText}</Button>
           <Button onClick={this.props.onFormClose}>Cancel</Button>
         </Card>

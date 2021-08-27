@@ -1,9 +1,6 @@
 import React from "react";
 // import { FaBeer } from 'react-icons/fa';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-} from "react-icons/ai";
+import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 
 import { Card, Col, Row } from "react-bootstrap";
@@ -168,7 +165,12 @@ class EditableStudent extends React.Component {
           return (
             <p className="m-0" key={i}>
               {" "}
-              <AiFillQuestionCircle size={24} color="lightgreen" title="Uploaded successfully"/> {doc.name}
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgreen"
+                title="Uploaded successfully"
+              />{" "}
+              {doc.name}
             </p>
           );
         } else if (
@@ -177,7 +179,12 @@ class EditableStudent extends React.Component {
         ) {
           return (
             <p className="m-0" key={i}>
-              <IoCheckmarkCircle size={24} color="limegreen" title="Valid Document"/> {doc.name} 
+              <IoCheckmarkCircle
+                size={24}
+                color="limegreen"
+                title="Valid Document"
+              />{" "}
+              {doc.name}
             </p>
           );
         } else if (
@@ -187,14 +194,24 @@ class EditableStudent extends React.Component {
         ) {
           return (
             <p className="m-0" key={i}>
-              <AiFillCloseCircle size={24} color="red" title="Invalid Document"/> {doc.name}
+              <AiFillCloseCircle
+                size={24}
+                color="red"
+                title="Invalid Document"
+              />{" "}
+              {doc.name}
             </p>
           );
         } else {
           return (
             <p className="m-0" key={i}>
               <b>
-                <AiFillQuestionCircle size={24} color="lightgray" title="No Document uploaded"/> {doc.name}{" "}
+                <AiFillQuestionCircle
+                  size={24}
+                  color="lightgray"
+                  title="No Document uploaded"
+                />{" "}
+                {doc.name}{" "}
               </b>
             </p>
           );

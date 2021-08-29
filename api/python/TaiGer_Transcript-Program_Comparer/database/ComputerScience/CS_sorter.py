@@ -1,8 +1,8 @@
 import xlsxwriter
 import gc
-from alogrithms import *
+from CourseSuggestionAlogrithms import *
 from util import *
-from CS_KEYWORDS import *
+from database.ComputerScience.CS_KEYWORDS import *
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
 from numpy import nan
@@ -117,7 +117,7 @@ program_sort_function = [TUM_CS]
 
 def CS_sorter(program_idx, file_path):
 
-    Database_Path = env_file_path + '/database/'
+    Database_Path = env_file_path + '/'
     Output_Path = os.path.split(file_path)
     Output_Path = Output_Path[0]
     Output_Path = Output_Path + '/output/'

@@ -145,6 +145,7 @@ class UploadPage extends React.Component {
 
         var filetype = actualFileName.split("."); //split file name
         filetype = filetype.pop(); //get the file type
+        console.log("actualFileName " + actualFileName);
 
         if (filetype === "pdf") {
           console.log(blob);
@@ -154,7 +155,8 @@ class UploadPage extends React.Component {
 
           //Open the URL on new Window
           console.log(url);
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
+          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
+          newWindow.document.title = actualFileName;
         } else {
           //if not pdf, download instead.
 
@@ -181,7 +183,6 @@ class UploadPage extends React.Component {
   // This is download template file.
   onDownloadFile(e, category) {
     e.preventDefault();
-    const auth = localStorage.getItem("token");
     var actualFileName;
     templateDownload(category).then(
       (resp) => {
@@ -240,24 +241,24 @@ class UploadPage extends React.Component {
               <Col>
                 <Card>
                   {/* <Card.Title> */}
-                    <Card.Header as="h5">
-                      {/* <Card.Title as="h5"> */}
-                        Upload Your Application Documets
-                      {/* </Card.Title> */}
-                    </Card.Header>
+                  <Card.Header as="h5">
+                    {/* <Card.Title as="h5"> */}
+                    Upload Your Application Documets
+                    {/* </Card.Title> */}
+                  </Card.Header>
                   {/* </Card.Title> */}
                   {/* <Card.Body> */}
-                    <EditUploadFilesSubpage
-                      student={this.state.student}
-                      submitFile={this.submitFile}
-                      onFileChange={this.onFileChange}
-                      documentslist={window.documentlist}
-                      onDownloadFilefromstudent={this.onDownloadFile}
-                      onRejectFilefromstudent={this.onRejectFilefromstudent}
-                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                    />
+                  <EditUploadFilesSubpage
+                    student={this.state.student}
+                    submitFile={this.submitFile}
+                    onFileChange={this.onFileChange}
+                    documentslist={window.documentlist}
+                    onDownloadFilefromstudent={this.onDownloadFile}
+                    onRejectFilefromstudent={this.onRejectFilefromstudent}
+                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                  />
                 </Card>
               </Col>
             </Row>

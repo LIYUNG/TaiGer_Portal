@@ -2,9 +2,9 @@
 import sys
 import os
 import pandas as pd
-from EE_sorter import *
-from CS_sorter import *
-from ME_sorter import *
+from database.ElectricalEngineering.EE_sorter import *
+from database.ComputerScience.CS_sorter import *
+from  database.MechanicalEngineering.ME_sorter import *
 file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)
 
@@ -21,16 +21,18 @@ if __name__ == "__main__":
     program_idx = []
     program_selection_path = ''
     if sys.argv[2] == 'cs':
-        program_selection_path = file_path + '/CS_Programs.xlsx'
+        program_selection_path = file_path + '/database/ComputerScience/CS_Programs.xlsx'
         print(file_path)
     elif sys.argv[2] == 'ee':
-        program_selection_path = file_path + '/EE_Programs.xlsx'
+        program_selection_path = file_path + \
+            '/database/ElectricalEngineering/EE_Programs.xlsx'
         print(file_path)
     elif sys.argv[2] == 'me':
-        program_selection_path = file_path + '/ME_Programs.xlsx'
+        program_selection_path = file_path + \
+            '/database/MechanicalEngineering/ME_Programs.xlsx'
         print(file_path)
     elif sys.argv[2] == 'mgm':
-        program_selection_path = file_path + '/MGM_Programs.xlsx'
+        program_selection_path = file_path + '/database/Management/MGM_Programs.xlsx'
         print(file_path)
     else:
         print("Please specify program group: cs ee me")

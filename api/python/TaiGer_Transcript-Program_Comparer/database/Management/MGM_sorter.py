@@ -1,8 +1,8 @@
 import xlsxwriter
 import gc
-from alogrithms import *
+from CourseSuggestionAlogrithms import *
 from util import *
-from ME_KEYWORDS import *
+from database.Management.MGM_KEYWORDS import *
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
 from numpy import nan
@@ -128,41 +128,11 @@ def ME_sorter(program_idx, file_path):
     sorted_courses = []
     # ME
     transcript_sorted_group_map = {
-        '微積分': [ME_CALCULUS_KEY_WORDS, ME_CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
-        '數學': [ME_MATH_KEY_WORDS, ME_MATH_ANTI_KEY_WORDS],
-        '物理': [ME_PHYSICS_KEY_WORDS, ME_PHYSICS_ANTI_KEY_WORDS, ['一', '二']],
-        '物理實驗': [ME_PHYSICS_EXP_KEY_WORDS, ME_PHYSICS_EXP_ANTI_KEY_WORDS, ['一', '二']],
-        '機械設計': [ME_MASCHINENGESTALTUNG_KEY_WORDS, ME_MASCHINENGESTALTUNG_ANTI_KEY_WORDS, ['一', '二']],
-        '熱力學': [ME_THERMODYN_KEY_WORDS, ME_THERMODYN_ANTI_KEY_WORDS, ['一', '二']],
-        '熱傳導': [ME_WARMTRANSPORT_KEY_WORDS, ME_WARMTRANSPORT_ANTI_KEY_WORDS, ['一', '二']],
-        '材料': [ME_WERKSTOFFKUNDE_KEY_WORDS, ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS, ['一', '二']],
-        '控制系統': [ME_CONTROL_THEORY_KEY_WORDS, ME_CONTROL_THEORY_ANTI_KEY_WORDS, ['一', '二']],
-        '流體': [ME_FLUIDDYN_KEY_WORDS, ME_FLUIDDYN_ANTI_KEY_WORDS, ['一', '二']],
-        '力學': [ME_MECHANIK_KEY_WORDS, ME_MECHANIK_ANTI_KEY_WORDS],
-        '基礎電機電子': [ME_ELECTRICAL_ENG_KEY_WORDS, ME_ELECTRICAL_ENG_ANTI_KEY_WORDS],
-        '製造工程': [ME_MANUFACTURE_ENG_KEY_WORDS, ME_MANUFACTURE_ENG_ANTI_KEY_WORDS],
-        '計算機概論': [ME_COMPUTER_SCIENCE_KEY_WORDS, ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS],
-        '機電': [ME_MECHATRONICS_KEY_WORDS, ME_MECHATRONICS_ANTI_KEY_WORDS],
-        '車輛': [ME_VEHICLE_KEY_WORDS, ME_VEHICLE_ANTI_KEY_WORDS],
+        '經濟學': [MGM_ECONOMICS_KEY_WORDS, MGM_ECONOMICS_ANTI_KEY_WORDS],
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     suggestion_courses_sorted_group_map = {
-        '微積分': [[], ME_CALCULUS_ANTI_KEY_WORDS],
-        '數學': [[], ME_MATH_ANTI_KEY_WORDS],
-        '物理': [[], ME_PHYSICS_ANTI_KEY_WORDS],
-        '物理實驗': [[], ME_CONTROL_THEORY_ANTI_KEY_WORDS],
-        '機械設計': [[], ME_MASCHINENGESTALTUNG_ANTI_KEY_WORDS],
-        '熱力學': [[], ME_CONTROL_THEORY_ANTI_KEY_WORDS],
-        '熱傳導': [[], ME_WARMTRANSPORT_ANTI_KEY_WORDS],
-        '材料': [[], ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS],
-        '控制系統': [[], ME_CONTROL_THEORY_ANTI_KEY_WORDS],
-        '流體': [[], ME_FLUIDDYN_ANTI_KEY_WORDS],
-        '力學': [[], ME_MECHANIK_ANTI_KEY_WORDS],
-        '基礎電機電子': [[], ME_ELECTRICAL_ENG_ANTI_KEY_WORDS],
-        '製造工程': [[], ME_MANUFACTURE_ENG_ANTI_KEY_WORDS],
-        '計算機概論': [[], ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS],
-        '機電': [[], ME_MECHATRONICS_ANTI_KEY_WORDS],
-        '車輛': [[], ME_VEHICLE_ANTI_KEY_WORDS],
+        '經濟學': [[], MGM_ECONOMICS_ANTI_KEY_WORDS],
         '其他': [[], USELESS_COURSES_ANTI_KEY_WORDS], }
 
     category_data = []

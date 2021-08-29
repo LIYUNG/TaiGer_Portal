@@ -119,12 +119,10 @@ class EditUploadFilesSubpage extends React.Component {
                 </p>
               </td>
               <td>
-                <Col>
-                </Col>
+                <Col></Col>
               </td>
               <td>
-                <Col>
-                </Col>
+                <Col></Col>
               </td>
               <td>
                 <Col>
@@ -162,10 +160,7 @@ class EditUploadFilesSubpage extends React.Component {
                 />
               </th>
               <td>
-                <p className="m-0">
-                  {" "}
-                  {doc.name}
-                </p>
+                <p className="m-0"> {doc.name}</p>
                 <p>
                   {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
                 </p>
@@ -278,13 +273,54 @@ class EditUploadFilesSubpage extends React.Component {
         }
       });
     } else {
-      documentlist = (
-        <Col md={2}>
-          <p>So far no selected program!</p>
-        </Col>
-      );
-    }
+      documentlist = this.props.documentslist.map((doc, i) => {
+        return (
+          <tr key={i + 1}>
+            <th>
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="No Document uploaded"
+              />
+            </th>
+            <td>
+              <p className="m-0">
+                <b> {doc.name} </b>
+              </p>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onChange={(e) => this.props.onFileChange(e)}
+                  onClick={(e) => (e.target.value = null)}
+                >
+                  <Form.File id={this.props.id}>
+                    <Form.File.Input />
+                  </Form.File>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col md={2}>
+                <Form onSubmit={(e) => this.props.submitFile(e, doc.prop)}>
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      Upload
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+          </tr>
+        );
+      });
 
+      // documentlist = (
+      //   <Col md={2}>
+      //     <p>So far no selected program!</p>
+      //   </Col>
+      // );
+    }
     return (
       <Table>
         <tbody>{documentlist}</tbody>

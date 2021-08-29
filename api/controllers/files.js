@@ -4,7 +4,7 @@ const fs = require("fs");
 const spawn = require("child_process").spawn;
 const { BASE_PATH, PATH_DELIMITER, PYTHON_BASE_PATH } = require("../config");
 
-exports.UploadPage = async (req, res) => {
+const getFiles = async (req, res) => {
   try {
     const bearer = req.headers.authorization.split(" ");
     const token = bearer[1];
@@ -33,7 +33,7 @@ exports.UploadPage = async (req, res) => {
   }
 };
 
-exports.UploadPost = async (req, res) => {
+const uploadPost = async (req, res) => {
   try {
     console.log("UploadPost: Which file? " + req.file);
     const bearer = req.headers.authorization.split(" ");
@@ -86,7 +86,7 @@ exports.UploadPost = async (req, res) => {
   }
 };
 
-exports.UploadForStudentPost = async (req, res) => {
+const uploadForStudentPost = async (req, res) => {
   try {
     console.log("UploadForStudentPost: Which file? " + req.file);
     // const bearer = req.headers.authorization.split(" ");
@@ -135,7 +135,7 @@ exports.UploadForStudentPost = async (req, res) => {
   }
 };
 
-exports.templatefiledownload = async (req, res, next) => {
+const templateFileDownload = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)
     const category_name = req.params.category;
@@ -187,7 +187,7 @@ exports.templatefiledownload = async (req, res, next) => {
   }
 };
 
-exports.filedownloadfromstudent = async (req, res, next) => {
+const fileDownloadFromStudent = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)
     const category_name = req.params.category;
@@ -226,7 +226,7 @@ exports.filedownloadfromstudent = async (req, res, next) => {
   }
 };
 
-exports.rejectdoc = async (req, res, next) => {
+const rejectDoc = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)
     const category_name = req.params.category;
@@ -252,7 +252,7 @@ exports.rejectdoc = async (req, res, next) => {
   }
 };
 
-exports.acceptdoc = async (req, res, next) => {
+const acceptDoc = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)
     const category_name = req.params.category;
@@ -277,7 +277,7 @@ exports.acceptdoc = async (req, res, next) => {
   }
 };
 
-exports.deletefile = async (req, res, next) => {
+const deleteFile = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)
     const category_name = req.params.category;
@@ -317,7 +317,7 @@ exports.deletefile = async (req, res, next) => {
   }
 };
 
-exports.Upload_Transcript_XLSX = async (req, res) => {
+const uploadTranscriptXLSX = async (req, res) => {
   try {
     var dataToSend;
     console.log("Upload_Transcript_XLSX: " + req.file.filename);
@@ -389,7 +389,7 @@ exports.Upload_Transcript_XLSX = async (req, res) => {
   }
 };
 
-exports.generated_XLSX_download = async (req, res, next) => {
+const generatedXLSXDownload = async (req, res, next) => {
   try {
     // console.log('filedownload req.params.filename = ' + req.params.category)
     const category_name = req.params.category;
@@ -449,3 +449,16 @@ exports.generated_XLSX_download = async (req, res, next) => {
     return res.status(500).end(); // 500 Internal Server Error
   }
 };
+
+module.exports = {
+  getFiles,
+  uploadPost,
+  uploadForStudentPost,
+  templateFileDownload,
+  fileDownloadFromStudent,
+  rejectDoc,
+  acceptDoc,
+  deleteFile,
+  uploadTranscriptXLSX,
+  generatedXLSXDownload,
+}

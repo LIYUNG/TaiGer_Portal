@@ -1,8 +1,8 @@
 import request from "./request";
 
 // Student_API
-export const getStudents = () => request.get("/studentlist");
-export const getMyfiles = () => request.get("/upload");
+export const getStudents = () => request.get("/students");
+export const getMyfiles = () => request.get("/files");
 
 // del_prog_std_API
 export const removeProgramFromStudent = (programId, studentId) =>
@@ -36,29 +36,29 @@ export const deleteFile = (category, id) =>
 
 // FIXME: The endpoint should be "/programs/:id"
 // program_list_API
-export const getPrograms = () => request.get("/programlist");
+export const getPrograms = () => request.get("/programs");
 
 // delete_program_API
-export const deleteProgram = (id) => request.delete(`/deleteprogram/${id}`);
+export const deleteProgram = (id) => request.delete(`/programs/${id}`);
 
 // add_program_API
-export const createProgram = (program) => request.post("/addprogram", program);
+export const createProgram = (program) => request.post("/programs", program);
 
 // edit_program_API
 export const updateProgram = (program) =>
-  request.post(`/editprogram/${program._id}`, program);
+  request.post(`/programs/${program._id}`, program);
 
 // assign_program_API
 export const assignProgramToStudent = (data) =>
   request.post("/assignprogramtostudent", data);
 
-export const getUsers = () => request.get("/userslist");
+export const getUsers = () => request.get("/users");
 
-export const deleteUser = (id) => request.delete(`/deleteuser/${id}`);
+export const deleteUser = (id) => request.delete(`/users/${id}`);
 
-export const updateUser = (user) => request.post(`/edituser/${user._id}`, user);
+export const updateUser = (user) => request.post(`/users/${user._id}`, user);
 
-export const changeUserRole = (role) => request.post("/changeuserrole", role);
+export const changeUserRole = (id, role) => updateUser({ _id: id, role })
 
 export const deleteDoc = (id) => request.delete(`/docs/${id}`);
 export const addDoc = (id) => request.post(`/docs/${id}`);

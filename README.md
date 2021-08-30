@@ -2,34 +2,34 @@
 - copy `.env.sample` to `.env.production`, `.env.development`, `.env.test` and fill in the values
 
 # Todos
-- [ ] fill missing fields in `api/.env.sample`
+- [x] fill missing fields in `api/.env.sample`
 - [ ] Verify routes still working
-  - [ ] POST   /login
-  - [ ] POST   /register
-  - [ ] GET    /users                                      (userslist)
-  - [ ] DELETE /users/:id                                  (deleteuser)
-  - [ ] POST   /users/:id                                  (edituser, changeuserrole)
-  - [ ] GET    /agents                                     (editagent)
-  - [ ] GET    /editors                                    (editeditor)
-  - [ ] GET    /students                                   (studentlist)
-  - [ ] POST   /students/:id/agents                        (updateagent)
-  - [ ] POST   /students/:id/editors                       (updateeditor)
-  - [ ] POST   /students/:id/programs                      (assignprogramtostudent)
-  - [ ] DELETE /students/:studentId/programs/:programId    (deleteprogramfromstudent)
-  - [ ] GET    /students/:studentId/files/:category        (filedownloadfromstudent)
-  - [ ] POST   /students/:studentId/files/:category        (UploadForStudentPost)
-  - [ ] DELETE /students/:studentId/files/:category        (deletefile)
-  - [ ] POST   /students/:studentId/files/:category/status (rejectdoc, acceptdoc)
-  - [ ] GET    /account/files
-  - [ ] GET    /account/files/:category                    (templatefiledownload)
-  - [ ] POST   /account/files/:category                    (UploadPost)
-  - [ ] POST   /account/transcript/:category/:group        (Upload_Transcript_XLSX)
-  - [ ] GET    /account/download/:category/:filename       (generated_XLSX_download)
-  - [ ] GET    /programs                                   (programlist)
-  - [ ] POST   /programs                                   (addprogram)
-  - [ ] POST   /programs/:id                               (editprogram)
-  - [ ] DELETE /programs/:id                               (deleteprogram)
-  - [ ] DELETE /docs/:id
-  - [ ] POST   /docs/:id
-  - [ ] POST   /docs
-  - [ ] GET    /docs/:type
+  - [x] POST   /login
+  - [x] POST   /register
+  - [x] GET    /users                                      (userslist)
+  - [x] DELETE /users/:id                                  (deleteuser)
+  - [xx] POST   /users/:id                                  (edituser, changeuserrole)
+  - [x] GET    /agents                                     (editagent)
+  - [x] GET    /editors                                    (editeditor)
+  - [xx] GET    /students                                   (studentlist) user role: studnet跟guest 都 return status 500
+  - [xx] POST   /students/:id/agents                        (updateagent) issue: 格式跑掉 (應只留選取的agent)
+  - [xx] POST   /students/:id/editors                       (updateeditor) issue: 格式跑掉 (應只留選取的editor)
+  - [xx] POST   /students/:id/programs                      (assignprogramtostudent) return status 500
+  - [x] DELETE /students/:studentId/programs/:programId    (deleteprogramfromstudent)
+  - [x] GET    /students/:studentId/files/:category        (filedownloadfromstudent) return status 500
+  - [xx] POST   /students/:studentId/files/:category        (UploadForStudentPost)  maybe my BASE_PATH not correct
+  - [x] DELETE /students/:studentId/files/:category        (deletefile)
+  - [x] POST   /students/:studentId/files/:category/status (rejectdoc, acceptdoc)
+  - [xx] GET    /account/files after fixing route /students, the front end can render can check
+  - [xx] GET    /account/files/:category                    (templatefiledownload) check later
+  - [xx] POST   /account/files/:category                    (UploadPost) after fixing route /students, the front end can render can check
+  - [xx] POST   /account/transcript/:category/:group        (Upload_Transcript_XLSX) upload issue: maybe my BASE_PATH not correct
+  - [xx] GET    /account/download/:category/:filename       (generated_XLSX_download) after fixing upload, check later
+  - [x] GET    /programs                                   (programlist)
+  - [x] POST   /programs                                   (addprogram)
+  - [x] POST   /programs/:id                               (editprogram)
+  - [x] DELETE /programs/:id                               (deleteprogram)
+  - [ ] DELETE /docs/:id    check later (currently integrating rich text editor)
+  - [ ] POST   /docs/:id    check later (currently integrating rich text editor)
+  - [ ] POST   /docs        check later (currently integrating rich text editor)
+  - [ ] GET    /docs/:type  check later (currently integrating rich text editor)

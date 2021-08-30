@@ -1,9 +1,13 @@
-const Student = require("../models/Students");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const saltRounds = 10;
+
+const { ErrorResponse } = require("../common/errors");
+const { asyncHandler } = require("../middlewares/error-handler");
+const { Role } = require("../models/User");
+const Student = require("../models/Students");
 
 const { JWT_KEY, JWT_EXPIRY_SECONDS } = require("../config");
+const saltRounds = 10;
 
 const signUp = async (req, res) => {
   console.log(req.body);
@@ -121,347 +125,84 @@ const settings = async (req, res) => {
   });
 };
 
-const getStudents = async (req, res) => {
-  try {
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    console.log(emailaddress);
-    const students_exists = await Student.findOne({
-      emailaddress_: emailaddress,
-    }); //get email by token
+const getStudents = asyncHandler(async (req, res) => {
+  const { role_: role, emailaddress_: emailaddress } = req.user;
 
-    if (students_exists.role_ === "Agent") {
-      const Agent = await Student.findOne({ emailaddress_: emailaddress }); //get email by token
-      const student_all = await Student.find({
-        role_: "Student",
-        agent_: emailaddress,
-      });
-      console.log(
-        students_exists.role_ +
-          " " +
-          Agent.firstname_ +
-          " " +
-          Agent.lastname_ +
-          " get her/his student list"
-      );
-      res.send({
-        data: student_all,
-        role: students_exists.role_,
-      });
-    } else if (students_exists.role_ === "Admin") {
-      const student_all = await Student.find({ role_: "Student" });
-      console.log("Admin get all student list");
-      res.send({
-        data: student_all,
-        role: students_exists.role_,
-      });
-    } else if (students_exists.role_ === "Editor") {
-      const Editor = await Student.findOne({ emailaddress_: emailaddress }); //get email by token
-      const student_all = await Student.find({
-        role_: "Student",
-        editor_: emailaddress,
-      });
-      console.log(
-        students_exists.role_ +
-          "  " +
-          Editor.firstname_ +
-          " " +
-          Editor.lastname_ +
-          " log in"
-      );
-      res.send({
-        data: student_all,
-        role: students_exists.role_,
-      });
-    } else if (students_exists.role_ === "Student") {
-      console.log(
-        students_exists.role_ +
-          " " +
-          students_exists.firstname_ +
-          " " +
-          students_exists.lastname_ +
-          " get her/his personal dashboard"
-      );
-      res.send({
-        data: [students_exists],
-        role: students_exists.role_,
-      });
-    } else {
-      console.log(
-        "Guest " +
-          students_exists.firstname_ +
-          " " +
-          students_exists.lastname_ +
-          " get her/his personal dashboard"
-      );
-      res.send({
-        data: [students_exists],
-        role: students_exists.role_,
-      });
+  const query = { role_: Role.Student };
+
+  switch (role) {
+    case Role.Agent: {
+      const students = await Student.find({ ...query, agent_: emailaddress });
+      return res.send({ data: students, role });
     }
-  } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      // if the error thrown is because the JWT is unauthorized, return a 401 error
-      console.log(e);
-      console.log("error by studentlist");
-      return res.status(500).end(); // 500 Internal Server Error
+
+    case Role.Admin: {
+      const students = await Student.find({ ...query });
+      return res.send({ data: students, role });
     }
-    console.log(err);
-    return res.status(500).end(); // 500 Internal Server Error
+
+    case Role.Editor: {
+      const students = await Student.find({ ...query, editor_: emailaddress });
+      return res.send({ data: students, role });
+    }
+
+    default: {
+      return res.send({ data: [user], role });
+    }
   }
-};
+});
 
-const assignprogramtostudent = async (req, res) => {
-  try {
-    // Only Admin and Agent can assign.
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    const user_me = await Student.findOne({
-      emailaddress_: emailaddress, // get current user.
-    });
-    if (user_me.role_ === "Admin" || user_me.role_ === "Agent") {
-      console.log("edit req.body = " + req.body);
-      console.log("edit req.body.program_id = " + req.body.program_id);
-      const program_id = req.body.program_id;
-      let program = await Program.findById(program_id);
-      console.log("edit req.body.student_id = " + req.body.student_id);
-      const student_id = req.body.student_id;
-      var student1 = await Student.findById(student_id);
-      const exist_program = await student1.applying_program_.id(program_id);
-      if (exist_program === null) {
-        student1.applying_program_.push(program);
-        student1.save();
-        console.log("success: " + program);
-        res.send({
-          data: "success",
-        });
-      } else {
-        res.send({
-          data: "failed",
-        });
-      }
-    } else {
-      return res.status(401).end(); // 401 Unauthorized response
-    }
-  } catch (err) {
-    console.log("error by assigning program");
-    console.log(err);
-    return res.status(500).end(); // 500 Internal Server Error
-  }
-};
+const updateAgent = asyncHandler(async (req, res, next) => {
+  // TODO: use findByIdAndUpdate
+  const student = await Student.findById(req.params.id);
+  if (!student) throw new ErrorResponse(400, "Invalid id");
 
-const editagent = async (req, res, next) => {
-  try {
-    // Only Admin can edit.
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    const user_me = await Student.findOne({
-      emailaddress_: emailaddress, // get current user.
-    });
-    if (user_me.role_ === "Admin") {
-      const Agent_all = await Student.find({ role_: "Agent" });
-      console.log("get agent list success!");
-      res.send({
-        data: Agent_all,
-      });
-    } else {
-      return res.status(401).end(); // 401 Unauthorized response
-    }
-  } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      // if the error thrown is because the JWT is unauthorized, return a 401 error
-      console.log(e);
-      console.log("error by editagent");
-      return res.status(500).end(); // 500 Internal Server Error
-    }
-    console.log(err);
-    return res.status(500).end(); // 500 Internal Server Error
-  }
-};
+  const agents = await Student.find({ role_: Role.Agent });
+  student.agent_ = agents.filter(
+    (agent) => req.body[agent.emailaddress_] !== undefined
+  );
+  await student.save();
+  res.status(200).end();
+});
 
-const updateagent = async (req, res, next) => {
-  console.log(req.body);
-  // console.log(req.params.student_id);
-  try {
-    // Only admin can update agent// Only Admin can edit.
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    const user_me = await Student.findOne({
-      emailaddress_: emailaddress, // get current user.
-    });
-    if (user_me.role_ === "Admin") {
-      const Agent_all = await Student.find({ role_: "Agent" });
-      const student = await Student.findById(req.params.student_id);
-      console.log(student._id);
-      let temp_updateAgentlist = [];
-      Agent_all.map((agent) =>
-        // console.log(agent.emailaddress_)
-        req.body[agent.emailaddress_] === undefined
-          ? console.log("undefined")
-          : req.body[agent.emailaddress_]
-          ? temp_updateAgentlist.push(agent.emailaddress_)
-          : //  var indx = await student.agent_.indexOf(agent.emailaddress_);
-            // add agent student's database
-            // remove agent student's database
-            console.log("false")
-      );
-      student.agent_ = temp_updateAgentlist;
-      await student.save();
-      console.log("temp_updateAgentlist: " + temp_updateAgentlist);
-      console.log("update agent list success!");
-      res.status(200).end();
-    } else {
-      return res.status(401).end(); // 401 Unauthorized response
-    }
-  } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      // if the error thrown is because the JWT is unauthorized, return a 401 error
-      console.log(e);
-      console.log("error by update agent");
-      return res.status(500).end(); // 500 Internal Server Error
-    }
-    console.log(err);
-    return res.status(500).end(); // 500 Internal Server Error
-  }
-};
+const updateEditor = asyncHandler(async (req, res, next) => {
+  // TODO: use findByIdAndUpdate
+  const student = await Student.findById(req.params.id);
+  if (!student) throw new ErrorResponse(400, "Invalid id");
 
-const editeditor = async (req, res, next) => {
-  try {
-    // Only Admin can edit.
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    const user_me = await Student.findOne({
-      emailaddress_: emailaddress, // get current user.
-    });
-    if (user_me.role_ === "Admin") {
-      const Editor_all = await Student.find({ role_: "Editor" });
-      console.log("get editor list success!");
-      res.send({
-        data: Editor_all,
-      });
-    } else {
-      return res.status(401).end(); // 401 Unauthorized response
-    }
-  } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      // if the error thrown is because the JWT is unauthorized, return a 401 error
-      console.log(e);
-      console.log("error by editeditor");
-      return res.status(500).end(); // 500 Internal Server Error
-    }
-    console.log(err);
-    return res.status(500).end(); // 500 Internal Server Error
-  }
-};
+  const editors = await Student.find({ role_: Role.Editor });
+  student.editor_ = editors.filter(
+    (editor) => req.body[editor.emailaddress_] !== undefined
+  );
+  await student.save();
+  res.status(200).end();
+});
 
-const updateeditor = async (req, res, next) => {
-  console.log(req.body);
+const createProgram = asyncHandler(async (req, res) => {
+  const { studentId } = req.params;
+  const programId = req.body;
 
-  try {
-    // Only Admin can update editor
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    const user_me = await Student.findOne({
-      emailaddress_: emailaddress, // get current user.
-    });
-    if (user_me.role_ === "Admin") {
-      const Editor_All = await Student.find({ role_: "Editor" });
-      const student = await Student.findById(req.params.student_id);
-      console.log(student._id);
-      let temp_updateEditorlist = [];
-      Editor_All.map((editor) =>
-        req.body[editor.emailaddress_] === undefined
-          ? console.log("undefined")
-          : req.body[editor.emailaddress_]
-          ? temp_updateEditorlist.push(editor.emailaddress_)
-          : console.log("false")
-      );
-      student.editor_ = temp_updateEditorlist;
-      await student.save();
-      console.log("temp_updateEditorlist: " + temp_updateEditorlist);
-      console.log("update editor list success!");
-      res.status(200).end();
-    } else {
-      return res.status(401).end(); // 401 Unauthorized response
-    }
-  } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      // if the error thrown is because the JWT is unauthorized, return a 401 error
-      console.log(e);
-      console.log("error by update editor");
-      return res.status(500).end(); // 500 Internal Server Error
-    }
-    console.log(err);
-    return res.status(500).end(); // 500 Internal Server Error
-  }
-};
+  const student = await Student.findById(studentId);
+  if (await student.applying_program_.id(programId))
+    throw new ErrorResponse(400, "Duplicate program");
 
-const editstudentprogram = async (req, res, next) => {
-  //TODO: only agent can update
-  console.log("editstudentprogram success!");
-  res.status(404).end();
-};
+  const program = await Program.findById(programId);
+  student.applying_program_.push(program);
+  student.save();
+  res.status(201).send({ data: "success" });
+});
 
-const deleteprogramfromstudent = async (req, res, next) => {
-  try {
-    //Only Admin and Agent can delete
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    const user_me = await Student.findOne({
-      emailaddress_: emailaddress, // get current user.
-    });
-    if (user_me.role_ === "Admin" || user_me.role_ === "Agent") {
-      const student_id = req.params.student_id;
-      const program_id = req.params.program_id;
-      console.log("student id: " + student_id);
-      console.log("program id: " + program_id);
-      await Student.findByIdAndUpdate(
-        student_id,
-        { $pull: { applying_program_: { _id: program_id } } },
-        { safe: true, upsert: true },
-        function (err, node) {
-          if (err) {
-            return res.status(500).end(); // 500 Internal Server Error
-          }
-          return res.status(200).end();
-        }
-      );
-    } else {
-      return res.status(401).end(); // 401 Unauthorized response
-    }
-  } catch (err) {
-    console.log("error delete file: " + err);
-    return res.status(500).end(); // 500 Internal Server Error
-  }
-};
+// TODO: edit program?
+
+const deleteProgram = asyncHandler(async (req, res, next) => {
+  const { studentId, programId } = req.params;
+  await Student.findByIdAndUpdate(
+    studentId,
+    { $pull: { applying_program_: { _id: programId } } },
+    { safe: true, upsert: true }
+  );
+  res.status(200).end();
+});
 
 module.exports = {
   signIn,
@@ -470,4 +211,8 @@ module.exports = {
   settings,
   // student APIs
   getStudents,
+  updateAgent,
+  updateEditor,
+  createProgram,
+  deleteProgram,
 };

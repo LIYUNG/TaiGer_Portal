@@ -4,6 +4,8 @@ const studentController = require("../controllers/students");
 
 const authRouter = require("./auth");
 const usersRouter = require("./users");
+const agentsRouter = require("./agents")
+const editorsRouter = require("./editors")
 const studentsRouter = require("./students");
 const documentationsRouter = require("./documentations");
 const programsRouter = require("./programs");
@@ -53,9 +55,12 @@ const router = (app) => {
   app.use("/auth", authRouter);
 
   app.use("/users", usersRouter);
+  app.use("/students", studentsRouter)
+  app.use("/agents", agentsRouter)
+  app.use("/editors", editorsRouter)
+
   app.use("/docs", documentationsRouter);
   app.use("/programs", programsRouter);
-  app.use("/students", studentsRouter)
   app.use('/files', filesRouter)
 
   // TODO: organize below routes

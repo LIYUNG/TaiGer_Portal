@@ -1,50 +1,18 @@
-const Student = require('../models/Students')
-const Program = require('../models/Programs')
+const { asyncHandler } = require("../middlewares/error-handler");
 
+const Student = require("../models/Students");
+const Program = require("../models/Programs");
 
-const getPrograms = async (req, res) => {
-  try {
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    // //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    // //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    console.log(emailaddress);
-    const students_exists = await Student.findOne({
-      emailaddress_: emailaddress,
-    });
-    // Access all programs
-    if (
-      students_exists.role_ === "Agent" ||
-      students_exists.role_ === "Admin"
-    ) {
-      const program_all = await Program.find();
-      res.send({
-        data: program_all,
-        role: "Agent",
-      });
-    } else {
-      res.send({
-        // send the student's selected program
-        data: students_exists.applying_program_,
-        role: "Student",
-      });
-    }
-  } catch (err) {
-    if (e instanceof jwt.JsonWebTokenError) {
-      // if the error thrown is because the JWT is unauthorized, return a 401 error
-      console.log(e);
-      console.log("error by programlist");
-      return res.status(401).end();
-    }
-    console.log(err);
-  }
-};
+const getPrograms = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const programs =
+    user.role_ === "Agent" || user.role_ === "Admin"
+      ? await Program.find()
+      : user.applying_program_;
+  res.send({ data: programs, role: user.role_ });
+});
 
-
-const createProgram = async (req, res) => {
-  console.log(req.body);
+const createProgram = asyncHandler(async (req, res) => {
   const date_now = Date();
   try {
     console.log("New program ");
@@ -106,13 +74,13 @@ const createProgram = async (req, res) => {
     console.log("error by adding programlist : " + err);
     return res.status(500).end(); // 500 Internal Server Error
   }
-};
+});
 
-const updateProgram = async (req, res) => {
+const updateProgram = asyncHandler(async (req, res) => {
   try {
     console.log("edit req.params.id = " + req.params.id);
-    const program_id = req.params.id;
-    let program = await Program.findById(program_id);
+    const id = req.params.id;
+    let program = await Program.findById(id);
     console.log("program: " + program);
     const date_now = Date();
     const bearer = req.headers.authorization.split(" ");
@@ -140,45 +108,16 @@ const updateProgram = async (req, res) => {
     console.log("error by edit program: " + err);
     return res.status(500).end(); // 500 Internal Server Error
   }
-};
+});
 
-const deleteProgram = async (req, res) => {
-  try {
-    const bearer = req.headers.authorization.split(" ");
-    const token = bearer[1];
-    //Extract user email info by token
-    var emailaddress = jwt_decode(token);
-    //Get user email
-    emailaddress = emailaddress["emailaddress"];
-    const user_me = await Student.findOne({
-      emailaddress_: emailaddress, // get current user.
-    });
-    if (user_me.role_ === "Admin" || user_me.role_ === "Agent") {
-      console.log("delete " + req.params.program_id);
-      const program_id = req.params.program_id;
-      await Program.findByIdAndDelete(program_id);
-      res.send({
-        data: "success",
-      });
-    } else {
-      console.log(
-        "delete " +
-          req.params.program_id +
-          " failed: " +
-          "only Admin and Agent can delete program"
-      );
-      return res.status(401).end(); // 401 Unauthorized response
-    }
-  } catch (err) {
-    console.log("error by delete program");
-    console.log(err);
-    return res.status(500).end(); // 500 Internal Server Error
-  }
-};
+const deleteProgram = asyncHandler(async (req, res) => {
+  await Program.findByIdAndDelete(req.params.id);
+  res.send({ data: "success" });
+});
 
 module.exports = {
   getPrograms,
   createProgram,
   updateProgram,
   deleteProgram,
-}
+};

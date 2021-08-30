@@ -1,35 +1,32 @@
 const { Router } = require("express");
 
-const { auth } = require("../middlewares/auth");
+const { auth, permit } = require("../middlewares/auth");
+const { Role } = require("../models/User");
 
 const {
-  // getUsers,
-  // updateUser,
-  // deleteUser,
-  // changeUserRole,
-  // getStudents,
+  getStudents,
+  updateAgent,
+  updateEditor,
+  createProgram,
+  deleteProgram,
 } = require("../controllers/students");
 
 const router = Router();
 
 router.use(auth);
 
-// app.post("/assignprogramtostudent", auth, handlers.assignprogramtostudent);
+router.route("/").get(getStudents);
 
-// app.get("/studentlist", getStudents);
+router.route("/:id/agents").post(permit(Role.Admin), updateAgent);
 
-// app.get("/editagent", auth, handlers.editagent);
-// app.post("/updateagent/:student_id", auth, handlers.updateagent);
+router.route("/:id/editors").post(permit(Role.Admin), updateEditor);
 
-// app.get("/editeditor", auth, handlers.editeditor);
-// app.post("/updateeditor/:student_id", auth, handlers.updateeditor);
+router
+  .route("/:id/programs")
+  .post(permit(Role.Admin, Role.Agent), createProgram);
 
-// app.post("/editstudentprogram", auth, handlers.editstudentprogram);
-
-// app.delete(
-//   "/deleteprogramfromstudent/:program_id/:student_id",
-//   auth,
-//   handlers.deleteprogramfromstudent
-// );
+router
+  .route("/:studentId/programs/:programId")
+  .delete(permit(Role.Admin, Role.Agent), deleteProgram);
 
 module.exports = router;

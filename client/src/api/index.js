@@ -2,25 +2,22 @@ import request from "./request";
 
 // Student_API
 export const getStudents = () => request.get("/students");
-export const getMyfiles = () => request.get("/files");
+export const getAgents = () => request.get("/agents");
+export const getEditors = () => request.get("/editors");
 
-// del_prog_std_API
-export const removeProgramFromStudent = (programId, studentId) =>
-  request.delete(`/deleteprogramfromstudent/${programId}/${studentId}`);
-
-// edit_agent_API
-export const getAgents = () => request.get("/editagent");
-
-// update_agent_API
 export const updateAgents = (id, agents) =>
-  request.post(`/updateagent/${id}`, agents);
+  request.post(`/students/${id}/agents`, agents);
 
-// edit_editor_API
-export const getEditors = () => request.get("/editeditor");
-
-// update_editor_API
 export const updateEditors = (id, editors) =>
-  request.post(`/updateeditor/${id}`, editors);
+  request.post(`/students/${id}/editors`, editors);
+
+export const assignProgramToStudent = (studentId, programId) =>
+  request.post(`/students/${studentId}/programs`, programId);
+
+export const removeProgramFromStudent = (programId, studentId) =>
+  request.delete(`/students/${studentId}/programs/${programId}`);
+
+export const getMyfiles = () => request.get("/files");
 
 // accept_document_API, post data?
 export const acceptDocument = (category, id) =>
@@ -34,23 +31,14 @@ export const rejectDocument = (category, id) =>
 export const deleteFile = (category, id) =>
   request.delete(`/deletefile/${category}/${id}`);
 
-// FIXME: The endpoint should be "/programs/:id"
-// program_list_API
 export const getPrograms = () => request.get("/programs");
 
-// delete_program_API
 export const deleteProgram = (id) => request.delete(`/programs/${id}`);
 
-// add_program_API
 export const createProgram = (program) => request.post("/programs", program);
 
-// edit_program_API
 export const updateProgram = (program) =>
   request.post(`/programs/${program._id}`, program);
-
-// assign_program_API
-export const assignProgramToStudent = (data) =>
-  request.post("/assignprogramtostudent", data);
 
 export const getUsers = () => request.get("/users");
 

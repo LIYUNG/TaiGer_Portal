@@ -1,6 +1,7 @@
 const { Router } = require("express");
 
-const { auth } = require("../middlewares/auth");
+const { auth, permit } = require("../middlewares/auth");
+const { Role } = require('../models/User')
 
 const {
   getPrograms,
@@ -13,10 +14,12 @@ const router = Router();
 
 router.use(auth);
 
+// TODO: permission middleware
 router.route("/").get(getPrograms).post(createProgram);
 
-router.route("/:id").post(updateProgram);
-
-router.route("/:program_id").delete(deleteProgram);
+router
+  .route("/:id")
+  .post(updateProgram)
+  .delete(permit(Role.Admin, Role.Agent), deleteProgram);
 
 module.exports = router;

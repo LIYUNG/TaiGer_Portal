@@ -140,7 +140,8 @@ class ProgramTable extends React.Component {
   };
 
   assignProgram = (assign_data) => {
-    assignProgramToStudent(assign_data).then(
+    const { student_id, program_id } = assign_data
+    assignProgramToStudent(student_id, program_id).then(
       (resp) => {},
       (error) => {}
     );

@@ -1,2 +1,35 @@
 # Backend Setup
 - copy `.env.sample` to `.env.production`, `.env.development`, `.env.test` and fill in the values
+
+# Todos
+- [ ] fill missing fields in `api/.env.sample`
+- [ ] Verify routes still working
+  - [ ] POST   /login
+  - [ ] POST   /register
+  - [ ] GET    /users                                      (userslist)
+  - [ ] DELETE /users/:id                                  (deleteuser)
+  - [ ] POST   /users/:id                                  (edituser, changeuserrole)
+  - [ ] GET    /agents                                     (editagent)
+  - [ ] GET    /editors                                    (editeditor)
+  - [ ] GET    /students                                   (studentlist)
+  - [ ] POST   /students/:id/agents                        (updateagent)
+  - [ ] POST   /students/:id/editors                       (updateeditor)
+  - [ ] POST   /students/:id/programs                      (assignprogramtostudent)
+  - [ ] DELETE /students/:studentId/programs/:programId    (deleteprogramfromstudent)
+  - [ ] GET    /students/:studentId/files/:category        (filedownloadfromstudent)
+  - [ ] POST   /students/:studentId/files/:category        (UploadForStudentPost)
+  - [ ] DELETE /students/:studentId/files/:category        (deletefile)
+  - [ ] POST   /students/:studentId/files/:category/status (rejectdoc, acceptdoc)
+  - [ ] GET    /account/files
+  - [ ] GET    /account/files/:category                    (templatefiledownload)
+  - [ ] POST   /account/files/:category                    (UploadPost)
+  - [ ] POST   /account/transcript/:category/:group        (Upload_Transcript_XLSX)
+  - [ ] GET    /account/download/:category/:filename       (generated_XLSX_download)
+  - [ ] GET    /programs                                   (programlist)
+  - [ ] POST   /programs                                   (addprogram)
+  - [ ] POST   /programs/:id                               (editprogram)
+  - [ ] DELETE /programs/:id                               (deleteprogram)
+  - [ ] DELETE /docs/:id
+  - [ ] POST   /docs/:id
+  - [ ] POST   /docs
+  - [ ] GET    /docs/:type

@@ -24,6 +24,7 @@
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
+    "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "mongoose": "^5.12.5",
     "morgan": "^1.10.0",

@@ -1,7 +1,9 @@
+const path = require('path')
 const dotenv = require("dotenv");
 
-// FIXME: read different env file depend on NODE_ENV
-dotenv.config();
+dotenv.config({
+  path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`)
+});
 
 const isProd = () => process.env.NODE_ENV === "production";
 const isDev = () => process.env.NODE_ENV === "development";

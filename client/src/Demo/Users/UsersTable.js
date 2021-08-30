@@ -122,7 +122,7 @@ class UsersTable extends React.Component {
     });
     console.log("click assign user role");
     console.log(user_data);
-    changeUserRole(user_data)
+    changeUserRole(user_data._id, user_data.role_)
       // .then((res) => res.json())
       .then(
         (result) => {},

@@ -5,7 +5,7 @@ const connectToDatabase = async (uri, timeoutMS = 5000) => {
     console.error('Database connection error')
   })
 
-  const { connection } = await mongoose.connect('mongodb://localhost:27017/TaiGer', {
+  const { connection } = await mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

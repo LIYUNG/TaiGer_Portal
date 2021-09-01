@@ -49,9 +49,22 @@ const signIn = async (req, res) => {
   // console.log(req.body);
   const { emailaddress, password } = req.body;
   // Found existing users
-  const students_exists = await Student.findOne({
-    emailaddress_: req.body.emailaddress,
-  }).select("+password_");
+  // const students_exists = await Student.findOne({
+  //   emailaddress_: req.body.emailaddress,
+  // }).select("+password_");
+
+  let students_exists;
+  try {
+    students_exists = await Student.findOne({
+      emailaddress_: req.body.emailaddress,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  console.log(req.body);
+  console.log(students_exists);
+  if (!students_exists) return res.status(401).end();
   // console.log(students_exists);
   try {
     if (students_exists != null) {
@@ -153,27 +166,29 @@ const getStudents = asyncHandler(async (req, res) => {
 });
 
 const updateAgent = asyncHandler(async (req, res, next) => {
+  // FIXME: the request body should just be an array of emails, require change in frontend
   // TODO: use findByIdAndUpdate
   const student = await Student.findById(req.params.id);
   if (!student) throw new ErrorResponse(400, "Invalid id");
 
   const agents = await Student.find({ role_: Role.Agent });
-  student.agent_ = agents.filter(
-    (agent) => req.body[agent.emailaddress_] !== undefined
-  );
+  student.agent_ = agents
+    .map((agent) => agent.emailaddress_)
+    .filter((email) => req.body[email]);
   await student.save();
   res.status(200).end();
 });
 
 const updateEditor = asyncHandler(async (req, res, next) => {
+  // FIXME: the request body should just be an array of emails, require change in frontend
   // TODO: use findByIdAndUpdate
   const student = await Student.findById(req.params.id);
   if (!student) throw new ErrorResponse(400, "Invalid id");
 
   const editors = await Student.find({ role_: Role.Editor });
-  student.editor_ = editors.filter(
-    (editor) => req.body[editor.emailaddress_] !== undefined
-  );
+  student.editor_ = editors
+    .map((editor) => editor.emailaddress_)
+    .filter((email) => req.body[email]);
   await student.save();
   res.status(200).end();
 });

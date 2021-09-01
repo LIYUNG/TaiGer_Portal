@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production nodemon index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js --ignore '__tests__/*'",
-    "test": "cross-env NODE_ENV=test jest"
+    "test": "cross-env NODE_ENV=test jest --runInBand"
   },
   "preset": "@shelf/jest-mongodb",
   "dependencies": {
@@ -38,7 +38,9 @@
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^2.0.1",
+    "@types/jest": "^27.0.1",
     "cross-env": "^7.0.3",
+    "faker": "^5.5.3",
     "jest": "^27.0.6",
     "nodemon": "^2.0.9",
     "prettier": "^2.3.2",

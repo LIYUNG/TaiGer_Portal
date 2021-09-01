@@ -5,10 +5,8 @@ const { Role } = require("../models/User");
 const Student = require("../models/Students");
 
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await Student.find({
-    emailaddress_: { $ne: req.user.emailaddress_ },
-  });
-  res.send({ data: users, role: req.user.role_ });
+  const users = await Student.find();
+  res.send({ data: users });
 });
 
 const updateUser = asyncHandler(async (req, res) => {

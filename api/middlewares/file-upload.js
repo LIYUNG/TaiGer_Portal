@@ -3,9 +3,8 @@ const path = require("path");
 const multer = require("multer");
 
 const { ErrorResponse } = require("../common/errors");
-const { BASE_PATH } = require("../config");
+const { UPLOAD_PATH } = require("../config");
 
-const UPLOAD_FOLDER = "./public/";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_MIME_TYPES = [
   "application/pdf",
@@ -19,7 +18,7 @@ const ALLOWED_MIME_TYPES = [
 const userFolder = (user) => `${user.firstname_}_${user.lastname_}_${user._id}`;
 
 const fullUploadPath = (user, category) =>
-  path.join(UPLOAD_FOLDER, BASE_PATH, userFolder(user), category);
+  path.join(UPLOAD_PATH, userFolder(user), category);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -29,8 +28,7 @@ const storage = multer.diskStorage({
     return cb(null, directory);
   },
   filename: (req, file, cb) => {
-    const fileName =
-      Date.now() + file.originalname.toLowerCase().split(" ").join("-");
+    const fileName = file.originalname.toLowerCase().split(" ").join("-");
     cb(null, fileName);
   },
 });
@@ -51,7 +49,6 @@ const upload = multer({
     cb(null, true);
   },
 });
-
 
 module.exports = {
   fileUpload: upload.single("file"),

@@ -5,6 +5,7 @@ const { ErrorResponse } = require("../common/errors");
 const { asyncHandler } = require("../middlewares/error-handler");
 const { Role } = require("../models/User");
 const Student = require("../models/Students");
+const Program = require("../models/Programs");
 
 const { JWT_KEY, JWT_EXPIRY_SECONDS } = require("../config");
 const saltRounds = 10;
@@ -194,8 +195,7 @@ const updateEditor = asyncHandler(async (req, res, next) => {
 });
 
 const createProgram = asyncHandler(async (req, res) => {
-  const { studentId } = req.params;
-  const programId = req.body;
+  const { params: { studentId }, body: { programId } } = req
 
   const student = await Student.findById(studentId);
   if (await student.applying_program_.id(programId))
@@ -203,7 +203,7 @@ const createProgram = asyncHandler(async (req, res) => {
 
   const program = await Program.findById(programId);
   student.applying_program_.push(program);
-  student.save();
+  await student.save();
   res.status(201).send({ data: "success" });
 });
 
@@ -211,6 +211,7 @@ const createProgram = asyncHandler(async (req, res) => {
 
 const deleteProgram = asyncHandler(async (req, res, next) => {
   const { studentId, programId } = req.params;
+  // FIXME: might want to check if student really have the program, return 400 otherwise
   await Student.findByIdAndUpdate(
     studentId,
     { $pull: { applying_program_: { _id: programId } } },

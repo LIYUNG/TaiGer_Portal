@@ -1,9 +1,6 @@
 const { ObjectId } = require("mongoose").Types;
 const faker = require("faker");
 
-const { connectToDatabase, disconnectFromDatabase } = require("../../database");
-const Student = require("../../models/Students");
-
 const generateUser = (role) => ({
   _id: new ObjectId(),
   firstname_: faker.name.firstName(),

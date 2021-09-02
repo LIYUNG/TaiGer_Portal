@@ -31,7 +31,7 @@ router.route("/:id/agents").post(permit(Role.Admin), updateAgent);
 router.route("/:id/editors").post(permit(Role.Admin), updateEditor);
 
 router
-  .route("/:id/programs")
+  .route("/:studentId/programs")
   .post(permit(Role.Admin, Role.Agent), createProgram);
 
 router
@@ -42,8 +42,8 @@ router
   .route("/:studentId/files/:category")
   .get(
     permit(Role.Admin, Role.Agent),
-    (req, res, next) => {
-      const student = Students.findById(req.params.studentId);
+    async (req, res, next) => {
+      const student = await Students.findById(req.params.studentId);
       if (!student) throw new ErrorResponse(400, "Invalid student Id");
 
       req.user = student;
@@ -53,8 +53,8 @@ router
   )
   .post(
     permit(Role.Admin, Role.Agent),
-    (req, res, next) => {
-      const student = Students.findById(req.params.studentId);
+    async (req, res, next) => {
+      const student = await Students.findById(req.params.studentId);
       if (!student) throw new ErrorResponse(400, "Invalid student Id");
 
       req.user = student;

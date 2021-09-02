@@ -4,7 +4,7 @@ const { spawn } = require("child_process");
 
 const { asyncHandler } = require("../middlewares/error-handler");
 const Student = require("../models/Students");
-const { BASE_PATH, PYTHON_BASE_PATH } = require("../config");
+const { UPLOAD_PATH, PYTHON_BASE_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 
 // TODO: validate category
@@ -15,7 +15,7 @@ const getFiles = asyncHandler(async (req, res) => {
 });
 
 const saveFilePath = asyncHandler(async (req, res) => {
-  const { category } = req.params;
+  const { studentId, category } = req.params;
 
   const fields = {
     [`uploadedDocs_.${category}.uploadStatus_`]: "uploaded",
@@ -23,8 +23,8 @@ const saveFilePath = asyncHandler(async (req, res) => {
     [`uploadedDocs_.${category}.LastUploadDate_`]: Date(),
   };
 
-  await Student.findByIdAndUpdate(_id, { $set: fields });
-  return res.status(200).end();
+  await Student.findByIdAndUpdate(studentId, { $set: fields });
+  return res.status(201).end();
 });
 
 const downloadFile = asyncHandler(async (req, res, next) => {
@@ -33,7 +33,7 @@ const downloadFile = asyncHandler(async (req, res, next) => {
 
   // TODO: confirm the use of this path?
   // const directoryPath = path.join(
-  //   BASE_PATH,
+  //   UPLOAD_PATH,
   //   "TaiGer_Template_2021_02",
   //   category,
   //   "Template.docx"
@@ -122,7 +122,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   const { firstname_, lastname_, _id } = student;
 
   const filePath = path.join(
-    BASE_PATH,
+    UPLOAD_PATH,
     `${firstname_}_${lastname_}_${_id}`,
     category,
     "output",

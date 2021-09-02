@@ -1,4 +1,4 @@
-const { isDev } = require("../config");
+const { isProd } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 
 const asyncHandler = (handler) => (req, res, next) =>
@@ -18,7 +18,7 @@ const errorHandler = (err, req, res, next) => {
   // TODO: body-parser error, mongoose error, validation error
   res.status(500).json({
     success: false,
-    message: isDev() ? err.message : "Unexpected condition",
+    message: isProd() ? "Unexpected condition" : err.message,
   });
 };
 

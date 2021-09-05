@@ -1,6 +1,9 @@
 # Backend Setup
 - copy `.env.sample` to `.env.production`, `.env.development`, `.env.test` and fill in the values
 
+# Notes
+- the `UPLOAD_PATH` in `.env.test` will be deleted whenever the test is run, be careful not to share the value with other `.env` files
+
 # Todos
 - [x] fill missing fields in `api/.env.sample`
 - [ ] Verify routes still working

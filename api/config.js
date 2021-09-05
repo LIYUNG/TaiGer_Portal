@@ -28,7 +28,6 @@ module.exports = {
   BASE_URL: env("BASE_URL", "http://localhost:3000"),
   // TODO: verify values below
   UPLOAD_PATH: env("UPLOAD_PATH"),
-  PYTHON_BASE_PATH: env("PYTHON_BASE_PATH"),
   JWT_KEY: env("JWT_KEY"),
   JWT_EXPIRY_SECONDS: parseInt(env("JWT_EXPIRY_SECONDS", 3600)),
 };

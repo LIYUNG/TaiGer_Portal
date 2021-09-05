@@ -4,7 +4,7 @@ const { spawn } = require("child_process");
 
 const { asyncHandler } = require("../middlewares/error-handler");
 const Student = require("../models/Students");
-const { UPLOAD_PATH, PYTHON_BASE_PATH } = require("../config");
+const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 
 // TODO: validate category
@@ -15,7 +15,9 @@ const getFiles = asyncHandler(async (req, res) => {
 });
 
 const saveFilePath = asyncHandler(async (req, res) => {
-  const { studentId, category } = req.params;
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const studentId = req.params.studentId || req.user._id;
+  const { category } = req.params;
 
   const fields = {
     [`uploadedDocs_.${category}.uploadStatus_`]: "uploaded",
@@ -56,6 +58,7 @@ const downloadFile = asyncHandler(async (req, res, next) => {
 const updateFileStatus = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
   const { status } = req.body;
+  // FIXME: validate status
 
   const fields = {
     [`uploadedDocs_.${category}.uploadStatus_`]: status,
@@ -84,7 +87,7 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   return res.status(200).end();
 });
 
-const processTranscript = asyncHandler(async (req, res) => {
+const processTranscript = asyncHandler(async (req, res, next) => {
   const {
     params: { group },
     file: { filename, path: filePath },
@@ -93,23 +96,20 @@ const processTranscript = asyncHandler(async (req, res) => {
   // FIXME: better pass output filepath as argument to python script instead of hard code value
   const output = `analyzed_${filename}`;
   const python = spawn("python", [
-    path.join(
-      PYTHON_BASE_PATH,
-      "TaiGer_Transcript-Program_Comparer",
-      "main.py"
-    ),
+    path.join(__dirname, "..", "TaiGer_Transcript-Program_Comparer", "main.py"),
     filePath,
     group,
   ]);
 
   python.on("close", (code) => {
-    if (code !== 0)
-      throw new ErrorResponse(
+    if (code === 0) return res.status(200).send({ generatedfile: output });
+
+    next(
+      new ErrorResponse(
         500,
         "Error occurs while trying to produce analyzed report"
-      );
-
-    return res.status(200).send({ generatedfile: output });
+      )
+    );
   });
 });
 

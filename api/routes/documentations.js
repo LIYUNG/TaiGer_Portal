@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const { auth, permit, prohibit } = require("../middlewares/auth");
+const { protect, permit, prohibit } = require("../middlewares/auth");
 const { Role } = require('../models/User')
 
 const {
@@ -12,7 +12,7 @@ const {
 
 const router = Router();
 
-router.use(auth);
+router.use(protect);
 
 router.route("/").post(permit(Role.Admin, Role.Agent), createDocumentation);
 

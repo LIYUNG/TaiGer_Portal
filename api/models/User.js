@@ -66,11 +66,52 @@ const User = model("User", UserSchema);
 
 const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
 
+const UploadStatus = {
+  Missing: "missing",
+  Accepted: "accepted",
+  Rejected: "rejected",
+};
+
+const applicationSchema = new Schema(
+  {
+    programId: { type: ObjectId, ref: "Program" },
+    documents: [
+      {
+        type: {
+          type: String,
+          required: true,
+        },
+        status: {
+          type: String,
+          enum: Object.values(UploadStatus),
+          default: UploadStatus.Missing,
+        },
+        path: String,
+        // TODO: updateBy
+        updatedAt: Date,
+      },
+    ],
+  },
+);
+
+const Student = User.discriminator(
+  "Student",
+  new Schema(
+    {
+      agents: [{ type: ObjectId, ref: "Agent" }],
+      editors: [{ type: ObjectId, ref: "Editor" }],
+      applications: [applicationSchema],
+    },
+    options
+  ),
+  Role.Student
+);
+
 const Agent = User.discriminator(
   "Agent",
   new Schema(
     {
-      students: [{ type: ObjectId, ref: "User" }],
+      students: [{ type: ObjectId, ref: "Student" }],
     },
     options
   ),
@@ -81,7 +122,7 @@ const Editor = User.discriminator(
   "Editor",
   new Schema(
     {
-      students: [{ type: ObjectId, ref: "User" }],
+      students: [{ type: ObjectId, ref: "Student" }],
     },
     options
   ),
@@ -90,4 +131,4 @@ const Editor = User.discriminator(
 
 const Admin = User.discriminator("Admin", new Schema({}, options), Role.Admin);
 
-module.exports = { Role, User, Guest, Agent, Editor, Admin };
+module.exports = { Role, User, Guest, Student, Agent, Editor, Admin };

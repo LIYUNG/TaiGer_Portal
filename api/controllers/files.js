@@ -3,7 +3,7 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 
 const { asyncHandler } = require("../middlewares/error-handler");
-const Student = require("../models/Students");
+const { Student } = require("../models/User");
 const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 

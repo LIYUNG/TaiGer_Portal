@@ -1,6 +1,7 @@
 const { Router } = require("express");
 
-const { auth } = require("../middlewares/auth");
+const { Role } = require("../models/User")
+const { protect, permit } = require("../middlewares/auth");
 const { fileUpload } = require("../middlewares/file-upload");
 
 const {
@@ -13,7 +14,7 @@ const {
 
 const router = Router();
 
-router.use(auth);
+router.use(protect, permit(Role.Student));
 
 router.route("/files").get(getFiles);
 

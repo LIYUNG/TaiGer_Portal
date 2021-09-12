@@ -12,7 +12,7 @@ const {
   checkToken,
 } = require("../common/validation");
 const { asyncHandler } = require("../middlewares/error-handler");
-const { User, Role } = require("../models/User");
+const { User, Student, Role } = require("../models/User");
 const Token = require("../models/Token");
 const {
   sendConfirmationEmail,
@@ -43,12 +43,13 @@ const signup = asyncHandler(async (req, res) => {
     );
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await Student.create({ name, email, password });
+  // const user = await User.create({ name, email, password });
 
   const activationToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(activationToken) });
 
-  await sendConfirmationEmail({ name, address: email }, activationToken);
+  // await sendConfirmationEmail({ name, address: email }, activationToken);
 
   const authToken = generateAuthToken(user);
   res

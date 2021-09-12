@@ -2,15 +2,14 @@ const request = require("supertest");
 
 const { app } = require("../app");
 const { connectToDatabase, disconnectFromDatabase } = require("../database");
-const { Role } = require("../models/User");
-const Student = require("../models/Students");
+const { Role, User } = require("../models/User");
 const { generateUser } = require("./fixtures/users");
 
 jest.mock("../middlewares/auth", () => {
   const passthrough = async (req, res, next) => next();
 
   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
-    auth: passthrough,
+    protect: passthrough,
     permit: (...roles) => passthrough,
   });
 });
@@ -27,38 +26,39 @@ const guests = [...Array(5)].map(() => generateUser(Role.Guest));
 const users = [...admins, ...agents, ...editors, ...students, ...guests];
 
 beforeEach(async () => {
-  await Student.deleteMany();
-  await Student.create(users);
+  await User.deleteMany();
+  await User.create(users);
 });
 
 describe("GET /users", () => {
   it("should return all users", async () => {
     const resp = await request(app).get("/users");
-    const { data } = resp.body;
+    const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
+    expect(success).toBe(true);
     expect(data).toEqual(expect.any(Array));
     expect(data.length).toBe(users.length);
   });
 });
 
-describe("POST /users/:id", () => {
+describe("PUT /users/:id", () => {
   it("should update a user", async () => {
     const { _id } = users[0];
-    const { firstname_, lastname_, emailaddress_ } = generateUser();
+    const { name, email } = generateUser();
 
-    const resp = await request(app).post(`/users/${_id}`).send({
-      firstname_,
-      lastname_,
-      emailaddress_,
-    });
+    const resp = await request(app).put(`/users/${_id}`).send({ name, email });
+    const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
-    expect(resp.body.data).toMatchObject({ firstname_, lastname_, emailaddress_ })
+    expect(success).toBe(true);
+    expect(data).toMatchObject({ name, email });
 
-    const updatedUser = await Student.findById(_id);
-    expect(updatedUser).toMatchObject({ firstname_, lastname_, emailaddress_ })
+    const updatedUser = await User.findById(_id);
+    expect(updatedUser).toMatchObject({ name, email });
   });
+
+  it.todo("should change user fields when updating it's role");
 });
 
 describe("DELETE /users/:id", () => {
@@ -68,35 +68,52 @@ describe("DELETE /users/:id", () => {
     const resp = await request(app).delete(`/users/${_id}`);
 
     expect(resp.status).toBe(200);
+    expect(resp.body.success).toBe(true);
 
-    const deletedUser = await Student.findById(_id);
-    expect(deletedUser).toBe(null)
+    const deletedUser = await User.findById(_id);
+    expect(deletedUser).toBe(null);
   });
 });
 
+// TODO: move below to their own files?
 describe("GET /agents", () => {
   it("should return all agents", async () => {
     const resp = await request(app).get("/agents");
-    const { data } = resp.body;
+    const { success, data } = resp.body;
+
+    const agentIds = agents.map(({ _id }) => _id).sort()
+    const receivedIds = data.map(({ _id }) => _id).sort()
 
     expect(resp.status).toBe(200);
-    expect(data).toEqual(expect.any(Array));
-    expect(data.length).toBe(agents.length);
+    expect(success).toBe(true);
+    expect(receivedIds).toEqual(agentIds);
   });
 });
 
 describe("GET /editors", () => {
   it("should return all editors", async () => {
     const resp = await request(app).get("/editors");
-    const { data } = resp.body;
+    const { success, data } = resp.body;
+
+    const editorIds = editors.map(({ _id }) => _id).sort()
+    const receivedIds = data.map(({ _id }) => _id).sort()
 
     expect(resp.status).toBe(200);
-    expect(data).toEqual(expect.any(Array));
-    expect(data.length).toBe(editors.length);
+    expect(success).toBe(true);
+    expect(receivedIds).toEqual(editorIds);
   });
 });
 
 describe("GET /students", () => {
-  // FIXME: fix the logic for this route, return data shouldn't depend on role?
-  it.todo("should return all students");
+  it("should return all students", async () => {
+    const resp = await request(app).get("/students");
+    const { success, data } = resp.body;
+
+    const studentIds = students.map(({ _id }) => _id).sort()
+    const receivedIds = data.map(({ _id }) => _id).sort()
+
+    expect(resp.status).toBe(200);
+    expect(success).toBe(true);
+    expect(receivedIds).toEqual(studentIds);
+  });
 });

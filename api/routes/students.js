@@ -1,17 +1,18 @@
 const { Router } = require("express");
 
 const { ErrorResponse } = require("../common/errors");
-const { auth, permit } = require("../middlewares/auth");
+const { protect, permit } = require("../middlewares/auth");
 const { fileUpload } = require("../middlewares/file-upload");
-const { Role } = require("../models/User");
-const Students = require("../models/Students");
+const { Role, Student } = require("../models/User");
 
 const {
   getStudents,
-  updateAgent,
-  updateEditor,
-  createProgram,
-  deleteProgram,
+  assignAgentToStudent,
+  removeAgentFromStudent,
+  assignEditorToStudent,
+  removeEditorFromStudent,
+  createApplication,
+  deleteApplication,
 } = require("../controllers/students");
 const {
   saveFilePath,
@@ -22,28 +23,34 @@ const {
 
 const router = Router();
 
-router.use(auth);
+router.use(protect);
 
-router.route("/").get(getStudents);
+router.route("/").get(permit(Role.Admin), getStudents);
 
-router.route("/:id/agents").post(permit(Role.Admin), updateAgent);
+router.route("/:id/agents").post(permit(Role.Admin), assignAgentToStudent);
+router
+  .route("/:studentId/agents/:agentId")
+  .delete(permit(Role.Admin), removeAgentFromStudent);
 
-router.route("/:id/editors").post(permit(Role.Admin), updateEditor);
+router.route("/:id/editors").post(permit(Role.Admin), assignEditorToStudent);
+router
+  .route("/:studentId/editors/:editorId")
+  .delete(permit(Role.Admin), removeEditorFromStudent);
 
 router
-  .route("/:studentId/programs")
-  .post(permit(Role.Admin, Role.Agent), createProgram);
+  .route("/:studentId/applications")
+  .post(permit(Role.Admin, Role.Agent), createApplication);
 
 router
-  .route("/:studentId/programs/:programId")
-  .delete(permit(Role.Admin, Role.Agent), deleteProgram);
+  .route("/:studentId/applications/:applicationId")
+  .delete(permit(Role.Admin, Role.Agent), deleteApplication);
 
 router
   .route("/:studentId/files/:category")
   .get(
     permit(Role.Admin, Role.Agent),
     async (req, res, next) => {
-      const student = await Students.findById(req.params.studentId);
+      const student = await Student.findById(req.params.studentId);
       if (!student) throw new ErrorResponse(400, "Invalid student Id");
 
       req.user = student;
@@ -54,7 +61,7 @@ router
   .post(
     permit(Role.Admin, Role.Agent),
     async (req, res, next) => {
-      const student = await Students.findById(req.params.studentId);
+      const student = await Student.findById(req.params.studentId);
       if (!student) throw new ErrorResponse(400, "Invalid student Id");
 
       req.user = student;

@@ -26,8 +26,5 @@ module.exports = {
   SMTP_USERNAME: env("SMTP_USERNAME", "glen.simonis12@ethereal.email"),
   SMTP_PASSWORD: env("SMTP_PASSWORD", "KHJ5yg3xpSCgRDHCjd"),
   BASE_URL: env("BASE_URL", "http://localhost:3000"),
-  // TODO: verify values below
   UPLOAD_PATH: env("UPLOAD_PATH"),
-  JWT_KEY: env("JWT_KEY"),
-  JWT_EXPIRY_SECONDS: parseInt(env("JWT_EXPIRY_SECONDS", 3600)),
 };

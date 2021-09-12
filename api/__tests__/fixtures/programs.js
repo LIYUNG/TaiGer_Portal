@@ -1,25 +1,18 @@
-
 const { ObjectId } = require("mongoose").Types;
 const faker = require("faker");
 
-const generateProgram = () => ({
+const { Degree } = require("../../models/Program")
+
+const generateProgram = (degree = Degree.master) => ({
   _id: new ObjectId(),
-	University_: faker.lorem.word(),
-  Program_: faker.lorem.word(),
-  Degree_: faker.lorem.word(),
-  Semester_: faker.lorem.word(),
-  Want_: faker.lorem.word(),
-  TOEFL_: faker.lorem.word(),
-  IELTS_: faker.lorem.word(),
-  TestDaF_: faker.lorem.word(),
-  GMAT_: faker.lorem.word(),
-  GRE_: faker.lorem.word(),
-  Application_start_date_: faker.lorem.word(),
-  Application_end_date_: faker.lorem.word(),
-  Website_: faker.internet.url(),
-  FPSOlink_: faker.lorem.word(),
-  LastUpdate_: faker.lorem.word(),
-  // applicationDocu_: ?,
+  school: faker.company.companyName(),
+  name: faker.lorem.word(),
+  url: faker.internet.url(),
+  degree,
+  semester: "summer",
+  applicationAvailable: faker.date.recent(),
+  applicationDeadline: faker.date.future(),
+  requiredDocuments: [],
 });
 
 module.exports = {

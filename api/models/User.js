@@ -72,27 +72,32 @@ const UploadStatus = {
   Rejected: "rejected",
 };
 
-const applicationSchema = new Schema(
-  {
-    programId: { type: ObjectId, ref: "Program" },
-    documents: [
-      {
-        type: {
-          type: String,
-          required: true,
-        },
-        status: {
-          type: String,
-          enum: Object.values(UploadStatus),
-          default: UploadStatus.Missing,
-        },
-        path: String,
-        // TODO: updateBy
-        updatedAt: Date,
+const applicationSchema = new Schema({
+  programId: { type: ObjectId, ref: "Program" },
+  documents: [
+    {
+      name: {
+        type: String,
+        required: true,
       },
-    ],
-  },
-);
+      status: {
+        type: String,
+        enum: Object.values(UploadStatus),
+        default: UploadStatus.Missing,
+      },
+      required: {
+        type: Boolean,
+        required: true,
+      },
+      path: {
+        type: String,
+        default: "",
+      },
+      // TODO: updateBy
+      updatedAt: Date,
+    },
+  ],
+});
 
 const Student = User.discriminator(
   "Student",

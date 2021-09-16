@@ -4,7 +4,7 @@ const request = require("supertest");
 const { UPLOAD_PATH } = require("../config");
 const { app } = require("../app");
 const { connectToDatabase, disconnectFromDatabase } = require("../database");
-const { Role, Student } = require("../models/User");
+const { Role, User, Agent, Editor, Student } = require("../models/User");
 const { Program } = require("../models/Program");
 const { generateUser } = require("./fixtures/users");
 const { generateProgram } = require("./fixtures/programs");
@@ -24,94 +24,141 @@ const editors = [...Array(3)].map(() => generateUser(Role.Editor));
 const student = generateUser(Role.Student);
 const users = [admin, ...agents, ...editors, student];
 
-const programs = [...Array(10)].map(generateProgram);
+const requiredDocuments = ["transcript", "resume"];
+const optionalDocuments = ["certificate", "visa"];
+const program = generateProgram(requiredDocuments, optionalDocuments);
 
 beforeAll(async () => await connectToDatabase(global.__MONGO_URI__));
 
 afterAll(disconnectFromDatabase);
 
 beforeEach(async () => {
-  await Student.deleteMany();
-  await Student.create(users);
+  await User.deleteMany();
+  await User.insertMany(users);
 
   await Program.deleteMany();
-  await Program.create(programs);
+  await Program.create(program);
 });
 
 afterEach(() => {
   fs.rmSync(UPLOAD_PATH, { recursive: true, force: true });
 });
 
-// describe("POST /students/:id/agents", () => {
-//   it("should update user's agents", async () => {
-//     const { _id } = student;
-//     const [agent1, agent2, _] = agents;
+describe("POST /students/:id/agents", () => {
+  it("should assign an agent to student", async () => {
+    const { _id: studentId } = student;
+    const { _id: agentId } = agents[0];
 
-//     const resp = await request(app)
-//       .post(`/students/${_id}/agents`)
-//       .send({
-//         [agent1.emailaddress_]: true,
-//         [agent2.emailaddress_]: true,
-//       });
+    const resp = await request(app)
+      .post(`/students/${studentId}/agents`)
+      .send({ id: agentId });
 
-//     expect(resp.status).toBe(200);
+    expect(resp.status).toBe(200);
 
-//     const updatedStudent = await Student.findById(_id);
-//     expect(updatedStudent.agent_.toObject().sort()).toEqual(
-//       [agent1.emailaddress_, agent2.emailaddress_].sort()
-//     );
-//   });
-// });
+    const updatedStudent = await Student.findById(studentId);
+    expect(updatedStudent.agents.map(String)).toEqual([agentId]);
 
-// describe("POST /students/:id/editors", () => {
-//   it("should update user's editors", async () => {
-//     const { _id } = student;
-//     const [editor1, editor2, _] = editors;
+    const updatedAgent = await Agent.findById(agentId);
+    expect(updatedAgent.students.map(String)).toEqual([studentId]);
+  });
+});
 
-//     const resp = await request(app)
-//       .post(`/students/${_id}/editors`)
-//       .send({
-//         [editor1.emailaddress_]: true,
-//         [editor2.emailaddress_]: true,
-//       });
+describe("DELETE /students/:studentId/agents/:agentId", () => {
+  it("should remove an agent from student", async () => {
+    const { _id: studentId } = student;
+    const { _id: agentId } = agents[0];
 
-//     expect(resp.status).toBe(200);
+    await request(app)
+      .post(`/students/${studentId}/agents`)
+      .send({ id: agentId });
 
-//     const updatedStudent = await Student.findById(_id);
-//     expect(updatedStudent.editor_.toObject().sort()).toEqual(
-//       [editor1.emailaddress_, editor2.emailaddress_].sort()
-//     );
-//   });
-// });
+    const resp = await request(app).delete(
+      `/students/${studentId}/agents/${agentId}`
+    );
 
-// describe("POST /students/:id/programs", () => {
-//   it("should assign a program to student", async () => {
-//     const { _id: studentId } = student;
-//     const program = programs[0];
-//     const resp = await request(app)
-//       .post(`/students/${studentId}/programs`)
-//       .send({ programId: program._id });
+    expect(resp.status).toBe(200);
 
-//     expect(resp.status).toBe(201);
+    const updatedStudent = await Student.findById(studentId);
+    expect(updatedStudent.agents.map(String)).toEqual([]);
 
-//     const updatedStudent = await Student.findById(studentId);
-//     expect(updatedStudent.applying_program_[0]).toMatchObject(program);
-//   });
+    const updatedAgent = await Agent.findById(agentId);
+    expect(updatedAgent.students.map(String)).toEqual([]);
+  });
+});
 
-//   it("should return 400 when creating duplicate program for student", async () => {
-//     const { _id: studentId } = student;
-//     const program = programs[0];
-//     await request(app)
-//       .post(`/students/${studentId}/programs`)
-//       .send({ programId: program._id });
+describe("POST /students/:id/editors", () => {
+  it("should assign an editor to student", async () => {
+    const { _id: studentId } = student;
+    const { _id: editorId } = editors[0];
 
-//     const resp = await request(app)
-//       .post(`/students/${studentId}/programs`)
-//       .send({ programId: program._id });
+    const resp = await request(app)
+      .post(`/students/${studentId}/editors`)
+      .send({ id: editorId });
 
-//     expect(resp.status).toBe(400);
-//   });
-// });
+    expect(resp.status).toBe(200);
+
+    const updatedStudent = await Student.findById(studentId);
+    expect(updatedStudent.editors.map(String)).toEqual([editorId]);
+
+    const updatedEditor = await Editor.findById(editorId);
+    expect(updatedEditor.students.map(String)).toEqual([studentId]);
+  });
+});
+
+describe("DELETE /students/:studentId/editors/:editorId", () => {
+  it("should remove an editor from student", async () => {
+    const { _id: studentId } = student;
+    const { _id: editorId } = editors[0];
+
+    await request(app)
+      .post(`/students/${studentId}/editors`)
+      .send({ id: editorId });
+
+    const resp = await request(app).delete(
+      `/students/${studentId}/editors/${editorId}`
+    );
+
+    expect(resp.status).toBe(200);
+
+    const updatedStudent = await Student.findById(studentId);
+    expect(updatedStudent.editors.map(String)).toEqual([]);
+
+    const updatedEditor = await Editor.findById(editorId);
+    expect(updatedEditor.students.map(String)).toEqual([]);
+  });
+});
+
+describe("POST /students/:id/applications", () => {
+  it("should create an application for student", async () => {
+    const { _id: studentId } = student;
+    const resp = await request(app)
+      .post(`/students/${studentId}/applications`)
+      .send({ programId: program._id });
+
+    expect(resp.status).toBe(201);
+
+    const updatedStudent = await Student.findById(studentId);
+    const { programId, documents } = updatedStudent.applications[0];
+    expect(String(programId)).toEqual(program._id);
+
+    expect(Array.from(documents.map(({ name }) => name).sort())).toEqual(
+      [...requiredDocuments, ...optionalDocuments].sort()
+    );
+  });
+
+  it("should return 400 when creating application with duplicate program Id", async () => {
+    const { _id: studentId } = student;
+    await request(app)
+      .post(`/students/${studentId}/applications`)
+      .send({ programId: program._id });
+
+    const resp = await request(app)
+      .post(`/students/${studentId}/applications`)
+      .send({ programId: program._id });
+
+    expect(resp.status).toBe(400);
+  });
+});
 
 // describe("DELETE /students/:studentId/programs/:programId", () => {
 //   const { _id: studentId } = student;
@@ -235,5 +282,3 @@ afterEach(() => {
 
 //   it.todo("should return 400 when file status is invalid");
 // });
-
-test.todo("student test")

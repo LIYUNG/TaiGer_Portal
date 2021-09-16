@@ -11,19 +11,20 @@ const getStudents = asyncHandler(async (req, res) => {
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { id: studentId },
-    body: agentId,
+    body: { id: agentId },
   } = req;
   // TODO: check studentId and agentId are valid
 
   // TODO: transaction?
   await Student.findByIdAndUpdate(studentId, {
-    agents: { $push: agentId },
+    $push: { agents: agentId },
   });
 
   await Agent.findByIdAndUpdate(agentId, {
-    students: { $push: studentId },
+    $push: { students: studentId },
   });
 
+  // TODO: return data?
   res.status(200).send({ success: true });
 });
 
@@ -32,11 +33,11 @@ const removeAgentFromStudent = asyncHandler(async (req, res, next) => {
 
   // TODO: transaction?
   await Student.findByIdAndUpdate(studentId, {
-    agents: { $pull: agentId },
+    $pull: { agents: agentId },
   });
 
   await Agent.findByIdAndUpdate(agentId, {
-    students: { $pull: studentId },
+    $pull: { students: studentId },
   });
 
   res.status(200).send({ success: true });
@@ -45,17 +46,17 @@ const removeAgentFromStudent = asyncHandler(async (req, res, next) => {
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { id: studentId },
-    body: editorId,
+    body: { id: editorId },
   } = req;
   // TODO: check studentId and editorId are valid
 
   // TODO: transaction?
   await Student.findByIdAndUpdate(studentId, {
-    editors: { $push: editorId },
+    $push: { editors: editorId },
   });
 
   await Editor.findByIdAndUpdate(editorId, {
-    students: { $push: studentId },
+    $push: { students: studentId },
   });
 
   res.status(200).send({ success: true });
@@ -66,11 +67,11 @@ const removeEditorFromStudent = asyncHandler(async (req, res, next) => {
 
   // TODO: transaction?
   await Student.findByIdAndUpdate(studentId, {
-    editors: { $pull: editorId },
+    $pull: { editors: editorId },
   });
 
   await Editor.findByIdAndUpdate(editorId, {
-    students: { $pull: studentId },
+    $pull: { students: studentId },
   });
 
   res.status(200).send({ success: true });
@@ -78,21 +79,35 @@ const removeEditorFromStudent = asyncHandler(async (req, res, next) => {
 
 const createApplication = asyncHandler(async (req, res) => {
   const {
-    params: { studentId },
+    params: { id },
     body: { programId },
   } = req;
 
-  const student = await Student.findById(studentId);
+  const student = await Student.findById(id);
   const programIds = student.applications.map(({ programId }) => programId);
   if (programIds.includes(programId))
     throw new ErrorResponse(400, "Duplicate program");
 
   const program = await Program.findById(programId);
-  // TODO: figure out required documents from program and create application
-  // const application =
-  // student.applications.push(application);
+  const { requiredDocuments, optionalDocuments } = program;
+  const now = new Date();
+  const application = student.applications.create({ programId });
+  application.documents = [
+    ...requiredDocuments.map((name) => ({
+      name,
+      required: true,
+      updatedAt: now,
+    })),
+    ...optionalDocuments.map((name) => ({
+      name,
+      required: false,
+      updatedAt: now,
+    })),
+  ];
+  student.applications.push(application);
   await student.save();
-  res.status(201).send({ data: "success" });
+
+  res.status(201).send({ success: true, data: application });
 });
 
 const deleteApplication = asyncHandler(async (req, res, next) => {

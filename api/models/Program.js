@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const Degree = {
-  bachelor: 'bachelor',
-  master: 'master',
-  doctoral: 'doctoral',
-}
+  bachelor: "bachelor",
+  master: "master",
+  doctoral: "doctoral",
+};
 
 const programSchema = new mongoose.Schema(
   {
@@ -30,6 +30,7 @@ const programSchema = new mongoose.Schema(
       required: true,
     },
     requiredDocuments: [String],
+    optionalDocuments: [String],
   },
   { timestamps: true }
 );

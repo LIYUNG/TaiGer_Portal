@@ -21,6 +21,7 @@ const updateUser = asyncHandler(async (req, res) => {
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
+  // TODO: also remove the relationships
   await User.findByIdAndDelete(req.params.id);
   res.status(200).send({ success: true });
 });

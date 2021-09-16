@@ -22,7 +22,7 @@ const programs = [...Array(5)].map(generateProgram);
 
 beforeEach(async () => {
   await Program.deleteMany();
-  await Program.create(programs);
+  await Program.insertMany(programs);
 });
 
 describe("GET /programs", () => {
@@ -37,34 +37,45 @@ describe("GET /programs", () => {
   });
 });
 
-// describe("POST /programs", () => {
-//   it("should create a program", async () => {
-//     const fields = generateProgram()
-//     const resp = await request(app).post("/programs").send(fields);
-//     const { success, data } = resp.body;
+describe("POST /programs", () => {
+  it("should create a program", async () => {
+    const { _id, ...fields } = generateProgram();
+    const resp = await request(app).post("/programs").send(fields);
+    const { success, data } = resp.body;
 
-//     expect(resp.status).toBe(201);
-//     expect(success).toBe(true);
-//     expect(data).toMatchObject(fields);
-//   })
-// })
+    expect(resp.status).toBe(201);
+    expect(success).toBe(true);
+    expect({
+      ...data,
+      applicationAvailable: new Date(data.applicationAvailable),
+      applicationDeadline: new Date(data.applicationDeadline),
+    }).toMatchObject(fields);
 
-// describe("PUT /programs/:id", () => {
-//   it("should update a program", async () => {
-//     const { _id } = programs[0];
-//     const { } = generateProgram();
+    const createdProgram = await Program.findById(data._id);
+    expect(createdProgram.toObject()).toMatchObject(fields);
+  });
+});
 
-//     const resp = await request(app).put(`/programs/${_id}`).send({});
-//     const { success, data } = resp.body;
+describe("PUT /programs/:id", () => {
+  it("should update a program", async () => {
+    const { _id } = programs[0];
+    const { _id: _, ...fields } = generateProgram();
 
-//     expect(resp.status).toBe(200);
-//     expect(success).toBe(true);
-//     expect(data).toMatchObject({});
+    const resp = await request(app).put(`/programs/${_id}`).send(fields);
+    const { success, data } = resp.body;
 
-//     const updatedProgram = await Program.findById(_id);
-//     expect(updatedProgram).toMatchObject({});
-//   });
-// });
+    expect(resp.status).toBe(200);
+    expect(success).toBe(true);
+    expect({
+      ...data,
+      applicationAvailable: new Date(data.applicationAvailable),
+      applicationDeadline: new Date(data.applicationDeadline),
+    }).toMatchObject(fields);
+
+    const updatedProgram = await Program.findById(_id);
+    expect(updatedProgram.toObject()).toMatchObject(fields);
+  });
+});
 
 describe("DELETE /programs/:id", () => {
   it("should delete a program", async () => {

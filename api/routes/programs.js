@@ -18,7 +18,7 @@ router.route("/").get(getPrograms).post(createProgram);
 
 router
   .route("/:id")
-  .post(updateProgram)
+  .put(updateProgram)
   .delete(deleteProgram);
 
 module.exports = router;

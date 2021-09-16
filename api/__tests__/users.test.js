@@ -27,7 +27,7 @@ const users = [...admins, ...agents, ...editors, ...students, ...guests];
 
 beforeEach(async () => {
   await User.deleteMany();
-  await User.create(users);
+  await User.insertMany(users);
 });
 
 describe("GET /users", () => {

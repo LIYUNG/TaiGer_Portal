@@ -38,7 +38,7 @@ router
   .delete(permit(Role.Admin), removeEditorFromStudent);
 
 router
-  .route("/:studentId/applications")
+  .route("/:id/applications")
   .post(permit(Role.Admin, Role.Agent), createApplication);
 
 router
@@ -46,7 +46,7 @@ router
   .delete(permit(Role.Admin, Role.Agent), deleteApplication);
 
 router
-  .route("/:studentId/files/:category")
+  .route("/:id/files/:category")
   .get(
     permit(Role.Admin, Role.Agent),
     async (req, res, next) => {

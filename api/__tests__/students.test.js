@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path")
 const request = require("supertest");
 
 const { UPLOAD_PATH } = require("../config");
@@ -6,8 +7,10 @@ const { app } = require("../app");
 const { connectToDatabase, disconnectFromDatabase } = require("../database");
 const { Role, User, Agent, Editor, Student } = require("../models/User");
 const { Program } = require("../models/Program");
+const { DocumentStatus } = require("../constants")
 const { generateUser } = require("./fixtures/users");
 const { generateProgram } = require("./fixtures/programs");
+const { protect } = require("../middlewares/auth");
 
 jest.mock("../middlewares/auth", () => {
   const passthrough = async (req, res, next) => next();
@@ -55,10 +58,10 @@ describe("POST /students/:id/agents", () => {
 
     expect(resp.status).toBe(200);
 
-    const updatedStudent = await Student.findById(studentId);
+    const updatedStudent = await Student.findById(studentId).lean();
     expect(updatedStudent.agents.map(String)).toEqual([agentId]);
 
-    const updatedAgent = await Agent.findById(agentId);
+    const updatedAgent = await Agent.findById(agentId).lean();
     expect(updatedAgent.students.map(String)).toEqual([studentId]);
   });
 });
@@ -78,10 +81,10 @@ describe("DELETE /students/:studentId/agents/:agentId", () => {
 
     expect(resp.status).toBe(200);
 
-    const updatedStudent = await Student.findById(studentId);
+    const updatedStudent = await Student.findById(studentId).lean();
     expect(updatedStudent.agents.map(String)).toEqual([]);
 
-    const updatedAgent = await Agent.findById(agentId);
+    const updatedAgent = await Agent.findById(agentId).lean();
     expect(updatedAgent.students.map(String)).toEqual([]);
   });
 });
@@ -97,10 +100,10 @@ describe("POST /students/:id/editors", () => {
 
     expect(resp.status).toBe(200);
 
-    const updatedStudent = await Student.findById(studentId);
+    const updatedStudent = await Student.findById(studentId).lean();
     expect(updatedStudent.editors.map(String)).toEqual([editorId]);
 
-    const updatedEditor = await Editor.findById(editorId);
+    const updatedEditor = await Editor.findById(editorId).lean();
     expect(updatedEditor.students.map(String)).toEqual([studentId]);
   });
 });
@@ -120,10 +123,10 @@ describe("DELETE /students/:studentId/editors/:editorId", () => {
 
     expect(resp.status).toBe(200);
 
-    const updatedStudent = await Student.findById(studentId);
+    const updatedStudent = await Student.findById(studentId).lean();
     expect(updatedStudent.editors.map(String)).toEqual([]);
 
-    const updatedEditor = await Editor.findById(editorId);
+    const updatedEditor = await Editor.findById(editorId).lean();
     expect(updatedEditor.students.map(String)).toEqual([]);
   });
 });
@@ -135,13 +138,24 @@ describe("POST /students/:id/applications", () => {
       .post(`/students/${studentId}/applications`)
       .send({ programId: program._id });
 
-    expect(resp.status).toBe(201);
+    const {
+      status,
+      body: { success, data },
+    } = resp;
 
-    const updatedStudent = await Student.findById(studentId);
-    const { programId, documents } = updatedStudent.applications[0];
-    expect(String(programId)).toEqual(program._id);
+    expect(status).toBe(201);
+    expect(success).toBe(true);
+    expect(data).toMatchObject({
+      _id: expect.any(String),
+      programId: program._id,
+      documents: expect.toBeArrayOfSize(
+        requiredDocuments.length + optionalDocuments.length
+      ),
+    });
 
-    expect(Array.from(documents.map(({ name }) => name).sort())).toEqual(
+    const updatedStudent = await Student.findById(studentId).lean();
+    const { documents } = updatedStudent.applications[0];
+    expect(documents.map(({ name }) => name).sort()).toEqual(
       [...requiredDocuments, ...optionalDocuments].sort()
     );
   });
@@ -160,125 +174,172 @@ describe("POST /students/:id/applications", () => {
   });
 });
 
-// describe("DELETE /students/:studentId/programs/:programId", () => {
-//   const { _id: studentId } = student;
-//   const [program1, program2] = programs.slice(0, 2);
+describe("DELETE /students/:studentId/applications/:applicationId", () => {
+  it("should delete an application from student", async () => {
+    const { _id: studentId } = student;
 
-//   beforeEach(async () => {
-//     await request(app)
-//       .post(`/students/${studentId}/programs`)
-//       .send({ programId: program1._id });
-//   });
+    await request(app)
+      .post(`/students/${studentId}/applications`)
+      .send({ programId: program._id });
 
-//   it("should delete a program from student", async () => {
-//     const resp = await request(app).delete(
-//       `/students/${studentId}/programs/${program1._id}`
-//     );
+    let updatedStudent = await Student.findById(studentId).lean();
+    const applicationId = updatedStudent.applications[0]._id;
 
-//     expect(resp.status).toBe(200);
+    const resp = await request(app).delete(
+      `/students/${studentId}/applications/${applicationId}`
+    );
 
-//     const student = await Student.findById(studentId);
-//     expect(student.applying_program_).toHaveLength(0);
-//   });
+    expect(resp.status).toBe(200);
 
-//   it.todo(
-//     "should return 400 when deleting a program that student doesn't possess"
-//   );
-// });
+    updatedStudent = await Student.findById(studentId).lean();
+    expect(updatedStudent.applications).toHaveLength(0);
+  });
 
-// describe("POST /students/:studentId/files/:category", () => {
-//   it("should save the uploaded file and store the path in db", async () => {
-//     const { _id } = student;
-//     const category = "Essay_";
-//     const filename = "my-file.pdf";
+  it.todo(
+    "should return 400 when deleting a application that student doesn't possess"
+  );
+});
 
-//     const resp = await request(app)
-//       .post(`/students/${_id}/files/${category}`)
-//       .attach("file", Buffer.from("Lorem ipsum"), filename);
 
-//     expect(resp.status).toBe(201);
+describe("POST /students/:studentId/applications/:applicationId/:docName", () => {
+  const { _id: studentId } = student;
+  const docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
 
-//     const updatedStudent = await Student.findById(_id);
-//     expect(updatedStudent.uploadedDocs_[category]).toMatchObject({
-//       uploadStatus_: "uploaded",
-//       filePath_: expect.toEndWith(filename),
-//       LastUploadDate_: expect.anything(),
-//     });
-//   });
+  let applicationId
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(admin._id);
+      next();
+    });
 
-//   it.todo("should return 400 with invalid category");
-// });
+    const resp = await request(app)
+      .post(`/students/${studentId}/applications`)
+      .send({ programId: program._id });
 
-// describe("GET /students/:studentId/files/:category", () => {
-//   it("should download the previous uploaded file", async () => {
-//     const { _id } = student;
-//     const category = "Essay_";
-//     const filename = "my-file.pdf";
+    applicationId = resp.body.data._id
+  })
 
-//     await request(app)
-//       .post(`/students/${_id}/files/${category}`)
-//       .attach("file", Buffer.from("Lorem ipsum"), filename);
+  it("should save the uploaded file and store the path in db", async () => {
+    const resp = await request(app)
+      .post(`/students/${studentId}/applications/${applicationId}/${docName}`)
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
 
-//     const resp = await request(app)
-//       .get(`/students/${_id}/files/${category}`)
-//       .buffer();
+    const { status, body } = resp
+    expect(status).toBe(201);
+    expect(body.success).toBe(true);
+    expect(body.data).toMatchObject({
+      path: expect.not.stringMatching(/^$/),
+      name: docName,
+      status: DocumentStatus.Uploaded,
+    });
+  });
 
-//     expect(resp.status).toBe(200);
-//     expect(resp.headers["content-disposition"]).toEqual(
-//       `attachment; filename="${filename}"`
-//     );
-//   });
+  it("should return 400 with invalid document name", async () => {
+    const invalidDoc = "wrong-doc";
+    const resp = await request(app)
+      .post(`/students/${studentId}/applications/${applicationId}/${invalidDoc}`)
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
 
-//   it.todo("should return 400 when file not exist");
-// });
+    const { status, body } = resp
+    expect(status).toBe(400);
+    expect(body.success).toBe(false);
+  });
+});
 
-// describe("DELETE /students/:studentId/files/:category", () => {
-//   it("should delete previous uploaded file", async () => {
-//     const { _id } = student;
-//     const category = "Essay_";
-//     const filename = "my-file.pdf";
+describe("Document Read / Update / Delete operations", () => {
+  const { _id: studentId } = student;
+  const docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
 
-//     await request(app)
-//       .post(`/students/${_id}/files/${category}`)
-//       .attach("file", Buffer.from("Lorem ipsum"), filename);
+  let applicationId
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(admin._id);
+      next();
+    });
 
-//     const resp = await request(app).delete(
-//       `/students/${_id}/files/${category}`
-//     );
+    const resp = await request(app)
+      .post(`/students/${studentId}/applications`)
+      .send({ programId: program._id });
 
-//     expect(resp.status).toBe(200);
+    applicationId = resp.body.data._id
 
-//     const updatedStudent = await Student.findById(_id);
-//     expect(updatedStudent.uploadedDocs_[category]).toMatchObject({
-//       uploadStatus_: "",
-//       filePath_: "",
-//       LastUploadDate_: expect.anything(),
-//     });
-//   });
-// });
+    await request(app)
+      .post(`/students/${studentId}/applications/${applicationId}/${docName}`)
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+  })
 
-// describe("POST /students/:studentId/files/:category/status", () => {
-//   it("should update uploaded file status", async () => {
-//     const { _id } = student;
-//     const category = "Essay_";
-//     const filename = "my-file.pdf";
+  describe("GET /students/:studentId/applications/:applicationId/:docName", () => {
+    it("should download the previous uploaded file", async () => {
+      const resp = await request(app)
+        .get(`/students/${studentId}/applications/${applicationId}/${docName}`)
+        .buffer();
 
-//     await request(app)
-//       .post(`/students/${_id}/files/${category}`)
-//       .attach("file", Buffer.from("Lorem ipsum"), filename);
+      expect(resp.status).toBe(200);
+      expect(resp.headers["content-disposition"]).toEqual(
+        `attachment; filename="${docName}${path.extname(filename)}"`
+      );
+    });
 
-//     // FIXME: use enum
-//     const status = "checked";
-//     const resp = await request(app)
-//       .post(`/students/${_id}/files/${category}/status`)
-//       .send({ status });
+    it("should return 400 with invalid document name", async () => {
+      const invalidDoc = 'wrong-doc';
+      const resp = await request(app)
+        .get(`/students/${studentId}/applications/${applicationId}/${invalidDoc}`)
+        .buffer();
 
-//     expect(resp.status).toBe(200);
-//     const updatedStudent = await Student.findById(_id);
-//     expect(updatedStudent.uploadedDocs_[category]).toMatchObject({
-//       uploadStatus_: status,
-//     });
-//   });
+      expect(resp.status).toBe(400);
+    });
 
-//   it.todo("should return 400 when file status is invalid");
-// });
+    it("should return 400 when file not uploaded yet", async () => {
+      const emptyDoc = requiredDocuments[1];
+      const resp = await request(app)
+        .get(`/students/${studentId}/applications/${applicationId}/${emptyDoc}`)
+        .buffer();
+
+      expect(resp.status).toBe(400);
+    });
+  });
+
+  describe("DELETE /students/:studentId/applications/:applicationId/:docName", () => {
+    it("should delete previous uploaded file", async () => {
+      const resp = await request(app).delete(
+        `/students/${studentId}/applications/${applicationId}/${docName}`
+      );
+
+      const { success, data } = resp.body
+      expect(resp.status).toBe(200);
+      expect(success).toBe(true);
+      expect(data).toMatchObject({
+        status: DocumentStatus.Missing,
+        path: "",
+      });
+
+      const updatedStudent = await Student.findById(studentId);
+      const { documents } = updatedStudent.applications.id(applicationId)
+      const document = documents.find(({ name }) => name === docName);
+      expect(document).toMatchObject({
+        status: DocumentStatus.Missing,
+        path: "",
+      });
+    });
+  });
+
+  describe("POST /students//:studentId/applications/:applicationId/:docName/status", () => {
+    it("should update uploaded file status", async () => {
+      const status = DocumentStatus.Rejected
+      const resp = await request(app)
+        .post(`/students/${studentId}/applications/${applicationId}/${docName}/status`)
+        .send({ status })
+
+      const { success, data } = resp.body
+      expect(resp.status).toBe(200);
+      expect(success).toBe(true);
+      expect(data).toMatchObject({
+        status,
+        path: expect.any(String),
+        name: docName,
+      });
+    });
+  });
+})

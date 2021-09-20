@@ -115,6 +115,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   await Student.findByIdAndUpdate(studentId, {
     $pull: { applications: { _id: applicationId } },
   });
+  // TODO: remove uploaded files
 
   res.status(200).send({ success: true });
 });

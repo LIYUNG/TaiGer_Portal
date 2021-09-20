@@ -17,7 +17,7 @@ const {
 const {
   saveFilePath,
   downloadFile,
-  updateFileStatus,
+  updateDocumentStatus,
   deleteFile,
 } = require("../controllers/files");
 
@@ -28,11 +28,13 @@ router.use(protect);
 router.route("/").get(permit(Role.Admin), getStudents);
 
 router.route("/:id/agents").post(permit(Role.Admin), assignAgentToStudent);
+
 router
   .route("/:studentId/agents/:agentId")
   .delete(permit(Role.Admin), removeAgentFromStudent);
 
 router.route("/:id/editors").post(permit(Role.Admin), assignEditorToStudent);
+
 router
   .route("/:studentId/editors/:editorId")
   .delete(permit(Role.Admin), removeEditorFromStudent);
@@ -46,34 +48,13 @@ router
   .delete(permit(Role.Admin, Role.Agent), deleteApplication);
 
 router
-  .route("/:id/files/:category")
-  .get(
-    permit(Role.Admin, Role.Agent),
-    async (req, res, next) => {
-      const student = await Student.findById(req.params.studentId);
-      if (!student) throw new ErrorResponse(400, "Invalid student Id");
-
-      req.user = student;
-      next();
-    },
-    downloadFile
-  )
-  .post(
-    permit(Role.Admin, Role.Agent),
-    async (req, res, next) => {
-      const student = await Student.findById(req.params.studentId);
-      if (!student) throw new ErrorResponse(400, "Invalid student Id");
-
-      req.user = student;
-      next();
-    },
-    fileUpload,
-    saveFilePath
-  )
+  .route("/:studentId/applications/:applicationId/:docName")
+  .get(permit(Role.Admin, Role.Agent), downloadFile)
+  .post(permit(Role.Admin, Role.Agent), fileUpload, saveFilePath)
   .delete(permit(Role.Admin, Role.Agent), deleteFile);
 
 router
-  .route("/:studentId/files/:category/status")
-  .post(permit(Role.Admin, Role.Agent), updateFileStatus);
+  .route("/:studentId/applications/:applicationId/:docName/status")
+  .post(permit(Role.Admin, Role.Agent), updateDocumentStatus);
 
 module.exports = router;

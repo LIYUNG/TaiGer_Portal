@@ -18,7 +18,7 @@ beforeAll(async () => await connectToDatabase(global.__MONGO_URI__));
 
 afterAll(disconnectFromDatabase);
 
-const programs = [...Array(5)].map(generateProgram);
+const programs = [...Array(5)].map(() => generateProgram());
 
 beforeEach(async () => {
   await Program.deleteMany();
@@ -51,8 +51,8 @@ describe("POST /programs", () => {
       applicationDeadline: new Date(data.applicationDeadline),
     }).toMatchObject(fields);
 
-    const createdProgram = await Program.findById(data._id);
-    expect(createdProgram.toObject()).toMatchObject(fields);
+    const createdProgram = await Program.findById(data._id).lean();
+    expect(createdProgram).toMatchObject(fields);
   });
 });
 
@@ -72,8 +72,8 @@ describe("PUT /programs/:id", () => {
       applicationDeadline: new Date(data.applicationDeadline),
     }).toMatchObject(fields);
 
-    const updatedProgram = await Program.findById(_id);
-    expect(updatedProgram.toObject()).toMatchObject(fields);
+    const updatedProgram = await Program.findById(_id).lean();
+    expect(updatedProgram).toMatchObject(fields);
   });
 });
 

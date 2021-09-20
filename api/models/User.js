@@ -6,6 +6,8 @@ const {
 const bcrypt = require("bcryptjs");
 const isEmail = require("validator/lib/isEmail");
 
+const { DocumentStatus } = require("../constants")
+
 const Role = {
   Admin: "Admin",
   Guest: "Guest",
@@ -66,12 +68,6 @@ const User = model("User", UserSchema);
 
 const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
 
-const UploadStatus = {
-  Missing: "missing",
-  Accepted: "accepted",
-  Rejected: "rejected",
-};
-
 const applicationSchema = new Schema({
   programId: { type: ObjectId, ref: "Program" },
   documents: [
@@ -82,8 +78,8 @@ const applicationSchema = new Schema({
       },
       status: {
         type: String,
-        enum: Object.values(UploadStatus),
-        default: UploadStatus.Missing,
+        enum: Object.values(DocumentStatus),
+        default: DocumentStatus.Missing,
       },
       required: {
         type: Boolean,

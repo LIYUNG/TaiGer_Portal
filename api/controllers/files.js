@@ -6,8 +6,7 @@ const { asyncHandler } = require("../middlewares/error-handler");
 const { Student } = require("../models/User");
 const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
-
-// TODO: validate category
+const { DocumentStatus } = require("../constants");
 
 const getFiles = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -15,76 +14,108 @@ const getFiles = asyncHandler(async (req, res) => {
 });
 
 const saveFilePath = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, applicationId, docName },
+  } = req;
+
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const studentId = req.params.studentId || req.user._id;
-  const { category } = req.params;
+  const student = await Student.findById(studentId || user._id);
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  const fields = {
-    [`uploadedDocs_.${category}.uploadStatus_`]: "uploaded",
-    [`uploadedDocs_.${category}.filePath_`]: req.file.path,
-    [`uploadedDocs_.${category}.LastUploadDate_`]: Date(),
-  };
+  const application = student.applications.id(applicationId);
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
 
-  await Student.findByIdAndUpdate(studentId, { $set: fields });
-  return res.status(201).end();
+  const document = application.documents.find(({ name }) => name === docName);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+
+  document.status = DocumentStatus.Uploaded;
+  document.path = req.file.path.replace(UPLOAD_PATH, "");
+  document.updatedAt = new Date();
+
+  await student.save();
+  return res.status(201).send({ success: true, data: document });
 });
 
 const downloadFile = asyncHandler(async (req, res, next) => {
-  const student = req.user;
-  const { category } = req.params;
+  const {
+    user,
+    params: { studentId, applicationId, docName },
+  } = req;
 
-  // TODO: confirm the use of this path?
-  // const directoryPath = path.join(
-  //   UPLOAD_PATH,
-  //   "TaiGer_Template_2021_02",
-  //   category,
-  //   "Template.docx"
-  // );
-  //TODO: what if student.uploadedDocs_.bachelorCertificate_ undefined?
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId || user._id);
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  const filePath = student.uploadedDocs_[category].filePath_;
+  const application = student.applications.id(applicationId);
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
 
+  const document = application.documents.find(({ name }) => name === docName);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+  if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
+
+  const filePath = path.join(UPLOAD_PATH, document.path);
   // FIXME: clear the filePath for consistency?
   if (!fs.existsSync(filePath))
     throw new ErrorResponse(400, "File does not exist");
 
-  res.download(filePath, (err) => {
+  res.status(200).download(filePath, (err) => {
     if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-
-    res.status(200).end();
   });
 });
 
-const updateFileStatus = asyncHandler(async (req, res, next) => {
-  const { studentId, category } = req.params;
+const updateDocumentStatus = asyncHandler(async (req, res, next) => {
+  const { studentId, applicationId, docName } = req.params;
   const { status } = req.body;
-  // FIXME: validate status
 
-  const fields = {
-    [`uploadedDocs_.${category}.uploadStatus_`]: status,
-    [`uploadedDocs_.${category}.LastUploadDate_`]: Date(),
-  };
+  if (!Object.values(DocumentStatus).includes(status))
+    throw new ErrorResponse(400, "Invalid document status");
 
-  await Student.findByIdAndUpdate(studentId, { $set: fields });
-  res.status(200).end();
+  const student = await Student.findOne({
+    _id: studentId,
+    "applications._id": applicationId,
+  });
+  if (!student)
+    throw new ErrorResponse(400, "Invalid student Id or application Id");
+
+  const document = student.applications
+    .id(applicationId)
+    .documents.find(({ name }) => name === docName);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+
+  // TODO: validate status, ex: can't be accepted if document.path is empty
+  document.status = status;
+  document.updatedAt = new Date();
+
+  await student.save();
+  res.status(200).send({ success: true, data: document });
 });
 
 const deleteFile = asyncHandler(async (req, res, next) => {
-  const { studentId, category } = req.params;
+  const { studentId, applicationId, docName } = req.params;
 
-  const student = await Student.findById(studentId);
-  const filePath = student.uploadedDocs_[category].filePath_;
+  const student = await Student.findOne({
+    _id: studentId,
+    "applications._id": applicationId,
+  });
+  if (!student)
+    throw new ErrorResponse(400, "Invalid student Id or application Id");
 
+  const document = student.applications
+    .id(applicationId)
+    .documents.find(({ name }) => name === docName);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+  if (!document.path) throw new ErrorResponse(400, "File not exist");
+
+  const filePath = path.join(UPLOAD_PATH, document.path)
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-  const fields = {
-    [`uploadedDocs_.${category}.uploadStatus_`]: "",
-    [`uploadedDocs_.${category}.filePath_`]: "",
-    [`uploadedDocs_.${category}.LastUploadDate_`]: Date(),
-  };
+  document.status = DocumentStatus.Missing
+  document.path = ""
+  document.updatedAt = new Date()
 
-  await Student.findByIdAndUpdate(studentId, { $set: fields });
-  return res.status(200).end();
+  await student.save();
+  res.status(200).send({ success: true, data: document });
 });
 
 const processTranscript = asyncHandler(async (req, res, next) => {
@@ -145,7 +176,7 @@ module.exports = {
   getFiles,
   saveFilePath,
   downloadFile,
-  updateFileStatus,
+  updateDocumentStatus,
   deleteFile,
   processTranscript,
   downloadXLSX,

@@ -15,21 +15,18 @@ const ALLOWED_MIME_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
-const userFolder = (user) => `${user.firstname_}_${user.lastname_}_${user._id}`;
-
-const fullUploadPath = (user, category) =>
-  path.join(UPLOAD_PATH, userFolder(user), category);
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const directory = fullUploadPath(req.user, req.params.category);
+    const { studentId, applicationId } = req.params
+    // TODO: check studentId and applicationId exist
+    const directory = path.join(UPLOAD_PATH, studentId, applicationId);;
     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
 
     return cb(null, directory);
   },
   filename: (req, file, cb) => {
-    const fileName = file.originalname.toLowerCase().split(" ").join("-");
-    cb(null, fileName);
+    // TODO: check docName exist
+    cb(null, `${req.params.docName}${path.extname(file.originalname)}`);
   },
 });
 

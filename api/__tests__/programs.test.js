@@ -25,9 +25,9 @@ beforeEach(async () => {
   await Program.insertMany(programs);
 });
 
-describe("GET /programs", () => {
+describe("GET /api/programs", () => {
   it("should return all programs", async () => {
-    const resp = await request(app).get("/programs");
+    const resp = await request(app).get("/api/programs");
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
@@ -37,10 +37,10 @@ describe("GET /programs", () => {
   });
 });
 
-describe("POST /programs", () => {
+describe("POST /api/programs", () => {
   it("should create a program", async () => {
     const { _id, ...fields } = generateProgram();
-    const resp = await request(app).post("/programs").send(fields);
+    const resp = await request(app).post("/api/programs").send(fields);
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(201);
@@ -56,12 +56,12 @@ describe("POST /programs", () => {
   });
 });
 
-describe("PUT /programs/:id", () => {
+describe("PUT /api/programs/:id", () => {
   it("should update a program", async () => {
     const { _id } = programs[0];
     const { _id: _, ...fields } = generateProgram();
 
-    const resp = await request(app).put(`/programs/${_id}`).send(fields);
+    const resp = await request(app).put(`/api/programs/${_id}`).send(fields);
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
@@ -77,11 +77,11 @@ describe("PUT /programs/:id", () => {
   });
 });
 
-describe("DELETE /programs/:id", () => {
+describe("DELETE /api/programs/:id", () => {
   it("should delete a program", async () => {
     const { _id } = programs[0];
 
-    const resp = await request(app).delete(`/programs/${_id}`);
+    const resp = await request(app).delete(`/api/programs/${_id}`);
 
     expect(resp.status).toBe(200);
     expect(resp.body.success).toBe(true);

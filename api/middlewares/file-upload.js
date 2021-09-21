@@ -15,9 +15,16 @@ const ALLOWED_MIME_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
+/**
+ * currently used by route
+ *   /account/files/:applicationId/:docName (student upload)
+ *   /students/:studentId/applications/:applicationId/:docName (admin/agent upload)
+ */
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const { studentId, applicationId } = req.params
+    let { studentId, applicationId } = req.params
+    if (!studentId) studentId = String(req.user._id)
+
     // TODO: check studentId and applicationId exist
     const directory = path.join(UPLOAD_PATH, studentId, applicationId);;
     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });

@@ -30,9 +30,9 @@ beforeEach(async () => {
   await User.insertMany(users);
 });
 
-describe("GET /users", () => {
+describe("GET /api/users", () => {
   it("should return all users", async () => {
-    const resp = await request(app).get("/users");
+    const resp = await request(app).get("/api/users");
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
@@ -42,12 +42,12 @@ describe("GET /users", () => {
   });
 });
 
-describe("PUT /users/:id", () => {
+describe("PUT /api/users/:id", () => {
   it("should update a user", async () => {
     const { _id } = users[0];
     const { name, email } = generateUser();
 
-    const resp = await request(app).put(`/users/${_id}`).send({ name, email });
+    const resp = await request(app).put(`/api/users/${_id}`).send({ name, email });
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
@@ -61,11 +61,11 @@ describe("PUT /users/:id", () => {
   it.todo("should change user fields when updating it's role");
 });
 
-describe("DELETE /users/:id", () => {
+describe("DELETE /api/users/:id", () => {
   it("should delete a user", async () => {
     const { _id } = users[0];
 
-    const resp = await request(app).delete(`/users/${_id}`);
+    const resp = await request(app).delete(`/api/users/${_id}`);
 
     expect(resp.status).toBe(200);
     expect(resp.body.success).toBe(true);
@@ -76,9 +76,9 @@ describe("DELETE /users/:id", () => {
 });
 
 // TODO: move below to their own files?
-describe("GET /agents", () => {
+describe("GET /api/agents", () => {
   it("should return all agents", async () => {
-    const resp = await request(app).get("/agents");
+    const resp = await request(app).get("/api/agents");
     const { success, data } = resp.body;
 
     const agentIds = agents.map(({ _id }) => _id).sort()
@@ -90,9 +90,9 @@ describe("GET /agents", () => {
   });
 });
 
-describe("GET /editors", () => {
+describe("GET /api/editors", () => {
   it("should return all editors", async () => {
-    const resp = await request(app).get("/editors");
+    const resp = await request(app).get("/api/editors");
     const { success, data } = resp.body;
 
     const editorIds = editors.map(({ _id }) => _id).sort()
@@ -104,9 +104,9 @@ describe("GET /editors", () => {
   });
 });
 
-describe("GET /students", () => {
+describe("GET /api/students", () => {
   it("should return all students", async () => {
-    const resp = await request(app).get("/students");
+    const resp = await request(app).get("/api/students");
     const { success, data } = resp.body;
 
     const studentIds = students.map(({ _id }) => _id).sort()

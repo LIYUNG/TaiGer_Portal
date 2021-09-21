@@ -1,11 +1,10 @@
 const { Router } = require("express");
 
-const { Role } = require("../models/User")
+const { Role } = require("../models/User");
 const { protect, permit } = require("../middlewares/auth");
 const { fileUpload } = require("../middlewares/file-upload");
 
 const {
-  getFiles,
   saveFilePath,
   downloadFile,
   processTranscript,
@@ -16,17 +15,25 @@ const router = Router();
 
 router.use(protect, permit(Role.Student));
 
-router.route("/files").get(getFiles);
-
+// TODO: is delete route required?
 router
-  .route("/files/:category")
+  .route("/files/:applicationId/:docName")
   .get(downloadFile)
   .post(fileUpload, saveFilePath);
 
+// TODO: check the exact usage
 router
   .route("/transcript/:category/:group")
-  .post(fileUpload, processTranscript);
+  .post((req, res, next) =>
+    res.status(400).send({ success: false, message: "Not implemented yet" })
+  );
+// .post(fileUpload, processTranscript);
 
-router.route("/download/:category/:filename").get(downloadXLSX);
+router
+  .route("/download/:category/:filename")
+  .get((req, res, next) =>
+    res.status(400).send({ success: false, message: "Not implemented yet" })
+  );
+// .get(downloadXLSX);
 
 module.exports = router;

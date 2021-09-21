@@ -47,13 +47,13 @@ afterEach(() => {
   fs.rmSync(UPLOAD_PATH, { recursive: true, force: true });
 });
 
-describe("POST /students/:id/agents", () => {
+describe("POST /api/students/:id/agents", () => {
   it("should assign an agent to student", async () => {
     const { _id: studentId } = student;
     const { _id: agentId } = agents[0];
 
     const resp = await request(app)
-      .post(`/students/${studentId}/agents`)
+      .post(`/api/students/${studentId}/agents`)
       .send({ id: agentId });
 
     expect(resp.status).toBe(200);
@@ -66,17 +66,17 @@ describe("POST /students/:id/agents", () => {
   });
 });
 
-describe("DELETE /students/:studentId/agents/:agentId", () => {
+describe("DELETE /api/students/:studentId/agents/:agentId", () => {
   it("should remove an agent from student", async () => {
     const { _id: studentId } = student;
     const { _id: agentId } = agents[0];
 
     await request(app)
-      .post(`/students/${studentId}/agents`)
+      .post(`/api/students/${studentId}/agents`)
       .send({ id: agentId });
 
     const resp = await request(app).delete(
-      `/students/${studentId}/agents/${agentId}`
+      `/api/students/${studentId}/agents/${agentId}`
     );
 
     expect(resp.status).toBe(200);
@@ -89,13 +89,13 @@ describe("DELETE /students/:studentId/agents/:agentId", () => {
   });
 });
 
-describe("POST /students/:id/editors", () => {
+describe("POST /api/students/:id/editors", () => {
   it("should assign an editor to student", async () => {
     const { _id: studentId } = student;
     const { _id: editorId } = editors[0];
 
     const resp = await request(app)
-      .post(`/students/${studentId}/editors`)
+      .post(`/api/students/${studentId}/editors`)
       .send({ id: editorId });
 
     expect(resp.status).toBe(200);
@@ -108,17 +108,17 @@ describe("POST /students/:id/editors", () => {
   });
 });
 
-describe("DELETE /students/:studentId/editors/:editorId", () => {
+describe("DELETE /api/students/:studentId/editors/:editorId", () => {
   it("should remove an editor from student", async () => {
     const { _id: studentId } = student;
     const { _id: editorId } = editors[0];
 
     await request(app)
-      .post(`/students/${studentId}/editors`)
+      .post(`/api/students/${studentId}/editors`)
       .send({ id: editorId });
 
     const resp = await request(app).delete(
-      `/students/${studentId}/editors/${editorId}`
+      `/api/students/${studentId}/editors/${editorId}`
     );
 
     expect(resp.status).toBe(200);
@@ -131,11 +131,11 @@ describe("DELETE /students/:studentId/editors/:editorId", () => {
   });
 });
 
-describe("POST /students/:id/applications", () => {
+describe("POST /api/students/:id/applications", () => {
   it("should create an application for student", async () => {
     const { _id: studentId } = student;
     const resp = await request(app)
-      .post(`/students/${studentId}/applications`)
+      .post(`/api/students/${studentId}/applications`)
       .send({ programId: program._id });
 
     const {
@@ -163,30 +163,30 @@ describe("POST /students/:id/applications", () => {
   it("should return 400 when creating application with duplicate program Id", async () => {
     const { _id: studentId } = student;
     await request(app)
-      .post(`/students/${studentId}/applications`)
+      .post(`/api/students/${studentId}/applications`)
       .send({ programId: program._id });
 
     const resp = await request(app)
-      .post(`/students/${studentId}/applications`)
+      .post(`/api/students/${studentId}/applications`)
       .send({ programId: program._id });
 
     expect(resp.status).toBe(400);
   });
 });
 
-describe("DELETE /students/:studentId/applications/:applicationId", () => {
+describe("DELETE /api/students/:studentId/applications/:applicationId", () => {
   it("should delete an application from student", async () => {
     const { _id: studentId } = student;
 
     await request(app)
-      .post(`/students/${studentId}/applications`)
+      .post(`/api/students/${studentId}/applications`)
       .send({ programId: program._id });
 
     let updatedStudent = await Student.findById(studentId).lean();
     const applicationId = updatedStudent.applications[0]._id;
 
     const resp = await request(app).delete(
-      `/students/${studentId}/applications/${applicationId}`
+      `/api/students/${studentId}/applications/${applicationId}`
     );
 
     expect(resp.status).toBe(200);
@@ -201,7 +201,7 @@ describe("DELETE /students/:studentId/applications/:applicationId", () => {
 });
 
 
-describe("POST /students/:studentId/applications/:applicationId/:docName", () => {
+describe("POST /api/students/:studentId/applications/:applicationId/:docName", () => {
   const { _id: studentId } = student;
   const docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
@@ -214,7 +214,7 @@ describe("POST /students/:studentId/applications/:applicationId/:docName", () =>
     });
 
     const resp = await request(app)
-      .post(`/students/${studentId}/applications`)
+      .post(`/api/students/${studentId}/applications`)
       .send({ programId: program._id });
 
     applicationId = resp.body.data._id
@@ -222,7 +222,7 @@ describe("POST /students/:studentId/applications/:applicationId/:docName", () =>
 
   it("should save the uploaded file and store the path in db", async () => {
     const resp = await request(app)
-      .post(`/students/${studentId}/applications/${applicationId}/${docName}`)
+      .post(`/api/students/${studentId}/applications/${applicationId}/${docName}`)
       .attach("file", Buffer.from("Lorem ipsum"), filename);
 
     const { status, body } = resp
@@ -238,7 +238,7 @@ describe("POST /students/:studentId/applications/:applicationId/:docName", () =>
   it("should return 400 with invalid document name", async () => {
     const invalidDoc = "wrong-doc";
     const resp = await request(app)
-      .post(`/students/${studentId}/applications/${applicationId}/${invalidDoc}`)
+      .post(`/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`)
       .attach("file", Buffer.from("Lorem ipsum"), filename);
 
     const { status, body } = resp
@@ -260,20 +260,20 @@ describe("Document Read / Update / Delete operations", () => {
     });
 
     const resp = await request(app)
-      .post(`/students/${studentId}/applications`)
+      .post(`/api/students/${studentId}/applications`)
       .send({ programId: program._id });
 
     applicationId = resp.body.data._id
 
     await request(app)
-      .post(`/students/${studentId}/applications/${applicationId}/${docName}`)
+      .post(`/api/students/${studentId}/applications/${applicationId}/${docName}`)
       .attach("file", Buffer.from("Lorem ipsum"), filename);
   })
 
-  describe("GET /students/:studentId/applications/:applicationId/:docName", () => {
+  describe("GET /api/students/:studentId/applications/:applicationId/:docName", () => {
     it("should download the previous uploaded file", async () => {
       const resp = await request(app)
-        .get(`/students/${studentId}/applications/${applicationId}/${docName}`)
+        .get(`/api/students/${studentId}/applications/${applicationId}/${docName}`)
         .buffer();
 
       expect(resp.status).toBe(200);
@@ -285,7 +285,7 @@ describe("Document Read / Update / Delete operations", () => {
     it("should return 400 with invalid document name", async () => {
       const invalidDoc = 'wrong-doc';
       const resp = await request(app)
-        .get(`/students/${studentId}/applications/${applicationId}/${invalidDoc}`)
+        .get(`/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`)
         .buffer();
 
       expect(resp.status).toBe(400);
@@ -294,17 +294,17 @@ describe("Document Read / Update / Delete operations", () => {
     it("should return 400 when file not uploaded yet", async () => {
       const emptyDoc = requiredDocuments[1];
       const resp = await request(app)
-        .get(`/students/${studentId}/applications/${applicationId}/${emptyDoc}`)
+        .get(`/api/students/${studentId}/applications/${applicationId}/${emptyDoc}`)
         .buffer();
 
       expect(resp.status).toBe(400);
     });
   });
 
-  describe("DELETE /students/:studentId/applications/:applicationId/:docName", () => {
+  describe("DELETE /api/students/:studentId/applications/:applicationId/:docName", () => {
     it("should delete previous uploaded file", async () => {
       const resp = await request(app).delete(
-        `/students/${studentId}/applications/${applicationId}/${docName}`
+        `/api/students/${studentId}/applications/${applicationId}/${docName}`
       );
 
       const { success, data } = resp.body
@@ -325,11 +325,11 @@ describe("Document Read / Update / Delete operations", () => {
     });
   });
 
-  describe("POST /students//:studentId/applications/:applicationId/:docName/status", () => {
+  describe("POST /api/students/:studentId/applications/:applicationId/:docName/status", () => {
     it("should update uploaded file status", async () => {
       const status = DocumentStatus.Rejected
       const resp = await request(app)
-        .post(`/students/${studentId}/applications/${applicationId}/${docName}/status`)
+        .post(`/api/students/${studentId}/applications/${applicationId}/${docName}/status`)
         .send({ status })
 
       const { success, data } = resp.body

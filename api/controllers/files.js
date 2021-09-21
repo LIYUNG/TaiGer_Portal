@@ -3,15 +3,10 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 
 const { asyncHandler } = require("../middlewares/error-handler");
-const { Student } = require("../models/User");
+const { Role, Student } = require("../models/User");
 const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 const { DocumentStatus } = require("../constants");
-
-const getFiles = asyncHandler(async (req, res) => {
-  const { user } = req;
-  res.send({ data: user, role: user.role_ });
-});
 
 const saveFilePath = asyncHandler(async (req, res) => {
   const {
@@ -20,7 +15,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId || user._id);
+  const student = user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
   const application = student.applications.id(applicationId);
@@ -44,7 +39,7 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId || user._id);
+  const student = user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
   const application = student.applications.id(applicationId);
@@ -173,7 +168,6 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
-  getFiles,
   saveFilePath,
   downloadFile,
   updateDocumentStatus,

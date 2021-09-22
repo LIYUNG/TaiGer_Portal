@@ -12,7 +12,7 @@ const {
   checkToken,
 } = require("../common/validation");
 const { asyncHandler } = require("../middlewares/error-handler");
-const { User, Student, Role } = require("../models/User");
+const { User, Guest, Role } = require("../models/User");
 const Token = require("../models/Token");
 const {
   sendConfirmationEmail,
@@ -43,8 +43,7 @@ const signup = asyncHandler(async (req, res) => {
     );
   }
 
-  const user = await Student.create({ name, email, password });
-  // const user = await User.create({ name, email, password });
+  const user = await Guest.create({ name, email, password });
 
   const activationToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(activationToken) });
@@ -91,12 +90,12 @@ const activateAccount = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: token.userId, email });
   if (!user) throw new ErrorResponse(400, "Invalid email or token");
 
-  if (user.role !== undefined)
+  if (user.role !== Role.Guest)
     throw new ErrorResponse(400, "User account already activated");
 
   await User.findOneAndUpdate(
     { _id: token.userId },
-    { $set: { role: Role.Guest } },
+    { $set: { role: Role.Student } },
     { new: true }
   );
   await token.deleteOne();
@@ -112,7 +111,7 @@ const resendActivation = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw new ErrorResponse(400, "Email not found");
 
-  if (user.role !== undefined)
+  if (user.role !== Role.Guest)
     throw new ErrorResponse(400, "User account already activated");
 
   const activationToken = generateRandomToken();

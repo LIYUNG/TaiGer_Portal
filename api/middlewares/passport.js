@@ -10,7 +10,10 @@ passport.use(
     { usernameField: "email" },
     async (email, password, done) => {
       try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).populate(
+          "students agents editors",
+          "name email"
+        );
         if (!user) return done(null, false);
 
         const isPasswordValid = await user.verifyPassword(password);
@@ -32,7 +35,10 @@ passport.use(
     },
     async (payload, done) => {
       try {
-        const user = await User.findById(payload.id);
+        const user = await User.findById(payload.id).populate(
+          "students agents editors",
+          "name email"
+        );
         if (!user) return done(null, false);
 
         return done(null, user);

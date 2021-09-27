@@ -1,37 +1,7 @@
 import { String } from '@airtasker/spot'
 
 import { SuccessResponse } from './common'
-
-interface User {
-  _id: String
-  name: String
-  email: String
-  role: String
-}
-
-interface Guest extends User {
-  role: 'Guest'
-}
-
-interface Admin extends User {
-  role: 'Admin'
-}
-
-interface Agent extends User {
-  role: 'Agent'
-  students: User[]
-}
-
-interface Editor extends User {
-  role: 'Editor'
-  students: User[]
-}
-
-interface Student extends User {
-  role: 'Student'
-  agents: User[]
-  editors: User[]
-}
+import { Guest, Student, Agent, Editor, Admin } from './user'
 
 export interface UserResponse extends SuccessResponse {
   data: Guest | Student | Agent | Editor | Admin

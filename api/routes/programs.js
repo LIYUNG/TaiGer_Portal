@@ -5,6 +5,7 @@ const { Role } = require('../models/User')
 
 const {
   getPrograms,
+  getProgram,
   createProgram,
   updateProgram,
   deleteProgram,
@@ -18,6 +19,7 @@ router.route("/").get(getPrograms).post(createProgram);
 
 router
   .route("/:id")
+  .get(getProgram)
   .put(updateProgram)
   .delete(deleteProgram);
 

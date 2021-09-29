@@ -1,7 +1,7 @@
 import { String } from '@airtasker/spot'
 
 import { SuccessResponse } from './common'
-import { Guest, Student, Agent, Editor, Admin } from './user'
+import { Guest, Student, Agent, Editor, Admin } from './users'
 
 export interface UserResponse extends SuccessResponse {
   data: Guest | Student | Agent | Editor | Admin

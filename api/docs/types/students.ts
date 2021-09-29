@@ -1,7 +1,7 @@
 import { String, Date } from "@airtasker/spot";
 
 import { SuccessResponse } from "./common";
-import { Student } from "./user";
+import { Student } from "./users";
 
 type DocumentStatus = String;
 

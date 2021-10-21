@@ -3,7 +3,7 @@ import request from "./request";
 // TODO: organize to different files
 
 // TODO: replace auth APIs
-export const login = (credentials) => request.post("/login", credentials);
+export const login = (credentials) => request.post("/auth/login", credentials);
 
 export const register = (credentials) => request.post("/register", credentials);
 

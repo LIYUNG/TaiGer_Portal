@@ -20,10 +20,12 @@ export default function Signin1({ setToken }) {
         alert("Password please!");
       } else {
         try {
-          const resp = await login({ emailaddress, password })
+          console.log("Before Error");
+          const resp = await login({ emailaddress, password });
           setToken(resp.data);
         } catch (err) {
           // TODO: handle error
+          console.log(err);
         }
       }
     }

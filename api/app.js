@@ -12,7 +12,13 @@ const { isDev } = require("./config");
 
 const app = express();
 
-app.use(cors({ exposedHeaders: ["Content-Disposition"] }));
+app.use(
+  cors({
+    exposedHeaders: ["Content-Disposition"],
+    origin: "http://localhost:3006",
+    credentials: true,
+  })
+);
 if (isDev()) {
   app.use(morgan("dev"));
 }

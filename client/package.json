@@ -2,6 +2,7 @@
   "name": "datta-able-rv18.0.4",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3000",
   "homepage": "http://taigerportal.s3-website.us-east-2.amazonaws.com/",
   "dependencies": {
     "@material-ui/core": "^4.9.2",

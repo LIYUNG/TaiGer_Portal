@@ -7,13 +7,14 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import { login } from "../../../api";
 
-export default function Signin1({ setToken }) {
-  const [emailaddress, setEmailaddress] = useState();
+// export default function Signin1({ setToken }) {
+export default function Signin1() {
+  const [email, setEmailaddress] = useState();
   const [password, setPassword] = useState();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!emailaddress) {
+    if (!email) {
       alert("Email, please!");
     } else {
       if (!password) {
@@ -21,8 +22,9 @@ export default function Signin1({ setToken }) {
       } else {
         try {
           console.log("Before Error");
-          const resp = await login({ emailaddress, password });
-          setToken(resp.data);
+          const resp = await login({ email, password });
+          console.log(resp);
+          // setToken(resp.cookie);
         } catch (err) {
           // TODO: handle error
           console.log(err);
@@ -83,6 +85,6 @@ export default function Signin1({ setToken }) {
   );
 }
 
-Signin1.propTypes = {
-  setToken: PropTypes.func.isRequired,
-};
+// Signin1.propTypes = {
+//   setToken: PropTypes.func.isRequired,
+// };

@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from "react";
+import React, { Component, Suspense, useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Fullscreen from "react-full-screen";
@@ -71,34 +71,34 @@ function AdminLayout(props) {
     }
   };
 
-  const handleRemoveToken = () => {
-    try {
-      this.setState({
-        token: null,
-        role: null,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const handleRemoveToken = () => {
+  //   try {
+  //     this.setState({
+  //       token: null,
+  //       role: null,
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const saveToken = (data) => {
-    try {
-      if (data) {
-        localStorage.setItem("token", JSON.stringify(data.token));
-        handleSetToken(data.token, data.role);
-      } else {
-        alert("Email or password not correct.");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const saveToken = (data) => {
+  //   try {
+  //     if (data) {
+  //       localStorage.setItem("token", JSON.stringify(data.token));
+  //       handleSetToken(data.token, data.role);
+  //     } else {
+  //       alert("Email or password not correct.");
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-  // let [authenticated, setAuthenticated] = useState(
-  //   cookies.token !== undefined
-  // );
+  const [cookies, setCookie, removeCookie] = useCookies(["x-auth"]);
+  let [authenticated, setAuthenticated] = useState(
+    cookies.token !== undefined
+  );
   /* full screen exit call */
   document.addEventListener("fullscreenchange", fullScreenExitHandler);
   document.addEventListener(
@@ -128,22 +128,21 @@ function AdminLayout(props) {
         exact={route.exact}
         name={route.name}
         render={(props) => (
-          <route.component {...props} setToken={saveToken} />
+          // <route.component {...props} setToken={saveToken} />
+          <route.component {...props}  />
         )}
       />
     ) : null;
   });
 
   // if (!this.state.token) {
-  if (cookies.token == undefined) {
+  if (!authenticated) {
     return (
       <Aux>
         <ScrollToTop>
           <Suspense fallback={<Loader />}>
             <Switch>
               {menu2}
-              {/* <Route
-                                    path="/" component={AdminLayout} /> */}
             </Switch>
           </Suspense>
         </ScrollToTop>

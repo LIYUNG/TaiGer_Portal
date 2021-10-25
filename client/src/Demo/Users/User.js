@@ -8,11 +8,7 @@ class User extends React.Component {
   };
 
   render() {
-    if (
-      this.props.role === "Agent" ||
-      this.props.role === "Editor" ||
-      this.props.role === "Admin"
-    ) {
+    if (this.props.success) {
       return (
         <tr key={this.props.user._id}>
           <th>
@@ -36,7 +32,7 @@ class User extends React.Component {
                   this.props.setModalShow(
                     this.props.user.firstname_,
                     this.props.user.lastname_,
-                    this.props.user.role_,
+                    this.props.user.role,
                     this.props.user._id
                   )
                 }
@@ -50,7 +46,7 @@ class User extends React.Component {
                   this.props.setModalShowDelete(
                     this.props.user.firstname_,
                     this.props.user.lastname_,
-                    this.props.user._id,
+                    this.props.user._id
                   )
                 }
               >

@@ -38,7 +38,7 @@ class EditableUser extends React.Component {
           handleFormClose={this.handleFormClose}
           openForm={this.openForm}
           setModalShow={this.props.setModalShow}
-          role={this.props.role}
+          success={this.props.success}
         />
       );
     } else {
@@ -51,7 +51,7 @@ class EditableUser extends React.Component {
           RemoveProgramHandler3={this.props.RemoveProgramHandler3}
           onEditClick={this.handleEditClick}
           setModalShow={this.props.setModalShow}
-          role={this.props.role}
+          success={this.props.success}
         />
       );
     }

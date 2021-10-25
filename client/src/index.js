@@ -207,11 +207,11 @@ window.UserlistHeader = [
   },
   {
     name: "Email Address",
-    prop: "emailaddress_",
+    prop: "email",
   },
   {
     name: "User Type",
-    prop: "role_",
+    prop: "role",
   },
 ];
 

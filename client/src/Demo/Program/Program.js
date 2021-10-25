@@ -8,11 +8,7 @@ class ProgramForm extends React.Component {
   };
 
   render() {
-    if (
-      this.props.role === "Agent" ||
-      this.props.role === "Editor" ||
-      this.props.role === "Admin"
-    ) {
+    if (this.props.success) {
       return (
         <tr key={this.props.program._id}>
           <th>

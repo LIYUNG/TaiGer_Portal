@@ -11,16 +11,18 @@ class UsersTable extends React.Component {
     role: "",
     isLoaded: false,
     data: [],
+    success: false,
   };
 
   componentDidMount() {
     getUsers().then(
       (resp) => {
-        if (resp.status === 401) {
+        if (resp.status === 401 || resp.status === 403) {
           return this.setState({ error: resp.status });
         }
-        const { data, role } = resp.data;
-        this.setState({ isLoaded: true, data, role });
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        this.setState({ isLoaded: true, data, success });
       },
       (error) => this.setState({ isLoaded: true, error })
     );
@@ -30,7 +32,7 @@ class UsersTable extends React.Component {
     if (this.state.isLoaded === false) {
       getUsers().then(
         (resp) => {
-          const { data } = resp.data;
+          const { data, success } = resp.data;
           this.setState({ isLoaded: true, data });
         },
         (error) => this.setState({ isLoaded: true, error })
@@ -159,7 +161,7 @@ class UsersTable extends React.Component {
                     </Col>
                   </Row>
                   <UsersList
-                    role={this.state.role}
+                    success={this.state.success}
                     onFormSubmit={this.onFormSubmit}
                     assignUserAs={this.assignUserAs}
                     data={this.state.data}

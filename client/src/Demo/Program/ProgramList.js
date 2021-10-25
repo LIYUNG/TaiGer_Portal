@@ -103,12 +103,11 @@ class Programlist extends React.Component {
         key={program._id}
         program={program}
         header={this.props.header}
-        // handleChange={this.props.handleChange}
         onFormSubmit={this.props.onFormSubmit}
         setModalShowDelete={this.setModalShowDelete}
         RemoveProgramHandler3={this.props.RemoveProgramHandler3}
         setModalShow={this.setModalShow}
-        role={this.props.role}
+        success={this.props.success}
       />
     ));
     return (

@@ -21,11 +21,7 @@ class UserForm extends React.Component {
 
   render() {
     // TODO: emailaddress should be gray out <not allowed to change>
-    if (
-      this.props.role === "Agent" ||
-      this.props.role === "Editor" ||
-      this.props.role === "Admin"
-    ) {
+    if (this.props.success) {
       return (
         <tr key={this.state.user._id}>
           <th>

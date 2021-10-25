@@ -70,7 +70,7 @@ class Userslist extends React.Component {
   };
 
   render() {
-    if (this.props.role === "Admin") {
+    if (this.props.success) {
       const headers = (
         <tr>
           <th> </th>
@@ -87,7 +87,7 @@ class Userslist extends React.Component {
           onFormSubmit={this.props.onFormSubmit}
           setModalShowDelete={this.setModalShowDelete}
           setModalShow={this.setModalShow}
-          role={this.props.role}
+          success={this.props.success}
         />
       ));
       return (
@@ -118,9 +118,9 @@ class Userslist extends React.Component {
       );
     } else {
       return (
-      <>
-      <p>This is for Admin only.</p>
-      </>
+        <>
+          <p>This is for Admin only.</p>
+        </>
       );
     }
   }

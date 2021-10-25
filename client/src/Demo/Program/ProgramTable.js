@@ -17,6 +17,7 @@ class ProgramTable extends React.Component {
     role: "",
     isLoaded: false,
     data: [],
+    success: false
   };
 
   componentDidMount() {
@@ -26,8 +27,8 @@ class ProgramTable extends React.Component {
           return this.setState({ error: resp.status });
         }
         console.log(resp.data);
-        const { data, role } = resp.data;
-        this.setState({ isLoaded: true, data, role });
+        const { data, success } = resp.data;
+        this.setState({ isLoaded: true, data, success });
       },
       (error) => this.setState({ isLoaded: true, error })
     );
@@ -170,7 +171,7 @@ class ProgramTable extends React.Component {
                                 </Card.Header> */}
                 <Card.Body>
                   <Programlist
-                    role={this.state.role}
+                    success={this.state.success}
                     onFormSubmit={this.onFormSubmit}
                     data={this.state.data}
                     RemoveProgramHandler3={this.RemoveProgramHandler3}

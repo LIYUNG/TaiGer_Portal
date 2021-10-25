@@ -10,7 +10,6 @@ import * as actionTypes from "../../../../store/actions";
 class NavBar extends Component {
     constructor(props) {
         super(props);
-        this.handleRemoveToken = this.props.handleRemoveToken.bind(this)
     }
     
     render() {
@@ -39,7 +38,7 @@ class NavBar extends Component {
                     <a className="mobile-menu" id="mobile-header" href={DEMO.BLANK_LINK}><i className="feather icon-more-horizontal"/></a>
                     <div className="collapse navbar-collapse">
                         <NavLeft/>
-                        <NavRight handleRemoveToken={this.handleRemoveToken} rtlLayout={this.props.rtlLayout} />
+                        <NavRight rtlLayout={this.props.rtlLayout} />
                     </div>
                 </header>
             </Aux>

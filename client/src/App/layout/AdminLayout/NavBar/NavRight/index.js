@@ -13,8 +13,6 @@ import Avatar3 from '../../../../../assets/images/user/avatar-3.jpg';
 class NavRight extends Component {
     constructor(props) {
         super(props);
-        this.handleRemoveToken = this.props.handleRemoveToken.bind(this)
-        // this.handleOnClick = this.props.handleOnClick(this)
     }
 
     state = {
@@ -23,7 +21,6 @@ class NavRight extends Component {
 
     handleOnClick() {
         localStorage.clear();
-        this.handleRemoveToken();
     }
 
     render() {

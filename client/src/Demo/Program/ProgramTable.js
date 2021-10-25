@@ -25,6 +25,7 @@ class ProgramTable extends React.Component {
         if (resp.status === 401) {
           return this.setState({ error: resp.status });
         }
+        console.log(resp.data);
         const { data, role } = resp.data;
         this.setState({ isLoaded: true, data, role });
       },

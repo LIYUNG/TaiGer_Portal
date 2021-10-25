@@ -8,7 +8,7 @@ import { NavLink } from "react-router-dom";
 import { login } from "../../../api";
 
 // export default function Signin1({ setToken }) {
-export default function Signin1() {
+export default function Signin1({ userData }) {
   const [email, setEmailaddress] = useState();
   const [password, setPassword] = useState();
   const handleSubmit = async (e) => {
@@ -21,10 +21,9 @@ export default function Signin1() {
         alert("Password please!");
       } else {
         try {
-          console.log("Before Error");
           const resp = await login({ email, password });
-          console.log(resp);
-          // setToken(resp.cookie);
+          // console.log(resp);
+          userData(resp);
         } catch (err) {
           // TODO: handle error
           console.log(err);

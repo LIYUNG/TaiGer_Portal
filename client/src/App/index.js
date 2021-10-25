@@ -20,7 +20,6 @@ class App extends React.Component {
                 <ScrollToTop>
                     <Suspense fallback={<Loader />}>
                         <Switch>
-                            {/* {menu} */}
                             <Route
                                 path="/" component={AdminLayout} />
                         </Switch>

@@ -1,4 +1,4 @@
-import React, { Component, Suspense, useState } from "react";
+import React, { Component, Suspense, useState, useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Fullscreen from "react-full-screen";
@@ -18,20 +18,26 @@ import { useCookies } from "react-cookie";
 import "./app.scss";
 
 function AdminLayout(props) {
-  const getToken = () => {
-    const tokenString = localStorage.getItem("token");
-    // console.log('tokenString  ' + tokenString)
+  let [userdata, setUserdata] = useState({ success: false, data: null });
+
+  const setuserdata = (resp) => {
     try {
-      const userToken = JSON.parse(tokenString);
-      // console.log('userToken  ' + userToken)
-      return userToken;
+      if (resp) {
+        console.log(resp.data.success);
+        console.log(resp.data.data);
+
+        setUserdata({
+          success: resp.data.success,
+          data: resp.data.data,
+        });
+      } else {
+        alert("Email or password not correct.");
+      }
     } catch (e) {
-      const userToken = JSON.parse("0");
-      // console.log('userToken  ' + userToken)
-      return userToken;
+      console.log(e);
     }
   };
-
+  useEffect(() => {});
   const fullScreenExitHandler = () => {
     if (
       !document.fullscreenElement &&
@@ -60,51 +66,9 @@ function AdminLayout(props) {
     }
   };
 
-  const handleSetToken = (token, role) => {
-    try {
-      this.setState({
-        token: token,
-        role: role,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  // const handleRemoveToken = () => {
-  //   try {
-  //     this.setState({
-  //       token: null,
-  //       role: null,
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const saveToken = (data) => {
-  //   try {
-  //     if (data) {
-  //       localStorage.setItem("token", JSON.stringify(data.token));
-  //       handleSetToken(data.token, data.role);
-  //     } else {
-  //       alert("Email or password not correct.");
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  const [cookies, setCookie, removeCookie] = useCookies(["x-auth"]);
-  let [authenticated, setAuthenticated] = useState(
-    cookies.token !== undefined
-  );
   /* full screen exit call */
   document.addEventListener("fullscreenchange", fullScreenExitHandler);
-  document.addEventListener(
-    "webkitfullscreenchange",
-    fullScreenExitHandler
-  );
+  document.addEventListener("webkitfullscreenchange", fullScreenExitHandler);
   document.addEventListener("mozfullscreenchange", fullScreenExitHandler);
   document.addEventListener("MSFullscreenChange", fullScreenExitHandler);
 
@@ -129,55 +93,53 @@ function AdminLayout(props) {
         name={route.name}
         render={(props) => (
           // <route.component {...props} setToken={saveToken} />
-          <route.component {...props}  />
+          <route.component {...props} userData={setuserdata} />
         )}
       />
     ) : null;
   });
 
-  // if (!this.state.token) {
-  if (!authenticated) {
+  if (!userdata.success) {
     return (
       <Aux>
         <ScrollToTop>
           <Suspense fallback={<Loader />}>
-            <Switch>
-              {menu2}
-            </Switch>
+            <Switch>{menu2}</Switch>
           </Suspense>
         </ScrollToTop>
       </Aux>
     );
   }
   return (
-      <Aux>
-        <Fullscreen enabled={this.props.isFullScreen}>
-          <Navigation role={this.state.role} />
-          <NavBar handleRemoveToken={this.handleRemoveToken} />
-          <div
-            className="pcoded-main-container"
-            onClick={() => this.mobileOutClickHandler}
-          >
-            <div className="pcoded-wrapper">
-              <div className="pcoded-content">
-                <div className="pcoded-inner-content">
-                  <Breadcrumb role={this.state.role} />
-                  <div className="main-body">
-                    <div className="page-wrapper">
-                      <Suspense fallback={<Loader />}>
-                        <Switch>
-                          {menu}
-                          <Redirect from="/" to={this.props.defaultPath} />
-                        </Switch>
-                      </Suspense>
-                    </div>
+    <Aux>
+      <Fullscreen enabled={props.isFullScreen}>
+        <Navigation role={userdata.data.role} />
+        <NavBar />
+        <div
+          className="pcoded-main-container"
+          onClick={() => this.mobileOutClickHandler}
+        >
+          <div className="pcoded-wrapper">
+            <div className="pcoded-content">
+              <div className="pcoded-inner-content">
+                <Breadcrumb role={userdata.data.role} />
+                <div className="main-body">
+                  <div className="page-wrapper">
+                    <Suspense fallback={<Loader />}>
+                      <Switch>
+                        {menu}
+                        <Redirect from="/" to={props.defaultPath} />
+                      </Switch>
+                    </Suspense>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Fullscreen>
-      </Aux>);
+        </div>
+      </Fullscreen>
+    </Aux>
+  );
 }
 
 // class AdminLayout_old extends Component {

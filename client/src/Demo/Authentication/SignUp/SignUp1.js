@@ -10,29 +10,29 @@ import { register } from "../../../api";
 // import DEMO from "../../../store/constant";
 
 // class SignUp1 extends React.Component {
-export default function SignUp1({ setToken }) {
-  const [emailaddress, setEmailaddress] = useState();
+export default function SignUp1({ userData }) {
+  const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [passwordconfirm, setPasswordConfirm] = useState();
-  const [firstname, setFirstname] = useState();
+  const [name, setName] = useState();
   const [lastname, setLastname] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!firstname) return alert("First name, please!");
+    if (!name) return alert("First name, please!");
     if (!lastname) return alert("Last name, please!");
-    if (!emailaddress) return alert("Email, please!");
+    if (!email) return alert("Email, please!");
     if (!password || !passwordconfirm) return alert("Please enter passwords");
     if (password !== passwordconfirm) return alert("Password not matched!");
 
     try {
       const resp = await register({
-        firstname,
+        name,
         lastname,
-        emailaddress,
+        email,
         password,
-      })
-      setToken(resp.data);
+      });
+      userData(resp);
     } catch (err) {
       // TODO: handle error
     }
@@ -61,7 +61,7 @@ export default function SignUp1({ setToken }) {
                   type="text"
                   className="form-control"
                   placeholder="First name"
-                  onChange={(e) => setFirstname(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
               <div className="input-group mb-3">
@@ -77,7 +77,7 @@ export default function SignUp1({ setToken }) {
                   type="email"
                   className="form-control"
                   placeholder="Email"
-                  onChange={(e) => setEmailaddress(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="input-group mb-4">

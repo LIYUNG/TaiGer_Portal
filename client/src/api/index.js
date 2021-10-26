@@ -30,10 +30,12 @@ export const updateEditors = (id, editors) =>
   request.post(`/api/students/${id}/editors`, editors);
 
 export const assignProgramToStudent = (studentId, programId) =>
-  request.post(`/api/students/${studentId}/programs`, programId);
+  request.post(`/api/students/${studentId}/applications`, {
+    programId: programId,
+  });
 
 export const removeProgramFromStudent = (programId, studentId) =>
-  request.delete(`/api/students/${studentId}/programs/${programId}`);
+  request.delete(`/api/students/${studentId}/applications/${programId}`);
 
 export const download = (category, studentId) =>
   request.get(`/api/students/${studentId}/files/${category}`, {
@@ -43,15 +45,21 @@ export const download = (category, studentId) =>
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 
-export const acceptDocument = (category, studentId) =>
-  request.post(`/api/students/${studentId}/files/${category}/status`, {
-    status: "checked",
-  });
+export const acceptDocument = (category, applicationId, studentId) =>
+  request.post(
+    `/api/students/${studentId}/applications/${applicationId}/${category}/status`,
+    {
+      status: "checked",
+    }
+  );
 
-export const rejectDocument = (category, studentId) =>
-  request.post(`/api/students/${studentId}/files/${category}/status`, {
-    status: "unaccepted",
-  });
+export const rejectDocument = (category, applicationId, studentId) =>
+  request.post(
+    `/api/students/${studentId}/applications/${applicationId}/${category}/status`,
+    {
+      status: "unaccepted",
+    }
+  );
 
 export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);

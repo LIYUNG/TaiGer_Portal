@@ -42,7 +42,7 @@ router
   .delete(permit(Role.Admin), removeEditorFromStudent);
 
 router
-  .route("/:id/applications")
+  .route("/:studentId/applications")
   .post(permit(Role.Admin, Role.Agent), createApplication);
 
 router

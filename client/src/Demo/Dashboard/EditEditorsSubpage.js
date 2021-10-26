@@ -39,12 +39,12 @@ class EditEditorsSubpage extends React.Component {
                           type="checkbox"
                           name="student_id"
                           defaultChecked={
-                            this.props.student.editor_.indexOf(editor.emailaddress_) > -1
+                            this.props.student.editor_.indexOf(editor.email) > -1
                               ? true
                               : false
                           }
                           onChange={(e) => this.props.handleChangeEditorlist(e)}
-                          value={editor.emailaddress_}
+                          value={editor.email}
                           id={"editor" + i + 1}
                         />
                       </Form.Group>

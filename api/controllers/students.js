@@ -79,15 +79,13 @@ const removeEditorFromStudent = asyncHandler(async (req, res, next) => {
 
 const createApplication = asyncHandler(async (req, res) => {
   const {
-    params: { id },
+    params: { studentId },
     body: { programId },
   } = req;
-
-  const student = await Student.findById(id);
+  const student = await Student.findById(studentId);
   const programIds = student.applications.map(({ programId }) => programId);
   if (programIds.includes(programId))
     throw new ErrorResponse(400, "Duplicate program");
-
   const program = await Program.findById(programId);
   const { requiredDocuments, optionalDocuments } = program;
   const now = new Date();

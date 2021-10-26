@@ -33,7 +33,7 @@ class UsersTable extends React.Component {
       getUsers().then(
         (resp) => {
           const { data, success } = resp.data;
-          this.setState({ isLoaded: true, data });
+          this.setState({ isLoaded: true, data, success });
         },
         (error) => this.setState({ isLoaded: true, error })
       );

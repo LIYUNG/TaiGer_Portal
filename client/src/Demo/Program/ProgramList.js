@@ -14,6 +14,7 @@ class Programlist extends React.Component {
     program_id: "",
     modalShowNewProgram: false,
     deleteProgramWarning: false,
+    StudentId:"",
   };
 
   handleChange2 = (e) => {

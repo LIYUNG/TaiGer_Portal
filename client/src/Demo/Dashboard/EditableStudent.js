@@ -220,19 +220,15 @@ class EditableStudent extends React.Component {
     } else {
       studentDocOverview = <p>So far no uploaded file!</p>;
     }
-    if (
-      this.props.role === "Agent" ||
-      this.props.role === "Editor" ||
-      this.props.role === "Admin"
-    ) {
+    if (this.props.success) {
       return (
-        <Card key={this.props.student._id}>
+        <Card key={this.state.student._id}>
           <Card.Header>
             <Card.Title as="h5">
-              {this.props.student.firstname_} {this.props.student.lastname_}
+              {this.state.student.firstname_} {this.state.student.lastname_}
               <br />
-              Email: {this.props.student.emailaddress_}
-              {this.props.role === "Admin" ? (
+              Email: {this.state.student.email}
+              {this.props.success ? (
                 <DropdownButton
                   className="btn ml-2"
                   size="sm"
@@ -320,9 +316,9 @@ class EditableStudent extends React.Component {
             </td>
             <td>
               <h5>Programs:</h5>
-              {this.state.student.applying_program_.map((program, i) => (
+              {this.state.student.applications.map((program, i) => (
                 <h6 key={i}>
-                  {program.University_} {program.Program_}{" "}
+                  Program ID: {program.programId}{" "}
                 </h6>
               ))}
             </td>
@@ -369,54 +365,54 @@ class EditableStudent extends React.Component {
           </tr>
         </Card>
       );
-    } else if (this.props.role === "Student") {
-      return (
-        <Card>
-          <Card.Header>
-            <Card.Title as="h5">
-              {this.props.student.firstname_} {this.props.student.lastname_}
-              <br />
-              Email: {this.props.student.emailaddress_}
-            </Card.Title>
-          </Card.Header>
-          <tr key={this.state.student._id}>
-            <td>
-              <img
-                className="rounded-circle"
-                style={{ width: "40px" }}
-                src={avatar1}
-                alt="activity-user"
-              />
-            </td>
-            <td>
-              <h5 className="m-0">Document status</h5>
-              {studentDocOverview}
-            </td>
-            <td>
-              <h5>Agent:</h5>
-              {this.state.student.agent_.map((agent, i) => (
-                <p className="m-0" key={i}>
-                  {agent}
-                </p>
-              ))}
-              <h5>Editor:</h5>
-              {this.state.student.editor_.map((editor, i) => (
-                <p className="m-0" key={i}>
-                  {editor}
-                </p>
-              ))}
-            </td>
-            <td>
-              <h5>Programs:</h5>
-              {this.state.student.applying_program_.map((program, i) => (
-                <h6 key={i}>
-                  {program.University_} {program.Program_}{" "}
-                </h6>
-              ))}
-            </td>
-          </tr>
-        </Card>
-      );
+    // } else if (this.props.success) {
+    //   return (
+    //     <Card>
+    //       <Card.Header>
+    //         <Card.Title as="h5">
+    //           {this.props.student.firstname_} {this.props.student.lastname_}
+    //           <br />
+    //           Email: {this.props.student.emailaddress_}
+    //         </Card.Title>
+    //       </Card.Header>
+    //       <tr key={this.state.student._id}>
+    //         <td>
+    //           <img
+    //             className="rounded-circle"
+    //             style={{ width: "40px" }}
+    //             src={avatar1}
+    //             alt="activity-user"
+    //           />
+    //         </td>
+    //         <td>
+    //           <h5 className="m-0">Document status</h5>
+    //           {studentDocOverview}
+    //         </td>
+    //         <td>
+    //           <h5>Agent:</h5>
+    //           {this.state.student.agent_.map((agent, i) => (
+    //             <p className="m-0" key={i}>
+    //               {agent}
+    //             </p>
+    //           ))}
+    //           <h5>Editor:</h5>
+    //           {this.state.student.editor_.map((editor, i) => (
+    //             <p className="m-0" key={i}>
+    //               {editor}
+    //             </p>
+    //           ))}
+    //         </td>
+    //         <td>
+    //           <h5>Programs:</h5>
+    //           {this.state.student.applying_program_.map((program, i) => (
+    //             <h6 key={i}>
+    //               {program.University_} {program.Program_}{" "}
+    //             </h6>
+    //           ))}
+    //         </td>
+    //       </tr>
+    //     </Card>
+    //   );
     } else {
       return (
         <Card>

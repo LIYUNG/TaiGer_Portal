@@ -33,13 +33,14 @@ class Dashboard extends React.Component {
     students: [],
     updateAgentList: {},
     updateEditorList: {},
+    success: false,
   };
 
   componentDidMount() {
     getStudents().then(
       (resp) => {
-        const { data: students, role } = resp.data;
-        this.setState({ isLoaded: true, students, role });
+        const { data, success } = resp.data;
+        this.setState({ isLoaded: true, students: data, success: success });
       },
       (error) => {
         console.log(error);
@@ -56,10 +57,10 @@ class Dashboard extends React.Component {
     if (this.state.isLoaded === false) {
       getStudents().then(
         (resp) => {
-          console.log(resp.data.data);
           this.setState({
             isLoaded: true,
             students: resp.data.data,
+            success: resp.data.success,
           });
         },
         (error) => {
@@ -115,10 +116,10 @@ class Dashboard extends React.Component {
     );
   }
 
-  onRejectFilefromstudent = (e, category, id) => {
+  onRejectFilefromstudent = (e, category, applicationId, studentId) => {
     //id == student id
     e.preventDefault();
-    rejectDocument(category, id).then(
+    rejectDocument(category, applicationId, studentId).then(
       (result) => {},
       (error) => {
         this.setState({
@@ -129,10 +130,10 @@ class Dashboard extends React.Component {
     );
   };
 
-  onAcceptFilefromstudent = (e, category, id) => {
+  onAcceptFilefromstudent = (e, category, applicationId, studentId) => {
     //id == student id
     e.preventDefault();
-    acceptDocument(category, id).then(
+    acceptDocument(category, applicationId, studentId).then(
       (result) => {},
       (error) => {
         this.setState({
@@ -169,10 +170,12 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data: agents } = resp.data; //get all agent
         const { agent_ } = student;
+        console.log(resp.data);
+
         const updateAgentList = agents.reduce(
-          (prev, { emailaddress_ }) => ({
+          (prev, { email }) => ({
             ...prev,
-            [emailaddress_]: agent_.indexOf(emailaddress_) > -1,
+            [email]: agent_.indexOf(email) > -1,
           }),
           {}
         );
@@ -189,9 +192,9 @@ class Dashboard extends React.Component {
         const { data: editors } = resp.data;
         const { editor_ } = student;
         const updateEditorList = editors.reduce(
-          (prev, { emailaddress_ }) => ({
+          (prev, { email }) => ({
             ...prev,
-            [emailaddress_]: editor_.indexOf(emailaddress_) > -1,
+            [email]: editor_.indexOf(email) > -1,
           }),
           {}
         );
@@ -337,14 +340,14 @@ class Dashboard extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      if (this.state.students) {
+      if (this.state.success) {
         return (
           <Aux>
             <Row>
               {/* <Col md={6} xl={8}> */}
               <Col sm={12}>
                 <Studentlist
-                  role={this.state.role}
+                  success={this.state.success}
                   editAgent={this.editAgent}
                   editEditor={this.editEditor}
                   agent_list={this.state.agent_list}

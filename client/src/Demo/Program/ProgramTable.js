@@ -17,7 +17,7 @@ class ProgramTable extends React.Component {
     role: "",
     isLoaded: false,
     data: [],
-    success: false
+    success: false,
   };
 
   componentDidMount() {
@@ -142,9 +142,11 @@ class ProgramTable extends React.Component {
   };
 
   assignProgram = (assign_data) => {
-    const { student_id, program_id } = assign_data
+    const { student_id, program_id } = assign_data;
     assignProgramToStudent(student_id, program_id).then(
-      (resp) => {},
+      (resp) => {
+        const { data, success } = resp.data;
+      },
       (error) => {}
     );
   };

@@ -11,6 +11,7 @@ class Studentlist extends React.Component {
         <tbody>
           <EditableStudent
             student={student}
+            success={this.props.success}
             editAgent={this.props.editAgent}
             editEditor={this.props.editEditor}
             startEditingAgent={this.props.startEditingAgent}
@@ -18,7 +19,6 @@ class Studentlist extends React.Component {
             startEditingProgram={this.props.startEditingProgram}
             documentslist={this.props.documentslist}
             startUploadfile={this.props.startUploadfile}
-            role={this.props.role}
             agent_list={this.props.agent_list}
             editor_list={this.props.editor_list}
             onDeleteProgram={this.props.onDeleteProgram}

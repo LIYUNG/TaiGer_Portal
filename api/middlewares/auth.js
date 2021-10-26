@@ -6,7 +6,6 @@ const localAuth = (req, res, next) => {
     if (err) return next(err);
 
     if (!user) return next(new ErrorResponse(401, "Invalid credentials"));
-    console.log(user)
     req.user = user;
     next();
   })(req, res, next);
@@ -26,7 +25,6 @@ const protect = (req, res, next) => {
 const permit =
   (...roles) =>
   (req, res, next) => {
-    console.log(req.user)
     if (!roles.includes(req.user.role))
       return next(new ErrorResponse(403, "Permission denied"));
 

@@ -1,5 +1,4 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 
@@ -7,11 +6,9 @@ import { Card, Col, Row } from "react-bootstrap";
 
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import avatar1 from "../../assets/images/user/avatar-1.jpg";
-import EditAgentsSubpage from "./EditAgentsSubpage";
-import EditEditorsSubpage from "./EditEditorsSubpage";
-import EditProgramsSubpage from "./EditProgramsSubpage";
-import EditFilesSubpage from "./EditFilesSubpage";
+
 import { uploadforstudent } from "../../api";
+import AgentDashboard from "./AgentDashboard";
 
 class EditableStudent extends React.Component {
   state = {
@@ -220,71 +217,50 @@ class EditableStudent extends React.Component {
     } else {
       studentDocOverview = <p>So far no uploaded file!</p>;
     }
-    if (this.props.success) {
+    if (this.props.role === "Admin" || this.props.role === "Agent") {
       return (
-        <Card key={this.state.student._id}>
+        <AgentDashboard
+          role={this.props.role}
+          agent_list={this.props.agent_list}
+          editor_list={this.props.editor_list}
+          startEditingAgent={this.startEditingAgent}
+          startEditingEditor={this.startEditingEditor}
+          startEditingProgram={this.startEditingProgram}
+          startUploadfile={this.startUploadfile}
+          student={this.state.student}
+          studentDocOverview={studentDocOverview}
+          setAgentModalhide={this.setAgentModalhide}
+          updateAgentList={this.props.updateAgentList}
+          handleChangeAgentlist={this.props.handleChangeAgentlist}
+          submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+          setEditorModalhide={this.setEditorModalhide}
+          updateEditorList={this.props.updateEditorList}
+          handleChangeEditorlist={this.props.handleChangeEditorlist}
+          submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+          setProgramModalhide={this.setProgramModalhide}
+          onDeleteProgram={this.props.onDeleteProgram}
+          setFilesModalhide={this.setFilesModalhide}
+          onFileChange={this.onFileChange}
+          submitFile={this.submitFile}
+          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+          onRejectFilefromstudent={this.onRejectFilefromstudent}
+          onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+          documentslist={this.props.documentslist}
+          showAgentPage={this.state.showAgentPage}
+          showEditorPage={this.state.showEditorPage}
+          showProgramPage={this.state.showProgramPage}
+          showFilePage={this.state.showFilePage}
+        />
+      );
+    } else if (this.props.role === "Student") {
+      return (
+        <Card>
           <Card.Header>
             <Card.Title as="h5">
-              {this.state.student.firstname_} {this.state.student.lastname_}
+              {this.props.student.firstname_} {this.props.student.lastname_}
               <br />
-              Email: {this.state.student.email}
-              {this.props.success ? (
-                <DropdownButton
-                  className="btn ml-2"
-                  size="sm"
-                  title="Option"
-                  variant="primary"
-                  id={`dropdown-variants-${this.state.student._id}`}
-                  key={this.state.student._id}
-                >
-                  <Dropdown.Item
-                    eventKey="1"
-                    onSelect={() => this.startEditingAgent(this.state.student)}
-                  >
-                    Edit Agent
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    eventKey="2"
-                    onSelect={() => this.startEditingEditor(this.state.student)}
-                  >
-                    Edit Editor
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    eventKey="3"
-                    onSelect={() => this.startEditingProgram()}
-                  >
-                    Edit Program
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    eventKey="4"
-                    onSelect={() => this.startUploadfile()}
-                  >
-                    Edit File Status
-                  </Dropdown.Item>
-                </DropdownButton>
-              ) : (
-                <DropdownButton
-                  className="btn ml-2"
-                  size="sm"
-                  title="Option"
-                  variant="primary"
-                  id={`dropdown-variants-${this.state.student._id}`}
-                  key={this.state.student._id}
-                >
-                  <Dropdown.Item
-                    eventKey="3"
-                    onSelect={() => this.startEditingProgram()}
-                  >
-                    Edit Program
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    eventKey="4"
-                    onSelect={() => this.startUploadfile()}
-                  >
-                    Edit File Status
-                  </Dropdown.Item>
-                </DropdownButton>
-              )}
+              Email: {this.props.student.emailaddress_}
             </Card.Title>
           </Card.Header>
           <tr key={this.state.student._id}>
@@ -316,103 +292,15 @@ class EditableStudent extends React.Component {
             </td>
             <td>
               <h5>Programs:</h5>
-              {this.state.student.applications.map((program, i) => (
+              {this.state.student.applying_program_.map((program, i) => (
                 <h6 key={i}>
-                  Program ID: {program.programId}{" "}
+                  {program.University_} {program.Program_}{" "}
                 </h6>
               ))}
             </td>
-            <EditAgentsSubpage
-              student={this.state.student}
-              agent_list={this.props.agent_list}
-              show={this.state.showAgentPage}
-              onHide={this.setAgentModalhide}
-              setmodalhide={this.setAgentModalhide}
-              updateAgentList={this.props.updateAgentList}
-              handleChangeAgentlist={this.props.handleChangeAgentlist}
-              submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-            />
-            <EditEditorsSubpage
-              student={this.state.student}
-              editor_list={this.props.editor_list}
-              show={this.state.showEditorPage}
-              onHide={this.setEditorModalhide}
-              setmodalhide={this.setEditorModalhide}
-              updateEditorList={this.props.updateEditorList}
-              handleChangeEditorlist={this.props.handleChangeEditorlist}
-              submitUpdateEditorlist={this.props.submitUpdateEditorlist}
-            />
-            <EditProgramsSubpage
-              student={this.state.student}
-              show={this.state.showProgramPage}
-              onHide={this.setProgramModalhide}
-              setmodalhide={this.setProgramModalhide}
-              onDeleteProgram={this.props.onDeleteProgram}
-            />
-            <EditFilesSubpage
-              student={this.state.student}
-              documentslist={this.props.documentslist}
-              show={this.state.showFilePage}
-              onHide={this.setFilesModalhide}
-              setmodalhide={this.setFilesModalhide}
-              onFileChange={this.onFileChange}
-              submitFile={this.submitFile}
-              onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-              onRejectFilefromstudent={this.onRejectFilefromstudent}
-              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            />
           </tr>
         </Card>
       );
-    // } else if (this.props.success) {
-    //   return (
-    //     <Card>
-    //       <Card.Header>
-    //         <Card.Title as="h5">
-    //           {this.props.student.firstname_} {this.props.student.lastname_}
-    //           <br />
-    //           Email: {this.props.student.emailaddress_}
-    //         </Card.Title>
-    //       </Card.Header>
-    //       <tr key={this.state.student._id}>
-    //         <td>
-    //           <img
-    //             className="rounded-circle"
-    //             style={{ width: "40px" }}
-    //             src={avatar1}
-    //             alt="activity-user"
-    //           />
-    //         </td>
-    //         <td>
-    //           <h5 className="m-0">Document status</h5>
-    //           {studentDocOverview}
-    //         </td>
-    //         <td>
-    //           <h5>Agent:</h5>
-    //           {this.state.student.agent_.map((agent, i) => (
-    //             <p className="m-0" key={i}>
-    //               {agent}
-    //             </p>
-    //           ))}
-    //           <h5>Editor:</h5>
-    //           {this.state.student.editor_.map((editor, i) => (
-    //             <p className="m-0" key={i}>
-    //               {editor}
-    //             </p>
-    //           ))}
-    //         </td>
-    //         <td>
-    //           <h5>Programs:</h5>
-    //           {this.state.student.applying_program_.map((program, i) => (
-    //             <h6 key={i}>
-    //               {program.University_} {program.Program_}{" "}
-    //             </h6>
-    //           ))}
-    //         </td>
-    //       </tr>
-    //     </Card>
-    //   );
     } else {
       return (
         <Card>

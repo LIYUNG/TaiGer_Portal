@@ -41,7 +41,7 @@ class EditUploadFilesSubpage extends React.Component {
                     onChange={(e) => this.props.onFileChange(e)}
                     onClick={(e) => (e.target.value = null)}
                   >
-                    <Form.File id={this.props.id}>
+                    <Form.File id={this.props.userId}>
                       {/* <Form.File.Label>Regular file input</Form.File.Label> */}
                       <Form.File.Input />
                     </Form.File>
@@ -50,7 +50,11 @@ class EditUploadFilesSubpage extends React.Component {
               </td>
               <td>
                 <Col>
-                  <Form onSubmit={(e) => this.props.submitFile(e, doc.prop)}>
+                  <Form
+                    onSubmit={(e) =>
+                      this.props.submitFile(e, this.props.userId, doc.prop)
+                    }
+                  >
                     <Form.Group controlId="exampleForm.ControlSelect1">
                       <Button size="sm" type="submit">
                         Upload
@@ -66,7 +70,7 @@ class EditUploadFilesSubpage extends React.Component {
                       this.props.onDownloadFilefromstudent(
                         e,
                         doc.prop,
-                        this.props.student._id
+                        this.props.userId
                       )
                     }
                   >
@@ -85,7 +89,7 @@ class EditUploadFilesSubpage extends React.Component {
                       this.props.onDeleteFilefromstudent(
                         e,
                         doc.prop,
-                        this.props.student._id
+                        this.props.userId
                       )
                     }
                   >
@@ -131,7 +135,7 @@ class EditUploadFilesSubpage extends React.Component {
                       this.props.onDownloadFilefromstudent(
                         e,
                         doc.prop,
-                        this.props.student._id
+                        this.props.userId
                       )
                     }
                   >
@@ -196,7 +200,7 @@ class EditUploadFilesSubpage extends React.Component {
                       this.props.onDownloadFilefromstudent(
                         e,
                         doc.prop,
-                        this.props.student._id
+                        this.props.userId
                       )
                     }
                   >
@@ -215,7 +219,7 @@ class EditUploadFilesSubpage extends React.Component {
                       this.props.onDeleteFilefromstudent(
                         e,
                         doc.prop,
-                        this.props.student._id
+                        this.props.userId
                       )
                     }
                   >

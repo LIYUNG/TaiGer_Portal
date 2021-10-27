@@ -24,19 +24,21 @@ class UploadPage extends React.Component {
       file: "",
       isLoaded: false,
       student: [],
-      role: "",
+      success: false,
     };
   }
   componentDidMount() {
-    getMyfiles().then(
+    getMyfiles(this.props.userId).then(
       (resp) => {
-        const { data: student, role: role } = resp.data;
-        console.log("role: " + role);
+        console.log(this.props.userId);
+        console.log(resp.data);
+        const { data: student, success: success } = resp.data;
+        console.log(success);
         this.setState({
           file: "",
           isLoaded: true,
           student: student,
-          role: role,
+          success: success,
         });
       },
       (error) => {
@@ -77,10 +79,10 @@ class UploadPage extends React.Component {
     });
   }
 
-  onSubmitFile(e, id) {
+  onSubmitFile(e, studentId, docName) {
     const formData = new FormData();
     formData.append("file", this.state.file);
-    upload(id, formData).then(
+    upload(studentId, docName, formData).then(
       (res) => {
         if (res.status === 200) {
           // alert("Upload success");
@@ -108,13 +110,13 @@ class UploadPage extends React.Component {
     );
   }
 
-  submitFile = (e, id) => {
+  submitFile = (e, studentId, docName) => {
     if (this.state.file === "") {
       e.preventDefault();
       alert("Please select file");
     } else {
       e.preventDefault();
-      this.onSubmitFile(e, id);
+      this.onSubmitFile(e, studentId, docName);
     }
   };
 
@@ -155,7 +157,7 @@ class UploadPage extends React.Component {
 
           //Open the URL on new Window
           console.log(url);
-          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
+          var newWindow = window.open(url, "_blank"); //TODO: having a reasonable file name, pdf viewer
           newWindow.document.title = actualFileName;
         } else {
           //if not pdf, download instead.
@@ -234,7 +236,7 @@ class UploadPage extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      if (this.state.role === "Student") {
+      if (this.props.role === "Student") {
         return (
           <Aux>
             <Row>
@@ -249,6 +251,7 @@ class UploadPage extends React.Component {
                   {/* </Card.Title> */}
                   {/* <Card.Body> */}
                   <EditUploadFilesSubpage
+                    userId={this.props.userId}
                     student={this.state.student}
                     submitFile={this.submitFile}
                     onFileChange={this.onFileChange}
@@ -265,9 +268,9 @@ class UploadPage extends React.Component {
           </Aux>
         );
       } else if (
-        this.state.role === "Agent" ||
-        this.state.role === "Editor" ||
-        this.state.role === "Admin"
+        this.props.role === "Agent" ||
+        this.props.role === "Editor" ||
+        this.props.role === "Admin"
       ) {
         return (
           <Aux>

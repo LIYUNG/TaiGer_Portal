@@ -20,7 +20,7 @@ export const getAgents = () => request.get("/api/agents");
 
 export const getEditors = () => request.get("/api/editors");
 
-export const getStudents = () => request.get("/api/students");
+export const getStudents = (userId) => request.get(`/api/students/${userId}`);
 
 // Student APIs
 export const updateAgents = (id, agents) =>
@@ -65,13 +65,17 @@ export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);
 
 // Account APIs
-export const getMyfiles = () => request.get("/api/account/files");
+export const getMyfiles = (studentId) =>
+  request.get(`/api/account/${studentId}/files`);
 
 export const templateDownload = (category) =>
   request.get(`/api/account/files/${category}`, { responseType: "blob" });
 
-export const upload = (category, data) =>
-  request.post(`/api/account/files/${category}`, data);
+export const upload = (studentId, docName, data) =>
+  request.post(
+    `/api/account/files/${studentId}/${docName}`,
+    data
+  );
 
 export const transcriptanalyser = (category, group, data) =>
   request.post(`/api/account/transcript/${category}/${group}`, data);

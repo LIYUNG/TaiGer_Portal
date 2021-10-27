@@ -10,6 +10,7 @@ class Studentlist extends React.Component {
       <Table responsive key={i}>
         <tbody>
           <EditableStudent
+            role={this.props.role}
             student={student}
             success={this.props.success}
             editAgent={this.props.editAgent}

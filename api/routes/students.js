@@ -26,7 +26,7 @@ const router = Router();
 router.use(protect);
 
 router
-  .route("/")
+  .route("/:studentId")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudents);
 
 router.route("/:id/agents").post(permit(Role.Admin), assignAgentToStudent);

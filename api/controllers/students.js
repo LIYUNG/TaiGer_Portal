@@ -4,8 +4,15 @@ const { Agent, Student, Editor } = require("../models/User");
 const { Program } = require("../models/Program");
 
 const getStudents = asyncHandler(async (req, res) => {
+  // const { studentId } = req.params;
+  // const user = await Student.findById(studentId);
   const students = await Student.find();
-  res.status(200).send({ success: true, data: students });
+  // if (user.role === "Student") {
+  //   res.status(200).send({ success: true, data: [user] });
+  // } else {
+    
+    res.status(200).send({ success: true, data: students });
+  // }
 });
 
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
@@ -114,7 +121,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     $pull: { applications: { _id: applicationId } },
   });
   // TODO: remove uploaded files
-
+  // Not to remove common files like CV, Bachelor degree etc. (applications independent)
   res.status(200).send({ success: true });
 });
 

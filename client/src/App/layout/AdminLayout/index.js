@@ -23,9 +23,6 @@ function AdminLayout(props) {
   const setuserdata = (resp) => {
     try {
       if (resp) {
-        console.log(resp.data.success);
-        console.log(resp.data.data);
-
         setUserdata({
           success: resp.data.success,
           data: resp.data.data,
@@ -76,7 +73,13 @@ function AdminLayout(props) {
         path={route.path}
         exact={route.exact}
         name={route.name}
-        render={(props) => <route.component {...props} />}
+        render={(props) => (
+          <route.component
+            {...props}
+            role={userdata.data.role}
+            userId={userdata.data._id}
+          />
+        )}
       />
     ) : null;
   });
@@ -110,7 +113,8 @@ function AdminLayout(props) {
   return (
     <Aux>
       <Fullscreen enabled={props.isFullScreen}>
-        <Navigation role={userdata.data.role} />
+        {/* <Navigation role={userdata.data.role} /> */}
+        <Navigation />
         <NavBar />
         <div
           className="pcoded-main-container"
@@ -119,7 +123,8 @@ function AdminLayout(props) {
           <div className="pcoded-wrapper">
             <div className="pcoded-content">
               <div className="pcoded-inner-content">
-                <Breadcrumb role={userdata.data.role} />
+                {/* <Breadcrumb role={userdata.data.role} /> */}
+                <Breadcrumb />
                 <div className="main-body">
                   <div className="page-wrapper">
                     <Suspense fallback={<Loader />}>

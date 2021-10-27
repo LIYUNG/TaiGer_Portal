@@ -37,8 +37,10 @@ class Dashboard extends React.Component {
   };
 
   componentDidMount() {
-    getStudents().then(
+    console.log(this.props.userId);
+    getStudents(this.props.userId).then(
       (resp) => {
+        console.log(resp.data);
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, students: data, success: success });
       },
@@ -55,7 +57,7 @@ class Dashboard extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
-      getStudents().then(
+      getStudents(this.props.userId).then(
         (resp) => {
           this.setState({
             isLoaded: true,
@@ -143,7 +145,7 @@ class Dashboard extends React.Component {
       }
     );
   };
-  onDeleteProgram(e, student_id, program_id) {
+  onDeleteProgram = (e, student_id, program_id) => {
     //program id
     e.preventDefault();
     removeProgramFromStudent(program_id, student_id).then(
@@ -155,7 +157,7 @@ class Dashboard extends React.Component {
         });
       }
     );
-  }
+  };
 
   onDeleteFilefromstudent = (e, category, id) => {
     e.preventDefault();
@@ -347,6 +349,7 @@ class Dashboard extends React.Component {
               {/* <Col md={6} xl={8}> */}
               <Col sm={12}>
                 <Studentlist
+                  role={this.props.role}
                   success={this.state.success}
                   editAgent={this.editAgent}
                   editEditor={this.editEditor}
@@ -391,7 +394,7 @@ class Dashboard extends React.Component {
                 />
               </Col>
             </Row>
-            {this.state.role === "Student" ? (
+            {this.props.role === "Student" ? (
               <></>
             ) : (
               <Row>

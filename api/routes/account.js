@@ -5,6 +5,7 @@ const { protect, permit } = require("../middlewares/auth");
 const { fileUpload } = require("../middlewares/file-upload");
 
 const {
+  getMyfiles,
   saveFilePath,
   downloadFile,
   processTranscript,
@@ -15,9 +16,12 @@ const router = Router();
 
 router.use(protect, permit(Role.Student));
 
+// TODO: get document status
+router.route("/:studentId/files").get(permit(Role.Student), getMyfiles);
+
 // TODO: is delete route required?
 router
-  .route("/files/:applicationId/:docName")
+  .route("/files/:studentId/:applicationId/:docName")
   .get(downloadFile)
   .post(fileUpload, saveFilePath);
 

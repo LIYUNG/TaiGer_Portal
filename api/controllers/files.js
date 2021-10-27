@@ -8,6 +8,22 @@ const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 const { DocumentStatus } = require("../constants");
 
+const getMyfiles = asyncHandler(async (req, res) => {
+  const {
+    params: { studentId },
+  } = req;
+  console.log("getMyfiles API");
+  const student = await Student.findById(studentId);
+  // if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  // document.status = DocumentStatus.Uploaded;
+  // document.path = req.file.path.replace(UPLOAD_PATH, "");
+  // document.updatedAt = new Date();
+
+  await student.save();
+  return res.status(201).send({ success: true, data: student });
+});
+
 const saveFilePath = asyncHandler(async (req, res) => {
   const {
     user,
@@ -168,6 +184,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
+  getMyfiles,
   saveFilePath,
   downloadFile,
   updateDocumentStatus,

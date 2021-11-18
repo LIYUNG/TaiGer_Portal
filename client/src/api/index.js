@@ -7,6 +7,8 @@ export const login = (credentials) => request.post("/auth/login", credentials);
 
 export const register = (credentials) => request.post("/auth/signup", credentials);
 
+export const verify = () => request.get("/auth/verify");
+
 // User APIs
 export const getUsers = () => request.get("/api/users");
 

@@ -14,11 +14,20 @@ import * as actionTypes from "../../../store/actions";
 
 import routes2 from "../../../route";
 import ScrollToTop from "../ScrollToTop";
-import { useCookies } from "react-cookie";
+import { verify } from "../../../api";
+
 import "./app.scss";
 
 function AdminLayout(props) {
   let [userdata, setUserdata] = useState({ success: false, data: null });
+  useEffect(() => {
+    console.log("useEffect");
+    verify().then((resp) => {
+      console.log(resp.data);
+      const { data, success } = resp.data;
+      setUserdata({ success: success, data: data });
+    });
+  }, []);
 
   const setuserdata = (resp) => {
     try {
@@ -27,6 +36,7 @@ function AdminLayout(props) {
           success: resp.data.success,
           data: resp.data.data,
         });
+        console.log("successfullllll");
       } else {
         alert("Email or password not correct.");
       }
@@ -35,13 +45,13 @@ function AdminLayout(props) {
     }
   };
   useEffect(() => {
-      if (
-        props.windowWidth > 992 &&
-        props.windowWidth <= 1024 &&
-        props.layout !== "horizontal"
-      ) {
-        props.onComponentWillMount();
-      }
+    if (
+      props.windowWidth > 992 &&
+      props.windowWidth <= 1024 &&
+      props.layout !== "horizontal"
+    ) {
+      props.onComponentWillMount();
+    }
   });
   const fullScreenExitHandler = () => {
     if (
@@ -73,9 +83,9 @@ function AdminLayout(props) {
         path={route.path}
         exact={route.exact}
         name={route.name}
-        render={(props) => (
+        render={() => (
           <route.component
-            {...props}
+            // {...props}
             role={userdata.data.role}
             userId={userdata.data._id}
           />
@@ -92,7 +102,6 @@ function AdminLayout(props) {
         exact={route.exact}
         name={route.name}
         render={(props) => (
-          // <route.component {...props} setToken={saveToken} />
           <route.component {...props} userData={setuserdata} />
         )}
       />
@@ -143,7 +152,6 @@ function AdminLayout(props) {
     </Aux>
   );
 }
-
 
 const mapStateToProps = (state) => {
   return {

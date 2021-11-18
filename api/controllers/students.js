@@ -6,6 +6,13 @@ const { Program } = require("../models/Program");
 const getStudents = asyncHandler(async (req, res) => {
   // const { studentId } = req.params;
   // const user = await Student.findById(studentId);
+  const {
+    user,
+    params: { studentId },
+  } = req;
+
+  console.log(req);
+  console.log(studentId);
   const students = await Student.find();
   // if (user.role === "Student") {
   //   res.status(200).send({ success: true, data: [user] });

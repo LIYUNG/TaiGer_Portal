@@ -37,10 +37,11 @@ class Dashboard extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.userId);
+    console.log("default " + this.props.userId);
     getStudents(this.props.userId).then(
       (resp) => {
-        console.log(resp.data);
+        // console.log(resp.data);
+        console.log("Default.js rendered")
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, students: data, success: success });
       },

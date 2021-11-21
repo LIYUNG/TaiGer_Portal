@@ -18,7 +18,7 @@ class ProgramListSubpage extends React.Component {
   }
 
   componentDidMount() {
-    getStudents().then(
+    getStudents(this.props.userId).then(
       (resp) => {
         const { data: students, role } = resp.data;
         this.setState({ data: students });

@@ -21,12 +21,13 @@ class ProgramTable extends React.Component {
   };
 
   componentDidMount() {
+    console.log("ProgramTable.js rendered");
     getPrograms().then(
       (resp) => {
         if (resp.status === 401) {
           return this.setState({ error: resp.status });
         }
-        console.log(resp.data);
+        // console.log(resp.data);
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, data, success });
       },
@@ -173,6 +174,7 @@ class ProgramTable extends React.Component {
                                 </Card.Header> */}
                 <Card.Body>
                   <Programlist
+                    userId={this.props.userId}
                     success={this.state.success}
                     onFormSubmit={this.onFormSubmit}
                     data={this.state.data}

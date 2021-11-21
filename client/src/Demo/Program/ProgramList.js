@@ -138,6 +138,7 @@ class Programlist extends React.Component {
           <tbody>{programs}</tbody>
         </Table>
         <ProgramListSubpage
+          userId={this.props.userId}
           show={this.state.modalShow}
           setModalHide={this.setModalHide}
           uni_name={this.state.uni_name}

@@ -139,6 +139,10 @@ const routes = [
     name: "TaiGer AI",
     component: TaiGerAI,
   },
+  {
+    path: "/",
+    component: DashboardDefault,
+  },
 ];
 
 export default routes;

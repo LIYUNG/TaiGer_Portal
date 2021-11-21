@@ -19,20 +19,20 @@ import { verify } from "../../../api";
 import "./app.scss";
 
 function AdminLayout(props) {
-  let [userdata, setUserdata] = useState({ success: false, data: null });
+  // let [userdata, setUserdata] = useState({ success: false, data: null });
   useEffect(() => {
     console.log("useEffect");
     verify().then((resp) => {
-      console.log(resp.data);
+      // console.log(resp.data);
       const { data, success } = resp.data;
-      setUserdata({ success: success, data: data });
+      props.setUserdata({ success: success, data: data });
     });
   }, []);
 
   const setuserdata = (resp) => {
     try {
       if (resp) {
-        setUserdata({
+        props.setUserdata({
           success: resp.data.success,
           data: resp.data.data,
         });
@@ -86,8 +86,8 @@ function AdminLayout(props) {
         render={() => (
           <route.component
             // {...props}
-            role={userdata.data.role}
-            userId={userdata.data._id}
+            role={props.userdata.data.role}
+            userId={props.userdata.data._id}
           />
         )}
       />
@@ -108,13 +108,13 @@ function AdminLayout(props) {
     ) : null;
   });
 
-  if (!userdata.success) {
+  if (!props.userdata.success) {
     return (
       <Aux>
         <ScrollToTop>
-          <Suspense fallback={<Loader />}>
+          {/* <Suspense fallback={<Loader />}> */}
             <Switch>{menu2}</Switch>
-          </Suspense>
+          {/* </Suspense> */}
         </ScrollToTop>
       </Aux>
     );
@@ -122,9 +122,9 @@ function AdminLayout(props) {
   return (
     <Aux>
       <Fullscreen enabled={props.isFullScreen}>
-        {/* <Navigation role={userdata.data.role} /> */}
+        {/* <Navigation role={props.userdata.data.role} /> */}
         <Navigation />
-        <NavBar />
+        <NavBar userdata={props.userdata.data} setUserdata={setuserdata} />
         <div
           className="pcoded-main-container"
           onClick={() => mobileOutClickHandler}
@@ -136,12 +136,12 @@ function AdminLayout(props) {
                 <Breadcrumb />
                 <div className="main-body">
                   <div className="page-wrapper">
-                    <Suspense fallback={<Loader />}>
+                    {/* <Suspense fallback={<Loader />}> */}
                       <Switch>
                         {menu}
-                        <Redirect from="/" to={props.defaultPath} />
+                        {/* <Redirect from="/" to={props.defaultPath} /> */}
                       </Switch>
-                    </Suspense>
+                    {/* </Suspense> */}
                   </div>
                 </div>
               </div>

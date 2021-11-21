@@ -5,7 +5,7 @@ window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 
-const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Default'));
+const DashboardDefault = React.lazy(() => import("./Demo/Dashboard/Dashboard"));
 
 const UIBasicButton = React.lazy(() => import('./Demo/UIElements/Basic/Button'));
 const UIBasicBadges = React.lazy(() => import('./Demo/UIElements/Basic/Badges'));
@@ -39,7 +39,7 @@ const routes = [
   {
     path: "/dashboard/default",
     exact: true,
-    name: "Default",
+    name: "Dashboard",
     component: DashboardDefault,
   },
   {
@@ -139,10 +139,10 @@ const routes = [
     name: "TaiGer AI",
     component: TaiGerAI,
   },
-  {
-    path: "/",
-    component: DashboardDefault,
-  },
+  // {
+  //   path: "/",
+  //   component: DashboardDefault,
+  // },
 ];
 
 export default routes;

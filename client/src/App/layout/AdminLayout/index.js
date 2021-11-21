@@ -17,9 +17,9 @@ import ScrollToTop from "../ScrollToTop";
 import { verify } from "../../../api";
 
 import "./app.scss";
+import { logout } from "../../../api";
 
 function AdminLayout(props) {
-  // let [userdata, setUserdata] = useState({ success: false, data: null });
   useEffect(() => {
     console.log("useEffect");
     verify().then((resp) => {
@@ -53,6 +53,21 @@ function AdminLayout(props) {
       props.onComponentWillMount();
     }
   });
+
+  const handleOnClickLogout = (e) => {
+    e.preventDefault();
+    console.log("click logout");
+    logout().then(
+      (resp) => {
+        console.log(resp.data);
+        props.setUserdata({ data: { success: false, data: null } });
+        // const { success } = resp.data;
+        // this.setState({ success: success });
+      },
+      (error) => {}
+    );
+  };
+
   const fullScreenExitHandler = () => {
     if (
       !document.fullscreenElement &&
@@ -113,44 +128,49 @@ function AdminLayout(props) {
       <Aux>
         <ScrollToTop>
           {/* <Suspense fallback={<Loader />}> */}
-            <Switch>{menu2}</Switch>
+          <Switch>{menu2}</Switch>
           {/* </Suspense> */}
         </ScrollToTop>
       </Aux>
     );
-  }
-  return (
-    <Aux>
-      <Fullscreen enabled={props.isFullScreen}>
-        {/* <Navigation role={props.userdata.data.role} /> */}
-        <Navigation />
-        <NavBar userdata={props.userdata.data} setUserdata={setuserdata} />
-        <div
-          className="pcoded-main-container"
-          onClick={() => mobileOutClickHandler}
-        >
-          <div className="pcoded-wrapper">
-            <div className="pcoded-content">
-              <div className="pcoded-inner-content">
-                {/* <Breadcrumb role={userdata.data.role} /> */}
-                <Breadcrumb />
-                <div className="main-body">
-                  <div className="page-wrapper">
-                    {/* <Suspense fallback={<Loader />}> */}
+  } else {
+    return (
+      <Aux>
+        <Fullscreen enabled={props.isFullScreen}>
+          {/* <Navigation role={props.userdata.data.role} /> */}
+          <Navigation />
+          <NavBar
+            userdata={props.userdata.data}
+            setUserdata={setuserdata}
+            handleOnClickLogout={handleOnClickLogout}
+          />
+          <div
+            className="pcoded-main-container"
+            onClick={() => mobileOutClickHandler}
+          >
+            <div className="pcoded-wrapper">
+              <div className="pcoded-content">
+                <div className="pcoded-inner-content">
+                  {/* <Breadcrumb role={userdata.data.role} /> */}
+                  <Breadcrumb />
+                  <div className="main-body">
+                    <div className="page-wrapper">
+                      {/* <Suspense fallback={<Loader />}> */}
                       <Switch>
                         {menu}
-                        {/* <Redirect from="/" to={props.defaultPath} /> */}
+                        <Redirect from="/" to={props.defaultPath} />
                       </Switch>
-                    {/* </Suspense> */}
+                      {/* </Suspense> */}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </Fullscreen>
-    </Aux>
-  );
+        </Fullscreen>
+      </Aux>
+    );
+  }
 }
 
 const mapStateToProps = (state) => {

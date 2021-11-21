@@ -10,8 +10,6 @@ import Avatar1 from "../../../../../assets/images/user/avatar-1.jpg";
 import Avatar2 from "../../../../../assets/images/user/avatar-2.jpg";
 import Avatar3 from "../../../../../assets/images/user/avatar-3.jpg";
 
-import { logout } from "../../../../../api";
-
 class NavRight extends Component {
   constructor(props) {
     super(props);
@@ -21,17 +19,18 @@ class NavRight extends Component {
     listOpen: false,
   };
 
-  handleOnClick = () => {
-    console.log("click logout");
-    logout().then(
-      (resp) => {
-        console.log(resp.data);
-        this.props.setUserdata({ data: { success: false, data: null } });
-        // const { success } = resp.data;
-        // this.setState({ success: success });
-      },
-      (error) => {}
-    );
+  handleOnClick(e) {
+    this.props.handleOnClickLogout(e);
+    // console.log("click logout");
+    // logout().then(
+    //   (resp) => {
+    //     console.log(resp.data);
+    //     this.props.setUserdata({ data: { success: false, data: null } });
+    //     // const { success } = resp.data;
+    //     // this.setState({ success: success });
+    //   },
+    //   (error) => {}
+    // );
   }
 
   render() {
@@ -158,7 +157,11 @@ class NavRight extends Component {
           <li>
             {/* <a href={DEMO.LOG_OUT} className="dud-logout" title="Logout">
                         <i className="feather icon-log-out" /> Logout</a> */}
-            <Link to={"/"} onClick={this.handleOnClick} className="dud-logout">
+            <Link
+              to={"/"}
+              onClick={(e) => this.handleOnClick(e)}
+              className="dud-logout"
+            >
               Logout
             </Link>
           </li>

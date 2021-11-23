@@ -29,31 +29,31 @@ window.documentlist = [
     prop: "RL_",
   },
   {
-    name: "Bachelor Certificate",
+    name: "B.Sc Cert",
     prop: "bachelorCertificate_",
   },
   {
-    name: "Bachelor Transcript",
+    name: "B.Sc. Trans",
     prop: "bachelorTranscript_",
   },
   {
-    name: "High School Diploma",
+    name: "H. Sch. Dipl.",
     prop: "highSchoolDiploma_",
   },
   {
-    name: "High School Transcript",
+    name: "H. Sch. Trans",
     prop: "highSchoolTranscript_",
   },
   {
-    name: "University Entrance Exam",
+    name: "GSAT/SAT",
     prop: "universityEntranceExamination_",
   },
   {
-    name: "English Certificate",
+    name: "TOEFL/IELTS",
     prop: "EnglischCertificate_",
   },
   {
-    name: "German Certififcate",
+    name: "TestDaF/B2/C1",
     prop: "GermanCertificate_",
   },
   {
@@ -61,11 +61,11 @@ window.documentlist = [
     prop: "Essay_",
   },
   {
-    name: "ECTS Conversion",
+    name: "ECTS Conv.",
     prop: "ECTS_conversion_",
   },
   {
-    name: "Course Description",
+    name: "Course Descr/",
     prop: "CourseDescription_",
   },
   {

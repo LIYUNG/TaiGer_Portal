@@ -35,7 +35,28 @@ class Studentlist extends React.Component {
       />
     ));
 
-    return <>{stdlist}</>;
+    return (
+      <>
+        <Table responsive>
+          <thead>
+            <tr>
+              {this.props.role === "Admin" || this.props.role === "Agent" ? (
+                <>
+                  <th></th>
+                  <th>First-/Last Name</th>
+                </>
+              ) : (
+                <th>#</th>
+              )}
+              {this.props.documentslist.map((doc, index) => (
+                <th key={index}>{doc.name}</th>
+              ))}
+            </tr>
+          </thead>
+          {stdlist}
+        </Table>
+      </>
+    );
   }
 }
 

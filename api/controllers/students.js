@@ -5,22 +5,21 @@ const { Program } = require("../models/Program");
 
 const getStudents = asyncHandler(async (req, res) => {
   //TODO: send students based on the user/agent, editor, Admin
-  // const { studentId } = req.params;
-  // const user = await Student.findById(studentId);
+  // const { userId } = req.params;
+  // const user = await Student.findById(userId);
   const {
     user,
-    params: { studentId },
+    params: { userId },
   } = req;
 
-  // console.log(req);
+  // console.log(user);
   console.log(req.params);
   const students = await Student.find();
-  // if (user.role === "Student") {
-  //   res.status(200).send({ success: true, data: [user] });
-  // } else {
-    
+  if (user.role === "Student") {
+    res.status(200).send({ success: true, data: [user] });
+  } else {
     res.status(200).send({ success: true, data: students });
-  // }
+  }
 });
 
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {

@@ -152,6 +152,74 @@ class EditableStudent extends React.Component {
 
   render() {
     let studentDocOverview;
+    // studentDocOverview = <p>So far no uploaded file!</p>;
+    // if (this.state.student.uploadedDocs_) {
+    //   studentDocOverview = this.props.documentslist.map((doc, i) => {
+    //     if (
+    //       this.state.student.uploadedDocs_[doc.prop] &&
+    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
+    //         "uploaded"
+    //     ) {
+    //       return (
+    //         <p className="m-0" key={i}>
+    //           {" "}
+    //           <AiFillQuestionCircle
+    //             size={24}
+    //             color="lightgreen"
+    //             title="Uploaded successfully"
+    //           />{" "}
+    //           {doc.name}
+    //         </p>
+    //       );
+    //     } else if (
+    //       this.state.student.uploadedDocs_[doc.prop] &&
+    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
+    //     ) {
+    //       return (
+    //         <p className="m-0" key={i}>
+    //           <IoCheckmarkCircle
+    //             size={24}
+    //             color="limegreen"
+    //             title="Valid Document"
+    //           />{" "}
+    //           {doc.name}
+    //         </p>
+    //       );
+    //     } else if (
+    //       this.state.student.uploadedDocs_[doc.prop] &&
+    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
+    //         "unaccepted"
+    //     ) {
+    //       return (
+    //         <p className="m-0" key={i}>
+    //           <AiFillCloseCircle
+    //             size={24}
+    //             color="red"
+    //             title="Invalid Document"
+    //           />{" "}
+    //           {doc.name}
+    //         </p>
+    //       );
+    //     } else {
+    //       return (
+    //         <p className="m-0" key={i}>
+    //           <b>
+    //             <AiFillQuestionCircle
+    //               size={24}
+    //               color="lightgray"
+    //               title="No Document uploaded"
+    //             />{" "}
+    //             {doc.name}{" "}
+    //           </b>
+    //         </p>
+    //       );
+    //     }
+    //   });
+    // } else {
+    //   studentDocOverview = <p>So far no uploaded file!</p>;
+    // }
+
+
     if (this.state.student.uploadedDocs_) {
       studentDocOverview = this.props.documentslist.map((doc, i) => {
         if (
@@ -160,29 +228,26 @@ class EditableStudent extends React.Component {
             "uploaded"
         ) {
           return (
-            <p className="m-0" key={i}>
-              {" "}
+            <td key={i}>
               <AiFillQuestionCircle
                 size={24}
                 color="lightgreen"
                 title="Uploaded successfully"
               />{" "}
-              {doc.name}
-            </p>
+            </td>
           );
         } else if (
           this.state.student.uploadedDocs_[doc.prop] &&
           this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
         ) {
           return (
-            <p className="m-0" key={i}>
+            <td key={i}>
               <IoCheckmarkCircle
                 size={24}
                 color="limegreen"
                 title="Valid Document"
               />{" "}
-              {doc.name}
-            </p>
+            </td>
           );
         } else if (
           this.state.student.uploadedDocs_[doc.prop] &&
@@ -190,34 +255,31 @@ class EditableStudent extends React.Component {
             "unaccepted"
         ) {
           return (
-            <p className="m-0" key={i}>
+            <td key={i}>
               <AiFillCloseCircle
                 size={24}
                 color="red"
                 title="Invalid Document"
               />{" "}
-              {doc.name}
-            </p>
+            </td>
           );
         } else {
           return (
-            <p className="m-0" key={i}>
-              <b>
+            <td key={i}>
                 <AiFillQuestionCircle
                   size={24}
                   color="lightgray"
                   title="No Document uploaded"
                 />{" "}
-                {doc.name}{" "}
-              </b>
-            </p>
+            </td>
           );
         }
       });
     } else {
-      studentDocOverview = <p>So far no uploaded file!</p>;
+      studentDocOverview = <p>No Doc!</p>;
     }
-    if (this.props.role === "Admin" || this.props.role === "Agent") {
+
+
       return (
         <AgentDashboard
           role={this.props.role}
@@ -253,103 +315,7 @@ class EditableStudent extends React.Component {
           showFilePage={this.state.showFilePage}
         />
       );
-    } else if (this.props.role === "Student") {
-      return (
-        <Card>
-          <Card.Header>
-            <Card.Title as="h5">
-              {this.props.student.firstname_} {this.props.student.lastname_}
-              <br />
-              Email: {this.props.student.emailaddress_}
-            </Card.Title>
-          </Card.Header>
-          <tr key={this.state.student._id}>
-            <td>
-              <img
-                className="rounded-circle"
-                style={{ width: "40px" }}
-                src={avatar1}
-                alt="activity-user"
-              />
-            </td>
-            <td>
-              <h5 className="m-0">Document status</h5>
-              {studentDocOverview}
-            </td>
-            <td>
-              <h5>Agent:</h5>
-              {this.state.student.agent_.map((agent, i) => (
-                <p className="m-0" key={i}>
-                  {agent}
-                </p>
-              ))}
-              <h5>Editor:</h5>
-              {this.state.student.editor_.map((editor, i) => (
-                <p className="m-0" key={i}>
-                  {editor}
-                </p>
-              ))}
-            </td>
-            <td>
-              <h5>Programs:</h5>
-              {this.state.student.applying_program_.map((program, i) => (
-                <h6 key={i}>
-                  {program.University_} {program.Program_}{" "}
-                </h6>
-              ))}
-            </td>
-          </tr>
-        </Card>
-      );
-    } else {
-      return (
-        <Card>
-          <Card.Header>
-            <Card.Title as="h5">
-              {this.props.student.firstname_} {this.props.student.lastname_}
-              <br />
-              Email: {this.props.student.emailaddress_}
-            </Card.Title>
-          </Card.Header>
-          <tr key={this.state.student._id}>
-            <td>
-              <img
-                className="rounded-circle"
-                style={{ width: "40px" }}
-                src={avatar1}
-                alt="activity-user"
-              />
-            </td>
-            <td>
-              <h5 className="m-0">Document status</h5>
-              {studentDocOverview}
-            </td>
-            <td>
-              <h5>Agent:</h5>
-              {this.state.student.agent_.map((agent, i) => (
-                <p className="m-0" key={this.props.i}>
-                  {agent}
-                </p>
-              ))}
-              <h5>Editor:</h5>
-              {this.state.student.editor_.map((editor, i) => (
-                <p className="m-0" key={this.props.i}>
-                  {editor}
-                </p>
-              ))}
-            </td>
-            <td>
-              <h5>Programs:</h5>
-              {this.state.student.applying_program_.map((program, i) => (
-                <h6 key={this.props.i}>
-                  {program.University_} {program.Program_}{" "}
-                </h6>
-              ))}
-            </td>
-          </tr>
-        </Card>
-      );
-    }
+    // } 
   }
 }
 

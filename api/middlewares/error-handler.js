@@ -16,6 +16,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // TODO: body-parser error, mongoose error, validation error
+  console.log(err.message);
   res.status(500).json({
     success: false,
     message: isProd() ? "Unexpected condition" : err.message,

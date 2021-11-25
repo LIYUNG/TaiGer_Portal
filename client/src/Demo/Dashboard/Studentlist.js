@@ -14,7 +14,6 @@ class Studentlist extends React.Component {
         success={this.props.success}
         editAgent={this.props.editAgent}
         editEditor={this.props.editEditor}
-        startEditingAgent={this.props.startEditingAgent}
         startEditingEditor={this.props.startEditingEditor}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}

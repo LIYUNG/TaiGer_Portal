@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 class EditAgentsSubpage extends React.Component {
   // edit Agent subpage
+
   render() {
     let agentlist = this.props.agent_list ? (
       this.props.agent_list.map((agent, i) => (
@@ -21,12 +22,12 @@ class EditAgentsSubpage extends React.Component {
                 type="checkbox"
                 name="agent_id"
                 defaultChecked={
-                  this.props.student.agent_.indexOf(agent.email) > -1
+                  this.props.student.agents.indexOf(agent._id) > -1
                     ? true
                     : false
                 }
                 onChange={(e) => this.props.handleChangeAgentlist(e)}
-                value={agent.email}
+                value={agent._id}
                 id={"agent" + i + 1}
               />
             </Form.Group>

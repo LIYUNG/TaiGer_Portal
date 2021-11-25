@@ -25,13 +25,18 @@ const getStudents = asyncHandler(async (req, res) => {
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { id: studentId },
-    body: { id: agentId },
+    body: agentsId ,
   } = req;
   // TODO: check studentId and agentId are valid
+  console.log(agentsId);
+  const agentIds = await Agent.findById(({ agentsId }) => agentsId);
+  console.log(agentIds);
+  if (!agentIds)
+    throw new ErrorResponse(400, "Invalid AgentId");
 
   // TODO: transaction?
   await Student.findByIdAndUpdate(studentId, {
-    $push: { agents: agentId },
+    $push: { agents: agentsId },
   });
 
   await Agent.findByIdAndUpdate(agentId, {
@@ -62,7 +67,11 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     params: { id: studentId },
     body: { id: editorId },
   } = req;
+    console.log(req.body);
+
   // TODO: check studentId and editorId are valid
+  const editorIds = await Editor.findById(({ editorId }) => editorId);
+  if (!editorIds) throw new ErrorResponse(400, "Invalid EditorId");
 
   // TODO: transaction?
   await Student.findByIdAndUpdate(studentId, {

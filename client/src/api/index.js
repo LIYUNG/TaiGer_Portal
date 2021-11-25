@@ -7,7 +7,8 @@ export const login = (credentials) => request.post("/auth/login", credentials);
 
 export const logout = () => request.get("/auth/logout");
 
-export const register = (credentials) => request.post("/auth/signup", credentials);
+export const register = (credentials) =>
+  request.post("/auth/signup", credentials);
 
 export const verify = () => request.get("/auth/verify");
 
@@ -27,7 +28,7 @@ export const getEditors = () => request.get("/api/editors");
 export const getStudents = (userId) => request.get(`/api/students/${userId}`);
 
 // Student APIs
-export const updateAgents = (id, agents) =>
+export const updateAgents = (agents, id) =>
   request.post(`/api/students/${id}/agents`, agents);
 
 export const updateEditors = (id, editors) =>
@@ -76,10 +77,7 @@ export const templateDownload = (category) =>
   request.get(`/api/account/files/${category}`, { responseType: "blob" });
 
 export const upload = (studentId, docName, data) =>
-  request.post(
-    `/api/account/files/${studentId}/${docName}`,
-    data
-  );
+  request.post(`/api/account/files/${studentId}/${docName}`, data);
 
 export const transcriptanalyser = (category, group, data) =>
   request.post(`/api/account/transcript/${category}/${group}`, data);
@@ -94,7 +92,8 @@ export const getPrograms = () => request.get("/api/programs");
 
 export const deleteProgram = (id) => request.delete(`/api/programs/${id}`);
 
-export const createProgram = (program) => request.post("/api/programs", program);
+export const createProgram = (program) =>
+  request.post("/api/programs", program);
 
 export const updateProgram = (program) =>
   request.post(`/api/programs/${program._id}`, program);
@@ -102,11 +101,13 @@ export const updateProgram = (program) =>
 // Docs APIs
 export const deleteDoc = (id) => request.delete(`/api/docs/${id}`);
 export const addDoc = (id) => request.post(`/api/docs/${id}`);
-export const updateDoc = (id, doc_temp) => request.post(`/api/docs/${id}`, doc_temp);
+export const updateDoc = (id, doc_temp) =>
+  request.post(`/api/docs/${id}`, doc_temp);
 
 export const createArticle = (article) => request.post("/api/docs", article);
 
-export const updateArticle = (id, article) => request.post(`/api/docs/${id}`, article);
+export const updateArticle = (id, article) =>
+  request.post(`/api/docs/${id}`, article);
 
 const getArticle = (type) => request.get(`/api/docs/${type}`);
 

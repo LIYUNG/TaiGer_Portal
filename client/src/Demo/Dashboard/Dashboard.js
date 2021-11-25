@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Tabs, Tab } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
@@ -41,7 +41,7 @@ class Dashboard extends React.Component {
     getStudents(this.props.userId).then(
       (resp) => {
         // console.log(resp.data);
-        console.log("Default.js rendered")
+        console.log("Default.js rendered");
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, students: data, success: success });
       },
@@ -172,13 +172,13 @@ class Dashboard extends React.Component {
     getAgents().then(
       (resp) => {
         const { data: agents } = resp.data; //get all agent
-        const { agent_ } = student;
+        const { agents: student_agents } = student;
         console.log(resp.data);
 
         const updateAgentList = agents.reduce(
-          (prev, { email }) => ({
+          (prev, { _id }) => ({
             ...prev,
-            [email]: agent_.indexOf(email) > -1,
+            [_id]: student_agents.indexOf(_id) > -1,
           }),
           {}
         );
@@ -193,11 +193,11 @@ class Dashboard extends React.Component {
     getEditors().then(
       (resp) => {
         const { data: editors } = resp.data;
-        const { editor_ } = student;
+        const { editors: student_editors } = student;
         const updateEditorList = editors.reduce(
-          (prev, { email }) => ({
+          (prev, { _id }) => ({
             ...prev,
-            [email]: editor_.indexOf(email) > -1,
+            [_id]: student_editors.indexOf(_id) > -1,
           }),
           {}
         );
@@ -241,7 +241,7 @@ class Dashboard extends React.Component {
   };
 
   UpdateAgentlist = (updateAgentList, student_id) => {
-    updateAgents(student_id, updateAgentList).then(
+    updateAgents(updateAgentList, student_id).then(
       (resp) => {
         this.setState({
           updateAgentList: [],
@@ -356,7 +356,6 @@ class Dashboard extends React.Component {
                   editEditor={this.editEditor}
                   agent_list={this.state.agent_list}
                   editor_list={this.state.editor_list}
-                  startEditingAgent={this.startEditingAgent}
                   UpdateAgentlist={this.UpdateAgentlist}
                   startEditingEditor={this.startEditingEditor}
                   startEditingProgram={this.startEditingProgram}
@@ -430,6 +429,5 @@ class Dashboard extends React.Component {
     }
   }
 }
-
 
 export default Dashboard;

@@ -54,6 +54,46 @@ const upload = multer({
   },
 });
 
+/**
+ * currently used by route
+ *   /account/files/:docName (student upload)
+ *   /students/:studentId/:docName (admin/agent upload)
+ */
+const storage2 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let { studentId } = req.params
+    if (!studentId) studentId = String(req.user._id)
+
+    // TODO: check studentId and applicationId exist
+    const directory = path.join(UPLOAD_PATH, studentId);;
+    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
+
+    return cb(null, directory);
+  },
+  filename: (req, file, cb) => {
+    // TODO: check docName exist
+    cb(null, `${req.params.docName}${path.extname(file.originalname)}`);
+  },
+});
+
+//TODO: upload pdf/docx/image
+const upload2 = multer({
+  storage2,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(
+          400,
+          "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
+        )
+      );
+
+    cb(null, true);
+  },
+});
+
 module.exports = {
   fileUpload: upload.single("file"),
+  ProfilefileUpload: upload2.single("file"),
 };

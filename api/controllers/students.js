@@ -25,7 +25,7 @@ const getStudents = asyncHandler(async (req, res) => {
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { id: studentId },
-    body: agentsId ,
+    body: agentsId , // agentsId is json (or agentsId array with boolean)
   } = req;
   // TODO: check studentId and agentId are valid
   console.log(agentsId);

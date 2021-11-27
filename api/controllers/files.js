@@ -31,7 +31,8 @@ const saveFilePath = asyncHandler(async (req, res) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = user.role == Role.Student ? user : await Student.findById(studentId);
+  const student =
+    user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
   const application = student.applications.id(applicationId);
@@ -48,6 +49,53 @@ const saveFilePath = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: document });
 });
 
+const saveProfileFilePath = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, docName },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student =
+    user.role == Role.Student ? user : await Student.findById(studentId);
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  const document = student.profile.find(({ name }) => name === docName);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+
+  document.status = DocumentStatus.Uploaded;
+  document.path = req.file.path.replace(UPLOAD_PATH, "");
+  document.updatedAt = new Date();
+
+  await student.save();
+  return res.status(201).send({ success: true, data: document });
+});
+
+const downloadProfileFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, docName },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student =
+    user.role == Role.Student ? user : await Student.findById(studentId);
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  const document = application.documents.find(({ name }) => name === docName);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+  if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
+
+  const filePath = path.join(UPLOAD_PATH, document.path);
+  // FIXME: clear the filePath for consistency?
+  if (!fs.existsSync(filePath))
+    throw new ErrorResponse(400, "File does not exist");
+
+  res.status(200).download(filePath, (err) => {
+    if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  });
+});
+
 const downloadFile = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -55,7 +103,8 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = user.role == Role.Student ? user : await Student.findById(studentId);
+  const student =
+    user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
   const application = student.applications.id(applicationId);
@@ -118,12 +167,12 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not exist");
 
-  const filePath = path.join(UPLOAD_PATH, document.path)
+  const filePath = path.join(UPLOAD_PATH, document.path);
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-  document.status = DocumentStatus.Missing
-  document.path = ""
-  document.updatedAt = new Date()
+  document.status = DocumentStatus.Missing;
+  document.path = "";
+  document.updatedAt = new Date();
 
   await student.save();
   res.status(200).send({ success: true, data: document });
@@ -186,6 +235,8 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 module.exports = {
   getMyfiles,
   saveFilePath,
+  saveProfileFilePath,
+  downloadProfileFile,
   downloadFile,
   updateDocumentStatus,
   deleteFile,

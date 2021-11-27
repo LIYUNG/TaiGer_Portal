@@ -184,7 +184,11 @@ class EditUploadFilesSubpage extends React.Component {
               </td>
               <td>
                 <Col>
-                  <Form onSubmit={(e) => this.props.submitFile(e, doc.prop)}>
+                  <Form
+                    onSubmit={(e) =>
+                      this.props.submitFile(e, this.props.userId, doc.prop)
+                    }
+                  >
                     <Form.Group controlId="exampleForm.ControlSelect1">
                       <Button size="sm" type="submit">
                         Upload
@@ -263,7 +267,11 @@ class EditUploadFilesSubpage extends React.Component {
               </td>
               <td>
                 <Col md={2}>
-                  <Form onSubmit={(e) => this.props.submitFile(e, doc.prop)}>
+                  <Form
+                    onSubmit={(e) =>
+                      this.props.submitFile(e, this.props.userId, doc.prop)
+                    }
+                  >
                     <Form.Group controlId="exampleForm.ControlSelect1">
                       <Button size="sm" type="submit">
                         Upload
@@ -306,7 +314,11 @@ class EditUploadFilesSubpage extends React.Component {
             </td>
             <td>
               <Col md={2}>
-                <Form onSubmit={(e) => this.props.submitFile(e, doc.prop)}>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.submitFile(e, this.props.userId, doc.prop)
+                  }
+                >
                   <Form.Group controlId="exampleForm.ControlSelect1">
                     <Button size="sm" type="submit">
                       Upload

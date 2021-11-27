@@ -79,8 +79,10 @@ class UploadPage extends React.Component {
     });
   }
 
-  onSubmitFile(e, studentId, docName) {
+  onSubmitFile = (e, studentId, docName) => {
     const formData = new FormData();
+    console.log(studentId);
+    console.log(docName);
     formData.append("file", this.state.file);
     upload(studentId, docName, formData).then(
       (res) => {

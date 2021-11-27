@@ -2,11 +2,13 @@ const { Router } = require("express");
 
 const { Role } = require("../models/User");
 const { protect, permit } = require("../middlewares/auth");
-const { fileUpload } = require("../middlewares/file-upload");
+const { fileUpload, ProfilefileUpload } = require("../middlewares/file-upload");
 
 const {
   getMyfiles,
   saveFilePath,
+  saveProfileFilePath,
+  downloadProfileFile,
   downloadFile,
   processTranscript,
   downloadXLSX,
@@ -24,6 +26,11 @@ router
   .route("/files/:studentId/:applicationId/:docName")
   .get(downloadFile)
   .post(fileUpload, saveFilePath);
+
+router
+  .route("/files/:studentId/:docName")
+  .get(downloadProfileFile)
+  .post(ProfilefileUpload, saveProfileFilePath);
 
 // TODO: check the exact usage
 router

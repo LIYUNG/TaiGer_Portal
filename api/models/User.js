@@ -102,6 +102,29 @@ const Student = User.discriminator(
       agents: [{ type: ObjectId, ref: "Agent" }],
       editors: [{ type: ObjectId, ref: "Editor" }],
       applications: [applicationSchema],
+      profile: [
+        {
+          name: {
+            type: String,
+            required: true,
+          },
+          status: {
+            type: String,
+            enum: Object.values(DocumentStatus),
+            default: DocumentStatus.Missing,
+          },
+          required: {
+            type: Boolean,
+            required: true,
+          },
+          path: {
+            type: String,
+            default: "",
+          },
+          // TODO: updateBy
+          updatedAt: Date,
+        },
+      ],
     },
     options
   ),

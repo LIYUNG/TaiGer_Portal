@@ -38,7 +38,7 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     console.log("default " + this.props.userId);
-    getStudents(this.props.userId).then(
+    getStudents().then(
       (resp) => {
         // console.log(resp.data);
         console.log("Default.js rendered");
@@ -58,7 +58,7 @@ class Dashboard extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
-      getStudents(this.props.userId).then(
+      getStudents().then(
         (resp) => {
           this.setState({
             isLoaded: true,
@@ -349,56 +349,106 @@ class Dashboard extends React.Component {
             <Row>
               {/* <Col md={6} xl={8}> */}
               <Col sm={12}>
-                <Studentlist
-                  role={this.props.role}
-                  success={this.state.success}
-                  editAgent={this.editAgent}
-                  editEditor={this.editEditor}
-                  agent_list={this.state.agent_list}
-                  editor_list={this.state.editor_list}
-                  UpdateAgentlist={this.UpdateAgentlist}
-                  startEditingEditor={this.startEditingEditor}
-                  startEditingProgram={this.startEditingProgram}
-                  students={this.state.students}
-                  header={[
-                    {
-                      name: "StudentName",
-                      prop: "StudentName",
-                    },
-                    {
-                      name: "Agent",
-                      prop: "agent_",
-                    },
-                    {
-                      name: "Editor",
-                      prop: "editor_",
-                    },
-                    {
-                      name: "Program",
-                      prop: "Program",
-                    },
-                  ]}
-                  documentslist={window.documentlist}
-                  startUploadfile={this.startUploadfile}
-                  onDeleteProgram={this.onDeleteProgram}
-                  onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                  onRejectFilefromstudent={this.onRejectFilefromstudent}
-                  onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                  onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                  updateAgentList={this.state.updateAgentList}
-                  handleChangeAgentlist={this.handleChangeAgentlist}
-                  submitUpdateAgentlist={this.submitUpdateAgentlist}
-                  updateEditorList={this.state.updateEditorList}
-                  handleChangeEditorlist={this.handleChangeEditorlist}
-                  submitUpdateEditorlist={this.submitUpdateEditorlist}
-                />
+                <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
+                  <Tab eventKey="x" title="To Do list:">
+                    <Studentlist
+                      role={this.props.role}
+                      success={this.state.success}
+                      editAgent={this.editAgent}
+                      editEditor={this.editEditor}
+                      agent_list={this.state.agent_list}
+                      editor_list={this.state.editor_list}
+                      UpdateAgentlist={this.UpdateAgentlist}
+                      startEditingEditor={this.startEditingEditor}
+                      startEditingProgram={this.startEditingProgram}
+                      students={this.state.students}
+                      header={[
+                        {
+                          name: "StudentName",
+                          prop: "StudentName",
+                        },
+                        {
+                          name: "Agent",
+                          prop: "agent_",
+                        },
+                        {
+                          name: "Editor",
+                          prop: "editor_",
+                        },
+                        {
+                          name: "Program",
+                          prop: "Program",
+                        },
+                      ]}
+                      documentslist={window.documentlist}
+                      startUploadfile={this.startUploadfile}
+                      onDeleteProgram={this.onDeleteProgram}
+                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                      onRejectFilefromstudent={this.onRejectFilefromstudent}
+                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                      updateAgentList={this.state.updateAgentList}
+                      handleChangeAgentlist={this.handleChangeAgentlist}
+                      submitUpdateAgentlist={this.submitUpdateAgentlist}
+                      updateEditorList={this.state.updateEditorList}
+                      handleChangeEditorlist={this.handleChangeEditorlist}
+                      submitUpdateEditorlist={this.submitUpdateEditorlist}
+                    />
+                  </Tab>
+                  <Tab eventKey="y" title="Agent and Editor"></Tab>
+                  <Tab eventKey="r" title="Programs Deadline overview">
+                    <Studentlist
+                      role={this.props.role}
+                      success={this.state.success}
+                      editAgent={this.editAgent}
+                      editEditor={this.editEditor}
+                      agent_list={this.state.agent_list}
+                      editor_list={this.state.editor_list}
+                      UpdateAgentlist={this.UpdateAgentlist}
+                      startEditingEditor={this.startEditingEditor}
+                      startEditingProgram={this.startEditingProgram}
+                      students={this.state.students}
+                      header={[
+                        {
+                          name: "StudentName",
+                          prop: "StudentName",
+                        },
+                        {
+                          name: "Agent",
+                          prop: "agent_",
+                        },
+                        {
+                          name: "Editor",
+                          prop: "editor_",
+                        },
+                        {
+                          name: "Program",
+                          prop: "Program",
+                        },
+                      ]}
+                      documentslist={window.documentlist}
+                      startUploadfile={this.startUploadfile}
+                      onDeleteProgram={this.onDeleteProgram}
+                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                      onRejectFilefromstudent={this.onRejectFilefromstudent}
+                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                      updateAgentList={this.state.updateAgentList}
+                      handleChangeAgentlist={this.handleChangeAgentlist}
+                      submitUpdateAgentlist={this.submitUpdateAgentlist}
+                      updateEditorList={this.state.updateEditorList}
+                      handleChangeEditorlist={this.handleChangeEditorlist}
+                      submitUpdateEditorlist={this.submitUpdateEditorlist}
+                    />
+                  </Tab>
+                </Tabs>
               </Col>
             </Row>
-            {this.props.role === "Student" ? (
+            {/* {this.props.role === "Student" ? (
               <></>
             ) : (
               <Row>
-                <Col className="m-b-30">
+                <Col className="m-b-20">
                   <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
                     <Tab eventKey="today" title="To Do list:">
                       {tabContent}
@@ -409,7 +459,7 @@ class Dashboard extends React.Component {
                   </Tabs>
                 </Col>
               </Row>
-            )}
+            )} */}
           </Aux>
         );
       } else {

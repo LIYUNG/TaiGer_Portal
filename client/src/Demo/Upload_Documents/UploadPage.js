@@ -12,7 +12,7 @@ import {
   download,
   templateDownload,
 } from "../../api";
-import EditUploadFilesSubpage from "./EditUploadFilesSubpage";
+import EditUploadFilesSubpage from "../Documentation/EditUploadFilesSubpage";
 
 class UploadPage extends React.Component {
   constructor(props) {
@@ -53,24 +53,24 @@ class UploadPage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      getMyfiles().then(
-        (resp) => {
-          const { data: student, role: role } = resp.data;
-          console.log(resp.data.data);
-          this.setState({
-            isLoaded: true,
-            student: student,
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error: true,
-          });
-        }
-      );
-    }
+    // if (this.state.isLoaded === false) {
+    //   getMyfiles().then(
+    //     (resp) => {
+    //       const { data: student, role: role } = resp.data;
+    //       console.log(resp.data.data);
+    //       this.setState({
+    //         isLoaded: true,
+    //         student: student,
+    //       });
+    //     },
+    //     (error) => {
+    //       this.setState({
+    //         isLoaded: true,
+    //         error: true,
+    //       });
+    //     }
+    //   );
+    // }
   }
 
   onFileChange(e) {
@@ -86,8 +86,10 @@ class UploadPage extends React.Component {
     formData.append("file", this.state.file);
     upload(studentId, docName, formData).then(
       (res) => {
-        if (res.status === 200) {
+        // console.log(res)
+        if (res.data.success) {
           // alert("Upload success");
+          console.log("Upload success");
           this.setState({
             file: "",
             isLoaded: false,

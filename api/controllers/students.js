@@ -4,44 +4,52 @@ const { Agent, Student, Editor } = require("../models/User");
 const { Program } = require("../models/Program");
 
 const getStudents = asyncHandler(async (req, res) => {
-  //TODO: send students based on the user/agent, editor, Admin
   // const { userId } = req.params;
   // const user = await Student.findById(userId);
   const {
     user,
-    params: { userId },
+    // params: { userId },
   } = req;
 
   // console.log(user);
-  console.log(req.params);
+  // console.log(req.params);
   const students = await Student.find();
   if (user.role === "Student") {
     res.status(200).send({ success: true, data: [user] });
   } else {
+    //TODO: send students based on the user/agent, editor, Admin
     res.status(200).send({ success: true, data: students });
   }
 });
 
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
+  // TODO: update student's agent ang agent's student view
   const {
     params: { id: studentId },
-    body: agentsId , // agentsId is json (or agentsId array with boolean)
+    body: agentsId, // agentsId is json (or agentsId array with boolean)
   } = req;
-  // TODO: check studentId and agentId are valid
-  console.log(agentsId);
-  const agentIds = await Agent.findById(({ agentsId }) => agentsId);
-  console.log(agentIds);
-  if (!agentIds)
-    throw new ErrorResponse(400, "Invalid AgentId");
+  const keys = Object.keys(agentsId);
+  console.log(keys);
+  // for (let i = 0; i < keys.length; i++) {
+  //   const agent = await Agent.findById(({ agentsId }) => agentsId);
+  // }
+  // console.log(agentIds);
+  // if (!agentIds) throw new ErrorResponse(400, "Invalid AgentId");
 
   // TODO: transaction?
-  await Student.findByIdAndUpdate(studentId, {
-    $push: { agents: agentsId },
-  });
-
-  await Agent.findByIdAndUpdate(agentId, {
-    $push: { students: studentId },
-  });
+  // await Student.findByIdAndUpdate(studentId, {
+  //   $push: { agents: agentsId },
+  // });
+  // agentIds.map((agentid) => {
+  //   await Agent.findByIdAndUpdate(agentid, {
+  //     $push: { students: studentId },
+  //   });
+  // });
+  // for(let i = 0; i < agentIds.length; i++){
+  //   await Agent.findByIdAndUpdate(agentid, {
+  //     $push: { students: studentId },
+  //   });
+  // }
 
   // TODO: return data?
   res.status(200).send({ success: true });
@@ -67,7 +75,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     params: { id: studentId },
     body: { id: editorId },
   } = req;
-    console.log(req.body);
+  // console.log(req.body);
 
   // TODO: check studentId and editorId are valid
   const editorIds = await Editor.findById(({ editorId }) => editorId);

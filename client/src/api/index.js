@@ -25,11 +25,11 @@ export const getAgents = () => request.get("/api/agents");
 
 export const getEditors = () => request.get("/api/editors");
 
-export const getStudents = (userId) => request.get(`/api/students/${userId}`);
+export const getStudents = () => request.get(`/api/students`);
 
 // Student APIs
-export const updateAgents = (agents, id) =>
-  request.post(`/api/students/${id}/agents`, agents);
+export const updateAgents = (agentsId, id) =>
+  request.post(`/api/students/${id}/agents`, agentsId);
 
 export const updateEditors = (id, editors) =>
   request.post(`/api/students/${id}/editors`, editors);

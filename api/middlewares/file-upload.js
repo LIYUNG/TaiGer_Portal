@@ -56,16 +56,16 @@ const upload = multer({
 
 /**
  * currently used by route
- *   /account/files/:docName (student upload)
- *   /students/:studentId/:docName (admin/agent upload)
+ *   /account/files/:studentId/:docName (student upload)
  */
 const storage2 = multer.diskStorage({
   destination: (req, file, cb) => {
     let { studentId } = req.params
     if (!studentId) studentId = String(req.user._id)
 
-    // TODO: check studentId and applicationId exist
+    // TODO: check studentId exist
     const directory = path.join(UPLOAD_PATH, studentId);;
+    console.log(directory);
     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
 
     return cb(null, directory);

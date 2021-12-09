@@ -30,7 +30,7 @@ const DocsCertification = React.lazy(() =>
 );
 const DocsUniassist = React.lazy(() => import('./Demo/Documentation/Uniassist/Uniassist'));
 const DocsVisa = React.lazy(() => import('./Demo/Documentation/Visa/Visa'));
-const Upload = React.lazy(() => import("./Demo/Documentation/UploadPage"));
+const Upload = React.lazy(() => import("./Demo/Upload_Documents/UploadPage"));
 const TaiGerAI = React.lazy(() =>
   import("./Demo/TaiGerAI/Application/CoursesAnalyser")
 );

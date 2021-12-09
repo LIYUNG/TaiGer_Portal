@@ -54,21 +54,42 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     user,
     params: { studentId, docName },
   } = req;
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  // console.log(studentId);
+  // console.log(docName);
+  // // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student =
     user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
-
-  const document = student.profile.find(({ name }) => name === docName);
-  if (!document) throw new ErrorResponse(400, "Invalid document name");
-
+  // console.log(student);
+  let document = student.profile.find(({ name }) => name === docName);
+  if (!document) {
+    document = student.profile.create({ name: docName });
+    document.status = DocumentStatus.Uploaded;
+    document.required = true;
+    document.updatedAt = new Date();
+    // console.log(UPLOAD_PATH);
+    // console.log(req.file);
+    document.path = UPLOAD_PATH;
+    // document.path = req.file.path.replace(UPLOAD_PATH, "");
+    student.profile.push(document);
+    await student.save();
+    return res.status(201).send({ success: true });
+  }
   document.status = DocumentStatus.Uploaded;
-  document.path = req.file.path.replace(UPLOAD_PATH, "");
+  document.required = true;
   document.updatedAt = new Date();
-
+  console.log(UPLOAD_PATH);
+  console.log(req.file);
+  document.path = UPLOAD_PATH;
+  // document.path = req.file.path.replace(UPLOAD_PATH, "");
+  // const document = student.profile.find(({ name }) => name === docName);
   await student.save();
-  return res.status(201).send({ success: true, data: document });
+  // return res.status(201).send({ success: true, data: document });
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+
+  // return res.status(201).send({ success: true, data: document });
+  return res.status(201).send({ success: true, data: document  });
 });
 
 const downloadProfileFile = asyncHandler(async (req, res, next) => {

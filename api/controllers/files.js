@@ -69,8 +69,8 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     document.updatedAt = new Date();
     // console.log(UPLOAD_PATH);
     // console.log(req.file);
-    document.path = UPLOAD_PATH;
-    // document.path = req.file.path.replace(UPLOAD_PATH, "");
+    // document.path = UPLOAD_PATH;
+    document.path = req.file.path.replace(UPLOAD_PATH, "");
     student.profile.push(document);
     await student.save();
     return res.status(201).send({ success: true });

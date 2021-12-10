@@ -40,7 +40,7 @@ class Dashboard extends React.Component {
     console.log("default " + this.props.userId);
     getStudents().then(
       (resp) => {
-        // console.log(resp.data);
+        console.log(resp.data);
         console.log("Default.js rendered");
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, students: data, success: success });
@@ -255,7 +255,7 @@ class Dashboard extends React.Component {
   };
 
   UpdateEditorlist = (updateEditorList, student_id) => {
-    updateEditors(student_id, updateEditorList).then(
+    updateEditors(updateEditorList, student_id).then(
       (resp) => {
         this.setState({
           updateEditorList: [],

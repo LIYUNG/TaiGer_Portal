@@ -31,8 +31,8 @@ export const getStudents = () => request.get(`/api/students`);
 export const updateAgents = (agentsId, id) =>
   request.post(`/api/students/${id}/agents`, agentsId);
 
-export const updateEditors = (id, editors) =>
-  request.post(`/api/students/${id}/editors`, editors);
+export const updateEditors = (editorsId, id) =>
+  request.post(`/api/students/${id}/editors`, editorsId);
 
 export const assignProgramToStudent = (studentId, programId) =>
   request.post(`/api/students/${studentId}/applications`, {

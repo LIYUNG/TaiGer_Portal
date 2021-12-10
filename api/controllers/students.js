@@ -28,11 +28,24 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     params: { id: studentId },
     body: agentsId, // agentsId is json (or agentsId array with boolean)
   } = req;
+  console.log(agentsId);
   const keys = Object.keys(agentsId);
   console.log(keys);
-  // for (let i = 0; i < keys.length; i++) {
-  //   const agent = await Agent.findById(({ agentsId }) => agentsId);
-  // }
+  let updated_agent_id = [];
+  for (let i = 0; i < keys.length; i++) {
+    // const agent = await Agent.findById(({ agentsId }) => agentsId);
+    if (agentsId[keys[i]]) {
+      updated_agent_id.push(keys[i]);
+      await Agent.findByIdAndUpdate(keys[i], {
+        $push: { students: studentId },
+      });
+    } else {
+      await Agent.findByIdAndUpdate(keys[i], {
+        $pull: { students: studentId },
+      });
+    }
+  }
+  console.log(updated_agent_id);
   // console.log(agentIds);
   // if (!agentIds) throw new ErrorResponse(400, "Invalid AgentId");
 
@@ -40,18 +53,10 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   // await Student.findByIdAndUpdate(studentId, {
   //   $push: { agents: agentsId },
   // });
-  // agentIds.map((agentid) => {
-  //   await Agent.findByIdAndUpdate(agentid, {
-  //     $push: { students: studentId },
-  //   });
-  // });
-  // for(let i = 0; i < agentIds.length; i++){
-  //   await Agent.findByIdAndUpdate(agentid, {
-  //     $push: { students: studentId },
-  //   });
-  // }
 
-  // TODO: return data?
+  await Student.findByIdAndUpdate(studentId, {
+    agents: updated_agent_id,
+  });
   res.status(200).send({ success: true });
 });
 
@@ -73,23 +78,38 @@ const removeAgentFromStudent = asyncHandler(async (req, res, next) => {
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { id: studentId },
-    body: { id: editorId },
+    body: editorsId,
   } = req;
-  // console.log(req.body);
+  console.log(editorsId);
+  const keys = Object.keys(editorsId);
+  console.log(keys);
+  let updated_editor_id = [];
+  for (let i = 0; i < keys.length; i++) {
+    // const agent = await Agent.findById(({ editorsId }) => editorsId);
+    if (editorsId[keys[i]]) {
+      updated_editor_id.push(keys[i]);
+      await Editor.findByIdAndUpdate(keys[i], {
+        $push: { students: studentId },
+      });
+    } else {
+      await Editor.findByIdAndUpdate(keys[i], {
+        $pull: { students: studentId },
+      });
+    }
+  }
+  console.log(updated_editor_id);
+  // TODO: check studentId and editorsId are valid
+  // const editorsIds = await Editor.findById(({ editorsId }) => editorsId);
+  // if (!editorsIds) throw new ErrorResponse(400, "Invalid editorsId");
 
-  // TODO: check studentId and editorId are valid
-  const editorIds = await Editor.findById(({ editorId }) => editorId);
-  if (!editorIds) throw new ErrorResponse(400, "Invalid EditorId");
+  // // TODO: transaction?
+  // await Student.findByIdAndUpdate(studentId, {
+  //   $push: { editors: editorsId },
+  // });
 
-  // TODO: transaction?
   await Student.findByIdAndUpdate(studentId, {
-    $push: { editors: editorId },
+    editors: updated_editor_id,
   });
-
-  await Editor.findByIdAndUpdate(editorId, {
-    $push: { students: studentId },
-  });
-
   res.status(200).send({ success: true });
 });
 

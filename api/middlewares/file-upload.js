@@ -22,11 +22,11 @@ const ALLOWED_MIME_TYPES = [
  */
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let { studentId, applicationId } = req.params
-    if (!studentId) studentId = String(req.user._id)
+    let { studentId, applicationId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId and applicationId exist
-    const directory = path.join(UPLOAD_PATH, studentId, applicationId);;
+    const directory = path.join(UPLOAD_PATH, studentId, applicationId);
     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
 
     return cb(null, directory);
@@ -60,11 +60,11 @@ const upload = multer({
  */
 const storage2 = multer.diskStorage({
   destination: (req, file, cb) => {
-    let { studentId } = req.params
-    if (!studentId) studentId = String(req.user._id)
+    let { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
-    const directory = path.join(UPLOAD_PATH, studentId);;
+    const directory = path.join(UPLOAD_PATH, studentId);
     console.log(directory);
     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
 
@@ -78,7 +78,7 @@ const storage2 = multer.diskStorage({
 
 //TODO: upload pdf/docx/image
 const upload2 = multer({
-  storage2,
+  storage: storage2,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))

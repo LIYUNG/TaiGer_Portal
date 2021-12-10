@@ -53,24 +53,24 @@ class UploadPage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // if (this.state.isLoaded === false) {
-    //   getMyfiles().then(
-    //     (resp) => {
-    //       const { data: student, role: role } = resp.data;
-    //       console.log(resp.data.data);
-    //       this.setState({
-    //         isLoaded: true,
-    //         student: student,
-    //       });
-    //     },
-    //     (error) => {
-    //       this.setState({
-    //         isLoaded: true,
-    //         error: true,
-    //       });
-    //     }
-    //   );
-    // }
+    if (this.state.isLoaded === false) {
+      getMyfiles(this.props.userId).then(
+        (resp) => {
+          const { data: student, success: success } = resp.data;
+          console.log(resp.data.data);
+          this.setState({
+            isLoaded: true,
+            student: student,
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error: true,
+          });
+        }
+      );
+    }
   }
 
   onFileChange(e) {

@@ -6,8 +6,11 @@ import DEMO from "../../store/constant";
 import avatar1 from "../../assets/images/user/avatar-1.jpg";
 import avatar2 from "../../assets/images/user/avatar-2.jpg";
 import avatar3 from "../../assets/images/user/avatar-3.jpg";
-import Studentlist from "./Studentlist";
-
+import AdminMainView from "./AdminMainView";
+import AgentMainView from "./AgentMainView";
+import EditorMainView from "./EditorMainView";
+import StudentMainView from "./StudentMainView";
+import GuestMainView from "./GuestMainView";
 import {
   getStudents,
   uploadforstudent,
@@ -344,124 +347,275 @@ class Dashboard extends React.Component {
       return <div>Loading...</div>;
     } else {
       if (this.state.success) {
-        return (
-          <Aux>
-            <Row>
-              {/* <Col md={6} xl={8}> */}
-              <Col sm={12}>
-                <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-                  <Tab eventKey="x" title="To Do list:">
-                    <Studentlist
-                      role={this.props.role}
-                      success={this.state.success}
-                      editAgent={this.editAgent}
-                      editEditor={this.editEditor}
-                      agent_list={this.state.agent_list}
-                      editor_list={this.state.editor_list}
-                      UpdateAgentlist={this.UpdateAgentlist}
-                      startEditingEditor={this.startEditingEditor}
-                      startEditingProgram={this.startEditingProgram}
-                      students={this.state.students}
-                      header={[
-                        {
-                          name: "StudentName",
-                          prop: "StudentName",
-                        },
-                        {
-                          name: "Agent",
-                          prop: "agent_",
-                        },
-                        {
-                          name: "Editor",
-                          prop: "editor_",
-                        },
-                        {
-                          name: "Program",
-                          prop: "Program",
-                        },
-                      ]}
-                      documentslist={window.documentlist}
-                      startUploadfile={this.startUploadfile}
-                      onDeleteProgram={this.onDeleteProgram}
-                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                      onRejectFilefromstudent={this.onRejectFilefromstudent}
-                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                      updateAgentList={this.state.updateAgentList}
-                      handleChangeAgentlist={this.handleChangeAgentlist}
-                      submitUpdateAgentlist={this.submitUpdateAgentlist}
-                      updateEditorList={this.state.updateEditorList}
-                      handleChangeEditorlist={this.handleChangeEditorlist}
-                      submitUpdateEditorlist={this.submitUpdateEditorlist}
-                    />
-                  </Tab>
-                  <Tab eventKey="y" title="Agent and Editor"></Tab>
-                  <Tab eventKey="r" title="Programs Deadline overview">
-                    <Studentlist
-                      role={this.props.role}
-                      success={this.state.success}
-                      editAgent={this.editAgent}
-                      editEditor={this.editEditor}
-                      agent_list={this.state.agent_list}
-                      editor_list={this.state.editor_list}
-                      UpdateAgentlist={this.UpdateAgentlist}
-                      startEditingEditor={this.startEditingEditor}
-                      startEditingProgram={this.startEditingProgram}
-                      students={this.state.students}
-                      header={[
-                        {
-                          name: "StudentName",
-                          prop: "StudentName",
-                        },
-                        {
-                          name: "Agent",
-                          prop: "agent_",
-                        },
-                        {
-                          name: "Editor",
-                          prop: "editor_",
-                        },
-                        {
-                          name: "Program",
-                          prop: "Program",
-                        },
-                      ]}
-                      documentslist={window.documentlist}
-                      startUploadfile={this.startUploadfile}
-                      onDeleteProgram={this.onDeleteProgram}
-                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                      onRejectFilefromstudent={this.onRejectFilefromstudent}
-                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                      updateAgentList={this.state.updateAgentList}
-                      handleChangeAgentlist={this.handleChangeAgentlist}
-                      submitUpdateAgentlist={this.submitUpdateAgentlist}
-                      updateEditorList={this.state.updateEditorList}
-                      handleChangeEditorlist={this.handleChangeEditorlist}
-                      submitUpdateEditorlist={this.submitUpdateEditorlist}
-                    />
-                  </Tab>
-                </Tabs>
-              </Col>
-            </Row>
-            {/* {this.props.role === "Student" ? (
-              <></>
-            ) : (
+        if (this.props.role === "Admin") {
+          return (
+            <Aux>
               <Row>
-                <Col className="m-b-20">
-                  <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
-                    <Tab eventKey="today" title="To Do list:">
-                      {tabContent}
+                <Col sm={12}>
+                  <AdminMainView
+                    role={this.props.role}
+                    success={this.state.success}
+                    editAgent={this.editAgent}
+                    editEditor={this.editEditor}
+                    agent_list={this.state.agent_list}
+                    editor_list={this.state.editor_list}
+                    UpdateAgentlist={this.UpdateAgentlist}
+                    startEditingEditor={this.startEditingEditor}
+                    startEditingProgram={this.startEditingProgram}
+                    students={this.state.students}
+                    header={[
+                      {
+                        name: "StudentName",
+                        prop: "StudentName",
+                      },
+                      {
+                        name: "Agent",
+                        prop: "agent_",
+                      },
+                      {
+                        name: "Editor",
+                        prop: "editor_",
+                      },
+                      {
+                        name: "Program",
+                        prop: "Program",
+                      },
+                    ]}
+                    documentslist={window.documentlist}
+                    documenheader={window.documenheader}
+                    startUploadfile={this.startUploadfile}
+                    onDeleteProgram={this.onDeleteProgram}
+                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                    onRejectFilefromstudent={this.onRejectFilefromstudent}
+                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                    updateAgentList={this.state.updateAgentList}
+                    handleChangeAgentlist={this.handleChangeAgentlist}
+                    submitUpdateAgentlist={this.submitUpdateAgentlist}
+                    updateEditorList={this.state.updateEditorList}
+                    handleChangeEditorlist={this.handleChangeEditorlist}
+                    submitUpdateEditorlist={this.submitUpdateEditorlist}
+                  />
+                </Col>
+              </Row>
+            </Aux>
+          );
+        } else if (this.props.role === "Agent") {
+          return (
+            <Aux>
+              <Row>
+                <Col sm={12}>
+                  <AgentMainView
+                    role={this.props.role}
+                    success={this.state.success}
+                    editAgent={this.editAgent}
+                    editEditor={this.editEditor}
+                    agent_list={this.state.agent_list}
+                    editor_list={this.state.editor_list}
+                    UpdateAgentlist={this.UpdateAgentlist}
+                    startEditingEditor={this.startEditingEditor}
+                    startEditingProgram={this.startEditingProgram}
+                    students={this.state.students}
+                    header={[
+                      {
+                        name: "StudentName",
+                        prop: "StudentName",
+                      },
+                      {
+                        name: "Agent",
+                        prop: "agent_",
+                      },
+                      {
+                        name: "Editor",
+                        prop: "editor_",
+                      },
+                      {
+                        name: "Program",
+                        prop: "Program",
+                      },
+                    ]}
+                    documentslist={window.documentlist}
+                    startUploadfile={this.startUploadfile}
+                    onDeleteProgram={this.onDeleteProgram}
+                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                    onRejectFilefromstudent={this.onRejectFilefromstudent}
+                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                    updateAgentList={this.state.updateAgentList}
+                    handleChangeAgentlist={this.handleChangeAgentlist}
+                    submitUpdateAgentlist={this.submitUpdateAgentlist}
+                    updateEditorList={this.state.updateEditorList}
+                    handleChangeEditorlist={this.handleChangeEditorlist}
+                    submitUpdateEditorlist={this.submitUpdateEditorlist}
+                  />
+                </Col>
+              </Row>
+            </Aux>
+          );
+        } else if (this.props.role === "Editor") {
+          return (
+            <Aux>
+              <Row>
+                <Col sm={12}>
+                  <EditorMainView
+                    role={this.props.role}
+                    success={this.state.success}
+                    editAgent={this.editAgent}
+                    editEditor={this.editEditor}
+                    agent_list={this.state.agent_list}
+                    editor_list={this.state.editor_list}
+                    UpdateAgentlist={this.UpdateAgentlist}
+                    startEditingEditor={this.startEditingEditor}
+                    startEditingProgram={this.startEditingProgram}
+                    students={this.state.students}
+                    header={[
+                      {
+                        name: "StudentName",
+                        prop: "StudentName",
+                      },
+                      {
+                        name: "Agent",
+                        prop: "agent_",
+                      },
+                      {
+                        name: "Editor",
+                        prop: "editor_",
+                      },
+                      {
+                        name: "Program",
+                        prop: "Program",
+                      },
+                    ]}
+                    documentslist={window.documentlist}
+                    startUploadfile={this.startUploadfile}
+                    onDeleteProgram={this.onDeleteProgram}
+                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                    onRejectFilefromstudent={this.onRejectFilefromstudent}
+                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                    updateAgentList={this.state.updateAgentList}
+                    handleChangeAgentlist={this.handleChangeAgentlist}
+                    submitUpdateAgentlist={this.submitUpdateAgentlist}
+                    updateEditorList={this.state.updateEditorList}
+                    handleChangeEditorlist={this.handleChangeEditorlist}
+                    submitUpdateEditorlist={this.submitUpdateEditorlist}
+                  />
+                </Col>
+              </Row>
+            </Aux>
+          );
+        } else if (this.props.role === "Student") {
+          return (
+            <Aux>
+              <Row>
+                <Col sm={12}>
+                  <StudentMainView
+                    role={this.props.role}
+                    success={this.state.success}
+                    editAgent={this.editAgent}
+                    editEditor={this.editEditor}
+                    agent_list={this.state.agent_list}
+                    editor_list={this.state.editor_list}
+                    UpdateAgentlist={this.UpdateAgentlist}
+                    startEditingEditor={this.startEditingEditor}
+                    startEditingProgram={this.startEditingProgram}
+                    students={this.state.students}
+                    header={[
+                      {
+                        name: "StudentName",
+                        prop: "StudentName",
+                      },
+                      {
+                        name: "Agent",
+                        prop: "agent_",
+                      },
+                      {
+                        name: "Editor",
+                        prop: "editor_",
+                      },
+                      {
+                        name: "Program",
+                        prop: "Program",
+                      },
+                    ]}
+                    documentslist={window.documentlist}
+                    startUploadfile={this.startUploadfile}
+                    onDeleteProgram={this.onDeleteProgram}
+                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                    onRejectFilefromstudent={this.onRejectFilefromstudent}
+                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                    updateAgentList={this.state.updateAgentList}
+                    handleChangeAgentlist={this.handleChangeAgentlist}
+                    submitUpdateAgentlist={this.submitUpdateAgentlist}
+                    updateEditorList={this.state.updateEditorList}
+                    handleChangeEditorlist={this.handleChangeEditorlist}
+                    submitUpdateEditorlist={this.submitUpdateEditorlist}
+                  />
+                </Col>
+              </Row>
+            </Aux>
+          );
+        } else {
+          return (
+            <Aux>
+              <Row>
+                <Col sm={12}>
+                  <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
+                    <Tab eventKey="x" title="To Do list:">
+                      <GuestMainView
+                        role={this.props.role}
+                        success={this.state.success}
+                        editAgent={this.editAgent}
+                        editEditor={this.editEditor}
+                        agent_list={this.state.agent_list}
+                        editor_list={this.state.editor_list}
+                        UpdateAgentlist={this.UpdateAgentlist}
+                        startEditingEditor={this.startEditingEditor}
+                        startEditingProgram={this.startEditingProgram}
+                        students={this.state.students}
+                        header={[
+                          {
+                            name: "StudentName",
+                            prop: "StudentName",
+                          },
+                          {
+                            name: "Agent",
+                            prop: "agent_",
+                          },
+                          {
+                            name: "Editor",
+                            prop: "editor_",
+                          },
+                          {
+                            name: "Program",
+                            prop: "Program",
+                          },
+                        ]}
+                        documentslist={window.documentlist}
+                        startUploadfile={this.startUploadfile}
+                        onDeleteProgram={this.onDeleteProgram}
+                        onDownloadFilefromstudent={
+                          this.onDownloadFilefromstudent
+                        }
+                        onRejectFilefromstudent={this.onRejectFilefromstudent}
+                        onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                        updateAgentList={this.state.updateAgentList}
+                        handleChangeAgentlist={this.handleChangeAgentlist}
+                        submitUpdateAgentlist={this.submitUpdateAgentlist}
+                        updateEditorList={this.state.updateEditorList}
+                        handleChangeEditorlist={this.handleChangeEditorlist}
+                        submitUpdateEditorlist={this.submitUpdateEditorlist}
+                      />
                     </Tab>
-                    <Tab eventKey="week" title="Deadline overview">
-                      {tabContent}
-                    </Tab>
+                    <Tab eventKey="y" title="Agent and Editor"></Tab>
                   </Tabs>
                 </Col>
               </Row>
-            )} */}
-          </Aux>
-        );
+            </Aux>
+          );
+        }
       } else {
         return (
           <Aux>

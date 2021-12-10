@@ -13,12 +13,21 @@ const getStudents = asyncHandler(async (req, res) => {
 
   // console.log(user);
   // console.log(req.params);
-  const students = await Student.find();
-  if (user.role === "Student") {
+
+  if (user.role === "Admin") {
+    const students = await Student.find();
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Agent") {
+    const students = await Student.find({ _id: { $in: user.students } });
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Editor") {
+    const students = await Student.find({ _id: { $in: user.students } });
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Student") {
     res.status(200).send({ success: true, data: [user] });
   } else {
-    //TODO: send students based on the user/agent, editor, Admin
-    res.status(200).send({ success: true, data: students });
+    // Guest
+    res.status(200).send({ success: true, data: [user] });
   }
 });
 

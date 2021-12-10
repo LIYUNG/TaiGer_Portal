@@ -14,9 +14,9 @@
   - [xx] POST   /users/:id                                  (edituser, changeuserrole)
   - [x] GET    /agents                                     (editagent)
   - [x] GET    /editors                                    (editeditor)
-  - [xx] GET    /students                                   (studentlist) user role: studnet跟guest 都 return status 500
-  - [xx] POST   /students/:id/agents                        (updateagent) issue: 格式跑掉 (應只留選取的agent)
-  - [xx] POST   /students/:id/editors                       (updateeditor) issue: 格式跑掉 (應只留選取的editor)
+  - [x] GET    /students                                   (studentlist)
+  - [x] POST   /students/:id/agents                        (updateagent) 
+  - [x] POST   /students/:id/editors                       (updateeditor)
   - [xx] POST   /students/:id/programs                      (assignprogramtostudent) return status 500
   - [x] DELETE /students/:studentId/programs/:programId    (deleteprogramfromstudent)
   - [x] GET    /students/:studentId/files/:category        (filedownloadfromstudent) return status 500

@@ -9,8 +9,12 @@ import avatar1 from "../../assets/images/user/avatar-1.jpg";
 
 import { uploadforstudent } from "../../api";
 import AgentDashboard from "./AgentDashboard";
+import EditorDashboard from "./EditorDashboard";
+import AdminDashboard from "./AdminDashboard";
+import StudentDashboard from "./StudentDashboard";
+import GuestDashboard from "./GuestDashboard";
 
-class EditableStudent extends React.Component {
+class EditorStudents extends React.Component {
   state = {
     showAgentPage: false,
     showEditorPage: false,
@@ -219,7 +223,6 @@ class EditableStudent extends React.Component {
     //   studentDocOverview = <p>So far no uploaded file!</p>;
     // }
 
-
     if (this.state.student.uploadedDocs_) {
       studentDocOverview = this.props.documentslist.map((doc, i) => {
         if (
@@ -266,11 +269,11 @@ class EditableStudent extends React.Component {
         } else {
           return (
             <td key={i}>
-                <AiFillQuestionCircle
-                  size={24}
-                  color="lightgray"
-                  title="No Document uploaded"
-                />{" "}
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="No Document uploaded"
+              />{" "}
             </td>
           );
         }
@@ -278,45 +281,44 @@ class EditableStudent extends React.Component {
     } else {
       studentDocOverview = <p>No Doc!</p>;
     }
+    return (
+      <EditorDashboard
+        role={this.props.role}
+        agent_list={this.props.agent_list}
+        editor_list={this.props.editor_list}
+        startEditingAgent={this.startEditingAgent}
+        startEditingEditor={this.startEditingEditor}
+        startEditingProgram={this.startEditingProgram}
+        startUploadfile={this.startUploadfile}
+        student={this.state.student}
+        studentDocOverview={studentDocOverview}
+        setAgentModalhide={this.setAgentModalhide}
+        updateAgentList={this.props.updateAgentList}
+        handleChangeAgentlist={this.props.handleChangeAgentlist}
+        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+        setEditorModalhide={this.setEditorModalhide}
+        updateEditorList={this.props.updateEditorList}
+        handleChangeEditorlist={this.props.handleChangeEditorlist}
+        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+        setProgramModalhide={this.setProgramModalhide}
+        onDeleteProgram={this.props.onDeleteProgram}
+        setFilesModalhide={this.setFilesModalhide}
+        onFileChange={this.onFileChange}
+        submitFile={this.submitFile}
+        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+        onRejectFilefromstudent={this.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+        documentslist={this.props.documentslist}
+        showAgentPage={this.state.showAgentPage}
+        showEditorPage={this.state.showEditorPage}
+        showProgramPage={this.state.showProgramPage}
+        showFilePage={this.state.showFilePage}
+      />
+    );
 
-
-      return (
-        <AgentDashboard
-          role={this.props.role}
-          agent_list={this.props.agent_list}
-          editor_list={this.props.editor_list}
-          startEditingAgent={this.startEditingAgent}
-          startEditingEditor={this.startEditingEditor}
-          startEditingProgram={this.startEditingProgram}
-          startUploadfile={this.startUploadfile}
-          student={this.state.student}
-          studentDocOverview={studentDocOverview}
-          setAgentModalhide={this.setAgentModalhide}
-          updateAgentList={this.props.updateAgentList}
-          handleChangeAgentlist={this.props.handleChangeAgentlist}
-          submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-          setEditorModalhide={this.setEditorModalhide}
-          updateEditorList={this.props.updateEditorList}
-          handleChangeEditorlist={this.props.handleChangeEditorlist}
-          submitUpdateEditorlist={this.props.submitUpdateEditorlist}
-          setProgramModalhide={this.setProgramModalhide}
-          onDeleteProgram={this.props.onDeleteProgram}
-          setFilesModalhide={this.setFilesModalhide}
-          onFileChange={this.onFileChange}
-          submitFile={this.submitFile}
-          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-          onRejectFilefromstudent={this.onRejectFilefromstudent}
-          onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-          documentslist={this.props.documentslist}
-          showAgentPage={this.state.showAgentPage}
-          showEditorPage={this.state.showEditorPage}
-          showProgramPage={this.state.showProgramPage}
-          showFilePage={this.state.showFilePage}
-        />
-      );
-    // } 
+    // }
   }
 }
 
-export default EditableStudent;
+export default EditorStudents;

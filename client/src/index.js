@@ -8,7 +8,7 @@ import App from "./App/index";
 import * as serviceWorker from "./serviceWorker";
 import reducer from "./store/reducer";
 import config from "./config";
-import "./style.css"
+import "./style.css";
 
 const store = createStore(
   reducer,
@@ -73,6 +73,23 @@ window.documentlist = [
     prop: "Passport_",
   },
 ];
+
+window.documenheader = {
+  CV_: "CV",
+  ML_: "ML",
+  RL_: "RL",
+  bachelorCertificate_: "B.Sc Cert",
+  bachelorTranscript_: "B.Sc. Trans",
+  highSchoolDiploma_: "H. Sch. Dipl.",
+  highSchoolTranscript_: "H. Sch. Trans",
+  universityEntranceExamination_: "GSAT/SAT",
+  EnglischCertificate_: "TOEFL/IELTS",
+  GermanCertificate_: "TestDaF/B2/C1",
+  Essay_: "Essay",
+  ECTS_conversion_: "ECTS Conv.",
+  CourseDescription_: "Course Descr.",
+  Passport_: "Passport",
+};
 
 window.ProgramlistHeader = [
   {

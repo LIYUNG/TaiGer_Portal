@@ -2,14 +2,16 @@ import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
 import avatar1 from "../../assets/images/user/avatar-1.jpg";
-import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";
 import EditProgramsSubpage from "./EditProgramsSubpage";
 import EditFilesSubpage from "./EditFilesSubpage";
 
-class AgentDashboard extends React.Component {
+class EditorDashboard extends React.Component {
   render() {
     return (
+      // <Card>
+      //   <Card.Body>
+      // {/* <Card.Title>Card Title</Card.Title> */}
       // Overview template 2
       <>
         <tbody>
@@ -24,6 +26,14 @@ class AgentDashboard extends React.Component {
                   id={`dropdown-variants-${this.props.student._id}`}
                   key={this.props.student._id}
                 >
+                  <Dropdown.Item
+                    eventKey="2"
+                    onSelect={() =>
+                      this.props.startEditingEditor(this.props.student)
+                    }
+                  >
+                    Edit Editor
+                  </Dropdown.Item>
                   <Dropdown.Item
                     eventKey="3"
                     onSelect={() => this.props.startEditingProgram()}
@@ -46,6 +56,16 @@ class AgentDashboard extends React.Component {
           </tr>
         </tbody>
         <>
+          <EditEditorsSubpage
+            student={this.props.student}
+            editor_list={this.props.editor_list}
+            show={this.props.showEditorPage}
+            onHide={this.props.setEditorModalhide}
+            setmodalhide={this.props.setEditorModalhide}
+            updateEditorList={this.props.updateEditorList}
+            handleChangeEditorlist={this.props.handleChangeEditorlist}
+            submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+          />
           <EditProgramsSubpage
             student={this.props.student}
             show={this.props.showProgramPage}
@@ -74,4 +94,4 @@ class AgentDashboard extends React.Component {
   }
 }
 
-export default AgentDashboard;
+export default EditorDashboard;

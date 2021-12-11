@@ -3,13 +3,13 @@ import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
-class DocsProgress extends React.Component {
+class ApplicationStatus extends React.Component {
   render() {
     let applying_universit;
     let applying_program;
     let application_deadline;
-    let programId = this.props.student.applications[0].programId;
-    console.log(typeof programId);
+    // let programId = this.props.student.applications[0].programId;
+    // console.log(typeof programId);
     if (this.props.student.applications) {
       applying_universit = this.props.student.applications.map(
         (application) => (
@@ -22,7 +22,7 @@ class DocsProgress extends React.Component {
       applying_universit = (
         <tr>
           <td>
-            <h4 className="mb-1"> No Program</h4>
+            <h4> No University</h4>
           </td>
         </tr>
       );
@@ -65,7 +65,6 @@ class DocsProgress extends React.Component {
     }
 
     return (
-      // Overview template 2
       <>
         <tbody>
           <tr>
@@ -85,4 +84,4 @@ class DocsProgress extends React.Component {
   }
 }
 
-export default DocsProgress;
+export default ApplicationStatus;

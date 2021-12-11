@@ -363,26 +363,9 @@ class Dashboard extends React.Component {
                     startEditingEditor={this.startEditingEditor}
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
-                    header={[
-                      {
-                        name: "StudentName",
-                        prop: "StudentName",
-                      },
-                      {
-                        name: "Agent",
-                        prop: "agent_",
-                      },
-                      {
-                        name: "Editor",
-                        prop: "editor_",
-                      },
-                      {
-                        name: "Program",
-                        prop: "Program",
-                      },
-                    ]}
                     documentslist={window.documentlist}
-                    documenheader={window.documenheader}
+                    documentsprogresslist={window.documentsprogresslist}
+                    programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}
                     onDeleteProgram={this.onDeleteProgram}
                     onDownloadFilefromstudent={this.onDownloadFilefromstudent}
@@ -416,26 +399,9 @@ class Dashboard extends React.Component {
                     startEditingEditor={this.startEditingEditor}
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
-                    header={[
-                      {
-                        name: "StudentName",
-                        prop: "StudentName",
-                      },
-                      {
-                        name: "Agent",
-                        prop: "agent_",
-                      },
-                      {
-                        name: "Editor",
-                        prop: "editor_",
-                      },
-                      {
-                        name: "Program",
-                        prop: "Program",
-                      },
-                    ]}
                     documentslist={window.documentlist}
-                    documenheader={window.documenheader}
+                    documentsprogresslist={window.documentsprogresslist}
+                    programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}
                     onDeleteProgram={this.onDeleteProgram}
                     onDownloadFilefromstudent={this.onDownloadFilefromstudent}
@@ -469,25 +435,9 @@ class Dashboard extends React.Component {
                     startEditingEditor={this.startEditingEditor}
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
-                    header={[
-                      {
-                        name: "StudentName",
-                        prop: "StudentName",
-                      },
-                      {
-                        name: "Agent",
-                        prop: "agent_",
-                      },
-                      {
-                        name: "Editor",
-                        prop: "editor_",
-                      },
-                      {
-                        name: "Program",
-                        prop: "Program",
-                      },
-                    ]}
                     documentslist={window.documentlist}
+                    documentsprogresslist={window.documentsprogresslist}
+                    programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}
                     onDeleteProgram={this.onDeleteProgram}
                     onDownloadFilefromstudent={this.onDownloadFilefromstudent}
@@ -521,25 +471,9 @@ class Dashboard extends React.Component {
                     startEditingEditor={this.startEditingEditor}
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
-                    header={[
-                      {
-                        name: "StudentName",
-                        prop: "StudentName",
-                      },
-                      {
-                        name: "Agent",
-                        prop: "agent_",
-                      },
-                      {
-                        name: "Editor",
-                        prop: "editor_",
-                      },
-                      {
-                        name: "Program",
-                        prop: "Program",
-                      },
-                    ]}
                     documentslist={window.documentlist}
+                    documentsprogresslist={window.documentsprogresslist}
+                    programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}
                     onDeleteProgram={this.onDeleteProgram}
                     onDownloadFilefromstudent={this.onDownloadFilefromstudent}
@@ -575,24 +509,6 @@ class Dashboard extends React.Component {
                         startEditingEditor={this.startEditingEditor}
                         startEditingProgram={this.startEditingProgram}
                         students={this.state.students}
-                        header={[
-                          {
-                            name: "StudentName",
-                            prop: "StudentName",
-                          },
-                          {
-                            name: "Agent",
-                            prop: "agent_",
-                          },
-                          {
-                            name: "Editor",
-                            prop: "editor_",
-                          },
-                          {
-                            name: "Program",
-                            prop: "Program",
-                          },
-                        ]}
                         documentslist={window.documentlist}
                         startUploadfile={this.startUploadfile}
                         onDeleteProgram={this.onDeleteProgram}

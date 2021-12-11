@@ -8,8 +8,8 @@ class DocsProgress extends React.Component {
     let applying_universit;
     let applying_program;
     let application_deadline;
-    let programId = this.props.student.applications[0].programId;
-    console.log(typeof programId);
+    // let programId = this.props.student.applications[0].programId;
+    // console.log(typeof programId);
     if (this.props.student.applications) {
       applying_universit = this.props.student.applications.map(
         (application) => (
@@ -22,7 +22,7 @@ class DocsProgress extends React.Component {
       applying_universit = (
         <tr>
           <td>
-            <h4 className="mb-1"> No Program</h4>
+            <h4 className="mb-1"> No University</h4>
           </td>
         </tr>
       );

@@ -15,13 +15,26 @@ const getStudents = asyncHandler(async (req, res) => {
   // console.log(req.params);
 
   if (user.role === "Admin") {
-    const students = await Student.find();
+    const students = await Student.find()
+      .populate("applications.programId")
+      .lean();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Agent") {
-    const students = await Student.find({ _id: { $in: user.students } });
+    const students = await Student.find({
+      _id: { $in: user.students },
+    })
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
+    // console.log(students[0].applications[0].programId); // looks ok!
+    console.log(students[0].applications[0].programId.University_); 
+
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Editor") {
-    const students = await Student.find({ _id: { $in: user.students } });
+    const students = await Student.find({
+      _id: { $in: user.students },
+    }).populate("applications.programId");
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Student") {
     res.status(200).send({ success: true, data: [user] });

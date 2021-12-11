@@ -1,6 +1,8 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
 import AdminStudents from "./AdminStudents";
+import EditorDocsProgress from "./EditorDocsProgress";
+import ApplicationProgress from "./ApplicationProgress";
 
 class AdminMainView extends React.Component {
   render() {
@@ -31,12 +33,45 @@ class AdminMainView extends React.Component {
         submitUpdateEditorlist={this.props.submitUpdateEditorlist}
       />
     ));
+    const student_editor = this.props.students.map((student, i) => (
+      <EditorDocsProgress
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        documentslist={this.props.documentslist}
+        documenheader={this.props.documenheader}
+        startUploadfile={this.props.startUploadfile}
+        agent_list={this.props.agent_list}
+        editor_list={this.props.editor_list}
+        onDeleteProgram={this.props.onDeleteProgram}
+        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
 
+    const application_progress = this.props.students.map((student, i) => (
+      <ApplicationProgress
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        documentslist={this.props.documentslist}
+        documenheader={this.props.documenheader}
+        startUploadfile={this.props.startUploadfile}
+        agent_list={this.props.agent_list}
+        editor_list={this.props.editor_list}
+        onDeleteProgram={this.props.onDeleteProgram}
+        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
     return (
       <>
-        {" "}
         <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-          <Tab eventKey="x" title="To Do list:">
+          <Tab eventKey="x" title="Student Documents Overview">
             <Table responsive>
               <thead>
                 <tr>
@@ -50,9 +85,44 @@ class AdminMainView extends React.Component {
                 </tr>
               </thead>
               {stdlist}
-            </Table>{" "}
+            </Table>
           </Tab>
-          <Tab eventKey="y" title="Agent and Editor"></Tab>
+          <Tab eventKey="y" title="Editor & Docs Progress">
+            <Table responsive>
+              <thead>
+                <tr>
+                  <>
+                    <th>First-/Last Name</th>
+                    <th>University</th>
+                    <th>Programs</th>
+                    <th>Deadline</th>
+                  </>
+                  {this.props.documentsprogresslist.map((doc, index) => (
+                    <th key={index}>{doc.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              {student_editor}
+            </Table>
+          </Tab>
+          <Tab eventKey="z" title="Application Overview">
+            <Table responsive>
+              <thead>
+                <tr>
+                  <>
+                    <th>First-/Last Name</th>
+                    <th>University</th>
+                    <th>Programs</th>
+                    <th>Deadline</th>
+                  </>
+                  {this.props.programstatuslist.map((doc, index) => (
+                    <th key={index}>{doc.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              {application_progress}
+            </Table>
+          </Tab>
         </Tabs>
       </>
     );

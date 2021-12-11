@@ -14,20 +14,57 @@ const store = createStore(
   reducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
+window.documentsprogresslist = [
+  {
+    name: "Received Template",
+    prop: "receive_template",
+  },
+  {
+    name: "Preparing",
+    prop: "preparing",
+  },
+  {
+    name: "Editing",
+    prop: "editing",
+  },
+  {
+    name: "Closed",
+    prop: "closed",
+  },
+];
+
+window.programstatuslist = [
+  {
+    name: "Decided",
+    prop: "decided",
+  },
+  {
+    name: "Preparing",
+    prop: "preparing",
+  },
+  {
+    name: "Submitted",
+    prop: "Submitted",
+  },
+  {
+    name: "Offer",
+    prop: "offer",
+  },
+];
 
 window.documentlist = [
-  {
-    name: "CV",
-    prop: "CV_",
-  },
-  {
-    name: "ML",
-    prop: "ML_",
-  },
-  {
-    name: "RL",
-    prop: "RL_",
-  },
+  // {
+  //   name: "CV",
+  //   prop: "CV_",
+  // },
+  // {
+  //   name: "ML",
+  //   prop: "ML_",
+  // },
+  // {
+  //   name: "RL",
+  //   prop: "RL_",
+  // },
   {
     name: "B.Sc Cert",
     prop: "bachelorCertificate_",
@@ -56,10 +93,10 @@ window.documentlist = [
     name: "TestDaF/B2/C1",
     prop: "GermanCertificate_",
   },
-  {
-    name: "Essay",
-    prop: "Essay_",
-  },
+  // {
+  //   name: "Essay",
+  //   prop: "Essay_",
+  // },
   {
     name: "ECTS Conv.",
     prop: "ECTS_conversion_",

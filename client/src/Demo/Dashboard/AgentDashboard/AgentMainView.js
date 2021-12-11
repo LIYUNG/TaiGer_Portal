@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
 import AgentStudents from "./AgentStudents";
 import EditorDocsProgress from "./EditorDocsProgress";
+import ApplicationProgress from "./ApplicationProgress";
 
 class AgentMainView extends React.Component {
   render() {
@@ -9,26 +10,16 @@ class AgentMainView extends React.Component {
       <AgentStudents
         key={i}
         student={student}
-        editAgent={this.props.editAgent}
-        editEditor={this.props.editEditor}
-        startEditingEditor={this.props.startEditingEditor}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
         onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
       />
     ));
 
@@ -36,9 +27,6 @@ class AgentMainView extends React.Component {
       <EditorDocsProgress
         key={i}
         student={student}
-        editAgent={this.props.editAgent}
-        editEditor={this.props.editEditor}
-        startEditingEditor={this.props.startEditingEditor}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}
@@ -50,12 +38,24 @@ class AgentMainView extends React.Component {
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+      />
+    ));
+
+    const application_progress = this.props.students.map((student, i) => (
+      <ApplicationProgress
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        documentslist={this.props.documentslist}
+        documenheader={this.props.documenheader}
+        startUploadfile={this.props.startUploadfile}
+        agent_list={this.props.agent_list}
+        editor_list={this.props.editor_list}
+        onDeleteProgram={this.props.onDeleteProgram}
+        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
 
@@ -83,10 +83,12 @@ class AgentMainView extends React.Component {
               <thead>
                 <tr>
                   <>
-                    <th></th>
                     <th>First-/Last Name</th>
+                    <th>University</th>
+                    <th>Programs</th>
+                    <th>Deadline</th>
                   </>
-                  {this.props.documentslist.map((doc, index) => (
+                  {this.props.documentsprogresslist.map((doc, index) => (
                     <th key={index}>{doc.name}</th>
                   ))}
                 </tr>
@@ -94,7 +96,24 @@ class AgentMainView extends React.Component {
               {student_editor}
             </Table>
           </Tab>
-          <Tab eventKey="z" title="Application Overview"></Tab>
+          <Tab eventKey="z" title="Application Overview">
+            <Table responsive>
+              <thead>
+                <tr>
+                  <>
+                    <th>First-/Last Name</th>
+                    <th>University</th>
+                    <th>Programs</th>
+                    <th>Deadline</th>
+                  </>
+                  {this.props.programstatuslist.map((doc, index) => (
+                    <th key={index}>{doc.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              {application_progress}
+            </Table>
+          </Tab>
         </Tabs>
       </>
     );

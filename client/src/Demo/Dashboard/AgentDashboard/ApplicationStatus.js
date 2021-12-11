@@ -3,7 +3,7 @@ import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
-class DocsProgress extends React.Component {
+class ApplicationStatus extends React.Component {
   render() {
     let applying_universit;
     let applying_program;
@@ -65,7 +65,6 @@ class DocsProgress extends React.Component {
     }
 
     return (
-      // Overview template 2
       <>
         <tbody>
           <tr>
@@ -85,4 +84,4 @@ class DocsProgress extends React.Component {
   }
 }
 
-export default DocsProgress;
+export default ApplicationStatus;

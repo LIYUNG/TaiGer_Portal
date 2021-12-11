@@ -1,16 +1,13 @@
 import React from "react";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
-
 import { Card, Col, Row } from "react-bootstrap";
-
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-
 import { uploadforstudent } from "../../../api";
-import DocsProgress from "./DocsProgress";
+import ApplicationStatus from "./ApplicationStatus";
 
-class EditorDocsProgress extends React.Component {
+class ApplicationProgress extends React.Component {
   state = {
     showProgramPage: false,
     showFilePage: false,
@@ -178,7 +175,7 @@ class EditorDocsProgress extends React.Component {
     }
 
     return (
-      <DocsProgress
+      <ApplicationStatus
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}
@@ -197,4 +194,4 @@ class EditorDocsProgress extends React.Component {
   }
 }
 
-export default EditorDocsProgress;
+export default ApplicationProgress;

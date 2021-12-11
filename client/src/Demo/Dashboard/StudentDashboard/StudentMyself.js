@@ -5,12 +5,12 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { Card, Col, Row } from "react-bootstrap";
 
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import avatar1 from "../../assets/images/user/avatar-1.jpg";
+import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
-import { uploadforstudent } from "../../api";
-import GuestDashboard from "./GuestDashboard";
+import { uploadforstudent } from "../../../api";
+import StudentDashboard from "./StudentDashboard";
 
-class GuestMyself extends React.Component {
+class StudentMyself extends React.Component {
   state = {
     showAgentPage: false,
     showEditorPage: false,
@@ -278,7 +278,7 @@ class GuestMyself extends React.Component {
       studentDocOverview = <p>No Doc!</p>;
     }
     return (
-      <GuestDashboard
+      <StudentDashboard
         role={this.props.role}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
@@ -317,4 +317,4 @@ class GuestMyself extends React.Component {
   }
 }
 
-export default GuestMyself;
+export default StudentMyself;

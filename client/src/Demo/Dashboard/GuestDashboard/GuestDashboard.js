@@ -1,11 +1,7 @@
 import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
-import avatar1 from "../../assets/images/user/avatar-1.jpg";
-import EditAgentsSubpage from "./EditAgentsSubpage";
-import EditEditorsSubpage from "./EditEditorsSubpage";
-import EditProgramsSubpage from "./EditProgramsSubpage";
-import EditFilesSubpage from "./EditFilesSubpage";
+import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
 class GuestDashboard extends React.Component {
   render() {

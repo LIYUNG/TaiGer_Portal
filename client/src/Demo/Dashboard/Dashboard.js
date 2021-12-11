@@ -6,11 +6,11 @@ import DEMO from "../../store/constant";
 import avatar1 from "../../assets/images/user/avatar-1.jpg";
 import avatar2 from "../../assets/images/user/avatar-2.jpg";
 import avatar3 from "../../assets/images/user/avatar-3.jpg";
-import AdminMainView from "./AdminMainView";
-import AgentMainView from "./AgentMainView";
-import EditorMainView from "./EditorMainView";
-import StudentMainView from "./StudentMainView";
-import GuestMainView from "./GuestMainView";
+import AdminMainView from "./AdminDashboard/AdminMainView";
+import AgentMainView from "./AgentDashboard/AgentMainView";
+import EditorMainView from "./EditorDashboard/EditorMainView";
+import StudentMainView from "./StudentDashboard/StudentMainView";
+import GuestMainView from "./GuestDashboard/GuestMainView";
 import {
   getStudents,
   uploadforstudent,
@@ -435,6 +435,7 @@ class Dashboard extends React.Component {
                       },
                     ]}
                     documentslist={window.documentlist}
+                    documenheader={window.documenheader}
                     startUploadfile={this.startUploadfile}
                     onDeleteProgram={this.onDeleteProgram}
                     onDownloadFilefromstudent={this.onDownloadFilefromstudent}

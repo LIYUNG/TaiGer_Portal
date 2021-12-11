@@ -6,7 +6,7 @@ const {
 const bcrypt = require("bcryptjs");
 const isEmail = require("validator/lib/isEmail");
 
-const { DocumentStatus } = require("../constants")
+const { DocumentStatus } = require("../constants");
 
 const Role = {
   Admin: "Admin",
@@ -93,6 +93,8 @@ const applicationSchema = new Schema({
       updatedAt: Date,
     },
   ],
+  prepared: { type: Boolean, required: true, default: false },
+  closed: { type: Boolean, required: true, default: false },
 });
 
 const Student = User.discriminator(

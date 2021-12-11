@@ -1,7 +1,7 @@
 import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
-import avatar1 from "../../assets/images/user/avatar-1.jpg";
+import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import EditEditorsSubpage from "./EditEditorsSubpage";
 import EditProgramsSubpage from "./EditProgramsSubpage";
 import EditFilesSubpage from "./EditFilesSubpage";

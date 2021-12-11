@@ -5,55 +5,17 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { Card, Col, Row } from "react-bootstrap";
 
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import avatar1 from "../../assets/images/user/avatar-1.jpg";
+import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
-import { uploadforstudent } from "../../api";
-import AgentDashboard from "./AgentDashboard";
-import EditorDashboard from "./EditorDashboard";
-import AdminDashboard from "./AdminDashboard";
-import StudentDashboard from "./StudentDashboard";
-import GuestDashboard from "./GuestDashboard";
+import { uploadforstudent } from "../../../api";
+import DocsProgress from "./DocsProgress";
 
-class AdminStudents extends React.Component {
+class EditorDocsProgress extends React.Component {
   state = {
-    showAgentPage: false,
-    showEditorPage: false,
     showProgramPage: false,
     showFilePage: false,
     student: this.props.student,
     file: "",
-  };
-
-  setAgentModalhide = () => {
-    this.setState({
-      showAgentPage: false,
-    });
-  };
-
-  startEditingAgent = (student) => {
-    console.log("startEditingAgent");
-    console.log(student);
-    this.props.editAgent(student);
-    this.setState({
-      subpage: 1,
-      showAgentPage: true,
-    });
-  };
-
-  setEditorModalhide = () => {
-    this.setState({
-      showEditorPage: false,
-    });
-  };
-
-  startEditingEditor = (student) => {
-    console.log("startEditingEditor");
-    console.log(student);
-    this.props.editEditor(student);
-    this.setState({
-      subpage: 2,
-      showEditorPage: true,
-    });
   };
 
   setProgramModalhide = () => {
@@ -156,73 +118,6 @@ class AdminStudents extends React.Component {
 
   render() {
     let studentDocOverview;
-    // studentDocOverview = <p>So far no uploaded file!</p>;
-    // if (this.state.student.uploadedDocs_) {
-    //   studentDocOverview = this.props.documentslist.map((doc, i) => {
-    //     if (
-    //       this.state.student.uploadedDocs_[doc.prop] &&
-    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-    //         "uploaded"
-    //     ) {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           {" "}
-    //           <AiFillQuestionCircle
-    //             size={24}
-    //             color="lightgreen"
-    //             title="Uploaded successfully"
-    //           />{" "}
-    //           {doc.name}
-    //         </p>
-    //       );
-    //     } else if (
-    //       this.state.student.uploadedDocs_[doc.prop] &&
-    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
-    //     ) {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           <IoCheckmarkCircle
-    //             size={24}
-    //             color="limegreen"
-    //             title="Valid Document"
-    //           />{" "}
-    //           {doc.name}
-    //         </p>
-    //       );
-    //     } else if (
-    //       this.state.student.uploadedDocs_[doc.prop] &&
-    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-    //         "unaccepted"
-    //     ) {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           <AiFillCloseCircle
-    //             size={24}
-    //             color="red"
-    //             title="Invalid Document"
-    //           />{" "}
-    //           {doc.name}
-    //         </p>
-    //       );
-    //     } else {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           <b>
-    //             <AiFillQuestionCircle
-    //               size={24}
-    //               color="lightgray"
-    //               title="No Document uploaded"
-    //             />{" "}
-    //             {doc.name}{" "}
-    //           </b>
-    //         </p>
-    //       );
-    //     }
-    //   });
-    // } else {
-    //   studentDocOverview = <p>So far no uploaded file!</p>;
-    // }
-
     if (this.state.student.uploadedDocs_) {
       studentDocOverview = this.props.documentslist.map((doc, i) => {
         if (
@@ -281,25 +176,13 @@ class AdminStudents extends React.Component {
     } else {
       studentDocOverview = <p>No Doc!</p>;
     }
+
     return (
-      <AdminDashboard
-        role={this.props.role}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        startEditingAgent={this.startEditingAgent}
-        startEditingEditor={this.startEditingEditor}
+      <DocsProgress
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}
         studentDocOverview={studentDocOverview}
-        setAgentModalhide={this.setAgentModalhide}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        setEditorModalhide={this.setEditorModalhide}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
         setProgramModalhide={this.setProgramModalhide}
         onDeleteProgram={this.props.onDeleteProgram}
         setFilesModalhide={this.setFilesModalhide}
@@ -310,15 +193,9 @@ class AdminStudents extends React.Component {
         onAcceptFilefromstudent={this.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
         documentslist={this.props.documentslist}
-        showAgentPage={this.state.showAgentPage}
-        showEditorPage={this.state.showEditorPage}
-        showProgramPage={this.state.showProgramPage}
-        showFilePage={this.state.showFilePage}
       />
     );
-
-    // }
   }
 }
 
-export default AdminStudents;
+export default EditorDocsProgress;

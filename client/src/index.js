@@ -14,6 +14,30 @@ const store = createStore(
   reducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
+
+window.agenttodolist = [
+  {
+    name: "Course Analysis",
+    prop: "courseanalysis",
+  },
+  {
+    name: "Send Portal Instruction",
+    prop: "sendportalinstruction",
+  },
+  {
+    name: "Provide ML template",
+    prop: "providemltemp",
+  },
+  {
+    name: "Provide RL template",
+    prop: "providerltemp",
+  },
+  {
+    name: "Assign Editor",
+    prop: "assigneditor",
+  },
+];
+
 window.documentsprogresslist = [
   {
     name: "Received Template",

@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
 import AgentStudents from "./AgentStudents";
+import AgentTodoList from "./AgentTodoList";
 import EditorDocsProgress from "./EditorDocsProgress";
 import ApplicationProgress from "./ApplicationProgress";
 
@@ -22,7 +23,23 @@ class AgentMainView extends React.Component {
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
-
+    const agent_todo = this.props.students.map((student, i) => (
+      <AgentTodoList
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        documentslist={this.props.documentslist}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        startUploadfile={this.props.startUploadfile}
+        agent_list={this.props.agent_list}
+        onDeleteProgram={this.props.onDeleteProgram}
+        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
     const student_editor = this.props.students.map((student, i) => (
       <EditorDocsProgress
         key={i}
@@ -62,7 +79,7 @@ class AgentMainView extends React.Component {
     return (
       <>
         <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-          <Tab eventKey="x" title="Student Documents Overview">
+          <Tab eventKey="w" title="Student Documents Overview">
             <Table responsive>
               <thead>
                 <tr>
@@ -76,6 +93,21 @@ class AgentMainView extends React.Component {
                 </tr>
               </thead>
               {stdlist}
+            </Table>
+          </Tab>
+          <Tab eventKey="x" title="Agent TODO">
+            <Table responsive>
+              <thead>
+                <tr>
+                  <>
+                    <th>First-/Last Name</th>
+                  </>
+                  {this.props.agenttodolist.map((doc, index) => (
+                    <th key={index}>{doc.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              {agent_todo}
             </Table>
           </Tab>
           <Tab eventKey="y" title="Editor & Docs Progress">

@@ -364,6 +364,7 @@ class Dashboard extends React.Component {
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
                     documentslist={window.documentlist}
+                    agenttodolist={window.agenttodolist}
                     documentsprogresslist={window.documentsprogresslist}
                     programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}
@@ -400,6 +401,7 @@ class Dashboard extends React.Component {
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
                     documentslist={window.documentlist}
+                    agenttodolist={window.agenttodolist}
                     documentsprogresslist={window.documentsprogresslist}
                     programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}

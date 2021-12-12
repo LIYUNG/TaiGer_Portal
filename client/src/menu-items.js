@@ -86,14 +86,14 @@ export default {
         //     url: '/maps/google-map'
         // },
         // {
-        {
-          id: "upload",
-          title: "Upload Documents",
-          type: "item",
-          url: "/upload",
-          classes: "nav-item",
-          icon: "feather icon-upload",
-        },
+        // {
+        //   id: "upload",
+        //   title: "Upload Documents",
+        //   type: "item",
+        //   url: "/upload",
+        //   classes: "nav-item",
+        //   icon: "feather icon-upload",
+        // },
         {
           id: "taigerai",
           title: "TaiGer AI",

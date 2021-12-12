@@ -6,6 +6,7 @@ node_modules
 /api/public
 /client/.pnp
 .pnp.js
+/api/tmp
 
 # testing
 /api/coverage

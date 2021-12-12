@@ -43,7 +43,7 @@ export const removeProgramFromStudent = (programId, studentId) =>
   request.delete(`/api/students/${studentId}/applications/${programId}`);
 
 export const download = (category, studentId) =>
-  request.get(`/api/students/${studentId}/files/${category}`, {
+  request.get(`/api/account/files/${studentId}/${category}`, {
     responseType: "blob",
   });
 
@@ -67,7 +67,7 @@ export const rejectDocument = (category, applicationId, studentId) =>
   );
 
 export const deleteFile = (category, studentId) =>
-  request.delete(`/api/students/${studentId}/files/${category}`);
+  request.delete(`/api/account/files/${studentId}/${category}`);
 
 // Account APIs
 export const getMyfiles = (studentId) =>

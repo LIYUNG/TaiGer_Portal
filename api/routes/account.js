@@ -10,6 +10,7 @@ const {
   saveProfileFilePath,
   downloadProfileFile,
   downloadFile,
+  deleteProfileFile,
   processTranscript,
   downloadXLSX,
 } = require("../controllers/files");
@@ -28,10 +29,10 @@ router
   .post(fileUpload, saveFilePath);
 
 router
-  .route("/files/:studentId/:docName")
+  .route("/files/:studentId/:category")
   .get(downloadProfileFile)
-  .post(ProfilefileUpload, saveProfileFilePath);
-
+  .post(ProfilefileUpload, saveProfileFilePath)
+  .delete(deleteProfileFile);
 // TODO: check the exact usage
 router
   .route("/transcript/:category/:group")

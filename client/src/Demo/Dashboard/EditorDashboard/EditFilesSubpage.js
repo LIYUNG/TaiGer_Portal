@@ -28,10 +28,7 @@ class EditFilesSubpage extends React.Component {
                 />
               </th>
               <td>
-                <p className="m-0">
-                  {" "}
-                  {doc.name}
-                </p>
+                <p className="m-0"> {doc.name}</p>
                 <p>
                   {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
                 </p>
@@ -129,10 +126,7 @@ class EditFilesSubpage extends React.Component {
                 />
               </th>
               <td>
-                <p className="m-0">
-                  {" "}
-                  {doc.name} 
-                </p>
+                <p className="m-0"> {doc.name}</p>
                 <p>
                   {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
                 </p>
@@ -231,10 +225,7 @@ class EditFilesSubpage extends React.Component {
                 />
               </th>
               <td>
-                <p className="m-0">
-                  {" "}
-                  {doc.name} 
-                </p>
+                <p className="m-0"> {doc.name}</p>
                 <p>
                   {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
                 </p>

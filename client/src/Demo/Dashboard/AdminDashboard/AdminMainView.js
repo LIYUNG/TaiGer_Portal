@@ -17,6 +17,7 @@ class AdminMainView extends React.Component {
         startEditingEditor={this.props.startEditingEditor}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
+        documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
@@ -86,6 +87,8 @@ class AdminMainView extends React.Component {
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
+    let header = Object.values(this.props.documentlist2);
+    // console.log(header)
     return (
       <>
         <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
@@ -97,8 +100,8 @@ class AdminMainView extends React.Component {
                     <th></th>
                     <th>First-/Last Name</th>
                   </>
-                  {this.props.documentslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
+                  {header.map((name, index) => (
+                    <th key={index}>{name}</th>
                   ))}
                 </tr>
               </thead>

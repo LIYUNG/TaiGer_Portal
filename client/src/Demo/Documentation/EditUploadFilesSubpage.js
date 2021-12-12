@@ -13,279 +13,245 @@ class EditUploadFilesSubpage extends React.Component {
 
   render() {
     let documentlist;
-    if (this.props.student.uploadedDocs_) {
-      documentlist = this.props.documentslist.map((doc, i) => {
-        if (
-          this.props.student.uploadedDocs_[doc.prop] &&
-          this.props.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-            "uploaded"
-        ) {
-          return (
-            <tr key={i + 1}>
-              <th>
-                <AiFillQuestionCircle
-                  size={24}
-                  color="lightgreen"
-                  title="Uploaded successfully"
-                />
-              </th>
-              <td>
-                <p className="m-0"> {doc.name}</p>
-                <p>
-                  {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
-                </p>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onChange={(e) => this.props.onFileChange(e)}
-                    onClick={(e) => (e.target.value = null)}
-                  >
-                    <Form.File id={this.props.userId}>
-                      {/* <Form.File.Label>Regular file input</Form.File.Label> */}
-                      <Form.File.Input />
-                    </Form.File>
-                  </Form>
-                </Col>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.submitFile(e, this.props.userId, doc.prop)
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Upload
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.onDownloadFilefromstudent(
-                        e,
-                        doc.prop,
-                        this.props.userId
-                      )
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Download
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.onDeleteFilefromstudent(
-                        e,
-                        doc.prop,
-                        this.props.userId
-                      )
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button variant="danger" size="sm" type="submit">
-                        Delete
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-            </tr>
-          );
-        } else if (
-          this.props.student.uploadedDocs_[doc.prop] &&
-          this.props.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
-        ) {
-          return (
-            <tr key={i + 1}>
-              <th>
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="Valid Document"
-                />
-              </th>
-              <td>
-                <p className="m-0"> {doc.name}</p>
-                <p>
-                  {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
-                </p>
-              </td>
-              <td>
-                <Col></Col>
-              </td>
-              <td>
-                <Col></Col>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.onDownloadFilefromstudent(
-                        e,
-                        doc.prop,
-                        this.props.userId
-                      )
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Download
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-            </tr>
-          );
-        } else if (
-          this.props.student.uploadedDocs_[doc.prop] &&
-          this.props.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-            "unaccepted"
-        ) {
-          return (
-            <tr key={i + 1}>
-              <th>
-                <AiFillCloseCircle
-                  size={24}
-                  color="red"
-                  title="Invalid Document"
-                />
-              </th>
-              <td>
-                <p className="m-0"> {doc.name}</p>
-                <p>
-                  {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_}
-                </p>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onChange={(e) => this.props.onFileChange(e)}
-                    onClick={(e) => (e.target.value = null)}
-                  >
-                    <Form.File id={this.props.id}>
-                      {/* <Form.File.Label>Regular file input</Form.File.Label> */}
-                      <Form.File.Input />
-                    </Form.File>
-                  </Form>
-                </Col>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.submitFile(e, this.props.userId, doc.prop)
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Upload
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.onDownloadFilefromstudent(
-                        e,
-                        doc.prop,
-                        this.props.userId
-                      )
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Download
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.onDeleteFilefromstudent(
-                        e,
-                        doc.prop,
-                        this.props.userId
-                      )
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button variant="danger" size="sm" type="submit">
-                        Delete
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-            </tr>
-          );
-        } else {
-          return (
-            <tr key={i + 1}>
-              <th>
-                <AiFillQuestionCircle
-                  size={24}
-                  color="lightgray"
-                  title="No Document uploaded"
-                />
-              </th>
-              <td>
-                <p className="m-0">
-                  <b> {doc.name} </b>
-                </p>
-              </td>
-              <td>
-                <Col>
-                  <Form
-                    onChange={(e) => this.props.onFileChange(e)}
-                    onClick={(e) => (e.target.value = null)}
-                  >
-                    <Form.File id={this.props.id}>
-                      {/* <Form.File.Label>Regular file input</Form.File.Label> */}
-                      <Form.File.Input />
-                    </Form.File>
-                  </Form>
-                </Col>
-              </td>
-              <td>
-                <Col md={2}>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.submitFile(e, this.props.userId, doc.prop)
-                    }
-                  >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Upload
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-            </tr>
-          );
+
+    let value2 = Object.values(this.props.documentlist2);
+    let keys2 = Object.keys(this.props.documentlist2);
+    let object_init = new Object();
+    for (let i = 0; i < keys2.length; i++) {
+      object_init[keys2[i]] = "missing";
+    }
+    console.log(this.props.student.firstname_);
+
+    if (this.props.student.profile) {
+      for (let i = 0; i < this.props.student.profile.length; i++) {
+        if (this.props.student.profile[i].status === "uploaded") {
+          object_init[this.props.student.profile[i].name] = "uploaded";
+        } else if (this.props.student.profile[i].status === "accepted") {
+          object_init[this.props.student.profile[i].name] = "accepted";
+        } else if (this.props.student.profile[i].status === "rejected") {
+          object_init[this.props.student.profile[i].name] = "rejected";
+        } else if (this.props.student.profile[i].status === "missing") {
+          object_init[this.props.student.profile[i].name] = "missing";
         }
-      });
+      }
     } else {
-      documentlist = this.props.documentslist.map((doc, i) => {
+      console.log("no files");
+    }
+    console.log(object_init);
+    let documentlist22;
+    documentlist22 = keys2.map((k, i) => {
+      if (object_init[k] === "uploaded") {
+        return (
+          <tr key={i + 1}>
+            <th>
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgreen"
+                title="Uploaded successfully"
+              />
+            </th>
+            <td>
+              <p className="m-0"> {value2[i]}</p>
+              <p>
+                {/* {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_} */}
+              </p>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onChange={(e) => this.props.onFileChange(e)}
+                  onClick={(e) => (e.target.value = null)}
+                >
+                  <Form.File id={this.props.userId}>
+                    {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                    <Form.File.Input />
+                  </Form.File>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.submitFile(e, this.props.userId, k)
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      Upload
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.onDownloadFilefromstudent(
+                      e,
+                      k,
+                      this.props.userId
+                    )
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      Download
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.onDeleteFilefromstudent(
+                      e,
+                      k,
+                      this.props.userId
+                    )
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button variant="danger" size="sm" type="submit">
+                      Delete
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+          </tr>
+        );
+      } else if (object_init[k] === "accepted") {
+        return (
+          <tr key={i + 1}>
+            <th>
+              <IoCheckmarkCircle
+                size={24}
+                color="limegreen"
+                title="Valid Document"
+              />
+            </th>
+            <td>
+              <p className="m-0"> {value2[i]}</p>
+              <p>
+                {/* {this.props.student.uploadedDocs_[k].LastUploadDate_} */}
+              </p>
+            </td>
+            <td>
+              <Col></Col>
+            </td>
+            <td>
+              <Col></Col>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.onDownloadFilefromstudent(
+                      e,
+                      k,
+                      this.props.userId
+                    )
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      Download
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+          </tr>
+        );
+      } else if (object_init[k] === "rejected") {
+        return (
+          <tr key={i + 1}>
+            <th>
+              <AiFillCloseCircle
+                size={24}
+                color="red"
+                title="Invalid Document"
+              />
+            </th>
+            <td>
+              <p className="m-0"> {value2[i]}</p>
+              <p>
+                {/* {this.props.student.uploadedDocs_[k].LastUploadDate_} */}
+              </p>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onChange={(e) => this.props.onFileChange(e)}
+                  onClick={(e) => (e.target.value = null)}
+                >
+                  <Form.File id={this.props.id}>
+                    {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                    <Form.File.Input />
+                  </Form.File>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.submitFile(e, this.props.userId, k)
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      Upload
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.onDownloadFilefromstudent(
+                      e,
+                      k,
+                      this.props.userId
+                    )
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      Download
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.onDeleteFilefromstudent(
+                      e,
+                      k,
+                      this.props.userId
+                    )
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button variant="danger" size="sm" type="submit">
+                      Delete
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+          </tr>
+        );
+      } else {
         return (
           <tr key={i + 1}>
             <th>
@@ -297,7 +263,7 @@ class EditUploadFilesSubpage extends React.Component {
             </th>
             <td>
               <p className="m-0">
-                <b> {doc.name} </b>
+                <b> {value2[i]} </b>
               </p>
             </td>
             <td>
@@ -307,6 +273,7 @@ class EditUploadFilesSubpage extends React.Component {
                   onClick={(e) => (e.target.value = null)}
                 >
                   <Form.File id={this.props.id}>
+                    {/* <Form.File.Label>Regular file input</Form.File.Label> */}
                     <Form.File.Input />
                   </Form.File>
                 </Form>
@@ -316,7 +283,7 @@ class EditUploadFilesSubpage extends React.Component {
               <Col md={2}>
                 <Form
                   onSubmit={(e) =>
-                    this.props.submitFile(e, this.props.userId, doc.prop)
+                    this.props.submitFile(e, this.props.userId, k)
                   }
                 >
                   <Form.Group controlId="exampleForm.ControlSelect1">
@@ -329,11 +296,12 @@ class EditUploadFilesSubpage extends React.Component {
             </td>
           </tr>
         );
-      });
-    }
+      }
+    });
+
     return (
       <Table>
-        <tbody>{documentlist}</tbody>
+        <tbody>{documentlist22}</tbody>
       </Table>
     );
   }

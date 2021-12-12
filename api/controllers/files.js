@@ -52,18 +52,18 @@ const saveFilePath = asyncHandler(async (req, res) => {
 const saveProfileFilePath = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { studentId, docName },
+    params: { studentId, category },
   } = req;
   // console.log(studentId);
-  // console.log(docName);
+  // console.log(category);
   // // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student =
     user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   // console.log(student);
-  let document = student.profile.find(({ name }) => name === docName);
+  let document = student.profile.find(({ name }) => name === category);
   if (!document) {
-    document = student.profile.create({ name: docName });
+    document = student.profile.create({ name: category });
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
@@ -80,7 +80,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   document.updatedAt = new Date();
   console.log(UPLOAD_PATH);
   console.log(req.file);
-  document.path = UPLOAD_PATH;
+  document.path = req.file.path.replace(UPLOAD_PATH, "");
   // document.path = req.file.path.replace(UPLOAD_PATH, "");
   // const document = student.profile.find(({ name }) => name === docName);
   await student.save();
@@ -89,13 +89,13 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
 
   // return res.status(201).send({ success: true, data: document });
-  return res.status(201).send({ success: true, data: document  });
+  return res.status(201).send({ success: true, data: document });
 });
 
 const downloadProfileFile = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, docName },
+    params: { studentId, category },
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -103,11 +103,13 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
     user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  const document = application.documents.find(({ name }) => name === docName);
+  const document = student.profile.find(({ name }) => name === category);
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
 
-  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = path.join(UPLOAD_PATH, document.path);
+  const filePath = document.path;
+  console.log(filePath);
   // FIXME: clear the filePath for consistency?
   if (!fs.existsSync(filePath))
     throw new ErrorResponse(400, "File does not exist");
@@ -199,6 +201,35 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: document });
 });
 
+const deleteProfileFile = asyncHandler(async (req, res, next) => {
+  const { studentId, category } = req.params;
+
+  const student = await Student.findOne({
+    _id: studentId,
+  });
+  if (!student)
+    throw new ErrorResponse(400, "Invalid student Id or application Id");
+
+  const document = student.profile.find(({ name }) => name === category);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+  if (!document.path) throw new ErrorResponse(400, "File not exist");
+
+  // const filePath = path.join(UPLOAD_PATH, document.path);
+  const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+  console.log(filePath);
+  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+  // await Student.findByIdAndUpdate(studentId, {
+  //   $pull: { profile: document._id },
+  // });
+  document.status = DocumentStatus.Missing;
+  document.path = "";
+  document.updatedAt = new Date();
+
+  await student.save();
+  res.status(200).send({ success: true, data: document });
+});
+
 const processTranscript = asyncHandler(async (req, res, next) => {
   const {
     params: { group },
@@ -261,6 +292,7 @@ module.exports = {
   downloadFile,
   updateDocumentStatus,
   deleteFile,
+  deleteProfileFile,
   processTranscript,
   downloadXLSX,
 };

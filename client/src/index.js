@@ -75,6 +75,18 @@ window.programstatuslist = [
     prop: "offer",
   },
 ];
+window.documentlist2 = {
+  bachelorCertificate_: "B.Sc Cert",
+  bachelorTranscript_: "B.Sc. Trans",
+  highSchoolDiploma_: "H. Sch. Dipl.",
+  highSchoolTranscript_: "H. Sch. Trans",
+  universityEntranceExamination_: "GSAT/SAT",
+  EnglischCertificate_: "TOEFL/IELTS",
+  GermanCertificate_: "TestDaF/B2/C1",
+  ECTS_conversion_: "ECTS Conv.",
+  CourseDescription_: "Course Descr.",
+  Passport_: "Passport",
+};
 
 window.documentlist = [
   // {

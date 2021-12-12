@@ -2,7 +2,7 @@ const { Router } = require("express");
 
 const { ErrorResponse } = require("../common/errors");
 const { protect, permit } = require("../middlewares/auth");
-const { fileUpload } = require("../middlewares/file-upload");
+const { fileUpload, ProfilefileUpload } = require("../middlewares/file-upload");
 const { Role, Student } = require("../models/User");
 
 const {
@@ -16,9 +16,12 @@ const {
 } = require("../controllers/students");
 const {
   saveFilePath,
+  saveProfileFilePath,
   downloadFile,
+  downloadProfileFile,
   updateDocumentStatus,
   deleteFile,
+  deleteProfileFile,
 } = require("../controllers/files");
 
 const router = Router();
@@ -54,6 +57,12 @@ router
   .get(permit(Role.Admin, Role.Agent), downloadFile)
   .post(permit(Role.Admin, Role.Agent), fileUpload, saveFilePath)
   .delete(permit(Role.Admin, Role.Agent), deleteFile);
+
+router
+  .route("/:studentId/files/:category")
+  .get(permit(Role.Admin, Role.Agent), downloadProfileFile)
+  .post(permit(Role.Admin, Role.Agent), ProfilefileUpload, saveProfileFilePath)
+  .delete(permit(Role.Admin, Role.Agent), deleteProfileFile);
 
 router
   .route("/:studentId/applications/:applicationId/:docName/status")

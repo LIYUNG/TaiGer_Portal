@@ -39,8 +39,11 @@ class EditEditorsSubpage extends React.Component {
                           type="checkbox"
                           name="student_id"
                           defaultChecked={
-                            this.props.student.editors.indexOf(editor._id) > -1
-                              ? true
+                            this.props.student.editors
+                              ? this.props.student.editors.indexOf(editor._id) >
+                                -1
+                                ? true
+                                : false
                               : false
                           }
                           onChange={(e) => this.props.handleChangeEditorlist(e)}

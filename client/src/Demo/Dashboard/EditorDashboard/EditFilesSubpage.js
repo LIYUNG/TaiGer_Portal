@@ -1,5 +1,4 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
 import { Button, Table, Col, Form, Modal } from "react-bootstrap";
 import UcFirst from "../../../App/components/UcFirst";
 import {
@@ -9,8 +8,6 @@ import {
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 class EditFilesSubpage extends React.Component {
-  // edit File subpage
-
   render() {
     const deleteStyle = "danger";
     let documentlist;

@@ -28,7 +28,7 @@ const getStudents = asyncHandler(async (req, res) => {
       .exec();
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
     // console.log(students[0].applications[0].programId); // looks ok!
-    console.log(students[0].applications[0].programId.University_); 
+    // console.log(students[0].applications[0].programId.University_); 
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Editor") {

@@ -275,7 +275,11 @@ class AdminStudents extends React.Component {
         }
       });
     } else {
-      studentDocOverview = <p>No Doc!</p>;
+      studentDocOverview = (
+        <td>
+          <h6>No Doc!</h6>
+        </td>
+      );
     }
     return (
       <AdminDashboard

@@ -9,7 +9,6 @@ class StudentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        success={this.props.success}
         editAgent={this.props.editAgent}
         editEditor={this.props.editEditor}
         startEditingEditor={this.props.startEditingEditor}

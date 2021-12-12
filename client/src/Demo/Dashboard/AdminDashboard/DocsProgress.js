@@ -5,62 +5,37 @@ import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
 class DocsProgress extends React.Component {
   render() {
-    let applying_universit;
+    let applying_university;
     let applying_program;
     let application_deadline;
-    // let programId = this.props.student.applications[0].programId;
-    // console.log(typeof programId);
-    if (this.props.student.applications) {
-      applying_universit = this.props.student.applications.map(
-        (application) => (
-          <>
-            <h5 className="mb-1">{application.programId.University_}</h5>
-          </>
+    if (
+      this.props.student.applications === undefined ||
+      this.props.student.applications.length === 0
+    ) {
+      applying_university = <h5 className="mb-1"> No University</h5>;
+      applying_program = <h5 className="mb-1"> No Program</h5>;
+      application_deadline = <h5 className="mb-1"> No Date</h5>;
+    } else {
+      applying_university = this.props.student.applications.map(
+        (application, i) => (
+          <h5 className="mb-1" key={i}>
+            {application.programId.University_}
+          </h5>
         )
       );
-    } else {
-      applying_universit = (
-        <tr>
-          <td>
-            <h4 className="mb-1"> No University</h4>
-          </td>
-        </tr>
+      applying_program = this.props.student.applications.map(
+        (application, i) => (
+          <h5 className="mb-1" key={i}>
+            {application.programId.Program_}
+          </h5>
+        )
       );
-    }
-
-    if (this.props.student.applications) {
-      applying_program = this.props.student.applications.map((application) => (
-        <>
-          <h5 className="mb-1">{application.programId.Program_}</h5>
-        </>
-      ));
-    } else {
-      applying_program = (
-        <tr>
-          <td>
-            <h4 className="mb-1"> No Program</h4>
-          </td>
-        </tr>
-      );
-    }
-
-    if (this.props.student.applications) {
       application_deadline = this.props.student.applications.map(
-        (application) => (
-          <>
-            <h5 className="mb-1">
-              {application.programId.Application_end_date_}
-            </h5>
-          </>
+        (application, i) => (
+          <h5 className="mb-1" key={i}>
+            {application.programId.Application_end_date_}
+          </h5>
         )
-      );
-    } else {
-      application_deadline = (
-        <tr>
-          <td>
-            <h4 className="mb-1"> No Program</h4>
-          </td>
-        </tr>
       );
     }
 
@@ -74,7 +49,7 @@ class DocsProgress extends React.Component {
                 {this.props.student.firstname_}, {this.props.student.lastname_}
               </h5>
             </td>
-            <td>{applying_universit}</td>
+            <td>{applying_university}</td>
             <td>{applying_program}</td>
             <td>{application_deadline}</td>
             {/* {this.props.studentDocOverview} */}

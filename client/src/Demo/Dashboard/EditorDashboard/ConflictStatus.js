@@ -3,7 +3,7 @@ import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
-class DocsProgress extends React.Component {
+class ConflictStatus extends React.Component {
   render() {
     let applying_university;
     let applying_program;
@@ -44,13 +44,13 @@ class DocsProgress extends React.Component {
       <>
         <tbody>
           <tr>
+            <td>{applying_university}</td>
+            <td>{applying_program}</td>
             <td>
               <h5>
                 {this.props.student.firstname_}, {this.props.student.lastname_}
               </h5>
             </td>
-            <td>{applying_university}</td>
-            <td>{applying_program}</td>
             <td>{application_deadline}</td>
             {/* {this.props.studentDocOverview} */}
           </tr>
@@ -60,4 +60,4 @@ class DocsProgress extends React.Component {
   }
 }
 
-export default DocsProgress;
+export default ConflictStatus;

@@ -176,12 +176,12 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data: agents } = resp.data; //get all agent
         const { agents: student_agents } = student;
+        console.log("editAgent");
         console.log(resp.data);
-
         const updateAgentList = agents.reduce(
           (prev, { _id }) => ({
             ...prev,
-            [_id]: student_agents.indexOf(_id) > -1,
+            [_id]: student_agents ? student_agents.indexOf(_id) > -1 : false,
           }),
           {}
         );
@@ -200,7 +200,7 @@ class Dashboard extends React.Component {
         const updateEditorList = editors.reduce(
           (prev, { _id }) => ({
             ...prev,
-            [_id]: student_editors.indexOf(_id) > -1,
+            [_id]: student_editors ? student_editors.indexOf(_id) > -1 : false,
           }),
           {}
         );
@@ -354,7 +354,6 @@ class Dashboard extends React.Component {
                 <Col sm={12}>
                   <AdminMainView
                     role={this.props.role}
-                    success={this.state.success}
                     editAgent={this.editAgent}
                     editEditor={this.editEditor}
                     agent_list={this.state.agent_list}
@@ -391,11 +390,6 @@ class Dashboard extends React.Component {
                 <Col sm={12}>
                   <AgentMainView
                     role={this.props.role}
-                    success={this.state.success}
-                    editAgent={this.editAgent}
-                    editEditor={this.editEditor}
-                    agent_list={this.state.agent_list}
-                    editor_list={this.state.editor_list}
                     UpdateAgentlist={this.UpdateAgentlist}
                     startEditingEditor={this.startEditingEditor}
                     startEditingProgram={this.startEditingProgram}
@@ -428,7 +422,6 @@ class Dashboard extends React.Component {
                 <Col sm={12}>
                   <EditorMainView
                     role={this.props.role}
-                    success={this.state.success}
                     editAgent={this.editAgent}
                     editEditor={this.editEditor}
                     agent_list={this.state.agent_list}
@@ -464,7 +457,6 @@ class Dashboard extends React.Component {
                 <Col sm={12}>
                   <StudentMainView
                     role={this.props.role}
-                    success={this.state.success}
                     editAgent={this.editAgent}
                     editEditor={this.editEditor}
                     agent_list={this.state.agent_list}

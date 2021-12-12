@@ -12,6 +12,7 @@ class EditAgentsSubpage extends React.Component {
   // edit Agent subpage
 
   render() {
+    // console.log(this.props.student.agents);
     let agentlist = this.props.agent_list ? (
       this.props.agent_list.map((agent, i) => (
         <tr key={i + 1}>
@@ -22,8 +23,10 @@ class EditAgentsSubpage extends React.Component {
                 type="checkbox"
                 name="agent_id"
                 defaultChecked={
-                  this.props.student.agents.indexOf(agent._id) > -1
-                    ? true
+                  this.props.student.agents
+                    ? this.props.student.agents.indexOf(agent._id) > -1
+                      ? true
+                      : false
                     : false
                 }
                 onChange={(e) => this.props.handleChangeAgentlist(e)}

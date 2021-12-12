@@ -15,7 +15,6 @@ class AgentMainView extends React.Component {
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
         onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
@@ -28,13 +27,9 @@ class AgentMainView extends React.Component {
         key={i}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
         agenttodolist={this.props.agenttodolist}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        onDeleteProgram={this.props.onDeleteProgram}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
@@ -48,8 +43,6 @@ class AgentMainView extends React.Component {
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
         onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
@@ -66,8 +59,6 @@ class AgentMainView extends React.Component {
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
         onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
@@ -78,7 +69,7 @@ class AgentMainView extends React.Component {
 
     return (
       <>
-        <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
+        <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
           <Tab eventKey="w" title="Student Documents Overview">
             <Table responsive>
               <thead>

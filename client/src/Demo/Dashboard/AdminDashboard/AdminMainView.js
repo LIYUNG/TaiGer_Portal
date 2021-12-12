@@ -12,7 +12,6 @@ class AdminMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        success={this.props.success}
         editAgent={this.props.editAgent}
         editEditor={this.props.editEditor}
         startEditingEditor={this.props.startEditingEditor}
@@ -89,7 +88,7 @@ class AdminMainView extends React.Component {
     ));
     return (
       <>
-        <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
+        <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
           <Tab eventKey="w" title="Student Documents Overview">
             <Table responsive>
               <thead>

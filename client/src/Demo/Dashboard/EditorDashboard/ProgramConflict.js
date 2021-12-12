@@ -6,50 +6,15 @@ import { Card, Col, Row } from "react-bootstrap";
 
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-
 import { uploadforstudent } from "../../../api";
-import GuestDashboard from "./GuestDashboard";
+import ConflictStatus from "./ConflictStatus";
 
-class GuestMyself extends React.Component {
+class ProgramConflict extends React.Component {
   state = {
-    showAgentPage: false,
-    showEditorPage: false,
     showProgramPage: false,
     showFilePage: false,
     student: this.props.student,
     file: "",
-  };
-
-  setAgentModalhide = () => {
-    this.setState({
-      showAgentPage: false,
-    });
-  };
-
-  startEditingAgent = (student) => {
-    console.log("startEditingAgent");
-    console.log(student);
-    this.props.editAgent(student);
-    this.setState({
-      subpage: 1,
-      showAgentPage: true,
-    });
-  };
-
-  setEditorModalhide = () => {
-    this.setState({
-      showEditorPage: false,
-    });
-  };
-
-  startEditingEditor = (student) => {
-    console.log("startEditingEditor");
-    console.log(student);
-    this.props.editEditor(student);
-    this.setState({
-      subpage: 2,
-      showEditorPage: true,
-    });
   };
 
   setProgramModalhide = () => {
@@ -210,25 +175,13 @@ class GuestMyself extends React.Component {
     } else {
       studentDocOverview = <p>No Doc!</p>;
     }
+
     return (
-      <GuestDashboard
-        role={this.props.role}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        startEditingAgent={this.startEditingAgent}
-        startEditingEditor={this.startEditingEditor}
+      <ConflictStatus
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}
         studentDocOverview={studentDocOverview}
-        setAgentModalhide={this.setAgentModalhide}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        setEditorModalhide={this.setEditorModalhide}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
         setProgramModalhide={this.setProgramModalhide}
         onDeleteProgram={this.props.onDeleteProgram}
         setFilesModalhide={this.setFilesModalhide}
@@ -238,16 +191,9 @@ class GuestMyself extends React.Component {
         onRejectFilefromstudent={this.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-        documentslist={this.props.documentslist}
-        showAgentPage={this.state.showAgentPage}
-        showEditorPage={this.state.showEditorPage}
-        showProgramPage={this.state.showProgramPage}
-        showFilePage={this.state.showFilePage}
       />
     );
-
-    // }
   }
 }
 
-export default GuestMyself;
+export default ProgramConflict;

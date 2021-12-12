@@ -137,8 +137,7 @@ function AdminLayout(props) {
     return (
       <Aux>
         <Fullscreen enabled={props.isFullScreen}>
-          {/* <Navigation role={props.userdata.data.role} /> */}
-          <Navigation />
+          <Navigation userdata={props.userdata.data} />
           <NavBar
             userdata={props.userdata.data}
             setUserdata={setuserdata}

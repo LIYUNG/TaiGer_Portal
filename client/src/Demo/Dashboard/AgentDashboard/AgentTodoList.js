@@ -13,9 +13,11 @@ class AgentTodoList extends React.Component {
     let application_deadline;
     if (this.props.student.applications) {
       applying_universit = this.props.student.applications.map(
-        (application) => (
+        (application, i) => (
           <>
-            <h5 className="mb-1">{application.programId.University_}</h5>
+            <h5 className="mb-1" key={i}>
+              {application.programId.University_}
+            </h5>
           </>
         )
       );
@@ -23,23 +25,27 @@ class AgentTodoList extends React.Component {
       applying_universit = (
         <tr>
           <td>
-            <h4 className="mb-1"> No Program</h4>
+            <h5 className="mb-1"> No Program</h5>
           </td>
         </tr>
       );
     }
 
     if (this.props.student.applications) {
-      applying_program = this.props.student.applications.map((application) => (
-        <>
-          <h5 className="mb-1">{application.programId.Program_}</h5>
-        </>
-      ));
+      applying_program = this.props.student.applications.map(
+        (application, i) => (
+          <>
+            <h5 className="mb-1" key={i}>
+              {application.programId.Program_}
+            </h5>
+          </>
+        )
+      );
     } else {
       applying_program = (
         <tr>
           <td>
-            <h4 className="mb-1"> No Program</h4>
+            <h5 className="mb-1"> No Program</h5>
           </td>
         </tr>
       );
@@ -47,9 +53,9 @@ class AgentTodoList extends React.Component {
 
     if (this.props.student.applications) {
       application_deadline = this.props.student.applications.map(
-        (application) => (
+        (application, i) => (
           <>
-            <h5 className="mb-1">
+            <h5 className="mb-1" key={i}>
               {application.programId.Application_end_date_}
             </h5>
           </>
@@ -59,7 +65,7 @@ class AgentTodoList extends React.Component {
       application_deadline = (
         <tr>
           <td>
-            <h4 className="mb-1"> No Program</h4>
+            <h5 className="mb-1"> No Program</h5>
           </td>
         </tr>
       );

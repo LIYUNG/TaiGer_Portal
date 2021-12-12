@@ -10,7 +10,6 @@ import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import { uploadforstudent } from "../../../api";
 import EditorDashboard from "./EditorDashboard";
 
-
 class EditorStudents extends React.Component {
   state = {
     showAgentPage: false,
@@ -276,7 +275,11 @@ class EditorStudents extends React.Component {
         }
       });
     } else {
-      studentDocOverview = <p>No Doc!</p>;
+      studentDocOverview = (
+        <td>
+          <p>No Doc!</p>
+        </td>
+      );
     }
     return (
       <EditorDashboard

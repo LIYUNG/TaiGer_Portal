@@ -151,136 +151,70 @@ class EditorStudents extends React.Component {
   };
 
   render() {
-    let studentDocOverview;
-    // studentDocOverview = <p>So far no uploaded file!</p>;
-    // if (this.state.student.uploadedDocs_) {
-    //   studentDocOverview = this.props.documentslist.map((doc, i) => {
-    //     if (
-    //       this.state.student.uploadedDocs_[doc.prop] &&
-    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-    //         "uploaded"
-    //     ) {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           {" "}
-    //           <AiFillQuestionCircle
-    //             size={24}
-    //             color="lightgreen"
-    //             title="Uploaded successfully"
-    //           />{" "}
-    //           {doc.name}
-    //         </p>
-    //       );
-    //     } else if (
-    //       this.state.student.uploadedDocs_[doc.prop] &&
-    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
-    //     ) {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           <IoCheckmarkCircle
-    //             size={24}
-    //             color="limegreen"
-    //             title="Valid Document"
-    //           />{" "}
-    //           {doc.name}
-    //         </p>
-    //       );
-    //     } else if (
-    //       this.state.student.uploadedDocs_[doc.prop] &&
-    //       this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-    //         "unaccepted"
-    //     ) {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           <AiFillCloseCircle
-    //             size={24}
-    //             color="red"
-    //             title="Invalid Document"
-    //           />{" "}
-    //           {doc.name}
-    //         </p>
-    //       );
-    //     } else {
-    //       return (
-    //         <p className="m-0" key={i}>
-    //           <b>
-    //             <AiFillQuestionCircle
-    //               size={24}
-    //               color="lightgray"
-    //               title="No Document uploaded"
-    //             />{" "}
-    //             {doc.name}{" "}
-    //           </b>
-    //         </p>
-    //       );
-    //     }
-    //   });
-    // } else {
-    //   studentDocOverview = <p>So far no uploaded file!</p>;
-    // }
+  let studentDocOverview;
+  let keys = Object.keys(this.props.documentlist2);
+  let object_init = new Object();
+  for (let i = 0; i < keys.length; i++) {
+    object_init[keys[i]] = "missing";
+  }
+  console.log(this.state.student.firstname_);
 
-    if (this.state.student.uploadedDocs_) {
-      studentDocOverview = this.props.documentslist.map((doc, i) => {
-        if (
-          this.state.student.uploadedDocs_[doc.prop] &&
-          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-            "uploaded"
-        ) {
-          return (
-            <td key={i}>
-              <AiFillQuestionCircle
-                size={24}
-                color="lightgreen"
-                title="Uploaded successfully"
-              />{" "}
-            </td>
-          );
-        } else if (
-          this.state.student.uploadedDocs_[doc.prop] &&
-          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
-        ) {
-          return (
-            <td key={i}>
-              <IoCheckmarkCircle
-                size={24}
-                color="limegreen"
-                title="Valid Document"
-              />{" "}
-            </td>
-          );
-        } else if (
-          this.state.student.uploadedDocs_[doc.prop] &&
-          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-            "unaccepted"
-        ) {
-          return (
-            <td key={i}>
-              <AiFillCloseCircle
-                size={24}
-                color="red"
-                title="Invalid Document"
-              />{" "}
-            </td>
-          );
-        } else {
-          return (
-            <td key={i}>
-              <AiFillQuestionCircle
-                size={24}
-                color="lightgray"
-                title="No Document uploaded"
-              />{" "}
-            </td>
-          );
-        }
-      });
+  if (this.state.student.profile) {
+    for (let i = 0; i < this.state.student.profile.length; i++) {
+      if (this.state.student.profile[i].status === "uploaded") {
+        object_init[this.state.student.profile[i].name] = "uploaded";
+      } else if (this.state.student.profile[i].status === "accepted") {
+        object_init[this.state.student.profile[i].name] = "accepted";
+      } else if (this.state.student.profile[i].status === "rejected") {
+        object_init[this.state.student.profile[i].name] = "rejected";
+      } else if (this.state.student.profile[i].status === "missing") {
+        object_init[this.state.student.profile[i].name] = "missing";
+      }
+    }
+  } else {
+    console.log("no files");
+  }
+  console.log(object_init);
+
+  studentDocOverview = keys.map((k, i) => {
+    if (object_init[k] === "uploaded") {
+      return (
+        <td key={i}>
+          <AiFillQuestionCircle
+            size={24}
+            color="lightgreen"
+            title="Uploaded successfully"
+          />{" "}
+        </td>
+      );
+    } else if (object_init[k] === "accepted") {
+      return (
+        <td key={i}>
+          <IoCheckmarkCircle
+            size={24}
+            color="limegreen"
+            title="Valid Document"
+          />{" "}
+        </td>
+      );
+    } else if (object_init[k] === "rejected") {
+      return (
+        <td key={i}>
+          <AiFillCloseCircle size={24} color="red" title="Invalid Document" />{" "}
+        </td>
+      );
     } else {
-      studentDocOverview = (
-        <td>
-          <p>No Doc!</p>
+      return (
+        <td key={i}>
+          <AiFillQuestionCircle
+            size={24}
+            color="lightgray"
+            title="No Document uploaded"
+          />{" "}
         </td>
       );
     }
+  });
     return (
       <EditorDashboard
         role={this.props.role}

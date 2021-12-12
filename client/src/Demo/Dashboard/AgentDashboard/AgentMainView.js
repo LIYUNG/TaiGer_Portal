@@ -13,6 +13,7 @@ class AgentMainView extends React.Component {
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
+        documentlist2={this.props.documentlist2}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
         onDeleteProgram={this.props.onDeleteProgram}

@@ -15,6 +15,7 @@ class EditorMainView extends React.Component {
         startEditingEditor={this.props.startEditingEditor}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
+        documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}

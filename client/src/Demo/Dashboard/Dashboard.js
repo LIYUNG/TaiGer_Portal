@@ -122,10 +122,10 @@ class Dashboard extends React.Component {
     );
   }
 
-  onRejectFilefromstudent = (e, category, applicationId, studentId) => {
+  onRejectFilefromstudent = (e, category, studentId) => {
     //id == student id
     e.preventDefault();
-    rejectDocument(category, applicationId, studentId).then(
+    rejectDocument(category, studentId).then(
       (result) => {},
       (error) => {
         this.setState({
@@ -136,10 +136,10 @@ class Dashboard extends React.Component {
     );
   };
 
-  onAcceptFilefromstudent = (e, category, applicationId, studentId) => {
+  onAcceptFilefromstudent = (e, category, studentId) => {
     //id == student id
     e.preventDefault();
-    acceptDocument(category, applicationId, studentId).then(
+    acceptDocument(category, studentId).then(
       (result) => {},
       (error) => {
         this.setState({
@@ -396,6 +396,7 @@ class Dashboard extends React.Component {
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
                     documentslist={window.documentlist}
+                    documentlist2={window.documentlist2}
                     agenttodolist={window.agenttodolist}
                     documentsprogresslist={window.documentsprogresslist}
                     programstatuslist={window.programstatuslist}
@@ -432,6 +433,7 @@ class Dashboard extends React.Component {
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
                     documentslist={window.documentlist}
+                    documentlist2={window.documentlist2}
                     documentsprogresslist={window.documentsprogresslist}
                     programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}
@@ -467,6 +469,7 @@ class Dashboard extends React.Component {
                     startEditingProgram={this.startEditingProgram}
                     students={this.state.students}
                     documentslist={window.documentlist}
+                    documentlist2={window.documentlist2}
                     documentsprogresslist={window.documentsprogresslist}
                     programstatuslist={window.programstatuslist}
                     startUploadfile={this.startUploadfile}

@@ -174,6 +174,30 @@ const updateDocumentStatus = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: document });
 });
 
+const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
+  const { studentId, category } = req.params;
+  const { status } = req.body;
+
+  if (!Object.values(DocumentStatus).includes(status))
+    throw new ErrorResponse(400, "Invalid document status");
+
+  const student = await Student.findOne({
+    _id: studentId,
+  });
+  if (!student)
+    throw new ErrorResponse(400, "Invalid student Id or application Id");
+
+  const document = student.profile.find(({ name }) => name === category);
+  if (!document) throw new ErrorResponse(400, "Invalid document name");
+
+  // TODO: validate status, ex: can't be accepted if document.path is empty
+  document.status = status;
+  document.updatedAt = new Date();
+
+  await student.save();
+  res.status(200).send({ success: true, data: document });
+});
+
 const deleteFile = asyncHandler(async (req, res, next) => {
   const { studentId, applicationId, docName } = req.params;
 
@@ -291,6 +315,7 @@ module.exports = {
   downloadProfileFile,
   downloadFile,
   updateDocumentStatus,
+  updateProfileDocumentStatus,
   deleteFile,
   deleteProfileFile,
   processTranscript,

@@ -50,19 +50,19 @@ export const download = (category, studentId) =>
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 
-export const acceptDocument = (category, applicationId, studentId) =>
+export const acceptDocument = (category, studentId) =>
   request.post(
-    `/api/students/${studentId}/applications/${applicationId}/${category}/status`,
+    `/api/students/${studentId}/${category}/status`,
     {
-      status: "checked",
+      status: "accepted",
     }
   );
 
-export const rejectDocument = (category, applicationId, studentId) =>
+export const rejectDocument = (category, studentId) =>
   request.post(
-    `/api/students/${studentId}/applications/${applicationId}/${category}/status`,
+    `/api/students/${studentId}/${category}/status`,
     {
-      status: "unaccepted",
+      status: "rejected",
     }
   );
 

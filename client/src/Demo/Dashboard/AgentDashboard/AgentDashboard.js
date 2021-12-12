@@ -54,6 +54,7 @@ class AgentDashboard extends React.Component {
           <EditFilesSubpage
             student={this.props.student}
             documentslist={this.props.documentslist}
+            documentlist2={this.props.documentlist2}
             show={this.props.showFilePage}
             onHide={this.props.setFilesModalhide}
             setmodalhide={this.props.setFilesModalhide}

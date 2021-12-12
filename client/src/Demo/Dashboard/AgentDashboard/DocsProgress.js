@@ -8,7 +8,6 @@ class DocsProgress extends React.Component {
     let applying_university;
     let applying_program;
     let application_deadline;
-    console.log(this.props.student.applications.length);
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0

@@ -121,7 +121,7 @@ class AdminStudents extends React.Component {
 
   onRejectFilefromstudent = (e, category, id) => {
     let stud = { ...this.state.student };
-    stud.uploadedDocs_[category].uploadStatus_ = "unaccepted";
+    stud.uploadedDocs_[category].uploadStatus_ = "rejected";
     console.log(stud);
     this.props.onRejectFilefromstudent(e, category, id);
     this.setState({
@@ -131,7 +131,7 @@ class AdminStudents extends React.Component {
 
   onAcceptFilefromstudent = (e, category, id) => {
     let stud = { ...this.state.student };
-    stud.uploadedDocs_[category].uploadStatus_ = "checked";
+    stud.profile[category].status = "accepted";
     console.log(stud);
     this.props.onAcceptFilefromstudent(e, category, id);
     this.setState({
@@ -157,7 +157,7 @@ class AdminStudents extends React.Component {
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
     }
-    console.log(this.state.student.firstname_);
+    // console.log(this.state.student.firstname_);
 
     if (this.state.student.profile) {
       for (let i = 0; i < this.state.student.profile.length; i++) {
@@ -174,7 +174,7 @@ class AdminStudents extends React.Component {
     } else {
       console.log("no files");
     }
-    console.log(object_init);
+    // console.log(object_init);
 
     studentDocOverview = keys.map((k, i) => {
       if (object_init[k] === "uploaded") {

@@ -20,6 +20,7 @@ const {
   downloadFile,
   downloadProfileFile,
   updateDocumentStatus,
+  updateProfileDocumentStatus,
   deleteFile,
   deleteProfileFile,
 } = require("../controllers/files");
@@ -68,4 +69,7 @@ router
   .route("/:studentId/applications/:applicationId/:docName/status")
   .post(permit(Role.Admin, Role.Agent), updateDocumentStatus);
 
+router
+  .route("/:studentId/:category/status")
+  .post(permit(Role.Admin, Role.Agent), updateProfileDocumentStatus);
 module.exports = router;

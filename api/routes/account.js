@@ -17,7 +17,7 @@ const {
 
 const router = Router();
 
-router.use(protect, permit(Role.Student));
+router.use(protect, permit(Role.Admin, Role.Agent, Role.Editor, Role.Student));
 
 // TODO: get document status
 router.route("/:studentId/files").get(permit(Role.Student), getMyfiles);

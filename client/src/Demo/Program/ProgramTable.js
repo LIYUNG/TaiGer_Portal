@@ -170,10 +170,9 @@ class ProgramTable extends React.Component {
           <Row>
             <Col>
               <Card>
-                {/* <Card.Header>
-                                </Card.Header> */}
                 <Card.Body>
                   <Programlist
+                    role={this.props.role}
                     userId={this.props.userId}
                     success={this.state.success}
                     onFormSubmit={this.onFormSubmit}

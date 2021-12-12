@@ -5,6 +5,7 @@ import ProgramListSubpage from "./ProgramListSubpage";
 import EditableProgram from "./EditableProgram";
 import NewProgramWindow from "./NewProgramWindow";
 import ProgramDeleteWarning from "./ProgramDeleteWarning";
+import ProgramAddedMyWatchList from "./ProgramAddedMyWatchList";
 
 class Programlist extends React.Component {
   state = {
@@ -13,8 +14,9 @@ class Programlist extends React.Component {
     program_name: "",
     program_id: "",
     modalShowNewProgram: false,
+    modalShowNAddMyWatchList: false,
     deleteProgramWarning: false,
-    StudentId:"",
+    StudentId: "",
   };
 
   handleChange2 = (e) => {
@@ -38,6 +40,21 @@ class Programlist extends React.Component {
     console.log("click assign");
     this.setState({
       modalShow: false,
+    });
+  };
+
+  onSubmit3 = (e, UserId, program_id, uni_name, program_name) => {
+    // e.preventDefault();
+    const student_id = UserId;
+    console.log("before submit");
+    console.log("program_id " + this.state.program_id);
+    console.log("UserId " + UserId);
+    this.props.assignProgram({ student_id, program_id });
+    console.log("click assign");
+    this.setState({
+      modalShowNAddMyWatchList: true,
+      uni_name: uni_name,
+      program_name: program_name,
     });
   };
 
@@ -89,6 +106,16 @@ class Programlist extends React.Component {
     });
   };
 
+  setModalShow_AddToMyWatchList = () => {
+    this.setState({
+      modalShowNAddMyWatchList: true,
+    });
+  };
+  setModalHide_AddToMyWatchList = () => {
+    this.setState({
+      modalShowNAddMyWatchList: false,
+    });
+  };
   render() {
     const headers = (
       <tr>
@@ -102,11 +129,14 @@ class Programlist extends React.Component {
     const programs = this.props.data.map((program) => (
       <EditableProgram
         key={program._id}
+        role={this.props.role}
+        userId={this.props.userId}
         program={program}
         header={this.props.header}
         onFormSubmit={this.props.onFormSubmit}
         setModalShowDelete={this.setModalShowDelete}
         RemoveProgramHandler3={this.props.RemoveProgramHandler3}
+        onSubmit3={this.onSubmit3}
         setModalShow={this.setModalShow}
         success={this.props.success}
       />
@@ -159,6 +189,14 @@ class Programlist extends React.Component {
           program_name={this.state.program_name}
           uni_name={this.state.uni_name}
           RemoveProgramHandler3={this.props.RemoveProgramHandler3}
+        />
+        <ProgramAddedMyWatchList
+          setModalHide_AddToMyWatchList={this.setModalHide_AddToMyWatchList}
+          modalShowNAddMyWatchList={this.state.modalShowNAddMyWatchList}
+          program_id={this.state.program_id}
+          program_name={this.state.program_name}
+          uni_name={this.state.uni_name}
+          setModalShow_AddToMyWatchList={this.setModalShow_AddToMyWatchList}
         />
       </>
     );

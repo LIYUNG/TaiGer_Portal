@@ -47,7 +47,7 @@ router
 
 router
   .route("/:studentId/applications")
-  .post(permit(Role.Admin, Role.Agent), createApplication);
+  .post(permit(Role.Admin, Role.Agent, Role.Student), createApplication);
 
 router
   .route("/:studentId/applications/:applicationId")

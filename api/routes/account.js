@@ -17,7 +17,7 @@ const {
 
 const router = Router();
 
-router.use(protect, permit(Role.Admin, Role.Agent, Role.Editor, Role.Student));
+router.use(protect, permit(Role.Student));
 
 // TODO: get document status
 router.route("/:studentId/files").get(permit(Role.Student), getMyfiles);
@@ -30,9 +30,19 @@ router
 
 router
   .route("/files/:studentId/:category")
-  .get(downloadProfileFile)
-  .post(ProfilefileUpload, saveProfileFilePath)
-  .delete(deleteProfileFile);
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    downloadProfileFile
+  )
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    ProfilefileUpload,
+    saveProfileFilePath
+  )
+  .delete(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    deleteProfileFile
+  );
 // TODO: check the exact usage
 router
   .route("/transcript/:category/:group")

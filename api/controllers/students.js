@@ -1,6 +1,6 @@
 const { ErrorResponse } = require("../common/errors");
 const { asyncHandler } = require("../middlewares/error-handler");
-const { Agent, Student, Editor } = require("../models/User");
+const { Role, Agent, Student, Editor } = require("../models/User");
 const { Program } = require("../models/Program");
 
 const getStudents = asyncHandler(async (req, res) => {
@@ -28,7 +28,7 @@ const getStudents = asyncHandler(async (req, res) => {
       .exec();
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
     // console.log(students[0].applications[0].programId); // looks ok!
-    // console.log(students[0].applications[0].programId.University_); 
+    // console.log(students[0].applications[0].programId.University_);
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Editor") {
@@ -37,7 +37,10 @@ const getStudents = asyncHandler(async (req, res) => {
     }).populate("applications.programId");
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Student") {
-    res.status(200).send({ success: true, data: [user] });
+    const student = await Student.findById(user._id).populate(
+      "applications.programId"
+    );
+    res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest
     res.status(200).send({ success: true, data: [user] });
@@ -152,10 +155,12 @@ const removeEditorFromStudent = asyncHandler(async (req, res, next) => {
 
 const createApplication = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { studentId },
     body: { programId },
   } = req;
-  const student = await Student.findById(studentId);
+  const student =
+    user.role == Role.Student ? user : await Student.findById(studentId);
   const programIds = student.applications.map(({ programId }) => programId);
   if (programIds.includes(programId))
     throw new ErrorResponse(400, "Duplicate program");

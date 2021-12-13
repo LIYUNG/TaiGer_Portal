@@ -17,7 +17,7 @@ const {
 
 const router = Router();
 
-router.use(protect, permit(Role.Student));
+router.use(protect);
 
 // TODO: get document status
 router.route("/:studentId/files").get(permit(Role.Student), getMyfiles);
@@ -25,8 +25,12 @@ router.route("/:studentId/files").get(permit(Role.Student), getMyfiles);
 // TODO: is delete route required?
 router
   .route("/files/:studentId/:applicationId/:docName")
-  .get(downloadFile)
-  .post(fileUpload, saveFilePath);
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    fileUpload,
+    saveFilePath
+  );
 
 router
   .route("/files/:studentId/:category")
@@ -40,7 +44,7 @@ router
     saveProfileFilePath
   )
   .delete(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Agent, Role.Editor),
     deleteProfileFile
   );
 // TODO: check the exact usage

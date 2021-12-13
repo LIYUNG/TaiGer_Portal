@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
-import AgentStudents from "./AgentStudents";
+import AgentDashboard from "./AgentDashboard";
 import AgentTodoList from "./AgentTodoList";
 import EditorDocsProgress from "./EditorDocsProgress";
 import ApplicationProgress from "./ApplicationProgress";
@@ -8,7 +8,7 @@ import ApplicationProgress from "./ApplicationProgress";
 class AgentMainView extends React.Component {
   render() {
     const stdlist = this.props.students.map((student, i) => (
-      <AgentStudents
+      <AgentDashboard
         key={i}
         student={student}
         startEditingProgram={this.props.startEditingProgram}

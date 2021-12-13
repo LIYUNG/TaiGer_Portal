@@ -58,13 +58,14 @@ export const acceptDocument = (category, studentId) =>
     }
   );
 
+export const updateDocumentStatus = (category, studentId, status) =>
+  request.post(`/api/students/${studentId}/${category}/status`, {
+    status: status,
+  });
 export const rejectDocument = (category, studentId) =>
-  request.post(
-    `/api/students/${studentId}/${category}/status`,
-    {
-      status: "rejected",
-    }
-  );
+  request.post(`/api/students/${studentId}/${category}/status`, {
+    status: "rejected",
+  });
 
 export const deleteFile = (category, studentId) =>
   request.delete(`/api/account/files/${studentId}/${category}`);

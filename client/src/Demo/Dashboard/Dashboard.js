@@ -124,7 +124,7 @@ class Dashboard extends React.Component {
 
   onRejectFilefromstudent = (e, category, studentId) => {
     //id == student id
-    e.preventDefault();
+    // e.preventDefault();
     rejectDocument(category, studentId).then(
       (result) => {},
       (error) => {
@@ -138,7 +138,7 @@ class Dashboard extends React.Component {
 
   onAcceptFilefromstudent = (e, category, studentId) => {
     //id == student id
-    e.preventDefault();
+    // e.preventDefault();
     acceptDocument(category, studentId).then(
       (result) => {},
       (error) => {

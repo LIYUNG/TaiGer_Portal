@@ -79,10 +79,11 @@ class EditFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onRejectFilefromstudent(
+                    this.props.onUpdateProfileDocStatus(
                       e,
                       k,
-                      this.props.student._id
+                      this.props.student._id,
+                      "rejected"
                     )
                   }
                 >
@@ -98,10 +99,11 @@ class EditFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onAcceptFilefromstudent(
+                    this.props.onUpdateProfileDocStatus(
                       e,
                       k,
-                      this.props.student._id
+                      this.props.student._id,
+                      "accepted"
                     )
                   }
                 >
@@ -146,9 +148,7 @@ class EditFilesSubpage extends React.Component {
             </th>
             <td>
               <p className="m-0"> {value2[i]}</p>
-              <p>
-                {this.props.student.uploadedDocs_[k].LastUploadDate_}
-              </p>
+              {/* <p>{this.props.student.uploadedDocs_[k].LastUploadDate_}</p> */}
             </td>
             <td>
               <Col>
@@ -174,10 +174,11 @@ class EditFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onRejectFilefromstudent(
+                    this.props.onUpdateProfileDocStatus(
                       e,
                       k,
-                      this.props.student._id
+                      this.props.student._id,
+                      "rejected"
                     )
                   }
                 >
@@ -193,10 +194,11 @@ class EditFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onAcceptFilefromstudent(
+                    this.props.onUpdateProfileDocStatus(
                       e,
                       k,
-                      this.props.student._id
+                      this.props.student._id,
+                      "accepted"
                     )
                   }
                 >
@@ -269,10 +271,11 @@ class EditFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onRejectFilefromstudent(
+                    this.props.onUpdateProfileDocStatus(
                       e,
                       k,
-                      this.props.student._id
+                      this.props.student._id,
+                      "rejected"
                     )
                   }
                 >
@@ -288,10 +291,11 @@ class EditFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onAcceptFilefromstudent(
+                    this.props.onUpdateProfileDocStatus(
                       e,
                       k,
-                      this.props.student._id
+                      this.props.student._id,
+                      "accepted"
                     )
                   }
                 >
@@ -356,7 +360,7 @@ class EditFilesSubpage extends React.Component {
               <Col md={2}>
                 <Form
                   onSubmit={(e) =>
-                    this.props.submitFile(e, k, this.props.student._id)
+                    this.props.onSubmitFile(e, k, this.props.student._id)
                   }
                 >
                   <Form.Group controlId="exampleForm.ControlSelect1">

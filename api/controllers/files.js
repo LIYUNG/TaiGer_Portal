@@ -73,7 +73,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     document.path = req.file.path.replace(UPLOAD_PATH, "");
     student.profile.push(document);
     await student.save();
-    return res.status(201).send({ success: true });
+    return res.status(201).send({ success: true, data: student });
   }
   document.status = DocumentStatus.Uploaded;
   document.required = true;
@@ -89,7 +89,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
 
   // return res.status(201).send({ success: true, data: document });
-  return res.status(201).send({ success: true, data: document });
+  return res.status(201).send({ success: true, data: student });
 });
 
 const downloadProfileFile = asyncHandler(async (req, res, next) => {

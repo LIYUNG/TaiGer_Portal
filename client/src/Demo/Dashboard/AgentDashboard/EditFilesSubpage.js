@@ -365,7 +365,7 @@ class EditFilesSubpage extends React.Component {
               <Col md={2}>
                 <Form
                   onSubmit={(e) =>
-                    this.props.submitFile(e, k, this.props.student._id)
+                    this.props.onSubmitFile(e, k, this.props.student._id)
                   }
                 >
                   <Form.Group controlId="exampleForm.ControlSelect1">

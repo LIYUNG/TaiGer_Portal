@@ -10,7 +10,7 @@ import {
   // getStudents,
   uploadforstudent,
   updateDocumentStatus,
-  // deleteFile,
+  deleteFile,
 } from "../../../api";
 class AgentDashboard extends React.Component {
   state = {
@@ -52,50 +52,49 @@ class AgentDashboard extends React.Component {
     });
   };
 
-  onSubmitFile = (e, id, student_id, file) => {
-    // e.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
-    uploadforstudent(id, student_id, formData).then(
-      (res) => {},
-      // Note: it's important to handle errors here
-      // instead of a catch() block so that we don't swallow
-      // exceptions from actual bugs in components.
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
-
-  submitFile = (e, category, student_id) => {
+  onSubmitFile = (e, category, student_id) => {
     if (this.state.file === "") {
       e.preventDefault();
       alert("Please select file");
     } else {
-      // e.preventDefault();
-      let stud = { ...this.state.student };
-      console.log(category);
-      // stud.uploadedDocs_[category].uploadStatus_ = "uploaded";
-      this.onSubmitFile(e, category, student_id, this.state.file);
-      this.setState({
-        student: stud,
-        file: "",
-      });
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("file", this.state.file);
+
+      uploadforstudent(category, student_id, formData).then(
+        (res) => {
+          this.setState({
+            student: res.data.data, // res.data = {success: true, data:{...}}
+            file: "",
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error,
+          });
+        }
+      );
     }
   };
 
   onDeleteFilefromstudent = (e, category, id) => {
     // TODO: delete this.state.student[document]
-    let stud = { ...this.state.student };
-    delete stud.uploadedDocs_[category];
-    console.log(stud);
-    this.props.onDeleteFilefromstudent(e, category, id);
-    this.setState({
-      student: stud,
-    });
+    e.preventDefault();
+    let idx = this.state.student.profile.findIndex(
+      (doc) => doc.name === category
+    );
+    let std = { ...this.state.student };
+    console.log(std);
+    deleteFile(category, id).then(
+      (res) => {
+        std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
+        this.setState({
+          student: std,
+        });
+      },
+      (error) => {}
+    );
   };
 
   onUpdateProfileDocStatus = (e, category, id, status) => {
@@ -215,21 +214,21 @@ class AgentDashboard extends React.Component {
         </tbody>
         <>
           <EditProgramsSubpage
-            student={this.props.student}
+            student={this.state.student}
             show={this.state.showProgramPage}
             onHide={this.setProgramModalhide}
             setmodalhide={this.setProgramModalhide}
             onDeleteProgram={this.props.onDeleteProgram}
           />
           <EditFilesSubpage
-            student={this.props.student}
+            student={this.state.student}
             documentslist={this.props.documentslist}
             documentlist2={this.props.documentlist2}
             show={this.state.showFilePage}
             onHide={this.setFilesModalhide}
             setmodalhide={this.setFilesModalhide}
             onFileChange={this.onFileChange}
-            submitFile={this.submitFile}
+            onSubmitFile={this.onSubmitFile}
             onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
             onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}

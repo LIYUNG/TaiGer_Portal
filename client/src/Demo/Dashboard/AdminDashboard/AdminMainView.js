@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
-import AdminStudents from "./AdminStudents";
+import AdminDashboard from "./AdminDashboard";
 import AgentTodoList from "./AgentTodoList";
 import EditorDocsProgress from "./EditorDocsProgress";
 import ApplicationProgress from "./ApplicationProgress";
@@ -8,7 +8,7 @@ import ApplicationProgress from "./ApplicationProgress";
 class AdminMainView extends React.Component {
   render() {
     const stdlist = this.props.students.map((student, i) => (
-      <AdminStudents
+      <AdminDashboard
         key={i}
         role={this.props.role}
         student={student}

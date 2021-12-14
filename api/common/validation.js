@@ -15,10 +15,15 @@ const fieldsValidation =
 const makeOptional = (rule) => rule.optional();
 
 // common rules
-const checkUsername = body("name")
+const checkUserFirstname = body("firstname")
   .isString()
   .notEmpty()
-  .withMessage("Username cannot be empty");
+  .withMessage("First name cannot be empty");
+
+const checkUserLastname = body("lastname")
+  .isString()
+  .notEmpty()
+  .withMessage("Last name cannot be empty");
 
 const checkEmail = body("email", "Invalid email address")
   .normalizeEmail({ gmail_remove_dots: false })
@@ -38,7 +43,8 @@ const checkObjectID = param("id", "Invalid id").custom(ObjectID.isValid);
 module.exports = {
   fieldsValidation,
   makeOptional,
-  checkUsername,
+  checkUserFirstname,
+  checkUserLastname,
   checkEmail,
   checkPassword,
   checkUserRole,

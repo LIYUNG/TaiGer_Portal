@@ -206,7 +206,7 @@ class AgentDashboard extends React.Component {
                 </DropdownButton>
               </td>
               <td>
-                {this.props.student.firstname_} /{this.props.student.lastname_}
+                {this.props.student.firstname} /{this.props.student.lastname}
               </td>
             </>
             {studentDocOverview}

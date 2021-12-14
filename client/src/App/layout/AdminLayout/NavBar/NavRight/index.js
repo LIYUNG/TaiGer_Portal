@@ -46,7 +46,7 @@ class NavRight extends Component {
               //   }}
             >
               <i className="icon feather icon-user" />{" "}
-              {this.props.userdata.firstname_} {this.props.userdata.lastname_}
+              {this.props.userdata.firstname} {this.props.userdata.lastname}
             </a>
           </li>
           <li>

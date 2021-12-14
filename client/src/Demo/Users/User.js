@@ -30,8 +30,8 @@ class User extends React.Component {
                 eventKey="2"
                 onSelect={() =>
                   this.props.setModalShow(
-                    this.props.user.firstname_,
-                    this.props.user.lastname_,
+                    this.props.user.firstname,
+                    this.props.user.lastname,
                     this.props.user.role,
                     this.props.user._id
                   )
@@ -44,8 +44,8 @@ class User extends React.Component {
                 onSelect={() =>
                   // this.props.RemoveUserHandler3(this.props.user._id)
                   this.props.setModalShowDelete(
-                    this.props.user.firstname_,
-                    this.props.user.lastname_,
+                    this.props.user.firstname,
+                    this.props.user.lastname,
                     this.props.user._id
                   )
                 }

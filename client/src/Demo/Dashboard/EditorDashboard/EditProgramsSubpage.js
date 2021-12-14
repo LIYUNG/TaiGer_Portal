@@ -57,8 +57,8 @@ class EditProgramsSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Program for {this.props.student.firstname_} -{" "}
-            {this.props.student.lastname_}
+            Program for {this.props.student.firstname} -{" "}
+            {this.props.student.lastname}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

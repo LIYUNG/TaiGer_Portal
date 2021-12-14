@@ -157,7 +157,7 @@ class EditorStudents extends React.Component {
   for (let i = 0; i < keys.length; i++) {
     object_init[keys[i]] = "missing";
   }
-  console.log(this.state.student.firstname_);
+  console.log(this.state.student.firstname);
 
   if (this.state.student.profile) {
     for (let i = 0; i < this.state.student.profile.length; i++) {

@@ -374,8 +374,8 @@ class EditFilesSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Uploaded files for {this.props.student.firstname_} -{" "}
-            {this.props.student.lastname_}
+            Uploaded files for {this.props.student.firstname} -{" "}
+            {this.props.student.lastname}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

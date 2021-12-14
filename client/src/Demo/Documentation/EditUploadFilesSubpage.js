@@ -20,7 +20,7 @@ class EditUploadFilesSubpage extends React.Component {
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = "missing";
     }
-    console.log(this.props.student.firstname_);
+    console.log(this.props.student.firstname);
 
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {

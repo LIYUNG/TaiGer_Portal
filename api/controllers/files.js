@@ -286,11 +286,11 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     user: student,
     params: { category, filename },
   } = req;
-  const { firstname_, lastname_, _id } = student;
+  const { firstname, lastname, _id } = student;
 
   const filePath = path.join(
     UPLOAD_PATH,
-    `${firstname_}_${lastname_}_${_id}`,
+    `${firstname}_${lastname}_${_id}`,
     category,
     "output",
     filename

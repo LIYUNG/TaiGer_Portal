@@ -6,7 +6,8 @@ const { ErrorResponse } = require("../common/errors");
 
 const {
   fieldsValidation,
-  checkUsername,
+  checkUserFirstname,
+  checkUserLastname,
   checkEmail,
   checkPassword,
   checkToken,
@@ -31,9 +32,14 @@ const hashToken = (token) =>
   crypto.createHash("sha256").update(token).digest("hex");
 
 const signup = asyncHandler(async (req, res) => {
-  await fieldsValidation(checkUsername, checkEmail, checkPassword)(req);
+  await fieldsValidation(
+    checkUserFirstname,
+    checkUserLastname,
+    checkEmail,
+    checkPassword
+  )(req);
 
-  const { name, email, password } = req.body;
+  const { firstname, lastname, email, password } = req.body;
 
   const existUser = await User.findOne({ email });
   if (existUser) {
@@ -43,12 +49,12 @@ const signup = asyncHandler(async (req, res) => {
     );
   }
 
-  const user = await Guest.create({ name, email, password });
+  const user = await Guest.create({ firstname, lastname, email, password });
 
   const activationToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(activationToken) });
 
-  // await sendConfirmationEmail({ name, address: email }, activationToken);
+  // await sendConfirmationEmail({ firstname, lastname, address: email }, activationToken);
 
   const authToken = generateAuthToken(user);
   res

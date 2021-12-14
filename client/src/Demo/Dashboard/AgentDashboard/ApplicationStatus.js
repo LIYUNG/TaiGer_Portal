@@ -45,7 +45,7 @@ class ApplicationStatus extends React.Component {
           <tr>
             <td>
               <h5>
-                {this.props.student.firstname_}, {this.props.student.lastname_}
+                {this.props.student.firstname}, {this.props.student.lastname}
               </h5>
             </td>
             <td>{applying_university}</td>

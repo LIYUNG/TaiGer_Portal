@@ -289,11 +289,11 @@ window.NewProgramHeader = [
 window.UserlistHeader = [
   {
     name: "First Name",
-    prop: "firstname_",
+    prop: "firstname",
   },
   {
     name: "Last Name",
-    prop: "lastname_",
+    prop: "lastname",
   },
   {
     name: "Email Address",

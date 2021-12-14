@@ -14,12 +14,12 @@ export default function SignUp1({ userData }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [passwordconfirm, setPasswordConfirm] = useState();
-  const [name, setName] = useState();
+  const [firstname, setFirstame] = useState();
   const [lastname, setLastname] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name) return alert("First name, please!");
+    if (!firstname) return alert("First name, please!");
     if (!lastname) return alert("Last name, please!");
     if (!email) return alert("Email, please!");
     if (!password || !passwordconfirm) return alert("Please enter passwords");
@@ -27,7 +27,7 @@ export default function SignUp1({ userData }) {
 
     try {
       const resp = await register({
-        name,
+        firstname,
         lastname,
         email,
         password,
@@ -35,6 +35,7 @@ export default function SignUp1({ userData }) {
       userData(resp);
     } catch (err) {
       // TODO: handle error
+      console.log(err)
     }
   };
 
@@ -61,7 +62,7 @@ export default function SignUp1({ userData }) {
                   type="text"
                   className="form-control"
                   placeholder="First name"
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => setFirstame(e.target.value)}
                 />
               </div>
               <div className="input-group mb-3">

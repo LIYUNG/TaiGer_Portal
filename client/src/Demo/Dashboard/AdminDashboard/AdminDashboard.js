@@ -158,7 +158,6 @@ class AdminDashboard extends React.Component {
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
     }
-    // console.log(this.state.student.firstname_);
 
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
@@ -257,7 +256,7 @@ class AdminDashboard extends React.Component {
               </DropdownButton>
             </td>
             <td>
-              {this.props.student.firstname_}, {this.props.student.lastname_}
+              {this.props.student.firstname}, {this.props.student.lastname}
             </td>
             {studentDocOverview}
           </tr>

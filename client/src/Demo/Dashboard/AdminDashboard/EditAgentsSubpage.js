@@ -37,7 +37,7 @@ class EditAgentsSubpage extends React.Component {
           </td>
           <td>
             <h4 className="mb-1">
-              {agent.lastname_} {agent.firstname_}{" "}
+              {agent.lastname} {agent.firstname}{" "}
             </h4>
           </td>
         </tr>
@@ -58,8 +58,8 @@ class EditAgentsSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Agent for {this.props.student.firstname_} -{" "}
-            {this.props.student.lastname_} to
+            Agent for {this.props.student.firstname} -{" "}
+            {this.props.student.lastname} to
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

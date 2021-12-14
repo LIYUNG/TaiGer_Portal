@@ -21,8 +21,8 @@ class EditEditorsSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Editor for {this.props.student.firstname_} -{" "}
-            {this.props.student.lastname_}
+            Editor for {this.props.student.firstname} -{" "}
+            {this.props.student.lastname}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -51,7 +51,7 @@ class EditEditorsSubpage extends React.Component {
                     </th>
                     <td>
                       <h4 className="mb-1">
-                        {editor.firstname_} {editor.lastname_}
+                        {editor.firstname} {editor.lastname}
                       </h4>
                     </td>
                   </tr>

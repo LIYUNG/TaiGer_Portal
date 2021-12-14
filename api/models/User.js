@@ -20,7 +20,11 @@ const options = { discriminatorKey: "role", timestamps: true };
 
 const UserSchema = new Schema(
   {
-    name: {
+    firstname: {
+      type: String,
+      trim: true,
+    },
+    lastname: {
       type: String,
       trim: true,
     },

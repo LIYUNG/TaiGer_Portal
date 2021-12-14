@@ -32,11 +32,15 @@ function AdminLayout(props) {
   const setuserdata = (resp) => {
     try {
       if (resp) {
-        props.setUserdata({
-          success: resp.data.success,
-          data: resp.data.data,
-        });
-        console.log("successfullllll");
+        if (resp.status === 400) {
+          alert("This Email is already registered.");
+        } else {
+          console.log("successfullllll");
+          props.setUserdata({
+            success: resp.data.success,
+            data: resp.data.data,
+          });
+        }
       } else {
         alert("Email or password not correct.");
       }

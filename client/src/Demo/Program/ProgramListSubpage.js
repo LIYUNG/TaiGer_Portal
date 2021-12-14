@@ -65,7 +65,7 @@ class ProgramListSubpage extends React.Component {
                 </th>
                 <td>
                   <h4 className="mb-1">
-                    {student.firstname_}, {student.lastname_}
+                    {student.firstname}, {student.lastname}
                   </h4>
                 </td>
               </tr>

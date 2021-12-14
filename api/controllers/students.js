@@ -37,9 +37,12 @@ const getStudents = asyncHandler(async (req, res) => {
     }).populate("applications.programId");
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Student") {
-    const student = await Student.findById(user._id).populate(
-      "applications.programId"
-    );
+    const student = await Student.findById(user._id)
+      .populate("applications.programId")
+      .populate("agents")
+      .populate("editors")
+      .lean()
+      .exec();
     res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest

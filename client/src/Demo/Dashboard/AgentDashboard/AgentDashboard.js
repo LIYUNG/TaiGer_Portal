@@ -1,6 +1,10 @@
 import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiFillQuestionCircle,
+  AiOutlineFieldTime,
+} from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { Card, Col, Row, Table } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
@@ -142,9 +146,9 @@ class AgentDashboard extends React.Component {
       if (object_init[k] === "uploaded") {
         return (
           <td key={i}>
-            <AiFillQuestionCircle
+            <AiOutlineFieldTime
               size={24}
-              color="lightgreen"
+              color="orange"
               title="Uploaded successfully"
             />{" "}
           </td>

@@ -63,10 +63,45 @@ class StudentMainView extends React.Component {
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
+
+    const your_editors = this.props.students.map((student, i) =>
+      student.editors.map((editor, i) => (
+        <tr>
+          <td>
+            {editor.firstname} - {editor.lastname}
+          </td>
+          <td>{editor.email}</td>
+        </tr>
+      ))
+    );
+
+    const your_agents = this.props.students.map((student, i) =>
+      student.agents.map((agent, i) => (
+        <tr>
+          <td>
+            {agent.firstname} - {agent.lastname}
+          </td>
+          <td>{agent.email}</td>
+        </tr>
+      ))
+    );
+
     return (
       <>
         <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
           <Tab eventKey="x" title="My Uploaded Documents">
+            <h5>Your Agents</h5>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <>
+                    <th>First-/Last Name</th>
+                    <th>Email</th>
+                  </>
+                </tr>
+              </thead>
+              <tbody>{your_agents}</tbody>
+            </Table>
             <Table responsive>
               <thead>
                 <tr>
@@ -82,6 +117,18 @@ class StudentMainView extends React.Component {
             </Table>
           </Tab>
           <Tab eventKey="y" title="My Editor & Docs Progress">
+            <h5>Your Editors</h5>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <>
+                    <th>First-/Last Name</th>
+                    <th>Email</th>
+                  </>
+                </tr>
+              </thead>
+              <tbody>{your_editors}</tbody>
+            </Table>
             <Table responsive>
               <thead>
                 <tr>

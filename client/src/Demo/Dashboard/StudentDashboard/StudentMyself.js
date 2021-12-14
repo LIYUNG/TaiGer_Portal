@@ -1,5 +1,9 @@
 import React from "react";
-import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiFillQuestionCircle,
+  AiOutlineFieldTime,
+} from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 
 import { Card, Col, Row } from "react-bootstrap";
@@ -157,7 +161,6 @@ class StudentMyself extends React.Component {
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
     }
-    console.log(this.state.student.firstname);
 
     if (this.state.student.profile) {
       for (let i = 0; i < this.state.student.profile.length; i++) {
@@ -174,15 +177,14 @@ class StudentMyself extends React.Component {
     } else {
       console.log("no files");
     }
-    console.log(object_init);
-
+    console.log(this.props.student.agents);
     studentDocOverview = keys.map((k, i) => {
       if (object_init[k] === "uploaded") {
         return (
           <td key={i}>
-            <AiFillQuestionCircle
+            <AiOutlineFieldTime
               size={24}
-              color="lightgreen"
+              color="orange"
               title="Uploaded successfully"
             />{" "}
           </td>

@@ -5,6 +5,7 @@ import {
   AiOutlineDownload,
   AiFillCloseCircle,
   AiFillQuestionCircle,
+  AiOutlineFieldTime,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 
@@ -44,9 +45,9 @@ class EditUploadFilesSubpage extends React.Component {
         return (
           <tr key={i + 1}>
             <th>
-              <AiFillQuestionCircle
+              <AiOutlineFieldTime
                 size={24}
-                color="lightgreen"
+                color="orange"
                 title="Uploaded successfully"
               />
             </th>
@@ -107,11 +108,7 @@ class EditUploadFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onDeleteFilefromstudent(
-                      e,
-                      k,
-                      this.props.userId
-                    )
+                    this.props.onDeleteFilefromstudent(e, k, this.props.userId)
                   }
                 >
                   <Form.Group controlId="exampleForm.ControlSelect1">

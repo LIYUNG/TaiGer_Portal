@@ -8,48 +8,14 @@ import { Dropdown, DropdownButton } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
 import { uploadforstudent } from "../../../api";
-import EditorDashboard from "./EditorDashboard";
+import DocsProgress from "./DocsProgress";
 
-class EditorStudents extends React.Component {
+class EditorDocsProgress extends React.Component {
   state = {
-    showAgentPage: false,
-    showEditorPage: false,
     showProgramPage: false,
     showFilePage: false,
     student: this.props.student,
     file: "",
-  };
-
-  setAgentModalhide = () => {
-    this.setState({
-      showAgentPage: false,
-    });
-  };
-
-  startEditingAgent = (student) => {
-    console.log("startEditingAgent");
-    console.log(student);
-    this.props.editAgent(student);
-    this.setState({
-      subpage: 1,
-      showAgentPage: true,
-    });
-  };
-
-  setEditorModalhide = () => {
-    this.setState({
-      showEditorPage: false,
-    });
-  };
-
-  startEditingEditor = (student) => {
-    console.log("startEditingEditor");
-    console.log(student);
-    this.props.editEditor(student);
-    this.setState({
-      subpage: 2,
-      showEditorPage: true,
-    });
   };
 
   setProgramModalhide = () => {
@@ -151,87 +117,72 @@ class EditorStudents extends React.Component {
   };
 
   render() {
-  let studentDocOverview;
-  let keys = Object.keys(this.props.documentlist2);
-  let object_init = new Object();
-  for (let i = 0; i < keys.length; i++) {
-    object_init[keys[i]] = "missing";
-  }
-
-  if (this.state.student.profile) {
-    for (let i = 0; i < this.state.student.profile.length; i++) {
-      if (this.state.student.profile[i].status === "uploaded") {
-        object_init[this.state.student.profile[i].name] = "uploaded";
-      } else if (this.state.student.profile[i].status === "accepted") {
-        object_init[this.state.student.profile[i].name] = "accepted";
-      } else if (this.state.student.profile[i].status === "rejected") {
-        object_init[this.state.student.profile[i].name] = "rejected";
-      } else if (this.state.student.profile[i].status === "missing") {
-        object_init[this.state.student.profile[i].name] = "missing";
-      }
-    }
-  } else {
-    console.log("no files");
-  }
-
-  studentDocOverview = keys.map((k, i) => {
-    if (object_init[k] === "uploaded") {
-      return (
-        <td key={i}>
-          <AiFillQuestionCircle
-            size={24}
-            color="lightgreen"
-            title="Uploaded successfully"
-          />{" "}
-        </td>
-      );
-    } else if (object_init[k] === "accepted") {
-      return (
-        <td key={i}>
-          <IoCheckmarkCircle
-            size={24}
-            color="limegreen"
-            title="Valid Document"
-          />{" "}
-        </td>
-      );
-    } else if (object_init[k] === "rejected") {
-      return (
-        <td key={i}>
-          <AiFillCloseCircle size={24} color="red" title="Invalid Document" />{" "}
-        </td>
-      );
+    let studentDocOverview;
+    if (this.state.student.uploadedDocs_) {
+      studentDocOverview = this.props.documentslist.map((doc, i) => {
+        if (
+          this.state.student.uploadedDocs_[doc.prop] &&
+          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
+            "uploaded"
+        ) {
+          return (
+            <td key={i}>
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgreen"
+                title="Uploaded successfully"
+              />{" "}
+            </td>
+          );
+        } else if (
+          this.state.student.uploadedDocs_[doc.prop] &&
+          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
+        ) {
+          return (
+            <td key={i}>
+              <IoCheckmarkCircle
+                size={24}
+                color="limegreen"
+                title="Valid Document"
+              />{" "}
+            </td>
+          );
+        } else if (
+          this.state.student.uploadedDocs_[doc.prop] &&
+          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
+            "unaccepted"
+        ) {
+          return (
+            <td key={i}>
+              <AiFillCloseCircle
+                size={24}
+                color="red"
+                title="Invalid Document"
+              />{" "}
+            </td>
+          );
+        } else {
+          return (
+            <td key={i}>
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="No Document uploaded"
+              />{" "}
+            </td>
+          );
+        }
+      });
     } else {
-      return (
-        <td key={i}>
-          <AiFillQuestionCircle
-            size={24}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-        </td>
-      );
+      studentDocOverview = <p>No Doc!</p>;
     }
-  });
+
     return (
-      <EditorDashboard
-        role={this.props.role}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        startEditingAgent={this.startEditingAgent}
-        startEditingEditor={this.startEditingEditor}
+      <DocsProgress
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}
         studentDocOverview={studentDocOverview}
-        setAgentModalhide={this.setAgentModalhide}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        setEditorModalhide={this.setEditorModalhide}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
         setProgramModalhide={this.setProgramModalhide}
         onDeleteProgram={this.props.onDeleteProgram}
         setFilesModalhide={this.setFilesModalhide}
@@ -241,16 +192,9 @@ class EditorStudents extends React.Component {
         onRejectFilefromstudent={this.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-        documentslist={this.props.documentslist}
-        showAgentPage={this.state.showAgentPage}
-        showEditorPage={this.state.showEditorPage}
-        showProgramPage={this.state.showProgramPage}
-        showFilePage={this.state.showFilePage}
       />
     );
-
-    // }
   }
 }
 
-export default EditorStudents;
+export default EditorDocsProgress;

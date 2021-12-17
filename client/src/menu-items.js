@@ -95,6 +95,14 @@ export default {
         //   icon: "feather icon-upload",
         // },
         {
+          id: "download",
+          title: "Download",
+          type: "item",
+          url: "/download",
+          classes: "nav-item",
+          icon: "feather icon-download",
+        },
+        {
           id: "taigerai",
           title: "TaiGer AI",
           type: "item",

@@ -14,16 +14,5 @@ const request = axios.create({
   validateStatus: (status) => status < 500,
 });
 
-// request.interceptors.request.use((config) => {
-//   const token = localStorage.getItem('token')
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${JSON.parse(token)}`
-//   }else{
-//     // TODO: what if no token?
-//   }
-//   return config
-// })
-
-
 export default request;
 

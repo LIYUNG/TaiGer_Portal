@@ -13,25 +13,33 @@ class EditFilesSubpage extends React.Component {
 
   render() {
     const deleteStyle = "danger";
-    let documentlist;
-
     let value2 = Object.values(this.props.documentlist2);
     let keys2 = Object.keys(this.props.documentlist2);
     let object_init = new Object();
+    let object_date_init = new Object();
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = "missing";
+      object_date_init[keys2[i]] = "";
     }
 
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
         if (this.props.student.profile[i].status === "uploaded") {
           object_init[this.props.student.profile[i].name] = "uploaded";
+          object_date_init[this.props.student.profile[i].name] =
+            this.props.student.profile[i].updatedAt.toString();
         } else if (this.props.student.profile[i].status === "accepted") {
           object_init[this.props.student.profile[i].name] = "accepted";
+          object_date_init[this.props.student.profile[i].name] =
+            this.props.student.profile[i].updatedAt.toString();
         } else if (this.props.student.profile[i].status === "rejected") {
           object_init[this.props.student.profile[i].name] = "rejected";
+          object_date_init[this.props.student.profile[i].name] =
+            this.props.student.profile[i].updatedAt.toString();
         } else if (this.props.student.profile[i].status === "missing") {
           object_init[this.props.student.profile[i].name] = "missing";
+          object_date_init[this.props.student.profile[i].name] =
+            this.props.student.profile[i].updatedAt.toString();
         }
       }
     } else {
@@ -50,10 +58,8 @@ class EditFilesSubpage extends React.Component {
               />
             </th>
             <td>
-              <p className="m-0"> {value2[i]}</p>
-              <p>
-                {/* {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_} */}
-              </p>
+              {value2[i]}
+              {object_date_init[k].updatedAt}
             </td>
             <td>
               <Col>
@@ -147,8 +153,8 @@ class EditFilesSubpage extends React.Component {
               />
             </th>
             <td>
-              <p className="m-0"> {value2[i]}</p>
-              {/* <p>{this.props.student.uploadedDocs_[k].LastUploadDate_}</p> */}
+              {value2[i]}
+              {object_date_init[k].updatedAt}
             </td>
             <td>
               <Col>
@@ -242,10 +248,8 @@ class EditFilesSubpage extends React.Component {
               />
             </th>
             <td>
-              <p className="m-0"> {value2[i]}</p>
-              <p>
-                {/* {this.props.student.uploadedDocs_[k].LastUploadDate_} */}
-              </p>
+              {value2[i]}
+              {object_date_init[k].updatedAt}
             </td>
             <td>
               <Col>

@@ -76,16 +76,16 @@ window.programstatuslist = [
   },
 ];
 window.documentlist2 = {
-  bachelorCertificate_: "B.Sc Cert",
-  bachelorTranscript_: "B.Sc. Trans",
-  highSchoolDiploma_: "H. Sch. Dipl.",
-  highSchoolTranscript_: "H. Sch. Trans",
-  universityEntranceExamination_: "GSAT/SAT",
-  EnglischCertificate_: "TOEFL/IELTS",
-  GermanCertificate_: "TestDaF/B2/C1",
-  ECTS_conversion_: "ECTS Conv.",
-  CourseDescription_: "Course Descr.",
-  Passport_: "Passport",
+  Bachelor_Certificate: "B.Sc Cert",
+  Bachelor_Transcript: "B.Sc. Trans",
+  High_School_Diploma: "H. Sch. Dipl.",
+  High_School_Transcript: "H. Sch. Trans",
+  University_Entrance_Examination: "GSAT/SAT",
+  Englisch_Certificate: "TOEFL/IELTS",
+  German_Certificate: "TestDaF/B2/C1",
+  ECTS_Conversion: "ECTS Conv.",
+  Course_Description: "Course Descr.",
+  Passport: "Passport",
 };
 
 window.documentlist = [

@@ -4,10 +4,6 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 
 import { Card, Col, Row } from "react-bootstrap";
 
-import { Dropdown, DropdownButton } from "react-bootstrap";
-import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import { uploadforstudent } from "../../../api";
-// import ConflictStatus from "./ConflictStatus";
 
 class ProgramConflict extends React.Component {
   state = {
@@ -19,7 +15,7 @@ class ProgramConflict extends React.Component {
 
     let studs_id = this.props.conflict_map[this.props.conf_program_id];
     let stds = studs_id.map((k, i) => (
-      <h5>
+      <h5 key={i}>
         {this.props.students.find((stud) => stud._id === studs_id[i]).firstname}
         ,{" "}
         {this.props.students.find((stud) => stud._id === studs_id[i]).lastname}

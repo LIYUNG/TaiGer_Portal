@@ -163,22 +163,21 @@ class AdminDashboard extends React.Component {
       object_init[keys[i]] = "missing";
     }
 
-    if (this.props.student.profile) {
-      for (let i = 0; i < this.props.student.profile.length; i++) {
-        if (this.props.student.profile[i].status === "uploaded") {
-          object_init[this.props.student.profile[i].name] = "uploaded";
-        } else if (this.props.student.profile[i].status === "accepted") {
-          object_init[this.props.student.profile[i].name] = "accepted";
-        } else if (this.props.student.profile[i].status === "rejected") {
-          object_init[this.props.student.profile[i].name] = "rejected";
-        } else if (this.props.student.profile[i].status === "missing") {
-          object_init[this.props.student.profile[i].name] = "missing";
+    if (this.state.student.profile) {
+      for (let i = 0; i < this.state.student.profile.length; i++) {
+        if (this.state.student.profile[i].status === "uploaded") {
+          object_init[this.state.student.profile[i].name] = "uploaded";
+        } else if (this.state.student.profile[i].status === "accepted") {
+          object_init[this.state.student.profile[i].name] = "accepted";
+        } else if (this.state.student.profile[i].status === "rejected") {
+          object_init[this.state.student.profile[i].name] = "rejected";
+        } else if (this.state.student.profile[i].status === "missing") {
+          object_init[this.state.student.profile[i].name] = "missing";
         }
       }
     } else {
       // console.log("no files");
     }
-    // console.log(object_init);
 
     studentDocOverview = keys.map((k, i) => {
       if (object_init[k] === "uploaded") {
@@ -230,7 +229,7 @@ class AdminDashboard extends React.Component {
                 size="sm"
                 title="Option"
                 variant="primary"
-                id={`dropdown-variants-${this.props.student._id}`}
+                id={`dropdown-variants-${this.state.student._id}`}
                 key={this.props.student._id}
               >
                 <Dropdown.Item
@@ -260,7 +259,7 @@ class AdminDashboard extends React.Component {
               </DropdownButton>
             </td>
             <td>
-              {this.props.student.firstname}, {this.props.student.lastname}
+              {this.state.student.firstname}, {this.state.student.lastname}
             </td>
             {studentDocOverview}
           </tr>

@@ -103,7 +103,6 @@ class AgentDashboard extends React.Component {
 
   onUpdateProfileDocStatus = (e, category, id, status) => {
     e.preventDefault();
-    let stud = { ...this.state.student };
     let idx = this.state.student.profile.findIndex(
       (doc) => doc.name === category
     );
@@ -127,6 +126,7 @@ class AgentDashboard extends React.Component {
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
     }
+
     if (this.state.student.profile) {
       for (let i = 0; i < this.state.student.profile.length; i++) {
         if (this.state.student.profile[i].status === "uploaded") {
@@ -142,6 +142,7 @@ class AgentDashboard extends React.Component {
     } else {
       console.log("no files");
     }
+
     studentDocOverview = keys.map((k, i) => {
       if (object_init[k] === "uploaded") {
         return (
@@ -210,7 +211,7 @@ class AgentDashboard extends React.Component {
                 </DropdownButton>
               </td>
               <td>
-                {this.props.student.firstname} /{this.props.student.lastname}
+                {this.state.student.firstname} /{this.state.student.lastname}
               </td>
             </>
             {studentDocOverview}

@@ -259,7 +259,6 @@ class UploadPage extends React.Component {
                     student={this.state.student}
                     submitFile={this.submitFile}
                     onFileChange={this.onFileChange}
-                    documentslist={window.documentlist}
                     documentlist2={window.documentlist2}
                     onDownloadFilefromstudent={this.onDownloadFile}
                     onRejectFilefromstudent={this.onRejectFilefromstudent}

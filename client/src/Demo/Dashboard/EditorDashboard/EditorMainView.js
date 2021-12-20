@@ -87,11 +87,12 @@ class EditorMainView extends React.Component {
       />
     ));
     let conflicted_program = Object.keys(conflict_map);
-    console.log(conflict_map);
-    console.log(conflicted_program);
-    console.log(conflict_programs);
+    // console.log(conflict_map);
+    // console.log(conflicted_program);
+    // console.log(conflict_programs);
     const program_conflict = conflicted_program.map((conf_program_id, i) => (
       <ProgramConflict
+        key={i}
         students={this.props.students}
         conflict_map={conflict_map}
         conf_program_id={conf_program_id}

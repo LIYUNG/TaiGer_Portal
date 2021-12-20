@@ -53,9 +53,6 @@ class EditUploadFilesSubpage extends React.Component {
             </th>
             <td>
               <p className="m-0"> {value2[i]}</p>
-              <p>
-                {/* {this.props.student.uploadedDocs_[doc.prop].LastUploadDate_} */}
-              </p>
             </td>
             <td>
               <Col>

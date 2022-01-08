@@ -152,8 +152,22 @@ class Dashboard extends React.Component {
   onDeleteProgram = (e, student_id, program_id) => {
     //program id
     e.preventDefault();
+    var stds = this.state.students;
+    var std_idx = stds.findIndex((stud) => stud._id === student_id);
+    var applications = [...stds[std_idx].applications];
+    let idx = applications.findIndex(
+      (application) => application._id === program_id
+    );
+    if (idx !== -1) {
+      applications.splice(idx, 1);
+      stds[std_idx].applications = applications;
+    }
     removeProgramFromStudent(program_id, student_id).then(
-      (result) => {},
+      (res) => {
+        this.setState({
+          students: stds,
+        });
+      },
       (error) => {
         this.setState({
           isLoaded: true,

@@ -181,7 +181,6 @@ class ApplicationProgress extends React.Component {
         student={this.state.student}
         studentDocOverview={studentDocOverview}
         setProgramModalhide={this.setProgramModalhide}
-        onDeleteProgram={this.props.onDeleteProgram}
         setFilesModalhide={this.setFilesModalhide}
         onFileChange={this.onFileChange}
         submitFile={this.submitFile}

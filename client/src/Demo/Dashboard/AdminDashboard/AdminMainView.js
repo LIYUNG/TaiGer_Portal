@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
 import AdminDashboard from "./AdminDashboard";
-import AgentTodoList from "./AgentTodoList";
+import AdminTodoList from "./AdminTodoList";
 import EditorDocsProgress from "./EditorDocsProgress";
 import ApplicationProgress from "./ApplicationProgress";
 
@@ -35,7 +35,7 @@ class AdminMainView extends React.Component {
       />
     ));
     const agent_todo = this.props.students.map((student, i) => (
-      <AgentTodoList
+      <AdminTodoList
         key={i}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
@@ -44,7 +44,6 @@ class AdminMainView extends React.Component {
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
-        onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
@@ -62,7 +61,6 @@ class AdminMainView extends React.Component {
         startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
-        onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
@@ -80,7 +78,6 @@ class AdminMainView extends React.Component {
         startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
-        onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}

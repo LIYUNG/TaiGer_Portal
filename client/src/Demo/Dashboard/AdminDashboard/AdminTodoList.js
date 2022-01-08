@@ -9,7 +9,7 @@ import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import { uploadforstudent } from "../../../api";
 
 
-class AgentTodoList extends React.Component {
+class AdminTodoList extends React.Component {
   render() {
     let applying_universit;
     let applying_program;
@@ -84,4 +84,4 @@ class AgentTodoList extends React.Component {
   }
 }
 
-export default AgentTodoList;
+export default AdminTodoList;

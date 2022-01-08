@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Table, Col, Form, Modal } from "react-bootstrap";
+import { removeProgramFromStudent } from "../../../api";
 
 class EditProgramsSubpage extends React.Component {
   // edit Program subpage
@@ -7,17 +8,15 @@ class EditProgramsSubpage extends React.Component {
     // Edit Program
     let programstatus;
     if (this.props.student.applications) {
-      programstatus = this.props.student.applications.map((program, i) => (
+      programstatus = this.props.student.applications.map((application, i) => (
         <tr key={i}>
-          <th>
-          </th>
+          <th></th>
           <td>
             <h4 className="mb-1">
-              {program._id}
+              {application.programId.University_} -{" "}
+              {application.programId.Program_}
             </h4>
-            <h5 className="mb-1">
-              {program.documents}
-            </h5>
+            <h5 className="mb-1">{application.programId.documents}</h5>
           </td>
           <td>
             <Form
@@ -25,7 +24,7 @@ class EditProgramsSubpage extends React.Component {
                 this.props.onDeleteProgram(
                   e,
                   this.props.student._id,
-                  program._id
+                  application._id
                 )
               }
             >

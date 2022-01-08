@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Table, Col, Form, Modal } from "react-bootstrap";
+import { removeProgramFromStudent } from "../../../api";
 
 class EditProgramsSubpage extends React.Component {
   // edit Program subpage
@@ -12,18 +13,15 @@ class EditProgramsSubpage extends React.Component {
           <th></th>
           <td>
             <h4 className="mb-1">
-              {application.programId.University_} - {application.programId.Program_}
+              {application.programId.University_} -{" "}
+              {application.programId.Program_}
             </h4>
             <h5 className="mb-1">{application.programId.documents}</h5>
           </td>
           <td>
             <Form
               onSubmit={(e) =>
-                this.props.onDeleteProgram(
-                  e,
-                  this.props.student._id,
-                  application._id
-                )
+                this.props.onDeleteProgram(e, this.props.student._id, application._id)
               }
             >
               <Form.Group controlId="exampleForm.ControlSelect1">

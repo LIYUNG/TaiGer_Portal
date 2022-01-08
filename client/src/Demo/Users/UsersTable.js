@@ -20,7 +20,7 @@ class UsersTable extends React.Component {
         if (resp.status === 401 || resp.status === 403) {
           return this.setState({ error: resp.status });
         }
-        console.log(resp.data.data);
+        // console.log(resp.data.data);
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, data, success });
       },
@@ -39,49 +39,6 @@ class UsersTable extends React.Component {
       );
     }
   }
-
-  deleteUser = (user_id) => {
-    // TODO: also delete files in file system
-    deleteUser(user_id).then(
-      (resp) => {},
-      (error) => {
-        console.log("error at deleteUser: " + deleteUser);
-      }
-    );
-  };
-
-  editUser = (edited_user) => {
-    // update local
-    this.setState({
-      data: this.state.data.map((user) => {
-        if (user._id === edited_user._id) {
-          return Object.assign(user, edited_user);
-        } else {
-          return user;
-        }
-      }),
-    });
-    // update remote
-    updateUser(edited_user).then(
-      (resp) => {},
-      (error) => {
-        console.log("error at editUser: " + error);
-      }
-    );
-  };
-
-  onFormSubmit = (edited_user) => {
-    this.editUser(edited_user);
-  };
-
-  RemoveUserHandler3 = (user_id) => {
-    console.log("click delete user");
-    console.log("id = " + user_id);
-    this.deleteUser(user_id);
-    this.setState({
-      isLoaded: false,
-    });
-  };
 
   validate = () => {
     let isError = false;
@@ -112,27 +69,6 @@ class UsersTable extends React.Component {
     return isError;
   };
 
-  assignUserAs = (user_data) => {
-    this.setState({
-      data: this.state.data.map((user) => {
-        if (user._id === user_data._id) {
-          return Object.assign(user, user_data);
-        } else {
-          return user;
-        }
-      }),
-    });
-    console.log("click assign user role");
-    console.log(user_data);
-    changeUserRole(user_data._id, user_data.role_)
-      // .then((res) => res.json())
-      .then(
-        (result) => {},
-        (error) => {
-          console.log(" error at assignUserAs" + error);
-        }
-      );
-  };
 
   render() {
     const { error, isLoaded } = this.state;
@@ -162,10 +98,9 @@ class UsersTable extends React.Component {
                   </Row>
                   <UsersList
                     success={this.state.success}
-                    onFormSubmit={this.onFormSubmit}
-                    assignUserAs={this.assignUserAs}
+                    // onFormSubmit={this.onFormSubmit}
+                    // assignUserAs={this.assignUserAs}
                     data={this.state.data}
-                    RemoveUserHandler3={this.RemoveUserHandler3}
                     onSubmit2={this.onSubmit2}
                     header={window.UserlistHeader}
                   />

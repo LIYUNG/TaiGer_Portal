@@ -8,8 +8,9 @@ import {
   upload,
   download,
   templateDownload,
+  getTemplateDownload,
 } from "../../api";
-import EditUploadFilesSubpage from "../Documentation/EditUploadFilesSubpage";
+import EditDownloadFilesSubpage from "./EditDownloadFilesSubpage";
 
 class DownloadPage extends React.Component {
   constructor(props) {
@@ -25,49 +26,48 @@ class DownloadPage extends React.Component {
     };
   }
   componentDidMount() {
-    getMyfiles(this.props.userId).then(
-      (resp) => {
-        console.log(this.props.userId);
-        console.log(resp.data);
-        const { data: student, success: success } = resp.data;
-        console.log(success);
+    // getMyfiles(this.props.userId).then(
+    //   (resp) => {
+    //     console.log(this.props.userId);
+    //     console.log(resp.data);
+    //     const { data: student, success: success } = resp.data;
+    //     console.log(success);
         this.setState({
           file: "",
           isLoaded: true,
-          student: student,
-          success: success,
+          success: true,
         });
-      },
-      (error) => {
-        console.log(error);
-        console.log(": " + error);
-        this.setState({
-          isLoaded: true,
-          error: true,
-        });
-      }
-    );
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //     console.log(": " + error);
+    //     this.setState({
+    //       isLoaded: true,
+    //       error: true,
+    //     });
+    //   }
+    // );
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      getMyfiles(this.props.userId).then(
-        (resp) => {
-          const { data: student, success: success } = resp.data;
-          console.log(resp.data.data);
-          this.setState({
-            isLoaded: true,
-            student: student,
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error: true,
-          });
-        }
-      );
-    }
+    // if (this.state.isLoaded === false) {
+    //   getTemplateDownload(this.props.userId).then(
+    //     (resp) => {
+    //       const { data: student, success: success } = resp.data;
+    //       console.log(resp.data.data);
+    //       this.setState({
+    //         isLoaded: true,
+    //         student: student,
+    //       });
+    //     },
+    //     (error) => {
+    //       this.setState({
+    //         isLoaded: true,
+    //         error: true,
+    //       });
+    //     }
+    //   );
+    // }
   }
 
   onFileChange(e) {
@@ -137,9 +137,9 @@ class DownloadPage extends React.Component {
     );
   };
 
-  onDownloadFilefromstudent(e, category, id) {
+  onDownloadFilefromstudent(e, category) {
     e.preventDefault();
-    download(category, id).then(
+    getTemplateDownload(category).then(
       (resp) => {
         const actualFileName =
           resp.headers["content-disposition"].split('"')[1];
@@ -237,7 +237,7 @@ class DownloadPage extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      if (this.props.role === "Student") {
+      if (this.props.role === "Student" || this.props.role === "Admin") {
         return (
           <Aux>
             <Row>
@@ -246,19 +246,18 @@ class DownloadPage extends React.Component {
                   {/* <Card.Title> */}
                   <Card.Header as="h5">
                     {/* <Card.Title as="h5"> */}
-                    Upload Your Application Documets
+                    Download TaiGer Document Templates
                     {/* </Card.Title> */}
                   </Card.Header>
                   {/* </Card.Title> */}
                   {/* <Card.Body> */}
-                  <EditUploadFilesSubpage
+                  <EditDownloadFilesSubpage
                     userId={this.props.userId}
                     student={this.state.student}
                     submitFile={this.submitFile}
                     onFileChange={this.onFileChange}
-                    documentslist={window.documentlist}
-                    documentlist2={window.documentlist2}
-                    onDownloadFilefromstudent={this.onDownloadFile}
+                    templatelist={window.templatelist}
+                    // onDownloadFilefromstudent={this.onDownloadFile}
                     onRejectFilefromstudent={this.onRejectFilefromstudent}
                     onAcceptFilefromstudent={this.onAcceptFilefromstudent}
                     onDeleteFilefromstudent={this.onDeleteFilefromstudent}
@@ -269,11 +268,7 @@ class DownloadPage extends React.Component {
             </Row>
           </Aux>
         );
-      } else if (
-        this.props.role === "Agent" ||
-        this.props.role === "Editor" ||
-        this.props.role === "Admin"
-      ) {
+      } else if (this.props.role === "Agent" || this.props.role === "Editor") {
         return (
           <Aux>
             <Row>

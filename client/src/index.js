@@ -88,6 +88,41 @@ window.documentlist2 = {
   Passport: "Passport",
 };
 
+window.templatelist = [
+  {
+    name: "CV",
+    prop: "00_Example_CV_english.pdf",
+  },
+  {
+    name: "ML",
+    prop: "ML_survey_lock_1.xlsx",
+  },
+  {
+    name: "RL",
+    prop: "RL_academic_survey_lock.xlsx",
+  },
+  {
+    name: "Internship Certificate",
+    prop: "internship_Example.png",
+  },
+  {
+    name: "Employment Certificate",
+    prop: "employment_template.png",
+  },
+  {
+    name: "Module Description",
+    prop: "Module Catalog.docx",
+  },
+  {
+    name: "ECTS Conv.",
+    prop: "NTU_ECTS_Conv_example.pdf",
+  },
+  // {
+  //   name: "Essay",
+  //   prop: "Essay_",
+  // },
+];
+
 window.documentlist = [
   // {
   //   name: "CV",

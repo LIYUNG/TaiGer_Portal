@@ -119,6 +119,24 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   });
 });
 
+const downloadTemplateFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { category },
+  } = req;
+  console.log("downloadTemplateFile");
+  const filePath = path.join(UPLOAD_PATH, "TaiGer_Template", category);
+  console.log(filePath);
+  // FIXME: clear the filePath for consistency?
+  if (!fs.existsSync(filePath))
+    throw new ErrorResponse(400, "File does not exist");
+
+  res.status(200).download(filePath, (err) => {
+    if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  });
+
+});
+
 const downloadFile = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -313,6 +331,7 @@ module.exports = {
   saveFilePath,
   saveProfileFilePath,
   downloadProfileFile,
+  downloadTemplateFile,
   downloadFile,
   updateDocumentStatus,
   updateProfileDocumentStatus,

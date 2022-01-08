@@ -9,6 +9,7 @@ const {
   saveFilePath,
   saveProfileFilePath,
   downloadProfileFile,
+  downloadTemplateFile,
   downloadFile,
   deleteProfileFile,
   processTranscript,
@@ -20,7 +21,9 @@ const router = Router();
 router.use(protect);
 
 // TODO: get document status
-router.route("/:studentId/files").get(permit(Role.Student), getMyfiles);
+router
+  .route("/:studentId/files")
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);
 
 // TODO: is delete route required?
 router
@@ -43,10 +46,7 @@ router
     ProfilefileUpload,
     saveProfileFilePath
   )
-  .delete(
-    permit(Role.Admin, Role.Agent, Role.Editor),
-    deleteProfileFile
-  );
+  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteProfileFile);
 // TODO: check the exact usage
 router
   .route("/transcript/:category/:group")
@@ -55,10 +55,19 @@ router
   );
 // .post(fileUpload, processTranscript);
 
+// router
+//   .route("/download/:category/:filename")
+//   .get(
+//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+//     (req, res, next) =>
+//       res.status(400).send({ success: false, message: "Not implemented yet" })
+//   );
+
 router
-  .route("/download/:category/:filename")
-  .get((req, res, next) =>
-    res.status(400).send({ success: false, message: "Not implemented yet" })
+  .route("/download/template/:category")
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    downloadTemplateFile,
   );
 // .get(downloadXLSX);
 

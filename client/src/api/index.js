@@ -10,7 +10,13 @@ export const logout = () => request.get("/auth/logout");
 export const register = (credentials) =>
   request.post("/auth/signup", credentials);
 
-export const verify = () => request.get("/auth/verify");
+  export const forgotPassword = ({ email }) =>
+  request.post("/auth/forgot-password", { email });
+
+  export const resendActivation = ({ email }) =>
+  request.post("/auth/resend-activation", { email });
+
+  export const verify = () => request.get("/auth/verify");
 
 // User APIs
 export const getUsers = () => request.get("/api/users");
@@ -51,12 +57,9 @@ export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 
 export const acceptDocument = (category, studentId) =>
-  request.post(
-    `/api/students/${studentId}/${category}/status`,
-    {
-      status: "accepted",
-    }
-  );
+  request.post(`/api/students/${studentId}/${category}/status`, {
+    status: "accepted",
+  });
 
 export const updateDocumentStatus = (category, studentId, status) =>
   request.post(`/api/students/${studentId}/${category}/status`, {
@@ -85,6 +88,10 @@ export const transcriptanalyser = (category, group, data) =>
 
 export const generatedFileDownload = (category, filename) =>
   request.get(`/api/account/download/${category}/${filename}`, {
+    responseType: "blob",
+  });
+export const getTemplateDownload = (category) =>
+  request.get(`/api/account/download/template/${category}`, {
     responseType: "blob",
   });
 

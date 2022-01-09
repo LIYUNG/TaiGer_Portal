@@ -7,7 +7,13 @@ const { Role, Student } = require("../models/User");
 const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 const { DocumentStatus } = require("../constants");
-
+const {
+  sendUploadedFilesEmail,
+  sendUploadedFilesRemindForAgentEmail,
+  sendChangedFileStatusEmail,
+  sendChangedFileStatusForAgentEmail,
+  sendSomeReminderEmail,
+} = require("../services/email");
 const getMyfiles = asyncHandler(async (req, res) => {
   const {
     params: { studentId },
@@ -73,6 +79,21 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     document.path = req.file.path.replace(UPLOAD_PATH, "");
     student.profile.push(document);
     await student.save();
+
+    await sendUploadedFilesEmail({
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email,
+    });
+    console.log(student.agents);
+    for (let i = 0; i < student.agents.length; i++) {
+      console.log(i);
+      await sendUploadedFilesRemindForAgentEmail({
+        firstname: student.agents[i].firstname,
+        lastname: student.agents[i].lastname,
+        address: student.agents[i].email,
+      });
+    }
     return res.status(201).send({ success: true, data: student });
   }
   document.status = DocumentStatus.Uploaded;
@@ -84,11 +105,25 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   // document.path = req.file.path.replace(UPLOAD_PATH, "");
   // const document = student.profile.find(({ name }) => name === docName);
   await student.save();
-  // return res.status(201).send({ success: true, data: document });
+  await sendUploadedFilesEmail({
+    firstname: student.firstname,
+    lastname: student.lastname,
+    address: student.email,
+  });
+
+  //Reminder for Agent:
+  console.log(student.agents);
+  for (let i = 0; i < student.agents.length; i++) {
+    console.log(i);
+    await sendUploadedFilesRemindForAgentEmail({
+      firstname: student.agents[i].firstname,
+      lastname: student.agents[i].lastname,
+      address: student.agents[i].email,
+    });
+  }
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
 
-  // return res.status(201).send({ success: true, data: document });
   return res.status(201).send({ success: true, data: student });
 });
 
@@ -134,7 +169,6 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   res.status(200).download(filePath, (err) => {
     if (err) throw new ErrorResponse(500, "Error occurs while downloading");
   });
-
 });
 
 const downloadFile = asyncHandler(async (req, res, next) => {
@@ -189,6 +223,7 @@ const updateDocumentStatus = asyncHandler(async (req, res, next) => {
   document.updatedAt = new Date();
 
   await student.save();
+
   res.status(200).send({ success: true, data: document });
 });
 
@@ -213,6 +248,12 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   document.updatedAt = new Date();
 
   await student.save();
+  //Reminder for Student:
+  await sendChangedFileStatusEmail({
+    firstname: student.firstname,
+    lastname: student.lastname,
+    address: student.email,
+  });
   res.status(200).send({ success: true, data: document });
 });
 

@@ -9,19 +9,26 @@ import { login } from "../../../api";
 
 // export default function Signin1({ setToken }) {
 export default function Signin1({ userData }) {
-  const [email, setEmailaddress] = useState();
+  const [emailaddress, setEmailaddress] = useState();
   const [password, setPassword] = useState();
+  const emailValidation = () => {
+    const regex =
+      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    if (!emailaddress || regex.test(emailaddress) === false) {
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email) {
-      alert("Email, please!");
-    } else {
+    if (emailValidation()) {
       if (!password) {
         alert("Password please!");
       } else {
         try {
-          const resp = await login({ email, password });
+          const resp = await login({ email: emailaddress, password });
           // console.log(resp);
           userData(resp);
         } catch (err) {
@@ -29,6 +36,8 @@ export default function Signin1({ userData }) {
           console.log(err);
         }
       }
+    } else {
+      alert("Email is not valid");
     }
   };
 

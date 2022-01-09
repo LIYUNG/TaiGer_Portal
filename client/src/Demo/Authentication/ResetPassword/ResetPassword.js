@@ -30,7 +30,6 @@ export default function ResetPassword() {
         } else {
           alert("Email is not existed!");
         }
-        //TODO: to render when clicked the button.
       } catch (err) {
         console.log(err);
       }

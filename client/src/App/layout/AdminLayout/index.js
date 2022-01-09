@@ -34,13 +34,15 @@ function AdminLayout(props) {
       if (resp) {
         if (resp.status === 400) {
           alert("This Email is already registered.");
-        } else {
-          console.log("successfullllll");
-          props.setUserdata({
-            success: resp.data.success,
-            data: resp.data.data,
-          });
-        }
+          } else if (resp.status === 401) {
+            alert("Password is not correct.");
+          } else {
+            console.log("successfullllll");
+            props.setUserdata({
+              success: resp.data.success,
+              data: resp.data.data,
+            });
+          }
       } else {
         alert("Email or password not correct.");
       }

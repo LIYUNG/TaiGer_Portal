@@ -45,7 +45,7 @@ const sendConfirmationEmail = async (recipient, token) => {
     query: { email: recipient.address, token },
   });
   const message = `\
-Hi ${recipient.name},
+Hi ${recipient.firstname} ${recipient.lastname},
 
 Your user account has been created.
 Please use the following link to activate your account:
@@ -65,7 +65,7 @@ const sendForgotPasswordEmail = async (recipient, token) => {
     query: { email: recipient.address, token },
   });
   const message = `\
-Hi ${recipient.name},
+Hi ${recipient.firstname} ${recipient.lastname},
 
 Please use the link below to reset your password:
 
@@ -80,9 +80,59 @@ You can request another here: ${FORGOT_PASSWORD_URL}`;
 const sendPasswordResetEmail = async (recipient) => {
   const subject = "Password reset successfully";
   const message = `\
-Hi ${recipient.name},
+Hi ${recipient.firstname} ${recipient.lastname},
 
 Your password has been successfully updated, you can now login with your new password.`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendUploadedFilesEmail = async (recipient) => {
+  const subject = "Uploaded Files";
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+A file is uploaded.`; // should be for student/agent/editor
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendUploadedFilesRemindForAgentEmail = async (recipient) => {
+  const subject = "Uploaded Files";
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+A file is uploaded.`; // should be for student/agent/editor
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendChangedFileStatusEmail = async (recipient) => {
+  const subject = "File Status changes";
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+a file status has changed.`; // should be for student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendChangedFileStatusForAgentEmail = async (recipient) => {
+  const subject = "File Status changes";
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+a file status has changed.`; // should be for student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendSomeReminderEmail = async (recipient) => {
+  const subject = "File Status changes";
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Some reminder email template.`; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
 };
@@ -93,4 +143,9 @@ module.exports = {
   sendConfirmationEmail,
   sendForgotPasswordEmail,
   sendPasswordResetEmail,
+  sendUploadedFilesEmail,
+  sendUploadedFilesRemindForAgentEmail,
+  sendChangedFileStatusEmail,
+  sendChangedFileStatusForAgentEmail,
+  sendSomeReminderEmail,
 };

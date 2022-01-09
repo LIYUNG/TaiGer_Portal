@@ -127,7 +127,7 @@ const resendActivation = asyncHandler(async (req, res) => {
   });
 
   await sendConfirmationEmail(
-    { name: user.name, address: email },
+    { firstname: user.firstname, lastname: user.lastname, address: email },
     activationToken
   );
 
@@ -146,7 +146,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   await Token.create({ userId: user._id, value: hashToken(resetToken) });
 
   await sendForgotPasswordEmail(
-    { name: user.name, address: email },
+    { firstname: user.firstname, lastname: user.lastname, address: email },
     resetToken
   );
 
@@ -167,7 +167,11 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.password = password;
   await user.save();
 
-  await sendPasswordResetEmail({ name: user.name, address: email });
+  await sendPasswordResetEmail({
+    firstname: user.firstname,
+    lastname: user.lastname,
+    address: email,
+  });
   await token.deleteOne();
 
   res.status(200).json({ success: true });

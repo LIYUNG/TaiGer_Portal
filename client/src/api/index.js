@@ -95,6 +95,9 @@ export const getTemplateDownload = (category) =>
     responseType: "blob",
   });
 
+export const createManualFileUploadPlace = (studentId, applicationId, docName) =>
+  request.put(`/api/account/files/${studentId}/${applicationId}/${docName}`);
+
 // Program APIs
 export const getPrograms = () => request.get("/api/programs");
 

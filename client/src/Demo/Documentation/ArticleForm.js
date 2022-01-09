@@ -56,7 +56,8 @@ class ArticleForm extends React.Component {
               placeholder="Content"
             />
           </Form.Group> */}
-          <TextEditor defaultContent={this.props.content} />
+          {/* <TextEditor defaultContent={this.props.content} /> */}
+          <TextEditor defaultContent="" />
           <Button onClick={this.handleSubmit}>{submitText}</Button>
           <Button onClick={this.props.onFormClose}>Cancel</Button>
         </Card>

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Row, Col } from "react-bootstrap";
 
 import Aux from "../../../hoc/_Aux";
-import ApplicationArticleList from "../ArticleList";
+import ArticleList from "../ArticleList";
 import ToggleableArticleForm from "../ToggleableArticleForm";
 
 import {
@@ -162,14 +162,14 @@ class Application extends Component {
         <Aux>
           <Row>
             <Col>
-              <ApplicationArticleList
+              <ArticleList
                 articles={this.state.articles}
                 category="application"
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
-                role={this.state.role}
+                role={this.props.role}
               />
-              {this.state.role === "Admin" || this.state.role === "Agent" ? (
+              {this.props.role === "Admin" || this.props.role === "Agent" ? (
                 <ToggleableArticleForm
                   category="application"
                   onFormSubmit={this.handleCreateFormSubmit}

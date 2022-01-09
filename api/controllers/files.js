@@ -30,6 +30,42 @@ const getMyfiles = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: student });
 });
 
+const createFilePlaceholderForProgram = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, applicationId, docName },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  console.log(student.applications);
+  console.log(applicationId);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
+  console.log(application);
+  console.log(idx);
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  let document = application.documents.find(({ name }) => name === docName);
+  if (document) throw new ErrorResponse(400, "Document already existed!");
+  
+  document = application.documents.create({ name: docName });
+  document.status = DocumentStatus.Missing;
+  document.path = "";
+  document.required = true;
+  document.updatedAt = new Date();
+  student.applications[idx].documents.push(document);
+  await student.save();
+  return res.status(201).send({ success: true, data: document });
+});
+
 const saveFilePath = asyncHandler(async (req, res) => {
   const {
     user,
@@ -374,6 +410,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   getMyfiles,
+  createFilePlaceholderForProgram,
   saveFilePath,
   saveProfileFilePath,
   downloadProfileFile,

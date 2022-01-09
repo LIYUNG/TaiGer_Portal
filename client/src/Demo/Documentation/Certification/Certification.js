@@ -164,9 +164,9 @@ class Certification extends Component {
                 category="certification"
                 onFormSubmit={this.handleEditFormSubmit}
                 onTrashClick={this.handleTrashClick}
-                role={this.state.role}
+                role={this.props.role}
               />
-              {this.state.role === "Admin" || this.state.role === "Agent" ? (
+              {this.props.role === "Admin" || this.props.role === "Agent" ? (
                 <ToggleableArticleForm
                   category="application"
                   onFormSubmit={this.handleCreateFormSubmit}

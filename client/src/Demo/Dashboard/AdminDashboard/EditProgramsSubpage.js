@@ -67,8 +67,7 @@ class EditProgramsSubpage extends React.Component {
           </Table>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.setmodalhide}>Assign</Button>
-          <Button onClick={this.props.setmodalhide}>Cancel</Button>
+          <Button onClick={this.props.setmodalhide}>Close</Button>
         </Modal.Footer>
       </Modal>
     );

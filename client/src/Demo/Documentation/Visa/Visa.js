@@ -22,6 +22,7 @@ class Visa extends Component {
   componentDidMount() {
     getVisaArticle().then(
       (resp) => {
+        console.log(resp)
         this.setState({
           articles: resp.data.documents,
           isLoaded: true,
@@ -167,7 +168,7 @@ class Visa extends Component {
                 onTrashClick={this.handleTrashClick}
                 role={this.state.role}
               />
-              {this.state.role === "Admin" || this.state.role === "Agent" ? (
+              {this.props.role === "Admin" || this.props.role === "Agent" ? (
                 <ToggleableArticleForm
                   category="application"
                   onFormSubmit={this.handleCreateFormSubmit}

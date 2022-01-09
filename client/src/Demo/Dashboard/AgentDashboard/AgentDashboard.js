@@ -11,7 +11,6 @@ import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import EditProgramsSubpage from "./EditProgramsSubpage";
 import EditFilesSubpage from "./EditFilesSubpage";
 import {
-  // getStudents,
   uploadforstudent,
   updateDocumentStatus,
   deleteFile,

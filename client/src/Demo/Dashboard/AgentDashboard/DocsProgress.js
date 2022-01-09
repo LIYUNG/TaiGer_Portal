@@ -2,8 +2,26 @@ import React from "react";
 import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
 import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+import EditProgramsFilesSubpage from "./EditProgramsFilesSubpage";
 
 class DocsProgress extends React.Component {
+  state = {
+    showProgramFilesPage: false,
+    student: this.props.student,
+    file: "",
+  };
+  startEditingProgramFiles = () => {
+    console.log("startEditingProgram");
+    this.setState({
+      showProgramFilesPage: true,
+    });
+  };
+
+  setProgramFilesModalhide = () => {
+    this.setState({
+      showProgramFilesPage: false,
+    });
+  };
   render() {
     let applying_university;
     let applying_program;
@@ -44,6 +62,23 @@ class DocsProgress extends React.Component {
         <tbody>
           <tr>
             <td>
+              <DropdownButton
+                className="btn ml-2"
+                size="sm"
+                title="Option"
+                variant="primary"
+                id={`dropdown-variants-${this.props.student._id}`}
+                key={this.props.student._id}
+              >
+                <Dropdown.Item
+                  eventKey="4"
+                  onSelect={() => this.startEditingProgramFiles()}
+                >
+                  Edit Files
+                </Dropdown.Item>
+              </DropdownButton>
+            </td>
+            <td>
               <h5>
                 {this.props.student.firstname}, {this.props.student.lastname}
               </h5>
@@ -54,6 +89,15 @@ class DocsProgress extends React.Component {
             {/* {this.props.studentDocOverview} */}
           </tr>
         </tbody>
+        <>
+          <EditProgramsFilesSubpage
+            student={this.state.student}
+            show={this.state.showProgramFilesPage}
+            onHide={this.setProgramFilesModalhide}
+            setmodalhide={this.setProgramFilesModalhide}
+            onDeleteProgram={this.props.onDeleteProgram}
+          />
+        </>
       </>
     );
   }

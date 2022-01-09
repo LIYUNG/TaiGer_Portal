@@ -124,18 +124,6 @@ window.templatelist = [
 ];
 
 window.documentlist = [
-  // {
-  //   name: "CV",
-  //   prop: "CV_",
-  // },
-  // {
-  //   name: "ML",
-  //   prop: "ML_",
-  // },
-  // {
-  //   name: "RL",
-  //   prop: "RL_",
-  // },
   {
     name: "B.Sc Cert",
     prop: "bachelorCertificate_",
@@ -164,10 +152,6 @@ window.documentlist = [
     name: "TestDaF/B2/C1",
     prop: "GermanCertificate_",
   },
-  // {
-  //   name: "Essay",
-  //   prop: "Essay_",
-  // },
   {
     name: "ECTS Conv.",
     prop: "ECTS_conversion_",

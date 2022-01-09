@@ -27,7 +27,7 @@ class ProgramTable extends React.Component {
         if (resp.status === 401) {
           return this.setState({ error: resp.status });
         }
-        // console.log(resp.data);
+        console.log(resp.data);
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, data, success });
       },
@@ -154,15 +154,13 @@ class ProgramTable extends React.Component {
 
   render() {
     const { error, isLoaded } = this.state;
-    if (error) {
-      //TODO: put error page component for timeout
-      localStorage.removeItem("token");
+    if (!this.state.success) {
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
         </div>
       );
-    } else if (!isLoaded) {
+    } else if (!this.state.isLoaded) {
       return <div>Loading...</div>;
     } else {
       return (

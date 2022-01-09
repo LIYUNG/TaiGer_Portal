@@ -112,7 +112,7 @@ class UploadPage extends React.Component {
         });
       }
     );
-  }
+  };
 
   submitFile = (e, studentId, docName) => {
     if (this.state.file === "") {
@@ -133,9 +133,20 @@ class UploadPage extends React.Component {
   }
 
   onDeleteFilefromstudent = (e, category, id) => {
-    // e.preventDefault();
+
+    e.preventDefault();
+    let idx = this.state.student.profile.findIndex(
+      (doc) => doc.name === category
+    );
+    let std = { ...this.state.student };
+    console.log(std);
     deleteFile(category, id).then(
-      (resp) => {},
+      (res) => {
+        std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
+        this.setState({
+          student: std,
+        });
+      },
       (error) => {}
     );
   };
@@ -229,12 +240,10 @@ class UploadPage extends React.Component {
   }
   render() {
     const { error, isLoaded } = this.state;
-    if (error) {
-      //TODO: put error page component for timeout
-      localStorage.removeItem("token");
+    if (!this.state.success) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          Error: This page is not authorized for you.
         </div>
       );
     } else if (!isLoaded) {
@@ -260,9 +269,9 @@ class UploadPage extends React.Component {
                     submitFile={this.submitFile}
                     onFileChange={this.onFileChange}
                     documentlist2={window.documentlist2}
-                    onDownloadFilefromstudent={this.onDownloadFile}
-                    onRejectFilefromstudent={this.onRejectFilefromstudent}
-                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                    // onDownloadFilefromstudent={this.onDownloadFile}
+                    // onRejectFilefromstudent={this.onRejectFilefromstudent}
+                    // onAcceptFilefromstudent={this.onAcceptFilefromstudent}
                     onDeleteFilefromstudent={this.onDeleteFilefromstudent}
                     onDownloadFilefromstudent={this.onDownloadFilefromstudent}
                   />

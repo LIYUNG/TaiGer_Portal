@@ -46,7 +46,10 @@ router
     ProfilefileUpload,
     saveProfileFilePath
   )
-  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteProfileFile);
+  .delete(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    deleteProfileFile
+  );
 // TODO: check the exact usage
 router
   .route("/transcript/:category/:group")

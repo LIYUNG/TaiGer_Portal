@@ -237,7 +237,12 @@ class DownloadPage extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      if (this.props.role === "Student" || this.props.role === "Admin") {
+      if (
+        this.props.role === "Student" ||
+        this.props.role === "Admin" ||
+        this.props.role === "Editor" ||
+        this.props.role === "Agent"
+      ) {
         return (
           <Aux>
             <Row>
@@ -257,7 +262,6 @@ class DownloadPage extends React.Component {
                     submitFile={this.submitFile}
                     onFileChange={this.onFileChange}
                     templatelist={window.templatelist}
-                    // onDownloadFilefromstudent={this.onDownloadFile}
                     onRejectFilefromstudent={this.onRejectFilefromstudent}
                     onAcceptFilefromstudent={this.onAcceptFilefromstudent}
                     onDeleteFilefromstudent={this.onDeleteFilefromstudent}
@@ -268,17 +272,7 @@ class DownloadPage extends React.Component {
             </Row>
           </Aux>
         );
-      } else if (this.props.role === "Agent" || this.props.role === "Editor") {
-        return (
-          <Aux>
-            <Row>
-              <Col>
-                <div> This page is for paid Student only. </div>
-              </Col>
-            </Row>
-          </Aux>
-        );
-      } else {
+      } else { // Guest
         return (
           <Aux>
             <Row>

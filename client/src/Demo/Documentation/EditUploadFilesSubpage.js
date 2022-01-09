@@ -21,10 +21,10 @@ class EditUploadFilesSubpage extends React.Component {
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = "missing";
     }
-    console.log(this.props.student.firstname);
-
+    console.log(this.props.student.profile);
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
+        console.log(i);
         if (this.props.student.profile[i].status === "uploaded") {
           object_init[this.props.student.profile[i].name] = "uploaded";
         } else if (this.props.student.profile[i].status === "accepted") {
@@ -55,32 +55,10 @@ class EditUploadFilesSubpage extends React.Component {
               <p className="m-0"> {value2[i]}</p>
             </td>
             <td>
-              <Col>
-                <Form
-                  onChange={(e) => this.props.onFileChange(e)}
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File id={this.props.userId}>
-                    {/* <Form.File.Label>Regular file input</Form.File.Label> */}
-                    <Form.File.Input />
-                  </Form.File>
-                </Form>
-              </Col>
+
             </td>
             <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.submitFile(e, this.props.userId, k)
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Upload
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
+
             </td>
             <td>
               <Col>
@@ -228,11 +206,7 @@ class EditUploadFilesSubpage extends React.Component {
               <Col>
                 <Form
                   onSubmit={(e) =>
-                    this.props.onDeleteFilefromstudent(
-                      e,
-                      k,
-                      this.props.userId
-                    )
+                    this.props.onDeleteFilefromstudent(e, k, this.props.userId)
                   }
                 >
                   <Form.Group controlId="exampleForm.ControlSelect1">

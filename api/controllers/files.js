@@ -86,13 +86,15 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       address: student.email,
     });
     console.log(student.agents);
-    for (let i = 0; i < student.agents.length; i++) {
-      console.log(i);
-      await sendUploadedFilesRemindForAgentEmail({
-        firstname: student.agents[i].firstname,
-        lastname: student.agents[i].lastname,
-        address: student.agents[i].email,
-      });
+    if (user.role == Role.Student) {
+      for (let i = 0; i < student.agents.length; i++) {
+        console.log(i);
+        await sendUploadedFilesRemindForAgentEmail({
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email,
+        });
+      }
     }
     return res.status(201).send({ success: true, data: student });
   }
@@ -113,13 +115,15 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
 
   //Reminder for Agent:
   console.log(student.agents);
-  for (let i = 0; i < student.agents.length; i++) {
-    console.log(i);
-    await sendUploadedFilesRemindForAgentEmail({
-      firstname: student.agents[i].firstname,
-      lastname: student.agents[i].lastname,
-      address: student.agents[i].email,
-    });
+  if (user.role == Role.Student) {
+    for (let i = 0; i < student.agents.length; i++) {
+      console.log(i);
+      await sendUploadedFilesRemindForAgentEmail({
+        firstname: student.agents[i].firstname,
+        lastname: student.agents[i].lastname,
+        address: student.agents[i].email,
+      });
+    }
   }
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -294,6 +298,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, "Invalid student Id or application Id");
 
   const document = student.profile.find(({ name }) => name === category);
+  console.log(document);
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not exist");
 

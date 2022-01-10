@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import ArticleForm from "./ArticleForm";
+import UploadFileForm from "./UploadFileForm";
 import { IoMdAdd } from "react-icons/io";
 import { Button } from "react-bootstrap";
 
-class ToggleableArticleForm extends Component {
+class ToggleableUploadFileForm extends Component {
   // TODO: replace by database
   state = {
     isOpen: false,
@@ -24,7 +24,7 @@ class ToggleableArticleForm extends Component {
   render() {
     if (this.state.isOpen) {
       return (
-        <ArticleForm
+        <UploadFileForm
           category={this.props.category}
           student={this.props.student}
           application={this.props.application}
@@ -47,4 +47,4 @@ class ToggleableArticleForm extends Component {
   }
 }
 
-export default ToggleableArticleForm;
+export default ToggleableUploadFileForm;

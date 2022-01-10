@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ArticleForm from "./ArticleForm";
+import UploadFileForm from "./UploadFileForm";
 import HandWrittenFile from "./HandWrittenFile";
 
 class EditableFile extends Component {
@@ -31,7 +31,7 @@ class EditableFile extends Component {
   render() {
     if (this.state.editFormOpen) {
       return (
-        <ArticleForm
+        <UploadFileForm
           id={this.props.id}
           category={this.props.category}
           onFormSubmit={this.handleSubmit}

@@ -1,16 +1,17 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
-import AgentDashboard from "./AgentDashboard";
+import StudDocsDashboard from "../MainViewTab/StudDocsOverview/StudDocsDashboard";
 import AgentTodoList from "./AgentTodoList";
-import EditorDocsProgress from "./EditorDocsProgress";
+import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";
 import ApplicationProgress from "./ApplicationProgress";
 
 class AgentMainView extends React.Component {
   render() {
     const stdlist = this.props.students.map((student, i) => (
-      <AgentDashboard
+      <StudDocsDashboard
         key={i}
         student={student}
+        role={this.props.role}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documentlist2={this.props.documentlist2}
@@ -40,6 +41,7 @@ class AgentMainView extends React.Component {
       <EditorDocsProgress
         key={i}
         student={student}
+        role={this.props.role}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}

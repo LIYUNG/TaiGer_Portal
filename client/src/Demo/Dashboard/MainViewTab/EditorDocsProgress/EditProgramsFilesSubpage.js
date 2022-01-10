@@ -1,7 +1,7 @@
 import React from "react";
 // import { FaBeer } from 'react-icons/fa';
 import { Button, Table, Col, Form, Modal } from "react-bootstrap";
-import UcFirst from "../../../App/components/UcFirst";
+// import UcFirst from "../../../App/components/UcFirst";
 import {
   AiOutlineDownload,
   AiFillCloseCircle,
@@ -47,6 +47,7 @@ class EditProgramsFilesSubpage extends React.Component {
           </tr>
           <tr>
             <ManualFiles
+              role={this.props.role}
               student={this.props.student}
               application={application}
             />

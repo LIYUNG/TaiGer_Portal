@@ -7,20 +7,56 @@ import {
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { Card, Col, Row, Table } from "react-bootstrap";
-import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+import EditAgentsSubpage from "./EditAgentsSubpage";
+import EditEditorsSubpage from "./EditEditorsSubpage";
 import EditProgramsSubpage from "./EditProgramsSubpage";
 import EditFilesSubpage from "./EditFilesSubpage";
 import {
   uploadforstudent,
   updateDocumentStatus,
   deleteFile,
-} from "../../../api";
-class AgentDashboard extends React.Component {
+} from "../../../../api";
+class StudDocsDashboard extends React.Component {
   state = {
+    showAgentPage: false,
+    showEditorPage: false,
     showProgramPage: false,
     showFilePage: false,
     student: this.props.student,
     file: "",
+  };
+
+  setAgentModalhide = () => {
+    this.setState({
+      showAgentPage: false,
+    });
+  };
+
+  startEditingAgent = (student) => {
+    console.log("startEditingAgent");
+    console.log(student);
+    this.props.editAgent(student);
+    this.setState({
+      subpage: 1,
+      showAgentPage: true,
+    });
+  };
+
+  setEditorModalhide = () => {
+    this.setState({
+      showEditorPage: false,
+    });
+  };
+
+  startEditingEditor = (student) => {
+    console.log("startEditingEditor");
+    console.log(student);
+    this.props.editEditor(student);
+    this.setState({
+      subpage: 2,
+      showEditorPage: true,
+    });
   };
 
   setProgramModalhide = () => {
@@ -195,6 +231,28 @@ class AgentDashboard extends React.Component {
                   id={`dropdown-variants-${this.state.student._id}`}
                   key={this.props.student._id}
                 >
+                  {this.props.role === "Admin" ? (
+                    <>
+                      <Dropdown.Item
+                        eventKey="1"
+                        onSelect={() =>
+                          this.startEditingAgent(this.props.student)
+                        }
+                      >
+                        Edit Agent
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey="2"
+                        onSelect={() =>
+                          this.startEditingEditor(this.props.student)
+                        }
+                      >
+                        Edit Editor
+                      </Dropdown.Item>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                   <Dropdown.Item
                     eventKey="3"
                     onSelect={() => this.startEditingProgram()}
@@ -217,6 +275,32 @@ class AgentDashboard extends React.Component {
           </tr>
         </tbody>
         <>
+          {this.props.role === "Admin" ? (
+            <>
+              <EditAgentsSubpage
+                student={this.state.student}
+                agent_list={this.props.agent_list}
+                show={this.state.showAgentPage}
+                onHide={this.setAgentModalhide}
+                setmodalhide={this.setAgentModalhide}
+                updateAgentList={this.props.updateAgentList}
+                handleChangeAgentlist={this.props.handleChangeAgentlist}
+                submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+              />
+              <EditEditorsSubpage
+                student={this.state.student}
+                editor_list={this.props.editor_list}
+                show={this.state.showEditorPage}
+                onHide={this.setEditorModalhide}
+                setmodalhide={this.setEditorModalhide}
+                updateEditorList={this.props.updateEditorList}
+                handleChangeEditorlist={this.props.handleChangeEditorlist}
+                submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+              />
+            </>
+          ) : (
+            <></>
+          )}
           <EditProgramsSubpage
             student={this.state.student}
             show={this.state.showProgramPage}
@@ -243,4 +327,4 @@ class AgentDashboard extends React.Component {
   }
 }
 
-export default AgentDashboard;
+export default StudDocsDashboard;

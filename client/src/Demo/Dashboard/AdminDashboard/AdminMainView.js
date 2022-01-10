@@ -1,8 +1,9 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
-import AdminDashboard from "./AdminDashboard";
+// import AdminDashboard from "./AdminDashboard";
+import StudDocsDashboard from "../MainViewTab/StudDocsOverview/StudDocsDashboard";
 import AdminTodoList from "./AdminTodoList";
-import EditorDocsProgress from "./EditorDocsProgress";
+import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";
 import ProgramConflict from "./ProgramConflict";
 import ApplicationProgress from "./ApplicationProgress";
 
@@ -50,7 +51,7 @@ class AdminMainView extends React.Component {
     }
 
     const stdlist = this.props.students.map((student, i) => (
-      <AdminDashboard
+      <StudDocsDashboard
         key={i}
         role={this.props.role}
         student={student}
@@ -96,6 +97,7 @@ class AdminMainView extends React.Component {
     const student_editor = this.props.students.map((student, i) => (
       <EditorDocsProgress
         key={i}
+        role={this.props.role}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}

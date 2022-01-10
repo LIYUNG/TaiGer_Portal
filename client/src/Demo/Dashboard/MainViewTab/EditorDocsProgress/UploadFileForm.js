@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Button } from "react-bootstrap";
 
-class ArticleForm extends React.Component {
+class UploadFileForm extends React.Component {
   state = {
     FileName: "",
     text: "",
@@ -45,4 +45,4 @@ class ArticleForm extends React.Component {
   }
 }
 
-export default ArticleForm;
+export default UploadFileForm;

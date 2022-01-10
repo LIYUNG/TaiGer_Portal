@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Table, Col, Form, Modal } from "react-bootstrap";
-import { removeProgramFromStudent } from "../../../api";
+import { removeProgramFromStudent } from "../../../../api";
 
 class EditProgramsSubpage extends React.Component {
   // edit Program subpage

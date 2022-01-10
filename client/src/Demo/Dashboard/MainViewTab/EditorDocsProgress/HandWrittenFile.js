@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import Card from "../../../App/components/MainCard";
 import { AiFillEdit } from "react-icons/ai";
-import { Form, Button } from "react-bootstrap";
+import { Form, Col, Button } from "react-bootstrap";
 
 import { BsTrash } from "react-icons/bs";
 class HandWrittenFile extends Component {
@@ -12,6 +11,17 @@ class HandWrittenFile extends Component {
     return (
       <div>
         <h5>Document Name: {this.props.document.name}</h5>
+        <Col>
+          <Form
+            // onChange={(e) => this.props.onFileChange(e)}
+            // onClick={(e) => (e.target.value = null)}
+          >
+            <Form.File id={this.props.id}>
+              {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+              <Form.File.Input />
+            </Form.File>
+          </Form>
+        </Col>
         <Button>Upload</Button>
         <Button>Download</Button>
         <Button>Delete</Button>

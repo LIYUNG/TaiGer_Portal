@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
 import EditorStudents from "./EditorStudents";
-import EditorDocsProgress from "./EditorDocsProgress";
+import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";
 import ProgramConflict from "./ProgramConflict";
 
 class EditorMainView extends React.Component {
@@ -75,6 +75,7 @@ class EditorMainView extends React.Component {
       <EditorDocsProgress
         key={i}
         student={student}
+        role={this.props.role}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}

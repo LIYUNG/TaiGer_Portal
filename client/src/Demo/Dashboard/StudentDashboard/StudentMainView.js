@@ -1,7 +1,8 @@
 import React from "react";
 import { Card, Table, Tabs, Tab } from "react-bootstrap";
 import StudentMyself from "./StudentMyself";
-import EditorDocsProgress from "./EditorDocsProgress";
+// import EditorDocsProgress from "./EditorDocsProgress";
+import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";
 import ApplicationProgress from "./ApplicationProgress";
 class StudentMainView extends React.Component {
   render() {
@@ -36,6 +37,7 @@ class StudentMainView extends React.Component {
       <EditorDocsProgress
         key={i}
         student={student}
+        role={this.props.role}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}

@@ -1,11 +1,11 @@
 import React from "react";
 import ManualFilesList from "./ManualFilesList";
-import ToggleableArticleForm from "./ToggleableArticleForm";
+import ToggleableUploadFileForm from "./ToggleableUploadFileForm";
 import {
   createManualFileUploadPlace,
   createArticle,
   getApplicationArticle,
-} from "../../../api";
+} from "../../../../api";
 
 class ManualFiles extends React.Component {
   createManualFileUpload = (studentId, applicationId, docName) => {
@@ -29,12 +29,17 @@ class ManualFiles extends React.Component {
           onTrashClick={this.handleTrashClick}
           role={this.props.role}
         />
-        <ToggleableArticleForm
-          category="application"
-          student={this.props.student}
-          application={this.props.application}
-          onFormSubmit={this.handleCreateFormSubmit}
-        />
+        {this.props.role === "Agent" || this.props.role === "Admin" ? (
+          <ToggleableUploadFileForm
+            role={this.props.role}
+            category="application"
+            student={this.props.student}
+            application={this.props.application}
+            onFormSubmit={this.handleCreateFormSubmit}
+          />
+        ) : (
+          <></>
+        )}
         {this.props.application.programId.University_}
       </>
     );

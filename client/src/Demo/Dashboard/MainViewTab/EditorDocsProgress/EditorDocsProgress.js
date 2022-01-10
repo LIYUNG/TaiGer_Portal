@@ -5,9 +5,9 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { Card, Col, Row } from "react-bootstrap";
 
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 
-import { uploadforstudent } from "../../../api";
+import { uploadforstudent } from "../../../../api";
 import DocsProgress from "./DocsProgress";
 
 class EditorDocsProgress extends React.Component {
@@ -179,6 +179,7 @@ class EditorDocsProgress extends React.Component {
 
     return (
       <DocsProgress
+        role={this.props.role}
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}

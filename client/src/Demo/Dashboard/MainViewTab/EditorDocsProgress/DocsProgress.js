@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { Card, Col, Row, Table } from "react-bootstrap";
-import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import EditProgramsFilesSubpage from "./EditProgramsFilesSubpage";
 
 class DocsProgress extends React.Component {
@@ -91,6 +91,7 @@ class DocsProgress extends React.Component {
         </tbody>
         <>
           <EditProgramsFilesSubpage
+            role={this.props.role}
             student={this.state.student}
             show={this.state.showProgramFilesPage}
             onHide={this.setProgramFilesModalhide}

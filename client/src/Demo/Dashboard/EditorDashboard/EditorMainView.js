@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
-import EditorStudents from "./EditorStudents";
+import StudDocsDashboard from "../MainViewTab/StudDocsOverview/StudDocsDashboard";
 import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";
 import ProgramConflict from "./ProgramConflict";
 
@@ -45,7 +45,7 @@ class EditorMainView extends React.Component {
       }
     }
     const stdlist = this.props.students.map((student, i) => (
-      <EditorStudents
+      <StudDocsDashboard
         key={i}
         role={this.props.role}
         student={student}

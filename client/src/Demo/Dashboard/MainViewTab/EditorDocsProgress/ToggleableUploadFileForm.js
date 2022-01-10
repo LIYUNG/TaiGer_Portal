@@ -34,14 +34,11 @@ class ToggleableUploadFileForm extends Component {
       );
     } else {
       return (
-        <div className="ui basic content center aligned segment">
-          <Button
-            className="ui basic button icon"
-            onClick={this.handleFormOpen}
-          >
-            <IoMdAdd />
-          </Button>
-        </div>
+        // <div className="ui basic content center aligned segment">
+        <Button className="ui basic button icon" onClick={this.handleFormOpen}>
+          <IoMdAdd />
+        </Button>
+        // </div>
       );
     }
   }

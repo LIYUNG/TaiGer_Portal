@@ -97,6 +97,8 @@ export const getTemplateDownload = (category) =>
 
 export const createManualFileUploadPlace = (studentId, applicationId, docName) =>
   request.put(`/api/account/files/${studentId}/${applicationId}/${docName}`);
+export const deleteManualFileUploadPlace = (studentId, applicationId, docName) =>
+  request.delete(`/api/account/files/${studentId}/${applicationId}/${docName}`);
 
 // Program APIs
 export const getPrograms = () => request.get("/api/programs");

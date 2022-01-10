@@ -61,8 +61,12 @@ router
 
 router
   .route("/:studentId/files/:category")
-  .get(permit(Role.Admin, Role.Agent), downloadProfileFile)
-  .post(permit(Role.Admin, Role.Agent), ProfilefileUpload, saveProfileFilePath)
+  .get(permit(Role.Admin, Role.Editor, Role.Agent), downloadProfileFile)
+  .post(
+    permit(Role.Admin, Role.Editor, Role.Agent),
+    ProfilefileUpload,
+    saveProfileFilePath
+  )
   .delete(permit(Role.Admin, Role.Agent), deleteProfileFile);
 
 router

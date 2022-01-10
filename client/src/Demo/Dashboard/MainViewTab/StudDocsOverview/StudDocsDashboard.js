@@ -253,12 +253,16 @@ class StudDocsDashboard extends React.Component {
                   ) : (
                     <></>
                   )}
-                  <Dropdown.Item
-                    eventKey="3"
-                    onSelect={() => this.startEditingProgram()}
-                  >
-                    Edit Program
-                  </Dropdown.Item>
+                  {this.props.role !== "Editor" ? (
+                    <Dropdown.Item
+                      eventKey="3"
+                      onSelect={() => this.startEditingProgram()}
+                    >
+                      Edit Program
+                    </Dropdown.Item>
+                  ) : (
+                    <></>
+                  )}
                   <Dropdown.Item
                     eventKey="4"
                     onSelect={() => this.startUploadfile()}
@@ -310,6 +314,7 @@ class StudDocsDashboard extends React.Component {
           />
           <EditFilesSubpage
             student={this.state.student}
+            role={this.props.role}
             documentslist={this.props.documentslist}
             documentlist2={this.props.documentlist2}
             show={this.state.showFilePage}

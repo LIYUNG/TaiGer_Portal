@@ -81,65 +81,71 @@ class EditFilesSubpage extends React.Component {
                 </Form>
               </Col>
             </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onUpdateProfileDocStatus(
-                      e,
-                      k,
-                      this.props.student._id,
-                      "rejected"
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Reject
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onUpdateProfileDocStatus(
-                      e,
-                      k,
-                      this.props.student._id,
-                      "accepted"
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Accept
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onDeleteFilefromstudent(
-                      e,
-                      k,
-                      this.props.student._id
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button variant={deleteStyle} size="sm" type="submit">
-                      <UcFirst text="Delete" />
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
+            {this.props.role === "Editor" ? (
+              <></>
+            ) : (
+              <>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "rejected"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Reject
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "accepted"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Accept
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onDeleteFilefromstudent(
+                          e,
+                          k,
+                          this.props.student._id
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button variant={deleteStyle} size="sm" type="submit">
+                          <UcFirst text="Delete" />
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+              </>
+            )}
           </tr>
         );
       } else if (object_init[k] === "accepted") {
@@ -176,65 +182,71 @@ class EditFilesSubpage extends React.Component {
                 </Form>
               </Col>
             </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onUpdateProfileDocStatus(
-                      e,
-                      k,
-                      this.props.student._id,
-                      "rejected"
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Reject
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onUpdateProfileDocStatus(
-                      e,
-                      k,
-                      this.props.student._id,
-                      "accepted"
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Accept
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onDeleteFilefromstudent(
-                      e,
-                      k,
-                      this.props.student._id
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button variant={deleteStyle} size="sm" type="submit">
-                      <UcFirst text="Delete" />
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
+            {this.props.role === "Editor" ? (
+              <></>
+            ) : (
+              <>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "rejected"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Reject
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "accepted"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Accept
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onDeleteFilefromstudent(
+                          e,
+                          k,
+                          this.props.student._id
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button variant={deleteStyle} size="sm" type="submit">
+                          <UcFirst text="Delete" />
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+              </>
+            )}
           </tr>
         );
       } else if (object_init[k] === "rejected") {
@@ -271,65 +283,71 @@ class EditFilesSubpage extends React.Component {
                 </Form>
               </Col>
             </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onUpdateProfileDocStatus(
-                      e,
-                      k,
-                      this.props.student._id,
-                      "rejected"
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Reject
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onUpdateProfileDocStatus(
-                      e,
-                      k,
-                      this.props.student._id,
-                      "accepted"
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Accept
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
-            <td>
-              <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onDeleteFilefromstudent(
-                      e,
-                      k,
-                      this.props.student._id
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button variant={deleteStyle} size="sm" type="submit">
-                      <UcFirst text="Delete" />
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
+            {this.props.role === "Editor" ? (
+              <></>
+            ) : (
+              <>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "rejected"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Reject
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "accepted"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Accept
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onDeleteFilefromstudent(
+                          e,
+                          k,
+                          this.props.student._id
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button variant={deleteStyle} size="sm" type="submit">
+                          <UcFirst text="Delete" />
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+              </>
+            )}
           </tr>
         );
       } else {
@@ -347,34 +365,40 @@ class EditFilesSubpage extends React.Component {
                 <b> {value2[i]} </b>
               </p>
             </td>
-            <td>
-              <Col>
-                <Form
-                  onChange={(e) => this.props.onFileChange(e)}
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File id={this.props.id}>
-                    {/* <Form.File.Label>Regular file input</Form.File.Label> */}
-                    <Form.File.Input />
-                  </Form.File>
-                </Form>
-              </Col>
-            </td>
-            <td>
-              <Col md={2}>
-                <Form
-                  onSubmit={(e) =>
-                    this.props.onSubmitFile(e, k, this.props.student._id)
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      Upload
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
-            </td>
+            {this.props.role === "Editor" ? (
+              <></>
+            ) : (
+              <>
+                <td>
+                  <Col>
+                    <Form
+                      onChange={(e) => this.props.onFileChange(e)}
+                      onClick={(e) => (e.target.value = null)}
+                    >
+                      <Form.File id={this.props.id}>
+                        {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                        <Form.File.Input />
+                      </Form.File>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col md={2}>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onSubmitFile(e, k, this.props.student._id)
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Upload
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+              </>
+            )}
           </tr>
         );
       }

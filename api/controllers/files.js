@@ -55,7 +55,7 @@ const createFilePlaceholderForProgram = asyncHandler(async (req, res) => {
 
   let document = application.documents.find(({ name }) => name === docName);
   if (document) throw new ErrorResponse(400, "Document already existed!");
-  
+
   document = application.documents.create({ name: docName });
   document.status = DocumentStatus.Missing;
   document.path = "";
@@ -63,7 +63,81 @@ const createFilePlaceholderForProgram = asyncHandler(async (req, res) => {
   document.updatedAt = new Date();
   student.applications[idx].documents.push(document);
   await student.save();
-  return res.status(201).send({ success: true, data: document });
+  return res
+    .status(201)
+    .send({ success: true, data: student.applications[idx] });
+});
+
+const deleteFilePlaceholderForProgram = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, applicationId, docName },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  let student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  console.log(student.applications);
+  // console.log(applicationId);
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
+  console.log(idx);
+
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  const document = application.documents.find(({ name }) => name === docName);
+  console.log(document);
+  if (!document) throw new ErrorResponse(400, "docName not existed");
+  if (document.path !== "") {
+    // const filePath = path.join(UPLOAD_PATH, document.path);
+    const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+    console.log(filePath);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  }
+  await Student.findOneAndUpdate(
+    { _id: studentId, "applications._id": application._id },
+    {
+      $pull: {
+        "applications.$.documents": { name: docName },
+      },
+    }
+  );
+  student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
+  // document.status = DocumentStatus.Missing;
+  // document.path = "";
+  // document.updatedAt = new Date();
+  // var array = [...this.state.data];
+  // let idx = this.state.data.findIndex((user) => user._id === user_id);
+  // if (idx !== -1) {
+  //   array.splice(idx, 1);
+  // }
+  await student.save();
+  ////////////////////////
+
+  // if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  // let document = application.documents.find(({ name }) => name === docName);
+  // if (document) throw new ErrorResponse(400, "Document already existed!");
+
+  // document = application.documents.create({ name: docName });
+  // document.status = DocumentStatus.Missing;
+  // document.path = "";
+  // document.required = true;
+  // document.updatedAt = new Date();
+  // student.applications[idx].documents.push(document);
+  // await student.save();
+  return res
+    .status(201)
+    .send({ success: true, data: student.applications[idx] });
 });
 
 const saveFilePath = asyncHandler(async (req, res) => {
@@ -411,6 +485,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 module.exports = {
   getMyfiles,
   createFilePlaceholderForProgram,
+  deleteFilePlaceholderForProgram,
   saveFilePath,
   saveProfileFilePath,
   downloadProfileFile,

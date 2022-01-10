@@ -27,12 +27,15 @@ class EditableFile extends Component {
   openForm = () => {
     this.setState({ editFormOpen: true });
   };
-  
+
   render() {
     if (this.state.editFormOpen) {
       return (
         <UploadFileForm
           id={this.props.id}
+          document={this.props.document}
+          application={this.props.application}
+          student={this.props.student}
           category={this.props.category}
           onFormSubmit={this.handleSubmit}
           onFormClose={this.handleFormClose}
@@ -48,6 +51,7 @@ class EditableFile extends Component {
           onEditClick={this.handleEditClick}
           onTrashClick={this.props.onTrashClick}
           lastupdate={this.props.lastupdate}
+          onFormDelete={this.props.onFormDelete}
           role={this.props.role}
         />
       );

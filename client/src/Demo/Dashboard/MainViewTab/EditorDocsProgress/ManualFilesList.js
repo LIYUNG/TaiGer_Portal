@@ -13,6 +13,7 @@ class ManualFilesList extends Component {
         category={this.props.category}
         onFormSubmit={this.props.onFormSubmit}
         onTrashClick={this.props.onTrashClick}
+        onFormDelete={this.props.onFormDelete}
         role={this.props.role}
       />
     ));

@@ -63,9 +63,7 @@ const createFilePlaceholderForProgram = asyncHandler(async (req, res) => {
   document.updatedAt = new Date();
   student.applications[idx].documents.push(document);
   await student.save();
-  return res
-    .status(201)
-    .send({ success: true, data: student});
+  return res.status(201).send({ success: true, data: student });
 });
 
 const deleteFilePlaceholderForProgram = asyncHandler(async (req, res) => {
@@ -145,11 +143,14 @@ const saveFilePath = asyncHandler(async (req, res) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student =
-    user.role == Role.Student ? user : await Student.findById(studentId);
+  const student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  const application = student.applications.id(applicationId);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
   const document = application.documents.find(({ name }) => name === docName);
@@ -160,7 +161,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
   document.updatedAt = new Date();
 
   await student.save();
-  return res.status(201).send({ success: true, data: document });
+  return res.status(201).send({ success: true, data: student });
 });
 
 const saveProfileFilePath = asyncHandler(async (req, res) => {
@@ -172,7 +173,9 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   // console.log(category);
   // // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student =
-    user.role == Role.Student ? user : await Student.findById(studentId);
+    user.role == Role.Student
+      ? user
+      : await Student.findById(studentId).populate("applications.programId");
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   // console.log(student);
   let document = student.profile.find(({ name }) => name === category);
@@ -301,7 +304,8 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
 
-  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = path.join(UPLOAD_PATH, document.path);
+  const filePath = document.path;
   // FIXME: clear the filePath for consistency?
   if (!fs.existsSync(filePath))
     throw new ErrorResponse(400, "File does not exist");
@@ -374,18 +378,19 @@ const deleteFile = asyncHandler(async (req, res, next) => {
 
   const student = await Student.findOne({
     _id: studentId,
-    "applications._id": applicationId,
-  });
+  }).populate("applications.programId");
   if (!student)
     throw new ErrorResponse(400, "Invalid student Id or application Id");
 
-  const document = student.applications
-    .id(applicationId)
-    .documents.find(({ name }) => name === docName);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  const document = application.documents.find(({ name }) => name === docName);
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not exist");
 
-  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = path.join(UPLOAD_PATH, document.path);
+  const filePath = document.path;
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
   document.status = DocumentStatus.Missing;
@@ -393,7 +398,7 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   document.updatedAt = new Date();
 
   await student.save();
-  res.status(200).send({ success: true, data: document });
+  res.status(200).send({ success: true, data: student });
 });
 
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
@@ -467,8 +472,6 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     "output",
     filename
   );
-
-  //TODO: what if student.uploadedDocs_.bachelorCertificate_ undefined?
 
   if (!fs.existsSync(filePath))
     throw new ErrorResponse(400, "File does not exist");

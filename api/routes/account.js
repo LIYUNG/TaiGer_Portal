@@ -14,6 +14,7 @@ const {
   downloadTemplateFile,
   downloadFile,
   deleteProfileFile,
+  deleteFile,
   processTranscript,
   downloadXLSX,
 } = require("../controllers/files");
@@ -27,10 +28,8 @@ router
   .route("/:studentId/files")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);
 
-// TODO: is delete route required?
 router
-  .route("/files/:studentId/:applicationId/:docName")
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
+  .route("/files/placeholder/:studentId/:applicationId/:docName")
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     createFilePlaceholderForProgram
@@ -39,6 +38,11 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor),
     deleteFilePlaceholderForProgram
   )
+
+router
+  .route("/files/:studentId/:applicationId/:docName")
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
+  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteFile)
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     fileUpload,

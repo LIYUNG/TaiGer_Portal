@@ -1,10 +1,16 @@
 import React, { Component } from "react";
 import UploadFileForm from "./UploadFileForm";
 import HandWrittenFile from "./HandWrittenFile";
-
+import {
+  uploadHandwrittenFileforstudent,
+  updateDocumentStatus,
+  downloadHandWrittenFile,
+  deleteFile,
+} from "../../../../api";
 class EditableFile extends Component {
   state = {
     editFormOpen: false,
+    file: "",
   };
 
   handleEditClick = () => {
@@ -28,6 +34,8 @@ class EditableFile extends Component {
     this.setState({ editFormOpen: true });
   };
 
+
+
   render() {
     if (this.state.editFormOpen) {
       return (
@@ -39,6 +47,7 @@ class EditableFile extends Component {
           category={this.props.category}
           onFormSubmit={this.handleSubmit}
           onFormClose={this.handleFormClose}
+          role={this.props.role}
         />
       );
     } else {
@@ -49,6 +58,10 @@ class EditableFile extends Component {
           application={this.props.application}
           student={this.props.student}
           onEditClick={this.handleEditClick}
+          onFileChange={this.props.onFileChange}
+          onDownloadFile={this.props.onDownloadFile}
+          onSubmitFile={this.props.onSubmitFile}
+          onDeleteFile={this.props.onDeleteFile}
           onTrashClick={this.props.onTrashClick}
           lastupdate={this.props.lastupdate}
           onFormDelete={this.props.onFormDelete}

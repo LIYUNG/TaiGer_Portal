@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { AiFillEdit } from "react-icons/ai";
-import { Form, Col, Button } from "react-bootstrap";
+import { Form, Col, Row, Button } from "react-bootstrap";
 
 import { BsTrash } from "react-icons/bs";
 class HandWrittenFile extends Component {
@@ -16,27 +16,150 @@ class HandWrittenFile extends Component {
     );
   };
 
-  
-  render() {
-    return (
-      <div>
-        <h5>Document Name: {this.props.document.name}</h5>
-        <Col>
-          <Form
-          // onChange={(e) => this.props.onFileChange(e)}
-          // onClick={(e) => (e.target.value = null)}
-          >
-            <Form.File id={this.props.id}>
-              {/* <Form.File.Label>Regular file input</Form.File.Label> */}
-              <Form.File.Input />
-            </Form.File>
-          </Form>
-        </Col>
-        <Button>Upload</Button>
-        <Button>Download</Button>
-        <Button onClick={this.handleSubmit}>Delete</Button>
-      </div>
+  handleSubmitFile = () => {
+    this.props.onFormDelete(
+      this.props.student._id,
+      this.props.application.programId._id,
+      this.props.document.name
     );
+  };
+
+  render() {
+    let fileStatus;
+    if (this.props.document.status === "uploaded") {
+      fileStatus = (
+        <>
+          <h5>Document Name: {this.props.document.name}</h5>
+          <Col>
+            <Row>
+              <Form
+                onChange={(e) => this.props.onFileChange(e)}
+                // onClick={(e) => (e.target.value = null)}
+              >
+                <Form.File id={this.props.id}>
+                  {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                  <Form.File.Input />
+                </Form.File>
+              </Form>
+              <Button
+                onClick={(e) =>
+                  this.props.onSubmitFile(
+                    e,
+                    this.props.student._id,
+                    this.props.application._id,
+                    this.props.document.name
+                  )
+                }
+              >
+                Upload
+              </Button>
+              <Button
+                onClick={(e) =>
+                  this.props.onDownloadFile(
+                    e,
+                    this.props.student._id,
+                    this.props.application._id,
+                    this.props.document.name
+                  )
+                }
+              >
+                Download
+              </Button>
+              <Button
+                onClick={(e) =>
+                  this.props.onDeleteFile(
+                    e,
+                    this.props.student._id,
+                    this.props.application.programId._id,
+                    this.props.document.name
+                  )
+                }
+              >
+                Delete File
+              </Button>
+              {this.props.role === "Student" ? (
+                <></>
+              ) : (
+                <Button onClick={this.handleSubmit}>Delete Placeholder</Button>
+              )}
+            </Row>
+          </Col>
+        </>
+      );
+    } else if (this.props.document.status === "missing") {
+      fileStatus = (
+        <>
+          <h5>Document Name: {this.props.document.name}</h5>
+          <Col>
+            <Row>
+              <Form
+                onChange={(e) => this.props.onFileChange(e)}
+                // onClick={(e) => (e.target.value = null)}
+              >
+                <Form.File id={this.props.id}>
+                  {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                  <Form.File.Input />
+                </Form.File>
+              </Form>
+              <Button
+                onClick={(e) =>
+                  this.props.onSubmitFile(
+                    e,
+                    this.props.student._id,
+                    this.props.application.programId._id,
+                    this.props.document.name
+                  )
+                }
+              >
+                Upload
+              </Button>
+              {this.props.role === "Student" ? (
+                <></>
+              ) : (
+                <Button onClick={this.handleSubmit}>Delete Placeholder</Button>
+              )}
+            </Row>
+          </Col>
+        </>
+      );
+    } else {
+      fileStatus = (
+        <>
+          <h5>Document Name: {this.props.document.name}</h5>
+          <Col>
+            <Row>
+              <Form
+                onChange={(e) => this.props.onFileChange(e)}
+                // onClick={(e) => (e.target.value = null)}
+              >
+                <Form.File id={this.props.id}>
+                  {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                  <Form.File.Input />
+                </Form.File>
+              </Form>
+              <Button
+                onClick={(e) =>
+                  this.props.onSubmitFile(
+                    e,
+                    this.props.student._id,
+                    this.props.application._id,
+                    this.props.document.name
+                  )
+                }
+              >
+                Upload
+              </Button>
+              {this.props.role === "Student" ? (
+                <></>
+              ) : (
+                <Button onClick={this.handleSubmit}>Delete Placeholder</Button>
+              )}
+            </Row>
+          </Col>
+        </>
+      );
+    }
+    return <>{fileStatus}</>;
   }
 }
 

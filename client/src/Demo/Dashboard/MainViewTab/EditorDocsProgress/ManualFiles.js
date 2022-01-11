@@ -9,15 +9,20 @@ import {
 } from "../../../../api";
 
 class ManualFiles extends React.Component {
-
-
-
   handleCreateFormSubmit = (studentId, applicationId, docName) => {
-    this.props.createManualFileUpload(studentId, applicationId, docName);
+    this.props.createManualFileUploadPlaceholder(
+      studentId,
+      applicationId,
+      docName
+    );
   };
 
   handleDeleteFormSubmit = (studentId, applicationId, docName) => {
-    this.props.deleteManualFileUpload(studentId, applicationId, docName);
+    this.props.deleteManualFileUploadPlaceholder(
+      studentId,
+      applicationId,
+      docName
+    );
   };
 
   render() {
@@ -29,6 +34,10 @@ class ManualFiles extends React.Component {
           category="application"
           onFormSubmit={this.handleEditFormSubmit}
           onTrashClick={this.handleTrashClick}
+          onDownloadFile={this.props.onDownloadFile}
+          onDeleteFile={this.props.onDeleteFile}
+          onFileChange={this.props.onFileChange}
+          onSubmitFile={this.props.onSubmitFile}
           onFormDelete={this.handleDeleteFormSubmit}
           role={this.props.role}
         />

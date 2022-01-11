@@ -2,6 +2,7 @@ const { ErrorResponse } = require("../common/errors");
 const { asyncHandler } = require("../middlewares/error-handler");
 const { Role, Agent, Student, Editor } = require("../models/User");
 const { Program } = require("../models/Program");
+const fs = require("fs");
 
 const getStudents = asyncHandler(async (req, res) => {
   // const { userId } = req.params;
@@ -190,12 +191,45 @@ const createApplication = asyncHandler(async (req, res) => {
 });
 
 const deleteApplication = asyncHandler(async (req, res, next) => {
-  const { studentId, applicationId } = req.params;
+  const {
+    user,
+    params: { studentId, applicationId, docName },
+  } = req;
+  // TODO: remove uploaded files before remove program
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  let student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  console.log(student.applications);
+  // console.log(applicationId);
+  const idx = student.applications.findIndex(
+    ({ _id }) => _id == applicationId
+  );
+  console.log(idx);
+
+  const application = student.applications.find(
+    ({ _id }) => _id == applicationId
+  );
+  console.log(application);
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  // TODO: iteratively to remove files
+  for (let i = 0; i < application.documents.length; i++) {
+    let document = application.documents[i];
+    if (!document) throw new ErrorResponse(400, "docName not existed");
+    if (document.path !== "") {
+      const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    }
+  }
+
+  //////// update DB
   await Student.findByIdAndUpdate(studentId, {
     $pull: { applications: { _id: applicationId } },
   });
-  // TODO: remove uploaded files
-  // Not to remove common files like CV, Bachelor degree etc. (applications independent)
   res.status(200).send({ success: true });
 });
 

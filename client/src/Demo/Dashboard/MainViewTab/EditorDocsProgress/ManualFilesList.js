@@ -12,8 +12,12 @@ class ManualFilesList extends Component {
         student={this.props.student}
         category={this.props.category}
         onFormSubmit={this.props.onFormSubmit}
+        onSubmitFile={this.props.onSubmitFile}
+        onDownloadFile={this.props.onDownloadFile}
+        onDeleteFile={this.props.onDeleteFile}
         onTrashClick={this.props.onTrashClick}
         onFormDelete={this.props.onFormDelete}
+        onFileChange={this.props.onFileChange}
         role={this.props.role}
       />
     ));

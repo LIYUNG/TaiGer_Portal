@@ -10,13 +10,13 @@ export const logout = () => request.get("/auth/logout");
 export const register = (credentials) =>
   request.post("/auth/signup", credentials);
 
-  export const forgotPassword = ({ email }) =>
+export const forgotPassword = ({ email }) =>
   request.post("/auth/forgot-password", { email });
 
-  export const resendActivation = ({ email }) =>
+export const resendActivation = ({ email }) =>
   request.post("/auth/resend-activation", { email });
 
-  export const verify = () => request.get("/auth/verify");
+export const verify = () => request.get("/auth/verify");
 
 // User APIs
 export const getUsers = () => request.get("/api/users");
@@ -95,11 +95,41 @@ export const getTemplateDownload = (category) =>
     responseType: "blob",
   });
 
-export const createManualFileUploadPlace = (studentId, applicationId, docName) =>
-  request.put(`/api/account/files/${studentId}/${applicationId}/${docName}`);
-export const deleteManualFileUploadPlace = (studentId, applicationId, docName) =>
+export const createManualFileUploadPlace = (
+  studentId,
+  applicationId,
+  docName
+) =>
+  request.put(
+    `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
+  );
+export const deleteManualFileUploadPlace = (
+  studentId,
+  applicationId,
+  docName
+) =>
+  request.delete(
+    `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
+  );
+export const uploadHandwrittenFileforstudent = (
+  studentId,
+  applicationId,
+  docName,
+  data
+) =>
+  request.post(
+    `/api/account/files/${studentId}/${applicationId}/${docName}`,
+    data
+  );
+
+export const downloadHandWrittenFile = (studentId, applicationId, docName) =>
+  request.get(`/api/account/files/${studentId}/${applicationId}/${docName}`, {
+    responseType: "blob",
+  });
+export const deleteWrittenFile = (studentId, applicationId, docName) =>
   request.delete(`/api/account/files/${studentId}/${applicationId}/${docName}`);
 
+  
 // Program APIs
 export const getPrograms = () => request.get("/api/programs");
 

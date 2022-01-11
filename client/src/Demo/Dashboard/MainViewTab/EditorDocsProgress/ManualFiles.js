@@ -9,46 +9,22 @@ import {
 } from "../../../../api";
 
 class ManualFiles extends React.Component {
-  state = {
-    application: this.props.application,
-  };
-  createManualFileUpload = (studentId, applicationId, docName) => {
-    createManualFileUploadPlace(studentId, applicationId, docName).then(
-      (resp) => {
-        console.log(resp.data.data);
-        this.setState({
-          application: resp.data.data,
-        });
-      },
-      (error) => {}
-    );
-  };
 
-  deleteManualFileUpload = (studentId, applicationId, docName) => {
-    deleteManualFileUploadPlace(studentId, applicationId, docName).then(
-      (resp) => {
-        console.log(resp.data.data);
-        this.setState({
-          application: resp.data.data,
-        });
-      },
-      (error) => {}
-    );
-  };
+
 
   handleCreateFormSubmit = (studentId, applicationId, docName) => {
-    this.createManualFileUpload(studentId, applicationId, docName);
+    this.props.createManualFileUpload(studentId, applicationId, docName);
   };
 
   handleDeleteFormSubmit = (studentId, applicationId, docName) => {
-    this.deleteManualFileUpload(studentId, applicationId, docName);
+    this.props.deleteManualFileUpload(studentId, applicationId, docName);
   };
 
   render() {
     return (
       <>
         <ManualFilesList
-          application={this.state.application}
+          application={this.props.application}
           student={this.props.student}
           category="application"
           onFormSubmit={this.handleEditFormSubmit}
@@ -61,7 +37,7 @@ class ManualFiles extends React.Component {
             role={this.props.role}
             category="application"
             student={this.props.student}
-            application={this.state.application}
+            application={this.props.application}
             onFormSubmit={this.handleCreateFormSubmit}
           />
         ) : (

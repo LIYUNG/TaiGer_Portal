@@ -65,7 +65,7 @@ const createFilePlaceholderForProgram = asyncHandler(async (req, res) => {
   await student.save();
   return res
     .status(201)
-    .send({ success: true, data: student.applications[idx] });
+    .send({ success: true, data: student});
 });
 
 const deleteFilePlaceholderForProgram = asyncHandler(async (req, res) => {
@@ -135,9 +135,7 @@ const deleteFilePlaceholderForProgram = asyncHandler(async (req, res) => {
   // document.updatedAt = new Date();
   // student.applications[idx].documents.push(document);
   // await student.save();
-  return res
-    .status(201)
-    .send({ success: true, data: student.applications[idx] });
+  return res.status(201).send({ success: true, data: student });
 });
 
 const saveFilePath = asyncHandler(async (req, res) => {

@@ -9,14 +9,45 @@ import {
 } from "react-icons/ai";
 import ManualFiles from "./ManualFiles";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import {
+  createManualFileUploadPlace,
+  deleteManualFileUploadPlace,
+  createArticle,
+  getApplicationArticle,
+} from "../../../../api";
 class EditProgramsFilesSubpage extends React.Component {
   // edit File subpage
+  state = {
+    student: this.props.student,
+  };
+  createManualFileUpload = (studentId, applicationId, docName) => {
+    createManualFileUploadPlace(studentId, applicationId, docName).then(
+      (resp) => {
+        console.log(resp.data.data);
+        this.setState({
+          student: resp.data.data,
+        });
+      },
+      (error) => {}
+    );
+  };
 
+  deleteManualFileUpload = (studentId, applicationId, docName) => {
+    deleteManualFileUploadPlace(studentId, applicationId, docName).then(
+      (resp) => {
+        console.log(resp.data.data);
+        this.setState({
+          student: resp.data.data,
+        });
+      },
+      (error) => {}
+    );
+  };
   render() {
     // Edit Program
     let programstatus;
-    if (this.props.student.applications) {
-      programstatus = this.props.student.applications.map((application, i) => (
+    if (this.state.student.applications) {
+      programstatus = this.state.student.applications.map((application, i) => (
         <>
           <tr key={i}>
             {/* <th></th> */}
@@ -47,8 +78,10 @@ class EditProgramsFilesSubpage extends React.Component {
           </tr>
           <tr>
             <ManualFiles
+              createManualFileUpload={this.createManualFileUpload}
+              deleteManualFileUpload={this.deleteManualFileUpload}
               role={this.props.role}
-              student={this.props.student}
+              student={this.state.student}
               application={application}
             />
           </tr>
@@ -73,8 +106,8 @@ class EditProgramsFilesSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Program for {this.props.student.firstname} -{" "}
-            {this.props.student.lastname}
+            Program for {this.state.student.firstname} -{" "}
+            {this.state.student.lastname}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

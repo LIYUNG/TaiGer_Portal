@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
 import StudDocsDashboard from "../MainViewTab/StudDocsOverview/StudDocsDashboard";
 import AgentTodoList from "./AgentTodoList";
-import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";
+import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import ApplicationProgress from "./ApplicationProgress";
 
 class AgentMainView extends React.Component {
@@ -32,22 +32,6 @@ class AgentMainView extends React.Component {
         agenttodolist={this.props.agenttodolist}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-      />
-    ));
-    const student_editor = this.props.students.map((student, i) => (
-      <EditorDocsProgress
-        key={i}
-        student={student}
-        role={this.props.role}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
-        onDeleteProgram={this.props.onDeleteProgram}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
@@ -105,23 +89,19 @@ class AgentMainView extends React.Component {
             </Table>
           </Tab>
           <Tab eventKey="y" title="Editor & Docs Progress">
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th></th>
-                    <th>First-/Last Name</th>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>Deadline</th>
-                  </>
-                  {this.props.documentsprogresslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              {student_editor}
-            </Table>
+            <TabEditorDocsProgress
+              role={this.props.role}
+              students={this.props.students}
+              startEditingProgram={this.props.startEditingProgram}
+              documentslist={this.props.documentslist}
+              documentsprogresslist={this.props.documentsprogresslist}
+              documenheader={this.props.documenheader}
+              startUploadfile={this.props.startUploadfile}
+              onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+              onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+              onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+              onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+            />
           </Tab>
           <Tab eventKey="z" title="Application Overview">
             <Table responsive>

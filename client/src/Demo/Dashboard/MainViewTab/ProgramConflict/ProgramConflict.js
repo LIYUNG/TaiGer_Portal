@@ -1,9 +1,4 @@
 import React from "react";
-import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-
-import { Card, Col, Row } from "react-bootstrap";
-
 
 class ProgramConflict extends React.Component {
   state = {

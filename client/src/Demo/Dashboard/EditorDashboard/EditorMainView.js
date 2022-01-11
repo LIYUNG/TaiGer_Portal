@@ -1,49 +1,11 @@
 import React from "react";
 import { Table, Tabs, Tab } from "react-bootstrap";
 import StudDocsDashboard from "../MainViewTab/StudDocsOverview/StudDocsDashboard";
-import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";
-import ProgramConflict from "./ProgramConflict";
+import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
+import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
 
 class EditorMainView extends React.Component {
   render() {
-    let conflict_map = new Object();
-    let conflict_programs = new Object();
-
-    for (let i = 0; i < this.props.students.length; i++) {
-      for (let j = 0; j < this.props.students[i].applications.length; j++) {
-        if (
-          !Array.isArray(
-            conflict_map[this.props.students[i].applications[j].programId._id]
-          )
-        ) {
-          // console.log(this.props.students[i].applications[j].programId._id);
-          conflict_map[this.props.students[i].applications[j].programId._id] = [
-            this.props.students[i]._id,
-          ];
-          conflict_programs[
-            this.props.students[i].applications[j].programId._id
-          ] = {
-            University_:
-              this.props.students[i].applications[j].programId.University_,
-            Program_: this.props.students[i].applications[j].programId.Program_,
-            Application_end_date_: this.props.students[i].applications[j].programId.Application_end_date_,
-          };
-        } else {
-          // console.log(this.props.students[i].applications[j].programId._id);
-          conflict_map[
-            this.props.students[i].applications[j].programId._id
-          ].push(this.props.students[i]._id);
-        }
-      }
-    }
-    let conflict_program_ids = Object.keys(conflict_map);
-    // Delete non-conflict keys(program_id)
-    for (let i = 0; i < conflict_program_ids.length; i++) {
-      if (conflict_map[conflict_program_ids[i]].length === 1) {
-        delete conflict_map[conflict_program_ids[i]];
-        delete conflict_programs[conflict_program_ids[i]];
-      }
-    }
     const stdlist = this.props.students.map((student, i) => (
       <StudDocsDashboard
         key={i}
@@ -71,45 +33,7 @@ class EditorMainView extends React.Component {
         submitUpdateEditorlist={this.props.submitUpdateEditorlist}
       />
     ));
-    const student_editor = this.props.students.map((student, i) => (
-      <EditorDocsProgress
-        key={i}
-        student={student}
-        role={this.props.role}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
-        onDeleteProgram={this.props.onDeleteProgram}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-      />
-    ));
-    let conflicted_program = Object.keys(conflict_map);
-    // console.log(conflict_map);
-    // console.log(conflicted_program);
-    // console.log(conflict_programs);
-    const program_conflict = conflicted_program.map((conf_program_id, i) => (
-      <ProgramConflict
-        key={i}
-        students={this.props.students}
-        conflict_map={conflict_map}
-        conf_program_id={conf_program_id}
-        conflict_programs={conflict_programs}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        onDeleteProgram={this.props.onDeleteProgram}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-      />
-    ));
+
     return (
       <>
         <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
@@ -130,40 +54,27 @@ class EditorMainView extends React.Component {
             </Table>
           </Tab>
           <Tab eventKey="y" title="Editor & Docs Progress">
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th>First-/Last Name</th>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>Deadline</th>
-                  </>
-                  {this.props.documentsprogresslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              {student_editor}
-            </Table>
+            <TabEditorDocsProgress
+              role={this.props.role}
+              students={this.props.students}
+              startEditingProgram={this.props.startEditingProgram}
+              documentslist={this.props.documentslist}
+              documentsprogresslist={this.props.documentsprogresslist}
+              documenheader={this.props.documenheader}
+              startUploadfile={this.props.startUploadfile}
+              onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+              onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+              onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+              onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+            />
           </Tab>
           <Tab eventKey="z" title="Program Conflicts">
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>First-/Last Name</th>
-                    <th>Deadline</th>
-                  </>
-                  {/* {this.props.documentsprogresslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))} */}
-                </tr>
-              </thead>
-              {program_conflict}
-            </Table>
+            <TabProgramConflict
+              students={this.props.students}
+              startEditingProgram={this.props.startEditingProgram}
+              startUploadfile={this.props.startUploadfile}
+              onDeleteProgram={this.props.onDeleteProgram}
+            />
           </Tab>
         </Tabs>
       </>

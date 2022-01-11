@@ -86,7 +86,6 @@ class DocsProgress extends React.Component {
             <td>{applying_university}</td>
             <td>{applying_program}</td>
             <td>{application_deadline}</td>
-            {/* {this.props.studentDocOverview} */}
           </tr>
         </tbody>
         <>
@@ -96,7 +95,6 @@ class DocsProgress extends React.Component {
             show={this.state.showProgramFilesPage}
             onHide={this.setProgramFilesModalhide}
             setmodalhide={this.setProgramFilesModalhide}
-            onDeleteProgram={this.props.onDeleteProgram}
           />
         </>
       </>

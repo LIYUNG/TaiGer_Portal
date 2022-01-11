@@ -156,21 +156,6 @@ class EditProgramsFilesSubpage extends React.Component {
               <h5 className="mb-1">{application.programId.documents}</h5>
             </td>
             <td>
-              {/* <Form
-              // onSubmit={(e) =>
-              //   this.props.onDeleteProgram(
-              //     e,
-              //     this.props.student._id,
-              //     application._id
-              //   )
-              // }
-              >
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <div className="form-group">
-                    <Button type="submit">Delete</Button>
-                  </div>
-                </Form.Group>
-              </Form> */}
             </td>
           </tr>
           <tr>

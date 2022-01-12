@@ -107,6 +107,16 @@ A file is uploaded.`; // should be for student/agent/editor
   return sendEmail(recipient, subject, message);
 };
 
+const sendUploadedFilesRemindForEditorEmail = async (recipient) => {
+  const subject = "Uploaded Files";
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+A file is uploaded.`; // should be for student/agent/editor
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendChangedFileStatusEmail = async (recipient) => {
   const subject = "File Status changes";
   const message = `\
@@ -145,6 +155,7 @@ module.exports = {
   sendPasswordResetEmail,
   sendUploadedFilesEmail,
   sendUploadedFilesRemindForAgentEmail,
+  sendUploadedFilesRemindForEditorEmail,
   sendChangedFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,

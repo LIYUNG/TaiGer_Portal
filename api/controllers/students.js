@@ -40,8 +40,8 @@ const getStudents = asyncHandler(async (req, res) => {
   } else if (user.role === "Student") {
     const student = await Student.findById(user._id)
       .populate("applications.programId")
-      .populate("agents")
-      .populate("editors")
+      .populate("agents", "-password")
+      .populate("editors", "-password")
       .lean()
       .exec();
     res.status(200).send({ success: true, data: [student] });
@@ -205,9 +205,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 
   console.log(student.applications);
   // console.log(applicationId);
-  const idx = student.applications.findIndex(
-    ({ _id }) => _id == applicationId
-  );
+  const idx = student.applications.findIndex(({ _id }) => _id == applicationId);
   console.log(idx);
 
   const application = student.applications.find(

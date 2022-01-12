@@ -45,7 +45,7 @@ class HandWrittenFile extends Component {
                   this.props.onSubmitFile(
                     e,
                     this.props.student._id,
-                    this.props.application._id,
+                    this.props.application.programId._id,
                     this.props.document.name
                   )
                 }
@@ -57,29 +57,34 @@ class HandWrittenFile extends Component {
                   this.props.onDownloadFile(
                     e,
                     this.props.student._id,
-                    this.props.application._id,
+                    this.props.application.programId._id,
                     this.props.document.name
                   )
                 }
               >
                 Download
               </Button>
-              <Button
-                onClick={(e) =>
-                  this.props.onDeleteFile(
-                    e,
-                    this.props.student._id,
-                    this.props.application.programId._id,
-                    this.props.document.name
-                  )
-                }
-              >
-                Delete File
-              </Button>
+
               {this.props.role === "Student" ? (
                 <></>
               ) : (
-                <Button onClick={this.handleSubmit}>Delete Placeholder</Button>
+                <>
+                  <Button
+                    onClick={(e) =>
+                      this.props.onDeleteFile(
+                        e,
+                        this.props.student._id,
+                        this.props.application.programId._id,
+                        this.props.document.name
+                      )
+                    }
+                  >
+                    Delete File
+                  </Button>
+                  <Button onClick={this.handleSubmit}>
+                    Delete Placeholder
+                  </Button>
+                </>
               )}
             </Row>
           </Col>
@@ -141,7 +146,7 @@ class HandWrittenFile extends Component {
                   this.props.onSubmitFile(
                     e,
                     this.props.student._id,
-                    this.props.application._id,
+                    this.props.application.programId._id,
                     this.props.document.name
                   )
                 }

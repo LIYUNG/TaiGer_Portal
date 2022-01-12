@@ -10,6 +10,7 @@ const { DocumentStatus } = require("../constants");
 const {
   sendUploadedFilesEmail,
   sendUploadedFilesRemindForAgentEmail,
+  sendUploadedFilesRemindForEditorEmail,
   sendChangedFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,
@@ -110,29 +111,7 @@ const deleteFilePlaceholderForProgram = asyncHandler(async (req, res) => {
   student = await Student.findById(studentId).populate(
     "applications.programId"
   );
-  // document.status = DocumentStatus.Missing;
-  // document.path = "";
-  // document.updatedAt = new Date();
-  // var array = [...this.state.data];
-  // let idx = this.state.data.findIndex((user) => user._id === user_id);
-  // if (idx !== -1) {
-  //   array.splice(idx, 1);
-  // }
   await student.save();
-  ////////////////////////
-
-  // if (!application) throw new ErrorResponse(400, "Invalid application id");
-
-  // let document = application.documents.find(({ name }) => name === docName);
-  // if (document) throw new ErrorResponse(400, "Document already existed!");
-
-  // document = application.documents.create({ name: docName });
-  // document.status = DocumentStatus.Missing;
-  // document.path = "";
-  // document.required = true;
-  // document.updatedAt = new Date();
-  // student.applications[idx].documents.push(document);
-  // await student.save();
   return res.status(201).send({ success: true, data: student });
 });
 
@@ -143,11 +122,11 @@ const saveFilePath = asyncHandler(async (req, res) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId).populate(
-    "applications.programId"
-  );
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email");
   if (!student) throw new ErrorResponse(400, "Invalid student id");
-
+  console.log(student);
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
@@ -161,7 +140,25 @@ const saveFilePath = asyncHandler(async (req, res) => {
   document.updatedAt = new Date();
 
   await student.save();
-  return res.status(201).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: student });
+
+  await sendUploadedFilesEmail({
+    firstname: student.firstname,
+    lastname: student.lastname,
+    address: student.email,
+  });
+  //Reminder for Editor:
+  console.log(student.editors);
+  if (user.role == Role.Student) {
+    for (let i = 0; i < student.editors.length; i++) {
+      console.log(i);
+      await sendUploadedFilesRemindForEditorEmail({
+        firstname: student.editors[i].firstname,
+        lastname: student.editors[i].lastname,
+        address: student.editors[i].email,
+      });
+    }
+  }
 });
 
 const saveProfileFilePath = asyncHandler(async (req, res) => {
@@ -169,9 +166,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     user,
     params: { studentId, category },
   } = req;
-  // console.log(studentId);
-  // console.log(category);
-  // // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student =
     user.role == Role.Student
       ? user
@@ -191,6 +186,8 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     student.profile.push(document);
     await student.save();
 
+    res.status(201).send({ success: true, data: student });
+
     await sendUploadedFilesEmail({
       firstname: student.firstname,
       lastname: student.lastname,
@@ -207,7 +204,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         });
       }
     }
-    return res.status(201).send({ success: true, data: student });
+    return;
   }
   document.status = DocumentStatus.Uploaded;
   document.required = true;
@@ -218,12 +215,14 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   // document.path = req.file.path.replace(UPLOAD_PATH, "");
   // const document = student.profile.find(({ name }) => name === docName);
   await student.save();
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  res.status(201).send({ success: true, data: student });
   await sendUploadedFilesEmail({
     firstname: student.firstname,
     lastname: student.lastname,
     address: student.email,
   });
-
   //Reminder for Agent:
   console.log(student.agents);
   if (user.role == Role.Student) {
@@ -236,10 +235,6 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       });
     }
   }
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-
-  return res.status(201).send({ success: true, data: student });
 });
 
 const downloadProfileFile = asyncHandler(async (req, res, next) => {
@@ -293,17 +288,20 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student =
-    user.role == Role.Student ? user : await Student.findById(studentId);
+  const student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  const application = student.applications.id(applicationId);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
   const document = application.documents.find(({ name }) => name === docName);
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
-
+  console.log(document);
   // const filePath = path.join(UPLOAD_PATH, document.path);
   const filePath = document.path;
   // FIXME: clear the filePath for consistency?
@@ -364,13 +362,13 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   document.updatedAt = new Date();
 
   await student.save();
+  res.status(200).send({ success: true, data: document });
   //Reminder for Student:
   await sendChangedFileStatusEmail({
     firstname: student.firstname,
     lastname: student.lastname,
     address: student.email,
   });
-  res.status(200).send({ success: true, data: document });
 });
 
 const deleteFile = asyncHandler(async (req, res, next) => {

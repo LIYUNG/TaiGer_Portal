@@ -172,7 +172,6 @@ class StudentMyself extends React.Component {
     } else {
       console.log("no files");
     }
-    // console.log(this.props.student.agents);
     studentDocOverview = keys.map((k, i) => {
       if (object_init[k] === "uploaded") {
         return (

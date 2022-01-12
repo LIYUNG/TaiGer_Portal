@@ -36,12 +36,10 @@ const UserSchema = new Schema(
     },
     password: {
       type: String,
+      select: false,
       trim: true,
       minlength: [8, "Password must contain at least 8 characters"],
     },
-    // applications: [{ type: ObjectId, ref: applicationSchema" }],
-    // agents: [{ type: ObjectId, ref: "Agent" }],
-    // editors: [{ type: ObjectId, ref: "Editor" }],
   },
   options
 );

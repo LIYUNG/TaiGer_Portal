@@ -11,26 +11,12 @@ import Avatar2 from "../../../../../assets/images/user/avatar-2.jpg";
 import Avatar3 from "../../../../../assets/images/user/avatar-3.jpg";
 
 class NavRight extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     listOpen: false,
   };
 
   handleOnClick(e) {
     this.props.handleOnClickLogout(e);
-    // console.log("click logout");
-    // logout().then(
-    //   (resp) => {
-    //     console.log(resp.data);
-    //     this.props.setUserdata({ data: { success: false, data: null } });
-    //     // const { success } = resp.data;
-    //     // this.setState({ success: success });
-    //   },
-    //   (error) => {}
-    // );
   }
 
   render() {

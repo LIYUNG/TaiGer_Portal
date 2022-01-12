@@ -104,7 +104,6 @@ class Certification extends Component {
       Category_: attrs.Category_,
       LastUpdate_: attrs.LastUpdate_,
     });
-    const auth = localStorage.getItem("token");
     console.log(article_temp);
 
     updateDoc(attrs._id, article_temp).then(

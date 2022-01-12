@@ -21,7 +21,7 @@ class ManualFilesList extends Component {
         role={this.props.role}
       />
     ));
-    return <div>{articles}</div>;
+    return <>{articles}</>;
   }
 }
 

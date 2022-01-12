@@ -3,7 +3,7 @@ import { Row, Col, Card } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import UsersList from "./UsersList";
 
-import { getUsers, deleteUser, updateUser, changeUserRole } from "../../api";
+import { getUsers } from "../../api";
 
 class UsersTable extends React.Component {
   state = {
@@ -68,7 +68,6 @@ class UsersTable extends React.Component {
 
     return isError;
   };
-
 
   render() {
     const { error, isLoaded } = this.state;

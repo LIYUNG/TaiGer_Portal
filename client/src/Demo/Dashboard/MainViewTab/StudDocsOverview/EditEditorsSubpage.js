@@ -1,6 +1,5 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
-import { Table, Col, Form, Modal } from "react-bootstrap";
+import { Table, Form, Modal } from "react-bootstrap";
 import {
   Button,
   // OverlayTrigger,

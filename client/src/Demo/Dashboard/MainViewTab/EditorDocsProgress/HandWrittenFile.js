@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { AiFillEdit } from "react-icons/ai";
 import { Form, Col, Row, Button } from "react-bootstrap";
 
 import { BsTrash } from "react-icons/bs";
@@ -29,7 +28,7 @@ class HandWrittenFile extends Component {
     if (this.props.document.status === "uploaded") {
       fileStatus = (
         <>
-          <h5>Document Name: {this.props.document.name}</h5>
+          <h4>Document Name: {this.props.document.name}</h4>
           <Col>
             <Row>
               <Form

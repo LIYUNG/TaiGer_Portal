@@ -1,42 +1,16 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
-import { Button, Table, Col, Form, Modal } from "react-bootstrap";
-import {
-  AiOutlineDownload,
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
+import { Button, Table, Col, Form } from "react-bootstrap";
 
 class EditDownloadFilesSubpage extends React.Component {
   // edit File subpage
 
   render() {
-    let value2 = Object.values(this.props.templatelist);
     let keys2 = Object.keys(this.props.templatelist);
     let object_init = new Object();
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = "missing";
     }
-    // console.log(this.props.student.firstname);
 
-    // if (this.props.student.profile) {
-    //   for (let i = 0; i < this.props.student.profile.length; i++) {
-    //     if (this.props.student.profile[i].status === "uploaded") {
-    //       object_init[this.props.student.profile[i].name] = "uploaded";
-    //     } else if (this.props.student.profile[i].status === "accepted") {
-    //       object_init[this.props.student.profile[i].name] = "accepted";
-    //     } else if (this.props.student.profile[i].status === "rejected") {
-    //       object_init[this.props.student.profile[i].name] = "rejected";
-    //     } else if (this.props.student.profile[i].status === "missing") {
-    //       object_init[this.props.student.profile[i].name] = "missing";
-    //     }
-    //   }
-    // } else {
-    //   console.log("no files");
-    // }
-    console.log(this.props.templatelist);
     let templatelist2;
     templatelist2 = this.props.templatelist.map((template, i) => {
       return (

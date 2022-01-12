@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Table, Tabs, Tab } from "react-bootstrap";
+import { Table, Tabs, Tab } from "react-bootstrap";
 import StudentMyself from "./StudentMyself";
 // import EditorDocsProgress from "./EditorDocsProgress";
 import EditorDocsProgress from "../MainViewTab/EditorDocsProgress/EditorDocsProgress";

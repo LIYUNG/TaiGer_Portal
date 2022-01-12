@@ -1,9 +1,6 @@
 import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
-
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-
 import { NavLink } from "react-router-dom";
 import { login } from "../../../api";
 
@@ -92,7 +89,3 @@ export default function Signin1({ userData }) {
     </Aux>
   );
 }
-
-// Signin1.propTypes = {
-//   setToken: PropTypes.func.isRequired,
-// };

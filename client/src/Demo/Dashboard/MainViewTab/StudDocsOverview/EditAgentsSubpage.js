@@ -1,16 +1,10 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
-import { Table, Col, Form, Modal } from "react-bootstrap";
+import { Table, Form, Modal } from "react-bootstrap";
 import {
   Button,
-  // OverlayTrigger,
-  // Tooltip,
-  // ButtonToolbar,
-  // SplitButton
 } from "react-bootstrap";
 class EditAgentsSubpage extends React.Component {
   // edit Agent subpage
-
   render() {
     // console.log(this.props.student.agents);
     let agentlist = this.props.agent_list ? (

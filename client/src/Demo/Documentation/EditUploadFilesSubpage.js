@@ -1,8 +1,6 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
-import { Button, Table, Col, Form, Modal } from "react-bootstrap";
+import { Button, Table, Col, Form } from "react-bootstrap";
 import {
-  AiOutlineDownload,
   AiFillCloseCircle,
   AiFillQuestionCircle,
   AiOutlineFieldTime,
@@ -13,8 +11,6 @@ class EditUploadFilesSubpage extends React.Component {
   // edit File subpage
 
   render() {
-    let documentlist;
-
     let value2 = Object.values(this.props.documentlist2);
     let keys2 = Object.keys(this.props.documentlist2);
     let object_init = new Object();

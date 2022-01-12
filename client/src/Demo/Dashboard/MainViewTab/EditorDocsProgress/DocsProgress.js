@@ -1,7 +1,6 @@
 import React from "react";
-import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
-import { Card, Col, Row, Table } from "react-bootstrap";
-import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
+import { Dropdown, DropdownButton } from "react-bootstrap";
+// import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import EditProgramsFilesSubpage from "./EditProgramsFilesSubpage";
 
 class DocsProgress extends React.Component {
@@ -79,9 +78,9 @@ class DocsProgress extends React.Component {
               </DropdownButton>
             </td>
             <td>
-              <h5>
+              <p>
                 {this.props.student.firstname}, {this.props.student.lastname}
-              </h5>
+              </p>
             </td>
             <td>{applying_university}</td>
             <td>{applying_program}</td>

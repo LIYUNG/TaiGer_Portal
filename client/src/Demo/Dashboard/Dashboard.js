@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Row, Col, Tabs, Tab } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
-import DEMO from "../../store/constant";
-
-import avatar1 from "../../assets/images/user/avatar-1.jpg";
-import avatar2 from "../../assets/images/user/avatar-2.jpg";
-import avatar3 from "../../assets/images/user/avatar-3.jpg";
+// import DEMO from "../../store/constant";
+// import avatar1 from "../../assets/images/user/avatar-1.jpg";
+// import avatar2 from "../../assets/images/user/avatar-2.jpg";
+// import avatar3 from "../../assets/images/user/avatar-3.jpg";
 import AdminMainView from "./AdminDashboard/AdminMainView";
 import AgentMainView from "./AgentDashboard/AgentMainView";
 import EditorMainView from "./EditorDashboard/EditorMainView";
@@ -13,7 +12,6 @@ import StudentMainView from "./StudentDashboard/StudentMainView";
 import GuestMainView from "./GuestDashboard/GuestMainView";
 import {
   getStudents,
-  uploadforstudent,
   download,
   removeProgramFromStudent,
   getAgents,
@@ -286,67 +284,67 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const tabContent = (
-      <Aux>
-        <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-          <div className="m-r-10 photo-table">
-            <a href={DEMO.BLANK_LINK}>
-              <img
-                className="rounded-circle"
-                style={{ width: "40px" }}
-                src={avatar1}
-                alt="activity-user"
-              />
-            </a>
-          </div>
-          <div className="media-body">
-            <h6 className="m-0 d-inline">Silje Larsen</h6>
-            <span className="float-right d-flex  align-items-center">
-              <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
-              3784
-            </span>
-          </div>
-        </div>
-        <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-          <div className="m-r-10 photo-table">
-            <a href={DEMO.BLANK_LINK}>
-              <img
-                className="rounded-circle"
-                style={{ width: "40px" }}
-                src={avatar2}
-                alt="activity-user"
-              />
-            </a>
-          </div>
-          <div className="media-body">
-            <h6 className="m-0 d-inline">Julie Vad</h6>
-            <span className="float-right d-flex  align-items-center">
-              <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
-              3544
-            </span>
-          </div>
-        </div>
-        <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-          <div className="m-r-10 photo-table">
-            <a href={DEMO.BLANK_LINK}>
-              <img
-                className="rounded-circle"
-                style={{ width: "40px" }}
-                src={avatar3}
-                alt="activity-user"
-              />
-            </a>
-          </div>
-          <div className="media-body">
-            <h6 className="m-0 d-inline">Storm Hanse</h6>
-            <span className="float-right d-flex  align-items-center">
-              <i className="fa fa-caret-down f-22 m-r-10 text-c-red" />
-              2739
-            </span>
-          </div>
-        </div>
-      </Aux>
-    );
+    // const tabContent = (
+    //   <Aux>
+    //     <div className="media friendlist-box align-items-center justify-content-center m-b-20">
+    //       <div className="m-r-10 photo-table">
+    //         <a href={DEMO.BLANK_LINK}>
+    //           <img
+    //             className="rounded-circle"
+    //             style={{ width: "40px" }}
+    //             src={avatar1}
+    //             alt="activity-user"
+    //           />
+    //         </a>
+    //       </div>
+    //       <div className="media-body">
+    //         <h6 className="m-0 d-inline">Silje Larsen</h6>
+    //         <span className="float-right d-flex  align-items-center">
+    //           <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
+    //           3784
+    //         </span>
+    //       </div>
+    //     </div>
+    //     <div className="media friendlist-box align-items-center justify-content-center m-b-20">
+    //       <div className="m-r-10 photo-table">
+    //         <a href={DEMO.BLANK_LINK}>
+    //           <img
+    //             className="rounded-circle"
+    //             style={{ width: "40px" }}
+    //             src={avatar2}
+    //             alt="activity-user"
+    //           />
+    //         </a>
+    //       </div>
+    //       <div className="media-body">
+    //         <h6 className="m-0 d-inline">Julie Vad</h6>
+    //         <span className="float-right d-flex  align-items-center">
+    //           <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
+    //           3544
+    //         </span>
+    //       </div>
+    //     </div>
+    //     <div className="media friendlist-box align-items-center justify-content-center m-b-20">
+    //       <div className="m-r-10 photo-table">
+    //         <a href={DEMO.BLANK_LINK}>
+    //           <img
+    //             className="rounded-circle"
+    //             style={{ width: "40px" }}
+    //             src={avatar3}
+    //             alt="activity-user"
+    //           />
+    //         </a>
+    //       </div>
+    //       <div className="media-body">
+    //         <h6 className="m-0 d-inline">Storm Hanse</h6>
+    //         <span className="float-right d-flex  align-items-center">
+    //           <i className="fa fa-caret-down f-22 m-r-10 text-c-red" />
+    //           2739
+    //         </span>
+    //       </div>
+    //     </div>
+    //   </Aux>
+    // );
 
     const { error, isLoaded } = this.state;
     if (error) {

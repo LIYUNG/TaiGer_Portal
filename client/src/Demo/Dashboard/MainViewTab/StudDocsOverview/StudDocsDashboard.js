@@ -6,7 +6,6 @@ import {
   AiOutlineFieldTime,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { Card, Col, Row, Table } from "react-bootstrap";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";

@@ -1,12 +1,6 @@
 import React, { Component } from "react";
 import UploadFileForm from "./UploadFileForm";
 import HandWrittenFile from "./HandWrittenFile";
-import {
-  uploadHandwrittenFileforstudent,
-  updateDocumentStatus,
-  downloadHandWrittenFile,
-  deleteFile,
-} from "../../../../api";
 class EditableFile extends Component {
   state = {
     editFormOpen: false,

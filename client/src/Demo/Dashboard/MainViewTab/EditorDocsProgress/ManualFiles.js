@@ -1,12 +1,6 @@
 import React from "react";
 import ManualFilesList from "./ManualFilesList";
 import ToggleableUploadFileForm from "./ToggleableUploadFileForm";
-import {
-  createManualFileUploadPlace,
-  deleteManualFileUploadPlace,
-  createArticle,
-  getApplicationArticle,
-} from "../../../../api";
 
 class ManualFiles extends React.Component {
   handleCreateFormSubmit = (studentId, applicationId, docName) => {
@@ -52,7 +46,7 @@ class ManualFiles extends React.Component {
         ) : (
           <></>
         )}
-        {this.props.application.programId.University_}
+        {/* {this.props.application.programId.University_} */}
       </>
     );
   }

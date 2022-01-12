@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Row, Col } from "react-bootstrap";
-
 import Aux from "../../../hoc/_Aux";
 import ArticleList from "../ArticleList";
 import ToggleableArticleForm from "../ToggleableArticleForm";
@@ -22,7 +21,6 @@ class Application extends Component {
   };
   componentDidMount() {
     console.log("get article");
-    // const auth = localStorage.getItem("token");
     getApplicationArticle().then(
       (resp) => {
         if (resp.status == 200) {

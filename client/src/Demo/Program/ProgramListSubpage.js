@@ -1,15 +1,10 @@
 import React from "react";
-import { Table, Form, Modal } from "react-bootstrap";
-import {
-  Button,
-} from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
-import {
-  getStudents,
-} from "../../api";
+import { getStudents } from "../../api";
 
 class ProgramListSubpage extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -20,8 +15,9 @@ class ProgramListSubpage extends React.Component {
   componentDidMount() {
     getStudents().then(
       (resp) => {
-        const { data: students, role } = resp.data;
-        this.setState({ data: students });
+        const { data: students, success } = resp.data;
+        console.log(students);
+        this.setState({ data: students, success });
       },
       (error) => {
         console.log("Problem while getting studentlist");
@@ -47,29 +43,29 @@ class ProgramListSubpage extends React.Component {
           <h4>Student:</h4>
           <table>
             <tbody>
-            {this.state.data.map((student) => (
-              <tr key={student._id}>
-                <th>
-                  <div>
-                    <Form.Group>
-                      <Form.Check
-                        custom
-                        type="radio"
-                        name="student_id"
-                        value={student._id}
-                        id={student._id}
-                        onChange={this.props.handleChange2}
-                      />
-                    </Form.Group>
-                  </div>
-                </th>
-                <td>
-                  <h4 className="mb-1">
-                    {student.firstname}, {student.lastname}
-                  </h4>
-                </td>
-              </tr>
-            ))}
+              {this.state.data.map((student) => (
+                <tr key={student._id}>
+                  <th>
+                    <div>
+                      <Form.Group>
+                        <Form.Check
+                          custom
+                          type="radio"
+                          name="student_id"
+                          value={student._id}
+                          id={student._id}
+                          onChange={this.props.handleChange2}
+                        />
+                      </Form.Group>
+                    </div>
+                  </th>
+                  <td>
+                    <h4 className="mb-1">
+                      {student.firstname}, {student.lastname}
+                    </h4>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </Modal.Body>

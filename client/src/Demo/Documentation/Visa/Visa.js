@@ -105,7 +105,6 @@ class Visa extends Component {
       Category_: attrs.Category_,
       LastUpdate_: attrs.LastUpdate_,
     });
-    const auth = localStorage.getItem("token");
     console.log(article_temp);
 
     updateDoc(attrs._id, article_temp).then(
@@ -132,7 +131,6 @@ class Visa extends Component {
 
     console.log("click submit article");
     console.log(articleId);
-    const auth = localStorage.getItem("token");
     deleteDoc(articleId).then(
       (result) => {},
       (error) => {

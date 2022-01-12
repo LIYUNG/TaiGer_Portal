@@ -1,9 +1,5 @@
-import FilesUploadComponent from "../../App/components/files-upload-component";
-import axios from "axios";
-
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
-
 import Aux from "../../hoc/_Aux";
 import {
   getMyfiles,

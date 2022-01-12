@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
-
 import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
 import Breadcrumb from "../../../App/layout/AdminLayout/Breadcrumb";
 import { register } from "../../../api";
 
-// import DEMO from "../../../store/constant";
-
-// class SignUp1 extends React.Component {
 export default function SignUp1({ userData }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -114,10 +110,7 @@ export default function SignUp1({ userData }) {
       </div>
     </Aux>
   );
-  // }
 }
-
-// export default SignUp1;
 
 SignUp1.propTypes = {
   setToken: PropTypes.func.isRequired,

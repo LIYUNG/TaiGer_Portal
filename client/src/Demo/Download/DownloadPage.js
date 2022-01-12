@@ -3,10 +3,8 @@ import { Row, Col, Card } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
 import {
-  getMyfiles,
   deleteFile,
   upload,
-  download,
   templateDownload,
   getTemplateDownload,
 } from "../../api";

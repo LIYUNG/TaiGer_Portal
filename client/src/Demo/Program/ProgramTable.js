@@ -146,14 +146,13 @@ class ProgramTable extends React.Component {
     const { student_id, program_id } = assign_data;
     assignProgramToStudent(student_id, program_id).then(
       (resp) => {
-        const { data, success } = resp.data;
+        console.log(resp.data);
       },
       (error) => {}
     );
   };
 
   render() {
-    const { error, isLoaded } = this.state;
     if (!this.state.success) {
       return (
         <div>

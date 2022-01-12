@@ -1,21 +1,12 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
-import { Button, Table, Col, Form, Modal } from "react-bootstrap";
-// import UcFirst from "../../../App/components/UcFirst";
-import {
-  AiOutlineDownload,
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-} from "react-icons/ai";
+import { Button, Table, Modal } from "react-bootstrap";
 import ManualFiles from "./ManualFiles";
-import { IoCheckmarkCircle } from "react-icons/io5";
 import {
   createManualFileUploadPlace,
   deleteManualFileUploadPlace,
   uploadHandwrittenFileforstudent,
   downloadHandWrittenFile,
   deleteWrittenFile,
-  getApplicationArticle,
 } from "../../../../api";
 class EditProgramsFilesSubpage extends React.Component {
   // edit File subpage
@@ -145,18 +136,17 @@ class EditProgramsFilesSubpage extends React.Component {
     let programstatus;
     if (this.state.student.applications) {
       programstatus = this.state.student.applications.map((application, i) => (
-        <>
-          <tr key={i}>
+        <div key={application._id}>
+          <tr>
             {/* <th></th> */}
             <td>
               <h4 className="mb-1">
                 {application.programId.University_} -{" "}
                 {application.programId.Program_}
               </h4>
-              <h5 className="mb-1">{application.programId.documents}</h5>
+              <p className="mb-1">{application.programId.documents}</p>
             </td>
-            <td>
-            </td>
+            <td></td>
           </tr>
           <tr>
             <ManualFiles
@@ -175,7 +165,7 @@ class EditProgramsFilesSubpage extends React.Component {
               application={application}
             />
           </tr>
-        </>
+        </div>
       ));
     } else {
       programstatus = (

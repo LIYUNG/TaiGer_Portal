@@ -6,7 +6,6 @@ import {
   Row,
   Col,
   Form,
-  FormGroup,
   Card,
 } from "react-bootstrap";
 
@@ -100,7 +99,6 @@ class UploadAndGenerate extends Component {
 
   onDownloadFile(e, category, filename) {
     e.preventDefault();
-    const auth = localStorage.getItem("token");
     var actualFileName;
     generatedFileDownload(category, filename).then(
       (resp) => {

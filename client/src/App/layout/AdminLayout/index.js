@@ -1,4 +1,5 @@
-import React, { Component, Suspense, useState, useEffect } from "react";
+import React, { useEffect } from "react";
+// import { Component, Suspense, useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Fullscreen from "react-full-screen";
@@ -7,7 +8,7 @@ import windowSize from "react-window-size";
 import Navigation from "./Navigation";
 import NavBar from "./NavBar";
 import Breadcrumb from "./Breadcrumb";
-import Loader from "../Loader";
+// import Loader from "../Loader";
 import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
@@ -34,15 +35,15 @@ function AdminLayout(props) {
       if (resp) {
         if (resp.status === 400) {
           alert("This Email is already registered.");
-          } else if (resp.status === 401) {
-            alert("Password is not correct.");
-          } else {
-            console.log("successfullllll");
-            props.setUserdata({
-              success: resp.data.success,
-              data: resp.data.data,
-            });
-          }
+        } else if (resp.status === 401) {
+          alert("Password is not correct.");
+        } else {
+          console.log("successfullllll");
+          props.setUserdata({
+            success: resp.data.success,
+            data: resp.data.data,
+          });
+        }
       } else {
         alert("Email or password not correct.");
       }

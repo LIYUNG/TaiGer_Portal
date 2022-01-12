@@ -2,10 +2,6 @@ import React from "react";
 import { Table, Form, Modal } from "react-bootstrap";
 import {
   Button,
-  // OverlayTrigger,
-  // Tooltip,
-  // ButtonToolbar,
-  // SplitButton
 } from "react-bootstrap";
 class EditEditorsSubpage extends React.Component {
   // edit Editor subpage

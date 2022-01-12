@@ -6,7 +6,6 @@ import {
 class EditAgentsSubpage extends React.Component {
   // edit Agent subpage
   render() {
-    // console.log(this.props.student.agents);
     let agentlist = this.props.agent_list ? (
       this.props.agent_list.map((agent, i) => (
         <tr key={i + 1}>

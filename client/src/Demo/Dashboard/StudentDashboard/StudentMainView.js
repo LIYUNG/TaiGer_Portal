@@ -67,25 +67,33 @@ class StudentMainView extends React.Component {
     ));
 
     const your_editors = this.props.students.map((student, i) =>
-      student.editors.map((editor, i) => (
-        <tr>
-          <td>
-            {editor.firstname} - {editor.lastname}
-          </td>
-          <td>{editor.email}</td>
-        </tr>
-      ))
+      student.editors ? (
+        student.editors.map((editor, i) => (
+          <tr>
+            <td>
+              {editor.firstname} - {editor.lastname}
+            </td>
+            <td>{editor.email}</td>
+          </tr>
+        ))
+      ) : (
+        <></>
+      )
     );
 
     const your_agents = this.props.students.map((student, i) =>
-      student.agents.map((agent, i) => (
-        <tr>
-          <td>
-            {agent.firstname} - {agent.lastname}
-          </td>
-          <td>{agent.email}</td>
-        </tr>
-      ))
+      student.agents ? (
+        student.agents.map((agent, i) => (
+          <tr>
+            <td>
+              {agent.firstname} - {agent.lastname}
+            </td>
+            <td>{agent.email}</td>
+          </tr>
+        ))
+      ) : (
+        <></>
+      )
     );
 
     return (

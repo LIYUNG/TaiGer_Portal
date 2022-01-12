@@ -8,31 +8,32 @@ class TabProgramConflict extends React.Component {
     let conflict_programs = new Object();
 
     for (let i = 0; i < this.props.students.length; i++) {
-      for (let j = 0; j < this.props.students[i].applications.length; j++) {
-        if (
-          !Array.isArray(
-            conflict_map[this.props.students[i].applications[j].programId._id]
-          )
-        ) {
-          conflict_map[this.props.students[i].applications[j].programId._id] = [
-            this.props.students[i]._id,
-          ];
-          conflict_programs[
-            this.props.students[i].applications[j].programId._id
-          ] = {
-            University_:
-              this.props.students[i].applications[j].programId.University_,
-            Program_: this.props.students[i].applications[j].programId.Program_,
-            Application_end_date_:
-              this.props.students[i].applications[j].programId
-                .Application_end_date_,
-          };
-        } else {
-          conflict_map[
-            this.props.students[i].applications[j].programId._id
-          ].push(this.props.students[i]._id);
+      if (this.props.students[i].applications)
+        for (let j = 0; j < this.props.students[i].applications.length; j++) {
+          if (
+            !Array.isArray(
+              conflict_map[this.props.students[i].applications[j].programId._id]
+            )
+          ) {
+            conflict_map[this.props.students[i].applications[j].programId._id] =
+              [this.props.students[i]._id];
+            conflict_programs[
+              this.props.students[i].applications[j].programId._id
+            ] = {
+              University_:
+                this.props.students[i].applications[j].programId.University_,
+              Program_:
+                this.props.students[i].applications[j].programId.Program_,
+              Application_end_date_:
+                this.props.students[i].applications[j].programId
+                  .Application_end_date_,
+            };
+          } else {
+            conflict_map[
+              this.props.students[i].applications[j].programId._id
+            ].push(this.props.students[i]._id);
+          }
         }
-      }
     }
     let conflict_program_ids = Object.keys(conflict_map);
     for (let i = 0; i < conflict_program_ids.length; i++) {

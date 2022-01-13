@@ -126,7 +126,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
     .populate("applications.programId")
     .populate("students agents editors", "firstname lastname email");
   if (!student) throw new ErrorResponse(400, "Invalid student id");
-  console.log(student);
+  // console.log(student);
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );

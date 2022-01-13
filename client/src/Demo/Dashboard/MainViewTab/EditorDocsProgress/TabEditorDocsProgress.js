@@ -25,7 +25,11 @@ class TabEditorDocsProgress extends React.Component {
             <tr>
               <>
                 <th></th>
-                <th>First-/Last Name</th>
+                {this.props.role !== "Student" ? (
+                  <th>First-/Last Name</th>
+                ) : (
+                  <></>
+                )}
                 <th>University</th>
                 <th>Programs</th>
                 <th>Deadline</th>

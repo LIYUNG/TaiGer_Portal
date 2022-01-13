@@ -1,5 +1,10 @@
 import React from "react";
-import { uploadforstudent } from "../../../api";
+import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
+import { IoCheckmarkCircle } from "react-icons/io5";
+// import { Card, Col, Row } from "react-bootstrap";
+// import { Dropdown, DropdownButton } from "react-bootstrap";
+// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+import { uploadforstudent } from "../../../../api";
 import ApplicationStatus from "./ApplicationStatus";
 
 class ApplicationProgress extends React.Component {
@@ -109,13 +114,73 @@ class ApplicationProgress extends React.Component {
   };
 
   render() {
+    let studentDocOverview;
+    if (this.state.student.uploadedDocs_) {
+      studentDocOverview = this.props.documentslist.map((doc, i) => {
+        if (
+          this.state.student.uploadedDocs_[doc.prop] &&
+          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
+            "uploaded"
+        ) {
+          return (
+            <td key={i}>
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgreen"
+                title="Uploaded successfully"
+              />{" "}
+            </td>
+          );
+        } else if (
+          this.state.student.uploadedDocs_[doc.prop] &&
+          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
+        ) {
+          return (
+            <td key={i}>
+              <IoCheckmarkCircle
+                size={24}
+                color="limegreen"
+                title="Valid Document"
+              />{" "}
+            </td>
+          );
+        } else if (
+          this.state.student.uploadedDocs_[doc.prop] &&
+          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
+            "unaccepted"
+        ) {
+          return (
+            <td key={i}>
+              <AiFillCloseCircle
+                size={24}
+                color="red"
+                title="Invalid Document"
+              />{" "}
+            </td>
+          );
+        } else {
+          return (
+            <td key={i}>
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="No Document uploaded"
+              />{" "}
+            </td>
+          );
+        }
+      });
+    } else {
+      studentDocOverview = <p>No Doc!</p>;
+    }
+
     return (
       <ApplicationStatus
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}
+        studentDocOverview={studentDocOverview}
         setProgramModalhide={this.setProgramModalhide}
-        onDeleteProgram={this.props.onDeleteProgram}
         setFilesModalhide={this.setFilesModalhide}
         onFileChange={this.onFileChange}
         submitFile={this.submitFile}

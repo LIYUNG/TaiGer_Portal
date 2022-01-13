@@ -1,8 +1,9 @@
 import React from "react";
-import { Table, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
+import Card from "../../../App/components/MainCard";
 import StudentMyself from "./StudentMyself";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
-import ApplicationProgress from "./ApplicationProgress";
+import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
 class StudentMainView extends React.Component {
   render() {
     const stdlist = this.props.students.map((student, i) => (
@@ -10,26 +11,7 @@ class StudentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        editAgent={this.props.editAgent}
-        editEditor={this.props.editEditor}
-        startEditingEditor={this.props.startEditingEditor}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        onDeleteProgram={this.props.onDeleteProgram}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
       />
     ));
 
@@ -81,81 +63,104 @@ class StudentMainView extends React.Component {
 
     return (
       <>
-        <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-          <Tab eventKey="x" title="My Uploaded Documents">
-            <h5>Your Agents</h5>
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th>First-/Last Name</th>
-                    <th>Email</th>
-                  </>
-                </tr>
-              </thead>
-              <tbody>{your_agents}</tbody>
-            </Table>
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th>First-/Last Name</th>
-                  </>
-                  {this.props.documentslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              {stdlist}
-            </Table>
-          </Tab>
-          <Tab eventKey="y" title="My Editor & Docs Progress">
-            <h5>Your Editors</h5>
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th>First-/Last Name</th>
-                    <th>Email</th>
-                  </>
-                </tr>
-              </thead>
-              <tbody>{your_editors}</tbody>
-            </Table>
-            <TabEditorDocsProgress
-              role={this.props.role}
-              students={this.props.students}
-              startEditingProgram={this.props.startEditingProgram}
-              documentslist={this.props.documentslist}
-              documentsprogresslist={this.props.documentsprogresslist}
-              documenheader={this.props.documenheader}
-              startUploadfile={this.props.startUploadfile}
-              onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-              onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-              onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-              onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-            />
-          </Tab>
-          <Tab eventKey="z" title="My Applications">
-            {" "}
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th>First-/Last Name</th>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>Deadline</th>
-                  </>
-                  {this.props.programstatuslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              {application_progress}
-            </Table>
-          </Tab>
-        </Tabs>
+        <Row>
+          <Col md={6}>
+            <Card title="Agent">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <>
+                      <th>First-/Last Name</th>
+                      <th>Email</th>
+                    </>
+                  </tr>
+                </thead>
+                <tbody>{your_agents}</tbody>
+              </Table>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card title="Editor">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <>
+                      <th>First-/Last Name</th>
+                      <th>Email</th>
+                    </>
+                  </tr>
+                </thead>
+                <tbody>{your_editors}</tbody>
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Card title="My Editor & Docs Progress">
+              <TabEditorDocsProgress
+                role={this.props.role}
+                students={this.props.students}
+                startEditingProgram={this.props.startEditingProgram}
+                documentslist={this.props.documentslist}
+                documentsprogresslist={this.props.documentsprogresslist}
+                documenheader={this.props.documenheader}
+                startUploadfile={this.props.startUploadfile}
+                onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+                onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+                onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+                onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+              />
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Card title="My Application Progress">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <>
+                      {this.props.role !== "Student" ? (
+                        <th>First-/Last Name</th>
+                      ) : (
+                        <></>
+                      )}
+                      <th>University</th>
+                      <th>Programs</th>
+                      <th>Deadline</th>
+                    </>
+                    {this.props.programstatuslist.map((doc, index) => (
+                      <th key={index}>{doc.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                {application_progress}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
+              <Tab eventKey="x" title="My Uploaded Documents">
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      {/* <>
+                        <th>First-/Last Name</th>
+                      </> */}
+                      {this.props.documentslist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  {stdlist}
+                </Table>
+              </Tab>
+            </Tabs>
+          </Col>
+        </Row>
       </>
     );
   }

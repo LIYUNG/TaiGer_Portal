@@ -1,8 +1,9 @@
 const DocumentStatus = {
-  Uploaded: 'uploaded',
+  Uploaded: "uploaded",
   Missing: "missing",
   Accepted: "accepted",
   Rejected: "rejected",
+  NotNeeded: "notneeded",
 };
 
 module.exports = {

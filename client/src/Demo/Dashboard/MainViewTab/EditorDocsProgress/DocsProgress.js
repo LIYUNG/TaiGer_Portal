@@ -77,11 +77,15 @@ class DocsProgress extends React.Component {
                 </Dropdown.Item>
               </DropdownButton>
             </td>
-            <td>
-              <p>
-                {this.props.student.firstname}, {this.props.student.lastname}
-              </p>
-            </td>
+            {this.props.role !== "Student" ? (
+              <td>
+                <p>
+                  {this.props.student.firstname}, {this.props.student.lastname}
+                </p>
+              </td>
+            ) : (
+              <></>
+            )}
             <td>{applying_university}</td>
             <td>{applying_program}</td>
             <td>{application_deadline}</td>

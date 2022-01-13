@@ -185,7 +185,7 @@ class StudDocsDashboard extends React.Component {
               size={24}
               color="orange"
               title="Uploaded successfully"
-            />{" "}
+            />
           </td>
         );
       } else if (object_init[k] === "accepted") {
@@ -195,13 +195,13 @@ class StudDocsDashboard extends React.Component {
               size={24}
               color="limegreen"
               title="Valid Document"
-            />{" "}
+            />
           </td>
         );
       } else if (object_init[k] === "rejected") {
         return (
           <td key={i}>
-            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />{" "}
+            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
           </td>
         );
       } else {

@@ -1,10 +1,17 @@
 import React from "react";
-import { Row, Col, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Breadcrumb, Tabs, Tab } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 // import DEMO from "../../store/constant";
 // import avatar1 from "../../assets/images/user/avatar-1.jpg";
 // import avatar2 from "../../assets/images/user/avatar-2.jpg";
 // import avatar3 from "../../assets/images/user/avatar-3.jpg";
+import {
+  AiFillCloseCircle,
+  AiFillQuestionCircle,
+  AiOutlineFieldTime,
+} from "react-icons/ai";
+import { IoCheckmarkCircle } from "react-icons/io5";
+import { BsDash } from "react-icons/bs";
 import AdminMainView from "./AdminDashboard/AdminMainView";
 import AgentMainView from "./AgentDashboard/AgentMainView";
 import EditorMainView from "./EditorDashboard/EditorMainView";
@@ -284,69 +291,49 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    // const tabContent = (
-    //   <Aux>
-    //     <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-    //       <div className="m-r-10 photo-table">
-    //         <a href={DEMO.BLANK_LINK}>
-    //           <img
-    //             className="rounded-circle"
-    //             style={{ width: "40px" }}
-    //             src={avatar1}
-    //             alt="activity-user"
-    //           />
-    //         </a>
-    //       </div>
-    //       <div className="media-body">
-    //         <h6 className="m-0 d-inline">Silje Larsen</h6>
-    //         <span className="float-right d-flex  align-items-center">
-    //           <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
-    //           3784
-    //         </span>
-    //       </div>
-    //     </div>
-    //     <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-    //       <div className="m-r-10 photo-table">
-    //         <a href={DEMO.BLANK_LINK}>
-    //           <img
-    //             className="rounded-circle"
-    //             style={{ width: "40px" }}
-    //             src={avatar2}
-    //             alt="activity-user"
-    //           />
-    //         </a>
-    //       </div>
-    //       <div className="media-body">
-    //         <h6 className="m-0 d-inline">Julie Vad</h6>
-    //         <span className="float-right d-flex  align-items-center">
-    //           <i className="fa fa-caret-up f-22 m-r-10 text-c-green" />
-    //           3544
-    //         </span>
-    //       </div>
-    //     </div>
-    //     <div className="media friendlist-box align-items-center justify-content-center m-b-20">
-    //       <div className="m-r-10 photo-table">
-    //         <a href={DEMO.BLANK_LINK}>
-    //           <img
-    //             className="rounded-circle"
-    //             style={{ width: "40px" }}
-    //             src={avatar3}
-    //             alt="activity-user"
-    //           />
-    //         </a>
-    //       </div>
-    //       <div className="media-body">
-    //         <h6 className="m-0 d-inline">Storm Hanse</h6>
-    //         <span className="float-right d-flex  align-items-center">
-    //           <i className="fa fa-caret-down f-22 m-r-10 text-c-red" />
-    //           2739
-    //         </span>
-    //       </div>
-    //     </div>
-    //   </Aux>
-    // );
-
     const { error, isLoaded } = this.state;
+    let FILE_OK_SYMBOL = (
+      <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
+    );
+    let FILE_NOT_OK_SYMBOL = (
+      <AiFillCloseCircle size={18} color="red" title="Invalid Document" />
+    );
+    let FILE_UPLOADED_SYMBOL = (
+      <AiOutlineFieldTime
+        size={18}
+        color="orange"
+        title="Uploaded successfully"
+      />
+    );
+    let FILE_MISSING_SYMBOL = (
+      <AiFillQuestionCircle
+        size={18}
+        color="lightgray"
+        title="No Document uploaded"
+      />
+    );
+    let FILE_DONT_CARE_SYMBOL = (
+      <BsDash size={18} color="lightgray" title="Not needed" />
+    );
+    let SYMBOL_EXPLANATION = (
+      <>
+        <p></p>
+        <p>
+          {FILE_OK_SYMBOL}: The document is valid and can be used in the
+          application.
+        </p>
+        <p>
+          {FILE_NOT_OK_SYMBOL}: The document is invalud and cannot be used in
+          the application. Please properly scan a new one.
+        </p>
+        <p>
+          {FILE_UPLOADED_SYMBOL}: The document is uploaded. Your agent will
+          check it as soon as possible.
+        </p>
+        <p>{FILE_MISSING_SYMBOL}: Please upload the copy of the document.</p>
+        <p>{FILE_DONT_CARE_SYMBOL}: This document is not needed.</p>
+      </>
+    );
     if (error) {
       //TODO: put error page component for timeout
       localStorage.removeItem("token");
@@ -362,143 +349,129 @@ class Dashboard extends React.Component {
         if (this.props.role === "Admin") {
           return (
             <Aux>
-              <Row>
-                <Col sm={12}>
-                  <AdminMainView
-                    role={this.props.role}
-                    editAgent={this.editAgent}
-                    editEditor={this.editEditor}
-                    agent_list={this.state.agent_list}
-                    editor_list={this.state.editor_list}
-                    UpdateAgentlist={this.UpdateAgentlist}
-                    startEditingEditor={this.startEditingEditor}
-                    startEditingProgram={this.startEditingProgram}
-                    students={this.state.students}
-                    documentslist={window.documentlist}
-                    documentlist2={window.documentlist2}
-                    agenttodolist={window.agenttodolist}
-                    documentsprogresslist={window.documentsprogresslist}
-                    programstatuslist={window.programstatuslist}
-                    startUploadfile={this.startUploadfile}
-                    onDeleteProgram={this.onDeleteProgram}
-                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                    onRejectFilefromstudent={this.onRejectFilefromstudent}
-                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                    updateAgentList={this.state.updateAgentList}
-                    handleChangeAgentlist={this.handleChangeAgentlist}
-                    submitUpdateAgentlist={this.submitUpdateAgentlist}
-                    updateEditorList={this.state.updateEditorList}
-                    handleChangeEditorlist={this.handleChangeEditorlist}
-                    submitUpdateEditorlist={this.submitUpdateEditorlist}
-                  />
-                </Col>
-              </Row>
+              <AdminMainView
+                role={this.props.role}
+                editAgent={this.editAgent}
+                editEditor={this.editEditor}
+                agent_list={this.state.agent_list}
+                editor_list={this.state.editor_list}
+                UpdateAgentlist={this.UpdateAgentlist}
+                startEditingEditor={this.startEditingEditor}
+                startEditingProgram={this.startEditingProgram}
+                students={this.state.students}
+                documentslist={window.documentlist}
+                documentlist2={window.documentlist2}
+                agenttodolist={window.agenttodolist}
+                documentsprogresslist={window.documentsprogresslist}
+                programstatuslist={window.programstatuslist}
+                startUploadfile={this.startUploadfile}
+                onDeleteProgram={this.onDeleteProgram}
+                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                onRejectFilefromstudent={this.onRejectFilefromstudent}
+                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                updateAgentList={this.state.updateAgentList}
+                handleChangeAgentlist={this.handleChangeAgentlist}
+                submitUpdateAgentlist={this.submitUpdateAgentlist}
+                updateEditorList={this.state.updateEditorList}
+                handleChangeEditorlist={this.handleChangeEditorlist}
+                submitUpdateEditorlist={this.submitUpdateEditorlist}
+                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+              />
             </Aux>
           );
         } else if (this.props.role === "Agent") {
           return (
             <Aux>
-              <Row>
-                <Col sm={12}>
-                  <AgentMainView
-                    role={this.props.role}
-                    UpdateAgentlist={this.UpdateAgentlist}
-                    startEditingEditor={this.startEditingEditor}
-                    startEditingProgram={this.startEditingProgram}
-                    students={this.state.students}
-                    documentslist={window.documentlist}
-                    documentlist2={window.documentlist2}
-                    agenttodolist={window.agenttodolist}
-                    documentsprogresslist={window.documentsprogresslist}
-                    programstatuslist={window.programstatuslist}
-                    startUploadfile={this.startUploadfile}
-                    onDeleteProgram={this.onDeleteProgram}
-                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                    onRejectFilefromstudent={this.onRejectFilefromstudent}
-                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                    updateAgentList={this.state.updateAgentList}
-                    handleChangeAgentlist={this.handleChangeAgentlist}
-                    submitUpdateAgentlist={this.submitUpdateAgentlist}
-                    updateEditorList={this.state.updateEditorList}
-                    handleChangeEditorlist={this.handleChangeEditorlist}
-                    submitUpdateEditorlist={this.submitUpdateEditorlist}
-                  />
-                </Col>
-              </Row>
+              <AgentMainView
+                role={this.props.role}
+                UpdateAgentlist={this.UpdateAgentlist}
+                startEditingEditor={this.startEditingEditor}
+                startEditingProgram={this.startEditingProgram}
+                students={this.state.students}
+                documentslist={window.documentlist}
+                documentlist2={window.documentlist2}
+                agenttodolist={window.agenttodolist}
+                documentsprogresslist={window.documentsprogresslist}
+                programstatuslist={window.programstatuslist}
+                startUploadfile={this.startUploadfile}
+                onDeleteProgram={this.onDeleteProgram}
+                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                onRejectFilefromstudent={this.onRejectFilefromstudent}
+                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                updateAgentList={this.state.updateAgentList}
+                handleChangeAgentlist={this.handleChangeAgentlist}
+                submitUpdateAgentlist={this.submitUpdateAgentlist}
+                updateEditorList={this.state.updateEditorList}
+                handleChangeEditorlist={this.handleChangeEditorlist}
+                submitUpdateEditorlist={this.submitUpdateEditorlist}
+                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+              />
             </Aux>
           );
         } else if (this.props.role === "Editor") {
           return (
             <Aux>
-              <Row>
-                <Col sm={12}>
-                  <EditorMainView
-                    role={this.props.role}
-                    editAgent={this.editAgent}
-                    editEditor={this.editEditor}
-                    agent_list={this.state.agent_list}
-                    editor_list={this.state.editor_list}
-                    UpdateAgentlist={this.UpdateAgentlist}
-                    startEditingEditor={this.startEditingEditor}
-                    startEditingProgram={this.startEditingProgram}
-                    students={this.state.students}
-                    documentslist={window.documentlist}
-                    documentlist2={window.documentlist2}
-                    documentsprogresslist={window.documentsprogresslist}
-                    programstatuslist={window.programstatuslist}
-                    startUploadfile={this.startUploadfile}
-                    onDeleteProgram={this.onDeleteProgram}
-                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                    onRejectFilefromstudent={this.onRejectFilefromstudent}
-                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                    updateAgentList={this.state.updateAgentList}
-                    handleChangeAgentlist={this.handleChangeAgentlist}
-                    submitUpdateAgentlist={this.submitUpdateAgentlist}
-                    updateEditorList={this.state.updateEditorList}
-                    handleChangeEditorlist={this.handleChangeEditorlist}
-                    submitUpdateEditorlist={this.submitUpdateEditorlist}
-                  />
-                </Col>
-              </Row>
+              <EditorMainView
+                role={this.props.role}
+                editAgent={this.editAgent}
+                editEditor={this.editEditor}
+                agent_list={this.state.agent_list}
+                editor_list={this.state.editor_list}
+                UpdateAgentlist={this.UpdateAgentlist}
+                startEditingEditor={this.startEditingEditor}
+                startEditingProgram={this.startEditingProgram}
+                students={this.state.students}
+                documentslist={window.documentlist}
+                documentlist2={window.documentlist2}
+                documentsprogresslist={window.documentsprogresslist}
+                programstatuslist={window.programstatuslist}
+                startUploadfile={this.startUploadfile}
+                onDeleteProgram={this.onDeleteProgram}
+                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                onRejectFilefromstudent={this.onRejectFilefromstudent}
+                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                updateAgentList={this.state.updateAgentList}
+                handleChangeAgentlist={this.handleChangeAgentlist}
+                submitUpdateAgentlist={this.submitUpdateAgentlist}
+                updateEditorList={this.state.updateEditorList}
+                handleChangeEditorlist={this.handleChangeEditorlist}
+                submitUpdateEditorlist={this.submitUpdateEditorlist}
+              />
             </Aux>
           );
         } else if (this.props.role === "Student") {
           return (
             <Aux>
-              <Row>
-                <Col sm={12}>
-                  <StudentMainView
-                    role={this.props.role}
-                    editAgent={this.editAgent}
-                    editEditor={this.editEditor}
-                    agent_list={this.state.agent_list}
-                    editor_list={this.state.editor_list}
-                    UpdateAgentlist={this.UpdateAgentlist}
-                    startEditingEditor={this.startEditingEditor}
-                    startEditingProgram={this.startEditingProgram}
-                    students={this.state.students}
-                    documentslist={window.documentlist}
-                    documentlist2={window.documentlist2}
-                    documentsprogresslist={window.documentsprogresslist}
-                    programstatuslist={window.programstatuslist}
-                    startUploadfile={this.startUploadfile}
-                    onDeleteProgram={this.onDeleteProgram}
-                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                    onRejectFilefromstudent={this.onRejectFilefromstudent}
-                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                    updateAgentList={this.state.updateAgentList}
-                    handleChangeAgentlist={this.handleChangeAgentlist}
-                    submitUpdateAgentlist={this.submitUpdateAgentlist}
-                    updateEditorList={this.state.updateEditorList}
-                    handleChangeEditorlist={this.handleChangeEditorlist}
-                    submitUpdateEditorlist={this.submitUpdateEditorlist}
-                  />
-                </Col>
-              </Row>
+              <StudentMainView
+                role={this.props.role}
+                editAgent={this.editAgent}
+                editEditor={this.editEditor}
+                agent_list={this.state.agent_list}
+                editor_list={this.state.editor_list}
+                UpdateAgentlist={this.UpdateAgentlist}
+                startEditingEditor={this.startEditingEditor}
+                startEditingProgram={this.startEditingProgram}
+                students={this.state.students}
+                documentslist={window.documentlist}
+                documentlist2={window.documentlist2}
+                documentsprogresslist={window.documentsprogresslist}
+                programstatuslist={window.programstatuslist}
+                startUploadfile={this.startUploadfile}
+                onDeleteProgram={this.onDeleteProgram}
+                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                onRejectFilefromstudent={this.onRejectFilefromstudent}
+                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                updateAgentList={this.state.updateAgentList}
+                handleChangeAgentlist={this.handleChangeAgentlist}
+                submitUpdateAgentlist={this.submitUpdateAgentlist}
+                updateEditorList={this.state.updateEditorList}
+                handleChangeEditorlist={this.handleChangeEditorlist}
+                submitUpdateEditorlist={this.submitUpdateEditorlist}
+              />
             </Aux>
           );
         } else {

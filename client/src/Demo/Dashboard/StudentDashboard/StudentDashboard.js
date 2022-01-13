@@ -10,10 +10,6 @@ class StudentDashboard extends React.Component {
       <>
         <tbody>
           <tr>
-            <td>
-              {this.props.student.firstname}
-              {this.props.student.lastname}
-            </td>
             {this.props.studentDocOverview}
           </tr>
         </tbody>

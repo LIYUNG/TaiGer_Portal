@@ -1,13 +1,6 @@
 import React from "react";
 import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
 import Card from "../../../App/components/MainCard";
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
 import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
 import AgentTodoList from "./AgentTodoList";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";

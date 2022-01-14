@@ -18,6 +18,7 @@ class StudentMainView extends React.Component {
     const application_progress = this.props.students.map((student, i) => (
       <ApplicationProgress
         key={i}
+        role={this.props.role}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}

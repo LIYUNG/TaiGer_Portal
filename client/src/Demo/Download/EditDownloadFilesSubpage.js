@@ -6,7 +6,7 @@ class EditDownloadFilesSubpage extends React.Component {
 
   render() {
     let keys2 = Object.keys(this.props.templatelist);
-    let object_init = new Object();
+    let object_init = {};
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = "missing";
     }

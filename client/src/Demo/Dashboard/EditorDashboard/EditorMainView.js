@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Tabs, Tab } from "react-bootstrap";
 import Card from "../../../App/components/MainCard";
 import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";

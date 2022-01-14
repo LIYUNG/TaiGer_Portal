@@ -176,6 +176,7 @@ class ApplicationProgress extends React.Component {
 
     return (
       <ApplicationStatus
+        role={this.props.role}
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}

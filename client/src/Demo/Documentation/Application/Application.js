@@ -23,7 +23,7 @@ class Application extends Component {
     console.log("get article");
     getApplicationArticle().then(
       (resp) => {
-        if (resp.status == 200) {
+        if (resp.status === 200) {
           this.setState({
             articles: resp.data.documents,
             isLoaded: true,

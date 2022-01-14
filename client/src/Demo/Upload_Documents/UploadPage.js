@@ -28,7 +28,7 @@ class UploadPage extends React.Component {
       (resp) => {
         console.log(this.props.user._id);
         console.log(resp.data);
-        const { data: student, success: success } = resp.data;
+        const { data: student, success } = resp.data;
         console.log(success);
         this.setState({
           file: "",
@@ -52,11 +52,12 @@ class UploadPage extends React.Component {
     if (this.state.isLoaded === false) {
       getMyfiles(this.props.user._id).then(
         (resp) => {
-          const { data: student, success: success } = resp.data;
+          const { data: student, success } = resp.data;
           console.log(resp.data.data);
           this.setState({
             isLoaded: true,
             student: student,
+            success: success,
           });
         },
         (error) => {
@@ -235,7 +236,7 @@ class UploadPage extends React.Component {
     );
   }
   render() {
-    const { error, isLoaded } = this.state;
+    const { isLoaded } = this.state;
     if (!this.state.success) {
       return (
         <div>

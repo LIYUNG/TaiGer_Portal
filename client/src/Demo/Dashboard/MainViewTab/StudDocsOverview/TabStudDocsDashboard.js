@@ -1,11 +1,5 @@
 import React from "react";
 import { Table } from "react-bootstrap";
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
 import StudDocsDashboard from "./StudDocsDashboard";
 class TabStudDocsDashboard extends React.Component {
   render() {

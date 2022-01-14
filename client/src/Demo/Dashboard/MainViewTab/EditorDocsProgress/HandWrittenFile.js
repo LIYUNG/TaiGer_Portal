@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Form, Col, Row, Button } from "react-bootstrap";
 
-import { BsTrash } from "react-icons/bs";
 class HandWrittenFile extends Component {
   handleTrashClick = () => {
     this.props.onTrashClick(this.props.id);

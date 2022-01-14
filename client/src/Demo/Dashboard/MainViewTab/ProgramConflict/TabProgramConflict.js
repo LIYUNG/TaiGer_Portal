@@ -4,8 +4,8 @@ import ProgramConflict from "./ProgramConflict";
 
 class TabProgramConflict extends React.Component {
   render() {
-    let conflict_map = new Object();
-    let conflict_programs = new Object();
+    let conflict_map = {};
+    let conflict_programs = {};
 
     for (let i = 0; i < this.props.students.length; i++) {
       if (this.props.students[i].applications)

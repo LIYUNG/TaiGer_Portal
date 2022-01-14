@@ -1,7 +1,7 @@
 import React from "react";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
+// import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import { uploadforstudent } from "../../../../api";
 import DocsProgress from "./DocsProgress";
 

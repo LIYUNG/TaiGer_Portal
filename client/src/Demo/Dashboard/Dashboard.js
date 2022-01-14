@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Breadcrumb, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Tabs, Tab } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 // import DEMO from "../../store/constant";
 // import avatar1 from "../../assets/images/user/avatar-1.jpg";

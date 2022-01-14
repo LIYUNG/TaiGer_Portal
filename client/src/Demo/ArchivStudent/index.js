@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Breadcrumb, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Tabs, Tab } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 // import DEMO from "../../store/constant";
 import {
@@ -10,7 +10,7 @@ import {
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
 import TabStudDocsDashboard from "../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard";
-import Card from "../../App/components/MainCard";
+// import Card from "../../App/components/MainCard";
 
 import {
   getArchivStudents,

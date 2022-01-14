@@ -22,9 +22,9 @@ const ProgramTable = React.lazy(() => import("./Demo/Program/ProgramTable"));
 const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
 
 const Settings = React.lazy(() => import("./Demo/Settings/index"));
-const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
+// const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
 
-const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
+// const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 
 const DocsApplication = React.lazy(() => import('./Demo/Documentation/Application/Application'));
 const DocsCertification = React.lazy(() =>

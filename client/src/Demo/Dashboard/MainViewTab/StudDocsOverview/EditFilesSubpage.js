@@ -15,8 +15,8 @@ class EditFilesSubpage extends React.Component {
     const deleteStyle = "danger";
     let value2 = Object.values(this.props.documentlist2);
     let keys2 = Object.keys(this.props.documentlist2);
-    let object_init = new Object();
-    let object_date_init = new Object();
+    let object_init = {};
+    let object_date_init = {};
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = "missing";
       object_date_init[keys2[i]] = "";

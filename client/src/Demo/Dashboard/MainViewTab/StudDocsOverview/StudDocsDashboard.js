@@ -159,7 +159,7 @@ class StudDocsDashboard extends React.Component {
   render() {
     let studentDocOverview;
     let keys = Object.keys(this.props.documentlist2);
-    let object_init = new Object();
+    let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
     }

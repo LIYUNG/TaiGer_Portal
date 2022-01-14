@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "../../App/components/MainCard";
 import { Form, Button } from "react-bootstrap";
-import ReactQuill from 'react-quill'; // ES6
+// import ReactQuill from 'react-quill'; // ES6
 import TextEditor from "./TextEditor";
 
 class ArticleForm extends React.Component {

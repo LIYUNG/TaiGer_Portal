@@ -8,10 +8,7 @@ import DEMO from "../../../../store/constant";
 import * as actionTypes from "../../../../store/actions";
 
 class NavBar extends Component {
-    constructor(props) {
-        super(props);
-    }
-    
+   
     render() {
         let headerClass = ['navbar', 'pcoded-header', 'navbar-expand-lg', this.props.headerBackColor];
         if (this.props.headerFixedLayout) {

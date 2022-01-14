@@ -130,7 +130,11 @@ class Navigation extends Component {
               windowWidth={this.props.windowWidth}
               onToggleNavigation={this.props.onToggleNavigation}
             />
-            <NavContent navigation={navigation.items} />
+            {this.props.userdata.role === "Student" ? (
+              <NavContent navigation={navigation2.items} />
+            ) : (
+              <NavContent navigation={navigation.items} />
+            )}
           </div>
         </OutsideClick>
       );

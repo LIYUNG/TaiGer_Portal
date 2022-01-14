@@ -40,22 +40,18 @@ class EditUploadFilesSubpage extends React.Component {
       if (object_init[k] === "uploaded") {
         return (
           <tr key={i + 1}>
-            <th>
+            <td>
               <AiOutlineFieldTime
                 size={24}
                 color="orange"
                 title="Uploaded successfully"
               />
-            </th>
+            </td>
             <td>
               <p className="m-0"> {value2[i]}</p>
             </td>
-            <td>
-
-            </td>
-            <td>
-
-            </td>
+            <td></td>
+            <td></td>
             <td>
               <Col>
                 <Form
@@ -95,18 +91,15 @@ class EditUploadFilesSubpage extends React.Component {
       } else if (object_init[k] === "accepted") {
         return (
           <tr key={i + 1}>
-            <th>
+            <td>
               <IoCheckmarkCircle
                 size={24}
                 color="limegreen"
                 title="Valid Document"
               />
-            </th>
+            </td>
             <td>
               <p className="m-0"> {value2[i]}</p>
-              <p>
-                {/* {this.props.student.uploadedDocs_[k].LastUploadDate_} */}
-              </p>
             </td>
             <td>
               <Col></Col>
@@ -133,23 +126,21 @@ class EditUploadFilesSubpage extends React.Component {
                 </Form>
               </Col>
             </td>
+            <td></td>
           </tr>
         );
       } else if (object_init[k] === "rejected") {
         return (
           <tr key={i + 1}>
-            <th>
+            <td>
               <AiFillCloseCircle
                 size={24}
                 color="red"
                 title="Invalid Document"
               />
-            </th>
+            </td>
             <td>
               <p className="m-0"> {value2[i]}</p>
-              <p>
-                {/* {this.props.student.uploadedDocs_[k].LastUploadDate_} */}
-              </p>
             </td>
             <td>
               <Col>
@@ -158,7 +149,6 @@ class EditUploadFilesSubpage extends React.Component {
                   onClick={(e) => (e.target.value = null)}
                 >
                   <Form.File id={this.props.id}>
-                    {/* <Form.File.Label>Regular file input</Form.File.Label> */}
                     <Form.File.Input />
                   </Form.File>
                 </Form>
@@ -237,7 +227,6 @@ class EditUploadFilesSubpage extends React.Component {
                   onClick={(e) => (e.target.value = null)}
                 >
                   <Form.File id={this.props.id}>
-                    {/* <Form.File.Label>Regular file input</Form.File.Label> */}
                     <Form.File.Input />
                   </Form.File>
                 </Form>
@@ -258,6 +247,8 @@ class EditUploadFilesSubpage extends React.Component {
                 </Form>
               </Col>
             </td>
+            <td></td>
+            <td></td>
           </tr>
         );
       }

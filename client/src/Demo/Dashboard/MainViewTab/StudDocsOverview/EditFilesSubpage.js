@@ -75,7 +75,6 @@ class EditFilesSubpage extends React.Component {
                   <Form.Group controlId="exampleForm.ControlSelect1">
                     <Button size="sm" type="submit" title="Download">
                       <AiOutlineDownload size={16} />
-                      {/* Download */}
                     </Button>
                   </Form.Group>
                 </Form>
@@ -399,6 +398,7 @@ class EditFilesSubpage extends React.Component {
                 </td>
               </>
             )}
+            <td></td>
           </tr>
         );
       }

@@ -153,6 +153,7 @@ class StudentMainView extends React.Component {
                     </tr>
                   </thead>
                   {stdlist}
+                  {this.props.SYMBOL_EXPLANATION}
                 </Table>
               </Tab>
             </Tabs>

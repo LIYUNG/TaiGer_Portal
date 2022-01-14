@@ -39,7 +39,7 @@ class GuestMainView extends React.Component {
             <tr>
               <>
                 <th></th>
-                <th>First-/Last Name</th>
+                <th>First-, Last Name</th>
               </>
               {this.props.documentslist.map((doc, index) => (
                 <th key={index}>{doc.name}</th>

@@ -63,7 +63,7 @@ class TabProgramConflict extends React.Component {
               <>
                 <th>University</th>
                 <th>Programs</th>
-                <th>First-/Last Name</th>
+                <th>First-, Last Name</th>
                 <th>Deadline</th>
               </>
             </tr>

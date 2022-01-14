@@ -70,7 +70,7 @@ class StudentMainView extends React.Component {
                 <thead>
                   <tr>
                     <>
-                      <th>First-/Last Name</th>
+                      <th>First-, Last Name</th>
                       <th>Email</th>
                     </>
                   </tr>
@@ -85,7 +85,7 @@ class StudentMainView extends React.Component {
                 <thead>
                   <tr>
                     <>
-                      <th>First-/Last Name</th>
+                      <th>First-, Last Name</th>
                       <th>Email</th>
                     </>
                   </tr>
@@ -122,7 +122,7 @@ class StudentMainView extends React.Component {
                   <tr>
                     <>
                       {this.props.role !== "Student" ? (
-                        <th>First-/Last Name</th>
+                        <th>First-, Last Name</th>
                       ) : (
                         <></>
                       )}
@@ -148,7 +148,7 @@ class StudentMainView extends React.Component {
                   <thead>
                     <tr>
                       {/* <>
-                        <th>First-/Last Name</th>
+                        <th>First-, Last Name</th>
                       </> */}
                       {this.props.documentslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>

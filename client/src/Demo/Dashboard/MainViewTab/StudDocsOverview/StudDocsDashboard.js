@@ -271,7 +271,9 @@ class StudDocsDashboard extends React.Component {
                 </DropdownButton>
               </td>
               <td>
-                {this.state.student.firstname} /{this.state.student.lastname}
+                {this.state.student.firstname}, {this.state.student.lastname}
+                <br />
+                {this.props.student.email}
               </td>
             </>
             {studentDocOverview}

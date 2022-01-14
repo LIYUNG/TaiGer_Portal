@@ -32,7 +32,6 @@ import {
 
 class Dashboard extends React.Component {
   state = {
-    role: "",
     error: null,
     modalShow: false,
     agent_list: [],
@@ -45,7 +44,7 @@ class Dashboard extends React.Component {
   };
 
   componentDidMount() {
-    console.log("default " + this.props.userId);
+    console.log(this.props.user);
     getStudents().then(
       (resp) => {
         console.log(resp.data);
@@ -346,11 +345,11 @@ class Dashboard extends React.Component {
       return <div>Loading...</div>;
     } else {
       if (this.state.success) {
-        if (this.props.role === "Admin") {
+        if (this.props.user.role === "Admin") {
           return (
             <Aux>
               <AdminMainView
-                role={this.props.role}
+                role={this.props.user.role}
                 editAgent={this.editAgent}
                 editEditor={this.editEditor}
                 agent_list={this.state.agent_list}
@@ -380,11 +379,11 @@ class Dashboard extends React.Component {
               />
             </Aux>
           );
-        } else if (this.props.role === "Agent") {
+        } else if (this.props.user.role === "Agent") {
           return (
             <Aux>
               <AgentMainView
-                role={this.props.role}
+                role={this.props.user.role}
                 UpdateAgentlist={this.UpdateAgentlist}
                 startEditingEditor={this.startEditingEditor}
                 startEditingProgram={this.startEditingProgram}
@@ -410,11 +409,11 @@ class Dashboard extends React.Component {
               />
             </Aux>
           );
-        } else if (this.props.role === "Editor") {
+        } else if (this.props.user.role === "Editor") {
           return (
             <Aux>
               <EditorMainView
-                role={this.props.role}
+                role={this.props.user.role}
                 editAgent={this.editAgent}
                 editEditor={this.editEditor}
                 agent_list={this.state.agent_list}
@@ -442,11 +441,11 @@ class Dashboard extends React.Component {
               />
             </Aux>
           );
-        } else if (this.props.role === "Student") {
+        } else if (this.props.user.role === "Student") {
           return (
             <Aux>
               <StudentMainView
-                role={this.props.role}
+                role={this.props.user.role}
                 editAgent={this.editAgent}
                 editEditor={this.editEditor}
                 agent_list={this.state.agent_list}
@@ -482,7 +481,7 @@ class Dashboard extends React.Component {
                   <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
                     <Tab eventKey="x" title="To Do list:">
                       <GuestMainView
-                        role={this.props.role}
+                        role={this.props.user.role}
                         success={this.state.success}
                         editAgent={this.editAgent}
                         editEditor={this.editEditor}

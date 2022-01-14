@@ -20,7 +20,8 @@ const FormsElements = React.lazy(() => import('./Demo/Forms/FormsElements'));
 const ProgramTable = React.lazy(() => import("./Demo/Program/ProgramTable"));
 const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
 
-const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
+const Settings = React.lazy(() => import("./Demo/Settings/index"));
+const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
 
 const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 
@@ -145,6 +146,12 @@ const routes = [
     exact: true,
     name: "TaiGer AI",
     component: TaiGerAI,
+  },
+  {
+    path: "/settings",
+    exact: true,
+    name: "Settings",
+    component: Settings,
   },
   // {
   //   path: "/",

@@ -169,8 +169,8 @@ class ProgramTable extends React.Component {
               <Card>
                 <Card.Body>
                   <Programlist
-                    role={this.props.role}
-                    userId={this.props.userId}
+                    role={this.props.user.role}
+                    userId={this.props.user._id}
                     success={this.state.success}
                     onFormSubmit={this.onFormSubmit}
                     data={this.state.data}

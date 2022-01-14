@@ -8,12 +8,12 @@ class ProgramAddedMyWatchList extends React.Component {
       <Modal
         show={this.props.modalShowNAddMyWatchList}
         onHide={this.props.setModalHideDDelete}
-        size="lg"
+        size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Warning</Modal.Title>
+          <Modal.Title>Success</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>

@@ -166,7 +166,7 @@ class Visa extends Component {
                 onTrashClick={this.handleTrashClick}
                 role={this.state.role}
               />
-              {this.props.role === "Admin" || this.props.role === "Agent" ? (
+              {this.props.user.role === "Admin" || this.props.user.role === "Agent" ? (
                 <ToggleableArticleForm
                   category="application"
                   onFormSubmit={this.handleCreateFormSubmit}

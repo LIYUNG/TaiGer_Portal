@@ -108,8 +108,7 @@ function AdminLayout(props) {
         render={() => (
           <route.component
             // {...props}
-            role={props.userdata.data.role}
-            userId={props.userdata.data._id}
+            user={props.userdata.data}
           />
         )}
       />

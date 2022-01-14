@@ -32,6 +32,12 @@ export default {
               url: "/basic/badges",
             },
             {
+              id: "forms",
+              title: "Forms",
+              type: "item",
+              url: "/forms/form-basic",
+            },
+            {
               id: "breadcrumb-pagination",
               title: "Breadcrumb & Pagination",
               type: "item",
@@ -86,14 +92,6 @@ export default {
         //     url: '/maps/google-map'
         // },
         // {
-        // {
-        //   id: "upload",
-        //   title: "Upload Documents",
-        //   type: "item",
-        //   url: "/upload",
-        //   classes: "nav-item",
-        //   icon: "feather icon-upload",
-        // },
         {
           id: "download",
           title: "Download",

@@ -123,7 +123,7 @@ class NavRight extends Component {
           </li>
           <li>
             <a
-              href={DEMO.BLANK_LINK}
+              href={DEMO.SETTINGS}
               className={this.props.rtlLayout ? "m-r-15" : "m-l-15"}
             >
               <i className="feather icon-settings" /> Settings

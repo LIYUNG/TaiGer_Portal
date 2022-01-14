@@ -44,7 +44,9 @@ class TabStudDocsDashboard extends React.Component {
             <tr>
               <>
                 <th></th>
-                <th>First-/Last Name</th>
+                <th>
+                  First-, Last Name <br /> Email
+                </th>
               </>
               {header.map((name, index) => (
                 <th key={index}>{name}</th>

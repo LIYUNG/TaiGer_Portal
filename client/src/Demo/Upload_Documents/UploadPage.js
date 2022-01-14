@@ -24,9 +24,9 @@ class UploadPage extends React.Component {
     };
   }
   componentDidMount() {
-    getMyfiles(this.props.userId).then(
+    getMyfiles(this.props.user._id).then(
       (resp) => {
-        console.log(this.props.userId);
+        console.log(this.props.user._id);
         console.log(resp.data);
         const { data: student, success: success } = resp.data;
         console.log(success);
@@ -50,7 +50,7 @@ class UploadPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
-      getMyfiles(this.props.userId).then(
+      getMyfiles(this.props.user._id).then(
         (resp) => {
           const { data: student, success: success } = resp.data;
           console.log(resp.data.data);
@@ -245,7 +245,7 @@ class UploadPage extends React.Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      if (this.props.role === "Student") {
+      if (this.props.user.role === "Student") {
         return (
           <Aux>
             <Row>
@@ -260,7 +260,7 @@ class UploadPage extends React.Component {
                   {/* </Card.Title> */}
                   {/* <Card.Body> */}
                   <EditUploadFilesSubpage
-                    userId={this.props.userId}
+                    userId={this.props.user._id}
                     student={this.state.student}
                     submitFile={this.submitFile}
                     onFileChange={this.onFileChange}
@@ -274,9 +274,9 @@ class UploadPage extends React.Component {
           </Aux>
         );
       } else if (
-        this.props.role === "Agent" ||
-        this.props.role === "Editor" ||
-        this.props.role === "Admin"
+        this.props.user.role === "Agent" ||
+        this.props.user.role === "Editor" ||
+        this.props.user.role === "Admin"
       ) {
         return (
           <Aux>

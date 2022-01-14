@@ -93,7 +93,7 @@ class AdminMainView extends React.Component {
                   <thead>
                     <tr>
                       <>
-                        <th>First-/Last Name</th>
+                        <th>First-, Last Name</th>
                       </>
                       {this.props.agenttodolist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
@@ -125,7 +125,7 @@ class AdminMainView extends React.Component {
                   <thead>
                     <tr>
                       <>
-                        <th>First-/Last Name</th>
+                        <th>First-, Last Name</th>
                         <th>University</th>
                         <th>Programs</th>
                         <th>Deadline</th>

@@ -1,6 +1,6 @@
 import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
-
+import { Row, Col } from "react-bootstrap";
+import Card from "../../App/components/MainCard";
 import Aux from "../../hoc/_Aux";
 import {
   deleteFile,
@@ -236,26 +236,19 @@ class DownloadPage extends React.Component {
       return <div>Loading...</div>;
     } else {
       if (
-        this.props.role === "Student" ||
-        this.props.role === "Admin" ||
-        this.props.role === "Editor" ||
-        this.props.role === "Agent"
+        this.props.user.role === "Student" ||
+        this.props.user.role === "Admin" ||
+        this.props.user.role === "Editor" ||
+        this.props.user.role === "Agent"
       ) {
         return (
           <Aux>
             <Row>
               <Col>
-                <Card>
-                  {/* <Card.Title> */}
-                  <Card.Header as="h5">
-                    {/* <Card.Title as="h5"> */}
-                    Download TaiGer Document Templates
-                    {/* </Card.Title> */}
-                  </Card.Header>
-                  {/* </Card.Title> */}
-                  {/* <Card.Body> */}
+                <Card title="Download TaiGer Document Templates">
                   <EditDownloadFilesSubpage
-                    userId={this.props.userId}
+                    role={this.props.user.role}
+                    userId={this.props.user._id}
                     student={this.state.student}
                     submitFile={this.submitFile}
                     onFileChange={this.onFileChange}

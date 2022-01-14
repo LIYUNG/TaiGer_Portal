@@ -18,11 +18,9 @@ class ProgramDeleteWarning extends React.Component {
         <Modal.Header closeButton>
           <Modal.Title>Warning</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
-          <p>Do you want to delete {this.props.uni_name} - {this.props.program_name}?</p>
+          <h5>Do you want to delete {this.props.uni_name} - {this.props.program_name}?</h5>
         </Modal.Body>
-
         <Modal.Footer>
           <Button
             variant="primary"

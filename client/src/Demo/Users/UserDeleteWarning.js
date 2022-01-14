@@ -8,7 +8,7 @@ class UserDeleteWarning extends React.Component {
       <Modal
         show={this.props.deleteUserWarning}
         onHide={this.props.setModalHideDDelete}
-        size="lg"
+        size="sm"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -16,10 +16,10 @@ class UserDeleteWarning extends React.Component {
           <Modal.Title>Warning</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
+          <h5>
             Do you want to delete {this.props.firstname} - {this.props.lastname}
             ?
-          </p>
+          </h5>
         </Modal.Body>
 
         <Modal.Footer>

@@ -67,13 +67,11 @@ class StudentMainView extends React.Component {
         <Row>
           <Col md={6}>
             <Card title="Agent">
-              <Table responsive>
+              <Table responsive striped bordered hover>
                 <thead>
                   <tr>
-                    <>
-                      <th>First-, Last Name</th>
-                      <th>Email</th>
-                    </>
+                    <th>First-, Last Name</th>
+                    <th>Email</th>
                   </tr>
                 </thead>
                 <tbody>{your_agents}</tbody>
@@ -82,13 +80,11 @@ class StudentMainView extends React.Component {
           </Col>
           <Col md={6}>
             <Card title="Editor">
-              <Table responsive>
+              <Table responsive striped bordered hover>
                 <thead>
                   <tr>
-                    <>
-                      <th>First-, Last Name</th>
-                      <th>Email</th>
-                    </>
+                    <th>First-, Last Name</th>
+                    <th>Email</th>
                   </tr>
                 </thead>
                 <tbody>{your_editors}</tbody>

@@ -163,7 +163,7 @@ class Userslist extends React.Component {
       ));
       return (
         <>
-          <Table responsive>
+          <Table table-responsive>
             <thead>{headers}</thead>
             <tbody>{users}</tbody>
           </Table>

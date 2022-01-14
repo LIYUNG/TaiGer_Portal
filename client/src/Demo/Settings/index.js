@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
 
@@ -132,9 +126,10 @@ class FormsElements extends React.Component {
                       <Form.Label>Firstname</Form.Label>
                       <Form.Control
                         type="text"
+                        readOnly={true}
                         placeholder="Text"
-                        default="firstname"
-                        autoComplete="off"
+                        autoComplete="nope"
+                        value={this.props.user.firstname}
                       />
                     </Form.Group>
                     <Form.Group controlId="form.birthday">
@@ -145,16 +140,21 @@ class FormsElements extends React.Component {
                         </Form.Text> */}
                     </Form.Group>
 
-                    <Form.Group controlId="form.BasicPassword">
+                    {/* <Form.Group controlId="form.BasicPassword">
                       <Form.Label>Password</Form.Label>
                       <Form.Control type="password" placeholder="Password" />
-                    </Form.Group>
+                    </Form.Group> */}
                     {/* </Form> */}
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="form.lastname">
                       <Form.Label>Lastname</Form.Label>
-                      <Form.Control type="text" placeholder="Text" />
+                      <Form.Control
+                        type="text"
+                        placeholder="Text"
+                        readOnly={true}
+                        value={this.props.user.lastname}
+                      />
                     </Form.Group>
                     <Form.Group className="mb-2">
                       <Form.Label>Email</Form.Label>
@@ -174,9 +174,9 @@ class FormsElements extends React.Component {
                         <option>5</option>
                       </Form.Control> 
                     </Form.Group>*/}
-                    <Form.Group controlId="formBasicChecbox">
+                    {/* <Form.Group controlId="formBasicChecbox">
                       <Form.Check type="checkbox" label="Check me out" />
-                    </Form.Group>
+                    </Form.Group> */}
                     <Button variant="primary">Submit</Button>
                   </Col>
                 </Row>

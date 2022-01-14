@@ -16,7 +16,7 @@ const Role = {
   Student: "Student",
 };
 
-const options = { discriminatorKey: "role", timestamps: true };
+const options = { discriminatorKey: "role", timestamps: true, strict: false };
 
 const UserSchema = new Schema(
   {

@@ -153,6 +153,9 @@ class StudDocsDashboard extends React.Component {
     );
   };
 
+  updateStudentArchivStatus = (studentId, isArchived) => {
+    this.props.updateStudentArchivStatus(studentId, isArchived);
+  };
   render() {
     let studentDocOverview;
     let keys = Object.keys(this.props.documentlist2);
@@ -268,6 +271,36 @@ class StudDocsDashboard extends React.Component {
                   >
                     Edit File Status
                   </Dropdown.Item>
+                  {this.props.isDashboard ? (
+                    <Dropdown.Item
+                      eventKey="5"
+                      onSelect={() =>
+                        this.updateStudentArchivStatus(
+                          this.props.student._id,
+                          true
+                        )
+                      }
+                    >
+                      Move to Archiv
+                    </Dropdown.Item>
+                  ) : (
+                    <></>
+                  )}
+                  {this.props.isArchivPage ? (
+                    <Dropdown.Item
+                      eventKey="6"
+                      onSelect={() =>
+                        this.updateStudentArchivStatus(
+                          this.props.student._id,
+                          false
+                        )
+                      }
+                    >
+                      Move to Active
+                    </Dropdown.Item>
+                  ) : (
+                    <></>
+                  )}
                 </DropdownButton>
               </td>
               <td>

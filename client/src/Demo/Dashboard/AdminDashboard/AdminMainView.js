@@ -65,11 +65,8 @@ class AdminMainView extends React.Component {
                   students={this.props.students}
                   editAgent={this.props.editAgent}
                   editEditor={this.props.editEditor}
-                  startEditingEditor={this.props.startEditingEditor}
-                  startEditingProgram={this.props.startEditingProgram}
                   documentslist={this.props.documentslist}
                   documentlist2={this.props.documentlist2}
-                  startUploadfile={this.props.startUploadfile}
                   agent_list={this.props.agent_list}
                   editor_list={this.props.editor_list}
                   onDeleteProgram={this.props.onDeleteProgram}
@@ -86,6 +83,8 @@ class AdminMainView extends React.Component {
                   handleChangeEditorlist={this.props.handleChangeEditorlist}
                   submitUpdateEditorlist={this.props.submitUpdateEditorlist}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
+                  updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+                  isDashboard={this.props.isDashboard}
                 />
               </Tab>
               <Tab eventKey="x" title="Admin TODO">

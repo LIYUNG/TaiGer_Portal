@@ -16,11 +16,8 @@ class TabStudDocsDashboard extends React.Component {
         student={student}
         editAgent={this.props.editAgent}
         editEditor={this.props.editEditor}
-        startEditingEditor={this.props.startEditingEditor}
-        startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
         onDeleteProgram={this.props.onDeleteProgram}
@@ -34,12 +31,15 @@ class TabStudDocsDashboard extends React.Component {
         updateEditorList={this.props.updateEditorList}
         handleChangeEditorlist={this.props.handleChangeEditorlist}
         submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+        isDashboard={this.props.isDashboard}
+        isArchivPage={this.props.isArchivPage}
       />
     ));
     let header = Object.values(this.props.documentlist2);
     return (
       <>
-        <Table responsive>
+        <Table table-responsive>
           <thead>
             <tr>
               <>

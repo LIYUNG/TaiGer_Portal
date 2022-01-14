@@ -11,18 +11,17 @@ const getStudents = asyncHandler(async (req, res) => {
     user,
     // params: { userId },
   } = req;
-
-  // console.log(user);
-  // console.log(req.params);
-
   if (user.role === "Admin") {
-    const students = await Student.find()
+    const students = await Student.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }],
+    })
       .populate("applications.programId")
       .lean();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Agent") {
     const students = await Student.find({
       _id: { $in: user.students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }],
     })
       .populate("applications.programId")
       .lean()
@@ -35,6 +34,7 @@ const getStudents = asyncHandler(async (req, res) => {
   } else if (user.role === "Editor") {
     const students = await Student.find({
       _id: { $in: user.students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }],
     }).populate("applications.programId");
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Student") {
@@ -48,6 +48,120 @@ const getStudents = asyncHandler(async (req, res) => {
   } else {
     // Guest
     res.status(200).send({ success: true, data: [user] });
+  }
+});
+
+const getArchivStudents = asyncHandler(async (req, res) => {
+  // const { userId } = req.params;
+  // const user = await Student.findById(userId);
+  const {
+    user,
+    // params: { userId },
+  } = req;
+
+  if (user.role === "Admin") {
+    const students = await Student.find({ archiv: true })
+      .populate("applications.programId")
+      .lean();
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Agent") {
+    const students = await Student.find({
+      _id: { $in: user.students },
+      archiv: true,
+    })
+      .populate("applications.programId")
+      .lean()
+      .exec();
+
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Editor") {
+    const students = await Student.find({
+      _id: { $in: user.students },
+      archiv: true,
+    }).populate("applications.programId");
+    res.status(200).send({ success: true, data: students });
+  } else {
+    // Guest
+    res.status(200).send({ success: true, data: [] });
+  }
+});
+
+const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId },
+    body: { isArchived },
+  } = req;
+  console.log(isArchived);
+  console.log(studentId);
+  if (
+    user.role === "Admin" ||
+    user.role === "Agent" ||
+    user.role === "Editor"
+  ) {
+    let student = await Student.findByIdAndUpdate(
+      studentId,
+      {
+        archiv: isArchived,
+      },
+      { strict: false }
+    );
+    if (isArchived) {
+      // return dashboard students
+      if (user.role === "Admin") {
+        const students = await Student.find({
+          $or: [{ archiv: { $exists: false } }, { archiv: false }],
+        })
+          .populate("applications.programId")
+          .lean();
+        console.log(students);
+        res.status(200).send({ success: true, data: students });
+      } else if (user.role === "Agent") {
+        const students = await Student.find({
+          _id: { $in: user.students },
+          $or: [{ archiv: { $exists: false } }, { archiv: false }],
+        })
+          .populate("applications.programId")
+          .lean()
+          .exec();
+        res.status(200).send({ success: true, data: students });
+      } else if (user.role === "Editor") {
+        const students = await Student.find({
+          _id: { $in: user.students },
+          $or: [{ archiv: { $exists: false } }, { archiv: false }],
+        }).populate("applications.programId");
+        res.status(200).send({ success: true, data: students });
+      }
+    } else {
+      if (user.role === "Admin") {
+        const students = await Student.find({ archiv: true })
+          .populate("applications.programId")
+          .lean();
+        res.status(200).send({ success: true, data: students });
+      } else if (user.role === "Agent") {
+        const students = await Student.find({
+          _id: { $in: user.students },
+          archiv: true,
+        })
+          .populate("applications.programId")
+          .lean()
+          .exec();
+
+        res.status(200).send({ success: true, data: students });
+      } else if (user.role === "Editor") {
+        const students = await Student.find({
+          _id: { $in: user.students },
+          archiv: true,
+        }).populate("applications.programId");
+        res.status(200).send({ success: true, data: students });
+      } else {
+        // Guest
+        res.status(200).send({ success: true, data: [] });
+      }
+    }
+  } else {
+    // Guest
+    res.status(200).send({ success: true, data: [] });
   }
 });
 
@@ -233,6 +347,8 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   getStudents,
+  getArchivStudents,
+  updateStudentsArchivStatus,
   assignAgentToStudent,
   removeAgentFromStudent,
   assignEditorToStudent,

@@ -6,6 +6,7 @@ window.$ = $;
 global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import("./Demo/Dashboard/Dashboard"));
+const ArchivStudent = React.lazy(() => import("./Demo/ArchivStudent/index"));
 
 const UIBasicButton = React.lazy(() => import('./Demo/UIElements/Basic/Button'));
 const UIBasicBadges = React.lazy(() => import('./Demo/UIElements/Basic/Badges'));
@@ -43,6 +44,12 @@ const routes = [
     exact: true,
     name: "Dashboard",
     component: DashboardDefault,
+  },
+  {
+    path: "/archiv/students",
+    exact: true,
+    name: "Archiv Students",
+    component: ArchivStudent,
   },
   {
     path: "/basic/button",

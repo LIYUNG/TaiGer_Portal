@@ -97,6 +97,10 @@ class AgentMainView extends React.Component {
                   handleChangeEditorlist={this.props.handleChangeEditorlist}
                   submitUpdateEditorlist={this.props.submitUpdateEditorlist}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
+                  updateStudentArchivStatus={
+                    this.props.updateStudentArchivStatus
+                  }
+                  isDashboard={this.props.isDashboard}
                 />
               </Tab>
               <Tab eventKey="y" title="Editor & Docs Progress">

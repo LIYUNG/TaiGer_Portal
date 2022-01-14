@@ -65,6 +65,13 @@ export default {
         },
         {
           id: "user-table",
+          title: "Archiv Students",
+          type: "item",
+          icon: "feather icon-users",
+          url: "/archiv/students",
+        },
+        {
+          id: "user-table",
           title: "User List",
           type: "item",
           icon: "feather icon-users",

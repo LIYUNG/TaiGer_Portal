@@ -7,6 +7,8 @@ const { Role, Student } = require("../models/User");
 
 const {
   getStudents,
+  getArchivStudents,
+  updateStudentsArchivStatus,
   assignAgentToStudent,
   removeAgentFromStudent,
   assignEditorToStudent,
@@ -32,6 +34,20 @@ router.use(protect);
 router
   .route("/")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudents);
+
+router
+  .route("/archiv")
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getArchivStudents
+  );
+
+router
+  .route("/archiv/:studentId")
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    updateStudentsArchivStatus
+  );
 
 router.route("/:id/agents").post(permit(Role.Admin), assignAgentToStudent);
 

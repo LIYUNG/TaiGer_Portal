@@ -33,6 +33,11 @@ export const getEditors = () => request.get("/api/editors");
 
 export const getStudents = () => request.get(`/api/students`);
 
+export const getArchivStudents = () => request.get(`/api/students/archiv`);
+
+export const updateArchivStudents = (studentId, isArchived) =>
+  request.post(`/api/students/archiv/${studentId}`, { isArchived: isArchived });
+
 // Student APIs
 export const updateAgents = (agentsId, id) =>
   request.post(`/api/students/${id}/agents`, agentsId);
@@ -129,7 +134,6 @@ export const downloadHandWrittenFile = (studentId, applicationId, docName) =>
 export const deleteWrittenFile = (studentId, applicationId, docName) =>
   request.delete(`/api/account/files/${studentId}/${applicationId}/${docName}`);
 
-  
 // Program APIs
 export const getPrograms = () => request.get("/api/programs");
 

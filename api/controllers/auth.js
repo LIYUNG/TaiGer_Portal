@@ -73,7 +73,10 @@ const login = (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie("x-auth").status(200).json({ success: true });
+  res
+    .clearCookie("x-auth", { httpOnly: true, sameSite: "none", secure: true })
+    .status(200)
+    .json({ success: true });
 };
 
 const verify = (req, res) => {

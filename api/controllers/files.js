@@ -95,8 +95,8 @@ const deleteFilePlaceholderForProgram = asyncHandler(async (req, res) => {
   console.log(document);
   if (!document) throw new ErrorResponse(400, "docName not existed");
   if (document.path !== "") {
-    // const filePath = path.join(UPLOAD_PATH, document.path);
-    const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+    const filePath = path.join(UPLOAD_PATH, document.path);
+    // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
     console.log(filePath);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   }
@@ -179,10 +179,9 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    // console.log(UPLOAD_PATH);
-    // console.log(req.file);
-    // document.path = UPLOAD_PATH;
+    console.log(req.file.path);
     document.path = req.file.path.replace(UPLOAD_PATH, "");
+    console.log(document.path);
     student.profile.push(document);
     await student.save();
 
@@ -209,9 +208,9 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   document.status = DocumentStatus.Uploaded;
   document.required = true;
   document.updatedAt = new Date();
-  console.log(UPLOAD_PATH);
-  console.log(req.file);
+  console.log(req.file.path);
   document.path = req.file.path.replace(UPLOAD_PATH, "");
+  console.log(document.path);
   // document.path = req.file.path.replace(UPLOAD_PATH, "");
   // const document = student.profile.find(({ name }) => name === docName);
   await student.save();
@@ -252,8 +251,8 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
 
-  // const filePath = path.join(UPLOAD_PATH, document.path);
-  const filePath = document.path;
+  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = document.path;
   console.log(filePath);
   // FIXME: clear the filePath for consistency?
   if (!fs.existsSync(filePath))
@@ -302,8 +301,8 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
   console.log(document);
-  // const filePath = path.join(UPLOAD_PATH, document.path);
-  const filePath = document.path;
+  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = document.path;
   // FIXME: clear the filePath for consistency?
   if (!fs.existsSync(filePath))
     throw new ErrorResponse(400, "File does not exist");
@@ -387,8 +386,8 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not exist");
 
-  // const filePath = path.join(UPLOAD_PATH, document.path);
-  const filePath = document.path;
+  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = document.path;
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
   document.status = DocumentStatus.Missing;
@@ -413,8 +412,8 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not exist");
 
-  // const filePath = path.join(UPLOAD_PATH, document.path);
-  const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
   console.log(filePath);
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 

@@ -58,7 +58,7 @@ const signup = asyncHandler(async (req, res) => {
 
   const authToken = generateAuthToken(user);
   res
-    .cookie("x-auth", authToken, { httpOnly: true })
+    .cookie("x-auth", authToken, { httpOnly: true, sameSite: 'none', secure: true })
     .status(201)
     .json({ success: true, data: user });
 });
@@ -67,7 +67,7 @@ const login = (req, res) => {
   const user = req.user;
   const token = generateAuthToken(user);
   res
-    .cookie("x-auth", token, { httpOnly: true })
+    .cookie("x-auth", token, { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)
     .json({ success: true, data: user });
 };
@@ -80,7 +80,7 @@ const verify = (req, res) => {
   const user = req.user;
   const token = generateAuthToken(user);
   res
-    .cookie("x-auth", token, { httpOnly: true })
+    .cookie("x-auth", token, { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)
     .json({ success: true, data: user });
 };

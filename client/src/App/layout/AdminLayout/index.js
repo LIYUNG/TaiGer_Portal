@@ -53,7 +53,7 @@ function AdminLayout(props) {
   };
   useEffect(() => {
     if (
-      props.windowWidth > 992 &&
+      props.windowWidth >= 992 &&
       props.windowWidth <= 1024 &&
       props.layout !== "horizontal"
     ) {

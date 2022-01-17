@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // TODO: use dotenv
-const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+const BASE_URL = process.env.BASE_URL || "https://localhost:3000";
 // const BASE_URL = "http://54.214.118.145:3000";
 
 const request = axios.create({

@@ -1,6 +1,8 @@
 const { app } = require("./app");
 const { connectToDatabase, disconnectFromDatabase } = require("./database");
 const { PORT, MONGODB_URI } = require("./config");
+var https = require("https");
+var fs = require("fs");
 
 process.on("SIGINT", () => {
   disconnectFromDatabase(() => {
@@ -17,10 +19,23 @@ const launch = async () => {
     console.error("Failed to connect to database");
     process.exit(1);
   }
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  // app.listen(PORT, () => {
+  //   console.log(`Server running on port ${PORT}`);
+  // });
   // TODO: launch both http and https server?
+  https
+    .createServer(
+      {
+        key: fs.readFileSync("./cert/cert.key"),
+        cert: fs.readFileSync("./cert/cert.pem"),
+      },
+      app
+    )
+    .listen(PORT, function () {
+      console.log(
+        "Example app listening on port ${PORT}! Go to https://localhost:3000/"
+      );
+    });
 };
 
 launch();

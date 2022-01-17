@@ -35,7 +35,7 @@ class StudentMainView extends React.Component {
     const your_editors = this.props.students.map((student, i) =>
       student.editors ? (
         student.editors.map((editor, i) => (
-          <tr>
+          <tr key={i}>
             <td>
               {editor.firstname} - {editor.lastname}
             </td>
@@ -50,7 +50,7 @@ class StudentMainView extends React.Component {
     const your_agents = this.props.students.map((student, i) =>
       student.agents ? (
         student.agents.map((agent, i) => (
-          <tr>
+          <tr key={i}>
             <td>
               {agent.firstname} - {agent.lastname}
             </td>
@@ -153,8 +153,8 @@ class StudentMainView extends React.Component {
                     </tr>
                   </thead>
                   {stdlist}
-                  {this.props.SYMBOL_EXPLANATION}
                 </Table>
+                {this.props.SYMBOL_EXPLANATION}
               </Tab>
             </Tabs>
           </Col>

@@ -10,6 +10,7 @@ import Aux from "./../../../../hoc/_Aux";
 import * as actionTypes from "./../../../../store/actions";
 import navigation from "../../../../menu-items";
 import navigation2 from "../../../../menu-items2";
+import navigation3 from "../../../../menu-items3";
 
 class Navigation extends Component {
   resize = () => {
@@ -29,6 +30,22 @@ class Navigation extends Component {
     window.removeEventListener("resize", this.resize);
   }
 
+  renderSwitchMenu(param) {
+    switch (param) {
+      case "Admin":
+        return <NavContent navigation={navigation.items} />;
+      case "Agent":
+        return <NavContent navigation={navigation3.items} />;
+      case "Editor":
+        return <NavContent navigation={navigation3.items} />;
+      case "Student":
+        return <NavContent navigation={navigation2.items} />;
+      case "Guest":
+        return <NavContent navigation={navigation2.items} />;
+      default:
+        return "foo";
+    }
+  }
   render() {
     let navClass = ["pcoded-navbar"];
 
@@ -114,11 +131,7 @@ class Navigation extends Component {
           windowWidth={this.props.windowWidth}
           onToggleNavigation={this.props.onToggleNavigation}
         />
-        {this.props.userdata.role === "Student" ? (
-          <NavContent navigation={navigation2.items} />
-        ) : (
-          <NavContent navigation={navigation.items} />
-        )}
+        {this.renderSwitchMenu(this.props.userdata.role)}
       </div>
     );
     if (this.props.windowWidth < 992) {
@@ -130,10 +143,22 @@ class Navigation extends Component {
               windowWidth={this.props.windowWidth}
               onToggleNavigation={this.props.onToggleNavigation}
             />
-            {this.props.userdata.role === "Student" ? (
+            {this.props.userdata.role === "Agent" ||
+            this.props.userdata.role === "Editor" ? (
+              <NavContent navigation={navigation3.items} />
+            ) : (
+              <></>
+            )}
+            {this.props.userdata.role === "Admin" ? (
+              <NavContent navigation={navigation.items} />
+            ) : (
+              <></>
+            )}
+            {this.props.userdata.role === "Student" ||
+            this.props.userdata.role === "Guest" ? (
               <NavContent navigation={navigation2.items} />
             ) : (
-              <NavContent navigation={navigation.items} />
+              <></>
             )}
           </div>
         </OutsideClick>

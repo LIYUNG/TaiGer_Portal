@@ -2,7 +2,7 @@ export default {
   items: [
     {
       id: "navigation2",
-      title: "Navigation2",
+      title: "Navigation",
       type: "group",
       icon: "icon-navigation",
       children: [

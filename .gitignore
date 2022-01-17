@@ -4,6 +4,7 @@
 node_modules
 /api/.pnp
 /api/public
+/api/cert
 /client/.pnp
 .pnp.js
 /api/tmp

@@ -7,16 +7,12 @@ import ScrollToTop from "./layout/ScrollToTop";
 import AdminLayout from "./layout/AdminLayout";
 
 function App() {
-  let [userdata, setUserdata] = useState({ success: false, data: null });
   return (
     <Aux>
       <ScrollToTop>
         <Suspense fallback={<Loader />}>
           <Switch>
-            <AdminLayout
-              userdata={userdata}
-              setUserdata={setUserdata}
-            />
+            <AdminLayout />
           </Switch>
         </Suspense>
       </ScrollToTop>

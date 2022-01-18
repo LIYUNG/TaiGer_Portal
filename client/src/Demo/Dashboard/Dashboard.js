@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Tabs, Tab, Spinner } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 // import DEMO from "../../store/constant";
 // import avatar1 from "../../assets/images/user/avatar-1.jpg";
@@ -355,195 +355,224 @@ class Dashboard extends React.Component {
       </>
     );
     if (error) {
-      //TODO: put error page component for timeout
-      localStorage.removeItem("token");
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
         </div>
       );
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
+    }
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
+    if (!isLoaded && !this.state.data) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
     } else {
-      if (this.state.success) {
-        if (this.props.user.role === "Admin") {
-          return (
-            <Aux>
-              <AdminMainView
-                role={this.props.user.role}
-                editAgent={this.editAgent}
-                editEditor={this.editEditor}
-                agent_list={this.state.agent_list}
-                editor_list={this.state.editor_list}
-                UpdateAgentlist={this.UpdateAgentlist}
-                students={this.state.students}
-                documentslist={window.documentlist}
-                documentlist2={window.documentlist2}
-                agenttodolist={window.agenttodolist}
-                documentsprogresslist={window.documentsprogresslist}
-                programstatuslist={window.programstatuslist}
-                startUploadfile={this.startUploadfile}
-                onDeleteProgram={this.onDeleteProgram}
-                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                onRejectFilefromstudent={this.onRejectFilefromstudent}
-                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                updateAgentList={this.state.updateAgentList}
-                handleChangeAgentlist={this.handleChangeAgentlist}
-                submitUpdateAgentlist={this.submitUpdateAgentlist}
-                updateEditorList={this.state.updateEditorList}
-                handleChangeEditorlist={this.handleChangeEditorlist}
-                submitUpdateEditorlist={this.submitUpdateEditorlist}
-                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                updateStudentArchivStatus={this.updateStudentArchivStatus}
-                isDashboard={this.state.isDashboard}
-              />
-            </Aux>
-          );
-        } else if (this.props.user.role === "Agent") {
-          return (
-            <Aux>
-              <AgentMainView
-                role={this.props.user.role}
-                UpdateAgentlist={this.UpdateAgentlist}
-                students={this.state.students}
-                documentslist={window.documentlist}
-                documentlist2={window.documentlist2}
-                agenttodolist={window.agenttodolist}
-                documentsprogresslist={window.documentsprogresslist}
-                programstatuslist={window.programstatuslist}
-                startUploadfile={this.startUploadfile}
-                onDeleteProgram={this.onDeleteProgram}
-                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                onRejectFilefromstudent={this.onRejectFilefromstudent}
-                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                updateAgentList={this.state.updateAgentList}
-                handleChangeAgentlist={this.handleChangeAgentlist}
-                submitUpdateAgentlist={this.submitUpdateAgentlist}
-                updateEditorList={this.state.updateEditorList}
-                handleChangeEditorlist={this.handleChangeEditorlist}
-                submitUpdateEditorlist={this.submitUpdateEditorlist}
-                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                updateStudentArchivStatus={this.updateStudentArchivStatus}
-                isDashboard={this.state.isDashboard}
-              />
-            </Aux>
-          );
-        } else if (this.props.user.role === "Editor") {
-          return (
-            <Aux>
-              <EditorMainView
-                role={this.props.user.role}
-                editAgent={this.editAgent}
-                editEditor={this.editEditor}
-                agent_list={this.state.agent_list}
-                editor_list={this.state.editor_list}
-                UpdateAgentlist={this.UpdateAgentlist}
-                students={this.state.students}
-                documentslist={window.documentlist}
-                documentlist2={window.documentlist2}
-                documentsprogresslist={window.documentsprogresslist}
-                programstatuslist={window.programstatuslist}
-                startUploadfile={this.startUploadfile}
-                onDeleteProgram={this.onDeleteProgram}
-                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                onRejectFilefromstudent={this.onRejectFilefromstudent}
-                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                updateAgentList={this.state.updateAgentList}
-                handleChangeAgentlist={this.handleChangeAgentlist}
-                submitUpdateAgentlist={this.submitUpdateAgentlist}
-                updateEditorList={this.state.updateEditorList}
-                handleChangeEditorlist={this.handleChangeEditorlist}
-                submitUpdateEditorlist={this.submitUpdateEditorlist}
-                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                updateStudentArchivStatus={this.updateStudentArchivStatus}
-                isDashboard={this.state.isDashboard}
-              />
-            </Aux>
-          );
-        } else if (this.props.user.role === "Student") {
-          return (
-            <Aux>
-              <StudentMainView
-                role={this.props.user.role}
-                editAgent={this.editAgent}
-                editEditor={this.editEditor}
-                agent_list={this.state.agent_list}
-                editor_list={this.state.editor_list}
-                UpdateAgentlist={this.UpdateAgentlist}
-                students={this.state.students}
-                documentslist={window.documentlist}
-                documentlist2={window.documentlist2}
-                documentsprogresslist={window.documentsprogresslist}
-                programstatuslist={window.programstatuslist}
-                startUploadfile={this.startUploadfile}
-                onDeleteProgram={this.onDeleteProgram}
-                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                onRejectFilefromstudent={this.onRejectFilefromstudent}
-                onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                updateAgentList={this.state.updateAgentList}
-                handleChangeAgentlist={this.handleChangeAgentlist}
-                submitUpdateAgentlist={this.submitUpdateAgentlist}
-                updateEditorList={this.state.updateEditorList}
-                handleChangeEditorlist={this.handleChangeEditorlist}
-                submitUpdateEditorlist={this.submitUpdateEditorlist}
-                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-              />
-            </Aux>
-          );
-        } else {
-          return (
-            <Aux>
-              <Row>
-                <Col sm={12}>
-                  <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-                    <Tab eventKey="x" title="To Do list:">
-                      <GuestMainView
-                        role={this.props.user.role}
-                        success={this.state.success}
-                        editAgent={this.editAgent}
-                        editEditor={this.editEditor}
-                        agent_list={this.state.agent_list}
-                        editor_list={this.state.editor_list}
-                        UpdateAgentlist={this.UpdateAgentlist}
-                        students={this.state.students}
-                        documentslist={window.documentlist}
-                        startUploadfile={this.startUploadfile}
-                        onDeleteProgram={this.onDeleteProgram}
-                        onDownloadFilefromstudent={
-                          this.onDownloadFilefromstudent
-                        }
-                        onRejectFilefromstudent={this.onRejectFilefromstudent}
-                        onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                        updateAgentList={this.state.updateAgentList}
-                        handleChangeAgentlist={this.handleChangeAgentlist}
-                        submitUpdateAgentlist={this.submitUpdateAgentlist}
-                        updateEditorList={this.state.updateEditorList}
-                        handleChangeEditorlist={this.handleChangeEditorlist}
-                        submitUpdateEditorlist={this.submitUpdateEditorlist}
-                        SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                      />
-                    </Tab>
-                    <Tab eventKey="y" title="Agent and Editor"></Tab>
-                  </Tabs>
-                </Col>
-              </Row>
-            </Aux>
-          );
-        }
+      if (this.props.user.role === "Admin") {
+        return (
+          <Aux>
+            <AdminMainView
+              role={this.props.user.role}
+              editAgent={this.editAgent}
+              editEditor={this.editEditor}
+              agent_list={this.state.agent_list}
+              editor_list={this.state.editor_list}
+              UpdateAgentlist={this.UpdateAgentlist}
+              students={this.state.students}
+              documentslist={window.documentlist}
+              documentlist2={window.documentlist2}
+              agenttodolist={window.agenttodolist}
+              documentsprogresslist={window.documentsprogresslist}
+              programstatuslist={window.programstatuslist}
+              startUploadfile={this.startUploadfile}
+              onDeleteProgram={this.onDeleteProgram}
+              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+              onRejectFilefromstudent={this.onRejectFilefromstudent}
+              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+              updateAgentList={this.state.updateAgentList}
+              handleChangeAgentlist={this.handleChangeAgentlist}
+              submitUpdateAgentlist={this.submitUpdateAgentlist}
+              updateEditorList={this.state.updateEditorList}
+              handleChangeEditorlist={this.handleChangeEditorlist}
+              submitUpdateEditorlist={this.submitUpdateEditorlist}
+              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+              updateStudentArchivStatus={this.updateStudentArchivStatus}
+              isDashboard={this.state.isDashboard}
+            />
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Aux>
+        );
+      } else if (this.props.user.role === "Agent") {
+        return (
+          <Aux>
+            <AgentMainView
+              role={this.props.user.role}
+              UpdateAgentlist={this.UpdateAgentlist}
+              students={this.state.students}
+              documentslist={window.documentlist}
+              documentlist2={window.documentlist2}
+              agenttodolist={window.agenttodolist}
+              documentsprogresslist={window.documentsprogresslist}
+              programstatuslist={window.programstatuslist}
+              startUploadfile={this.startUploadfile}
+              onDeleteProgram={this.onDeleteProgram}
+              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+              onRejectFilefromstudent={this.onRejectFilefromstudent}
+              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+              updateAgentList={this.state.updateAgentList}
+              handleChangeAgentlist={this.handleChangeAgentlist}
+              submitUpdateAgentlist={this.submitUpdateAgentlist}
+              updateEditorList={this.state.updateEditorList}
+              handleChangeEditorlist={this.handleChangeEditorlist}
+              submitUpdateEditorlist={this.submitUpdateEditorlist}
+              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+              updateStudentArchivStatus={this.updateStudentArchivStatus}
+              isDashboard={this.state.isDashboard}
+            />
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Aux>
+        );
+      } else if (this.props.user.role === "Editor") {
+        return (
+          <Aux>
+            <EditorMainView
+              role={this.props.user.role}
+              editAgent={this.editAgent}
+              editEditor={this.editEditor}
+              agent_list={this.state.agent_list}
+              editor_list={this.state.editor_list}
+              UpdateAgentlist={this.UpdateAgentlist}
+              students={this.state.students}
+              documentslist={window.documentlist}
+              documentlist2={window.documentlist2}
+              documentsprogresslist={window.documentsprogresslist}
+              programstatuslist={window.programstatuslist}
+              startUploadfile={this.startUploadfile}
+              onDeleteProgram={this.onDeleteProgram}
+              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+              onRejectFilefromstudent={this.onRejectFilefromstudent}
+              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+              updateAgentList={this.state.updateAgentList}
+              handleChangeAgentlist={this.handleChangeAgentlist}
+              submitUpdateAgentlist={this.submitUpdateAgentlist}
+              updateEditorList={this.state.updateEditorList}
+              handleChangeEditorlist={this.handleChangeEditorlist}
+              submitUpdateEditorlist={this.submitUpdateEditorlist}
+              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+              updateStudentArchivStatus={this.updateStudentArchivStatus}
+              isDashboard={this.state.isDashboard}
+            />
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Aux>
+        );
+      } else if (this.props.user.role === "Student") {
+        return (
+          <Aux>
+            <StudentMainView
+              role={this.props.user.role}
+              editAgent={this.editAgent}
+              editEditor={this.editEditor}
+              agent_list={this.state.agent_list}
+              editor_list={this.state.editor_list}
+              UpdateAgentlist={this.UpdateAgentlist}
+              students={this.state.students}
+              documentslist={window.documentlist}
+              documentlist2={window.documentlist2}
+              documentsprogresslist={window.documentsprogresslist}
+              programstatuslist={window.programstatuslist}
+              startUploadfile={this.startUploadfile}
+              onDeleteProgram={this.onDeleteProgram}
+              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+              onRejectFilefromstudent={this.onRejectFilefromstudent}
+              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+              updateAgentList={this.state.updateAgentList}
+              handleChangeAgentlist={this.handleChangeAgentlist}
+              submitUpdateAgentlist={this.submitUpdateAgentlist}
+              updateEditorList={this.state.updateEditorList}
+              handleChangeEditorlist={this.handleChangeEditorlist}
+              submitUpdateEditorlist={this.submitUpdateEditorlist}
+              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+            />
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Aux>
+        );
       } else {
         return (
           <Aux>
             <Row>
-              <Col>
-                <div>
-                  {" "}
-                  Error: Can not get data. Please refresh the page again!{" "}
-                </div>
+              <Col sm={12}>
+                <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
+                  <Tab eventKey="x" title="To Do list:">
+                    <GuestMainView
+                      role={this.props.user.role}
+                      success={this.state.success}
+                      editAgent={this.editAgent}
+                      editEditor={this.editEditor}
+                      agent_list={this.state.agent_list}
+                      editor_list={this.state.editor_list}
+                      UpdateAgentlist={this.UpdateAgentlist}
+                      students={this.state.students}
+                      documentslist={window.documentlist}
+                      startUploadfile={this.startUploadfile}
+                      onDeleteProgram={this.onDeleteProgram}
+                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                      onRejectFilefromstudent={this.onRejectFilefromstudent}
+                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                      updateAgentList={this.state.updateAgentList}
+                      handleChangeAgentlist={this.handleChangeAgentlist}
+                      submitUpdateAgentlist={this.submitUpdateAgentlist}
+                      updateEditorList={this.state.updateEditorList}
+                      handleChangeEditorlist={this.handleChangeEditorlist}
+                      submitUpdateEditorlist={this.submitUpdateEditorlist}
+                      SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+                    />
+                  </Tab>
+                  <Tab eventKey="y" title="Agent and Editor"></Tab>
+                </Tabs>
+                {!isLoaded && (
+                  <div style={style}>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  </div>
+                )}
               </Col>
             </Row>
           </Aux>

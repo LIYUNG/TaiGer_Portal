@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Spinner } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import Programlist from "./ProgramList";
 
@@ -16,7 +16,7 @@ class ProgramTable extends React.Component {
     error: null,
     role: "",
     isLoaded: false,
-    data: [],
+    data: null,
     success: false,
   };
 
@@ -153,40 +153,61 @@ class ProgramTable extends React.Component {
   };
 
   render() {
-    if (!this.state.success) {
+    const { error, isLoaded } = this.state;
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
+    if (error) {
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
         </div>
       );
-    } else if (!this.state.isLoaded) {
-      return <div>Loading...</div>;
-    } else {
+    }
+    if (!isLoaded && !this.state.data) {
       return (
-        <Aux>
-          <Row>
-            <Col>
-              <Card>
-                <Card.Body>
-                  <Programlist
-                    role={this.props.user.role}
-                    userId={this.props.user._id}
-                    success={this.state.success}
-                    onFormSubmit={this.onFormSubmit}
-                    data={this.state.data}
-                    RemoveProgramHandler3={this.RemoveProgramHandler3}
-                    assignProgram={this.assignProgram}
-                    header={window.ProgramlistHeader}
-                    submitNewProgram={this.submitNewProgram}
-                    modalShowNewProgram={this.state.modalShowNewProgram}
-                  />
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Aux>
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
       );
     }
+
+    return (
+      <Aux>
+        <Row>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Programlist
+                  role={this.props.user.role}
+                  userId={this.props.user._id}
+                  success={this.state.success}
+                  onFormSubmit={this.onFormSubmit}
+                  data={this.state.data}
+                  RemoveProgramHandler3={this.RemoveProgramHandler3}
+                  assignProgram={this.assignProgram}
+                  header={window.ProgramlistHeader}
+                  submitNewProgram={this.submitNewProgram}
+                  modalShowNewProgram={this.state.modalShowNewProgram}
+                />
+              </Card.Body>
+            </Card>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Col>
+        </Row>
+      </Aux>
+    );
   }
 }
 

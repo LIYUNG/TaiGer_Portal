@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Spinner } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import UsersList from "./UsersList";
 
@@ -10,7 +10,7 @@ class UsersTable extends React.Component {
     error: null,
     role: "",
     isLoaded: false,
-    data: [],
+    data: null,
     success: false,
   };
 
@@ -71,45 +71,61 @@ class UsersTable extends React.Component {
 
   render() {
     const { error, isLoaded } = this.state;
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
     if (error) {
-      //TODO: put error page component for timeout
-      localStorage.removeItem("token");
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
         </div>
       );
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else {
+    }
+    if (!isLoaded && !this.state.data) {
       return (
-        <Aux>
-          <Row>
-            <Col>
-              <Card>
-                {/* <Card.Header>
-                                </Card.Header> */}
-                <Card.Body>
-                  <Row>
-                    <Col>
-                      <Card.Title as="h4">Users List</Card.Title>
-                    </Col>
-                  </Row>
-                  <UsersList
-                    success={this.state.success}
-                    // onFormSubmit={this.onFormSubmit}
-                    // assignUserAs={this.assignUserAs}
-                    data={this.state.data}
-                    onSubmit2={this.onSubmit2}
-                    header={window.UserlistHeader}
-                  />
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Aux>
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
       );
     }
+
+    return (
+      <Aux>
+        <Row>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Row>
+                  <Col>
+                    <Card.Title as="h4">Users List</Card.Title>
+                  </Col>
+                </Row>
+                <UsersList
+                  success={this.state.success}
+                  // onFormSubmit={this.onFormSubmit}
+                  // assignUserAs={this.assignUserAs}
+                  data={this.state.data}
+                  onSubmit2={this.onSubmit2}
+                  header={window.UserlistHeader}
+                />
+              </Card.Body>
+            </Card>
+            {!this.state.isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Col>
+        </Row>
+      </Aux>
+    );
   }
 }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
 import Card from "../../App/components/MainCard";
 import Aux from "../../hoc/_Aux";
 import {
@@ -30,11 +30,11 @@ class DownloadPage extends React.Component {
     //     console.log(resp.data);
     //     const { data: student, success: success } = resp.data;
     //     console.log(success);
-        this.setState({
-          file: "",
-          isLoaded: true,
-          success: true,
-        });
+    this.setState({
+      file: "",
+      isLoaded: true,
+      success: true,
+    });
     //   },
     //   (error) => {
     //     console.log(error);
@@ -107,7 +107,7 @@ class DownloadPage extends React.Component {
         });
       }
     );
-  }
+  };
 
   submitFile = (e, studentId, docName) => {
     if (this.state.file === "") {
@@ -224,16 +224,27 @@ class DownloadPage extends React.Component {
   }
   render() {
     const { error, isLoaded } = this.state;
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
     if (error) {
-      //TODO: put error page component for timeout
-      localStorage.removeItem("token");
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
         </div>
       );
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
+    }
+    if (!isLoaded) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
     } else {
       if (
         this.props.user.role === "Student" ||
@@ -259,11 +270,19 @@ class DownloadPage extends React.Component {
                     onDownloadFilefromstudent={this.onDownloadFilefromstudent}
                   />
                 </Card>
+                {!isLoaded && (
+                  <div style={style}>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  </div>
+                )}
               </Col>
             </Row>
           </Aux>
         );
-      } else { // Guest
+      } else {
+        // Guest
         return (
           <Aux>
             <Row>

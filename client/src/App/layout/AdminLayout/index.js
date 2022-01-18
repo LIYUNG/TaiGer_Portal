@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // import { Component, Suspense, useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Fullscreen from "react-full-screen";
 import windowSize from "react-window-size";
+import { Spinner } from "react-bootstrap";
 
 import Navigation from "./Navigation";
 import NavBar from "./NavBar";
@@ -21,16 +22,28 @@ import "./app.scss";
 import { logout } from "../../../api";
 
 function AdminLayout(props) {
+  let [userdata, setUserdata] = useState({
+    success: false,
+    data: null,
+    isloaded: false,
+    error: null,
+  });
+
   useEffect(() => {
     console.log("useEffect");
     verify().then((resp) => {
       // console.log(resp.data);
       const { data, success } = resp.data;
-      props.setUserdata({ success: success, data: data });
+      setUserdata((state) => ({
+        ...state,
+        success: success,
+        data: data,
+        isloaded: true,
+      }));
     });
   }, []);
 
-  const setuserdata = (resp) => {
+  const setuserdata2 = (resp) => {
     try {
       if (resp) {
         if (resp.status === 400) {
@@ -39,10 +52,12 @@ function AdminLayout(props) {
           alert("Password is not correct.");
         } else {
           console.log("successfullllll");
-          props.setUserdata({
+          setUserdata((state) => ({
+            ...state,
             success: resp.data.success,
             data: resp.data.data,
-          });
+            isloaded: true,
+          }));
         }
       } else {
         alert("Email or password not correct.");
@@ -67,7 +82,10 @@ function AdminLayout(props) {
     logout().then(
       (resp) => {
         console.log(resp.data);
-        props.setUserdata({ data: { success: false, data: null } });
+        setUserdata((state) => ({
+          ...state,
+          data: null,
+        }));
         // const { success } = resp.data;
         // this.setState({ success: success });
       },
@@ -108,7 +126,7 @@ function AdminLayout(props) {
         render={() => (
           <route.component
             // {...props}
-            user={props.userdata.data}
+            user={userdata.data}
           />
         )}
       />
@@ -123,13 +141,19 @@ function AdminLayout(props) {
         exact={route.exact}
         name={route.name}
         render={(props) => (
-          <route.component {...props} userData={setuserdata} />
+          <route.component {...props} userData={setuserdata2} />
         )}
       />
     ) : null;
   });
-
-  if (!props.userdata.success) {
+  const style = {
+    position: "fixed",
+    top: "40%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+  console.log(userdata.data);
+  if (!userdata.data) {
     return (
       <Aux>
         <ScrollToTop>
@@ -143,10 +167,10 @@ function AdminLayout(props) {
     return (
       <Aux>
         <Fullscreen enabled={props.isFullScreen}>
-          <Navigation userdata={props.userdata.data} />
+          <Navigation userdata={userdata.data} />
           <NavBar
-            userdata={props.userdata.data}
-            setUserdata={setuserdata}
+            userdata={userdata.data}
+            setUserdata={setuserdata2}
             handleOnClickLogout={handleOnClickLogout}
           />
           <div
@@ -165,6 +189,13 @@ function AdminLayout(props) {
                         {menu}
                         <Redirect from="/" to={props.defaultPath} />
                       </Switch>
+                      {!userdata.isloaded && (
+                        <div style={style}>
+                          <Spinner animation="border" role="status">
+                            <span className="visually-hidden"></span>
+                          </Spinner>
+                        </div>
+                      )}
                       {/* </Suspense> */}
                     </div>
                   </div>

@@ -201,12 +201,20 @@ class Dashboard extends React.Component {
         const updateAgentList = agents.reduce(
           (prev, { _id }) => ({
             ...prev,
-            [_id]: student_agents ? student_agents.findIndex((student_agent) => student_agent._id === _id) > -1 : false,
+            [_id]: student_agents
+              ? student_agents.findIndex(
+                  (student_agent) => student_agent._id === _id
+                ) > -1
+              : false,
           }),
           {}
         );
 
-        this.setState({ agent_list: agents, updateAgentList });
+        this.setState((state) => ({
+          ...state,
+          agent_list: agents,
+          updateAgentList,
+        }));
       },
       (error) => {}
     );
@@ -229,7 +237,11 @@ class Dashboard extends React.Component {
           {}
         );
 
-        this.setState({ editor_list: editors, updateEditorList });
+        this.setState((state) => ({
+          ...state,
+          editor_list: editors,
+          updateEditorList,
+        }));
       },
       (error) => {}
     );
@@ -270,9 +282,12 @@ class Dashboard extends React.Component {
   UpdateAgentlist = (updateAgentList, student_id) => {
     updateAgents(updateAgentList, student_id).then(
       (resp) => {
+        const { data, success } = resp.data;
         this.setState({
+          students: data,
           updateAgentList: [],
           isLoaded: false,
+          success: success,
         });
       },
       (error) => {
@@ -284,10 +299,14 @@ class Dashboard extends React.Component {
   UpdateEditorlist = (updateEditorList, student_id) => {
     updateEditors(updateEditorList, student_id).then(
       (resp) => {
-        this.setState({
+        const { data, success } = resp.data;
+        this.setState((state) => ({
+          ...state,
+          students: data,
           updateEditorList: [],
           isLoaded: false,
-        });
+          success: success,
+        }));
       },
       (error) => {
         alert("UpdateEditorlist is failed.");
@@ -301,7 +320,12 @@ class Dashboard extends React.Component {
         console.log(resp.data);
         console.log("Archiv index.js rendered");
         const { data, success } = resp.data;
-        this.setState({ isLoaded: true, students: data, success: success });
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          students: data,
+          success: success,
+        }));
       },
       (error) => {
         console.log(error);

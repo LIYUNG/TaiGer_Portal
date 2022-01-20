@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import { Component, Suspense, useState } from "react";
+import { Suspense } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Fullscreen from "react-full-screen";
@@ -9,7 +9,7 @@ import { Spinner } from "react-bootstrap";
 import Navigation from "./Navigation";
 import NavBar from "./NavBar";
 import Breadcrumb from "./Breadcrumb";
-// import Loader from "../Loader";
+import Loader from "../Loader";
 import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
@@ -27,6 +27,7 @@ function AdminLayout(props) {
     data: null,
     isloaded: false,
     error: null,
+    everlogin: false,
   });
 
   useEffect(() => {
@@ -153,13 +154,13 @@ function AdminLayout(props) {
     transform: "translate(-50%, -50%)",
   };
   console.log(userdata.data);
-  if (!userdata.data) {
+  if (!userdata.data && !userdata.everlogin) {
     return (
       <Aux>
         <ScrollToTop>
-          {/* <Suspense fallback={<Loader />}> */}
-          <Switch>{menu2}</Switch>
-          {/* </Suspense> */}
+          <Suspense fallback={<Loader />}>
+            <Switch>{menu2}</Switch>
+          </Suspense>
         </ScrollToTop>
       </Aux>
     );
@@ -180,23 +181,22 @@ function AdminLayout(props) {
             <div className="pcoded-wrapper">
               <div className="pcoded-content">
                 <div className="pcoded-inner-content">
-                  {/* <Breadcrumb role={userdata.data.role} /> */}
                   <Breadcrumb />
                   <div className="main-body">
                     <div className="page-wrapper">
-                      {/* <Suspense fallback={<Loader />}> */}
-                      <Switch>
-                        {menu}
-                        <Redirect from="/" to={props.defaultPath} />
-                      </Switch>
-                      {!userdata.isloaded && (
-                        <div style={style}>
-                          <Spinner animation="border" role="status">
-                            <span className="visually-hidden"></span>
-                          </Spinner>
-                        </div>
-                      )}
-                      {/* </Suspense> */}
+                      <Suspense fallback={<Loader />}>
+                        <Switch>
+                          {menu}
+                          <Redirect from="/" to={props.defaultPath} />
+                        </Switch>
+                        {!userdata.isloaded && (
+                          <div style={style}>
+                            <Spinner animation="border" role="status">
+                              <span className="visually-hidden"></span>
+                            </Spinner>
+                          </div>
+                        )}
+                      </Suspense>
                     </div>
                   </div>
                 </div>

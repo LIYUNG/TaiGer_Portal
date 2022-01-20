@@ -15,9 +15,7 @@ const getStudents = asyncHandler(async (req, res) => {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }],
     })
-      .populate(
-        "applications.programId agents editors"
-      )
+      .populate("applications.programId agents editors")
       .lean();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Agent") {
@@ -114,7 +112,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
         const students = await Student.find({
           $or: [{ archiv: { $exists: false } }, { archiv: false }],
         })
-          .populate("applications.programId")
+          .populate("applications.programId agents editors")
           .lean();
         console.log(students);
         res.status(200).send({ success: true, data: students });
@@ -123,7 +121,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
           _id: { $in: user.students },
           $or: [{ archiv: { $exists: false } }, { archiv: false }],
         })
-          .populate("applications.programId")
+          .populate("applications.programId agents editors")
           .lean()
           .exec();
         res.status(200).send({ success: true, data: students });
@@ -131,13 +129,13 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
         const students = await Student.find({
           _id: { $in: user.students },
           $or: [{ archiv: { $exists: false } }, { archiv: false }],
-        }).populate("applications.programId");
+        }).populate("applications.programId agents editors");
         res.status(200).send({ success: true, data: students });
       }
     } else {
       if (user.role === "Admin") {
         const students = await Student.find({ archiv: true })
-          .populate("applications.programId")
+          .populate("applications.programId agents editors")
           .lean();
         res.status(200).send({ success: true, data: students });
       } else if (user.role === "Agent") {
@@ -145,7 +143,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
           _id: { $in: user.students },
           archiv: true,
         })
-          .populate("applications.programId")
+          .populate("applications.programId agents editors")
           .lean()
           .exec();
 
@@ -168,7 +166,6 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
 });
 
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
-  // TODO: update student's agent ang agent's student view
   const {
     params: { id: studentId },
     body: agentsId, // agentsId is json (or agentsId array with boolean)
@@ -198,11 +195,14 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   // await Student.findByIdAndUpdate(studentId, {
   //   $push: { agents: agentsId },
   // });
-
   await Student.findByIdAndUpdate(studentId, {
     agents: updated_agent_id,
   });
-  res.status(200).send({ success: true });
+  const student = await Student.findById(studentId)
+    .populate("applications.programId agents editors")
+    .exec();
+  console.log(student);
+  res.status(200).send({ success: true, data: student });
 });
 
 const removeAgentFromStudent = asyncHandler(async (req, res, next) => {
@@ -255,7 +255,11 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   await Student.findByIdAndUpdate(studentId, {
     editors: updated_editor_id,
   });
-  res.status(200).send({ success: true });
+  const student = await Student.findById(studentId)
+    .populate("applications.programId agents editors")
+    .exec();
+  console.log(student);
+  res.status(200).send({ success: true, data: student });
 });
 
 const removeEditorFromStudent = asyncHandler(async (req, res, next) => {

@@ -1,10 +1,45 @@
 import React from "react";
-import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Spinner } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
 
-class FormsElements extends React.Component {
+class Settings extends React.Component {
+  state = {
+    error: null,
+    role: "",
+    isLoaded: false,
+    data: null,
+    success: false,
+  };
+
+  componentDidMount() {
+    console.log("Setting index.js rendered");
+    this.setState({ isLoaded: true });
+  }
   render() {
+    const { error, isLoaded } = this.state;
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
+    if (error) {
+      return (
+        <div>
+          Error: your session is timeout! Please refresh the page and Login
+        </div>
+      );
+    }
+    if (!isLoaded) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
     return (
       <Aux>
         {this.props.user.role === "Student" ? (
@@ -227,6 +262,13 @@ class FormsElements extends React.Component {
                 </Row> */}
               </Card.Body>
             </Card>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
           </Col>
         </Row>
       </Aux>
@@ -234,4 +276,4 @@ class FormsElements extends React.Component {
   }
 }
 
-export default FormsElements;
+export default Settings;

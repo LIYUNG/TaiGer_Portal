@@ -60,7 +60,7 @@ export default function Signin1({ userData }) {
               <div className="mb-4">
                 <i className="feather icon-unlock auth-icon" />
               </div>
-              <h3 className="mb-4"> TaiGer - Portal2</h3>
+              <h3 className="mb-4"> TaiGer - Portal</h3>
               <p> Study in Germany</p>
               <div className="input-group mb-3">
                 <input
@@ -79,7 +79,7 @@ export default function Signin1({ userData }) {
                 />
               </div>
               <button
-                disabled={buttondisable}
+                disabled={!emailaddress || !password || buttondisable}
                 onClick={(e) => onButtonClick(e, true)}
                 type="submit"
                 className="btn btn-primary shadow-2 mb-4"

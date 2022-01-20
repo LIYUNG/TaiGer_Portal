@@ -3,6 +3,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const methodOverride = require("method-override");
+const { ORIGIN } = require("./config");
 
 require("./middlewares/passport");
 
@@ -15,7 +16,7 @@ const app = express();
 app.use(
   cors({
     exposedHeaders: ["Content-Disposition"],
-    origin: "http://localhost:3006",
+    origin: ORIGIN,
     credentials: true,
   })
 );

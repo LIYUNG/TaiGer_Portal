@@ -17,6 +17,8 @@ module.exports = {
   isProd,
   isDev,
   PORT: env("PORT", 3000),
+  HTTPS_PORT: env("HTTPS_PORT", 3000),
+  ORIGIN: env("ORIGIN", "http://localhost:3006"),
   // TODO: remove some of the default values
   MONGODB_URI: env("MONGODB_URI", "mongodb://localhost:27017/TaiGer"),
   JWT_SECRET: env("JWT_SECRET", "topsecret"),

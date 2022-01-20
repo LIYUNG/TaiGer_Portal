@@ -1,6 +1,6 @@
 const { app } = require("./app");
 const { connectToDatabase, disconnectFromDatabase } = require("./database");
-const { PORT, MONGODB_URI } = require("./config");
+const { PORT, HTTPS_PORT, MONGODB_URI } = require("./config");
 var https = require("https");
 var fs = require("fs");
 
@@ -31,9 +31,13 @@ const launch = async () => {
       },
       app
     )
-    .listen(PORT, function () {
+    .listen(HTTPS_PORT, function () {
       console.log(
-        "Example app listening on port ${PORT}! Go to https://localhost:3000/"
+        "Example app listening on port " +
+          HTTPS_PORT +
+          " ! Go to https://localhost:" +
+          HTTPS_PORT +
+          "/"
       );
     });
 };

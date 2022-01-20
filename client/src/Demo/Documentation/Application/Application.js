@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import ArticleList from "../ArticleList";
 import ToggleableArticleForm from "../ToggleableArticleForm";
@@ -29,8 +29,7 @@ class Application extends Component {
             isLoaded: true,
             role: resp.data.role,
           });
-        }
-        else{
+        } else {
           this.setState({
             isLoaded: false,
           });
@@ -145,41 +144,59 @@ class Application extends Component {
 
   render() {
     const { error, isLoaded } = this.state;
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
     if (error) {
-      //TODO: put error page component for timeout
-      localStorage.removeItem("token");
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
         </div>
       );
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else {
+    }
+    if (!isLoaded && !this.state.data) {
       return (
-        <Aux>
-          <Row>
-            <Col>
-              <ArticleList
-                articles={this.state.articles}
-                category="application"
-                onFormSubmit={this.handleEditFormSubmit}
-                onTrashClick={this.handleTrashClick}
-                role={this.props.user.role}
-              />
-              {this.props.user.role === "Admin" || this.props.user.role === "Agent" ? (
-                <ToggleableArticleForm
-                  category="application"
-                  onFormSubmit={this.handleCreateFormSubmit}
-                />
-              ) : (
-                <></>
-              )}
-            </Col>
-          </Row>
-        </Aux>
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
       );
     }
+    return (
+      <Aux>
+        <Row>
+          <Col>
+            <ArticleList
+              articles={this.state.articles}
+              category="application"
+              onFormSubmit={this.handleEditFormSubmit}
+              onTrashClick={this.handleTrashClick}
+              role={this.props.user.role}
+            />
+            {this.props.user.role === "Admin" ||
+            this.props.user.role === "Agent" ? (
+              <ToggleableArticleForm
+                category="application"
+                onFormSubmit={this.handleCreateFormSubmit}
+              />
+            ) : (
+              <></>
+            )}
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Col>
+        </Row>
+      </Aux>
+    );
   }
 }
 

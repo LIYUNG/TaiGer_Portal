@@ -27,13 +27,13 @@ export default {
         //   icon: "feather icon-users",
         //   url: "/users",
         // },
-        {
-          id: "program-table",
-          title: "Program List",
-          type: "item",
-          icon: "feather icon-list",
-          url: "/programs",
-        },
+        // {
+        //   id: "program-table",
+        //   title: "Program List",
+        //   type: "item",
+        //   icon: "feather icon-list",
+        //   url: "/programs",
+        // },
         // {
         //     id: 'charts',
         //     title: 'Charts',

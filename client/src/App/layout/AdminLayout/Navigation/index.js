@@ -11,6 +11,7 @@ import * as actionTypes from "./../../../../store/actions";
 import navigation from "../../../../menu-items";
 import navigation2 from "../../../../menu-items2";
 import navigation3 from "../../../../menu-items3";
+import navigation_editor from "../../../../menu-items_editor";
 
 class Navigation extends Component {
   resize = () => {
@@ -37,7 +38,7 @@ class Navigation extends Component {
       case "Agent":
         return <NavContent navigation={navigation3.items} />;
       case "Editor":
-        return <NavContent navigation={navigation3.items} />;
+        return <NavContent navigation={navigation_editor.items} />;
       case "Student":
         return <NavContent navigation={navigation2.items} />;
       case "Guest":
@@ -143,23 +144,7 @@ class Navigation extends Component {
               windowWidth={this.props.windowWidth}
               onToggleNavigation={this.props.onToggleNavigation}
             />
-            {this.props.userdata.role === "Agent" ||
-            this.props.userdata.role === "Editor" ? (
-              <NavContent navigation={navigation3.items} />
-            ) : (
-              <></>
-            )}
-            {this.props.userdata.role === "Admin" ? (
-              <NavContent navigation={navigation.items} />
-            ) : (
-              <></>
-            )}
-            {this.props.userdata.role === "Student" ||
-            this.props.userdata.role === "Guest" ? (
-              <NavContent navigation={navigation2.items} />
-            ) : (
-              <></>
-            )}
+            {this.renderSwitchMenu(this.props.userdata.role)}
           </div>
         </OutsideClick>
       );

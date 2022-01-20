@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Tabs, Tab } from "react-bootstrap";
+import { Row, Col, Tabs, Tab, Spinner } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 // import DEMO from "../../store/constant";
 import {
@@ -350,15 +350,26 @@ class Dashboard extends React.Component {
       </>
     );
     if (error) {
-      //TODO: put error page component for timeout
-      localStorage.removeItem("token");
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
         </div>
       );
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
+    }
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
+    if (!isLoaded && !this.state.data) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
     } else {
       if (this.state.success) {
         return (
@@ -367,7 +378,6 @@ class Dashboard extends React.Component {
               <Col>
                 <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
                   <Tab eventKey="w" title="Archiv Student Overview">
-                    {/* <Card title="Archiv Student"> */}
                     {this.props.user.role === "Admin" ||
                     this.props.user.role === "Agent" ||
                     this.props.user.role === "Editor" ? (
@@ -405,6 +415,13 @@ class Dashboard extends React.Component {
                     {/* </Card> */}
                   </Tab>
                 </Tabs>
+                {!isLoaded && (
+                  <div style={style}>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  </div>
+                )}
               </Col>
             </Row>
           </Aux>

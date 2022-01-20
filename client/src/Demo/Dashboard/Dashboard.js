@@ -535,46 +535,38 @@ class Dashboard extends React.Component {
       } else {
         return (
           <Aux>
-            <Row>
-              <Col sm={12}>
-                <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-                  <Tab eventKey="x" title="To Do list:">
-                    <GuestMainView
-                      role={this.props.user.role}
-                      success={this.state.success}
-                      editAgent={this.editAgent}
-                      editEditor={this.editEditor}
-                      agent_list={this.state.agent_list}
-                      editor_list={this.state.editor_list}
-                      UpdateAgentlist={this.UpdateAgentlist}
-                      students={this.state.students}
-                      documentslist={window.documentlist}
-                      startUploadfile={this.startUploadfile}
-                      onDeleteProgram={this.onDeleteProgram}
-                      onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                      onRejectFilefromstudent={this.onRejectFilefromstudent}
-                      onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                      onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                      updateAgentList={this.state.updateAgentList}
-                      handleChangeAgentlist={this.handleChangeAgentlist}
-                      submitUpdateAgentlist={this.submitUpdateAgentlist}
-                      updateEditorList={this.state.updateEditorList}
-                      handleChangeEditorlist={this.handleChangeEditorlist}
-                      submitUpdateEditorlist={this.submitUpdateEditorlist}
-                      SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                    />
-                  </Tab>
-                  <Tab eventKey="y" title="Agent and Editor"></Tab>
-                </Tabs>
-                {!isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
-              </Col>
-            </Row>
+            <GuestMainView
+              role={this.props.user.role}
+              success={this.state.success}
+              editAgent={this.editAgent}
+              editEditor={this.editEditor}
+              agent_list={this.state.agent_list}
+              editor_list={this.state.editor_list}
+              UpdateAgentlist={this.UpdateAgentlist}
+              students={this.state.students}
+              documentslist={window.documentlist}
+              startUploadfile={this.startUploadfile}
+              onDeleteProgram={this.onDeleteProgram}
+              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+              onRejectFilefromstudent={this.onRejectFilefromstudent}
+              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
+              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+              updateAgentList={this.state.updateAgentList}
+              handleChangeAgentlist={this.handleChangeAgentlist}
+              submitUpdateAgentlist={this.submitUpdateAgentlist}
+              updateEditorList={this.state.updateEditorList}
+              handleChangeEditorlist={this.handleChangeEditorlist}
+              submitUpdateEditorlist={this.submitUpdateEditorlist}
+              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+            />
+
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
           </Aux>
         );
       }

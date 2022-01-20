@@ -183,18 +183,22 @@ class ProgramTable extends React.Component {
           <Col>
             <Card>
               <Card.Body>
-                <Programlist
-                  role={this.props.user.role}
-                  userId={this.props.user._id}
-                  success={this.state.success}
-                  onFormSubmit={this.onFormSubmit}
-                  data={this.state.data}
-                  RemoveProgramHandler3={this.RemoveProgramHandler3}
-                  assignProgram={this.assignProgram}
-                  header={window.ProgramlistHeader}
-                  submitNewProgram={this.submitNewProgram}
-                  modalShowNewProgram={this.state.modalShowNewProgram}
-                />
+                {this.props.user.role === "Guest" ? (
+                  <>This is for Premium only. Please contact our sales!</>
+                ) : (
+                  <Programlist
+                    role={this.props.user.role}
+                    userId={this.props.user._id}
+                    success={this.state.success}
+                    onFormSubmit={this.onFormSubmit}
+                    data={this.state.data}
+                    RemoveProgramHandler3={this.RemoveProgramHandler3}
+                    assignProgram={this.assignProgram}
+                    header={window.ProgramlistHeader}
+                    submitNewProgram={this.submitNewProgram}
+                    modalShowNewProgram={this.state.modalShowNewProgram}
+                  />
+                )}
               </Card.Body>
             </Card>
             {!isLoaded && (

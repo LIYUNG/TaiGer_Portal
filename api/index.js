@@ -1,6 +1,12 @@
 const { app } = require("./app");
 const { connectToDatabase, disconnectFromDatabase } = require("./database");
-const { PORT, HTTPS_PORT, MONGODB_URI } = require("./config");
+const {
+  PORT,
+  HTTPS_KEY,
+  HTTPS_CERT,
+  HTTPS_PORT,
+  MONGODB_URI,
+} = require("./config");
 var https = require("https");
 var fs = require("fs");
 
@@ -26,8 +32,8 @@ const launch = async () => {
   https
     .createServer(
       {
-        key: fs.readFileSync("./cert/cert.key"),
-        cert: fs.readFileSync("./cert/cert.pem"),
+        key: fs.readFileSync(HTTPS_KEY),
+        cert: fs.readFileSync(HTTPS_CERT),
       },
       app
     )

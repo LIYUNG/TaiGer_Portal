@@ -6,6 +6,7 @@ import AdminTodoList from "./AdminTodoList";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
+import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
 
 class AdminMainView extends React.Component {
   render() {
@@ -25,7 +26,22 @@ class AdminMainView extends React.Component {
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
-
+    const students_agent_editor = this.props.students.map((student, i) => (
+      <StudentsAgentEditor
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        documentslist={this.props.documentslist}
+        documenheader={this.props.documenheader}
+        startUploadfile={this.props.startUploadfile}
+        agent_list={this.props.agent_list}
+        editor_list={this.props.editor_list}
+        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
     const application_progress = this.props.students.map((student, i) => (
       <ApplicationProgress
         key={i}
@@ -83,9 +99,23 @@ class AdminMainView extends React.Component {
                   handleChangeEditorlist={this.props.handleChangeEditorlist}
                   submitUpdateEditorlist={this.props.submitUpdateEditorlist}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
-                  updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+                  updateStudentArchivStatus={
+                    this.props.updateStudentArchivStatus
+                  }
                   isDashboard={this.props.isDashboard}
                 />
+              </Tab>
+              <Tab eventKey="dz" title="Agents and Editors">
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>First-, Last Name</th>
+                      <th>Agents</th>
+                      <th>Editors</th>
+                    </tr>
+                  </thead>
+                  {students_agent_editor}
+                </Table>
               </Tab>
               <Tab eventKey="x" title="Admin TODO">
                 <Table responsive>

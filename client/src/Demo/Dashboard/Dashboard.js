@@ -201,7 +201,7 @@ class Dashboard extends React.Component {
         const updateAgentList = agents.reduce(
           (prev, { _id }) => ({
             ...prev,
-            [_id]: student_agents ? student_agents.indexOf(_id) > -1 : false,
+            [_id]: student_agents ? student_agents.findIndex((student_agent) => student_agent._id === _id) > -1 : false,
           }),
           {}
         );
@@ -220,7 +220,11 @@ class Dashboard extends React.Component {
         const updateEditorList = editors.reduce(
           (prev, { _id }) => ({
             ...prev,
-            [_id]: student_editors ? student_editors.indexOf(_id) > -1 : false,
+            [_id]: student_editors
+              ? student_editors.findIndex(
+                  (student_editor) => student_editor._id === _id
+                ) > -1
+              : false,
           }),
           {}
         );

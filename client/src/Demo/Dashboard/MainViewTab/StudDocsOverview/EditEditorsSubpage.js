@@ -1,8 +1,6 @@
 import React from "react";
 import { Table, Form, Modal } from "react-bootstrap";
-import {
-  Button,
-} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 class EditEditorsSubpage extends React.Component {
   // edit Editor subpage
   render() {
@@ -35,8 +33,9 @@ class EditEditorsSubpage extends React.Component {
                           name="student_id"
                           defaultChecked={
                             this.props.student.editors
-                              ? this.props.student.editors.indexOf(editor._id) >
-                                -1
+                              ? this.props.student.editors.findIndex(
+                                  (Editor) => Editor._id === editor._id
+                                ) > -1
                                 ? true
                                 : false
                               : false

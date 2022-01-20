@@ -17,7 +17,7 @@ class EditAgentsSubpage extends React.Component {
                 name="agent_id"
                 defaultChecked={
                   this.props.student.agents
-                    ? this.props.student.agents.indexOf(agent._id) > -1
+                    ? this.props.student.agents.findIndex((Agent)=> Agent._id === agent._id) > -1
                       ? true
                       : false
                     : false

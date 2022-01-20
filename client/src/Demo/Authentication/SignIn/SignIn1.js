@@ -8,6 +8,7 @@ import { login } from "../../../api";
 export default function Signin1({ userData }) {
   const [emailaddress, setEmailaddress] = useState();
   const [password, setPassword] = useState();
+  const [buttondisable, setButtondisable] = useState(false);
   const emailValidation = () => {
     const regex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -38,6 +39,12 @@ export default function Signin1({ userData }) {
     }
   };
 
+  const onButtonClick = async (e, buttondisable) =>{
+    e.preventDefault();
+    setButtondisable(buttondisable);
+    handleSubmit(e)
+  }
+
   return (
     <Aux>
       <div className="auth-wrapper">
@@ -48,7 +55,7 @@ export default function Signin1({ userData }) {
             <span className="r s" />
             <span className="r" />
           </div> */}
-          <form className="card" onSubmit={handleSubmit}>
+          <form className="card">
             <div className="card-body text-center">
               <div className="mb-4">
                 <i className="feather icon-unlock auth-icon" />
@@ -71,7 +78,12 @@ export default function Signin1({ userData }) {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <button type="submit" className="btn btn-primary shadow-2 mb-4">
+              <button
+                disabled={buttondisable}
+                onClick={(e) => onButtonClick(e, true)}
+                type="submit"
+                className="btn btn-primary shadow-2 mb-4"
+              >
                 Login
               </button>
               <p className="mb-2 text-muted">

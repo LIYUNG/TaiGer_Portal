@@ -51,7 +51,6 @@ class NavBar extends Component {
                 <NavRight
                   rtlLayout={this.props.rtlLayout}
                   userdata={this.props.userdata}
-                  setUserdata={this.props.setUserdata}
                   handleOnClickLogout={this.props.handleOnClickLogout}
                 />
               </div>

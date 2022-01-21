@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { login } from "../../../api";
 
 // export default function Signin1({ setToken }) {
-export default function Signin1({ userData }) {
+export default function Signin1({ userData, setUserdata }) {
   const [emailaddress, setEmailaddress] = useState();
   const [password, setPassword] = useState();
   const [buttondisable, setButtondisable] = useState(false);
@@ -16,6 +16,31 @@ export default function Signin1({ userData }) {
       return false;
     }
     return true;
+  };
+  const setuserdata2 = (resp) => {
+    try {
+      if (resp) {
+        if (resp.status === 400) {
+          alert("This Email is already registered.");
+        } else if (resp.status === 401) {
+          alert("Password is not correct.");
+          setButtondisable(false);
+        } else {
+          console.log("successfullllll");
+          setUserdata((state) => ({
+            ...state,
+            success: resp.data.success,
+            data: resp.data.data,
+            isloaded: true,
+          }));
+        }
+      } else {
+        alert("Email or password not correct.");
+        setButtondisable(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -28,7 +53,7 @@ export default function Signin1({ userData }) {
         try {
           const resp = await login({ email: emailaddress, password });
           // console.log(resp);
-          userData(resp);
+          setuserdata2(resp);
         } catch (err) {
           // TODO: handle error
           console.log(err);
@@ -39,11 +64,11 @@ export default function Signin1({ userData }) {
     }
   };
 
-  const onButtonClick = async (e, buttondisable) =>{
+  const onButtonClick = async (e, buttondisable) => {
     e.preventDefault();
     setButtondisable(buttondisable);
-    handleSubmit(e)
-  }
+    handleSubmit(e);
+  };
 
   return (
     <Aux>

@@ -44,29 +44,7 @@ function AdminLayout(props) {
     });
   }, []);
 
-  const setuserdata2 = (resp) => {
-    try {
-      if (resp) {
-        if (resp.status === 400) {
-          alert("This Email is already registered.");
-        } else if (resp.status === 401) {
-          alert("Password is not correct.");
-        } else {
-          console.log("successfullllll");
-          setUserdata((state) => ({
-            ...state,
-            success: resp.data.success,
-            data: resp.data.data,
-            isloaded: true,
-          }));
-        }
-      } else {
-        alert("Email or password not correct.");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+
   useEffect(() => {
     if (
       props.windowWidth >= 992 &&
@@ -142,7 +120,10 @@ function AdminLayout(props) {
         exact={route.exact}
         name={route.name}
         render={(props) => (
-          <route.component {...props} userData={setuserdata2} />
+          <route.component
+            {...props}
+            setUserdata={setUserdata}
+          />
         )}
       />
     ) : null;
@@ -171,7 +152,6 @@ function AdminLayout(props) {
           <Navigation userdata={userdata.data} />
           <NavBar
             userdata={userdata.data}
-            setUserdata={setuserdata2}
             handleOnClickLogout={handleOnClickLogout}
           />
           <div

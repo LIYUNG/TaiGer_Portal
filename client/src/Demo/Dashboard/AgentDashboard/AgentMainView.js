@@ -7,8 +7,13 @@ import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDo
 import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
 import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
-
+import {
+  uploadforstudent,
+  updateDocumentStatus,
+  deleteFile,
+} from "../../../api";
 class AgentMainView extends React.Component {
+  
   render() {
     const agent_todo = this.props.students.map((student, i) => (
       <AgentTodoList
@@ -17,6 +22,7 @@ class AgentMainView extends React.Component {
         startEditingProgram={this.props.startEditingProgram}
         agenttodolist={this.props.agenttodolist}
         documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
@@ -92,13 +98,16 @@ class AgentMainView extends React.Component {
                   startUploadfile={this.props.startUploadfile}
                   agent_list={this.props.agent_list}
                   editor_list={this.props.editor_list}
+                  onFileChange={this.props.onFileChange}
+                  onSubmitFile={this.props.onSubmitFile}
+                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+                  onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
                   onDeleteProgram={this.props.onDeleteProgram}
                   onDownloadFilefromstudent={
                     this.props.onDownloadFilefromstudent
                   }
                   onRejectFilefromstudent={this.props.onRejectFilefromstudent}
                   onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                   updateAgentList={this.props.updateAgentList}
                   handleChangeAgentlist={this.props.handleChangeAgentlist}
                   submitUpdateAgentlist={this.props.submitUpdateAgentlist}

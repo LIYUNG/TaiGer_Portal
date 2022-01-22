@@ -5,6 +5,7 @@ import {
   AiOutlineFieldTime,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import { BsDash } from "react-icons/bs";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import StudentDashboard from "./StudentDashboard";
 
@@ -32,6 +33,8 @@ class StudentMyself extends React.Component {
           object_init[this.state.student.profile[i].name] = "rejected";
         } else if (this.state.student.profile[i].status === "missing") {
           object_init[this.state.student.profile[i].name] = "missing";
+        } else if (this.state.student.profile[i].status === "notneeded") {
+          object_init[this.state.student.profile[i].name] = "notneeded";
         }
       }
     } else {
@@ -61,7 +64,13 @@ class StudentMyself extends React.Component {
       } else if (object_init[k] === "rejected") {
         return (
           <td key={i}>
-            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />{" "}
+            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
+          </td>
+        );
+      } else if (object_init[k] === "notneeded") {
+        return (
+          <td key={i}>
+            <BsDash size={24} color="lightgray" title="Not needed" />
           </td>
         );
       } else {

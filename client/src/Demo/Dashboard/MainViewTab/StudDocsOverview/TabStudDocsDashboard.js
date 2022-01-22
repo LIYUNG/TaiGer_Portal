@@ -1,6 +1,12 @@
 import React from "react";
 import { Table } from "react-bootstrap";
 import StudDocsDashboard from "./StudDocsDashboard";
+import {
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  useAsyncDebounce,
+} from "react-table";
 class TabStudDocsDashboard extends React.Component {
   render() {
     const stdlist = this.props.students.map((student, i) => (
@@ -15,10 +21,13 @@ class TabStudDocsDashboard extends React.Component {
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
         onDeleteProgram={this.props.onDeleteProgram}
+        onFileChange={this.props.onFileChange}
+        onSubmitFile={this.props.onSubmitFile}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+        onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
         updateAgentList={this.props.updateAgentList}
         handleChangeAgentlist={this.props.handleChangeAgentlist}
         submitUpdateAgentlist={this.props.submitUpdateAgentlist}

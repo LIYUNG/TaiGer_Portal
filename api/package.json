@@ -9,6 +9,7 @@
   },
   "preset": "@shelf/jest-mongodb",
   "dependencies": {
+    "async": "^3.2.3",
     "bcryptjs": "^2.4.3",
     "child_process": "^1.0.2",
     "cookie-parser": "^1.4.5",

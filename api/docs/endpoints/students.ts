@@ -51,18 +51,6 @@ class AssignAgentToStudent {
   successfulResponse(@body body: SuccessResponse) {}
 }
 
-@endpoint({
-  method: "DELETE",
-  path: "/api/students/:studentId/agents/:agentId",
-})
-class RemoveAgentFromStudent {
-  @request
-  request(@pathParams pathParams: { studentId: String; agentId: String }) {}
-
-  @response({ status: 200 })
-  successfulResponse(@body body: SuccessResponse) {}
-}
-
 @endpoint({ method: "POST", path: "/api/students/:id/editors" })
 class AssignEditorToStudent {
   @request

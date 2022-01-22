@@ -6,6 +6,7 @@ import {
   AiOutlineFieldTime,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import { BsDash } from "react-icons/bs";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";
@@ -22,8 +23,6 @@ class StudDocsDashboard extends React.Component {
     showEditorPage: false,
     showProgramPage: false,
     showFilePage: false,
-    student: this.props.student,
-    file: "",
   };
 
   setAgentModalhide = () => {
@@ -84,75 +83,6 @@ class StudDocsDashboard extends React.Component {
     });
   };
 
-  onFileChange = (e) => {
-    this.setState({
-      file: e.target.files[0],
-    });
-  };
-
-  onSubmitFile = (e, category, student_id) => {
-    if (this.state.file === "") {
-      e.preventDefault();
-      alert("Please select file");
-    } else {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("file", this.state.file);
-
-      uploadforstudent(category, student_id, formData).then(
-        (res) => {
-          this.setState({
-            student: res.data.data, // res.data = {success: true, data:{...}}
-            file: "",
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
-    }
-  };
-
-  onDeleteFilefromstudent = (e, category, id) => {
-    // TODO: delete this.state.student[document]
-    e.preventDefault();
-    let idx = this.state.student.profile.findIndex(
-      (doc) => doc.name === category
-    );
-    let std = { ...this.state.student };
-    console.log(std);
-    deleteFile(category, id).then(
-      (res) => {
-        std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
-        this.setState({
-          student: std,
-        });
-      },
-      (error) => {}
-    );
-  };
-
-  onUpdateProfileDocStatus = (e, category, id, status) => {
-    e.preventDefault();
-    let idx = this.state.student.profile.findIndex(
-      (doc) => doc.name === category
-    );
-    var std = { ...this.state.student };
-    console.log(std);
-    updateDocumentStatus(category, id, status).then(
-      (res) => {
-        std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
-        this.setState({
-          student: std,
-        });
-      },
-      (error) => {}
-    );
-  };
-
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);
   };
@@ -164,16 +94,18 @@ class StudDocsDashboard extends React.Component {
       object_init[keys[i]] = "missing";
     }
 
-    if (this.state.student.profile) {
-      for (let i = 0; i < this.state.student.profile.length; i++) {
-        if (this.state.student.profile[i].status === "uploaded") {
-          object_init[this.state.student.profile[i].name] = "uploaded";
-        } else if (this.state.student.profile[i].status === "accepted") {
-          object_init[this.state.student.profile[i].name] = "accepted";
-        } else if (this.state.student.profile[i].status === "rejected") {
-          object_init[this.state.student.profile[i].name] = "rejected";
-        } else if (this.state.student.profile[i].status === "missing") {
-          object_init[this.state.student.profile[i].name] = "missing";
+    if (this.props.student.profile) {
+      for (let i = 0; i < this.props.student.profile.length; i++) {
+        if (this.props.student.profile[i].status === "uploaded") {
+          object_init[this.props.student.profile[i].name] = "uploaded";
+        } else if (this.props.student.profile[i].status === "accepted") {
+          object_init[this.props.student.profile[i].name] = "accepted";
+        } else if (this.props.student.profile[i].status === "rejected") {
+          object_init[this.props.student.profile[i].name] = "rejected";
+        } else if (this.props.student.profile[i].status === "missing") {
+          object_init[this.props.student.profile[i].name] = "missing";
+        } else if (this.props.student.profile[i].status === "notneeded") {
+          object_init[this.props.student.profile[i].name] = "notneeded";
         }
       }
     } else {
@@ -207,6 +139,12 @@ class StudDocsDashboard extends React.Component {
             <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
           </td>
         );
+      } else if (object_init[k] === "notneeded") {
+        return (
+          <td key={i}>
+            <BsDash size={24} color="lightgray" title="Not needed" />
+          </td>
+        );
       } else {
         return (
           <td key={i}>
@@ -230,7 +168,7 @@ class StudDocsDashboard extends React.Component {
                   size="sm"
                   title="Option"
                   variant="primary"
-                  id={`dropdown-variants-${this.state.student._id}`}
+                  id={`dropdown-variants-${this.props.student._id}`}
                   key={this.props.student._id}
                 >
                   {this.props.role === "Admin" && !this.props.isArchivPage ? (
@@ -316,7 +254,7 @@ class StudDocsDashboard extends React.Component {
           {this.props.role === "Admin" ? (
             <>
               <EditAgentsSubpage
-                student={this.state.student}
+                student={this.props.student}
                 agent_list={this.props.agent_list}
                 show={this.state.showAgentPage}
                 onHide={this.setAgentModalhide}
@@ -326,7 +264,7 @@ class StudDocsDashboard extends React.Component {
                 submitUpdateAgentlist={this.props.submitUpdateAgentlist}
               />
               <EditEditorsSubpage
-                student={this.state.student}
+                student={this.props.student}
                 editor_list={this.props.editor_list}
                 show={this.state.showEditorPage}
                 onHide={this.setEditorModalhide}
@@ -340,25 +278,25 @@ class StudDocsDashboard extends React.Component {
             <></>
           )}
           <EditProgramsSubpage
-            student={this.state.student}
+            student={this.props.student}
             show={this.state.showProgramPage}
             onHide={this.setProgramModalhide}
             setmodalhide={this.setProgramModalhide}
             onDeleteProgram={this.props.onDeleteProgram}
           />
           <EditFilesSubpage
-            student={this.state.student}
+            student={this.props.student}
             role={this.props.role}
             documentslist={this.props.documentslist}
             documentlist2={this.props.documentlist2}
             show={this.state.showFilePage}
             onHide={this.setFilesModalhide}
             setmodalhide={this.setFilesModalhide}
-            onFileChange={this.onFileChange}
-            onSubmitFile={this.onSubmitFile}
+            onFileChange={this.props.onFileChange}
+            onSubmitFile={this.props.onSubmitFile}
             onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-            onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
-            onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+            onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
+            onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
           />
         </>
       </>

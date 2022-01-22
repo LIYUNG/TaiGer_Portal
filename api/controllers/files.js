@@ -354,7 +354,17 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, "Invalid student Id or application Id");
 
   const document = student.profile.find(({ name }) => name === category);
-  if (!document) throw new ErrorResponse(400, "Invalid document name");
+  if (!document) {
+    document = student.profile.create({ name: category });
+    document.status = DocumentStatus.Uploaded;
+    document.required = true;
+    document.updatedAt = new Date();
+    document.path = "";
+    student.profile.push(document);
+    await student.save();
+    res.status(201).send({ success: true, data: document });
+  }
+  //  throw new ErrorResponse(400, "Invalid document name");
 
   // TODO: validate status, ex: can't be accepted if document.path is empty
   document.status = status;

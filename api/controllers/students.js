@@ -2,6 +2,7 @@ const { ErrorResponse } = require("../common/errors");
 const { asyncHandler } = require("../middlewares/error-handler");
 const { Role, Agent, Student, Editor } = require("../models/User");
 const { Program } = require("../models/Program");
+var async = require("async");
 const fs = require("fs");
 
 const getStudents = asyncHandler(async (req, res) => {
@@ -187,6 +188,21 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       });
     }
   }
+  // async.eachSeries(
+  //   keys,
+  //   function updateObject(key, done) {
+  //     // Model.update(condition, doc, callback)
+  //     if (agentsId[key]) {
+  //       updated_agent_id.push(key);
+  //       Agent.updateOne({ _id: key }, { $push: { students: studentId } }, done);
+  //     } else {
+  //       Agent.updateOne({ _id: key }, { $pull: { students: studentId } }, done);
+  //     }
+  //   },
+  //   function allDone(err) {
+  //     // this will be called when all the updates are done or an error occurred during the iteration
+  //   }
+  // );
   console.log(updated_agent_id);
   // console.log(agentIds);
   // if (!agentIds) throw new ErrorResponse(400, "Invalid AgentId");
@@ -201,24 +217,24 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const student = await Student.findById(studentId)
     .populate("applications.programId agents editors")
     .exec();
-  console.log(student);
+  // console.log(student);
   res.status(200).send({ success: true, data: student });
 });
 
-const removeAgentFromStudent = asyncHandler(async (req, res, next) => {
-  const { studentId, agentId } = req.params;
+// const removeAgentFromStudent = asyncHandler(async (req, res, next) => {
+//   const { studentId, agentId } = req.params;
 
-  // TODO: transaction?
-  await Student.findByIdAndUpdate(studentId, {
-    $pull: { agents: agentId },
-  });
+//   // TODO: transaction?
+//   await Student.findByIdAndUpdate(studentId, {
+//     $pull: { agents: agentId },
+//   });
 
-  await Agent.findByIdAndUpdate(agentId, {
-    $pull: { students: studentId },
-  });
+//   await Agent.findByIdAndUpdate(agentId, {
+//     $pull: { students: studentId },
+//   });
 
-  res.status(200).send({ success: true });
-});
+//   res.status(200).send({ success: true });
+// });
 
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
@@ -242,6 +258,29 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       });
     }
   }
+  // async.eachSeries(
+  //   keys,
+  //   function updateObject(key, done) {
+  //     // Model.update(condition, doc, callback)
+  //     if (editorsId[key]) {
+  //       updated_editor_id.push(key);
+  //       Editor.updateOne(
+  //         { _id: key },
+  //         { $push: { students: studentId } },
+  //         done
+  //       );
+  //     } else {
+  //       Editor.updateOne(
+  //         { _id: key },
+  //         { $pull: { students: studentId } },
+  //         done
+  //       );
+  //     }
+  //   },
+  //   function allDone(err) {
+  //     // this will be called when all the updates are done or an error occurred during the iteration
+  //   }
+  // );
   console.log(updated_editor_id);
   // TODO: check studentId and editorsId are valid
   // const editorsIds = await Editor.findById(({ editorsId }) => editorsId);
@@ -258,7 +297,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const student = await Student.findById(studentId)
     .populate("applications.programId agents editors")
     .exec();
-  console.log(student);
+  // console.log(student);
   res.status(200).send({ success: true, data: student });
 });
 
@@ -356,9 +395,9 @@ module.exports = {
   getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,
-  removeAgentFromStudent,
+  // removeAgentFromStudent,
   assignEditorToStudent,
-  removeEditorFromStudent,
+  // removeEditorFromStudent,
   createApplication,
   deleteApplication,
 };

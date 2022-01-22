@@ -85,6 +85,10 @@ class AdminMainView extends React.Component {
                   documentlist2={this.props.documentlist2}
                   agent_list={this.props.agent_list}
                   editor_list={this.props.editor_list}
+                  onFileChange={this.props.onFileChange}
+                  onSubmitFile={this.props.onSubmitFile}
+                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+                  onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
                   onDeleteProgram={this.props.onDeleteProgram}
                   onDownloadFilefromstudent={
                     this.props.onDownloadFilefromstudent

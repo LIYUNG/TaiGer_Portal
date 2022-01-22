@@ -17,6 +17,10 @@ const store = createStore(
 
 window.agenttodolist = [
   {
+    name: "Missing Profiles",
+    prop: "missingprofiles",
+  },
+  {
     name: "Course Analysis",
     prop: "courseanalysis",
   },

@@ -10,7 +10,7 @@ class StudentsAgentEditor extends React.Component {
   render() {
     let studentsAgent;
     let studentsEditor;
-    console.log(this.props.student.agents);
+    // console.log(this.props.student.agents);
     if (
       this.props.student.agents === undefined ||
       this.props.student.agents.length === 0

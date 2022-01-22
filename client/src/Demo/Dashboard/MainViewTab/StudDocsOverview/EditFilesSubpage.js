@@ -1,5 +1,4 @@
 import React from "react";
-// import { FaBeer } from 'react-icons/fa';
 import { Button, Table, Col, Form, Modal } from "react-bootstrap";
 import UcFirst from "../../../../App/components/UcFirst";
 import {
@@ -8,11 +7,13 @@ import {
   AiFillQuestionCircle,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import { BsDash } from "react-icons/bs";
 class EditFilesSubpage extends React.Component {
   // edit File subpage
 
   render() {
     const deleteStyle = "danger";
+    const graoutStyle = "light";
     let value2 = Object.values(this.props.documentlist2);
     let keys2 = Object.keys(this.props.documentlist2);
     let object_init = {};
@@ -34,6 +35,10 @@ class EditFilesSubpage extends React.Component {
             this.props.student.profile[i].updatedAt.toString();
         } else if (this.props.student.profile[i].status === "rejected") {
           object_init[this.props.student.profile[i].name] = "rejected";
+          object_date_init[this.props.student.profile[i].name] =
+            this.props.student.profile[i].updatedAt.toString();
+        } else if (this.props.student.profile[i].status === "notneeded") {
+          object_init[this.props.student.profile[i].name] = "notneeded";
           object_date_init[this.props.student.profile[i].name] =
             this.props.student.profile[i].updatedAt.toString();
         } else if (this.props.student.profile[i].status === "missing") {
@@ -349,6 +354,74 @@ class EditFilesSubpage extends React.Component {
             )}
           </tr>
         );
+      } else if (object_init[k] === "notneeded") {
+        return (
+          <tr key={i + 1}>
+            <th>
+              <BsDash size={24} color="lightgray" title="Not needed" />
+            </th>
+            <td>
+              <p className="m-0">
+                <b> {value2[i]} </b>
+              </p>
+            </td>
+            {this.props.role === "Editor" ? (
+              <></>
+            ) : (
+              <>
+                <td>
+                  <Col>
+                    <Form
+                      onChange={(e) => this.props.onFileChange(e)}
+                      onClick={(e) => (e.target.value = null)}
+                    >
+                      <Form.File id={this.props.id}>
+                        {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                        <Form.File.Input />
+                      </Form.File>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "missing"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Set Needed
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col md={2}>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onSubmitFile(e, k, this.props.student._id)
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button size="sm" type="submit">
+                          Upload
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+              </>
+            )}
+            <td></td>
+          </tr>
+        );
       } else {
         return (
           <tr key={i + 1}>
@@ -391,6 +464,26 @@ class EditFilesSubpage extends React.Component {
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <Button size="sm" type="submit">
                           Upload
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </td>
+                <td>
+                  <Col>
+                    <Form
+                      onSubmit={(e) =>
+                        this.props.onUpdateProfileDocStatus(
+                          e,
+                          k,
+                          this.props.student._id,
+                          "notneeded"
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Button variant={"secondary"} size="sm" type="submit">
+                          Set notneeded
                         </Button>
                       </Form.Group>
                     </Form>

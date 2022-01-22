@@ -10,9 +10,9 @@ const {
   getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,
-  removeAgentFromStudent,
+  // removeAgentFromStudent,
   assignEditorToStudent,
-  removeEditorFromStudent,
+  // removeEditorFromStudent,
   createApplication,
   deleteApplication,
 } = require("../controllers/students");
@@ -51,15 +51,15 @@ router
 
 router.route("/:id/agents").post(permit(Role.Admin), assignAgentToStudent);
 
-router
-  .route("/:studentId/agents/:agentId")
-  .delete(permit(Role.Admin), removeAgentFromStudent);
+// router
+//   .route("/:studentId/agents/:agentId")
+//   .delete(permit(Role.Admin), removeAgentFromStudent);
 
 router.route("/:id/editors").post(permit(Role.Admin), assignEditorToStudent);
 
-router
-  .route("/:studentId/editors/:editorId")
-  .delete(permit(Role.Admin), removeEditorFromStudent);
+// router
+//   .route("/:studentId/editors/:editorId")
+//   .delete(permit(Role.Admin), removeEditorFromStudent);
 
 router
   .route("/:studentId/applications")

@@ -18,6 +18,9 @@ import EditorMainView from "./EditorDashboard/EditorMainView";
 import StudentMainView from "./StudentDashboard/StudentMainView";
 import GuestMainView from "./GuestDashboard/GuestMainView";
 import {
+  uploadforstudent,
+  updateDocumentStatus,
+  deleteFile,
   getStudents,
   updateArchivStudents,
   download,
@@ -28,7 +31,6 @@ import {
   updateEditors,
   acceptDocument,
   rejectDocument,
-  deleteFile,
 } from "../../api";
 
 class Dashboard extends React.Component {
@@ -43,6 +45,7 @@ class Dashboard extends React.Component {
     updateEditorList: {},
     success: false,
     isDashboard: true,
+    file: "",
   };
 
   componentDidMount() {
@@ -69,6 +72,7 @@ class Dashboard extends React.Component {
     if (this.state.isLoaded === false) {
       getStudents().then(
         (resp) => {
+          console.log("Default.js componentDidUpdate rendered");
           this.setState({
             isLoaded: true,
             students: resp.data.data,
@@ -183,13 +187,13 @@ class Dashboard extends React.Component {
     );
   };
 
-  onDeleteFilefromstudent = (e, category, id) => {
-    e.preventDefault();
-    deleteFile(category, id).then(
-      (resp) => {},
-      (error) => {}
-    );
-  };
+  // onDeleteFilefromstudent = (e, category, id) => {
+  //   e.preventDefault();
+  //   deleteFile(category, id).then(
+  //     (resp) => {},
+  //     (error) => {}
+  //   );
+  // };
 
   editAgent = (student) => {
     getAgents().then(
@@ -338,6 +342,96 @@ class Dashboard extends React.Component {
     );
   };
 
+  onFileChange = (e) => {
+    this.setState({
+      file: e.target.files[0],
+    });
+  };
+
+  onSubmitFile = (e, category, student_id) => {
+    if (this.state.file === "") {
+      e.preventDefault();
+      alert("Please select file");
+    } else {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("file", this.state.file);
+
+      let student_arrayidx = this.state.students.findIndex(
+        (student) => student._id === student_id
+      );
+
+      uploadforstudent(category, student_id, formData).then(
+        (res) => {
+          let students = [...this.state.students];
+          students[student_arrayidx] = res.data.data;
+          console.log(students);
+          this.setState({
+            students: students, // res.data = {success: true, data:{...}}
+            file: "",
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error,
+          });
+        }
+      );
+    }
+  };
+  onDeleteFilefromstudent = (e, category, student_id) => {
+    // TODO: delete this.state.student[document]
+    console.log("onDeleteFilefromstudent AgentMainView.js");
+    e.preventDefault();
+    let student_arrayidx = this.state.students.findIndex(
+      (student) => student._id === student_id
+    );
+    let student = this.state.students.find(
+      (student) => student._id === student_id
+    );
+    let idx = student.profile.findIndex((doc) => doc.name === category);
+    let students = [...this.state.students];
+    // console.log(students);
+    deleteFile(category, student_id).then(
+      (res) => {
+        students[student_arrayidx].profile[idx] = res.data.data;
+        // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
+        this.setState({
+          students: students,
+        });
+      },
+      (error) => {}
+    );
+  };
+
+  onUpdateProfileDocStatus = (e, category, student_id, status) => {
+    e.preventDefault();
+
+    let student_arrayidx = this.state.students.findIndex(
+      (student) => student._id === student_id
+    );
+    let student = this.state.students.find(
+      (student) => student._id === student_id
+    );
+    let idx = student.profile.findIndex((doc) => doc.name === category);
+    let students = [...this.state.students];
+
+    console.log(students);
+    // var std = { ...this.state.student };
+    // console.log(std);
+    updateDocumentStatus(category, student_id, status).then(
+      (res) => {
+        students[student_arrayidx].profile[idx] = res.data.data;
+        // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
+        this.setState({
+          students: students,
+        });
+      },
+      (error) => {}
+    );
+  };
+
   render() {
     const { error, isLoaded } = this.state;
     let FILE_OK_SYMBOL = (
@@ -418,6 +512,10 @@ class Dashboard extends React.Component {
               documentslist={window.documentlist}
               documentlist2={window.documentlist2}
               agenttodolist={window.agenttodolist}
+              onFileChange={this.onFileChange}
+              onSubmitFile={this.onSubmitFile}
+              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+              onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
               documentsprogresslist={window.documentsprogresslist}
               programstatuslist={window.programstatuslist}
               startUploadfile={this.startUploadfile}
@@ -425,7 +523,6 @@ class Dashboard extends React.Component {
               onDownloadFilefromstudent={this.onDownloadFilefromstudent}
               onRejectFilefromstudent={this.onRejectFilefromstudent}
               onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
               updateAgentList={this.state.updateAgentList}
               handleChangeAgentlist={this.handleChangeAgentlist}
               submitUpdateAgentlist={this.submitUpdateAgentlist}
@@ -458,11 +555,14 @@ class Dashboard extends React.Component {
               documentsprogresslist={window.documentsprogresslist}
               programstatuslist={window.programstatuslist}
               startUploadfile={this.startUploadfile}
+              onFileChange={this.onFileChange}
+              onSubmitFile={this.onSubmitFile}
+              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+              onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
               onDeleteProgram={this.onDeleteProgram}
               onDownloadFilefromstudent={this.onDownloadFilefromstudent}
               onRejectFilefromstudent={this.onRejectFilefromstudent}
               onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
               updateAgentList={this.state.updateAgentList}
               handleChangeAgentlist={this.handleChangeAgentlist}
               submitUpdateAgentlist={this.submitUpdateAgentlist}

@@ -1,10 +1,12 @@
 import React from "react";
 import { Button, Table, Col, Form } from "react-bootstrap";
+// import UcFirst from "../../../../App/components/UcFirst";
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
   AiOutlineFieldTime,
 } from "react-icons/ai";
+import { BsDash } from "react-icons/bs";
 import { IoCheckmarkCircle } from "react-icons/io5";
 
 class EditUploadFilesSubpage extends React.Component {
@@ -203,6 +205,48 @@ class EditUploadFilesSubpage extends React.Component {
                 </Form>
               </Col>
             </td>
+          </tr>
+        );
+      } else if (object_init[k] === "notneeded") {
+        return (
+          <tr key={i + 1}>
+            <th>
+              <BsDash size={24} color="lightgray" title="Not needed" />
+            </th>
+            <td>
+              <p className="m-0">
+                <b> {value2[i]} </b>
+              </p>
+            </td>
+            <td>
+              <Col>
+                <Form
+                  onChange={(e) => this.props.onFileChange(e)}
+                  onClick={(e) => (e.target.value = null)}
+                >
+                  <Form.File id={this.props.id}>
+                    <Form.File.Input />
+                  </Form.File>
+                </Form>
+              </Col>
+            </td>
+            <td>
+              <Col md={2}>
+                <Form
+                  onSubmit={(e) =>
+                    this.props.submitFile(e, this.props.userId, k)
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      Upload
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+            <td></td>
+            <td></td>
           </tr>
         );
       } else {

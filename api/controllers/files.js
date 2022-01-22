@@ -352,18 +352,23 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   });
   if (!student)
     throw new ErrorResponse(400, "Invalid student Id or application Id");
-
-  const document = student.profile.find(({ name }) => name === category);
-  if (!document) {
-    document = student.profile.create({ name: category });
-    document.status = DocumentStatus.Uploaded;
-    document.required = true;
-    document.updatedAt = new Date();
-    document.path = "";
-    student.profile.push(document);
-    await student.save();
-    res.status(201).send({ success: true, data: document });
+  let document = student.profile.find(({ name }) => name === category);
+  try {
+    if (!document) {
+      document = student.profile.create({ name: category });
+      document.status = DocumentStatus.NotNeeded;
+      document.required = true;
+      document.updatedAt = new Date();
+      document.path = "";
+      student.profile.push(document);
+      await student.save();
+      return res.status(201).send({ success: true, data: student });
+      
+    }
+  } catch (err) {
+    console.log(err);
   }
+
   //  throw new ErrorResponse(400, "Invalid document name");
 
   // TODO: validate status, ex: can't be accepted if document.path is empty
@@ -371,7 +376,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   document.updatedAt = new Date();
 
   await student.save();
-  res.status(200).send({ success: true, data: document });
+  res.status(200).send({ success: true, data: student });
   //Reminder for Student:
   await sendChangedFileStatusEmail({
     firstname: student.firstname,

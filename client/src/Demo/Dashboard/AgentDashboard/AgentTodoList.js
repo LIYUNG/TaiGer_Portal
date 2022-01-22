@@ -39,6 +39,15 @@ class AgentTodoList extends React.Component {
         );
       }
     });
+    let to_be_checked_profiles = keys.map((key, i) => {
+      if (object_init[key] === "uploaded") {
+        return (
+          <>
+            <h5>{this.props.documentlist2[key]}</h5>
+          </>
+        );
+      }
+    });
     // let applying_program;
     // let application_deadline;
     // if (this.props.student.applications) {
@@ -111,6 +120,7 @@ class AgentTodoList extends React.Component {
               </h5>
             </td>
             <td>{missing_profiles}</td>
+            <td>{to_be_checked_profiles}</td>
           </tr>
         </tbody>
       </>

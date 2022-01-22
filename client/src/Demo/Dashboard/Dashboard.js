@@ -422,7 +422,7 @@ class Dashboard extends React.Component {
     // console.log(std);
     updateDocumentStatus(category, student_id, status).then(
       (res) => {
-        students[student_arrayidx].profile[idx] = res.data.data;
+        students[student_arrayidx] = res.data.data;
         // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
         this.setState({
           students: students,

@@ -21,6 +21,10 @@ window.agenttodolist = [
     prop: "missingprofiles",
   },
   {
+    name: "Check Profiles",
+    prop: "checkprofiles",
+  },
+  {
     name: "Course Analysis",
     prop: "courseanalysis",
   },

@@ -134,7 +134,7 @@ function AdminLayout(props) {
     left: "50%",
     transform: "translate(-50%, -50%)",
   };
-  console.log(userdata.data);
+  // console.log(userdata.data);
   if (!userdata.data && !userdata.everlogin) {
     return (
       <Aux>

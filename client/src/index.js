@@ -15,6 +15,29 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
+window.editortodolist = [
+  {
+    name: "Waiting Template",
+    prop: "waitingtemplate",
+  },
+  {
+    name: "waiting Std Response",
+    prop: "checkprofiles",
+  },
+  {
+    name: "Send Portal Instruction",
+    prop: "sendportalinstruction",
+  },
+  {
+    name: "Provide ML template",
+    prop: "providemltemp",
+  },
+  {
+    name: "Provide RL template",
+    prop: "providerltemp",
+  },
+];
+
 window.agenttodolist = [
   {
     name: "Missing Profiles",

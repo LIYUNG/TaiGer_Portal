@@ -8,10 +8,11 @@ import NavContent from "./NavContent";
 import OutsideClick from "./OutsideClick";
 import Aux from "./../../../../hoc/_Aux";
 import * as actionTypes from "./../../../../store/actions";
-import navigation from "../../../../menu-items";
-import navigation2 from "../../../../menu-items2";
-import navigation3 from "../../../../menu-items3";
-import navigation_editor from "../../../../menu-items_editor";
+import navigation_admin from "../../../../menu-admin";
+import navigation_guest from "../../../../menu-guest";
+import navigation_student from "../../../../menu-student";
+import navigation_agent from "../../../../menu-agent";
+import navigation_editor from "../../../../menu-editor";
 
 class Navigation extends Component {
   resize = () => {
@@ -34,15 +35,15 @@ class Navigation extends Component {
   renderSwitchMenu(param) {
     switch (param) {
       case "Admin":
-        return <NavContent navigation={navigation.items} />;
+        return <NavContent navigation={navigation_admin.items} />;
       case "Agent":
-        return <NavContent navigation={navigation3.items} />;
+        return <NavContent navigation={navigation_agent.items} />;
       case "Editor":
         return <NavContent navigation={navigation_editor.items} />;
       case "Student":
-        return <NavContent navigation={navigation2.items} />;
+        return <NavContent navigation={navigation_student.items} />;
       case "Guest":
-        return <NavContent navigation={navigation2.items} />;
+        return <NavContent navigation={navigation_guest.items} />;
       default:
         return "foo";
     }

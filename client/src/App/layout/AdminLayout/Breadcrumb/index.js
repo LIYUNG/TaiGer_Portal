@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import config from "../../../../config";
-import navigation from "../../../../menu-items";
+import navigation_admin from "../../../../menu-admin";
 import DEMO from "../../../../store/constant";
 import Aux from "../../../../hoc/_Aux";
 
@@ -13,7 +13,7 @@ class Breadcrumb extends Component {
   };
 
   componentDidMount() {
-    navigation.items.map((item, index) => {
+    navigation_admin.items.map((item, index) => {
       if (item.type && item.type === "group") {
         this.getCollapse(item, index);
       }
@@ -23,7 +23,7 @@ class Breadcrumb extends Component {
 
   // componentWillReceiveProps = () => {
   UNSAFE_componentWillReceiveProps = () => {
-    navigation.items.map((item, index) => {
+    navigation_admin.items.map((item, index) => {
       if (item.type && item.type === "group") {
         this.getCollapse(item);
       }

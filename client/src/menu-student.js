@@ -1,7 +1,7 @@
 export default {
   items: [
     {
-      id: "navigation2",
+      id: "navigation_student",
       title: "Navigation",
       type: "group",
       icon: "icon-navigation",
@@ -19,6 +19,14 @@ export default {
           type: "item",
           icon: "feather icon-list",
           url: "/programs",
+        },
+        {
+          id: "editor_center",
+          title: "Editor Center",
+          type: "item",
+          url: "/editor-center",
+          classes: "nav-item",
+          icon: "feather icon-edit-2",
         },
         {
           id: "upload",
@@ -42,7 +50,7 @@ export default {
           type: "item",
           url: "/taigerai",
           classes: "nav-item",
-          icon: "feather icon-code",
+          icon: "feather icon-box",
         },
         {
           id: "docs",

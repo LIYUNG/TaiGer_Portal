@@ -180,7 +180,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     if (agentsId[keys[i]]) {
       updated_agent_id.push(keys[i]);
       await Agent.findByIdAndUpdate(keys[i], {
-        $push: { students: studentId },
+        $addToSet: { students: studentId },
       });
     } else {
       await Agent.findByIdAndUpdate(keys[i], {
@@ -250,7 +250,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     if (editorsId[keys[i]]) {
       updated_editor_id.push(keys[i]);
       await Editor.findByIdAndUpdate(keys[i], {
-        $push: { students: studentId },
+        $addToSet: { students: studentId },
       });
     } else {
       await Editor.findByIdAndUpdate(keys[i], {

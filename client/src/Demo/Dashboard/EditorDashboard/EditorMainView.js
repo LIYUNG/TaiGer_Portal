@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col, Tabs, Tab, Table } from "react-bootstrap";
 import Card from "../../../App/components/MainCard";
+import EditorTodoList from "./EditorTodoList";
 import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
@@ -8,6 +9,20 @@ import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgen
 
 class EditorMainView extends React.Component {
   render() {
+    const editor_todo = this.props.students.map((student, i) => (
+      <EditorTodoList
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        editortodolist={this.props.editortodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
@@ -26,6 +41,25 @@ class EditorMainView extends React.Component {
     ));
     return (
       <>
+        <Row>
+          <Col sm={12}>
+            <Card title="Agent: To Do">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <>
+                      <th>First-, Last Name</th>
+                    </>
+                    {this.props.editortodolist.map((doc, index) => (
+                      <th key={index}>{doc.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                {editor_todo}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col sm={12}>
             <Card title="Program Conflicts">

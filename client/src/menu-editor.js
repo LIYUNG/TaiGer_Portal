@@ -1,7 +1,7 @@
 export default {
   items: [
     {
-      id: "navigation",
+      id: "navigation_editor",
       title: "Navigation",
       type: "group",
       icon: "icon-navigation",
@@ -14,19 +14,12 @@ export default {
           icon: "feather icon-home",
         },
         {
-          id: "user-table",
+          id: "archiv-students",
           title: "Archiv Students",
           type: "item",
           icon: "feather icon-users",
           url: "/archiv/students",
         },
-        // {
-        //   id: "user-table",
-        //   title: "User List",
-        //   type: "item",
-        //   icon: "feather icon-users",
-        //   url: "/users",
-        // },
         // {
         //   id: "program-table",
         //   title: "Program List",
@@ -41,14 +34,14 @@ export default {
         //     icon: 'feather icon-pie-chart',
         //     url: '/charts/nvd3'
         // },
-        // {
-        //     id: 'maps',
-        //     title: 'Map',
-        //     type: 'item',
-        //     icon: 'feather icon-map',
-        //     url: '/maps/google-map'
-        // },
-        // {
+        {
+          id: "editor_center",
+          title: "Editor Center",
+          type: "item",
+          url: "/editor-center",
+          classes: "nav-item",
+          icon: "feather icon-edit-2",
+        },
         {
           id: "download",
           title: "Download",
@@ -63,7 +56,7 @@ export default {
           type: "item",
           url: "/taigerai",
           classes: "nav-item",
-          icon: "feather icon-code",
+          icon: "feather icon-box",
         },
         {
           id: "docs",
@@ -157,6 +150,5 @@ export default {
                 }*/
       ],
     },
-
   ],
 };

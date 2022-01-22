@@ -1,7 +1,7 @@
 export default {
   items: [
     {
-      id: "navigation",
+      id: "navigation_admin",
       title: "Navigation",
       type: "group",
       icon: "icon-navigation",
@@ -14,19 +14,77 @@ export default {
           icon: "feather icon-home",
         },
         {
-          id: "user-table",
+          id: "basic",
+          title: "Component",
+          type: "collapse",
+          icon: "feather icon-box",
+          children: [
+            {
+              id: "button",
+              title: "Button",
+              type: "item",
+              url: "/basic/button",
+            },
+            {
+              id: "badges",
+              title: "Badges",
+              type: "item",
+              url: "/basic/badges",
+            },
+            {
+              id: "forms",
+              title: "Forms",
+              type: "item",
+              url: "/forms/form-basic",
+            },
+            {
+              id: "breadcrumb-pagination",
+              title: "Breadcrumb & Pagination",
+              type: "item",
+              url: "/basic/breadcrumb-paging",
+            },
+            {
+              id: "collapse",
+              title: "Collapse",
+              type: "item",
+              url: "/basic/collapse",
+            },
+            {
+              id: "tabs-pills",
+              title: "Tabs & Pills",
+              type: "item",
+              url: "/basic/tabs-pills",
+            },
+            {
+              id: "typography",
+              title: "Typography",
+              type: "item",
+              url: "/basic/typography",
+            },
+          ],
+        },
+        {
+          id: "editor_center",
+          title: "Editor Center",
+          type: "item",
+          url: "/editor-center",
+          classes: "nav-item",
+          icon: "feather icon-edit-2",
+        },
+        {
+          id: "archiv-student",
           title: "Archiv Students",
           type: "item",
           icon: "feather icon-users",
           url: "/archiv/students",
         },
-        // {
-        //   id: "user-table",
-        //   title: "User List",
-        //   type: "item",
-        //   icon: "feather icon-users",
-        //   url: "/users",
-        // },
+        {
+          id: "user-table",
+          title: "User List",
+          type: "item",
+          icon: "feather icon-users",
+          url: "/users",
+        },
         {
           id: "program-table",
           title: "Program List",
@@ -63,7 +121,7 @@ export default {
           type: "item",
           url: "/taigerai",
           classes: "nav-item",
-          icon: "feather icon-code",
+          icon: "feather icon-box",
         },
         {
           id: "docs",
@@ -157,6 +215,23 @@ export default {
                 }*/
       ],
     },
+    // {
+    //     id: 'ui-forms',
+    //     title: 'Forms & Tables',
+    //     type: 'group',
+    //     icon: 'icon-group',
+    //     children: [
 
+    //     ]
+    // },
+    // {
+    //     id: 'pages',
+    //     title: 'Pages',
+    //     type: 'group',
+    //     icon: 'icon-pages',
+    //     children: [
+
+    //     ]
+    // }
   ],
 };

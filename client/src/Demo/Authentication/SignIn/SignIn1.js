@@ -56,6 +56,8 @@ export default function Signin1({ userData, setUserdata }) {
           setuserdata2(resp);
         } catch (err) {
           // TODO: handle error
+          alert("Server no response! Please try later.");
+          setButtondisable(false);
           console.log(err);
         }
       }

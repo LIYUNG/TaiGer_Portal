@@ -1,7 +1,7 @@
 export default {
   items: [
     {
-      id: "navigation_admin",
+      id: "navigation_sidebar",
       title: "Navigation",
       type: "group",
       icon: "icon-navigation",
@@ -92,21 +92,20 @@ export default {
           icon: "feather icon-list",
           url: "/programs",
         },
-        // {
-        //     id: 'charts',
-        //     title: 'Charts',
-        //     type: 'item',
-        //     icon: 'feather icon-pie-chart',
-        //     url: '/charts/nvd3'
-        // },
-        // {
-        //     id: 'maps',
-        //     title: 'Map',
-        //     type: 'item',
-        //     icon: 'feather icon-map',
-        //     url: '/maps/google-map'
-        // },
-        // {
+        {
+          id: "charts",
+          title: "Charts",
+          type: "item",
+          icon: "feather icon-pie-chart",
+          url: "/charts/nvd3",
+        },
+        {
+          id: "maps",
+          title: "Map",
+          type: "item",
+          icon: "feather icon-map",
+          url: "/maps/google-map",
+        },
         {
           id: "download",
           title: "Download",
@@ -165,6 +164,22 @@ export default {
           ],
         },
         {
+          id: "personaldata",
+          title: "Personal Data",
+          type: "item",
+          url: "/profile",
+          classes: "nav-item",
+          icon: "feather icon-user",
+        },
+        {
+          id: "settings",
+          title: "Settings",
+          type: "item",
+          url: "/settings",
+          classes: "nav-item",
+          icon: "feather icon-settings",
+        },
+        {
           id: "menu-level",
           title: "Menu Levels",
           type: "collapse",
@@ -191,28 +206,28 @@ export default {
             },
           ],
         },
-        {
-          id: "disabled-menu",
-          title: "Disabled Menu",
-          type: "item",
-          url: "#",
-          classes: "nav-item disabled",
-          icon: "feather icon-power",
-        },
-        /*{
-                    id: 'buy-now',
-                    title: 'Buy Now',
-                    type: 'item',
-                    icon: 'feather icon-user',
-                    classes: 'nav-item',
-                    url: 'https://codedthemes.com',
-                    target: true,
-                    external: true,
-                    badge: {
-                        title: 'v1.0',
-                        type: 'label-primary'
-                    }
-                }*/
+        // {
+        //   id: "disabled-menu",
+        //   title: "Disabled Menu",
+        //   type: "item",
+        //   url: "#",
+        //   classes: "nav-item disabled",
+        //   icon: "feather icon-power",
+        // },
+        // {
+        //   id: "buy-now",
+        //   title: "Buy Now",
+        //   type: "item",
+        //   icon: "feather icon-user",
+        //   classes: "nav-item",
+        //   url: "https://codedthemes.com",
+        //   target: true,
+        //   external: true,
+        //   badge: {
+        //     title: "v1.0",
+        //     type: "label-primary",
+        //   },
+        // },
       ],
     },
     // {

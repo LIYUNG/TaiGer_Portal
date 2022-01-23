@@ -11,9 +11,16 @@ const navGroup = (props) => {
             item = groups[item];
             switch (item.type) {
                 case 'collapse':
-                    return <NavCollapse key={item.id} collapse={item} type="main" />;
+                    return (
+                      <NavCollapse
+                        role={props.user.role}
+                        key={item.id}
+                        collapse={item}
+                        type="main"
+                      />
+                    );
                 case 'item':
-                    return <NavItem layout={props.layout} key={item.id} item={item} />;
+                    return <NavItem role={props.user.role} layout={props.layout} key={item.id} item={item} />;
                 default:
                     return false;
             }

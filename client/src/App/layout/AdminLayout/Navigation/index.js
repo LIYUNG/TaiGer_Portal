@@ -8,11 +8,7 @@ import NavContent from "./NavContent";
 import OutsideClick from "./OutsideClick";
 import Aux from "./../../../../hoc/_Aux";
 import * as actionTypes from "./../../../../store/actions";
-import navigation_admin from "../../../../menu-admin";
-import navigation_guest from "../../../../menu-guest";
-import navigation_student from "../../../../menu-student";
-import navigation_agent from "../../../../menu-agent";
-import navigation_editor from "../../../../menu-editor";
+import navigation_all from "../../../../menu-sidebar";
 
 class Navigation extends Component {
   resize = () => {
@@ -32,22 +28,6 @@ class Navigation extends Component {
     window.removeEventListener("resize", this.resize);
   }
 
-  renderSwitchMenu(param) {
-    switch (param) {
-      case "Admin":
-        return <NavContent navigation={navigation_admin.items} />;
-      case "Agent":
-        return <NavContent navigation={navigation_agent.items} />;
-      case "Editor":
-        return <NavContent navigation={navigation_editor.items} />;
-      case "Student":
-        return <NavContent navigation={navigation_student.items} />;
-      case "Guest":
-        return <NavContent navigation={navigation_guest.items} />;
-      default:
-        return "foo";
-    }
-  }
   render() {
     let navClass = ["pcoded-navbar"];
 
@@ -133,7 +113,11 @@ class Navigation extends Component {
           windowWidth={this.props.windowWidth}
           onToggleNavigation={this.props.onToggleNavigation}
         />
-        {this.renderSwitchMenu(this.props.userdata.role)}
+        <NavContent
+          user={this.props.userdata}
+          navigation={navigation_all.items}
+        />
+        ;
       </div>
     );
     if (this.props.windowWidth < 992) {
@@ -145,7 +129,11 @@ class Navigation extends Component {
               windowWidth={this.props.windowWidth}
               onToggleNavigation={this.props.onToggleNavigation}
             />
-            {this.renderSwitchMenu(this.props.userdata.role)}
+            <NavContent
+              user={this.props.userdata}
+              navigation={navigation_all.items}
+            />
+            ;
           </div>
         </OutsideClick>
       );

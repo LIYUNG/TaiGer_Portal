@@ -67,7 +67,7 @@ class EditFilesSubpage extends React.Component {
               {object_date_init[k].updatedAt}
             </td>
             <td>
-              <Col>
+              <Col md>
                 <Form
                   onSubmit={(e) =>
                     this.props.onDownloadFilefromstudent(
@@ -90,7 +90,7 @@ class EditFilesSubpage extends React.Component {
             ) : (
               <>
                 <td>
-                  <Col>
+                  <Col md>
                     <Form
                       onSubmit={(e) =>
                         this.props.onUpdateProfileDocStatus(
@@ -110,7 +110,7 @@ class EditFilesSubpage extends React.Component {
                   </Col>
                 </td>
                 <td>
-                  <Col>
+                  <Col md>
                     <Form
                       onSubmit={(e) =>
                         this.props.onUpdateProfileDocStatus(
@@ -130,7 +130,7 @@ class EditFilesSubpage extends React.Component {
                   </Col>
                 </td>
                 <td>
-                  <Col>
+                  <Col md>
                     <Form
                       onSubmit={(e) =>
                         this.props.onDeleteFilefromstudent(
@@ -167,7 +167,7 @@ class EditFilesSubpage extends React.Component {
               {object_date_init[k].updatedAt}
             </td>
             <td>
-              <Col>
+              <Col md>
                 <Form
                   onSubmit={(e) =>
                     this.props.onDownloadFilefromstudent(
@@ -191,7 +191,7 @@ class EditFilesSubpage extends React.Component {
             ) : (
               <>
                 <td>
-                  <Col>
+                  <Col md>
                     <Form
                       onSubmit={(e) =>
                         this.props.onUpdateProfileDocStatus(
@@ -211,7 +211,7 @@ class EditFilesSubpage extends React.Component {
                   </Col>
                 </td>
                 <td>
-                  <Col>
+                  <Col md>
                     <Form
                       onSubmit={(e) =>
                         this.props.onUpdateProfileDocStatus(
@@ -470,7 +470,7 @@ class EditFilesSubpage extends React.Component {
                   </Col>
                 </td>
                 <td>
-                  <Col>
+                  <Col md>
                     <Form
                       onSubmit={(e) =>
                         this.props.onUpdateProfileDocStatus(

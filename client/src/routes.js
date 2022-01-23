@@ -19,9 +19,11 @@ const EditorCenter = React.lazy(() =>
 );
 const ProgramTable = React.lazy(() => import("./Demo/Program/ProgramTable"));
 const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
+const Profile = React.lazy(() => import("./Demo/Profile/index"));
+const Survey = React.lazy(() => import("./Demo/Survey/index"));
 const Settings = React.lazy(() => import("./Demo/Settings/index"));
-// const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
-// const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
+const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
+const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 const DocsApplication = React.lazy(() => import('./Demo/Documentation/Application/Application'));
 const DocsCertification = React.lazy(() =>
   import("./Demo/Documentation/Certification/Certification")
@@ -101,18 +103,18 @@ const routes = [
     name: "Users Table",
     component: UsersTable,
   },
-  // {
-  //   path: "/charts/nvd3",
-  //   exact: true,
-  //   name: "Nvd3 Chart",
-  //   component: Nvd3Chart,
-  // },
-  // {
-  //   path: "/maps/google-map",
-  //   exact: true,
-  //   name: "Google Map",
-  //   component: GoogleMap,
-  // },
+  {
+    path: "/charts/nvd3",
+    exact: true,
+    name: "Nvd3 Chart",
+    component: Nvd3Chart,
+  },
+  {
+    path: "/maps/google-map",
+    exact: true,
+    name: "Google Map",
+    component: GoogleMap,
+  },
   {
     path: "/docs/application",
     exact: true,
@@ -161,6 +163,18 @@ const routes = [
     exact: true,
     name: "Settings",
     component: Settings,
+  },
+  {
+    path: "/survey",
+    exact: true,
+    name: "",
+    component: Survey,
+  },
+  {
+    path: "/profile",
+    exact: true,
+    name: "Profile",
+    component: Profile,
   },
   // {
   //   path: "/",

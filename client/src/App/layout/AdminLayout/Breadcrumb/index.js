@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import config from "../../../../config";
-import navigation_admin from "../../../../menu-admin";
+import navigation_admin from "../../../../menu-sidebar";
 import DEMO from "../../../../store/constant";
 import Aux from "../../../../hoc/_Aux";
 

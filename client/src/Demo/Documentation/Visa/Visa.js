@@ -22,12 +22,17 @@ class Visa extends Component {
   componentDidMount() {
     getVisaArticle().then(
       (resp) => {
-        console.log(resp);
-        this.setState({
-          articles: resp.data.documents,
-          isLoaded: true,
-          role: resp.data.role,
-        });
+        if (resp.status === 200) {
+          this.setState({
+            articles: resp.data.documents,
+            isLoaded: true,
+            role: resp.data.role,
+          });
+        } else {
+          this.setState({
+            isLoaded: false,
+          });
+        }
       },
       (error) => {
         this.setState({

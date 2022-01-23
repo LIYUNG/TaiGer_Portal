@@ -42,7 +42,7 @@ class TabStudDocsDashboard extends React.Component {
     let header = Object.values(this.props.documentlist2);
     return (
       <>
-        <Table table-responsive>
+        <Table responsive>
           <thead>
             <tr>
               <>

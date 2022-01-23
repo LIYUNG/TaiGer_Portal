@@ -97,8 +97,8 @@ class HandWrittenFile extends Component {
                   </Button>
                 </Col> */}
                 <Col md={2}>
-                  <Button size="sm" onClick={this.handleSubmit}>
-                    Delete Task
+                  <Button size="sm" variant="danger" onClick={this.handleSubmit}>
+                    Delete
                   </Button>
                 </Col>
               </>
@@ -150,8 +150,8 @@ class HandWrittenFile extends Component {
               {this.props.role === "Student" ? (
                 <></>
               ) : (
-                <Button size="sm" onClick={this.handleSubmit}>
-                  Delete Task
+                <Button size="sm" variant="danger" onClick={this.handleSubmit}>
+                  Delete
                 </Button>
               )}
             </Col>
@@ -196,7 +196,7 @@ class HandWrittenFile extends Component {
                 <></>
               ) : (
                 <Button size="sm" onClick={this.handleSubmit}>
-                  Delete Placeholder
+                  Delete
                 </Button>
               )}
             </Col>

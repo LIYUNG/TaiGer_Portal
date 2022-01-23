@@ -125,7 +125,7 @@ class NavRight extends Component {
               </li>
               <li className={this.props.rtlLayout ? "m-r-15" : "m-l-15"}>
                 <a
-                  href={DEMO.BLANK_LINK}
+                  // href={DEMO.BLANK_LINK}
                   // className="displayChatbox"
                   onClick={() => {
                     this.setState({ listOpen: true });

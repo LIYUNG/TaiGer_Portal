@@ -86,17 +86,17 @@ class EditorDocsProgress extends React.Component {
       const formData = new FormData();
       formData.append("file", NewFile);
 
-      uploadHandwrittenFileforstudent(
-        studentId,
-        applicationId,
-        formData
-      ).then(
+      uploadHandwrittenFileforstudent(studentId, applicationId, formData).then(
         (res) => {
-          console.log(res);
-          this.setState({
-            student: res.data.data, // res.data = {success: true, data:{...}}
-            file: "",
-          });
+          if (res.status === 400) {
+            alert("Uploading file failed. Same file name");
+          } else {
+            console.log(res);
+            this.setState({
+              student: res.data.data, // res.data = {success: true, data:{...}}
+              file: "",
+            });
+          }
         },
         (error) => {
           this.setState({
@@ -108,12 +108,7 @@ class EditorDocsProgress extends React.Component {
     }
   };
   onFileChange = (e, studentId, applicationId) => {
-    this.onSubmitFile_test(
-      e,
-      e.target.files[0],
-      studentId,
-      applicationId,
-    );
+    this.onSubmitFile_test(e, e.target.files[0], studentId, applicationId);
     // this.setState({
     //   file: e.target.files[0],
     // });
@@ -166,9 +161,13 @@ class EditorDocsProgress extends React.Component {
     e.preventDefault();
     deleteWrittenFile(studentId, applicationId, docName).then(
       (res) => {
-        this.setState({
-          student: res.data.data,
-        });
+        if (res.status === 400) {
+          alert("Delete file failed.");
+        } else {
+          this.setState({
+            student: res.data.data,
+          });
+        }
       },
       (error) => {}
     );

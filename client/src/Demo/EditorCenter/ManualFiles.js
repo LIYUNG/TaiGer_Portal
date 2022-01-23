@@ -33,7 +33,10 @@ class ManualFiles extends React.Component {
           onFormDelete={this.handleDeleteFormSubmit}
           role={this.props.role}
         />
-        {this.props.role === "Agent" || this.props.role === "Admin" ? (
+        {this.props.role === "Agent" ||
+        this.props.role === "Admin" ||
+        this.props.role === "Editor" ||
+        this.props.role === "Student" ? (
           <ToggleableUploadFileForm
             role={this.props.role}
             category="application"

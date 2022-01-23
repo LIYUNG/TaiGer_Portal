@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Table, Row, Col, Card, ButtonToolbar } from "react-bootstrap";
+import { Button, Table, Row, Col, ButtonToolbar } from "react-bootstrap";
+import Card from "../../App/components/MainCard";
 
 import ProgramListSubpage from "./ProgramListSubpage";
 import EditableProgram from "./EditableProgram";
@@ -145,9 +146,6 @@ class Programlist extends React.Component {
       <>
         <Row>
           <Col>
-            <Card.Title as="h4">Program List</Card.Title>
-          </Col>
-          <Col>
             <ButtonToolbar className="float-right">
               {this.props.role === "Student" ? (
                 <></>
@@ -155,6 +153,7 @@ class Programlist extends React.Component {
                 <Button
                   className="btn btn-primary"
                   type="submit"
+                  size="sm"
                   onClick={() => this.NewProgram()}
                 >
                   New Program
@@ -163,41 +162,43 @@ class Programlist extends React.Component {
             </ButtonToolbar>
           </Col>
         </Row>
-        <Table responsive>
-          <thead>{headers}</thead>
-          <tbody>{programs}</tbody>
-        </Table>
-        <ProgramListSubpage
-          userId={this.props.userId}
-          show={this.state.modalShow}
-          setModalHide={this.setModalHide}
-          uni_name={this.state.uni_name}
-          program_name={this.state.program_name}
-          handleChange2={this.handleChange2}
-          onSubmit2={this.onSubmit2}
-        />
-        <NewProgramWindow
-          show={this.state.modalShowNewProgram}
-          setModalHide2={this.setModalHide2}
-          submitNewProgram={this.onSubmitNewProgram}
-          header={window.NewProgramHeader}
-        />
-        <ProgramDeleteWarning
-          deleteProgramWarning={this.state.deleteProgramWarning}
-          setModalHideDDelete={this.setModalHideDDelete}
-          program_id={this.state.program_id}
-          program_name={this.state.program_name}
-          uni_name={this.state.uni_name}
-          RemoveProgramHandler3={this.props.RemoveProgramHandler3}
-        />
-        <ProgramAddedMyWatchList
-          setModalHide_AddToMyWatchList={this.setModalHide_AddToMyWatchList}
-          modalShowNAddMyWatchList={this.state.modalShowNAddMyWatchList}
-          program_id={this.state.program_id}
-          program_name={this.state.program_name}
-          uni_name={this.state.uni_name}
-          setModalShow_AddToMyWatchList={this.setModalShow_AddToMyWatchList}
-        />
+        <Card title={"Program List"}>
+          <Table responsive>
+            <thead>{headers}</thead>
+            <tbody>{programs}</tbody>
+          </Table>
+          <ProgramListSubpage
+            userId={this.props.userId}
+            show={this.state.modalShow}
+            setModalHide={this.setModalHide}
+            uni_name={this.state.uni_name}
+            program_name={this.state.program_name}
+            handleChange2={this.handleChange2}
+            onSubmit2={this.onSubmit2}
+          />
+          <NewProgramWindow
+            show={this.state.modalShowNewProgram}
+            setModalHide2={this.setModalHide2}
+            submitNewProgram={this.onSubmitNewProgram}
+            header={window.NewProgramHeader}
+          />
+          <ProgramDeleteWarning
+            deleteProgramWarning={this.state.deleteProgramWarning}
+            setModalHideDDelete={this.setModalHideDDelete}
+            program_id={this.state.program_id}
+            program_name={this.state.program_name}
+            uni_name={this.state.uni_name}
+            RemoveProgramHandler3={this.props.RemoveProgramHandler3}
+          />
+          <ProgramAddedMyWatchList
+            setModalHide_AddToMyWatchList={this.setModalHide_AddToMyWatchList}
+            modalShowNAddMyWatchList={this.state.modalShowNAddMyWatchList}
+            program_id={this.state.program_id}
+            program_name={this.state.program_name}
+            uni_name={this.state.uni_name}
+            setModalShow_AddToMyWatchList={this.setModalShow_AddToMyWatchList}
+          />
+        </Card>
       </>
     );
   }

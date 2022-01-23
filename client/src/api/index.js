@@ -119,11 +119,10 @@ export const deleteManualFileUploadPlace = (
 export const uploadHandwrittenFileforstudent = (
   studentId,
   applicationId,
-  docName,
   data
 ) =>
   request.post(
-    `/api/account/files/${studentId}/${applicationId}/${docName}`,
+    `/api/account/files/upload/${studentId}/${applicationId}`,
     data
   );
 

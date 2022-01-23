@@ -12,10 +12,14 @@ import * as actionTypes from "../../../../../../store/actions";
 class NavItem extends Component {
   menuItemFilterByRole = (itemTitle) => {
     if (this.props.role === "Admin") {
+      if (itemTitle === "Academic Survey") {
+        return false;
+      }
       return true;
     }
     if (this.props.role === "Agent") {
       if (
+        itemTitle === "Academic Survey" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
         itemTitle === "User List"
@@ -26,6 +30,8 @@ class NavItem extends Component {
     }
     if (this.props.role === "Editor") {
       if (
+        itemTitle === "Academic Survey" ||
+        itemTitle === "Program List" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
         itemTitle === "User List"

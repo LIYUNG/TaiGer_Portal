@@ -17,7 +17,6 @@ const {
   deleteApplication,
 } = require("../controllers/students");
 const {
-  saveFilePath,
   saveProfileFilePath,
   downloadFile,
   downloadProfileFile,
@@ -68,12 +67,6 @@ router
 router
   .route("/:studentId/applications/:applicationId")
   .delete(permit(Role.Admin, Role.Agent), deleteApplication);
-
-router
-  .route("/:studentId/applications/:applicationId/:docName")
-  .get(permit(Role.Admin, Role.Agent), downloadFile)
-  .post(permit(Role.Admin, Role.Agent), fileUpload, saveFilePath)
-  .delete(permit(Role.Admin, Role.Agent), deleteFile);
 
 router
   .route("/:studentId/files/:category")

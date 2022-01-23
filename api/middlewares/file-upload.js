@@ -33,7 +33,10 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check docName exist
-    cb(null, `${req.params.docName}${path.extname(file.originalname)}`);
+    console.log(`${file.originalname}${path.extname(file.originalname)}`);
+    // console.log(file.originalname);
+    cb(null, file.originalname);
+    // cb(null, `${req.params.docName}${path.extname(file.originalname)}`);
   },
 });
 

@@ -118,7 +118,8 @@ const deleteFilePlaceholderForProgram = asyncHandler(async (req, res) => {
 const saveFilePath = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { studentId, applicationId, docName },
+    params: { studentId, applicationId },
+    file: { filename },
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -130,14 +131,22 @@ const saveFilePath = asyncHandler(async (req, res) => {
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
-  const document = application.documents.find(({ name }) => name === docName);
-  if (!document) throw new ErrorResponse(400, "Invalid document name");
-
+  let document = application.documents.find(
+    ({ name }) => name === req.file.filename
+  );
+  if (document) throw new ErrorResponse(400, "Document already existed!");
+  // if (!document) throw new ErrorResponse(400, "Invalid document name");
+  document = application.documents.create({ name: req.file.filename }); //TODO: and rename file name
   document.status = DocumentStatus.Uploaded;
   document.path = req.file.path.replace(UPLOAD_PATH, "");
+  document.required = true;
   document.updatedAt = new Date();
+  student.applications[idx].documents.push(document); //TODO: and rename file name
 
   await student.save();
   res.status(201).send({ success: true, data: student });
@@ -363,7 +372,6 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       student.profile.push(document);
       await student.save();
       return res.status(201).send({ success: true, data: student });
-      
     }
   } catch (err) {
     console.log(err);
@@ -405,6 +413,7 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   // const filePath = document.path;
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
+  document.name = "";
   document.status = DocumentStatus.Missing;
   document.path = "";
   document.updatedAt = new Date();

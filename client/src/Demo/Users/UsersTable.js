@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Col, Card, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
+import Card from "../../App/components/MainCard";
 import Aux from "../../hoc/_Aux";
 import UsersList from "./UsersList";
 
@@ -98,22 +99,15 @@ class UsersTable extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card>
-              <Card.Body>
-                <Row>
-                  <Col>
-                    <Card.Title as="h4">Users List</Card.Title>
-                  </Col>
-                </Row>
-                <UsersList
-                  success={this.state.success}
-                  // onFormSubmit={this.onFormSubmit}
-                  // assignUserAs={this.assignUserAs}
-                  data={this.state.data}
-                  onSubmit2={this.onSubmit2}
-                  header={window.UserlistHeader}
-                />
-              </Card.Body>
+            <Card title={"Users List"}>
+              <UsersList
+                success={this.state.success}
+                // onFormSubmit={this.onFormSubmit}
+                // assignUserAs={this.assignUserAs}
+                data={this.state.data}
+                onSubmit2={this.onSubmit2}
+                header={window.UserlistHeader}
+              />
             </Card>
             {!this.state.isLoaded && (
               <div style={style}>

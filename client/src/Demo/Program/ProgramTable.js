@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Col, Card, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
+import Card from "../../App/components/MainCard";
 import Aux from "../../hoc/_Aux";
 import Programlist from "./ProgramList";
 
@@ -181,26 +182,22 @@ class ProgramTable extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card>
-              <Card.Body>
-                {this.props.user.role === "Guest" ? (
-                  <>This is for Premium only. Please contact our sales!</>
-                ) : (
-                  <Programlist
-                    role={this.props.user.role}
-                    userId={this.props.user._id}
-                    success={this.state.success}
-                    onFormSubmit={this.onFormSubmit}
-                    data={this.state.data}
-                    RemoveProgramHandler3={this.RemoveProgramHandler3}
-                    assignProgram={this.assignProgram}
-                    header={window.ProgramlistHeader}
-                    submitNewProgram={this.submitNewProgram}
-                    modalShowNewProgram={this.state.modalShowNewProgram}
-                  />
-                )}
-              </Card.Body>
-            </Card>
+            {this.props.user.role === "Guest" ? (
+              <Card>This is for Premium only. Please contact our sales!</Card>
+            ) : (
+              <Programlist
+                role={this.props.user.role}
+                userId={this.props.user._id}
+                success={this.state.success}
+                onFormSubmit={this.onFormSubmit}
+                data={this.state.data}
+                RemoveProgramHandler3={this.RemoveProgramHandler3}
+                assignProgram={this.assignProgram}
+                header={window.ProgramlistHeader}
+                submitNewProgram={this.submitNewProgram}
+                modalShowNewProgram={this.state.modalShowNewProgram}
+              />
+            )}
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">

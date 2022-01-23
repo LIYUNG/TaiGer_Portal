@@ -13,7 +13,6 @@ class Survey extends React.Component {
   };
 
   componentDidMount() {
-    console.log("Setting index.js rendered");
     this.setState({ isLoaded: true });
   }
   render() {

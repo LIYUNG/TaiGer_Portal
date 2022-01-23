@@ -112,73 +112,12 @@ class EditorDocsProgress extends React.Component {
   };
 
   render() {
-    let studentDocOverview;
-    if (this.state.student.uploadedDocs_) {
-      studentDocOverview = this.props.documentslist.map((doc, i) => {
-        if (
-          this.state.student.uploadedDocs_[doc.prop] &&
-          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-            "uploaded"
-        ) {
-          return (
-            <td key={i}>
-              <AiFillQuestionCircle
-                size={24}
-                color="lightgreen"
-                title="Uploaded successfully"
-              />{" "}
-            </td>
-          );
-        } else if (
-          this.state.student.uploadedDocs_[doc.prop] &&
-          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ === "checked"
-        ) {
-          return (
-            <td key={i}>
-              <IoCheckmarkCircle
-                size={24}
-                color="limegreen"
-                title="Valid Document"
-              />{" "}
-            </td>
-          );
-        } else if (
-          this.state.student.uploadedDocs_[doc.prop] &&
-          this.state.student.uploadedDocs_[doc.prop].uploadStatus_ ===
-            "unaccepted"
-        ) {
-          return (
-            <td key={i}>
-              <AiFillCloseCircle
-                size={24}
-                color="red"
-                title="Invalid Document"
-              />{" "}
-            </td>
-          );
-        } else {
-          return (
-            <td key={i}>
-              <AiFillQuestionCircle
-                size={24}
-                color="lightgray"
-                title="No Document uploaded"
-              />{" "}
-            </td>
-          );
-        }
-      });
-    } else {
-      studentDocOverview = <p>No Doc!</p>;
-    }
-
     return (
       <DocsProgress
         role={this.props.role}
         startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}
-        studentDocOverview={studentDocOverview}
         setProgramModalhide={this.setProgramModalhide}
         setFilesModalhide={this.setFilesModalhide}
         onFileChange={this.onFileChange}

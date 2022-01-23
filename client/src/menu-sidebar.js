@@ -64,6 +64,13 @@ export default {
           ],
         },
         {
+          id: "academicsurvey",
+          title: "Academic Survey",
+          type: "item",
+          url: "/survey",
+          icon: "feather icon-file-text",
+        },
+        {
           id: "editor_center",
           title: "Editor Center",
           type: "item",

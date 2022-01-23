@@ -37,12 +37,14 @@ router
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor),
     deleteFilePlaceholderForProgram
-  )
+  );
 
 router
   .route("/files/:studentId/:applicationId/:docName")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
-  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteFile)
+  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteFile);
+router
+  .route("/files/upload/:studentId/:applicationId")
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     fileUpload,
@@ -84,7 +86,7 @@ router
   .route("/download/template/:category")
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    downloadTemplateFile,
+    downloadTemplateFile
   );
 // .get(downloadXLSX);
 

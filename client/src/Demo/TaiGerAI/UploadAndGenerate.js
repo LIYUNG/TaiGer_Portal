@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
-  DropdownButton,
-  Dropdown,
+  // DropdownButton,
+  // Dropdown,
   Button,
   Row,
   Col,
@@ -78,7 +78,7 @@ class UploadAndGenerate extends Component {
       file: e.target.files[0],
     });
   };
-  
+
   //from /upload
   submitFile = (e, category, id) => {
     if (this.state.file === "") {
@@ -145,9 +145,10 @@ class UploadAndGenerate extends Component {
         </Card.Header>
         <Card.Body>
           <Row>
-            <Col md={2}>
+            <Col md={3}>
               <Form>
-                <DropdownButton
+                {/* <DropdownButton
+                  size="sm"
                   alignRight
                   id="dropdown-menu-align-right"
                   onSelect={(e) => this.handleSelect(e)}
@@ -162,7 +163,15 @@ class UploadAndGenerate extends Component {
                   <Dropdown.Item eventKey="me">
                     Mechanical Engineering (me)
                   </Dropdown.Item>
-                </DropdownButton>
+                </DropdownButton> */}
+                <Form.Group controlId="formFile" className="mb-3">
+                  <Form.Control as="select">
+                    <option value="ee">Please Select</option>
+                    <option value="ee">Electrical Engieering (ee)</option>
+                    <option value="cs">Computer Science (cs)</option>
+                    <option value="me">Mechanical Engineering (me)</option>
+                  </Form.Control>
+                </Form.Group>
               </Form>
             </Col>
             <Col md={3}>
@@ -184,6 +193,7 @@ class UploadAndGenerate extends Component {
                 <Form.Group controlId="exampleForm.ControlSelect1">
                   <div className="form-group">
                     <Button
+                      size="sm"
                       className="btn btn-primary"
                       type="submit"
                       disabled={this.state.isLoading}

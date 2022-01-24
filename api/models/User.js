@@ -98,6 +98,29 @@ const applicationSchema = new Schema({
       updatedAt: Date,
     },
   ],
+  student_inputs: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      status: {
+        type: String,
+        enum: Object.values(DocumentStatus),
+        default: DocumentStatus.Missing,
+      },
+      required: {
+        type: Boolean,
+        required: true,
+      },
+      path: {
+        type: String,
+        default: "",
+      },
+      // TODO: updateBy
+      updatedAt: Date,
+    },
+  ],
   prepared: { type: Boolean, required: true, default: false },
   closed: { type: Boolean, required: true, default: false },
 });

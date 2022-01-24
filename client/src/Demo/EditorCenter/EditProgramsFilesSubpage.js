@@ -3,10 +3,9 @@ import { Button, Table, Modal } from "react-bootstrap";
 import ManualFiles from "./ManualFiles";
 import {
   createManualFileUploadPlace,
-  deleteManualFileUploadPlace,
+  deleteManualFileUpload,
   uploadHandwrittenFileforstudent,
   downloadHandWrittenFile,
-  deleteWrittenFile,
 } from "../../api";
 class EditProgramsFilesSubpage extends React.Component {
   // edit File subpage
@@ -32,7 +31,7 @@ class EditProgramsFilesSubpage extends React.Component {
   };
 
   deleteManualFileUploadPlaceholder = (studentId, applicationId, docName) => {
-    deleteManualFileUploadPlace(studentId, applicationId, docName).then(
+    deleteManualFileUpload(studentId, applicationId, docName).then(
       (resp) => {
         console.log(resp.data.data);
         this.setState({
@@ -119,18 +118,6 @@ class EditProgramsFilesSubpage extends React.Component {
     );
   }
 
-  onDeleteFile = (e, studentId, applicationId, docName) => {
-    e.preventDefault();
-    deleteWrittenFile(studentId, applicationId, docName).then(
-      (res) => {
-        this.setState({
-          student: res.data.data,
-        });
-      },
-      (error) => {}
-    );
-  };
-
   render() {
     // Edit Program
     let programstatus;
@@ -159,7 +146,6 @@ class EditProgramsFilesSubpage extends React.Component {
               onFileChange={this.onFileChange}
               onSubmitFile={this.onSubmitFile}
               onDownloadFile={this.onDownloadFile}
-              onDeleteFile={this.onDeleteFile}
               role={this.props.role}
               student={this.state.student}
               application={application}

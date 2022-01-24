@@ -3,7 +3,7 @@ import { Button, Table, Modal } from "react-bootstrap";
 import ManualFiles from "./ManualFiles";
 import {
   createManualFileUploadPlace,
-  deleteManualFileUploadPlace,
+  deleteManualFileUpload,
   uploadHandwrittenFileforstudent,
   downloadHandWrittenFile,
   deleteWrittenFile,
@@ -32,7 +32,7 @@ class EditProgramsFilesSubpage extends React.Component {
   };
 
   deleteManualFileUploadPlaceholder = (studentId, applicationId, docName) => {
-    deleteManualFileUploadPlace(studentId, applicationId, docName).then(
+    deleteManualFileUpload(studentId, applicationId, docName).then(
       (resp) => {
         console.log(resp.data.data);
         this.setState({

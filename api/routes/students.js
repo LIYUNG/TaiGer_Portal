@@ -10,19 +10,15 @@ const {
   getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,
-  // removeAgentFromStudent,
   assignEditorToStudent,
-  // removeEditorFromStudent,
   createApplication,
   deleteApplication,
 } = require("../controllers/students");
 const {
   saveProfileFilePath,
-  downloadFile,
   downloadProfileFile,
   updateDocumentStatus,
   updateProfileDocumentStatus,
-  deleteFile,
   deleteProfileFile,
 } = require("../controllers/files");
 

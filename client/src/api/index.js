@@ -108,13 +108,14 @@ export const createManualFileUploadPlace = (
   request.put(
     `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
   );
-export const deleteManualFileUploadPlace = (
+export const deleteManualFileUpload = (
   studentId,
   applicationId,
-  docName
+  docName,
+  whoupdate
 ) =>
   request.delete(
-    `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
+    `/api/account/files/${studentId}/${applicationId}/${docName}/${whoupdate}`
   );
 export const uploadHandwrittenFileforstudent = (
   studentId,
@@ -126,10 +127,18 @@ export const uploadHandwrittenFileforstudent = (
     data
   );
 
-export const downloadHandWrittenFile = (studentId, applicationId, docName) =>
-  request.get(`/api/account/files/${studentId}/${applicationId}/${docName}`, {
-    responseType: "blob",
-  });
+export const downloadHandWrittenFile = (
+  studentId,
+  applicationId,
+  docName,
+  student_inputs
+) =>
+  request.get(
+    `/api/account/files/${studentId}/${applicationId}/${docName}/${student_inputs}`,
+    {
+      responseType: "blob",
+    }
+  );
 export const deleteWrittenFile = (studentId, applicationId, docName) =>
   request.delete(`/api/account/files/${studentId}/${applicationId}/${docName}`);
 

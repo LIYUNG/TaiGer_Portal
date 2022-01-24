@@ -7,23 +7,9 @@ import DocsProgress from "./DocsProgress";
 
 class EditorDocsProgress extends React.Component {
   state = {
-    showProgramPage: false,
     showFilePage: false,
     student: this.props.student,
     file: "",
-  };
-
-  setProgramModalhide = () => {
-    this.setState({
-      showProgramPage: false,
-    });
-  };
-
-  startEditingProgram = () => {
-    console.log("startEditingProgram");
-    this.setState({
-      showProgramPage: true,
-    });
   };
 
   setFilesModalhide = () => {
@@ -115,10 +101,8 @@ class EditorDocsProgress extends React.Component {
     return (
       <DocsProgress
         role={this.props.role}
-        startEditingProgram={this.startEditingProgram}
         startUploadfile={this.startUploadfile}
         student={this.state.student}
-        setProgramModalhide={this.setProgramModalhide}
         setFilesModalhide={this.setFilesModalhide}
         onFileChange={this.onFileChange}
         submitFile={this.submitFile}

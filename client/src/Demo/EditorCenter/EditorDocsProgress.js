@@ -5,14 +5,11 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import { Row, Col, Button, Card, Collapse, Spinner } from "react-bootstrap";
 import {
-  getStudents,
   createManualFileUploadPlace,
-  deleteManualFileUploadPlace,
+  deleteManualFileUpload,
   uploadHandwrittenFileforstudent,
   downloadHandWrittenFile,
-  deleteWrittenFile,
 } from "../../api";
-import DocsProgress from "./DocsProgress";
 import ManualFiles from "./ManualFiles";
 
 class EditorDocsProgress extends React.Component {
@@ -33,8 +30,8 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  deleteManualFileUploadPlaceholder = (studentId, applicationId, docName) => {
-    deleteManualFileUploadPlace(studentId, applicationId, docName).then(
+  onDeleteFile = (studentId, applicationId, docName, whoupdate) => {
+    deleteManualFileUpload(studentId, applicationId, docName, whoupdate).then(
       (resp) => {
         console.log(resp.data.data);
         this.setState({
@@ -45,39 +42,7 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  onSubmitFile = (e, studentId, applicationId, docName) => {
-    if (this.state.file === "") {
-      e.preventDefault();
-      alert("Please select file");
-    } else {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("file", this.state.file);
-
-      uploadHandwrittenFileforstudent(
-        studentId,
-        applicationId,
-        docName,
-        formData
-      ).then(
-        (res) => {
-          console.log(res);
-          this.setState({
-            student: res.data.data, // res.data = {success: true, data:{...}}
-            file: "",
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
-    }
-  };
-
-  onSubmitFile_test = (e, NewFile, studentId, applicationId) => {
+  onSubmitFile = (e, NewFile, studentId, applicationId) => {
     if (NewFile === "") {
       e.preventDefault();
       alert("Please select file");
@@ -108,14 +73,19 @@ class EditorDocsProgress extends React.Component {
     }
   };
   onFileChange = (e, studentId, applicationId) => {
-    this.onSubmitFile_test(e, e.target.files[0], studentId, applicationId);
+    this.onSubmitFile(e, e.target.files[0], studentId, applicationId);
     // this.setState({
     //   file: e.target.files[0],
     // });
   };
-  onDownloadFile(e, studentId, applicationId, docName) {
+  onDownloadFile(e, studentId, applicationId, docName, student_inputs) {
     e.preventDefault();
-    downloadHandWrittenFile(studentId, applicationId, docName).then(
+    downloadHandWrittenFile(
+      studentId,
+      applicationId,
+      docName,
+      student_inputs
+    ).then(
       (resp) => {
         console.log(resp);
         const actualFileName =
@@ -157,22 +127,6 @@ class EditorDocsProgress extends React.Component {
     );
   }
 
-  onDeleteFile = (e, studentId, applicationId, docName) => {
-    e.preventDefault();
-    deleteWrittenFile(studentId, applicationId, docName).then(
-      (res) => {
-        if (res.status === 400) {
-          alert("Delete file failed.");
-        } else {
-          this.setState({
-            student: res.data.data,
-          });
-        }
-      },
-      (error) => {}
-    );
-  };
-
   render() {
     return (
       <Card className="mt-2" key={this.props.idx}>
@@ -207,17 +161,22 @@ class EditorDocsProgress extends React.Component {
                       </h5>
                     </Col>
                   </Row>
+                  <Row>
+                    <Col md={6}>
+                      <strong>Editor output</strong>
+                    </Col>
+                    <Col md={6}>
+                      <strong>Student input</strong>
+                    </Col>
+                  </Row>
                   <ManualFiles
                     createManualFileUploadPlaceholder={
                       this.createManualFileUploadPlaceholder
                     }
-                    deleteManualFileUploadPlaceholder={
-                      this.deleteManualFileUploadPlaceholder
-                    }
+                    onDeleteFile={this.onDeleteFile}
                     onFileChange={this.onFileChange}
                     onSubmitFile={this.onSubmitFile}
                     onDownloadFile={this.onDownloadFile}
-                    onDeleteFile={this.onDeleteFile}
                     role={this.props.role}
                     student={this.state.student}
                     application={application}

@@ -11,12 +11,8 @@ class ManualFiles extends React.Component {
     );
   };
 
-  handleDeleteFormSubmit = (studentId, applicationId, docName) => {
-    this.props.deleteManualFileUploadPlaceholder(
-      studentId,
-      applicationId,
-      docName
-    );
+  handleDeleteFormSubmit = (studentId, applicationId, docName, whoupdate) => {
+    this.props.onDeleteFile(studentId, applicationId, docName, whoupdate);
   };
 
   render() {
@@ -27,7 +23,6 @@ class ManualFiles extends React.Component {
           student={this.props.student}
           category="application"
           onDownloadFile={this.props.onDownloadFile}
-          onDeleteFile={this.props.onDeleteFile}
           onFileChange={this.props.onFileChange}
           onSubmitFile={this.props.onSubmitFile}
           onFormDelete={this.handleDeleteFormSubmit}

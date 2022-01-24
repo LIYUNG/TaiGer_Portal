@@ -1,67 +1,116 @@
 import React, { Component } from "react";
-import UploadFileForm from "./UploadFileForm";
-import HandWrittenFile from "./HandWrittenFile";
+// import HandWrittenFile from "./HandWrittenFile";
+import { Form, Col, Row, Button } from "react-bootstrap";
+
 class EditableFile extends Component {
-  state = {
-    editFormOpen: false,
-    file: "",
+  handleTrashClick = () => {
+    this.props.onTrashClick(this.props.id);
   };
 
-  handleEditClick = () => {
-    this.openForm();
+  handleDelete = () => {
+    this.props.onFormDelete(
+      this.props.student._id,
+      this.props.application.programId._id,
+      this.props.document.name,
+      this.props.whoupdate
+    );
   };
-
-  handleFormClose = () => {
-    this.closeForm();
-  };
-
-  handleSubmit = (article) => {
-    this.props.onFormSubmit(article);
-    this.closeForm();
-  };
-
-  closeForm = () => {
-    this.setState({ editFormOpen: false });
-  };
-
-  openForm = () => {
-    this.setState({ editFormOpen: true });
-  };
-
-
 
   render() {
-    if (this.state.editFormOpen) {
-      return (
-        <UploadFileForm
-          id={this.props.id}
-          application={this.props.application}
-          student={this.props.student}
-          category={this.props.category}
-          onFormSubmit={this.handleSubmit}
-          onFormClose={this.handleFormClose}
-          role={this.props.role}
-        />
+    let fileStatus;
+    console.log(this.props.document.path);
+    let documenName = this.props.document.path.replaceAll("\\", "/");
+    documenName = documenName.includes("/") ? documenName.split("/")[3] : "x";
+    console.log(documenName);
+    if (this.props.document.status === "uploaded") {
+      fileStatus = (
+        <>
+          <Row>
+            <Col md={8}>
+              <p>{documenName}</p>
+            </Col>
+            <Col md={2}>
+              <Button
+                size="sm"
+                onClick={(e) =>
+                  this.props.onDownloadFile(
+                    e,
+                    this.props.student._id,
+                    this.props.application.programId._id,
+                    this.props.document.name,
+                    this.props.whoupdate
+                  )
+                }
+              >
+                Download
+              </Button>
+            </Col>
+            {this.props.role === "Editor" ||
+            this.props.whoupdate === "student" ? (
+              <>
+                <Col md={2}>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={this.handleDelete}
+                  >
+                    Delete
+                  </Button>
+                </Col>
+              </>
+            ) : (
+              <></>
+            )}
+          </Row>
+        </>
       );
     } else {
-      return (
-        <HandWrittenFile
-          id={this.props.id}
-          document={this.props.document}
-          application={this.props.application}
-          student={this.props.student}
-          onEditClick={this.handleEditClick}
-          onFileChange={this.props.onFileChange}
-          onDownloadFile={this.props.onDownloadFile}
-          onSubmitFile={this.props.onSubmitFile}
-          onDeleteFile={this.props.onDeleteFile}
-          onTrashClick={this.props.onTrashClick}
-          lastupdate={this.props.lastupdate}
-          onFormDelete={this.props.onFormDelete}
-          role={this.props.role}
-        />
+      fileStatus = (
+        <>
+          <Row>
+            <Col md={2}>
+              <p>Document Name: {this.props.document.name}</p>
+            </Col>
+            <Col md={2}>
+              <Form
+                onChange={(e) => this.props.onFileChange(e)}
+                // onClick={(e) => (e.target.value = null)}
+              >
+                <Form.File id={this.props.id}>
+                  {/* <Form.File.Label>Regular file input</Form.File.Label> */}
+                  <Form.File.Input />
+                </Form.File>
+              </Form>
+            </Col>
+            <Col md={2}>
+              <Button
+                size="sm"
+                onClick={(e) =>
+                  this.props.onSubmitFile(
+                    e,
+                    this.props.student._id,
+                    this.props.application.programId._id,
+                    this.props.document.name
+                  )
+                }
+              >
+                Upload
+              </Button>
+            </Col>
+            <Col md={2}>
+              {this.props.role === "Student" ? (
+                <></>
+              ) : (
+                <Button size="sm" onClick={this.handleDelete}>
+                  Delete
+                </Button>
+              )}
+            </Col>
+          </Row>
+        </>
       );
     }
+    return <>{fileStatus}</>;
   }
 }
 

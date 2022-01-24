@@ -7,7 +7,6 @@ const { fileUpload, ProfilefileUpload } = require("../middlewares/file-upload");
 const {
   getMyfiles,
   createFilePlaceholderForProgram,
-  deleteFilePlaceholderForProgram,
   saveFilePath,
   saveProfileFilePath,
   downloadProfileFile,
@@ -29,20 +28,22 @@ router
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);
 
 router
-  .route("/files/placeholder/:studentId/:applicationId/:docName")
+  .route(
+    "/files/placeholder/:studentId/:applicationId/:docName/:student_inputs"
+  )
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     createFilePlaceholderForProgram
-  )
-  .delete(
-    permit(Role.Admin, Role.Agent, Role.Editor),
-    deleteFilePlaceholderForProgram
   );
 
 router
-  .route("/files/:studentId/:applicationId/:docName")
+  .route("/files/:studentId/:applicationId/:docName/:student_inputs")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
-  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteFile);
+  .delete(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    deleteFile
+  );
+
 router
   .route("/files/upload/:studentId/:applicationId")
   .post(

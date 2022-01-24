@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
+const { Program } = require("../models/Program");
+const { Student } = require("../models/User");
 
 const { ErrorResponse } = require("../common/errors");
 const { UPLOAD_PATH } = require("../config");
@@ -33,9 +35,49 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check docName exist
-    console.log(`${file.originalname}${path.extname(file.originalname)}`);
-    // console.log(file.originalname);
-    cb(null, file.originalname);
+    let { studentId, applicationId } = req.params;
+
+    Student.findOne({ _id: studentId })
+      .populate("applications.programId")
+      .lean()
+      .exec()
+      .then(function (student) {
+        if (student) {
+          console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
+          console.log(path.extname(file.originalname)); //.pdf
+          // console.log(student.applications);
+          // console.log(student.lastname);
+          // console.log(
+          //   student.applications.find(
+          //     ({ programId }) => programId._id == applicationId
+          //   )
+          // );
+          let application = student.applications.find(
+            ({ programId }) => programId._id == applicationId
+          );
+          // console.log(application.programId);
+          let temp_name =
+            student.lastname +
+            "_" +
+            student.firstname +
+            "_" +
+            application.programId.University_ +
+            "_" +
+            application.programId.Program_ +
+            "_" +
+            file.originalname;
+            // path.extname(file.originalname);
+          temp_name = temp_name.replace(/ /g, "_");
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        console.log(resp.fileName);
+        cb(null, resp.fileName);
+      });
+
     // cb(null, `${req.params.docName}${path.extname(file.originalname)}`);
   },
 });

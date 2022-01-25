@@ -46,7 +46,7 @@ class CoursesAnalyser extends Component {
               {this.props.user.role === "Guest" ? (
                 <>This is for Premium only. Please contact our sales!</>
               ) : (
-                <UploadAndGenerate id="ToBeGenerated" />
+                <UploadAndGenerate user={this.props.user} />
               )}
             </Col>
           </Row>

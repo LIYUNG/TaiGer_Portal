@@ -1,11 +1,9 @@
 import xlsxwriter
-import gc
-from CourseSuggestionAlogrithms import *
+from CourseSuggestionAlgorithms import *
 from util import *
 from database.Management.MGM_KEYWORDS import *
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
-from numpy import nan
 import sys
 import os
 env_file_path = os.path.realpath(__file__)
@@ -14,7 +12,9 @@ env_file_path = os.path.dirname(env_file_path)
 # Global variable:
 column_len_array = []
 
-#FPSO: https://www.tum.de/fileadmin/w00bfo/www/Studium/Studienangebot/Lesbare_Fassung/Master/Managem._Techn._LB_AS_3._AS_28052021.pdf
+# FPSO: https://www.tum.de/fileadmin/w00bfo/www/Studium/Studienangebot/Lesbare_Fassung/Master/Managem._Techn._LB_AS_3._AS_28052021.pdf
+
+
 def TUM_MMT(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
     program_name = 'TUM_MMT'
     print("Create " + program_name + " sheet")
@@ -29,45 +29,47 @@ def TUM_MMT(transcript_sorted_group_map, df_transcript_array, df_category_course
     #####################################################################
 
     # Create transcript_sorted_group to program_category mapping
-    
-    PROG_SPEC_BML_PARAM = {
-        'Program_Category': 'Betriebswirtschaftliche Module', 'Required_CP': 25}
+
+    PROG_SPEC_BWL_PARAM = {
+        'Program_Category': 'Betriebswirtschaftliche Module', 'Required_ECTS': 25}  # 20 PUnkto
     PROG_SPEC_EMPIRIAL_METHODE_PARAM = {
-        'Program_Category': 'Empirische Methoden', 'Required_CP': 6}
+        'Program_Category': 'Empirische Methoden', 'Required_ECTS': 6}            # 10 Punkte
     PROG_SPEC_OPERATION_RESEARCH_PARAM = {
-        'Program_Category': 'Operations Research', 'Required_CP': 6}
+        'Program_Category': 'Operations Research', 'Required_ECTS': 6}            # 10 Punkte
     PROG_SPEC_VWL_PARAM = {
-        'Program_Category': 'Volkswirtschaftliche Module', 'Required_CP': 10}
+        'Program_Category': 'Volkswirtschaftliche Module', 'Required_ECTS': 10}
+    PROG_SPEC_ENG_SCIENCE_MATH_PARAM = {
+        'Program_Category': 'Engineering, Science, Math', 'Required_ECTS': 15}
     PROG_SPEC_OTHERS = {
-        'Program_Category': 'Others', 'Required_CP': 0}
+        'Program_Category': 'Others', 'Required_ECTS': 0}
 
     # This fixed to program course category.
     program_category = [
-        PROG_SPEC_BML_PARAM,  # 管理
-        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  
-        PROG_SPEC_OPERATION_RESEARCH_PARAM,  # 作業研究 
+        PROG_SPEC_BWL_PARAM,  # 管理
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,
+        PROG_SPEC_OPERATION_RESEARCH_PARAM,  # 作業研究
         PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_ENG_SCIENCE_MATH_PARAM, # 工程 數學 自然科學
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
-        PROG_SPEC_OTHERS,  # 微積分
-        PROG_SPEC_OTHERS,  # 數學
-        PROG_SPEC_OTHERS,  # 物理
-        PROG_SPEC_OTHERS,  # 物理實驗
-        PROG_SPEC_OTHERS,  # 機械設計
-        PROG_SPEC_OTHERS,  # 熱力學
-        PROG_SPEC_OTHERS,  # 熱 物質傳導
-        PROG_SPEC_OTHERS,  # 材料
-        PROG_SPEC_OTHERS,  # 控制工程
-        PROG_SPEC_OTHERS,  # 流體
-        PROG_SPEC_OTHERS,  # 力學,機械
-        PROG_SPEC_OTHERS,  # 基礎電機電子
-        PROG_SPEC_OTHERS,  # 製造
-        PROG_SPEC_OTHERS,  # 計算機概論
-        PROG_SPEC_OTHERS,  # 機電
-        PROG_SPEC_OTHERS,  # 車輛
+        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 微積分
+        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 數學
+        PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 計量經濟
+        PROG_SPEC_BWL_PARAM,  # 企業
+        PROG_SPEC_BWL_PARAM,  # 管理
+        PROG_SPEC_BWL_PARAM,  # 會計
+        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 統計
+        PROG_SPEC_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 行銷
+        PROG_SPEC_OPERATION_RESEARCH_PARAM,  # 作業研究
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 觀察研究
+        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 程式
+        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 資料科學
+        PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -86,120 +88,382 @@ def TUM_MMT(transcript_sorted_group_map, df_transcript_array, df_category_course
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
-program_sort_function = [TUM_MMT]
+def TUM_CONSUMER_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUM_CONSUMER_SCIENCE'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
 
+    # Create transcript_sorted_group to program_category mapping
+    # Statistik, Empirische Forschungsmethoden, Quantitative Methoden, Mathematik
+    PROG_SPEC_EMPIRIAL_METHODE_PARAM = {
+        'Program_Category': 'BWL, Quantitative Method, Mathematik', 'Required_ECTS': 15}  # 15 PUnkto
+    #  Bachelorarbeit, eines Projekts, eines wissenschaftlichen Aufsatzes
+    PROG_SPEC_BACHELORARBEIT_PARAM = {
+        'Program_Category': 'Bachelor Thesis', 'Required_ECTS': 5}                # 5 Punkte
+    # quantitativen Entscheidungsunterstützung mit Methoden des Operations Research
+    PROG_SPEC_BWL_PARAM = {
+        'Program_Category': 'BWL', 'Required_ECTS': 6}                           # 6 Punkte
+    # VWL mind. 5 Credits oder Module aus dem Bereich Consumer Behavior mind. 5 Credits
+    PROG_SPEC_VWL_PARAM = {
+        'Program_Category': 'Volkswirtschaftliche Module', 'Required_ECTS': 10}   # 10 Punkte
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
 
-def ME_sorter(program_idx, file_path):
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 觀察研究, 研究方法, 量化分析, 數學
+        PROG_SPEC_BACHELORARBEIT_PARAM,  # 論文
+        PROG_SPEC_BWL_PARAM,  # 企業管理
+        PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_OTHERS  # 其他
+    ]
 
-    Database_Path = env_file_path + '/database/'
-    Output_Path = os.path.split(file_path)
-    Output_Path = Output_Path[0]
-    Output_Path = Output_Path + '/output/'
-    print("output file path " + Output_Path)
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_OTHERS,  # 微積分
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 數學
+        PROG_SPEC_VWL_PARAM,  # 企業
+        PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 計量經濟
+        PROG_SPEC_BWL_PARAM,  # 管理
+        PROG_SPEC_OTHERS,  # 會計
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 統計
+        PROG_SPEC_OTHERS,  # 金融
+        PROG_SPEC_OTHERS,  # 行銷
+        PROG_SPEC_OTHERS,  # 作業研究
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 觀察研究
+        PROG_SPEC_OTHERS,  # 程式
+        PROG_SPEC_OTHERS,  # 資料科學
+        PROG_SPEC_BACHELORARBEIT_PARAM,  # 論文
+        PROG_SPEC_OTHERS  # 其他
+    ]
 
-    if not os.path.exists(Output_Path):
-        print("create output folder")
-        os.makedirs(Output_Path)
-
-    Database_file_name = 'ME_Course_database.xlsx'
-    input_file_name = os.path.split(file_path)
-    input_file_name = input_file_name[1]
-    print("input file name " + input_file_name)
-
-    df_transcript = pd.read_excel(file_path,
-                                  sheet_name='Transcript_Sorting')
-    # Verify the format of transcript_course_list.xlsx
-    if df_transcript.columns[0] != '所修科目' or df_transcript.columns[1] != '學分' or df_transcript.columns[2] != '成績':
-        print("Error: Please check the student's transcript xlsx file.")
-        print("Header: column_1 = 所修科目, column_2 = 學分, column_3 = 成績")
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
         sys.exit()
 
-    df_database = pd.read_excel(Database_Path+Database_file_name,
-                                sheet_name='All_ME_Courses')
-    # Verify the format of ME_Course_database.xlsx
-    if df_database.columns[0] != '所有科目':
-        print("Error: Please check the ME database xlsx file.")
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
+def UNI_KOELN_BA(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'UNI_KOELN_BA'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_VWL_PARAM = {
+        'Program_Category': 'Economics', 'Required_ECTS': 18}   # 18 Punkte
+    # Statistik, Empirische Forschungsmethoden, Quantitative Methoden, Mathematik
+    PROG_SPEC_STATISTIK_MATH_PARAM = {
+        'Program_Category': 'Statistics and Math', 'Required_ECTS': 15}  # 15 PUnkto
+    # quantitativen Entscheidungsunterstützung mit Methoden des Operations Research
+    PROG_SPEC_BWL_PARAM = {
+        'Program_Category': 'Business Administration', 'Required_ECTS': 48}  # 48 Punkte
+    # VWL mind. 5 Credits oder Module aus dem Bereich Consumer Behavior mind. 5 Credits
+
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_STATISTIK_MATH_PARAM,  # 數學 統計
+        PROG_SPEC_BWL_PARAM,  # 企業管理
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_STATISTIK_MATH_PARAM,  # 微積分
+        PROG_SPEC_STATISTIK_MATH_PARAM,  # 數學
+        PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_VWL_PARAM,  # 計量經濟
+        PROG_SPEC_BWL_PARAM,  # 企業
+        PROG_SPEC_BWL_PARAM,  # 管理
+        PROG_SPEC_BWL_PARAM,  # 會計
+        PROG_SPEC_STATISTIK_MATH_PARAM,  # 統計
+        PROG_SPEC_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 行銷
+        PROG_SPEC_OTHERS,  # 作業研究
+        PROG_SPEC_OTHERS,  # 觀察研究
+        PROG_SPEC_OTHERS,  # 程式
+        PROG_SPEC_OTHERS,  # 資料科學
+        PROG_SPEC_OTHERS,  # 論文
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
         sys.exit()
-    df_database['所有科目'] = df_database['所有科目'].fillna('-')
 
-    # unify course naming convention
-    Naming_Convention(df_transcript)
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
 
-    sorted_courses = []
-    # ME
-    transcript_sorted_group_map = {
-        '經濟學': [MGM_ECONOMICS_KEY_WORDS, MGM_ECONOMICS_ANTI_KEY_WORDS],
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+# https://www.uni-mannheim.de/studium/studienangebot/mannheim-master-in-management/#c35913
+def UNI_MANNHEIM_MGM(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'UNI_MANNHEIM_MGM'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_BWL_PARAM = {
+        'Program_Category': 'Business Administration', 'Required_ECTS': 36}  # 36 Punkte
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_BWL_PARAM,  # 企業管理
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_OTHERS,  # 微積分
+        PROG_SPEC_OTHERS,  # 數學
+        PROG_SPEC_OTHERS,  # 經濟
+        PROG_SPEC_OTHERS,  # 計量經濟
+        PROG_SPEC_BWL_PARAM,  # 企業
+        PROG_SPEC_BWL_PARAM,  # 管理
+        PROG_SPEC_BWL_PARAM,  # 會計
+        PROG_SPEC_OTHERS,  # 統計
+        PROG_SPEC_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 行銷
+        PROG_SPEC_OTHERS,  # 作業研究
+        PROG_SPEC_OTHERS,  # 觀察研究
+        PROG_SPEC_OTHERS,  # 程式
+        PROG_SPEC_OTHERS,  # 資料科學
+        PROG_SPEC_OTHERS,  # 論文
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+# https://www.ovgu.de/unimagdeburg/en/Study/Study+Programmes/Master/Financial+Economics-p-55738.html
+# https://www.isp.ovgu.de/manec_media/FINECRelevanceDocu.pdf
+def UNI_MAGDEBURG_FIN_ECO(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'UNI_MAGDEBURG_FIN_ECO'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    # statistics, math, decision analysis, econometrics)
+    PROG_SPEC_QUAN_MODULE_PARAM = {
+        'Program_Category': 'Quantitative Modules', 'Required_ECTS': 18}  # 18 PUnkte
+    PROG_SPEC_ECO_BWL_PARAM = {
+        'Program_Category': 'Economics / Business Modules', 'Required_ECTS': 60}  # 60 Punkte
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_QUAN_MODULE_PARAM,  # statistics, math, decision analysis, econometrics)
+        PROG_SPEC_ECO_BWL_PARAM,  # 經濟 企業管理
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_QUAN_MODULE_PARAM,  # 微積分
+        PROG_SPEC_QUAN_MODULE_PARAM,  # 數學
+        PROG_SPEC_ECO_BWL_PARAM,  # 經濟
+        PROG_SPEC_QUAN_MODULE_PARAM,  # 計量經濟
+        PROG_SPEC_ECO_BWL_PARAM,  # 企業
+        PROG_SPEC_ECO_BWL_PARAM,  # 管理
+        PROG_SPEC_ECO_BWL_PARAM,  # 會計
+        PROG_SPEC_QUAN_MODULE_PARAM,  # 統計
+        PROG_SPEC_ECO_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 行銷
+        PROG_SPEC_OTHERS,  # 作業研究
+        PROG_SPEC_OTHERS,  # 觀察研究
+        PROG_SPEC_OTHERS,  # 程式
+        PROG_SPEC_OTHERS,  # 資料科學
+        PROG_SPEC_OTHERS,  # 論文
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+# https://tu-dresden.de/bu/verkehr/studium/studienangebot/transportation-economics-master/eignungsfeststellung
+def TU_DRESDEN_TRANSPORT_ECONOM(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TU_DRESDEN_TRANSPORT_ECONOM'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    # economics
+    PROG_SPEC_VWL_PARAM = {
+        'Program_Category': 'Economics', 'Required_ECTS': 20}   # 18 Punkte
+    # BA
+    PROG_SPEC_BWL_PARAM = {
+        'Program_Category': 'Business Administration', 'Required_ECTS': 20}  # 48 Punkte
+    # mathematics, statistics, econometrics, operations research, programming, data analytics
+    PROG_SPEC_QUAN_METHOD_PARAM = {
+        'Program_Category': 'Statistics and Math', 'Required_ECTS': 20}  # 15 PUnkto
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_BWL_PARAM,  # 企業管理
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 數學 統計 量化經濟
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 微積分
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 數學
+        PROG_SPEC_VWL_PARAM,  # 經濟
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 計量經濟
+        PROG_SPEC_BWL_PARAM,  # 企業
+        PROG_SPEC_BWL_PARAM,  # 管理
+        PROG_SPEC_BWL_PARAM,  # 會計
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 統計
+        PROG_SPEC_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 行銷
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 作業研究
+        PROG_SPEC_OTHERS,  # 觀察研究
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 程式
+        PROG_SPEC_QUAN_METHOD_PARAM,  # 資料科學
+        PROG_SPEC_OTHERS,  # 論文
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+program_sort_function = [TUM_MMT, TUM_CONSUMER_SCIENCE,
+                         UNI_KOELN_BA, UNI_MANNHEIM_MGM, UNI_MAGDEBURG_FIN_ECO, TU_DRESDEN_TRANSPORT_ECONOM]
+
+
+def MGM_sorter(program_idx, file_path, abbrev):
+    basic_classification_en = {
+        '微積分': [MGM_CALCULUS_KEY_WORDS_EN, MGM_CALCULUS_ANTI_KEY_WORDS_EN],
+        '數學': [MGM_MATH_KEY_WORDS_EN, MGM_MATH_ANTI_KEY_WORDS_EN],
+        '經濟': [MGM_ECONOMICS_KEY_WORDS_EN, MGM_ECONOMICS_ANTI_KEY_WORDS_EN],
+        '計量經濟': [MGM_ECONOMETRICS_KEY_WORDS_EN, MGM_ECONOMETRICS_ANTI_KEY_WORDS_EN],
+        '企業': [MGM_BUSINESS_KEY_WORDS_EN, MGM_BUSINESS_ANTI_KEY_WORDS_EN],
+        '管理': [MGM_MANAGEMENT_KEY_WORDS_EN, MGM_MANAGEMENT_ANTI_KEY_WORDS_EN],
+        '會計': [MGM_ACCOUNTING_KEY_WORDS_EN, MGM_ACCOUNTING_ANTI_KEY_WORDS_EN],
+        '統計': [MGM_STATISTICS_KEY_WORDS_EN, MGM_STATISTICS_ANTI_KEY_WORDS_EN],
+        '金融': [MGM_FINANCE_KEY_WORDS_EN, MGM_FINANCE_ANTI_KEY_WORDS_EN],
+        '行銷': [MGM_MARKETING_KEY_WORDS_EN, MGM_MARKETING_ANTI_KEY_WORDS_EN],
+        '作業研究': [MGM_OP_RESEARCH_KEY_WORDS_EN, MGM_OP_RESEARCH_ANTI_KEY_WORDS_EN],
+        '觀察研究': [MGM_EP_RESEARCH_KEY_WORDS_EN, MGM_EP_RESEARCH_ANTI_KEY_WORDS_EN],
+        '程式': [MGM_PROGRAMMING_KEY_WORDS_EN, MGM_PROGRAMMING_ANTI_KEY_WORDS_EN],
+        '資料科學': [MGM_DATA_SCIENCE_KEY_WORDS_EN, MGM_DATA_SCIENCE_ANTI_KEY_WORDS_EN],
+        '論文': [MGM_BACHELOR_THESIS_KEY_WORDS_EN, MGM_BACHELOR_THESIS_ANTI_KEY_WORDS_EN],
+        '其他': [USELESS_COURSES_KEY_WORDS_EN, USELESS_COURSES_ANTI_KEY_WORDS_EN], }
+
+    basic_classification_zh = {
+        '微積分': [MGM_CALCULUS_KEY_WORDS, MGM_CALCULUS_ANTI_KEY_WORDS],
+        '數學': [MGM_MATH_KEY_WORDS, MGM_MATH_ANTI_KEY_WORDS],
+        '經濟': [MGM_ECONOMICS_KEY_WORDS, MGM_ECONOMICS_ANTI_KEY_WORDS],
+        '計量經濟': [MGM_ECONOMETRICS_KEY_WORDS, MGM_ECONOMETRICS_ANTI_KEY_WORDS],
+        '企業': [MGM_BUSINESS_KEY_WORDS, MGM_BUSINESS_ANTI_KEY_WORDS],
+        '管理': [MGM_MANAGEMENT_KEY_WORDS, MGM_MANAGEMENT_ANTI_KEY_WORDS],
+        '會計': [MGM_ACCOUNTING_KEY_WORDS, MGM_ACCOUNTING_ANTI_KEY_WORDS],
+        '統計': [MGM_STATISTICS_KEY_WORDS, MGM_STATISTICS_ANTI_KEY_WORDS],
+        '金融': [MGM_FINANCE_KEY_WORDS, MGM_FINANCE_ANTI_KEY_WORDS],
+        '行銷': [MGM_MARKETING_KEY_WORDS, MGM_MARKETING_ANTI_KEY_WORDS],
+        '作業研究': [MGM_OP_RESEARCH_KEY_WORDS, MGM_OP_RESEARCH_ANTI_KEY_WORDS],
+        '觀察研究': [MGM_EP_RESEARCH_KEY_WORDS, MGM_EP_RESEARCH_ANTI_KEY_WORDS],
+        '程式': [MGM_PROGRAMMING_KEY_WORDS, MGM_PROGRAMMING_ANTI_KEY_WORDS],
+        '資料科學': [MGM_DATA_SCIENCE_KEY_WORDS, MGM_DATA_SCIENCE_ANTI_KEY_WORDS],
+        '論文': [MGM_BACHELOR_THESIS_KEY_WORDS, MGM_BACHELOR_THESIS_ANTI_KEY_WORDS],
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
-    suggestion_courses_sorted_group_map = {
-        '經濟學': [[], MGM_ECONOMICS_ANTI_KEY_WORDS],
-        '其他': [[], USELESS_COURSES_ANTI_KEY_WORDS], }
-
-    category_data = []
-    df_category_data = []
-    category_courses_sugesstion_data = []
-    df_category_courses_sugesstion_data = []
-    for idx, cat in enumerate(transcript_sorted_group_map):
-        category_data = {cat: [], '學分': [], '成績': []}
-        df_category_data.append(pd.DataFrame(data=category_data))
-        df_category_courses_sugesstion_data.append(
-            pd.DataFrame(data=category_courses_sugesstion_data, columns=['建議修課']))
-
-    # 基本分類課程 (與學程無關)
-    df_category_data = CourseSorting(
-        df_transcript, df_category_data, transcript_sorted_group_map)
-
-    # 基本分類機械課程資料庫
-    df_category_courses_sugesstion_data = DatabaseCourseSorting(
-        df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map)
-
-    for idx, cat in enumerate(df_category_data):
-        df_category_courses_sugesstion_data[idx]['建議修課'] = df_category_courses_sugesstion_data[idx]['建議修課'].str.replace(
-            '(', '', regex=False)
-        df_category_courses_sugesstion_data[idx]['建議修課'] = df_category_courses_sugesstion_data[idx]['建議修課'].str.replace(
-            ')', '', regex=False)
-
-    # 樹狀篩選 微積分:[一,二] 同時有含 微積分、一  的，就從recommendation拿掉
-    # algorithm :
-    df_category_courses_sugesstion_data = SuggestionCourseAlgorithm(
-        df_category_data, transcript_sorted_group_map, df_category_courses_sugesstion_data)
-
-    output_file_name = 'analyzed_' + input_file_name
-    writer = pd.ExcelWriter(
-        Output_Path+output_file_name, engine='xlsxwriter')
-
-    sorted_courses = df_category_data
-
-    start_row = 0
-    for idx, sortedcourses in enumerate(sorted_courses):
-        sortedcourses.to_excel(
-            writer, sheet_name='General', startrow=start_row, index=False)
-        start_row += len(sortedcourses.index) + 2
-    workbook = writer.book
-    worksheet = writer.sheets['General']
-    global column_len_array
-
-    red_out_failed_subject(workbook, worksheet, 1, start_row)
-
-    for i, col in enumerate(df_transcript.columns):
-        # find length of column i
-        column_len = df_transcript[col].astype(str).str.len().max()
-        # Setting the length if the column header is larger
-        # than the max column value length
-        column_len_array.append(max(column_len, len(col)))
-        # set the column length
-        worksheet.set_column(i, i, column_len_array[i] * 2)
-
-    # Modify to column width for "Required_CP"
-    column_len_array.append(6)
-
-    for idx in program_idx:
-        program_sort_function[idx](
-            transcript_sorted_group_map,
-            sorted_courses,
-            df_category_courses_sugesstion_data,
-            writer)
-
-    writer.save()
-    print("output data at: " + Output_Path + output_file_name)
-    print("Students' courses analysis and courses suggestion in EE area finished! ")
+    Classifier(program_idx, file_path, abbrev, env_file_path,
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function)

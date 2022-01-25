@@ -3,7 +3,15 @@ import DEMO from "../../store/constant";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
-import { Row, Col, Button, Card, Collapse, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Button,
+  Card,
+  Collapse,
+  Spinner,
+  Modal,
+} from "react-bootstrap";
 import {
   createManualFileUploadPlace,
   deleteManualFileUpload,
@@ -15,7 +23,41 @@ import ManualFiles from "./ManualFiles";
 class EditorDocsProgress extends React.Component {
   state = {
     student: this.props.student,
+    deleteFileWarningModel: false,
+    studentId: "",
+    applicationId: "",
+    docName: "",
+    whoupdate: "",
     file: "",
+  };
+
+  openWarningWindow = () => {
+    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
+  };
+  closeWarningWindow = () => {
+    this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
+  };
+  ConfirmDeleteFileHandler = () => {
+    deleteManualFileUpload(
+      this.state.studentId,
+      this.state.applicationId,
+      this.state.docName,
+      this.state.whoupdate
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        this.setState((state) => ({
+          ...state,
+          studentId: "",
+          applicationId: "",
+          docName: "",
+          whoupdate: "",
+          student: resp.data.data,
+          deleteFileWarningModel: false,
+        }));
+      },
+      (error) => {}
+    );
   };
 
   createManualFileUploadPlaceholder = (studentId, applicationId, docName) => {
@@ -31,15 +73,14 @@ class EditorDocsProgress extends React.Component {
   };
 
   onDeleteFile = (studentId, applicationId, docName, whoupdate) => {
-    deleteManualFileUpload(studentId, applicationId, docName, whoupdate).then(
-      (resp) => {
-        console.log(resp.data.data);
-        this.setState({
-          student: resp.data.data,
-        });
-      },
-      (error) => {}
-    );
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      applicationId,
+      docName,
+      whoupdate,
+      deleteFileWarningModel: true,
+    }));
   };
 
   onSubmitFile = (e, NewFile, studentId, applicationId) => {
@@ -129,11 +170,13 @@ class EditorDocsProgress extends React.Component {
 
   render() {
     return (
-      <Card className="mt-2" key={this.props.idx}>
-        <Card.Header>
-          <Card.Title as="h5">
-            <a
-              onClick={() => this.props.singleExpandtHandler(this.props.idx)}
+      <>
+        <Card className="mt-2" key={this.props.idx}>
+          <Card.Header
+            onClick={() => this.props.singleExpandtHandler(this.props.idx)}
+          >
+            <Card.Title
+              as="h5"
               aria-controls={"accordion" + this.props.idx}
               aria-expanded={
                 this.props.accordionKeys[this.props.idx] === this.props.idx
@@ -142,52 +185,71 @@ class EditorDocsProgress extends React.Component {
               {this.state.student.firstname}
               {" ,"}
               {this.state.student.lastname}
-            </a>
-          </Card.Title>
-        </Card.Header>
-        <Collapse
-          in={this.props.accordionKeys[this.props.idx] === this.props.idx}
+            </Card.Title>
+          </Card.Header>
+          <Collapse
+            in={this.props.accordionKeys[this.props.idx] === this.props.idx}
+          >
+            <div id="accordion1">
+              <Card.Body>
+                {this.state.student.applications.map((application, i) => (
+                  <>
+                    <Row>
+                      <Col md={6}>
+                        <h5>
+                          {application.programId.University_}
+                          {" - "}
+                          {application.programId.Program_}
+                        </h5>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={6}>
+                        <h6>Editor output</h6>
+                      </Col>
+                      <Col md={6}>
+                        <h6>Student input</h6>
+                      </Col>
+                    </Row>
+                    <ManualFiles
+                      createManualFileUploadPlaceholder={
+                        this.createManualFileUploadPlaceholder
+                      }
+                      onDeleteFile={this.onDeleteFile}
+                      onFileChange={this.onFileChange}
+                      onSubmitFile={this.onSubmitFile}
+                      onDownloadFile={this.onDownloadFile}
+                      role={this.props.role}
+                      student={this.state.student}
+                      application={application}
+                    />
+                  </>
+                ))}
+                {/* {JSON.stringify(student)} */}
+              </Card.Body>
+            </div>
+          </Collapse>
+        </Card>
+        <Modal
+          show={this.state.deleteFileWarningModel}
+          onHide={this.closeWarningWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
         >
-          <div id="accordion1">
-            <Card.Body>
-              {this.state.student.applications.map((application, i) => (
-                <>
-                  <Row>
-                    <Col md={6}>
-                      <h5>
-                        {application.programId.University_}
-                        {" - "}
-                        {application.programId.Program_}
-                      </h5>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={6}>
-                      <strong>Editor output</strong>
-                    </Col>
-                    <Col md={6}>
-                      <strong>Student input</strong>
-                    </Col>
-                  </Row>
-                  <ManualFiles
-                    createManualFileUploadPlaceholder={
-                      this.createManualFileUploadPlaceholder
-                    }
-                    onDeleteFile={this.onDeleteFile}
-                    onFileChange={this.onFileChange}
-                    onSubmitFile={this.onSubmitFile}
-                    onDownloadFile={this.onDownloadFile}
-                    role={this.props.role}
-                    student={this.state.student}
-                    application={application}
-                  />
-                </>
-              ))}
-              {/* {JSON.stringify(student)} */}
-            </Card.Body>
-          </div>
-        </Collapse>
-      </Card>
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body bsPrefix="break-word">
+            <h5>Do you want to delete {this.state.docName}?</h5>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.ConfirmDeleteFileHandler}>Yes</Button>
+            <Button onClick={this.closeWarningWindow}>No</Button>
+          </Modal.Footer>
+        </Modal>
+      </>
     );
   }
 }

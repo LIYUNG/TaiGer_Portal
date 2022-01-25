@@ -1,6 +1,9 @@
 import pandas as pd
+from CourseSuggestionAlgorithms import *
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import gc
+import sys
+import os
 
 KEY_WORDS = 0
 ANTI_KEY_WORDS = 1
@@ -22,7 +25,7 @@ def ProgramCategoryInit(program_category):
     df_PROG_SPEC_CATES_COURSES_SUGGESTION = []
     for idx, cat in enumerate(program_category):
         PROG_SPEC_CAT = {cat['Program_Category']: [],
-                         '學分': [], '成績': [], 'Required_CP': cat['Required_CP']}
+                         '學分': [], '成績': [], 'Required_ECTS': cat['Required_ECTS']}
         PROG_SPEC_CATES_COURSES_SUGGESTION = {cat['Program_Category']: [],
                                               }
         df_PROG_SPEC_CATES.append(pd.DataFrame(data=PROG_SPEC_CAT))
@@ -31,26 +34,88 @@ def ProgramCategoryInit(program_category):
     return df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION
 
 
-def Naming_Convention(df_course):
-    # modify data in the same
-    df_course['所修科目'] = df_course['所修科目'].fillna('-')
+def CheckTemplateFormat(df_transcript):
+    if '所修科目_中文' not in df_transcript.columns or '所修科目_英語' not in df_transcript.columns or '學分' not in df_transcript.columns or '成績' not in df_transcript.columns:
+        print("Error: Please check the student's transcript xlsx file.")
+        print(" There must be 所修科目_中文, 所修科目_英語, 學分 and 成績 in student's course excel file.")
+        sys.exit()
 
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+
+def CheckDBFormat(df_database):
+    if '所有科目' not in df_database.columns:
+        print("Error: Please check the database xlsx file.")
+        sys.exit()
+
+
+def isOutputEnglish(df_transcript):
+
+    if ~df_transcript['所修科目_英語'].isnull().any():
+        # output English version
+        print("Output English Version")
+        return True
+
+    # print(df_transcript['所修科目_中文'].isnull().any())
+    if ~df_transcript['所修科目_中文'].isnull().any():
+        print("Output Chinese Version")
+        return False  # output CHinese version
+
+    print("所修科目_英語 所修科目_中文 學分 和 成績 not match. Please make sure you fill the template correctly")
+    sys.exit()
+
+
+def DataPreparation(df_database, df_transcript):
+    df_database['所有科目'] = df_database['所有科目'].fillna('-')
+    if '所有科目_英語' in df_database.columns:
+        df_database['所有科目_英語'] = df_database['所有科目_英語'].str.lower()
+    # unify course naming convention
+    df_transcript = Naming_Convention_ZH(df_transcript)
+    df_transcript = Naming_Convention_EN(df_transcript)
+    print("Prepared data successfully.")
+    return df_database, df_transcript
+
+
+def Naming_Convention_ZH(df_course):
+    # modify data in the same
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].fillna('-')
+
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
+        '+', '＋', regex=False)
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         '1', '一', regex=False)
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         '2', '二', regex=False)
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         '3', '三', regex=False)
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         '(', '', regex=False)
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         '（', '', regex=False)
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         ')', '', regex=False)
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         '）', '', regex=False)
-    df_course['所修科目'] = df_course['所修科目'].str.replace(
+    df_course['所修科目_中文'] = df_course['所修科目_中文'].str.replace(
         ' ', '', regex=False)
+    return df_course
+
+
+def Naming_Convention_EN(df_course):
+    # English Version only:
+    df_course['所修科目_英語'] = df_course['所修科目_英語'].fillna('-')
+
+    df_course['所修科目_英語'] = df_course['所修科目_英語'].str.lower()
+
+    df_course['所修科目_英語'] = df_course['所修科目_英語'].str.replace(
+        '+', '＋', regex=False)
+
+    df_course['所修科目_英語'] = df_course['所修科目_英語'].str.replace(
+        '(', '', regex=False)
+    df_course['所修科目_英語'] = df_course['所修科目_英語'].str.replace(
+        '（', '', regex=False)
+    df_course['所修科目_英語'] = df_course['所修科目_英語'].str.replace(
+        ')', '', regex=False)
+    df_course['所修科目_英語'] = df_course['所修科目_英語'].str.replace(
+        '）', '', regex=False)
     return df_course
 
 
@@ -79,8 +144,10 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
 
 
 # course sorting
-def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map):
-    for idx, subj in enumerate(df_transcript['所修科目']):
+def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, column_name_en_zh):
+    # print(df_transcript[column_name_en_zh])
+    # df_transcript = df_transcript.dropna()
+    for idx, subj in enumerate(df_transcript[column_name_en_zh]):
         if subj == '-':
             continue
         for idx2, cat in enumerate(transcript_sorted_group_map):
@@ -91,10 +158,13 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map):
                 df_category_data[idx2] = df_category_data[idx2].append(
                     temp, ignore_index=True)
                 continue
+
             # filter subject by keywords. and exclude subject by anti_keywords
             if any(keywords in subj for keywords in transcript_sorted_group_map[cat][KEY_WORDS] if not any(anti_keywords in subj for anti_keywords in transcript_sorted_group_map[cat][ANTI_KEY_WORDS])):
                 temp_string = str(df_transcript['成績'][idx])
-                if((isfloat(temp_string) and float(temp_string) < 60)):  # failed subject not count
+                # failed subject not count
+                if((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
+                   or "Fail" in temp_string or "W" in temp_string or "F" in temp_string or "fail" in temp_string or "退選" in temp_string or "withdraw" in temp_string):
                     continue
                 temp = {cat: subj, '學分': df_transcript['學分'][idx],
                         '成績': df_transcript['成績'][idx]}
@@ -104,8 +174,8 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map):
     return df_category_data
 
 
-def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map):
-    for idx, subj in enumerate(df_database['所有科目']):
+def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, column_name_en_zh):
+    for idx, subj in enumerate(df_database[column_name_en_zh]):
         if subj == '-':
             continue
         for idx2, cat in enumerate(transcript_sorted_group_map):
@@ -127,8 +197,13 @@ def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, tran
 
 def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
     for idx, trans_cat in enumerate(df_PROG_SPEC_CATES):
-        category_credits_sum = {'學分': df_PROG_SPEC_CATES[idx]['學分'].sum(
-        ), 'Required_CP': program_category[idx]['Required_CP']}
+        credit_sum = df_PROG_SPEC_CATES[idx]['學分'].sum()
+        category_credits_sum = {
+            trans_cat.columns[0]: "sum", '學分': credit_sum}
+        df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(
+            category_credits_sum, ignore_index=True)
+        category_credits_sum = {trans_cat.columns[0]: "ECTS轉換", '學分': 1.5 *
+                                credit_sum, 'Required_ECTS': program_category[idx]['Required_ECTS']}
         df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(
             category_credits_sum, ignore_index=True)
     return df_PROG_SPEC_CATES
@@ -186,3 +261,129 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
             worksheet.set_column(i, i, column_len_array[i] * 2)
     gc.collect()  # Forced GC
     print("Save to " + program_name)
+
+
+def Classifier(program_idx, file_path, abbrev, env_file_path, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function):
+
+    program_idx, file_path, abbrev
+    Database_Path = env_file_path + '/'
+    Output_Path = os.path.split(file_path)
+    Output_Path = Output_Path[0]
+    Output_Path = Output_Path + '/output/'
+    print("output file path " + Output_Path)
+
+    if not os.path.exists(Output_Path):
+        print("create output folder")
+        os.makedirs(Output_Path)
+
+    Database_file_name = abbrev + '_Course_database.xlsx'
+    input_file_name = os.path.split(file_path)
+    input_file_name = input_file_name[1]
+    print("input file name " + input_file_name)
+
+    df_transcript = pd.read_excel(file_path,
+                                  sheet_name='Transcript_Sorting')
+    # TODO: move the checking mechanism to util.py!
+    # Verify the format of transcript_course_list.xlsx
+    CheckTemplateFormat(df_transcript)
+    print("Checked input template successfully.")
+
+    sheetname = 'All_' + abbrev + '_Courses'
+    df_database = pd.read_excel(Database_Path+Database_file_name,
+                                sheet_name=sheetname)
+    # Verify the format of Course_database.xlsx
+    CheckDBFormat(df_database)
+    print("Checked database successfully.")
+
+    Englist_Version = isOutputEnglish(df_transcript)
+    # Data preparation
+    df_database, df_transcript = DataPreparation(df_database, df_transcript)
+
+    sorted_courses = []
+    transcript_sorted_group_map = {}
+
+    if Englist_Version:
+        transcript_sorted_group_map = basic_classification_en
+    else:
+        transcript_sorted_group_map = basic_classification_zh
+
+    category_data = []
+    df_category_data = []
+    category_courses_sugesstion_data = []
+    df_category_courses_sugesstion_data = []
+    for idx, cat in enumerate(transcript_sorted_group_map):
+        category_data = {cat: [], '學分': [], '成績': []}
+        df_category_data.append(pd.DataFrame(data=category_data))
+        df_category_courses_sugesstion_data.append(
+            pd.DataFrame(data=category_courses_sugesstion_data, columns=['建議修課']))
+
+    if Englist_Version:
+        # 基本分類課程 (與申請學程無關)
+        df_category_data = CourseSorting(
+            df_transcript, df_category_data, transcript_sorted_group_map, "所修科目_英語")
+        # 基本分類電機課程資料庫
+        df_category_courses_sugesstion_data = DatabaseCourseSorting(
+            df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "所有科目_英語")
+    else:
+        # 基本分類課程 (與申請學程無關)
+        df_category_data = CourseSorting(
+            df_transcript, df_category_data, transcript_sorted_group_map, "所修科目_中文")
+        # 基本分類電機課程資料庫
+        df_category_courses_sugesstion_data = DatabaseCourseSorting(
+            df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "所有科目")
+
+    for idx, cat in enumerate(df_category_data):
+        df_category_courses_sugesstion_data[idx]['建議修課'] = df_category_courses_sugesstion_data[idx]['建議修課'].str.replace(
+            '(', '', regex=False)
+        df_category_courses_sugesstion_data[idx]['建議修課'] = df_category_courses_sugesstion_data[idx]['建議修課'].str.replace(
+            ')', '', regex=False)
+
+    # 樹狀篩選 微積分:[一,二] 同時有含 微積分、一  的，就從recommendation拿掉
+    # algorithm :
+    df_category_courses_sugesstion_data = SuggestionCourseAlgorithm(
+        df_category_data, transcript_sorted_group_map, df_category_courses_sugesstion_data)
+
+    output_file_name = 'analyzed_' + input_file_name
+    writer = pd.ExcelWriter(
+        Output_Path+output_file_name, engine='xlsxwriter')
+
+    sorted_courses = df_category_data
+
+    start_row = 0
+    for idx, sortedcourses in enumerate(sorted_courses):
+        sortedcourses.to_excel(
+            writer, sheet_name='General', startrow=start_row, index=False)
+        start_row += len(sortedcourses.index) + 2
+    workbook = writer.book
+    worksheet = writer.sheets['General']
+
+    red_out_failed_subject(workbook, worksheet, 1, start_row)
+
+    for i, col in enumerate(df_transcript.columns):
+        # find length of column i
+
+        column_len = df_transcript[col].astype(str).str.len().max()
+        # Setting the length if the column header is larger
+        # than the max column value length
+        if i == 1:
+            column_len_array.append(len(col))
+        else:
+            column_len_array.append(max(column_len, len(col)))
+
+        # set the column length
+        worksheet.set_column(i, i, column_len_array[i] * 2)
+
+    # Modify to column width for "Required_ECTS"
+    column_len_array.append(6)
+
+    for idx in program_idx:
+        program_sort_function[idx](
+            transcript_sorted_group_map,
+            sorted_courses,
+            df_category_courses_sugesstion_data,
+            writer)
+
+    writer.save()
+    print("output data at: " + Output_Path + output_file_name)
+    print("Students' courses analysis and courses suggestion in " +
+          abbrev + " area finished! ")

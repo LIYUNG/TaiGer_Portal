@@ -2,7 +2,11 @@ const { Router } = require("express");
 
 const { Role } = require("../models/User");
 const { protect, permit } = require("../middlewares/auth");
-const { fileUpload, ProfilefileUpload } = require("../middlewares/file-upload");
+const {
+  fileUpload,
+  ProfilefileUpload,
+  TranscriptExcelUpload,
+} = require("../middlewares/file-upload");
 
 const {
   getMyfiles,
@@ -69,10 +73,21 @@ router
   );
 // TODO: check the exact usage
 router
-  .route("/transcript/:category/:group")
-  .post((req, res, next) =>
-    res.status(400).send({ success: false, message: "Not implemented yet" })
+  .route("/transcript/:studentId/:category")
+  // .post((req, res, next) =>
+  //   res.status(400).send({ success: false, message: "Not implemented yet" })
+  // );
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    TranscriptExcelUpload,
+    processTranscript
   );
+router
+  .route("/transcript/:studentId/:filename")
+  // .post((req, res, next) =>
+  //   res.status(400).send({ success: false, message: "Not implemented yet" })
+  // );
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);
 // .post(fileUpload, processTranscript);
 
 // router

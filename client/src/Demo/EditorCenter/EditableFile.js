@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import HandWrittenFile from "./HandWrittenFile";
 import { Form, Col, Row, Button } from "react-bootstrap";
-
+import { AiOutlineDownload, AiOutlineDelete } from "react-icons/ai";
 class EditableFile extends Component {
   handleTrashClick = () => {
     this.props.onTrashClick(this.props.id);
@@ -32,6 +32,7 @@ class EditableFile extends Component {
             <Col md={2}>
               <Button
                 size="sm"
+                title="Download"
                 onClick={(e) =>
                   this.props.onDownloadFile(
                     e,
@@ -42,7 +43,7 @@ class EditableFile extends Component {
                   )
                 }
               >
-                Download
+                <AiOutlineDownload size={16} />
               </Button>
             </Col>
             {this.props.role === "Editor" ||
@@ -51,10 +52,11 @@ class EditableFile extends Component {
                 <Col md={2}>
                   <Button
                     size="sm"
+                    title="Delete"
                     variant="danger"
                     onClick={this.handleDelete}
                   >
-                    Delete
+                    <AiOutlineDelete size={16} />
                   </Button>
                 </Col>
               </>

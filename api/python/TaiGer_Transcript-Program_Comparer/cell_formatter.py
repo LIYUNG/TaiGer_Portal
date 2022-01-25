@@ -4,13 +4,13 @@ def red_out_failed_subject(workbook, worksheet, row_begin, row_end):
 
     column_range = 'C' + str(row_begin)+':C' + str(row_end)
     worksheet.conditional_format(column_range, {'type': 'blanks',
-                                            'stop_if_true': True,
-                                            'format': fmt2})
+                                                'stop_if_true': True,
+                                                'format': fmt2})
     worksheet.conditional_format(column_range, {'type': 'cell',
-                                            'criteria': 'between',
-                                            'minimum': 0,
-                                            'maximum': 59,
-                                            'format': fmt1})
+                                                'criteria': 'between',
+                                                'minimum': 4.5,
+                                                'maximum': 59,
+                                                'format': fmt1})
 
 
 def red_out_insufficient_credit(workbook, worksheet):

@@ -213,8 +213,11 @@ class Survey extends React.Component {
                       <Col md={6}>
                         <Form>
                           <Form.Group controlId="form.firstname">
-                            <Form.Label>Firstname</Form.Label>
-                            <Form.Control type="text" placeholder="Text" />
+                            <Form.Label>Target Application Fields</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="M.Sc. Data Science, MBA, etc."
+                            />
                           </Form.Group>
                           <Form.Group controlId="exampleForm.ControlSelect1">
                             <Form.Label>
@@ -234,19 +237,9 @@ class Survey extends React.Component {
                               <option>No</option>
                             </Form.Control>
                           </Form.Group>
-                          <Form.Group controlId="formBasicChecbox">
-                            <Form.Check type="checkbox" label="Check me out" />
-                          </Form.Group>
                         </Form>
                       </Col>
                       <Col md={6}>
-                        <Form.Group controlId="exampleForm.ControlTextarea1">
-                          <Form.Label>Expected Application Year</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="2022 WS, 2023 SS"
-                          />
-                        </Form.Group>
                         <br />
                         <Button variant="primary">Submit</Button>
                       </Col>

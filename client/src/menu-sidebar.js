@@ -79,6 +79,14 @@ export default {
           icon: "feather icon-edit-2",
         },
         {
+          id: "profile_upload",
+          title: "Profile Upload",
+          type: "item",
+          url: "/upload",
+          classes: "nav-item",
+          icon: "feather icon-upload",
+        },
+        {
           id: "archiv-student",
           title: "Archiv Students",
           type: "item",
@@ -115,7 +123,7 @@ export default {
         },
         {
           id: "download",
-          title: "Download",
+          title: "Template Download",
           type: "item",
           url: "/download",
           classes: "nav-item",

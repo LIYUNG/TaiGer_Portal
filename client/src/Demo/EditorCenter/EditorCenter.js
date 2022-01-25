@@ -1,10 +1,8 @@
 import React from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner, Button, Card } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
-import {
-  getStudents,
-} from "../../api";
+import { getStudents } from "../../api";
 import EditorDocsProgress from "./EditorDocsProgress";
 import ManualFiles from "./ManualFiles";
 
@@ -17,6 +15,7 @@ class EditorCenter extends React.Component {
     // accordionKeys: new Array(-1, this.props.user.students.length),  // To collapse all
     students: [],
     file: "",
+    expand: true,
     accordionKeys:
       this.props.user.role === "Editor" || this.props.user.role === "Agent"
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
@@ -55,6 +54,26 @@ class EditorCenter extends React.Component {
     this.setState((state) => ({
       ...state,
       accordionKeys: accordionKeys,
+    }));
+  };
+  AllCollapsetHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      expand: false,
+      accordionKeys:
+        this.props.user.role === "Editor" || this.props.user.role === "Agent"
+          ? new Array(this.props.user.students.length).fill().map((x, i) => -1)
+          : [-1], // to expand all]
+    }));
+  };
+  AllExpandtHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      expand: true,
+      accordionKeys:
+        this.props.user.role === "Editor" || this.props.user.role === "Agent"
+          ? new Array(this.props.user.students.length).fill().map((x, i) => i)
+          : [0], // to expand all]
     }));
   };
 
@@ -104,12 +123,38 @@ class EditorCenter extends React.Component {
 
     return (
       <Aux>
+        <Row className="sticky-top">
+          <Card className="mt-0">
+            <Card.Header>
+              <Card.Title as="h5">
+                <Row>
+                  <Col>
+                    <h3>Editor Center</h3>
+                  </Col>
+                  <Col md={{ span: 2, offset: 0 }}>
+                    {this.state.expand ? (
+                      <Button
+                        className="btn-sm"
+                        onClick={() => this.AllCollapsetHandler()}
+                      >
+                        Collaspse
+                      </Button>
+                    ) : (
+                      <Button
+                        className="btn-sm"
+                        onClick={() => this.AllExpandtHandler()}
+                      >
+                        Expand
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
+              </Card.Title>
+            </Card.Header>
+          </Card>
+        </Row>
         <Row>
-          <Col sm={12} className="accordion">
-            <h5>Editor Center</h5>
-            <hr />
-            {student_editor}
-          </Col>
+          <Col sm={12}>{student_editor}</Col>
         </Row>
       </Aux>
     );

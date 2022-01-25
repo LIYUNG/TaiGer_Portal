@@ -66,7 +66,7 @@ const storage = multer.diskStorage({
             application.programId.Program_ +
             "_" +
             file.originalname;
-            // path.extname(file.originalname);
+          // path.extname(file.originalname);
           temp_name = temp_name.replace(/ /g, "_");
           return {
             fileName: temp_name,
@@ -117,7 +117,31 @@ const storage2 = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check category exist
-    cb(null, `${req.params.category}${path.extname(file.originalname)}`);
+    let { studentId, applicationId } = req.params;
+
+    Student.findOne({ _id: studentId })
+      .populate("applications.programId")
+      .lean()
+      .exec()
+      .then(function (student) {
+        if (student) {
+          let temp_name =
+            student.lastname +
+            "_" +
+            student.firstname +
+            "_" +
+            req.params.category +
+            path.extname(file.originalname);
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        cb(null, resp.fileName);
+      });
+
+    // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
   },
 });
 
@@ -138,7 +162,67 @@ const upload2 = multer({
   },
 });
 
+const storage3 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId exist
+    const directory = path.join(UPLOAD_PATH, studentId);
+    console.log(directory);
+    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
+
+    return cb(null, directory);
+  },
+  filename: (req, file, cb) => {
+    // TODO: check category exist
+    let { studentId } = req.params;
+
+    Student.findOne({ _id: studentId })
+      .populate("applications.programId")
+      .lean()
+      .exec()
+      .then(function (student) {
+        if (student) {
+          let temp_name =
+            student.lastname +
+            "_" +
+            student.firstname +
+            "_" +
+            "TaiGerTranscriptAI" +
+            path.extname(file.originalname);
+          console.log(temp_name);
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        cb(null, resp.fileName);
+      });
+
+    // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
+  },
+});
+
+//TODO: upload pdf/docx/image
+const upload3 = multer({
+  storage: storage3,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(
+          400,
+          "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
+        )
+      );
+
+    cb(null, true);
+  },
+});
 module.exports = {
   fileUpload: upload.single("file"),
   ProfilefileUpload: upload2.single("file"),
+  TranscriptExcelUpload: upload3.single("file"),
 };

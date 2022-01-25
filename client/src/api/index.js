@@ -88,11 +88,11 @@ export const templateDownload = (category) =>
 export const upload = (studentId, docName, data) =>
   request.post(`/api/account/files/${studentId}/${docName}`, data);
 
-export const transcriptanalyser = (category, group, data) =>
-  request.post(`/api/account/transcript/${category}/${group}`, data);
+export const transcriptanalyser = (studentId, category, data) =>
+  request.post(`/api/account/transcript/${studentId}/${category}`, data);
 
-export const generatedFileDownload = (category, filename) =>
-  request.get(`/api/account/download/${category}/${filename}`, {
+export const generatedFileDownload = (studentId, filename) =>
+  request.get(`/api/account/transcript/${studentId}/${filename}`, {
     responseType: "blob",
   });
 export const getTemplateDownload = (category) =>
@@ -122,10 +122,7 @@ export const uploadHandwrittenFileforstudent = (
   applicationId,
   data
 ) =>
-  request.post(
-    `/api/account/files/upload/${studentId}/${applicationId}`,
-    data
-  );
+  request.post(`/api/account/files/upload/${studentId}/${applicationId}`, data);
 
 export const downloadHandWrittenFile = (
   studentId,

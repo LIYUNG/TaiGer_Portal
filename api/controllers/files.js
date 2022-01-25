@@ -474,16 +474,32 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
 
 const processTranscript = asyncHandler(async (req, res, next) => {
   const {
-    params: { group },
+    params: { category },
     file: { filename, path: filePath },
   } = req;
 
+  console.log(
+    path.join(
+      __dirname,
+      "..",
+      "python",
+      "TaiGer_Transcript-Program_Comparer",
+      "main.py"
+    )
+  );
+  console.log(filePath);
   // FIXME: better pass output filepath as argument to python script instead of hard code value
   const output = `analyzed_${filename}`;
   const python = spawn("python", [
-    path.join(__dirname, "..", "TaiGer_Transcript-Program_Comparer", "main.py"),
+    path.join(
+      __dirname,
+      "..",
+      "python",
+      "TaiGer_Transcript-Program_Comparer",
+      "main.py"
+    ),
     filePath,
-    group,
+    category,
   ]);
 
   python.on("close", (code) => {
@@ -502,14 +518,13 @@ const processTranscript = asyncHandler(async (req, res, next) => {
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
     user: student,
-    params: { category, filename },
+    params: { studentId, filename },
   } = req;
   const { firstname, lastname, _id } = student;
 
   const filePath = path.join(
     UPLOAD_PATH,
-    `${firstname}_${lastname}_${_id}`,
-    category,
+    `${_id}`,
     "output",
     filename
   );

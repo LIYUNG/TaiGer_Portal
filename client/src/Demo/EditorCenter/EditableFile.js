@@ -18,10 +18,10 @@ class EditableFile extends Component {
 
   render() {
     let fileStatus;
-    console.log(this.props.document.path);
+    // console.log(this.props.document.path);
     let documenName = this.props.document.path.replaceAll("\\", "/");
     documenName = documenName.includes("/") ? documenName.split("/")[3] : "x";
-    console.log(documenName);
+    // console.log(documenName);
     if (this.props.document.status === "uploaded") {
       fileStatus = (
         <>
@@ -83,7 +83,7 @@ class EditableFile extends Component {
                   <Form.File.Input />
                 </Form.File>
               </Form>
-            </Col>
+            </Col>{" "}
             <Col md={2}>
               <Button
                 size="sm"

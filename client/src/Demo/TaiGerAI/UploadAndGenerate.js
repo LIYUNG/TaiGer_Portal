@@ -169,23 +169,6 @@ class UploadAndGenerate extends Component {
             <Row>
               <Col md={3}>
                 <Form>
-                  {/* <DropdownButton
-                  size="sm"
-                  alignRight
-                  id="dropdown-menu-align-right"
-                  onSelect={(e) => this.handleSelect(e)}
-                  title={this.state.selected}
-                >
-                  <Dropdown.Item eventKey="ee">
-                    Electrical Engieering (ee)
-                  </Dropdown.Item>
-                  <Dropdown.Item eventKey="cs">
-                    Computer Science (cs)
-                  </Dropdown.Item>
-                  <Dropdown.Item eventKey="me">
-                    Mechanical Engineering (me)
-                  </Dropdown.Item>
-                </DropdownButton> */}
                   <Form.Group controlId="formFile" className="mb-3">
                     <Form.Control
                       as="select"

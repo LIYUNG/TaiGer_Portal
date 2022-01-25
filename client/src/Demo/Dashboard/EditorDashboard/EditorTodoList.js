@@ -30,85 +30,28 @@ class EditorTodoList extends React.Component {
     } else {
       console.log("no files");
     }
-    let missing_profiles = keys.map((key, i) => {
-      if (object_init[key] !== "accepted" && object_init[key] !== "notneeded") {
+    let waiting_RL_templates = this.props.student.applications.map(
+      (application, i) => {
         return (
           <>
-            <h5>{this.props.documentlist2[key]}</h5>
+            <h6>
+              {application.programId.University_}
+              {" - "}
+              {application.programId.Program_}
+            </h6>
           </>
         );
       }
-    });
-    let to_be_checked_profiles = keys.map((key, i) => {
+    );
+    let waiting_ML_templates = keys.map((key, i) => {
       if (object_init[key] === "uploaded") {
         return (
           <>
-            <h5>{this.props.documentlist2[key]}</h5>
+            <h6>{this.props.documentlist2[key]}</h6>
           </>
         );
       }
     });
-    // let applying_program;
-    // let application_deadline;
-    // if (this.props.student.applications) {
-    //   applying_universit = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h5 className="mb-1" key={i}>
-    //           {application.programId.University_}
-    //         </h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   applying_universit = (
-    //     <tr>
-    //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-
-    // if (this.props.student.applications) {
-    //   applying_program = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h5 className="mb-1" key={i}>
-    //           {application.programId.Program_}
-    //         </h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   applying_program = (
-    //     <tr>
-    //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-
-    // if (this.props.student.applications) {
-    //   application_deadline = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h5 className="mb-1" key={i}>
-    //           {application.programId.Application_end_date_}
-    //         </h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   application_deadline = (
-    //     <tr>
-    //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
 
     return (
       <>
@@ -119,8 +62,8 @@ class EditorTodoList extends React.Component {
                 {this.props.student.firstname}, {this.props.student.lastname}
               </h5>
             </td>
-            <td>{missing_profiles}</td>
-            <td>{to_be_checked_profiles}</td>
+            <td>{waiting_RL_templates}</td>
+            <td>{waiting_ML_templates}</td>
           </tr>
         </tbody>
       </>

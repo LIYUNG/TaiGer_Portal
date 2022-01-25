@@ -9,11 +9,9 @@ import {
   Button,
   Card,
   Collapse,
-  Spinner,
   Modal,
 } from "react-bootstrap";
 import {
-  createManualFileUploadPlace,
   deleteManualFileUpload,
   uploadHandwrittenFileforstudent,
   downloadHandWrittenFile,
@@ -55,18 +53,6 @@ class EditorDocsProgress extends React.Component {
           student: resp.data.data,
           deleteFileWarningModel: false,
         }));
-      },
-      (error) => {}
-    );
-  };
-
-  createManualFileUploadPlaceholder = (studentId, applicationId, docName) => {
-    createManualFileUploadPlace(studentId, applicationId, docName).then(
-      (resp) => {
-        console.log(resp.data.data);
-        this.setState({
-          student: resp.data.data,
-        });
       },
       (error) => {}
     );
@@ -192,6 +178,28 @@ class EditorDocsProgress extends React.Component {
           >
             <div id="accordion1">
               <Card.Body>
+                <Row>
+                  <Col md={6}>
+                    <h6>Editor output</h6>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Student input</h6>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={8}>
+                    <h5>General Documents (CV, Recommendation Letters)</h5>
+                  </Col>
+                </Row>
+                <ManualFiles
+                  onDeleteFile={this.onDeleteFile}
+                  onFileChange={this.onFileChange}
+                  onSubmitFile={this.onSubmitFile}
+                  onDownloadFile={this.onDownloadFile}
+                  role={this.props.role}
+                  student={this.state.student}
+                  filetype={"General"}
+                />
                 {this.state.student.applications.map((application, i) => (
                   <>
                     <Row>
@@ -203,18 +211,8 @@ class EditorDocsProgress extends React.Component {
                         </h5>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col md={6}>
-                        <h6>Editor output</h6>
-                      </Col>
-                      <Col md={6}>
-                        <h6>Student input</h6>
-                      </Col>
-                    </Row>
+
                     <ManualFiles
-                      createManualFileUploadPlaceholder={
-                        this.createManualFileUploadPlaceholder
-                      }
                       onDeleteFile={this.onDeleteFile}
                       onFileChange={this.onFileChange}
                       onSubmitFile={this.onSubmitFile}
@@ -222,6 +220,7 @@ class EditorDocsProgress extends React.Component {
                       role={this.props.role}
                       student={this.state.student}
                       application={application}
+                      filetype={"ProgramSpecific"}
                     />
                   </>
                 ))}

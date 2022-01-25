@@ -17,24 +17,16 @@ const store = createStore(
 
 window.editortodolist = [
   {
-    name: "Waiting Template",
-    prop: "waitingtemplate",
+    name: "Waiting ML_Template",
+    prop: "waitingrltemplate",
   },
   {
-    name: "waiting Std Response",
-    prop: "checkprofiles",
+    name: "Waiting ML Response",
+    prop: "waitingmltemplate",
   },
   {
-    name: "Send Portal Instruction",
-    prop: "sendportalinstruction",
-  },
-  {
-    name: "Provide ML template",
+    name: "Provide ML Status",
     prop: "providemltemp",
-  },
-  {
-    name: "Provide RL template",
-    prop: "providerltemp",
   },
 ];
 

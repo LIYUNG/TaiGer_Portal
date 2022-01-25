@@ -43,7 +43,7 @@ class EditorMainView extends React.Component {
       <>
         <Row>
           <Col sm={12}>
-            <Card title="Agent: To Do">
+            <Card title="Editor: To Do">
               <Table responsive>
                 <thead>
                   <tr>

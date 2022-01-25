@@ -113,6 +113,10 @@ const applicationSchema = new Schema({
         type: Boolean,
         required: true,
       },
+      file_category: {
+        type: String,
+        default: "Others",
+      },
       path: {
         type: String,
         default: "",

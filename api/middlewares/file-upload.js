@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 const { Program } = require("../models/Program");
-const { Student } = require("../models/User");
+const { Student, User } = require("../models/User");
 
 const { ErrorResponse } = require("../common/errors");
 const { UPLOAD_PATH } = require("../config");
@@ -94,7 +94,10 @@ const upload = multer({
           "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
         )
       );
-
+    const fileSize = parseInt(req.headers["content-length"]);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, "File size is limited to 5 MB!"));
+    }
     cb(null, true);
   },
 });
@@ -157,7 +160,10 @@ const upload2 = multer({
           "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
         )
       );
-
+    const fileSize = parseInt(req.headers["content-length"]);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, "File size is limited to 5 MB!"));
+    }
     cb(null, true);
   },
 });
@@ -177,29 +183,29 @@ const storage3 = multer.diskStorage({
   filename: (req, file, cb) => {
     // TODO: check category exist
     let { studentId } = req.params;
-
-    Student.findOne({ _id: studentId })
-      .populate("applications.programId")
-      .lean()
-      .exec()
-      .then(function (student) {
-        if (student) {
-          let temp_name =
-            student.lastname +
-            "_" +
-            student.firstname +
-            "_" +
-            "TaiGerTranscriptAI" +
-            path.extname(file.originalname);
-          console.log(temp_name);
-          return {
-            fileName: temp_name,
-          };
-        }
-      })
-      .then(function (resp) {
-        cb(null, resp.fileName);
-      });
+    try {
+      User.findOne({ _id: studentId })
+        .then(function (student) {
+          if (student) {
+            let temp_name =
+              student.lastname +
+              "_" +
+              student.firstname +
+              "_" +
+              "TaiGerTranscriptAI" +
+              path.extname(file.originalname);
+            console.log(temp_name);
+            return {
+              fileName: temp_name,
+            };
+          }
+        })
+        .then(function (resp) {
+          cb(null, resp.fileName);
+        });
+    } catch (err) {
+      console.log(err);
+    }
 
     // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
   },
@@ -217,7 +223,10 @@ const upload3 = multer({
           "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
         )
       );
-
+    const fileSize = parseInt(req.headers["content-length"]);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, "File size is limited to 5 MB!"));
+    }
     cb(null, true);
   },
 });

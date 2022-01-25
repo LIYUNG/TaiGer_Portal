@@ -16,7 +16,6 @@ class ManualFiles extends React.Component {
               filetype={this.props.filetype}
               application={this.props.application}
               student={this.props.student}
-              category="application"
               onDownloadFile={this.props.onDownloadFile}
               onFileChange={this.props.onFileChange}
               onSubmitFile={this.props.onSubmitFile}
@@ -29,12 +28,11 @@ class ManualFiles extends React.Component {
             this.props.role === "Student" ? (
               <ToggleableUploadFileForm
                 role={this.props.role}
-                category="application"
                 student={this.props.student}
                 onFileChange={this.props.onFileChange}
                 onSubmitFile={this.props.onSubmitFile}
                 filetype={this.props.filetype}
-                // application={this.props.application}
+                application={this.props.application}
               />
             ) : (
               <></>
@@ -43,9 +41,9 @@ class ManualFiles extends React.Component {
         ) : (
           <>
             <ManualFilesList
+              filetype={this.props.filetype}
               application={this.props.application}
               student={this.props.student}
-              category="application"
               onDownloadFile={this.props.onDownloadFile}
               onFileChange={this.props.onFileChange}
               onSubmitFile={this.props.onSubmitFile}
@@ -58,10 +56,10 @@ class ManualFiles extends React.Component {
             this.props.role === "Student" ? (
               <ToggleableUploadFileForm
                 role={this.props.role}
-                category="application"
                 student={this.props.student}
                 onFileChange={this.props.onFileChange}
                 onSubmitFile={this.props.onSubmitFile}
+                filetype={this.props.filetype}
                 application={this.props.application}
               />
             ) : (

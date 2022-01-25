@@ -9,6 +9,7 @@ import {
   Card,
   Spinner,
 } from "react-bootstrap";
+import { IoMdCloudUpload } from "react-icons/io";
 
 import { transcriptanalyser, generatedFileDownload } from "../../api";
 
@@ -16,7 +17,6 @@ class UploadAndGenerate extends Component {
   // TODO: replace by database
   state = {
     isGenerated: false,
-    selected: "Please Select",
     isLoaded: false,
     error: null,
     file: "",
@@ -33,19 +33,9 @@ class UploadAndGenerate extends Component {
     this.setState({ category: e.target.value });
   };
 
-  onFileChange = (e) => {
-    e.preventDefault();
-    this.setState({
-      file: e.target.files[0],
-    });
-  };
-
   //from /upload
   submitFile = (e, category) => {
-    if (this.state.file === "") {
-      e.preventDefault();
-      alert("Please select file");
-    } else if (category === "Please Select") {
+    if (!this.state.category) {
       e.preventDefault();
       alert("Please select program group");
     } else {
@@ -54,7 +44,7 @@ class UploadAndGenerate extends Component {
       }));
       e.preventDefault();
       const formData = new FormData();
-      formData.append("file", this.state.file);
+      formData.append("file", e.target.files[0]);
       transcriptanalyser(
         this.props.user._id,
         this.state.category,
@@ -66,7 +56,6 @@ class UploadAndGenerate extends Component {
             console.log("res.generatedfile = " + res.data.generatedfile);
             this.setState((state) => ({
               ...state,
-              file: "",
               category: "",
               generatedfilename: res.data.generatedfile,
               generatedfileExisted: true,
@@ -76,7 +65,6 @@ class UploadAndGenerate extends Component {
             alert("Upload failed");
             this.setState((state) => ({
               ...state,
-              file: "",
               generatedfileExisted: false,
               isLoaded: true,
             }));
@@ -174,7 +162,7 @@ class UploadAndGenerate extends Component {
                       as="select"
                       onChange={(e) => this.handleSelect(e)}
                     >
-                      <option value="ee">Please Select</option>
+                      <option value="">Please Select</option>
                       <option value="ee">Electrical Engieering (ee)</option>
                       <option value="cs">Computer Science (cs)</option>
                       <option value="me">Mechanical Engineering (me)</option>
@@ -182,31 +170,19 @@ class UploadAndGenerate extends Component {
                   </Form.Group>
                 </Form>
               </Col>
-              <Col md={3}>
-                <Form
-                  onChange={(e) => this.onFileChange(e)}
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File>
-                    <Form.File.Input />
-                  </Form.File>
+              <Col md={2}>
+                {/* New*/}{" "}
+                <Form>
+                  <Form.File.Label
+                    onChange={(e) => this.submitFile(e)}
+                    onClick={(e) => (e.target.value = null)}
+                  >
+                    <Form.File.Input hidden />
+                    <IoMdCloudUpload size={32} />
+                  </Form.File.Label>
                 </Form>
               </Col>
               <Col md={2}>
-                <Form onSubmit={(e) => this.submitFile(e, this.state.category)}>
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <div className="form-group">
-                      <Button
-                        size="sm"
-                        className="btn btn-primary"
-                        type="submit"
-                        disabled={!this.state.isLoaded}
-                      >
-                        {this.state.isLoaded ? "Upload" : "Generating..."}
-                      </Button>
-                    </div>
-                  </Form.Group>
-                </Form>
               </Col>
               {this.state.generatedfileExisted ? (
                 <>

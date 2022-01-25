@@ -3,14 +3,7 @@ import DEMO from "../../store/constant";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
-import {
-  Row,
-  Col,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-} from "react-bootstrap";
+import { Row, Col, Button, Card, Collapse, Modal } from "react-bootstrap";
 import {
   deleteManualFileUpload,
   uploadHandwrittenFileforstudent,
@@ -54,7 +47,9 @@ class EditorDocsProgress extends React.Component {
           deleteFileWarningModel: false,
         }));
       },
-      (error) => {}
+      (error) => {
+        console.log(error);
+      }
     );
   };
 
@@ -78,42 +73,30 @@ class EditorDocsProgress extends React.Component {
       const formData = new FormData();
       formData.append("file", NewFile);
 
-      uploadHandwrittenFileforstudent(studentId, applicationId, formData).then(
-        (res) => {
+      uploadHandwrittenFileforstudent(studentId, applicationId, formData)
+        .then((res) => {
+          console.log(res.data);
           if (res.status === 400) {
-            alert("Uploading file failed. Same file name");
+            alert(res.data.message);
           } else {
-            console.log(res);
             this.setState({
               student: res.data.data, // res.data = {success: true, data:{...}}
               file: "",
             });
           }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
   onFileChange = (e, studentId, applicationId) => {
     this.onSubmitFile(e, e.target.files[0], studentId, applicationId);
-    // this.setState({
-    //   file: e.target.files[0],
-    // });
   };
   onDownloadFile(e, studentId, applicationId, docName, student_inputs) {
     e.preventDefault();
-    downloadHandWrittenFile(
-      studentId,
-      applicationId,
-      docName,
-      student_inputs
-    ).then(
-      (resp) => {
+    downloadHandWrittenFile(studentId, applicationId, docName, student_inputs)
+      .then((resp) => {
         console.log(resp);
         const actualFileName =
           resp.headers["content-disposition"].split('"')[1];
@@ -147,11 +130,10 @@ class EditorDocsProgress extends React.Component {
           // Clean up and remove the link
           link.parentNode.removeChild(link);
         }
-      },
-      (error) => {
+      })
+      .catch((err) => {
         alert("The file is not available.");
-      }
-    );
+      });
   }
 
   render() {
@@ -191,7 +173,7 @@ class EditorDocsProgress extends React.Component {
                     <h5>General Documents (CV, Recommendation Letters)</h5>
                   </Col>
                 </Row>
-                <ManualFiles
+                {/* <ManualFiles
                   onDeleteFile={this.onDeleteFile}
                   onFileChange={this.onFileChange}
                   onSubmitFile={this.onSubmitFile}
@@ -199,7 +181,7 @@ class EditorDocsProgress extends React.Component {
                   role={this.props.role}
                   student={this.state.student}
                   filetype={"General"}
-                />
+                /> */}
                 {this.state.student.applications.map((application, i) => (
                   <>
                     <Row>

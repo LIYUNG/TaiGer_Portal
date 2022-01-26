@@ -551,7 +551,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         }
       );
     } else {
-      student_input = student.generaldocs.student_inputs.find(
+      student_input = student.generaldocs.studentinputs.find(
         ({ name }) => name === docName
       );
       console.log(student_input);
@@ -566,7 +566,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         { _id: studentId },
         {
           $pull: {
-            "generaldocs.$.student_inputs": { name: docName },
+            "generaldocs.studentinputs": { name: docName },
           },
         }
       );

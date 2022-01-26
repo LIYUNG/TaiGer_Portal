@@ -93,8 +93,8 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
     params: { studentId },
     body: { isArchived },
   } = req;
-  console.log(isArchived);
-  console.log(studentId);
+  // console.log(isArchived);
+  // console.log(studentId);
   if (
     user.role === "Admin" ||
     user.role === "Agent" ||
@@ -115,7 +115,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
         })
           .populate("applications.programId agents editors")
           .lean();
-        console.log(students);
+        // console.log(students);
         res.status(200).send({ success: true, data: students });
       } else if (user.role === "Agent") {
         const students = await Student.find({
@@ -171,9 +171,8 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     params: { id: studentId },
     body: agentsId, // agentsId is json (or agentsId array with boolean)
   } = req;
-  console.log(agentsId);
   const keys = Object.keys(agentsId);
-  console.log(keys);
+  // console.log(keys);
   let updated_agent_id = [];
   for (let i = 0; i < keys.length; i++) {
     // const agent = await Agent.findById(({ agentsId }) => agentsId);
@@ -241,9 +240,8 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     params: { id: studentId },
     body: editorsId,
   } = req;
-  console.log(editorsId);
   const keys = Object.keys(editorsId);
-  console.log(keys);
+  // console.log(keys);
   let updated_editor_id = [];
   for (let i = 0; i < keys.length; i++) {
     // const agent = await Agent.findById(({ editorsId }) => editorsId);
@@ -362,15 +360,15 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   );
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  console.log(student.applications);
+  // console.log(student.applications);
   // console.log(applicationId);
   const idx = student.applications.findIndex(({ _id }) => _id == applicationId);
-  console.log(idx);
+  // console.log(idx);
 
   const application = student.applications.find(
     ({ _id }) => _id == applicationId
   );
-  console.log(application);
+  // console.log(application);
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
   // TODO: iteratively to remove files

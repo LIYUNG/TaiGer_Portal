@@ -38,7 +38,6 @@ class StudentMyself extends React.Component {
         }
       }
     } else {
-      console.log("no files");
     }
     studentDocOverview = keys.map((k, i) => {
       if (object_init[k] === "uploaded") {

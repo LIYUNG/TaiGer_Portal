@@ -52,8 +52,6 @@ class UploadAndGenerate extends Component {
       ).then(
         (res) => {
           if (res.status === 200) {
-            // alert("Upload success");
-            console.log("res.generatedfile = " + res.data.generatedfile);
             this.setState((state) => ({
               ...state,
               category: "",
@@ -94,13 +92,11 @@ class UploadAndGenerate extends Component {
         var filetype = actualFileName.split("."); //split file name
         filetype = filetype.pop(); //get the file type
         if (filetype === "pdf") {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: "application/pdf" })
           );
 
           //Open the URL on new Window
-          console.log(url);
           window.open(url); //TODO: having a reasonable file name, pdf viewer
         } else {
           //if not pdf, download instead.

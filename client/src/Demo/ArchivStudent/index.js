@@ -45,7 +45,6 @@ class Dashboard extends React.Component {
     getArchivStudents().then(
       (resp) => {
         console.log(resp.data);
-        console.log("Default.js rendered");
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, students: data, success: success });
       },

@@ -43,8 +43,8 @@ const storage = multer.diskStorage({
       .exec()
       .then(function (student) {
         if (student) {
-          console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
-          console.log(path.extname(file.originalname)); //.pdf
+          // console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
+          // console.log(path.extname(file.originalname)); //.pdf
           // console.log(student.applications);
           // console.log(student.lastname);
           // console.log(
@@ -83,7 +83,7 @@ const storage = multer.diskStorage({
         }
       })
       .then(function (resp) {
-        console.log(resp.fileName);
+        // console.log(resp.fileName);
         cb(null, resp.fileName);
       });
 
@@ -122,7 +122,6 @@ const storage2 = multer.diskStorage({
 
     // TODO: check studentId exist
     const directory = path.join(UPLOAD_PATH, studentId);
-    console.log(directory);
     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
 
     return cb(null, directory);
@@ -188,7 +187,6 @@ const storage3 = multer.diskStorage({
 
     // TODO: check studentId exist
     const directory = path.join(UPLOAD_PATH, studentId);
-    console.log(directory);
     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
 
     return cb(null, directory);
@@ -207,7 +205,7 @@ const storage3 = multer.diskStorage({
               "_" +
               "TaiGerTranscriptAI" +
               path.extname(file.originalname);
-            console.log(temp_name);
+            // console.log(temp_name);
             const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
             if (fs.existsSync(filePath))
               return cb(
@@ -267,8 +265,8 @@ const storage4 = multer.diskStorage({
     Student.findOne({ _id: studentId })
       .then(function (student) {
         if (student) {
-          console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
-          console.log(path.extname(file.originalname)); //.pdf
+          // console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
+          // console.log(path.extname(file.originalname)); //.pdf
           let temp_name =
             student.lastname +
             "_" +
@@ -291,7 +289,7 @@ const storage4 = multer.diskStorage({
         }
       })
       .then(function (resp) {
-        console.log(resp.fileName);
+        // console.log(resp.fileName);
         cb(null, resp.fileName);
       });
 

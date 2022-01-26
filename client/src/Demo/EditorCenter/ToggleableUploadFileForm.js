@@ -19,9 +19,9 @@ class ToggleableUploadFileForm extends Component {
               value={this.props.category}
             >
               <option value="">Please Select</option>
-              <option value="cvtemplate">CV Template</option>
-              <option value="rltemplate">RL Template</option>
-              <option value="others">Others</option>
+              <option value="CV_Template">CV Template</option>
+              <option value="RL_Template">RL Template</option>
+              <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>
         </Form>
@@ -35,9 +35,9 @@ class ToggleableUploadFileForm extends Component {
               value={this.props.category}
             >
               <option value="">Please Select</option>
-              <option value="cv">CV</option>
-              <option value="rl">RL</option>
-              <option value="others">Others</option>
+              <option value="CV">CV</option>
+              <option value="RL">RL</option>
+              <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>
         </Form>
@@ -52,10 +52,10 @@ class ToggleableUploadFileForm extends Component {
               value={this.props.category}
             >
               <option value="">Please Select</option>
-              <option value="mltemplate">ML Template</option>
-              <option value="essay">Essay</option>
-              <option value="scholarshipsform">Scholarship Form</option>
-              <option value="others">Others</option>
+              <option value="ML_Template_Filled">ML Template</option>
+              <option value="Essay_Draft">Essay</option>
+              <option value="Scholarship_Form">Scholarship Form</option>
+              <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>
         </Form>

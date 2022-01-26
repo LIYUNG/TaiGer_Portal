@@ -16,7 +16,6 @@ class ProgramListSubpage extends React.Component {
     getStudents().then(
       (resp) => {
         const { data: students, success } = resp.data;
-        console.log(students);
         this.setState({ data: students, success });
       },
       (error) => {

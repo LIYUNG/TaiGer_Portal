@@ -49,7 +49,6 @@ class Dashboard extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.user);
     getStudents().then(
       (resp) => {
         console.log(resp.data);
@@ -58,7 +57,6 @@ class Dashboard extends React.Component {
         this.setState({ isLoaded: true, students: data, success: success });
       },
       (error) => {
-        console.log(error);
         console.log(": " + error);
         this.setState({
           isLoaded: true,
@@ -102,13 +100,11 @@ class Dashboard extends React.Component {
         filetype = filetype.pop(); //get the file type
 
         if (filetype === "pdf") {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: "application/pdf" })
           );
 
           //Open the URL on new Window
-          console.log(url);
           window.open(url); //TODO: having a reasonable file name, pdf viewer
         } else {
           //if not pdf, download instead.
@@ -274,12 +270,10 @@ class Dashboard extends React.Component {
   };
 
   submitUpdateAgentlist = (updateAgentList, student_id) => {
-    console.log(updateAgentList + " " + student_id);
     this.UpdateAgentlist(updateAgentList, student_id);
   };
 
   submitUpdateEditorlist = (updateEditorList, student_id) => {
-    console.log(updateEditorList + " " + student_id);
     this.UpdateEditorlist(updateEditorList, student_id);
   };
 
@@ -321,7 +315,6 @@ class Dashboard extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
-        console.log(resp.data);
         console.log("Archiv index.js rendered");
         const { data, success } = resp.data;
         this.setState((state) => ({
@@ -332,7 +325,6 @@ class Dashboard extends React.Component {
         }));
       },
       (error) => {
-        console.log(error);
         console.log(": " + error);
         this.setState({
           isLoaded: true,
@@ -418,12 +410,9 @@ class Dashboard extends React.Component {
     let students = [...this.state.students];
 
     console.log(students);
-    // var std = { ...this.state.student };
-    // console.log(std);
     updateDocumentStatus(category, student_id, status).then(
       (res) => {
         students[student_arrayidx] = res.data.data;
-        // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
         this.setState({
           students: students,
         });

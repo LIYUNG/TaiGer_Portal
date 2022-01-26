@@ -103,7 +103,7 @@ window.documentlist2 = {
   Bachelor_Transcript: "B.Sc. Trans",
   High_School_Diploma: "H. Sch. Dipl.",
   High_School_Transcript: "H. Sch. Trans",
-  University_Entrance_Examination: "GSAT/SAT",
+  University_Entrance_Examination_GSAT: "GSAT/SAT",
   Englisch_Certificate: "TOEFL/IELTS",
   German_Certificate: "TestDaF/B2/C1",
   ECTS_Conversion: "ECTS Conv.",

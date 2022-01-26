@@ -4,6 +4,8 @@ import axios from 'axios'
 const BASE_URL = process.env.BASE_URL || "https://localhost:3000";
 // const BASE_URL = "http://54.214.118.145:3000";
 // const BASE_URL = "https://54.214.118.145";
+// const BASE_URL = "https://ec2-54-214-118-145.us-west-2.compute.amazonaws.com";
+// const BASE_URL = "http://ec2-54-214-118-145.us-west-2.compute.amazonaws.com";
 
 const request = axios.create({
   baseURL: BASE_URL,

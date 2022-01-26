@@ -48,7 +48,6 @@ class EditFilesSubpage extends React.Component {
         }
       }
     } else {
-      console.log("no files");
     }
     let documentlist22;
     documentlist22 = keys2.map((k, i) => {

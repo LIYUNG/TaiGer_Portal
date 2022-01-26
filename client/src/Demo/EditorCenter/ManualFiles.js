@@ -14,8 +14,7 @@ class ManualFiles extends React.Component {
     fileCategory
   ) => {
     e.preventDefault();
-    console.log(this.state.category);
-    console.log(e.target.files);
+    // console.log(e.target.files);
     if (!this.state.category) {
       alert("Please select file type");
     } else {
@@ -30,8 +29,7 @@ class ManualFiles extends React.Component {
   };
   handleGeneralDocSubmit = (e, studentId, fileCategory) => {
     e.preventDefault();
-    console.log(this.state.category);
-    console.log(e.target.files);
+    // console.log(e.target.files);
     if (!this.state.category) {
       alert("Please select file type");
     } else {
@@ -41,7 +39,7 @@ class ManualFiles extends React.Component {
   };
   handleSelect = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
+    // console.log(e.target.value);
     this.setState({ category: e.target.value });
   };
   render() {

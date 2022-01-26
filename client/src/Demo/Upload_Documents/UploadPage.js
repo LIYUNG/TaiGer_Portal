@@ -34,10 +34,7 @@ class UploadPage extends React.Component {
   componentDidMount() {
     getMyfiles(this.props.user._id).then(
       (resp) => {
-        console.log(this.props.user._id);
-        console.log(resp.data);
         const { data: student, success } = resp.data;
-        console.log(success);
         this.setState({
           file: "",
           isLoaded: true,
@@ -86,15 +83,12 @@ class UploadPage extends React.Component {
 
   onSubmitFile = (e, studentId, docName) => {
     const formData = new FormData();
-    console.log(studentId);
-    console.log(docName);
     formData.append("file", this.state.file);
     upload(studentId, docName, formData).then(
       (res) => {
         // console.log(res)
         if (res.data.success) {
-          // alert("Upload success");
-          console.log("Upload success");
+          // console.log("Upload success");
           this.setState({
             file: "",
             isLoaded: false,
@@ -169,13 +163,11 @@ class UploadPage extends React.Component {
         console.log("actualFileName " + actualFileName);
 
         if (filetype === "pdf") {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: "application/pdf" })
           );
 
           //Open the URL on new Window
-          console.log(url);
           var newWindow = window.open(url, "_blank"); //TODO: having a reasonable file name, pdf viewer
           newWindow.document.title = actualFileName;
         } else {
@@ -213,13 +205,11 @@ class UploadPage extends React.Component {
         var filetype = actualFileName.split("."); //split file name
         filetype = filetype.pop(); //get the file type
         if (filetype === "pdf") {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: "application/pdf" })
           );
 
           //Open the URL on new Window
-          console.log(url);
           window.open(url); //TODO: having a reasonable file name, pdf viewer
         } else {
           //if not pdf, download instead.

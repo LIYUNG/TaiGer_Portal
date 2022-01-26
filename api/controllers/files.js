@@ -8,9 +8,15 @@ const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 const { DocumentStatus } = require("../constants");
 const {
-  sendUploadedFilesEmail,
+  sendEditorOutputGeneralFilesEmailToStudent,
+  sendUploadedProgramSpecificFilesEmail,
+  sendEditorOutputProgramSpecificFilesEmailToStudent,
+  sendUploadedGeneralFilesEmail,
+  sendUploadedProfileFilesEmail,
   sendUploadedFilesRemindForAgentEmail,
+  sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedFilesRemindForEditorEmail,
+  sendUploadedGeneralFilesRemindForEditorEmail,
   sendChangedFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,
@@ -34,14 +40,19 @@ const getMyfiles = asyncHandler(async (req, res) => {
 const saveFilePath = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { studentId, applicationId },
+    params: { studentId, applicationId, fileCategory },
     file: { filename },
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate("applications.programId")
-    .populate("students agents editors", "firstname lastname email");
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+  const student2 = await Student.findById({ _id: studentId })
+    .populate("applications.programId")
+    .lean()
+    .exec();
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   // console.log(student);
   const application = student.applications.find(
@@ -51,58 +62,93 @@ const saveFilePath = asyncHandler(async (req, res) => {
     ({ programId }) => programId._id == applicationId
   );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
-  let document;
-  let student_input_doc;
+
+  var student_input_doc;
+  var editor_output_doc;
   if (user.role == Role.Student) {
     student_input_doc = application.student_inputs.find(
       ({ name }) => name === req.file.filename
     );
     if (student_input_doc)
       throw new ErrorResponse(400, "Document already existed!");
-    // if (!student_input_doc) throw new ErrorResponse(400, "Invalid student_input_doc name");
     student_input_doc = application.student_inputs.create({
       name: req.file.filename,
-    }); //TODO: and rename file name
+    });
     student_input_doc.status = DocumentStatus.Uploaded;
     student_input_doc.path = req.file.path.replace(UPLOAD_PATH, "");
     student_input_doc.required = true;
     student_input_doc.updatedAt = new Date();
-    student.applications[idx].student_inputs.push(student_input_doc); //TODO: and rename file name
+    student.applications[idx].student_inputs.push(student_input_doc);
     await student.save();
     res.status(201).send({ success: true, data: student });
-  } else {
-    document = application.documents.find(
-      ({ name }) => name === req.file.filename
+
+    await sendUploadedProgramSpecificFilesEmail(
+      // Upload success confirmation.
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        uploaded_documentname: student_input_doc.name,
+        uploaded_updatedAt: student_input_doc.updatedAt,
+        university_name: student2.applications[idx].programId.University_,
+        program_name: student2.applications[idx].programId.Program_,
+      }
     );
-    if (document) throw new ErrorResponse(400, "Document already existed!");
-    // if (!document) throw new ErrorResponse(400, "Invalid document name");
-    document = application.documents.create({ name: req.file.filename }); //TODO: and rename file name
-    document.status = DocumentStatus.Uploaded;
-    document.path = req.file.path.replace(UPLOAD_PATH, "");
-    document.required = true;
-    document.updatedAt = new Date();
-    student.applications[idx].documents.push(document); //TODO: and rename file name
-
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-  }
-
-  await sendUploadedFilesEmail({
-    firstname: student.firstname,
-    lastname: student.lastname,
-    address: student.email,
-  });
-  //Reminder for Editor:
-  console.log(student.editors);
-  if (user.role == Role.Student) {
     for (let i = 0; i < student.editors.length; i++) {
       console.log(i);
-      await sendUploadedFilesRemindForEditorEmail({
-        firstname: student.editors[i].firstname,
-        lastname: student.editors[i].lastname,
-        address: student.editors[i].email,
-      });
+      await sendUploadedFilesRemindForEditorEmail(
+        {
+          firstname: student.editors[i].firstname,
+          lastname: student.editors[i].lastname,
+          address: student.editors[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          fileCategory: fileCategory,
+          uploaded_documentname: student_input_doc.name,
+          uploaded_updatedAt: student_input_doc.updatedAt,
+          university_name: student2.applications[idx].programId.University_,
+          program_name: student2.applications[idx].programId.Program_,
+        }
+      );
     }
+  } else {
+    editor_output_doc = application.documents.find(
+      ({ name }) => name === req.file.filename
+    );
+    if (editor_output_doc)
+      throw new ErrorResponse(400, "Document already existed!");
+    editor_output_doc = application.documents.create({
+      name: req.file.filename,
+    });
+    editor_output_doc.status = DocumentStatus.Uploaded;
+    editor_output_doc.path = req.file.path.replace(UPLOAD_PATH, "");
+    editor_output_doc.required = true;
+    editor_output_doc.updatedAt = new Date();
+    student.applications[idx].documents.push(editor_output_doc);
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+
+    await sendEditorOutputProgramSpecificFilesEmailToStudent(
+      // Upload success confirmation.
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        fileCategory: fileCategory,
+        uploaded_documentname: editor_output_doc.name,
+        uploaded_updatedAt: editor_output_doc.updatedAt,
+        university_name: student2.applications[idx].programId.University_,
+        program_name: student2.applications[idx].programId.Program_,
+      }
+    );
+
+    // TODO: Inform editor themselves as well?
   }
 });
 
@@ -118,9 +164,8 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
     .populate("applications.programId")
     .populate("students agents editors", "firstname lastname email");
   if (!student) throw new ErrorResponse(400, "Invalid student id");
-
-  let editor_output_doc;
-  let student_input_doc;
+  var editor_output_doc;
+  var student_input_doc;
   if (user.role == Role.Student) {
     student_input_doc = student.generaldocs.studentinputs.find(
       ({ name }) => name === req.file.filename
@@ -137,6 +182,24 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
     student.generaldocs.studentinputs.push(student_input_doc); //TODO: and rename file name
     await student.save();
     res.status(201).send({ success: true, data: student });
+
+    for (let i = 0; i < student.editors.length; i++) {
+      console.log(i);
+      await sendUploadedGeneralFilesRemindForEditorEmail(
+        {
+          firstname: student.editors[i].firstname,
+          lastname: student.editors[i].lastname,
+          address: student.editors[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          uploaded_documentname: student_input_doc.name,
+          uploaded_updatedAt: student_input_doc.updatedAt,
+          fileCategory: fileCategory,
+        }
+      );
+    }
   } else {
     editor_output_doc = student.generaldocs.editoroutputs.find(
       ({ name }) => name === req.file.filename
@@ -154,24 +217,25 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
 
     await student.save();
     res.status(201).send({ success: true, data: student });
+    await sendEditorOutputGeneralFilesEmailToStudent(
+      // Upload success confirmation.
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        uploaded_documentname: editor_output_doc.name,
+        uploaded_updatedAt: editor_output_doc.updatedAt,
+        fileCategory: fileCategory,
+      }
+    );
+    //TODO: uploaded file confirmation for editor?
   }
 
-  await sendUploadedFilesEmail({
-    firstname: student.firstname,
-    lastname: student.lastname,
-    address: student.email,
-  });
   //Reminder for Editor:
   console.log(student.editors);
   if (user.role == Role.Student) {
-    for (let i = 0; i < student.editors.length; i++) {
-      console.log(i);
-      await sendUploadedFilesRemindForEditorEmail({
-        firstname: student.editors[i].firstname,
-        lastname: student.editors[i].lastname,
-        address: student.editors[i].email,
-      });
-    }
   }
 });
 
@@ -187,7 +251,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       : await Student.findById(studentId).populate("applications.programId");
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   // console.log(student);
-  let document = student.profile.find(({ name }) => name === category);
+  var document = student.profile.find(({ name }) => name === category);
   if (!document) {
     document = student.profile.create({ name: category });
     document.status = DocumentStatus.Uploaded;
@@ -201,20 +265,34 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
 
     res.status(201).send({ success: true, data: student });
 
-    await sendUploadedFilesEmail({
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email,
-    });
+    await sendUploadedProfileFilesEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        uploaded_documentname: document.name.replaceAll("_", " "),
+        uploaded_updatedAt: document.updatedAt,
+      }
+    );
     console.log(student.agents);
     if (user.role == Role.Student) {
       for (let i = 0; i < student.agents.length; i++) {
         console.log(i);
-        await sendUploadedFilesRemindForAgentEmail({
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email,
-        });
+        await sendUploadedProfileFilesRemindForAgentEmail(
+          {
+            firstname: student.agents[i].firstname,
+            lastname: student.agents[i].lastname,
+            address: student.agents[i].email,
+          },
+          {
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
+            uploaded_documentname: document.name.replaceAll("_", " "),
+            uploaded_updatedAt: document.updatedAt,
+          }
+        );
       }
     }
     return;
@@ -225,27 +303,39 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   console.log(req.file.path);
   document.path = req.file.path.replace(UPLOAD_PATH, "");
   console.log(document.path);
-  // document.path = req.file.path.replace(UPLOAD_PATH, "");
-  // const document = student.profile.find(({ name }) => name === docName);
   await student.save();
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
-  await sendUploadedFilesEmail({
-    firstname: student.firstname,
-    lastname: student.lastname,
-    address: student.email,
-  });
+  await sendUploadedProfileFilesEmail(
+    {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email,
+    },
+    {
+      uploaded_documentname: document.name.replaceAll("_", " "),
+      uploaded_updatedAt: document.updatedAt,
+    }
+  );
   //Reminder for Agent:
   console.log(student.agents);
   if (user.role == Role.Student) {
     for (let i = 0; i < student.agents.length; i++) {
       console.log(i);
-      await sendUploadedFilesRemindForAgentEmail({
-        firstname: student.agents[i].firstname,
-        lastname: student.agents[i].lastname,
-        address: student.agents[i].email,
-      });
+      await sendUploadedProfileFilesRemindForAgentEmail(
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          uploaded_documentname: document.name.replaceAll("_", " "),
+          uploaded_updatedAt: document.updatedAt,
+        }
+      );
     }
   }
 });
@@ -411,7 +501,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   });
   if (!student)
     throw new ErrorResponse(400, "Invalid student Id or application Id");
-  let document = student.profile.find(({ name }) => name === category);
+  var document = student.profile.find(({ name }) => name === category);
   try {
     if (!document) {
       document = student.profile.create({ name: category });
@@ -450,7 +540,7 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  let student = await Student.findById(studentId).populate(
+  var student = await Student.findById(studentId).populate(
     "applications.programId"
   );
   if (!student) throw new ErrorResponse(400, "Invalid student id");
@@ -467,8 +557,8 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
-  let document;
-  let student_input;
+  var document;
+  var student_input;
   if (student_inputs === "editor") {
     document = application.documents.find(({ name }) => name === docName);
     console.log(document);
@@ -522,13 +612,13 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  let student = await Student.findById(studentId).populate(
+  var student = await Student.findById(studentId).populate(
     "applications.programId"
   );
   if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  let document;
-  let student_input;
+  var document;
+  var student_input;
   try {
     if (student_inputs === "editor") {
       document = student.generaldocs.editoroutputs.find(

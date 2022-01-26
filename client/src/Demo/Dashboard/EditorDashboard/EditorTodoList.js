@@ -28,7 +28,6 @@ class EditorTodoList extends React.Component {
         }
       }
     } else {
-      console.log("no files");
     }
     let waiting_RL_templates = this.props.student.applications.map(
       (application, i) => {

@@ -24,7 +24,6 @@ class UploadFileForm extends React.Component {
   };
 
   render() {
-    console.log(this.props.student);
     const submitText = this.props.student._id ? "Update" : "Create";
 
     return (

@@ -19,10 +19,8 @@ class EditUploadFilesSubpage extends React.Component {
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = "missing";
     }
-    console.log(this.props.student.profile);
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
-        console.log(i);
         if (this.props.student.profile[i].status === "uploaded") {
           object_init[this.props.student.profile[i].name] = "uploaded";
         } else if (this.props.student.profile[i].status === "accepted") {
@@ -34,9 +32,7 @@ class EditUploadFilesSubpage extends React.Component {
         }
       }
     } else {
-      console.log("no files");
     }
-    console.log(object_init);
     let documentlist22;
     documentlist22 = keys2.map((k, i) => {
       if (object_init[k] === "uploaded") {

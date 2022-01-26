@@ -20,7 +20,6 @@ class Application extends Component {
     role: "Guest",
   };
   componentDidMount() {
-    console.log("get article");
     getApplicationArticle().then(
       (resp) => {
         if (resp.status === 200) {
@@ -49,8 +48,6 @@ class Application extends Component {
   };
 
   createArticle = (article) => {
-    console.log("click create new article");
-    console.log(article);
     let article_temp = {};
     Object.assign(article_temp, {
       Titel_: article.Titel_,
@@ -65,11 +62,9 @@ class Application extends Component {
         const {
           data: { documents },
         } = resp;
-        console.log(JSON.stringify(documents));
         this.setState({
           articles: this.state.articles.concat(documents),
         });
-        console.log(this.state.articles);
       },
       (error) => {
         this.setState({
@@ -96,8 +91,6 @@ class Application extends Component {
     });
 
     //update article
-    console.log("click update article");
-    console.log(attrs);
     let article_temp = {};
     Object.assign(article_temp, {
       //remove _id
@@ -109,7 +102,6 @@ class Application extends Component {
     updateDoc(attrs._id, article_temp).then(
       (result) => {},
       (error) => {
-        console.log(" error at updateArticle" + error);
         this.setState({
           isLoaded: false,
           error,
@@ -129,8 +121,6 @@ class Application extends Component {
       ),
     });
 
-    console.log("click submit article");
-    console.log(articleId);
     deleteDoc(articleId).then(
       (result) => {},
       (error) => {

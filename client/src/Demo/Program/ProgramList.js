@@ -23,8 +23,8 @@ class Programlist extends React.Component {
   handleChange2 = (e) => {
     const { value } = e.target;
     // console.log("std_id " + value)
-    console.log("program_id " + this.state.program_id);
-    console.log("student_id " + value);
+    // console.log("program_id " + this.state.program_id);
+    // console.log("student_id " + value);
     this.setState((state) => ({
       StudentId: value,
     }));
@@ -34,11 +34,10 @@ class Programlist extends React.Component {
     e.preventDefault();
     const program_id = this.state.program_id;
     const student_id = this.state.StudentId;
-    console.log("before submit");
-    console.log("program_id " + this.state.program_id);
-    console.log("student_id " + this.state.StudentId);
+    // console.log("before submit");
+    // console.log("program_id " + this.state.program_id);
+    // console.log("student_id " + this.state.StudentId);
     this.props.assignProgram({ student_id, program_id });
-    console.log("click assign");
     this.setState({
       modalShow: false,
     });
@@ -47,11 +46,10 @@ class Programlist extends React.Component {
   onSubmit3 = (e, UserId, program_id, uni_name, program_name) => {
     // e.preventDefault();
     const student_id = UserId;
-    console.log("before submit");
-    console.log("program_id " + this.state.program_id);
-    console.log("UserId " + UserId);
+    // console.log("before submit");
+    // console.log("program_id " + this.state.program_id);
+    // console.log("UserId " + UserId);
     this.props.assignProgram({ student_id, program_id });
-    console.log("click assign");
     this.setState({
       modalShowNAddMyWatchList: true,
       uni_name: uni_name,
@@ -90,7 +88,6 @@ class Programlist extends React.Component {
   };
 
   NewProgram = () => {
-    console.log("click NewProgram");
     this.setState({
       modalShowNewProgram: true,
     });

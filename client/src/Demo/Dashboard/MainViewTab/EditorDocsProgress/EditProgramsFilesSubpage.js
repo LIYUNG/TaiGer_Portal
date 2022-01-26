@@ -59,7 +59,6 @@ class EditProgramsFilesSubpage extends React.Component {
         formData
       ).then(
         (res) => {
-          console.log(res);
           this.setState({
             student: res.data.data, // res.data = {success: true, data:{...}}
             file: "",
@@ -79,7 +78,6 @@ class EditProgramsFilesSubpage extends React.Component {
     e.preventDefault();
     downloadHandWrittenFile(studentId, applicationId, docName).then(
       (resp) => {
-        console.log(resp);
         const actualFileName =
           resp.headers["content-disposition"].split('"')[1];
         const { data: blob } = resp;
@@ -89,13 +87,11 @@ class EditProgramsFilesSubpage extends React.Component {
         filetype = filetype.pop(); //get the file type
 
         if (filetype === "pdf") {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: "application/pdf" })
           );
 
           //Open the URL on new Window
-          console.log(url);
           window.open(url); //TODO: having a reasonable file name, pdf viewer
         } else {
           //if not pdf, download instead.

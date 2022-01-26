@@ -32,8 +32,6 @@ class StudDocsDashboard extends React.Component {
   };
 
   startEditingAgent = (student) => {
-    console.log("startEditingAgent");
-    console.log(student);
     this.props.editAgent(student);
     this.setState({
       subpage: 1,
@@ -48,8 +46,6 @@ class StudDocsDashboard extends React.Component {
   };
 
   startEditingEditor = (student) => {
-    console.log("startEditingEditor");
-    console.log(student);
     this.props.editEditor(student);
     this.setState({
       subpage: 2,
@@ -64,7 +60,6 @@ class StudDocsDashboard extends React.Component {
   };
 
   startEditingProgram = () => {
-    console.log("startEditingProgram");
     this.setState({
       showProgramPage: true,
     });
@@ -77,7 +72,6 @@ class StudDocsDashboard extends React.Component {
   };
 
   startUploadfile = () => {
-    console.log("startUploadfile");
     this.setState({
       showFilePage: true,
     });
@@ -109,7 +103,6 @@ class StudDocsDashboard extends React.Component {
         }
       }
     } else {
-      console.log("no files");
     }
 
     studentDocOverview = keys.map((k, i) => {

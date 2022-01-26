@@ -31,7 +31,7 @@ function AdminLayout(props) {
   });
 
   useEffect(() => {
-    console.log("useEffect");
+    // console.log("useEffect");
     verify().then((resp) => {
       // console.log(resp.data);
       const { data, success } = resp.data;
@@ -57,10 +57,10 @@ function AdminLayout(props) {
 
   const handleOnClickLogout = (e) => {
     e.preventDefault();
-    console.log("click logout");
+    // console.log("click logout");
     logout().then(
       (resp) => {
-        console.log(resp.data);
+        // console.log(resp.data);
         setUserdata((state) => ({
           ...state,
           data: null,

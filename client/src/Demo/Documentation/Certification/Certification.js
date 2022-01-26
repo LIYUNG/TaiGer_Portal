@@ -48,8 +48,6 @@ class Certification extends Component {
   };
 
   createArticle = (article) => {
-    console.log("click create new article");
-    console.log(article);
     let article_temp = {};
     Object.assign(article_temp, {
       Titel_: article.Titel_,
@@ -64,11 +62,9 @@ class Certification extends Component {
         const {
           data: { documents },
         } = resp;
-        console.log(JSON.stringify(documents));
         this.setState({
           articles: this.state.articles.concat(documents),
         });
-        console.log(this.state.articles);
       },
       (error) => {
         this.setState({
@@ -100,8 +96,6 @@ class Certification extends Component {
       }),
     });
     //update article
-    console.log("click update article");
-    console.log(attrs);
     let article_temp = {};
     Object.assign(article_temp, {
       //remove _id
@@ -134,8 +128,6 @@ class Certification extends Component {
       ),
     });
 
-    console.log("click submit article");
-    console.log(articleId);
     deleteDoc(articleId).then(
       (result) => {},
       (error) => {

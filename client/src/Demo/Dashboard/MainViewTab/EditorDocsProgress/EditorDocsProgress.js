@@ -19,7 +19,6 @@ class EditorDocsProgress extends React.Component {
   };
 
   startUploadfile = () => {
-    console.log("startUploadfile");
     this.setState({
       showFilePage: true,
     });
@@ -56,7 +55,6 @@ class EditorDocsProgress extends React.Component {
     } else {
       // e.preventDefault();
       let stud = { ...this.state.student };
-      console.log(category);
       // stud.uploadedDocs_[category].uploadStatus_ = "uploaded";
       this.onSubmitFile(e, category, student_id, this.state.file);
       this.setState({
@@ -69,7 +67,6 @@ class EditorDocsProgress extends React.Component {
   onRejectFilefromstudent = (e, category, id) => {
     let stud = { ...this.state.student };
     stud.uploadedDocs_[category].uploadStatus_ = "unaccepted";
-    console.log(stud);
     this.props.onRejectFilefromstudent(e, category, id);
     this.setState({
       student: stud,
@@ -79,7 +76,6 @@ class EditorDocsProgress extends React.Component {
   onAcceptFilefromstudent = (e, category, id) => {
     let stud = { ...this.state.student };
     stud.uploadedDocs_[category].uploadStatus_ = "checked";
-    console.log(stud);
     this.props.onAcceptFilefromstudent(e, category, id);
     this.setState({
       student: stud,
@@ -90,7 +86,6 @@ class EditorDocsProgress extends React.Component {
     // TODO: delete this.state.student[document]
     let stud = { ...this.state.student };
     delete stud.uploadedDocs_[category];
-    console.log(stud);
     this.props.onDeleteFilefromstudent(e, category, id);
     this.setState({
       student: stud,

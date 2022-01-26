@@ -24,8 +24,6 @@ class GuestMyself extends React.Component {
   };
 
   startEditingAgent = (student) => {
-    console.log("startEditingAgent");
-    console.log(student);
     this.props.editAgent(student);
     this.setState({
       subpage: 1,
@@ -40,8 +38,6 @@ class GuestMyself extends React.Component {
   };
 
   startEditingEditor = (student) => {
-    console.log("startEditingEditor");
-    console.log(student);
     this.props.editEditor(student);
     this.setState({
       subpage: 2,
@@ -56,7 +52,6 @@ class GuestMyself extends React.Component {
   };
 
   startEditingProgram = () => {
-    console.log("startEditingProgram");
     this.setState({
       showProgramPage: true,
     });
@@ -69,7 +64,6 @@ class GuestMyself extends React.Component {
   };
 
   startUploadfile = () => {
-    console.log("startUploadfile");
     this.setState({
       showFilePage: true,
     });
@@ -106,8 +100,6 @@ class GuestMyself extends React.Component {
     } else {
       // e.preventDefault();
       let stud = { ...this.state.student };
-      console.log(category);
-      // stud.uploadedDocs_[category].uploadStatus_ = "uploaded";
       this.onSubmitFile(e, category, student_id, this.state.file);
       this.setState({
         student: stud,
@@ -119,7 +111,6 @@ class GuestMyself extends React.Component {
   onRejectFilefromstudent = (e, category, id) => {
     let stud = { ...this.state.student };
     stud.uploadedDocs_[category].uploadStatus_ = "unaccepted";
-    console.log(stud);
     this.props.onRejectFilefromstudent(e, category, id);
     this.setState({
       student: stud,
@@ -129,7 +120,6 @@ class GuestMyself extends React.Component {
   onAcceptFilefromstudent = (e, category, id) => {
     let stud = { ...this.state.student };
     stud.uploadedDocs_[category].uploadStatus_ = "checked";
-    console.log(stud);
     this.props.onAcceptFilefromstudent(e, category, id);
     this.setState({
       student: stud,
@@ -140,7 +130,6 @@ class GuestMyself extends React.Component {
     // TODO: delete this.state.student[document]
     let stud = { ...this.state.student };
     delete stud.uploadedDocs_[category];
-    console.log(stud);
     this.props.onDeleteFilefromstudent(e, category, id);
     this.setState({
       student: stud,

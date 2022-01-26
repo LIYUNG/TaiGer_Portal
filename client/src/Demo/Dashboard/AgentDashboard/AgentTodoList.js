@@ -28,7 +28,6 @@ class AgentTodoList extends React.Component {
         }
       }
     } else {
-      console.log("no files");
     }
     let missing_profiles = keys.map((key, i) => {
       if (object_init[key] !== "accepted" && object_init[key] !== "notneeded") {

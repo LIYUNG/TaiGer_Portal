@@ -6,18 +6,21 @@ const {
   fileUpload,
   ProfilefileUpload,
   TranscriptExcelUpload,
+  EditGeneralDocsUpload,
 } = require("../middlewares/file-upload");
 
 const {
   getMyfiles,
-  createFilePlaceholderForProgram,
   saveFilePath,
+  saveGeneralFilePath,
   saveProfileFilePath,
   downloadProfileFile,
   downloadTemplateFile,
   downloadFile,
+  downloadGeneralFile,
   deleteProfileFile,
   deleteFile,
+  deleteGeneralFile,
   processTranscript,
   downloadXLSX,
 } = require("../controllers/files");
@@ -33,15 +36,18 @@ router
 
 router
   .route(
-    "/files/placeholder/:studentId/:applicationId/:docName/:student_inputs"
+    "/files/programspecific/upload/:studentId/:applicationId/:fileCategory"
   )
-  .put(
+  .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    createFilePlaceholderForProgram
+    fileUpload,
+    saveFilePath
   );
 
 router
-  .route("/files/:studentId/:applicationId/:docName/:student_inputs")
+  .route(
+    "/files/programspecific/:studentId/:applicationId/:docName/:student_inputs"
+  )
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
@@ -49,11 +55,25 @@ router
   );
 
 router
-  .route("/files/upload/:studentId/:applicationId")
+  .route("/files/general/upload/:studentId/:fileCategory")
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    fileUpload,
-    saveFilePath
+    EditGeneralDocsUpload,
+    saveGeneralFilePath
+  );
+
+router
+  .route("/files/general/:student_inputs/:studentId/:docName")
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    downloadGeneralFile
+    // (req, res, next) => {
+    //   res.status(200);
+    // }
+  )
+  .delete(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    deleteGeneralFile
   );
 
 router

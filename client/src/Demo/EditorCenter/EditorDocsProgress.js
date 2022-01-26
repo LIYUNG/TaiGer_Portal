@@ -6,8 +6,11 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { Row, Col, Button, Card, Collapse, Modal } from "react-bootstrap";
 import {
   deleteManualFileUpload,
+  deleteGenralFileUpload,
   uploadHandwrittenFileforstudent,
+  uploadEditGeneralFileforstudent,
   downloadHandWrittenFile,
+  downloadGeneralHandWrittenFile,
 } from "../../api";
 import ManualFiles from "./ManualFiles";
 
@@ -53,6 +56,39 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
+  ConfirmDeleteGeneralFileHandler = () => {
+    deleteGenralFileUpload(
+      this.state.studentId,
+      this.state.docName,
+      this.state.whoupdate,
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        this.setState((state) => ({
+          ...state,
+          studentId: "",
+          applicationId: "",
+          docName: "",
+          whoupdate: "",
+          student: resp.data.data,
+          deleteFileWarningModel: false,
+        }));
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+  onDeleteGeneralFile = (studentId, docName, whoupdate) => {
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      docName,
+      whoupdate,
+      filetype: "General",
+      deleteFileWarningModel: true,
+    }));
+  };
   onDeleteFile = (studentId, applicationId, docName, whoupdate) => {
     this.setState((state) => ({
       ...state,
@@ -60,11 +96,18 @@ class EditorDocsProgress extends React.Component {
       applicationId,
       docName,
       whoupdate,
+      filetype: "ProgramSpecific",
       deleteFileWarningModel: true,
     }));
   };
 
-  onSubmitFile = (e, NewFile, studentId, applicationId) => {
+  onSubmitProgramSpecificFile = (
+    e,
+    NewFile,
+    studentId,
+    applicationId,
+    fileCategory
+  ) => {
     if (NewFile === "") {
       e.preventDefault();
       alert("Please select file");
@@ -73,7 +116,12 @@ class EditorDocsProgress extends React.Component {
       const formData = new FormData();
       formData.append("file", NewFile);
 
-      uploadHandwrittenFileforstudent(studentId, applicationId, formData)
+      uploadHandwrittenFileforstudent(
+        studentId,
+        applicationId,
+        fileCategory,
+        formData
+      )
         .then((res) => {
           console.log(res.data);
           if (res.status === 400) {
@@ -90,10 +138,55 @@ class EditorDocsProgress extends React.Component {
         });
     }
   };
-  onFileChange = (e, studentId, applicationId) => {
-    this.onSubmitFile(e, e.target.files[0], studentId, applicationId);
+
+  onSubmitGeneralFile = (e, NewFile, studentId, fileCategory) => {
+    if (NewFile === "") {
+      e.preventDefault();
+      alert("Please select file");
+    } else {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("file", NewFile);
+
+      uploadEditGeneralFileforstudent(studentId, fileCategory, formData)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status === 400) {
+            alert(res.data.message);
+          } else {
+            this.setState({
+              student: res.data.data, // res.data = {success: true, data:{...}}
+              file: "",
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
-  onDownloadFile(e, studentId, applicationId, docName, student_inputs) {
+
+  SubmitProgramSpecificFile = (e, studentId, applicationId, fileCategory) => {
+    this.onSubmitProgramSpecificFile(
+      e,
+      e.target.files[0],
+      studentId,
+      applicationId,
+      fileCategory
+    );
+  };
+
+  SubmitGeneralFile = (e, studentId, fileCategory) => {
+    this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
+  };
+
+  onDownloadProgramSpecificFile = (
+    e,
+    studentId,
+    applicationId,
+    docName,
+    student_inputs
+  ) => {
     e.preventDefault();
     downloadHandWrittenFile(studentId, applicationId, docName, student_inputs)
       .then((resp) => {
@@ -134,8 +227,49 @@ class EditorDocsProgress extends React.Component {
       .catch((err) => {
         alert("The file is not available.");
       });
-  }
+  };
+  onDownloadGeneralFile = (e, studentId, docName, student_inputs) => {
+    e.preventDefault();
+    downloadGeneralHandWrittenFile(studentId, docName, student_inputs)
+      .then((resp) => {
+        console.log(resp);
+        const actualFileName =
+          resp.headers["content-disposition"].split('"')[1];
+        const { data: blob } = resp;
+        if (blob.size === 0) return;
 
+        var filetype = actualFileName.split("."); //split file name
+        filetype = filetype.pop(); //get the file type
+
+        if (filetype === "pdf") {
+          console.log(blob);
+          const url = window.URL.createObjectURL(
+            new Blob([blob], { type: "application/pdf" })
+          );
+
+          //Open the URL on new Window
+          console.log(url);
+          window.open(url); //TODO: having a reasonable file name, pdf viewer
+        } else {
+          //if not pdf, download instead.
+
+          const url = window.URL.createObjectURL(new Blob([blob]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", actualFileName);
+          // Append to html link element page
+          document.body.appendChild(link);
+          // Start download
+          link.click();
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+        }
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
   render() {
     return (
       <>
@@ -173,15 +307,14 @@ class EditorDocsProgress extends React.Component {
                     <h5>General Documents (CV, Recommendation Letters)</h5>
                   </Col>
                 </Row>
-                {/* <ManualFiles
-                  onDeleteFile={this.onDeleteFile}
-                  onFileChange={this.onFileChange}
-                  onSubmitFile={this.onSubmitFile}
-                  onDownloadFile={this.onDownloadFile}
+                <ManualFiles
+                  onDeleteGeneralFile={this.onDeleteGeneralFile}
+                  onDownloadGeneralFile={this.onDownloadGeneralFile}
+                  SubmitGeneralFile={this.SubmitGeneralFile}
                   role={this.props.role}
                   student={this.state.student}
                   filetype={"General"}
-                /> */}
+                />
                 {this.state.student.applications.map((application, i) => (
                   <>
                     <Row>
@@ -196,9 +329,10 @@ class EditorDocsProgress extends React.Component {
 
                     <ManualFiles
                       onDeleteFile={this.onDeleteFile}
-                      onFileChange={this.onFileChange}
-                      onSubmitFile={this.onSubmitFile}
-                      onDownloadFile={this.onDownloadFile}
+                      SubmitProgramSpecificFile={this.SubmitProgramSpecificFile}
+                      onDownloadProgramSpecificFile={
+                        this.onDownloadProgramSpecificFile
+                      }
                       role={this.props.role}
                       student={this.state.student}
                       application={application}
@@ -226,7 +360,14 @@ class EditorDocsProgress extends React.Component {
             <h5>Do you want to delete {this.state.docName}?</h5>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.ConfirmDeleteFileHandler}>Yes</Button>
+            {this.state.filetype === "General" ? (
+              <Button onClick={this.ConfirmDeleteGeneralFileHandler}>
+                Yes
+              </Button>
+            ) : (
+              <Button onClick={this.ConfirmDeleteFileHandler}>Yes</Button>
+            )}
+
             <Button onClick={this.closeWarningWindow}>No</Button>
           </Modal.Footer>
         </Modal>

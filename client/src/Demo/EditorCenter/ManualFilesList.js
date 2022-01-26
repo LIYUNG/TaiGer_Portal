@@ -6,7 +6,50 @@ class ManualFilesList extends Component {
   render() {
     let editor_outputs;
     let student_inputs;
-    // if (this.props.filetype === "General") {
+    if (this.props.filetype === "General") {
+      if (
+        this.props.student.generaldocs &&
+        this.props.student.generaldocs.editoroutputs
+      ) {
+        editor_outputs = this.props.student.generaldocs.editoroutputs.map(
+          (editoroutput) => (
+            <EditableFile
+              key={editoroutput._id}
+              document={editoroutput}
+              student={this.props.student}
+              onFormSubmit={this.props.onFormSubmit}
+              onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+              onTrashClick={this.props.onTrashClick}
+              onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+              role={this.props.role}
+              whoupdate={"editor"}
+              filetype={this.props.filetype}
+            />
+          )
+        );
+      }
+      if (
+        this.props.student.generaldocs &&
+        this.props.student.generaldocs.studentinputs
+      ) {
+        student_inputs = this.props.student.generaldocs.studentinputs.map(
+          (studentinput) => (
+            <EditableFile
+              key={studentinput._id}
+              document={studentinput}
+              student={this.props.student}
+              onFormSubmit={this.props.onFormSubmit}
+              onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+              onTrashClick={this.props.onTrashClick}
+              onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+              role={this.props.role}
+              whoupdate={"student"}
+              filetype={this.props.filetype}
+            />
+          )
+        );
+      }
+    } else {
       if (this.props.application && this.props.application.documents) {
         editor_outputs = this.props.application.documents.map((document) => (
           <EditableFile
@@ -15,11 +58,9 @@ class ManualFilesList extends Component {
             application={this.props.application}
             student={this.props.student}
             onFormSubmit={this.props.onFormSubmit}
-            onSubmitFile={this.props.onSubmitFile}
-            onDownloadFile={this.props.onDownloadFile}
+            onDownloadProgramSpecificFile={this.props.onDownloadProgramSpecificFile}
             onTrashClick={this.props.onTrashClick}
             onFormDelete={this.props.onFormDelete}
-            onFileChange={this.props.onFileChange}
             role={this.props.role}
             whoupdate={"editor"}
             filetype={this.props.filetype}
@@ -35,11 +76,9 @@ class ManualFilesList extends Component {
               application={this.props.application}
               student={this.props.student}
               onFormSubmit={this.props.onFormSubmit}
-              onSubmitFile={this.props.onSubmitFile}
-              onDownloadFile={this.props.onDownloadFile}
+              onDownloadProgramSpecificFile={this.props.onDownloadProgramSpecificFile}
               onTrashClick={this.props.onTrashClick}
               onFormDelete={this.props.onFormDelete}
-              onFileChange={this.props.onFileChange}
               role={this.props.role}
               whoupdate={"student"}
               filetype={this.props.filetype}
@@ -47,7 +86,9 @@ class ManualFilesList extends Component {
           )
         );
       }
+    }
     
+
     return (
       <>
         <Row>

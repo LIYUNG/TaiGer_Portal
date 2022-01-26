@@ -3,31 +3,11 @@ import { IoMdCloudUpload } from "react-icons/io";
 import { Button, Form, Row, Col } from "react-bootstrap";
 
 class ToggleableUploadFileForm extends Component {
-  state = {
-    category: "",
-  };
-
-  handleFormSubmit = (e, studentId, applicationId) => {
-    e.preventDefault();
-    console.log(this.state.category);
-    console.log(e.target.files);
-    if (!this.state.category) {
-      alert("Please select file type");
-    } else {
-      this.props.onFileChange(e, studentId, applicationId);
-      this.setState({ category: "" });
-    }
-  };
-  handleSelect = (e) => {
-    e.preventDefault();
-    console.log(e.target.value);
-    this.setState({ category: e.target.value });
-  };
 
   render() {
     let StudentSelectForm;
     let EditorSelectForm;
-    console.log(this.state.category);
+    // console.log(this.props.category);
 
     if (this.props.filetype === "General") {
       StudentSelectForm = (
@@ -35,8 +15,8 @@ class ToggleableUploadFileForm extends Component {
           <Form.Group controlId="formFile" className="mb-3">
             <Form.Control
               as="select"
-              onChange={(e) => this.handleSelect(e)}
-              value={this.state.category}
+              onChange={(e) => this.props.handleSelect(e)}
+              value={this.props.category}
             >
               <option value="">Please Select</option>
               <option value="cvtemplate">CV Template</option>
@@ -51,8 +31,8 @@ class ToggleableUploadFileForm extends Component {
           <Form.Group controlId="formFile" className="mb-3">
             <Form.Control
               as="select"
-              onChange={(e) => this.handleSelect(e)}
-              value={this.state.category}
+              onChange={(e) => this.props.handleSelect(e)}
+              value={this.props.category}
             >
               <option value="">Please Select</option>
               <option value="cv">CV</option>
@@ -68,8 +48,8 @@ class ToggleableUploadFileForm extends Component {
           <Form.Group controlId="formFile" className="mb-3">
             <Form.Control
               as="select"
-              onChange={(e) => this.handleSelect(e)}
-              value={this.state.category}
+              onChange={(e) => this.props.handleSelect(e)}
+              value={this.props.category}
             >
               <option value="">Please Select</option>
               <option value="mltemplate">ML Template</option>
@@ -85,8 +65,8 @@ class ToggleableUploadFileForm extends Component {
           <Form.Group controlId="formFile" className="mb-3">
             <Form.Control
               as="select"
-              onChange={(e) => this.handleSelect(e)}
-              value={this.state.category}
+              onChange={(e) => this.props.handleSelect(e)}
+              value={this.props.category}
             >
               <option value="">Please Select</option>
               <option value="ml">ML</option>
@@ -115,22 +95,40 @@ class ToggleableUploadFileForm extends Component {
         )}
 
         <Col md={2}>
-          <Form>
-            <Form.File.Label
-              onChange={(e) =>
-                this.handleFormSubmit(
-                  e,
-                  this.props.student._id,
-                  this.props.application.programId._id
-                )
-              }
-              onClick={(e) => (e.target.value = null)}
-            >
-              <Form.File.Input hidden />
-              <IoMdCloudUpload size={32} />
-            </Form.File.Label>
-          </Form>
-          {/* <IoMdCloudUpload /> */}
+          {this.props.filetype === "General" ? (
+            <Form>
+              <Form.File.Label
+                onChange={(e) =>
+                  this.props.handleGeneralDocSubmit(
+                    e,
+                    this.props.student._id,
+                    this.props.category
+                  )
+                }
+                onClick={(e) => (e.target.value = null)}
+              >
+                <Form.File.Input hidden />
+                <IoMdCloudUpload size={32} />
+              </Form.File.Label>
+            </Form>
+          ) : (
+            <Form>
+              <Form.File.Label
+                onChange={(e) =>
+                  this.props.handleProgramSpecificFormSubmit(
+                    e,
+                    this.props.student._id,
+                    this.props.application.programId._id,
+                    this.props.category
+                  )
+                }
+                onClick={(e) => (e.target.value = null)}
+              >
+                <Form.File.Input hidden />
+                <IoMdCloudUpload size={32} />
+              </Form.File.Label>
+            </Form>
+          )}
         </Col>
       </Row>
     );

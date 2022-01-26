@@ -3,14 +3,6 @@ import ManualFilesList from "./ManualFilesList";
 import ToggleableUploadFileForm from "./ToggleableUploadFileForm";
 
 class ManualFiles extends React.Component {
-  handleCreateFormSubmit = (studentId, applicationId, docName) => {
-    this.props.createManualFileUploadPlaceholder(
-      studentId,
-      applicationId,
-      docName
-    );
-  };
-
   handleDeleteFormSubmit = (studentId, applicationId, docName) => {
     this.props.deleteManualFileUploadPlaceholder(
       studentId,
@@ -41,7 +33,6 @@ class ManualFiles extends React.Component {
             category="application"
             student={this.props.student}
             application={this.props.application}
-            onFormSubmit={this.handleCreateFormSubmit}
           />
         ) : (
           <></>

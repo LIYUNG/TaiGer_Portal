@@ -3,10 +3,47 @@ import ManualFilesList from "./ManualFilesList";
 import ToggleableUploadFileForm from "./ToggleableUploadFileForm";
 
 class ManualFiles extends React.Component {
-  handleDeleteFormSubmit = (studentId, applicationId, docName, whoupdate) => {
-    this.props.onDeleteFile(studentId, applicationId, docName, whoupdate);
+  state = {
+    category: "",
   };
 
+  handleProgramSpecificFormSubmit = (
+    e,
+    studentId,
+    applicationId,
+    fileCategory
+  ) => {
+    e.preventDefault();
+    console.log(this.state.category);
+    console.log(e.target.files);
+    if (!this.state.category) {
+      alert("Please select file type");
+    } else {
+      this.props.SubmitProgramSpecificFile(
+        e,
+        studentId,
+        applicationId,
+        fileCategory
+      );
+      this.setState({ category: "" });
+    }
+  };
+  handleGeneralDocSubmit = (e, studentId, fileCategory) => {
+    e.preventDefault();
+    console.log(this.state.category);
+    console.log(e.target.files);
+    if (!this.state.category) {
+      alert("Please select file type");
+    } else {
+      this.props.SubmitGeneralFile(e, studentId, fileCategory);
+      this.setState({ category: "" });
+    }
+  };
+  handleSelect = (e) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    this.setState({ category: e.target.value });
+  };
   render() {
     return (
       <>
@@ -14,12 +51,9 @@ class ManualFiles extends React.Component {
           <>
             <ManualFilesList
               filetype={this.props.filetype}
-              application={this.props.application}
               student={this.props.student}
-              onDownloadFile={this.props.onDownloadFile}
-              onFileChange={this.props.onFileChange}
-              onSubmitFile={this.props.onSubmitFile}
-              onFormDelete={this.handleDeleteFormSubmit}
+              onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+              onDeleteGeneralFile={this.props.onDeleteGeneralFile}
               role={this.props.role}
             />
             {this.props.role === "Agent" ||
@@ -29,10 +63,13 @@ class ManualFiles extends React.Component {
               <ToggleableUploadFileForm
                 role={this.props.role}
                 student={this.props.student}
-                onFileChange={this.props.onFileChange}
-                onSubmitFile={this.props.onSubmitFile}
+                handleSelect={this.handleSelect}
+                handleProgramSpecificFormSubmit={
+                  this.handleProgramSpecificFormSubmit
+                }
+                handleGeneralDocSubmit={this.handleGeneralDocSubmit}
+                category={this.state.category}
                 filetype={this.props.filetype}
-                application={this.props.application}
               />
             ) : (
               <></>
@@ -44,10 +81,8 @@ class ManualFiles extends React.Component {
               filetype={this.props.filetype}
               application={this.props.application}
               student={this.props.student}
-              onDownloadFile={this.props.onDownloadFile}
-              onFileChange={this.props.onFileChange}
-              onSubmitFile={this.props.onSubmitFile}
-              onFormDelete={this.handleDeleteFormSubmit}
+              onDownloadProgramSpecificFile={this.props.onDownloadProgramSpecificFile}
+              onFormDelete={this.props.onDeleteFile}
               role={this.props.role}
             />
             {this.props.role === "Agent" ||
@@ -57,9 +92,13 @@ class ManualFiles extends React.Component {
               <ToggleableUploadFileForm
                 role={this.props.role}
                 student={this.props.student}
-                onFileChange={this.props.onFileChange}
-                onSubmitFile={this.props.onSubmitFile}
                 filetype={this.props.filetype}
+                handleSelect={this.handleSelect}
+                handleProgramSpecificFormSubmit={
+                  this.handleProgramSpecificFormSubmit
+                }
+                handleGeneralDocSubmit={this.handleGeneralDocSubmit}
+                category={this.state.category}
                 application={this.props.application}
               />
             ) : (

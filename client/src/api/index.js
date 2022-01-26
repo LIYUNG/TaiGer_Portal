@@ -108,21 +108,35 @@ export const createManualFileUploadPlace = (
   request.put(
     `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
   );
-export const deleteManualFileUpload = (
-  studentId,
-  applicationId,
-  docName,
-  whoupdate
-) =>
+export const deleteManualFileUpload = (studentId, applicationId, docName, whoupdate) =>
   request.delete(
-    `/api/account/files/${studentId}/${applicationId}/${docName}/${whoupdate}`
+    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${whoupdate}`
+  );
+
+export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
+  request.delete(
+    `/api/account/files/general/${whoupdate}/${studentId}/${docName}`
   );
 export const uploadHandwrittenFileforstudent = (
   studentId,
   applicationId,
+  fileCategory,
   data
 ) =>
-  request.post(`/api/account/files/upload/${studentId}/${applicationId}`, data);
+  request.post(
+    `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`,
+    data
+  );
+
+export const uploadEditGeneralFileforstudent = (
+  studentId,
+  fileCategory,
+  data
+) =>
+  request.post(
+    `/api/account/files/general/upload/${studentId}/${fileCategory}`,
+    data
+  );
 
 export const downloadHandWrittenFile = (
   studentId,
@@ -131,13 +145,24 @@ export const downloadHandWrittenFile = (
   student_inputs
 ) =>
   request.get(
-    `/api/account/files/${studentId}/${applicationId}/${docName}/${student_inputs}`,
+    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${student_inputs}`,
     {
       responseType: "blob",
     }
   );
-export const deleteWrittenFile = (studentId, applicationId, docName) =>
-  request.delete(`/api/account/files/${studentId}/${applicationId}/${docName}`);
+
+export const downloadGeneralHandWrittenFile = (studentId, docName, student_inputs) =>
+  request.get(
+    `/api/account/files/general/${student_inputs}/${studentId}/${docName}`,
+    {
+      responseType: "blob",
+    }
+  );
+//obsolete(? double check)
+export const deleteWrittenFile = (studentId, applicationId, docName, student_inputs) =>
+  request.delete(
+    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${student_inputs}`
+  );
 
 // Program APIs
 export const getPrograms = () => request.get("/api/programs");

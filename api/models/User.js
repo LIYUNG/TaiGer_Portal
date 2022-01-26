@@ -159,6 +159,54 @@ const Student = User.discriminator(
           updatedAt: Date,
         },
       ],
+      generaldocs: {
+        editoroutputs: [
+          {
+            name: {
+              type: String,
+              required: true,
+            },
+            status: {
+              type: String,
+              enum: Object.values(DocumentStatus),
+              default: DocumentStatus.Missing,
+            },
+            required: {
+              type: Boolean,
+              required: true,
+            },
+            path: {
+              type: String,
+              default: "",
+            },
+            // TODO: updateBy
+            updatedAt: Date,
+          },
+        ],
+        studentinputs: [
+          {
+            name: {
+              type: String,
+              required: true,
+            },
+            status: {
+              type: String,
+              enum: Object.values(DocumentStatus),
+              default: DocumentStatus.Missing,
+            },
+            required: {
+              type: Boolean,
+              required: true,
+            },
+            path: {
+              type: String,
+              default: "",
+            },
+            // TODO: updateBy
+            updatedAt: Date,
+          },
+        ],
+      },
     },
     options
   ),

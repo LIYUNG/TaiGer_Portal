@@ -35,7 +35,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check docName exist
-    let { studentId, applicationId } = req.params;
+    let { studentId, applicationId, fileCategory } = req.params;
 
     Student.findOne({ _id: studentId })
       .populate("applications.programId")
@@ -65,9 +65,18 @@ const storage = multer.diskStorage({
             "_" +
             application.programId.Program_ +
             "_" +
-            file.originalname;
-          // path.extname(file.originalname);
+            fileCategory +
+            `${path.extname(file.originalname)}`;
           temp_name = temp_name.replace(/ /g, "_");
+          const filePath = path.join(
+            UPLOAD_PATH,
+            studentId,
+            applicationId,
+            temp_name
+          );
+
+          if (fs.existsSync(filePath))
+            return cb(new ErrorResponse(400, "Document already existed!22222"));
           return {
             fileName: temp_name,
           };
@@ -135,6 +144,10 @@ const storage2 = multer.diskStorage({
             "_" +
             req.params.category +
             path.extname(file.originalname);
+          const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
+          if (fs.existsSync(filePath))
+            return cb(new ErrorResponse(400, "Document already existed!22222"));
+
           return {
             fileName: temp_name,
           };
@@ -195,6 +208,11 @@ const storage3 = multer.diskStorage({
               "TaiGerTranscriptAI" +
               path.extname(file.originalname);
             console.log(temp_name);
+            const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
+            if (fs.existsSync(filePath))
+              return cb(
+                new ErrorResponse(400, "Document already existed!33333")
+              );
             return {
               fileName: temp_name,
             };
@@ -230,8 +248,80 @@ const upload3 = multer({
     cb(null, true);
   },
 });
+
+const storage4 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId and applicationId exist
+    const directory = path.join(UPLOAD_PATH, studentId, "GeneralDocsEdit");
+    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
+
+    return cb(null, directory);
+  },
+  filename: (req, file, cb) => {
+    // TODO: check docName exist
+    let { studentId, fileCategory } = req.params;
+
+    Student.findOne({ _id: studentId })
+      .then(function (student) {
+        if (student) {
+          console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
+          console.log(path.extname(file.originalname)); //.pdf
+          let temp_name =
+            student.lastname +
+            "_" +
+            student.firstname +
+            "_" +
+            fileCategory +
+            `${path.extname(file.originalname)}`;
+          temp_name = temp_name.replace(/ /g, "_");
+          const filePath = path.join(
+            UPLOAD_PATH,
+            studentId,
+            "GeneralDocsEdit",
+            temp_name
+          );
+          if (fs.existsSync(filePath))
+            return cb(new ErrorResponse(400, "Document already existed!4444"));
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        console.log(resp.fileName);
+        cb(null, resp.fileName);
+      });
+
+    // cb(null, `${req.params.docName}${path.extname(file.originalname)}`);
+  },
+});
+
+//TODO: upload pdf/docx/image
+const upload4 = multer({
+  storage: storage4,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(
+          400,
+          "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
+        )
+      );
+    const fileSize = parseInt(req.headers["content-length"]);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, "File size is limited to 5 MB!"));
+    }
+    cb(null, true);
+  },
+});
+
 module.exports = {
   fileUpload: upload.single("file"),
   ProfilefileUpload: upload2.single("file"),
   TranscriptExcelUpload: upload3.single("file"),
+  EditGeneralDocsUpload: upload4.single("file"),
 };

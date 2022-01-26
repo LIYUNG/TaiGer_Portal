@@ -31,42 +31,6 @@ const getMyfiles = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: student });
 });
 
-const createFilePlaceholderForProgram = asyncHandler(async (req, res) => {
-  const {
-    user,
-    params: { studentId, applicationId, docName },
-  } = req;
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId).populate(
-    "applications.programId"
-  );
-  if (!student) throw new ErrorResponse(400, "Invalid student id");
-  console.log(student.applications);
-  console.log(applicationId);
-  const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
-  );
-  const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == applicationId
-  );
-  console.log(application);
-  console.log(idx);
-  if (!application) throw new ErrorResponse(400, "Invalid application id");
-
-  let document = application.documents.find(({ name }) => name === docName);
-  if (document) throw new ErrorResponse(400, "Document already existed!");
-
-  document = application.documents.create({ name: docName });
-  document.status = DocumentStatus.Missing;
-  document.path = "";
-  document.required = true;
-  document.updatedAt = new Date();
-  student.applications[idx].documents.push(document);
-  await student.save();
-  return res.status(201).send({ success: true, data: student });
-});
-
 const saveFilePath = asyncHandler(async (req, res) => {
   const {
     user,
@@ -118,6 +82,75 @@ const saveFilePath = asyncHandler(async (req, res) => {
     document.required = true;
     document.updatedAt = new Date();
     student.applications[idx].documents.push(document); //TODO: and rename file name
+
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+  }
+
+  await sendUploadedFilesEmail({
+    firstname: student.firstname,
+    lastname: student.lastname,
+    address: student.email,
+  });
+  //Reminder for Editor:
+  console.log(student.editors);
+  if (user.role == Role.Student) {
+    for (let i = 0; i < student.editors.length; i++) {
+      console.log(i);
+      await sendUploadedFilesRemindForEditorEmail({
+        firstname: student.editors[i].firstname,
+        lastname: student.editors[i].lastname,
+        address: student.editors[i].email,
+      });
+    }
+  }
+});
+
+const saveGeneralFilePath = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, fileCategory },
+    file: { filename },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email");
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  let editor_output_doc;
+  let student_input_doc;
+  if (user.role == Role.Student) {
+    student_input_doc = student.generaldocs.studentinputs.find(
+      ({ name }) => name === req.file.filename
+    );
+    if (student_input_doc)
+      throw new ErrorResponse(400, "Document already existed!");
+    student_input_doc = student.generaldocs.studentinputs.create({
+      name: req.file.filename,
+    }); //TODO: and rename file name
+    student_input_doc.status = DocumentStatus.Uploaded;
+    student_input_doc.path = req.file.path.replace(UPLOAD_PATH, "");
+    student_input_doc.required = true;
+    student_input_doc.updatedAt = new Date();
+    student.generaldocs.studentinputs.push(student_input_doc); //TODO: and rename file name
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+  } else {
+    editor_output_doc = student.generaldocs.editoroutputs.find(
+      ({ name }) => name === req.file.filename
+    );
+    if (editor_output_doc)
+      throw new ErrorResponse(400, "Document already existed!");
+    editor_output_doc = student.generaldocs.editoroutputs.create({
+      name: req.file.filename,
+    }); //TODO: and rename file name
+    editor_output_doc.status = DocumentStatus.Uploaded;
+    editor_output_doc.path = req.file.path.replace(UPLOAD_PATH, "");
+    editor_output_doc.required = true;
+    editor_output_doc.updatedAt = new Date();
+    student.generaldocs.editoroutputs.push(editor_output_doc); //TODO: and rename file name
 
     await student.save();
     res.status(201).send({ success: true, data: student });
@@ -298,6 +331,46 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   });
 });
 
+const downloadGeneralFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, docName, student_inputs },
+  } = req;
+  try {
+    // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+    const student = await Student.findById(studentId).populate(
+      "applications.programId"
+    );
+    if (!student) throw new ErrorResponse(400, "Invalid student id");
+    //TODO: flag for differenciate students input or edited file
+    let document;
+    if (student_inputs === "student") {
+      document = student.generaldocs.studentinputs.find(
+        ({ name }) => name === docName
+      );
+    } else {
+      document = student.generaldocs.editoroutputs.find(
+        ({ name }) => name === docName
+      );
+    }
+    if (!document) throw new ErrorResponse(400, "Invalid document name");
+    if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
+    console.log(document);
+    const filePath = path.join(UPLOAD_PATH, document.path);
+    // const filePath = document.path;
+    // FIXME: clear the filePath for consistency?
+    if (!fs.existsSync(filePath))
+      throw new ErrorResponse(400, "File does not exist");
+    console.log(filePath);
+    res.status(200).download(filePath, (err) => {
+      if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+    });
+  } catch (err) {
+    console.log(err);
+    return new ErrorResponse(400, "Strange error!");
+  }
+});
+
 const updateDocumentStatus = asyncHandler(async (req, res, next) => {
   const { studentId, applicationId, docName } = req.params;
   const { status } = req.body;
@@ -442,6 +515,71 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   return res.status(201).send({ success: true, data: student });
 });
 
+const deleteGeneralFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, docName, student_inputs },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  let student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  let document;
+  let student_input;
+  try {
+    if (student_inputs === "editor") {
+      document = student.generaldocs.editoroutputs.find(
+        ({ name }) => name === docName
+      );
+      console.log(document);
+      if (!document) throw new ErrorResponse(400, "docName not existed");
+      if (document.path !== "") {
+        const filePath = path.join(UPLOAD_PATH, document.path);
+        // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+        console.log(filePath);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      }
+      await Student.findOneAndUpdate(
+        { _id: studentId },
+        {
+          $pull: {
+            "generaldocs.editoroutputs": { name: docName },
+          },
+        }
+      );
+    } else {
+      student_input = student.generaldocs.student_inputs.find(
+        ({ name }) => name === docName
+      );
+      console.log(student_input);
+      if (!student_input) throw new ErrorResponse(400, "docName not existed");
+      if (student_input.path !== "") {
+        const filePath = path.join(UPLOAD_PATH, student_input.path);
+        // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+        console.log(filePath);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      }
+      await Student.findOneAndUpdate(
+        { _id: studentId },
+        {
+          $pull: {
+            "generaldocs.$.student_inputs": { name: docName },
+          },
+        }
+      );
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  student = await Student.findById(studentId).populate(
+    "applications.programId"
+  );
+  await student.save();
+  return res.status(201).send({ success: true, data: student });
+});
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
 
@@ -522,12 +660,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   } = req;
   const { firstname, lastname, _id } = student;
 
-  const filePath = path.join(
-    UPLOAD_PATH,
-    `${_id}`,
-    "output",
-    filename
-  );
+  const filePath = path.join(UPLOAD_PATH, `${_id}`, "output", filename);
 
   if (!fs.existsSync(filePath))
     throw new ErrorResponse(400, "File does not exist");
@@ -541,15 +674,17 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   getMyfiles,
-  createFilePlaceholderForProgram,
   saveFilePath,
+  saveGeneralFilePath,
   saveProfileFilePath,
   downloadProfileFile,
   downloadTemplateFile,
   downloadFile,
+  downloadGeneralFile,
   updateDocumentStatus,
   updateProfileDocumentStatus,
   deleteFile,
+  deleteGeneralFile,
   deleteProfileFile,
   processTranscript,
   downloadXLSX,

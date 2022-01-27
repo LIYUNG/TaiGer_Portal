@@ -22,9 +22,12 @@ class DocsProgress extends React.Component {
     });
   };
   render() {
-    let applying_university;
-    let applying_program;
-    let application_deadline;
+    var applying_university;
+    var applying_program;
+    var application_deadline;
+    var application_ML_template_filled;
+    var application_RL_template_filled;
+    var application_CV_template_filled;
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
@@ -54,6 +57,59 @@ class DocsProgress extends React.Component {
           </h5>
         )
       );
+      // console.log(
+      //   this.props.student.applications[0].documents[0].name.includes()
+      // );
+      application_ML_template_filled = this.props.student.applications.map(
+        (application, i) => (
+          <h5 className="mb-1" key={i}>
+            {application.student_inputs.findIndex((doc) =>
+              doc.name.includes("ML_Template")
+            ) !== -1 ? (
+              <h5>True</h5>
+            ) : (
+              <h5>False</h5>
+            )}
+          </h5>
+        )
+      );
+      console.log(this.props.student.generaldocs);
+      if (
+        this.props.student.generaldocs === undefined ||
+        this.props.student.generaldocs.studentinputs === undefined ||
+        this.props.student.generaldocs.studentinputs.length === 0
+      ) {
+      } else {
+        application_CV_template_filled =
+          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+            doc.name.includes("CV_Template")
+          ) !== -1 ? (
+            <h5>True</h5>
+          ) : (
+            <h5>False</h5>
+          );
+        //         doc.name.includes("CV_Template")
+        //   (studentinput, i) => (
+        //     <h5 className="mb-1" key={i}>
+        //       {studentinput.findIndex((doc) =>
+        //         doc.name.includes("CV_Template")
+        //       ) !== -1 ? (
+
+        //       ) : (
+
+        //       )}
+        //     </h5>
+        //   )
+        // );
+        application_RL_template_filled =
+          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+            doc.name.includes("RL_Template")
+          ) !== -1 ? (
+            <h5>True</h5>
+          ) : (
+            <h5>False</h5>
+          );
+      }
     }
 
     return (
@@ -89,6 +145,9 @@ class DocsProgress extends React.Component {
             <td>{applying_university}</td>
             <td>{applying_program}</td>
             <td>{application_deadline}</td>
+            <td>{application_ML_template_filled}</td>
+            <td>{application_RL_template_filled}</td>
+            <td>{application_CV_template_filled}</td>
           </tr>
         </tbody>
         <>

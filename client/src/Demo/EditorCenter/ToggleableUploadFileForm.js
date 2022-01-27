@@ -5,9 +5,8 @@ import { Button, Form, Row, Col } from "react-bootstrap";
 class ToggleableUploadFileForm extends Component {
 
   render() {
-    let StudentSelectForm;
-    let EditorSelectForm;
-    // console.log(this.props.category);
+    var StudentSelectForm;
+    var EditorSelectForm;
 
     if (this.props.filetype === "General") {
       StudentSelectForm = (
@@ -19,8 +18,8 @@ class ToggleableUploadFileForm extends Component {
               value={this.props.category}
             >
               <option value="">Please Select</option>
-              <option value="CV_Template">CV Template</option>
-              <option value="RL_Template">RL Template</option>
+              <option value="CV_Template_Filled">CV Template</option>
+              <option value="RL_Template_Filled">RL Template</option>
               <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>
@@ -69,10 +68,10 @@ class ToggleableUploadFileForm extends Component {
               value={this.props.category}
             >
               <option value="">Please Select</option>
-              <option value="ml">ML</option>
-              <option value="essay">Essay</option>
-              <option value="scholarshipsform">Scholarship Form</option>
-              <option value="others">Others</option>
+              <option value="ML">ML</option>
+              <option value="Essay">Essay</option>
+              <option value="Scholarship_Form">Scholarship Form</option>
+              <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>
         </Form>
@@ -83,13 +82,11 @@ class ToggleableUploadFileForm extends Component {
       <Row>
         {this.props.role === "Student" ? (
           <>
-            {" "}
             <Col md={6}></Col>
             <Col md={3}>{StudentSelectForm}</Col>
           </>
         ) : (
           <>
-            {" "}
             <Col md={3}>{EditorSelectForm}</Col>
           </>
         )}

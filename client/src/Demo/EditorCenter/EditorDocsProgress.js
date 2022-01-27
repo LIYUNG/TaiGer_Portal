@@ -151,7 +151,7 @@ class EditorDocsProgress extends React.Component {
       uploadEditGeneralFileforstudent(studentId, fileCategory, formData)
         .then((res) => {
           console.log(res.data);
-          if (res.status === 400) {
+          if (res.status === 400 || res.status === 401) {
             alert(res.data.message);
           } else {
             this.setState({

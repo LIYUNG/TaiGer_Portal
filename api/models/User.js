@@ -127,6 +127,7 @@ const applicationSchema = new Schema({
   ],
   prepared: { type: Boolean, required: true, default: false },
   closed: { type: Boolean, required: true, default: false },
+  admission: { type: Boolean, required: true, default: false },
 });
 
 const Student = User.discriminator(

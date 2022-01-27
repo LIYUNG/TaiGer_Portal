@@ -5,9 +5,12 @@ import React from "react";
 
 class ApplicationStatus extends React.Component {
   render() {
-    let applying_university;
-    let applying_program;
-    let application_deadline;
+    var applying_university;
+    var applying_program;
+    var application_deadline;
+    var application_prepared;
+    var application_closed;
+    var application_admission;
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
@@ -15,6 +18,8 @@ class ApplicationStatus extends React.Component {
       applying_university = <h5 className="mb-1"> No University</h5>;
       applying_program = <h5 className="mb-1"> No Program</h5>;
       application_deadline = <h5 className="mb-1"> No Date</h5>;
+      application_prepared = <h5 className="mb-1"></h5>;
+      application_closed = <h5 className="mb-1"></h5>;
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
@@ -37,6 +42,27 @@ class ApplicationStatus extends React.Component {
           </h5>
         )
       );
+      application_prepared = this.props.student.applications.map(
+        (application, i) => (
+          <h5 className="mb-1" key={i}>
+            {application.prepared ? <h5>True</h5> : <h5>False</h5>}
+          </h5>
+        )
+      );
+      application_closed = this.props.student.applications.map(
+        (application, i) => (
+          <h5 className="mb-1" key={i}>
+            {application.closed ? <h5>True</h5> : <h5>False</h5>}
+          </h5>
+        )
+      );
+      application_admission = this.props.student.applications.map(
+        (application, i) => (
+          <h5 className="mb-1" key={i}>
+            {application.admission ? <h5>True</h5> : <h5>False</h5>}
+          </h5>
+        )
+      );
     }
 
     return (
@@ -55,7 +81,10 @@ class ApplicationStatus extends React.Component {
             <td>{applying_university}</td>
             <td>{applying_program}</td>
             <td>{application_deadline}</td>
-            {/* {this.props.studentDocOverview} */}
+            <td></td>
+            <td>{application_prepared}</td>
+            <td>{application_closed}</td>
+            <td>{application_admission}</td>
           </tr>
         </tbody>
       </>

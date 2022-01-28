@@ -29,6 +29,9 @@ class DocsProgress extends React.Component {
     var application_ML_template_filled;
     var application_RL_template_filled;
     var application_CV_template_filled;
+    var application_ML_status;
+    var application_RL_status;
+    var application_CV_status;
     var application_ML_Lastupdate;
     var application_RL_Lastupdate;
     var application_CV_Lastupdate;
@@ -106,10 +109,25 @@ class DocsProgress extends React.Component {
               doc.name.includes("ML_Template")
             ) !== -1 ? (
               <h6 className="mb-1">True</h6>
-            ) : application.prepared ? ( // replace prepared by "programId.requiredML?"
-              <h6 className="mb-1">closed</h6>
             ) : (
-              <h6 className="mb-1">not required</h6>
+              // TODO: add new case: replace prepared by "programId.requiredML?"
+              <h6 className="mb-1">No</h6>
+            )}
+          </>
+        )
+      );
+      //For editor
+      application_ML_status = this.props.student.applications.map(
+        (application, i) => (
+          <>
+            {application.documents &&
+            application.documents.findIndex((doc) =>
+              doc.name.includes("_ML")
+            ) !== -1 ? (
+              <h6 className="mb-1">uploaded</h6>
+            ) : (
+              // TODO: add new case: replace prepared by "programId.requiredML?"
+              <h6 className="mb-1">No</h6>
             )}
           </>
         )
@@ -122,6 +140,8 @@ class DocsProgress extends React.Component {
       ) {
         application_CV_template_filled = <h6 className="mb-1">Not yet</h6>;
         application_RL_template_filled = <h6 className="mb-1">Not yet</h6>;
+        application_CV_status = <h6 className="mb-1">Not yet</h6>;
+        application_RL_status = <h6 className="mb-1">Not yet</h6>;
         application_CV_Lastupdate = <h6 className="mb-1">Not existed</h6>;
         application_RL_Lastupdate = <h6 className="mb-1">Not existed</h6>;
       } else {
@@ -132,6 +152,15 @@ class DocsProgress extends React.Component {
             <h6 className="mb-1">True</h6>
           ) : (
             <h6 className="mb-1">False</h6>
+          );
+        // For Editor
+        application_CV_status =
+          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+            doc.name.includes("CV")
+          ) !== -1 ? (
+            <h6 className="mb-1">Uploaded</h6>
+          ) : (
+            <h6 className="mb-1">Not</h6>
           );
         application_CV_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
@@ -164,6 +193,15 @@ class DocsProgress extends React.Component {
             <h6 className="mb-1">True</h6>
           ) : (
             <h6 className="mb-1">False</h6>
+          );
+        //For Editor:
+        application_RL_status =
+          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+            doc.name.includes("RL")
+          ) !== -1 ? (
+            <h6 className="mb-1">Uploaded</h6>
+          ) : (
+            <h6 className="mb-1">Not</h6>
           );
         application_RL_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
@@ -247,7 +285,11 @@ class DocsProgress extends React.Component {
               {application_CV_template_filled}
               {application_ML_template_filled}
             </td>
-            <td></td>
+            <td>
+              {application_RL_status}
+              {application_CV_status}
+              {application_ML_status}
+            </td>
             <td>
               {application_RL_Lastupdate}
               {application_CV_Lastupdate}

@@ -4,7 +4,7 @@ import Card from "../../App/components/MainCard";
 import Aux from "../../hoc/_Aux";
 import {
   deleteFile,
-  upload,
+  uploadtemplate,
   templateDownload,
   getTemplateDownload,
 } from "../../api";
@@ -24,48 +24,16 @@ class DownloadPage extends React.Component {
     };
   }
   componentDidMount() {
-    // getMyfiles(this.props.userId).then(
-    //   (resp) => {
-    //     console.log(this.props.userId);
-    //     console.log(resp.data);
-    //     const { data: student, success: success } = resp.data;
-    //     console.log(success);
+    console.log("Template Page");
     this.setState({
       file: "",
       isLoaded: true,
       success: true,
     });
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //     console.log(": " + error);
-    //     this.setState({
-    //       isLoaded: true,
-    //       error: true,
-    //     });
-    //   }
-    // );
+
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // if (this.state.isLoaded === false) {
-    //   getTemplateDownload(this.props.userId).then(
-    //     (resp) => {
-    //       const { data: student, success: success } = resp.data;
-    //       console.log(resp.data.data);
-    //       this.setState({
-    //         isLoaded: true,
-    //         student: student,
-    //       });
-    //     },
-    //     (error) => {
-    //       this.setState({
-    //         isLoaded: true,
-    //         error: true,
-    //       });
-    //     }
-    //   );
-    // }
   }
 
   onFileChange(e) {
@@ -76,30 +44,22 @@ class DownloadPage extends React.Component {
 
   onSubmitFile = (e, studentId, docName) => {
     const formData = new FormData();
-    console.log(studentId);
-    console.log(docName);
     formData.append("file", this.state.file);
-    upload(studentId, docName, formData).then(
-      (res) => {
-        // console.log(res)
-        if (res.data.success) {
-          // alert("Upload success");
-          console.log("Upload success");
+    uploadtemplate(docName, formData).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        //TODO: backend logic
+        if (success) {
           this.setState({
-            file: "",
-            isLoaded: false,
+            isLoaded: true, //false to reload everything
+            students: data,
+            success: success,
+            updateAgentList: [],
           });
         } else {
-          // alert("Upload failed");
-          this.setState({
-            file: "",
-            isLoaded: false,
-          });
+          alert(resp.data.message);
         }
       },
-      // Note: it's important to handle errors here
-      // instead of a catch() block so that we don't swallow
-      // exceptions from actual bugs in components.
       (error) => {
         this.setState({
           isLoaded: true,
@@ -109,13 +69,13 @@ class DownloadPage extends React.Component {
     );
   };
 
-  submitFile = (e, studentId, docName) => {
+  submitFile = (e, docName) => {
     if (this.state.file === "") {
       e.preventDefault();
       alert("Please select file");
     } else {
       e.preventDefault();
-      this.onSubmitFile(e, studentId, docName);
+      this.onSubmitFile(e, docName);
     }
   };
 

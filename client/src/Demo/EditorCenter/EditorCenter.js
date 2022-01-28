@@ -27,15 +27,18 @@ class EditorCenter extends React.Component {
     getStudents().then(
       (resp) => {
         console.log(resp.data);
-        console.log("EditorCenter.js rendered");
         const { data, success } = resp.data;
-        this.setState({
-          isLoaded: true,
-          students: data,
-          success: success,
-          accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
-          //   accordionKeys: new Array(-1, data.length), // to collapse all
-        });
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            students: data,
+            success: success,
+            accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
+            //   accordionKeys: new Array(-1, data.length), // to collapse all
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         console.log(error);

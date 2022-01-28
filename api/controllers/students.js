@@ -53,8 +53,6 @@ const getStudents = asyncHandler(async (req, res) => {
 });
 
 const getArchivStudents = asyncHandler(async (req, res) => {
-  // const { userId } = req.params;
-  // const user = await Student.findById(userId);
   const {
     user,
     // params: { userId },
@@ -93,8 +91,6 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
     params: { studentId },
     body: { isArchived },
   } = req;
-  // console.log(isArchived);
-  // console.log(studentId);
   if (
     user.role === "Admin" ||
     user.role === "Agent" ||
@@ -175,7 +171,6 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   // console.log(keys);
   let updated_agent_id = [];
   for (let i = 0; i < keys.length; i++) {
-    // const agent = await Agent.findById(({ agentsId }) => agentsId);
     if (agentsId[keys[i]]) {
       updated_agent_id.push(keys[i]);
       await Agent.findByIdAndUpdate(keys[i], {
@@ -187,23 +182,8 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       });
     }
   }
-  // async.eachSeries(
-  //   keys,
-  //   function updateObject(key, done) {
-  //     // Model.update(condition, doc, callback)
-  //     if (agentsId[key]) {
-  //       updated_agent_id.push(key);
-  //       Agent.updateOne({ _id: key }, { $push: { students: studentId } }, done);
-  //     } else {
-  //       Agent.updateOne({ _id: key }, { $pull: { students: studentId } }, done);
-  //     }
-  //   },
-  //   function allDone(err) {
-  //     // this will be called when all the updates are done or an error occurred during the iteration
-  //   }
-  // );
+
   console.log(updated_agent_id);
-  // console.log(agentIds);
   // if (!agentIds) throw new ErrorResponse(400, "Invalid AgentId");
 
   // TODO: transaction?
@@ -216,24 +196,10 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const student = await Student.findById(studentId)
     .populate("applications.programId agents editors")
     .exec();
-  // console.log(student);
   res.status(200).send({ success: true, data: student });
+
+  //TODO: email inform Student for(assigned agent) and inform Agent for (your new student)
 });
-
-// const removeAgentFromStudent = asyncHandler(async (req, res, next) => {
-//   const { studentId, agentId } = req.params;
-
-//   // TODO: transaction?
-//   await Student.findByIdAndUpdate(studentId, {
-//     $pull: { agents: agentId },
-//   });
-
-//   await Agent.findByIdAndUpdate(agentId, {
-//     $pull: { students: studentId },
-//   });
-
-//   res.status(200).send({ success: true });
-// });
 
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
@@ -256,29 +222,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       });
     }
   }
-  // async.eachSeries(
-  //   keys,
-  //   function updateObject(key, done) {
-  //     // Model.update(condition, doc, callback)
-  //     if (editorsId[key]) {
-  //       updated_editor_id.push(key);
-  //       Editor.updateOne(
-  //         { _id: key },
-  //         { $push: { students: studentId } },
-  //         done
-  //       );
-  //     } else {
-  //       Editor.updateOne(
-  //         { _id: key },
-  //         { $pull: { students: studentId } },
-  //         done
-  //       );
-  //     }
-  //   },
-  //   function allDone(err) {
-  //     // this will be called when all the updates are done or an error occurred during the iteration
-  //   }
-  // );
+
   console.log(updated_editor_id);
   // TODO: check studentId and editorsId are valid
   // const editorsIds = await Editor.findById(({ editorsId }) => editorsId);
@@ -297,21 +241,8 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     .exec();
   // console.log(student);
   res.status(200).send({ success: true, data: student });
-});
 
-const removeEditorFromStudent = asyncHandler(async (req, res, next) => {
-  const { studentId, editorId } = req.params;
-
-  // TODO: transaction?
-  await Student.findByIdAndUpdate(studentId, {
-    $pull: { editors: editorId },
-  });
-
-  await Editor.findByIdAndUpdate(editorId, {
-    $pull: { students: studentId },
-  });
-
-  res.status(200).send({ success: true });
+  //TODO: email inform Student for(assigned editor) and inform editor for (your new student)
 });
 
 const createApplication = asyncHandler(async (req, res) => {
@@ -393,9 +324,7 @@ module.exports = {
   getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,
-  // removeAgentFromStudent,
   assignEditorToStudent,
-  // removeEditorFromStudent,
   createApplication,
   deleteApplication,
 };

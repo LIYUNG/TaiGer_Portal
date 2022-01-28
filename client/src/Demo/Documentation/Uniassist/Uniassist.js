@@ -22,16 +22,15 @@ class Uniassist extends Component {
   componentDidMount() {
     getUniassistArticle().then(
       (resp) => {
-        if (resp.status === 200) {
+        const { success, data } = resp.data;
+        if (success) {
           this.setState({
-            articles: resp.data.documents,
+            success,
+            articles: data,
             isLoaded: true,
-            role: resp.data.role,
           });
         } else {
-          this.setState({
-            isLoaded: false,
-          });
+          alert(resp.data.message);
         }
       },
       (error) => {
@@ -61,14 +60,14 @@ class Uniassist extends Component {
     // console.log("article_temp : " + JSON.stringify(article_temp));
     createArticle(article_temp).then(
       (resp) => {
-        const {
-          data: { documents },
-        } = resp;
-        console.log(JSON.stringify(documents));
-        this.setState({
-          articles: this.state.articles.concat(documents),
-        });
-        console.log(this.state.articles);
+        const { success, data } = resp.data;
+        if (success) {
+          this.setState({
+            articles: this.state.articles.concat(data),
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         this.setState({
@@ -113,7 +112,22 @@ class Uniassist extends Component {
     console.log(article_temp);
 
     updateDoc(attrs._id, article_temp).then(
-      (result) => {},
+      (resp) => {
+        const { success, data } = resp.data;
+        if (success) {
+          this.setState({
+            articles: this.state.articles.map((article) => {
+              if (article._id === attrs._id) {
+                return Object.assign(article, attrs);
+              } else {
+                return article;
+              }
+            }),
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
       (error) => {
         this.setState({
           isLoaded: false,
@@ -185,7 +199,7 @@ class Uniassist extends Component {
             {this.props.user.role === "Admin" ||
             this.props.user.role === "Agent" ? (
               <ToggleableArticleForm
-                category="application"
+                category="uniassist"
                 onFormSubmit={this.handleCreateFormSubmit}
               />
             ) : (

@@ -18,10 +18,11 @@ const updateUser = asyncHandler(async (req, res) => {
   });
 
   return res.status(200).send({ success: true, data: user });
+  //TODO: Email inform Guest, the updated status 
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
-  // TODO: also remove the relationships
+  // TODO: also remove the relationships and data users have
   await User.findByIdAndDelete(req.params.id);
   res.status(200).send({ success: true });
 });

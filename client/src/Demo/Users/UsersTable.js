@@ -11,7 +11,7 @@ class UsersTable extends React.Component {
     error: null,
     role: "",
     isLoaded: false,
-    data: null,
+    user: null,
     success: false,
   };
 
@@ -21,9 +21,12 @@ class UsersTable extends React.Component {
         if (resp.status === 401 || resp.status === 403) {
           return this.setState({ error: resp.status });
         }
-        // console.log(resp.data.data);
         const { data, success } = resp.data;
-        this.setState({ isLoaded: true, data, success });
+        if (success) {
+          this.setState({ isLoaded: true, user: data, success });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => this.setState({ isLoaded: true, error })
     );
@@ -34,7 +37,11 @@ class UsersTable extends React.Component {
       getUsers().then(
         (resp) => {
           const { data, success } = resp.data;
-          this.setState({ isLoaded: true, data, success });
+          if (success) {
+            this.setState({ isLoaded: true, user: data, success });
+          } else {
+            alert(resp.data.message);
+          }
         },
         (error) => this.setState({ isLoaded: true, error })
       );
@@ -102,9 +109,7 @@ class UsersTable extends React.Component {
             <Card title={"Users List"}>
               <UsersList
                 success={this.state.success}
-                // onFormSubmit={this.onFormSubmit}
-                // assignUserAs={this.assignUserAs}
-                data={this.state.data}
+                user={this.state.user}
                 onSubmit2={this.onSubmit2}
                 header={window.UserlistHeader}
               />

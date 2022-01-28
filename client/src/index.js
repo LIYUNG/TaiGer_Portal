@@ -63,7 +63,7 @@ window.agenttodolist = [
 
 window.documentsprogresslist = [
   {
-    name: "Received ML Template",
+    name: "Template filled?",
     prop: "receive_template",
   },
   {
@@ -71,8 +71,8 @@ window.documentsprogresslist = [
     prop: "preparing",
   },
   {
-    name: "Editing",
-    prop: "editing",
+    name: "Last Update",
+    prop: "lastupdate",
   },
   {
     name: "Closed",

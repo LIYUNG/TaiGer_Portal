@@ -33,7 +33,7 @@ class EditDownloadFilesSubpage extends React.Component {
               <td>
                 <Col>
                   <Form
-                  // onSubmit={(e) => this.props.submitFile(e, this.props.userId, k)}
+                  // onSubmit={(e) => this.props.submitFile(e, k)}
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
                       <Button size="sm" type="submit">
@@ -75,7 +75,7 @@ class EditDownloadFilesSubpage extends React.Component {
           <td>
             <Col>
               <Form
-                onSubmit={(e) => this.props.submitFile(e, this.props.userId, k)}
+                onSubmit={(e) => this.props.submitFile(e, k)}
               >
                 <Form.Group controlId="exampleForm.ControlSelect1">
                   <Button size="sm" type="submit">

@@ -123,7 +123,7 @@ export default {
         },
         {
           id: "download",
-          title: "Template Download",
+          title: "Download Center",
           type: "item",
           url: "/download",
           classes: "nav-item",

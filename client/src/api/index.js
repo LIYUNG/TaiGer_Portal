@@ -88,6 +88,9 @@ export const templateDownload = (category) =>
 export const upload = (studentId, docName, data) =>
   request.post(`/api/account/files/${studentId}/${docName}`, data);
 
+export const uploadtemplate = (studentId, docName, data) =>
+  request.post(`/api/account/files/template/${docName}`, data);
+
 export const transcriptanalyser = (studentId, category, data) =>
   request.post(`/api/account/transcript/${studentId}/${category}`, data);
 
@@ -108,7 +111,12 @@ export const createManualFileUploadPlace = (
   request.put(
     `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
   );
-export const deleteManualFileUpload = (studentId, applicationId, docName, whoupdate) =>
+export const deleteManualFileUpload = (
+  studentId,
+  applicationId,
+  docName,
+  whoupdate
+) =>
   request.delete(
     `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${whoupdate}`
   );
@@ -151,7 +159,11 @@ export const downloadHandWrittenFile = (
     }
   );
 
-export const downloadGeneralHandWrittenFile = (studentId, docName, student_inputs) =>
+export const downloadGeneralHandWrittenFile = (
+  studentId,
+  docName,
+  student_inputs
+) =>
   request.get(
     `/api/account/files/general/${student_inputs}/${studentId}/${docName}`,
     {
@@ -159,7 +171,12 @@ export const downloadGeneralHandWrittenFile = (studentId, docName, student_input
     }
   );
 //obsolete(? double check)
-export const deleteWrittenFile = (studentId, applicationId, docName, student_inputs) =>
+export const deleteWrittenFile = (
+  studentId,
+  applicationId,
+  docName,
+  student_inputs
+) =>
   request.delete(
     `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${student_inputs}`
   );

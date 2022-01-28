@@ -7,13 +7,13 @@ const getDocumentations = asyncHandler(async (req, res) => {
   const documents = await Documentation.find({
     Category_: req.params.category,
   });
-  return res.send({ documents, role: req.user.role_ });
+  return res.send({ success: true, data: documents, role: req.user.role_ });
 });
 
 const createDocumentation = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, "_id");
   const newDoc = await Documentation.create(fields);
-  return res.send({ documents: newDoc });
+  return res.send({ success: true, data: newDoc });
 });
 
 const updateDocumentation = asyncHandler(async (req, res) => {

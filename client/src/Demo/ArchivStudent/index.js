@@ -46,7 +46,11 @@ class Dashboard extends React.Component {
       (resp) => {
         console.log(resp.data);
         const { data, success } = resp.data;
-        this.setState({ isLoaded: true, students: data, success: success });
+        if (success) {
+          this.setState({ isLoaded: true, students: data, success: success });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         console.log(error);
@@ -63,11 +67,12 @@ class Dashboard extends React.Component {
     if (this.state.isLoaded === false) {
       getArchivStudents().then(
         (resp) => {
-          this.setState({
-            isLoaded: true,
-            students: resp.data.data,
-            success: resp.data.success,
-          });
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState({ isLoaded: true, students: data, success: success });
+          } else {
+            alert(resp.data.message);
+          }
         },
         (error) => {
           this.setState({
@@ -123,8 +128,6 @@ class Dashboard extends React.Component {
   }
 
   onRejectFilefromstudent = (e, category, studentId) => {
-    //id == student id
-    // e.preventDefault();
     rejectDocument(category, studentId).then(
       (result) => {},
       (error) => {
@@ -137,8 +140,6 @@ class Dashboard extends React.Component {
   };
 
   onAcceptFilefromstudent = (e, category, studentId) => {
-    //id == student id
-    // e.preventDefault();
     acceptDocument(category, studentId).then(
       (result) => {},
       (error) => {

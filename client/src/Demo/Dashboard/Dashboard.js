@@ -54,7 +54,15 @@ class Dashboard extends React.Component {
         console.log(resp.data);
         console.log("Default.js rendered");
         const { data, success } = resp.data;
-        this.setState({ isLoaded: true, students: data, success: success });
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            students: data,
+            success: success,
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         console.log(": " + error);
@@ -71,11 +79,16 @@ class Dashboard extends React.Component {
       getStudents().then(
         (resp) => {
           console.log("Default.js componentDidUpdate rendered");
-          this.setState({
-            isLoaded: true,
-            students: resp.data.data,
-            success: resp.data.success,
-          });
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              students: data,
+              success: success,
+            });
+          } else {
+            alert(resp.data.message);
+          }
         },
         (error) => {
           this.setState({
@@ -91,6 +104,7 @@ class Dashboard extends React.Component {
     e.preventDefault();
     download(category, id).then(
       (resp) => {
+        console.log(resp.data)
         const actualFileName =
           resp.headers["content-disposition"].split('"')[1];
         const { data: blob } = resp;
@@ -281,12 +295,16 @@ class Dashboard extends React.Component {
     updateAgents(updateAgentList, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
-        this.setState({
-          students: data,
-          updateAgentList: [],
-          isLoaded: false,
-          success: success,
-        });
+        if (success) {
+          this.setState({
+            isLoaded: true, //false to reload everything
+            students: data,
+            success: success,
+            updateAgentList: [],
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         alert("UpdateAgentlist is failed.");

@@ -12,9 +12,10 @@ class Userslist extends React.Component {
     lastname: "",
     selected_user_role: "",
     selected_user_id: "",
-    data: this.props.data,
+    data: this.props.user,
     modalShowNewProgram: false,
     deleteUserWarning: false,
+    success: this.props.success,
   };
   setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
     this.setState({
@@ -64,10 +65,17 @@ class Userslist extends React.Component {
     }
     deleteUser(user_id).then(
       (resp) => {
-        this.setState((state) => ({
-          deleteUserWarning: false,
-          data: array,
-        }));
+        const { success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            success,
+            deleteUserWarning: false,
+            data: array,
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         console.log("error at deleteUser: " + deleteUser);
@@ -80,15 +88,16 @@ class Userslist extends React.Component {
     updateUser(edited_user).then(
       (resp) => {
         // update local
-        this.setState({
-          data: this.state.data.map((user) => {
-            if (user._id === edited_user._id) {
-              return Object.assign(user, edited_user);
-            } else {
-              return user;
-            }
-          }),
-        });
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            success,
+            data,
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         console.log("error at editUser: " + error);
@@ -101,37 +110,39 @@ class Userslist extends React.Component {
   };
 
   assignUserAs = (user_data) => {
-    console.log("click assign user role");
-    changeUserRole(user_data._id, user_data.role)
-      // .then((res) => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            modalShow: false,
-            data: this.state.data.map((user) => {
+    var updated_user = this.state.data.map((user) => {
               if (user._id === user_data._id) {
                 return Object.assign(user, user_data);
               } else {
                 return user;
               }
-            }),
+            })
+    changeUserRole(user_data._id, user_data.role).then(
+      (resp) => {
+        console.log(resp.data);
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            modalShow: false,
+            isLoaded: true,
+            success,
+            data: updated_user,
           });
-        },
-        (error) => {
-          console.log(" error at assignUserAs" + error);
+        } else {
+          alert(resp.data.message);
         }
-      );
+      },
+      (error) => {
+        console.log(" error at assignUserAs" + error);
+      }
+    );
   };
 
   onSubmit2 = (e) => {
     e.preventDefault();
     const user_role = this.state.selected_user_role;
     const user_id = this.state.selected_user_id;
-    console.log("before submit");
-    console.log("selected_user_role " + this.state.selected_user_role);
-    console.log("selected_user_id " + this.state.selected_user_id);
     this.assignUserAs({ role: user_role, _id: user_id });
-    console.log("click assign");
   };
 
   RemoveUserHandler3 = (user_id) => {
@@ -141,7 +152,7 @@ class Userslist extends React.Component {
   };
 
   render() {
-    if (this.props.success) {
+    if (this.state.success) {
       const headers = (
         <tr>
           <th> </th>
@@ -158,7 +169,7 @@ class Userslist extends React.Component {
           onFormSubmit={this.onFormSubmit}
           setModalShowDelete={this.setModalShowDelete}
           setModalShow={this.setModalShow}
-          success={this.props.success}
+          success={this.state.success}
         />
       ));
       return (

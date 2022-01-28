@@ -26,8 +26,6 @@ class TabStudDocsDashboard extends React.Component {
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
         onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         updateAgentList={this.props.updateAgentList}
         handleChangeAgentlist={this.props.handleChangeAgentlist}
         submitUpdateAgentlist={this.props.submitUpdateAgentlist}

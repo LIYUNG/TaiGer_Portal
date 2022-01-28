@@ -30,8 +30,9 @@ class TabEditorDocsProgress extends React.Component {
                 ) : (
                   <></>
                 )}
-                <th>University</th>
-                <th>Programs</th>
+                <th>Type</th>
+                <th>Document</th>
+                <th></th>
                 <th>Deadline</th>
               </>
               {this.props.documentsprogresslist.map((doc, index) => (

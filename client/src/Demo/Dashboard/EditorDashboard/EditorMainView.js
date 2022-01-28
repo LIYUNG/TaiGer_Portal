@@ -75,7 +75,36 @@ class EditorMainView extends React.Component {
         <Row>
           <Col sm={12}>
             <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-              <Tab eventKey="w" title="Student Overview">
+              <Tab eventKey="w" title="Editor & Docs Progress">
+                <TabEditorDocsProgress
+                  role={this.props.role}
+                  students={this.props.students}
+                  startEditingProgram={this.props.startEditingProgram}
+                  documentslist={this.props.documentslist}
+                  documentsprogresslist={this.props.documentsprogresslist}
+                  documenheader={this.props.documenheader}
+                  startUploadfile={this.props.startUploadfile}
+                  onDownloadFilefromstudent={
+                    this.props.onDownloadFilefromstudent
+                  }
+                  onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+                  onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+                />
+              </Tab>
+              <Tab eventKey="dz" title="Agents and Editors">
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>First-, Last Name</th>
+                      <th>Agents</th>
+                      <th>Editors</th>
+                    </tr>
+                  </thead>
+                  {students_agent_editor}
+                </Table>
+              </Tab>
+              <Tab eventKey="y" title="Student Profile Overview">
                 <TabStudDocsDashboard
                   role={this.props.role}
                   students={this.props.students}
@@ -106,35 +135,6 @@ class EditorMainView extends React.Component {
                     this.props.updateStudentArchivStatus
                   }
                   isDashboard={this.props.isDashboard}
-                />
-              </Tab>
-              <Tab eventKey="dz" title="Agents and Editors">
-                <Table responsive>
-                  <thead>
-                    <tr>
-                      <th>First-, Last Name</th>
-                      <th>Agents</th>
-                      <th>Editors</th>
-                    </tr>
-                  </thead>
-                  {students_agent_editor}
-                </Table>
-              </Tab>
-              <Tab eventKey="y" title="Editor & Docs Progress">
-                <TabEditorDocsProgress
-                  role={this.props.role}
-                  students={this.props.students}
-                  startEditingProgram={this.props.startEditingProgram}
-                  documentslist={this.props.documentslist}
-                  documentsprogresslist={this.props.documentsprogresslist}
-                  documenheader={this.props.documenheader}
-                  startUploadfile={this.props.startUploadfile}
-                  onDownloadFilefromstudent={
-                    this.props.onDownloadFilefromstudent
-                  }
-                  onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-                  onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
               </Tab>
             </Tabs>

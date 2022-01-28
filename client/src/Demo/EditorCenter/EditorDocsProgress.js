@@ -40,15 +40,22 @@ class EditorDocsProgress extends React.Component {
     ).then(
       (resp) => {
         console.log(resp.data.data);
-        this.setState((state) => ({
-          ...state,
-          studentId: "",
-          applicationId: "",
-          docName: "",
-          whoupdate: "",
-          student: resp.data.data,
-          deleteFileWarningModel: false,
-        }));
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            student: data,
+            success: success,
+            deleteFileWarningModel: false,
+          }));
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         console.log(error);
@@ -60,19 +67,26 @@ class EditorDocsProgress extends React.Component {
     deleteGenralFileUpload(
       this.state.studentId,
       this.state.docName,
-      this.state.whoupdate,
+      this.state.whoupdate
     ).then(
       (resp) => {
         console.log(resp.data.data);
-        this.setState((state) => ({
-          ...state,
-          studentId: "",
-          applicationId: "",
-          docName: "",
-          whoupdate: "",
-          student: resp.data.data,
-          deleteFileWarningModel: false,
-        }));
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            student: data,
+            success: success,
+            deleteFileWarningModel: false,
+          }));
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         console.log(error);
@@ -124,13 +138,16 @@ class EditorDocsProgress extends React.Component {
       )
         .then((res) => {
           console.log(res.data);
-          if (res.status === 400) {
-            alert(res.data.message);
-          } else {
+          const { data, success } = res.data;
+          if (success) {
             this.setState({
-              student: res.data.data, // res.data = {success: true, data:{...}}
+              isLoaded: true, //false to reload everything
+              student: data,
+              success: success,
               file: "",
             });
+          } else {
+            alert(res.data.message);
           }
         })
         .catch((err) => {
@@ -151,13 +168,16 @@ class EditorDocsProgress extends React.Component {
       uploadEditGeneralFileforstudent(studentId, fileCategory, formData)
         .then((res) => {
           console.log(res.data);
-          if (res.status === 400 || res.status === 401) {
-            alert(res.data.message);
-          } else {
+          const { data, success } = res.data;
+          if (success) {
             this.setState({
-              student: res.data.data, // res.data = {success: true, data:{...}}
+              isLoaded: true,
+              student: data,
+              success: success,
               file: "",
             });
+          } else {
+            alert(res.data.message);
           }
         })
         .catch((err) => {

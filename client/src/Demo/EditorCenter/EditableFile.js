@@ -30,7 +30,13 @@ class EditableFile extends Component {
         <>
           <Row>
             <Col md={8}>
-              <p>{documenName}</p>
+              <p>
+                {documenName}
+                {", updated on "}
+                {new Date(this.props.document.updatedAt).toLocaleDateString()}
+                {", "}
+                {new Date(this.props.document.updatedAt).toLocaleTimeString()}
+              </p>
             </Col>
             <Col md={2}>
               {this.props.filetype === "General" ? (

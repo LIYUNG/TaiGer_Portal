@@ -102,7 +102,7 @@ class Dashboard extends React.Component {
     e.preventDefault();
     download(category, id).then(
       (resp) => {
-        console.log(resp.data)
+        console.log(resp.data);
         const actualFileName =
           resp.headers["content-disposition"].split('"')[1];
         const { data: blob } = resp;
@@ -281,22 +281,30 @@ class Dashboard extends React.Component {
     }));
   };
 
-  submitUpdateAgentlist = (updateAgentList, student_id) => {
-    this.UpdateAgentlist(updateAgentList, student_id);
+  submitUpdateAgentlist = (e, updateAgentList, student_id) => {
+    e.preventDefault();
+    this.UpdateAgentlist(e, updateAgentList, student_id);
   };
 
-  submitUpdateEditorlist = (updateEditorList, student_id) => {
-    this.UpdateEditorlist(updateEditorList, student_id);
+  submitUpdateEditorlist = (e, updateEditorList, student_id) => {
+    e.preventDefault();
+    this.UpdateEditorlist(e, updateEditorList, student_id);
   };
 
-  UpdateAgentlist = (updateAgentList, student_id) => {
+  UpdateAgentlist = (e, updateAgentList, student_id) => {
+    e.preventDefault();
     updateAgents(updateAgentList, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        var students_temp = [...this.state.students];
+        var studentIdx = students_temp.findIndex(
+          ({ _id }) => _id === student_id
+        );
+        students_temp[studentIdx] = data; // datda is single student updated
         if (success) {
           this.setState({
             isLoaded: true, //false to reload everything
-            students: data,
+            students: students_temp,
             success: success,
             updateAgentList: [],
           });
@@ -310,17 +318,26 @@ class Dashboard extends React.Component {
     );
   };
 
-  UpdateEditorlist = (updateEditorList, student_id) => {
+  UpdateEditorlist = (e, updateEditorList, student_id) => {
+    e.preventDefault();
     updateEditors(updateEditorList, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
-        this.setState((state) => ({
-          ...state,
-          students: data,
-          updateEditorList: [],
-          isLoaded: false,
-          success: success,
-        }));
+        var students_temp = [...this.state.students];
+        var studentIdx = students_temp.findIndex(
+          ({ _id }) => _id === student_id
+        );
+        students_temp[studentIdx] = data; // datda is single student updated
+        if (success) {
+          this.setState({
+            isLoaded: true, //false to reload everything
+            students: students_temp,
+            success: success,
+            updateAgentList: [],
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => {
         alert("UpdateEditorlist is failed.");

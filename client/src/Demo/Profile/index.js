@@ -1,8 +1,8 @@
 import React from "react";
-import { Row, Col, Card, Form, Button, Spinner } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Spinner, Modal } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
-
+import { updatePersonalData, getStudents } from "../../api";
 class Profile extends React.Component {
   state = {
     error: null,
@@ -10,11 +10,98 @@ class Profile extends React.Component {
     isLoaded: false,
     data: null,
     success: false,
+    user: {},
+    personaldata: {
+      firstname: this.props.user.firstname,
+      lastname: this.props.user.lastname,
+    },
+    updateconfirmed: false,
   };
 
   componentDidMount() {
-    this.setState({ isLoaded: true });
+    getStudents().then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          console.log(data);
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            personaldata: {
+              firstname: this.props.user.firstname,
+              lastname: this.props.user.lastname,
+            },
+            success: success,
+          }));
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        console.log(": " + error);
+        this.setState({
+          isLoaded: true,
+          error: true,
+        });
+      }
+    );
   }
+
+  handleChange_PersonalData = (e) => {
+    console.log(e.target.value);
+    console.log(e.target.id);
+    // e.preventDefault();
+    var personaldata_temp = { ...this.state.personaldata };
+    personaldata_temp[e.target.id] = e.target.value;
+    console.log(personaldata_temp);
+    this.setState((state) => ({
+      ...state,
+      personaldata: personaldata_temp,
+    }));
+  };
+
+  handleSubmit_PersonalData = (e, personaldata) => {
+    console.log(personaldata);
+    // e.preventDefault();
+    updatePersonalData(personaldata).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          console.log(data);
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            personaldata: data,
+            success: success,
+            updateconfirmed: true,
+          }));
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        console.log(": " + error);
+        this.setState({
+          isLoaded: true,
+          error: true,
+        });
+      }
+    );
+  };
+
+  onHide = () => {
+    this.setState({
+      updateconfirmed: false,
+    });
+  };
+
+  setmodalhide = () => {
+    window.location.reload(true);
+    // this.setState({
+    //   updateconfirmed: false,
+    // });
+  };
+
   render() {
     const { error, isLoaded } = this.state;
     const style = {
@@ -50,41 +137,17 @@ class Profile extends React.Component {
               <Card.Body>
                 <Row>
                   <Col md={6}>
-                    {/* <Form> */}
-                    <Form.Group controlId="form.firstname">
+                    <Form.Group controlId="firstname">
                       <Form.Label>Firstname</Form.Label>
                       <Form.Control
                         type="text"
-                        readOnly={true}
-                        placeholder="Text"
+                        placeholder="First name"
                         autoComplete="nope"
-                        value={this.props.user.firstname}
+                        defaultValue={this.state.personaldata.firstname}
+                        onChange={(e) => this.handleChange_PersonalData(e)}
                       />
                     </Form.Group>
-                    <Form.Group controlId="form.birthday">
-                      <Form.Label>Birthday Date</Form.Label>
-                      <Form.Control type="date" placeholder="Date of Birth" />
-                      {/* <Form.Text className="text-muted">
-                          We'll never share your email with anyone else.
-                        </Form.Text> */}
-                    </Form.Group>
-
-                    {/* <Form.Group controlId="form.BasicPassword">
-                      <Form.Label>Password</Form.Label>
-                      <Form.Control type="password" placeholder="Password" />
-                    </Form.Group> */}
-                    {/* </Form> */}
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="form.lastname">
-                      <Form.Label>Lastname</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Text"
-                        readOnly={true}
-                        value={this.props.user.lastname}
-                      />
-                    </Form.Group>
+                    <br />
                     <Form.Group className="mb-2">
                       <Form.Label>Email</Form.Label>
                       <Form.Control
@@ -93,67 +156,41 @@ class Profile extends React.Component {
                         defaultValue={this.props.user.email}
                       />
                     </Form.Group>
-                    {/* <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Form.Label>Example select</Form.Label>
-                      <Form.Control as="select">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </Form.Control> 
-                    </Form.Group>*/}
-                    {/* <Form.Group controlId="formBasicChecbox">
-                      <Form.Check type="checkbox" label="Check me out" />
+                    {/* <Form.Group controlId="birthday">
+                      <Form.Label>Birthday Date</Form.Label>
+                      <Form.Control type="date" placeholder="Date of Birth" />
                     </Form.Group> */}
-                    <Button variant="primary">Submit</Button>
-                  </Col>
-                </Row>
-                {/* <h5 className="mt-5">Sizing</h5>
-                <hr />
-                <Row>
-                  <Col md={6}>
-                    <Form.Control
-                      size="lg"
-                      type="text"
-                      placeholder="Large text"
-                      className="mb-3"
-                    />
+                    {/* <Form.Group controlId="form.BasicPassword">
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control type="password" placeholder="Password" />
+                    </Form.Group> */}
+                    {/* </Form> */}
                   </Col>
                   <Col md={6}>
-                    <Form.Control size="lg" as="select" className="mb-3">
-                      <option>Large select</option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                    </Form.Control>
-                    <Form.Control as="select" className="mb-3">
-                      <option>Default select</option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                    </Form.Control>
+                    <Form.Group controlId="lastname">
+                      <Form.Label>Lastname</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Last name"
+                        defaultValue={this.state.personaldata.lastname}
+                        onChange={(e) => this.handleChange_PersonalData(e)}
+                      />
+                    </Form.Group>
+                    <br />
+                    <br />
+                    <Button
+                      variant="primary"
+                      onClick={(e) =>
+                        this.handleSubmit_PersonalData(
+                          e,
+                          this.state.personaldata
+                        )
+                      }
+                    >
+                      Update
+                    </Button>
                   </Col>
                 </Row>
-                <h5 className="mt-5">Inline</h5>
-                <hr />
-                <Row>
-                  <Col>
-                    <Form inline>
-                      <Form.Group className="mb-2 mr-5">
-                        <Form.Label srOnly>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" />
-                      </Form.Group>
-                      <Form.Group>
-                        <Button className="mb-0">Confirm Identity</Button>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                </Row> */}
               </Card.Body>
             </Card>
             {!isLoaded && (
@@ -165,6 +202,23 @@ class Profile extends React.Component {
             )}
           </Col>
         </Row>
+        <Modal
+          show={this.state.updateconfirmed}
+          onHide={this.setmodalhide}
+          size="sm"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Update Success
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Personal Data is updated successfully!</Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.setmodalhide}>Close</Button>
+          </Modal.Footer>
+        </Modal>
       </Aux>
     );
   }

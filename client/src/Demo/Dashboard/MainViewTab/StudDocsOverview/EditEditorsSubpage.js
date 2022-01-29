@@ -65,8 +65,9 @@ class EditEditorsSubpage extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            onClick={() =>
+            onClick={(e) =>
               this.props.submitUpdateEditorlist(
+                e,
                 this.props.updateEditorList,
                 this.props.student._id
               )

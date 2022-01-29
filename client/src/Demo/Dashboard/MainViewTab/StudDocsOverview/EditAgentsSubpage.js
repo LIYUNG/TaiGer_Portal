@@ -1,8 +1,6 @@
 import React from "react";
 import { Table, Form, Modal } from "react-bootstrap";
-import {
-  Button,
-} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 class EditAgentsSubpage extends React.Component {
   // edit Agent subpage
   render() {
@@ -17,7 +15,9 @@ class EditAgentsSubpage extends React.Component {
                 name="agent_id"
                 defaultChecked={
                   this.props.student.agents
-                    ? this.props.student.agents.findIndex((Agent)=> Agent._id === agent._id) > -1
+                    ? this.props.student.agents.findIndex(
+                        (Agent) => Agent._id === agent._id
+                      ) > -1
                       ? true
                       : false
                     : false
@@ -62,8 +62,9 @@ class EditAgentsSubpage extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            onClick={() =>
+            onClick={(e) =>
               this.props.submitUpdateAgentlist(
+                e,
                 this.props.updateAgentList,
                 this.props.student._id
               )

@@ -40,6 +40,10 @@ const UserSchema = new Schema(
       trim: true,
       minlength: [8, "Password must contain at least 8 characters"],
     },
+    birthday: {
+      type: String,
+      default: "",
+    },
   },
   options
 );

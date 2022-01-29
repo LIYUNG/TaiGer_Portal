@@ -26,6 +26,7 @@ const {
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,
+  updatePersonalData,
 } = require("../controllers/files");
 
 const router = Router();
@@ -129,6 +130,12 @@ router
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateLanguageSkill
+  );
+router
+  .route("/profile")
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    updatePersonalData
   );
 router
   .route("/download/template/:category")

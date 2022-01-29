@@ -3,7 +3,7 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 
 const { asyncHandler } = require("../middlewares/error-handler");
-const { Role, Student } = require("../models/User");
+const { Role, Student, User } = require("../models/User");
 const { UPLOAD_PATH } = require("../config");
 const { ErrorResponse } = require("../common/errors");
 const { DocumentStatus } = require("../constants");
@@ -368,7 +368,6 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       }
     );
   }
-
 });
 
 const downloadProfileFile = asyncHandler(async (req, res, next) => {
@@ -834,6 +833,22 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: language });
 });
 
+const updatePersonalData = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    body: { personaldata },
+  } = req;
+  const { _id } = user;
+  await User.findByIdAndUpdate(
+    _id,
+    {
+      firstname: personaldata.firstname,
+      lastname: personaldata.lastname,
+    },
+    { upsert: true, new: true }
+  );
+  res.status(200).send({ success: true, data: personaldata });
+});
 module.exports = {
   getMyfiles,
   saveFilePath,
@@ -853,4 +868,5 @@ module.exports = {
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,
+  updatePersonalData,
 };

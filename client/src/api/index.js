@@ -220,3 +220,7 @@ export const updateLanguageSkill = (language) =>
   request.post(`/api/account/survey/language`, { language });
 
 export const getMyAcademicBackground = () => request.get("/api/account/survey");
+
+//Personal Data:
+export const updatePersonalData = (personaldata) =>
+  request.post(`/api/account/profile`, { personaldata });

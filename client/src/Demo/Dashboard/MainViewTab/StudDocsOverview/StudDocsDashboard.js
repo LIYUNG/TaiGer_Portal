@@ -76,7 +76,17 @@ class StudDocsDashboard extends React.Component {
       showFilePage: true,
     });
   };
+  submitUpdateAgentlist = (e, updateAgentList, student_id) => {
+    e.preventDefault();
+    this.setAgentModalhide();
+    this.props.submitUpdateAgentlist(e, updateAgentList, student_id);
+  };
 
+  submitUpdateEditorlist = (e, updateEditorList, student_id) => {
+    e.preventDefault();
+    this.setEditorModalhide();
+    this.props.submitUpdateEditorlist(e, updateEditorList, student_id);
+  };
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);
   };
@@ -254,7 +264,7 @@ class StudDocsDashboard extends React.Component {
                 setmodalhide={this.setAgentModalhide}
                 updateAgentList={this.props.updateAgentList}
                 handleChangeAgentlist={this.props.handleChangeAgentlist}
-                submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+                submitUpdateAgentlist={this.submitUpdateAgentlist}
               />
               <EditEditorsSubpage
                 student={this.props.student}
@@ -264,7 +274,7 @@ class StudDocsDashboard extends React.Component {
                 setmodalhide={this.setEditorModalhide}
                 updateEditorList={this.props.updateEditorList}
                 handleChangeEditorlist={this.props.handleChangeEditorlist}
-                submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+                submitUpdateEditorlist={this.submitUpdateEditorlist}
               />
             </>
           ) : (

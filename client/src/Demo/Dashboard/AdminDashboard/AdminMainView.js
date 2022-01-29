@@ -110,7 +110,7 @@ class AdminMainView extends React.Component {
                   {students_agent_editor}
                 </Table>
               </Tab>
-              <Tab eventKey="x" title="Admin TODO">
+              {/* <Tab eventKey="x" title="Admin TODO">
                 <Table responsive>
                   <thead>
                     <tr>
@@ -124,7 +124,7 @@ class AdminMainView extends React.Component {
                   </thead>
                   {agent_todo}
                 </Table>
-              </Tab>
+              </Tab> */}
               <Tab eventKey="y" title="Editor & Docs Progress">
                 <TabEditorDocsProgress
                   role={this.props.role}

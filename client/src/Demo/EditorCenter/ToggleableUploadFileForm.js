@@ -3,7 +3,6 @@ import { IoMdCloudUpload } from "react-icons/io";
 import { Button, Form, Row, Col } from "react-bootstrap";
 
 class ToggleableUploadFileForm extends Component {
-
   render() {
     var StudentSelectForm;
     var EditorSelectForm;
@@ -91,7 +90,7 @@ class ToggleableUploadFileForm extends Component {
           </>
         )}
 
-        <Col md={2}>
+        <Col md={1}>
           {this.props.filetype === "General" ? (
             <Form>
               <Form.File.Label
@@ -127,6 +126,14 @@ class ToggleableUploadFileForm extends Component {
             </Form>
           )}
         </Col>
+         <Col md={2}><>(File size max: 5 MB)</></Col>
+        {this.props.role === "Student" ? (
+          <></>
+        ) : (
+          <>
+            <Col md={6}></Col>
+          </>
+        )}
       </Row>
     );
   }

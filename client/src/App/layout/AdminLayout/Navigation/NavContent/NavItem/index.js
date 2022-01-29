@@ -12,7 +12,7 @@ import * as actionTypes from "../../../../../../store/actions";
 class NavItem extends Component {
   menuItemFilterByRole = (itemTitle) => {
     if (this.props.role === "Admin") {
-      if (itemTitle === "Academic Survey" || itemTitle === "Profile Upload") {
+      if (itemTitle === "Academic Survey" || itemTitle === "Application Documents") {
         return false;
       }
       return true;
@@ -20,7 +20,7 @@ class NavItem extends Component {
     if (this.props.role === "Agent") {
       if (
         itemTitle === "Academic Survey" ||
-        itemTitle === "Profile Upload" ||
+        itemTitle === "Application Documents" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
         itemTitle === "User List"
@@ -32,7 +32,7 @@ class NavItem extends Component {
     if (this.props.role === "Editor") {
       if (
         itemTitle === "Academic Survey" ||
-        itemTitle === "Profile Upload" ||
+        itemTitle === "Application Documents" ||
         itemTitle === "Program List" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||

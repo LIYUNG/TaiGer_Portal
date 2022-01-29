@@ -182,7 +182,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
     student.generaldocs.studentinputs.push(student_input_doc); //TODO: and rename file name
     await student.save();
     res.status(201).send({ success: true, data: student });
-
+    //TODO: upload confirmation to Student?
     for (let i = 0; i < student.editors.length; i++) {
       console.log(i);
       await sendUploadedGeneralFilesRemindForEditorEmail(
@@ -272,7 +272,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         address: student.email,
       },
       {
-        uploaded_documentname: document.name.replaceAll("_", " "),
+        uploaded_documentname: document.name.replace(/_/g, " "),
         uploaded_updatedAt: document.updatedAt,
       }
     );
@@ -289,7 +289,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
           {
             student_firstname: student.firstname,
             student_lastname: student.lastname,
-            uploaded_documentname: document.name.replaceAll("_", " "),
+            uploaded_documentname: document.name.replace(/_/g, " "),
             uploaded_updatedAt: document.updatedAt,
           }
         );
@@ -314,7 +314,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       address: student.email,
     },
     {
-      uploaded_documentname: document.name.replaceAll("_", " "),
+      uploaded_documentname: document.name.replace(/_/g, " "),
       uploaded_updatedAt: document.updatedAt,
     }
   );
@@ -332,7 +332,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         {
           student_firstname: student.firstname,
           student_lastname: student.lastname,
-          uploaded_documentname: document.name.replaceAll("_", " "),
+          uploaded_documentname: document.name.replace(/_/g, " "),
           uploaded_updatedAt: document.updatedAt,
         }
       );
@@ -761,7 +761,40 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     res.status(200).end();
   });
 });
+const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
+  const {
+    user: student,
+    body: { academic_background },
+  } = req;
+  const { firstname, lastname, _id } = student;
+  var me = await Student.findById(_id);
+  res.status(200).send({ success: true, data: me.academic_background });
+});
 
+const updateAcademicBackground = asyncHandler(async (req, res, next) => {
+  const {
+    user: student,
+    body: { university },
+    params: { background_type },
+  } = req;
+  const { firstname, lastname, _id } = student;
+  await Student.findByIdAndUpdate(_id, {
+    "academic_background.university": university,
+  });
+  res.status(200).send({ success: true, data: university });
+});
+const updateLanguageSkill = asyncHandler(async (req, res, next) => {
+  const {
+    user: student,
+    body: { language },
+    params: { background_type },
+  } = req;
+  const { firstname, lastname, _id } = student;
+  await Student.findByIdAndUpdate(_id, {
+    "academic_background.language": language,
+  });
+  res.status(200).send({ success: true, data: language });
+});
 module.exports = {
   getMyfiles,
   saveFilePath,
@@ -778,4 +811,7 @@ module.exports = {
   deleteProfileFile,
   processTranscript,
   downloadXLSX,
+  getMyAcademicBackground,
+  updateAcademicBackground,
+  updateLanguageSkill,
 };

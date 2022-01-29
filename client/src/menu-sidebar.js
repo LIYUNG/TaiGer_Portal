@@ -80,7 +80,7 @@ export default {
         },
         {
           id: "profile_upload",
-          title: "Profile Upload",
+          title: "Application Documents",
           type: "item",
           url: "/upload",
           classes: "nav-item",

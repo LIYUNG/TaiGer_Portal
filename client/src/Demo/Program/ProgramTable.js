@@ -25,12 +25,16 @@ class ProgramTable extends React.Component {
     console.log("ProgramTable.js rendered");
     getPrograms().then(
       (resp) => {
-        if (resp.status === 401) {
-          return this.setState({ error: resp.status });
-        }
-        console.log(resp.data);
         const { data, success } = resp.data;
-        this.setState({ isLoaded: true, data, success });
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            data,
+            success,
+          });
+        } else {
+          alert(resp.data.message);
+        }
       },
       (error) => this.setState({ isLoaded: true, error })
     );
@@ -40,8 +44,16 @@ class ProgramTable extends React.Component {
     if (this.state.isLoaded === false) {
       getPrograms().then(
         (resp) => {
-          const { data } = resp.data;
-          this.setState({ isLoaded: true, data });
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              data,
+              success,
+            });
+          } else {
+            alert(resp.data.message);
+          }
         },
         (error) => this.setState({ isLoaded: true, error })
       );

@@ -212,3 +212,9 @@ export const getVisaArticle = () => getArticle("visa");
 export const getUniassistArticle = () => getArticle("uniassist");
 
 export const getCertificationArticle = () => getArticle("certification");
+
+//Survey:
+export const updateAcademicBackground = (university) =>
+  request.post(`/api/account/survey`, {university});
+
+export const getMyAcademicBackground = () => request.get("/api/account/survey");

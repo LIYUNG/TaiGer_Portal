@@ -118,7 +118,10 @@ Your editor will review it and give you feedback as soon as possible.
   return sendEmail(recipient, subject, message);
 };
 
-const sendEditorOutputProgramSpecificFilesEmailToStudent = async (recipient, msg) => {
+const sendEditorOutputProgramSpecificFilesEmailToStudent = async (
+  recipient,
+  msg
+) => {
   const subject = `New revised ${msg.fileCategory} for ${msg.university_name} - ${msg.program_name} from Editor!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
@@ -149,7 +152,7 @@ Your editor will review it and give you feedback as soon as possible.
 };
 
 const sendUploadedProfileFilesEmail = async (recipient, msg) => {
-  const subject = "Your profile file is successfully uploaded!";
+  const subject = `Your ${msg.uploaded_documentname} is successfully uploaded!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
@@ -174,7 +177,7 @@ for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.`;
 };
 
 const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
-  const subject = "Uploaded Files";
+  const subject = `New ${msg.uploaded_documentname} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 

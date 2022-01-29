@@ -66,7 +66,7 @@ class AgentMainView extends React.Component {
         <Row>
           <Col sm={12}>
             <Card title="Agent: To Do">
-              <Table responsive>
+              <Table responsive bordered hover>
                 <thead>
                   <tr>
                     <>

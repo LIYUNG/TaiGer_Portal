@@ -2,6 +2,9 @@ import React from "react";
 import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
 import Card from "../../../App/components/MainCard";
 import StudentMyself from "./StudentMyself";
+import StudentTodoList from "./StudentTodoList";
+import AgentReviewing from "./AgentReviewing";
+import EditorReviewing from "./EditorReviewing";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
 class StudentMainView extends React.Component {
@@ -62,6 +65,64 @@ class StudentMainView extends React.Component {
       )
     );
 
+    const to_do_student = this.props.students.map((student, i) =>
+      student.agents ? (
+        student.agents.map((agent, i) => (
+          <tr key={i}>
+            <td>
+              {agent.firstname} - {agent.lastname}
+            </td>
+            <td>{agent.email}</td>
+          </tr>
+        ))
+      ) : (
+        <></>
+      )
+    );
+
+    const std_todo = this.props.students.map((student, i) => (
+      <StudentTodoList
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
+    const agent_reviewing = this.props.students.map((student, i) => (
+      <AgentReviewing
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
+    const editor_reviewing = this.props.students.map((student, i) => (
+      <EditorReviewing
+        key={i}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
+
     return (
       <>
         <Row>
@@ -92,6 +153,73 @@ class StudentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
+        <Row>
+          <Col md={12}>
+            <Card title="My To Do:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>Please Upload files:</th>
+                    <th>Please filled the template for:</th>
+                    <th>Please Give Editor Feedback:</th>
+                  </tr>
+                </thead>
+                {std_todo}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={6}>
+            <Card title="Agent Reviewing:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>Uploaded files will be reviewed by your agent:</th>
+                  </tr>
+                </thead>
+                {agent_reviewing}
+              </Table>
+            </Card>
+          </Col>{" "}
+          <Col md={6}>
+            <Card title="Editor Reviewing:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>Uploaded files will be reviewed by your editor:</th>
+                  </tr>
+                </thead>
+                {editor_reviewing}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        {/* <Card title="To Do:">
+          <Row>
+            <Col md={6}>
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>Agent Reviewing:</th>
+                  </tr>
+                </thead>
+                <tbody>{std_todo}</tbody>
+              </Table>
+            </Col>
+            <Col md={6}>
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>Task</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>{to_do_student}</tbody>
+              </Table>{" "}
+            </Col>
+          </Row>
+        </Card> */}
         <Row>
           <Col>
             <Card title="My Editor & Docs Progress">

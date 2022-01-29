@@ -52,7 +52,7 @@ class EditableFile extends Component {
                     )
                   }
                 >
-                  <AiOutlineDownload size={16} />
+                  <AiOutlineDownload size={20} />
                 </Button>
               ) : (
                 <Button
@@ -68,7 +68,7 @@ class EditableFile extends Component {
                     )
                   }
                 >
-                  <AiOutlineDownload size={16} />
+                  <AiOutlineDownload size={20} />
                 </Button>
               )}
             </Col>
@@ -83,7 +83,7 @@ class EditableFile extends Component {
                       variant="danger"
                       onClick={this.handleDeleteGeneralFile}
                     >
-                      <AiOutlineDelete size={16} />
+                      <AiOutlineDelete size={20} />
                     </Button>
                   ) : (
                     <Button
@@ -92,7 +92,7 @@ class EditableFile extends Component {
                       variant="danger"
                       onClick={this.handleDeleteProgramSpecific}
                     >
-                      <AiOutlineDelete size={16} />
+                      <AiOutlineDelete size={20} />
                     </Button>
                   )}
                 </Col>

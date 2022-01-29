@@ -23,6 +23,8 @@ const {
   deleteGeneralFile,
   processTranscript,
   downloadXLSX,
+  getMyAcademicBackground,
+  updateAcademicBackground,
 } = require("../controllers/files");
 
 const router = Router();
@@ -109,15 +111,18 @@ router
   // );
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);
 // .post(fileUpload, processTranscript);
-
-// router
-//   .route("/download/:category/:filename")
-//   .get(
-//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-//     (req, res, next) =>
-//       res.status(400).send({ success: false, message: "Not implemented yet" })
-//   );
-
+router
+  .route("/survey")
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    getMyAcademicBackground
+  );
+router
+  .route("/survey")
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    updateAcademicBackground
+  );
 router
   .route("/download/template/:category")
   .get(

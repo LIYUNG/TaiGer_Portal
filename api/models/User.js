@@ -125,9 +125,10 @@ const applicationSchema = new Schema({
       updatedAt: Date,
     },
   ],
-  prepared: { type: Boolean, required: true, default: false },
-  closed: { type: Boolean, required: true, default: false },
-  admission: { type: Boolean, required: true, default: false },
+  decided: { type: Boolean, default: false },
+  prepared: { type: Boolean, default: false },
+  closed: { type: Boolean, default: false },
+  admission: { type: Boolean, default: false },
 });
 
 const Student = User.discriminator(
@@ -172,6 +173,10 @@ const Student = User.discriminator(
               enum: Object.values(DocumentStatus),
               default: DocumentStatus.Missing,
             },
+            isFinalVersion: {
+              type: Boolean,
+              default: false,
+            },
             required: {
               type: Boolean,
               required: true,
@@ -207,6 +212,102 @@ const Student = User.discriminator(
             updatedAt: Date,
           },
         ],
+      },
+      academic_background: {
+        university: {
+          attended_university: {
+            type: String,
+            default: "",
+          },
+          attended_university_program: {
+            type: String,
+            default: "",
+          },
+          isGraduated: {
+            type: String,
+            default: "No",
+          },
+          expected_grad_date: {
+            type: String,
+            default: "",
+          },
+          Highest_GPA_Uni: {
+            type: Number,
+            default: 0,
+          },
+          Passing_GPA_Uni: {
+            type: Number,
+            default: 0,
+          },
+          My_GPA_Uni: {
+            type: Number,
+            default: 0,
+          },
+          updatedAt: Date,
+        },
+        language: {
+          english_certificate: {
+            type: String,
+            default: "",
+          },
+          english_score: {
+            type: String,
+            default: "",
+          },
+          german_certificate: {
+            type: String,
+            default: "",
+          },
+          german_score: {
+            type: String,
+            default: "",
+          },
+          updatedAt: Date,
+        },
+      },
+      taigerai: {
+        input: {
+          name: {
+            type: String,
+            default: "",
+          },
+          status: {
+            type: String,
+            enum: Object.values(DocumentStatus),
+            default: DocumentStatus.Missing,
+          },
+          file_category: {
+            type: String,
+            default: "Others",
+          },
+          path: {
+            type: String,
+            default: "",
+          },
+          // TODO: updateBy
+          updatedAt: Date,
+        },
+        output: {
+          name: {
+            type: String,
+            default: "",
+          },
+          status: {
+            type: String,
+            enum: Object.values(DocumentStatus),
+            default: DocumentStatus.Missing,
+          },
+          file_category: {
+            type: String,
+            default: "Others",
+          },
+          path: {
+            type: String,
+            default: "",
+          },
+          // TODO: updateBy
+          updatedAt: Date,
+        },
       },
     },
     options

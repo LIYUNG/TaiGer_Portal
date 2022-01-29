@@ -51,8 +51,6 @@ class Dashboard extends React.Component {
   componentDidMount() {
     getStudents().then(
       (resp) => {
-        console.log(resp.data);
-        console.log("Default.js rendered");
         const { data, success } = resp.data;
         if (success) {
           this.setState({

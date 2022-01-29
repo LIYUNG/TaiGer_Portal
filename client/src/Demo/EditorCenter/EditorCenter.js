@@ -126,7 +126,7 @@ class EditorCenter extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top">
+        <Row className="sticky-top ">
           <Card className="mt-0">
             <Card.Header>
               <Card.Title as="h5">

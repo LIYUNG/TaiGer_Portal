@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card, Form, Button, Spinner } from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Spinner, Modal } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
 import {
@@ -14,15 +14,15 @@ class Survey extends React.Component {
     isLoaded: false,
     data: null,
     success: false,
-    university: {},
-    language: {},
     academic_background: {},
+    updateconfirmed: false,
   };
 
   componentDidMount() {
     getMyAcademicBackground().then(
       (resp) => {
         const { data, success } = resp.data;
+        console.log(data);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -47,41 +47,52 @@ class Survey extends React.Component {
   handleChange_Academic = (e) => {
     console.log(e.target.value);
     console.log(e.target.id);
+    e.preventDefault();
     var university_temp = { ...this.state.academic_background.university };
     university_temp[e.target.id] = e.target.value;
     console.log(university_temp);
     this.setState((state) => ({
       ...state,
-      university: university_temp,
+      academic_background: {
+        ...state.academic_background,
+        university: university_temp,
+      },
     }));
   };
 
   handleChange_Language = (e) => {
     console.log(e.target.value);
     console.log(e.target.id);
+    e.preventDefault();
     var language_temp = { ...this.state.academic_background.language };
     language_temp[e.target.id] = e.target.value;
     console.log(language_temp);
     this.setState((state) => ({
       ...state,
-      language: language_temp,
+      academic_background: {
+        ...state.academic_background,
+        language: language_temp,
+      },
     }));
   };
 
-  handleSubmit_AcademicBackground = (university) => {
+  handleSubmit_AcademicBackground = (e, university) => {
     console.log(university);
+    e.preventDefault();
     updateAcademicBackground(university).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
           console.log(data);
           this.setState((state) => ({
+            ...state,
             isLoaded: true,
             academic_background: {
               ...state.academic_background,
               university: data,
             },
             success: success,
+            updateconfirmed: true,
           }));
         } else {
           alert(resp.data.message);
@@ -97,19 +108,22 @@ class Survey extends React.Component {
     );
   };
 
-  handleSubmit_Language = (language) => {
+  handleSubmit_Language = (e, language) => {
     console.log(language);
+    e.preventDefault();
     updateLanguageSkill(language).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
           this.setState((state) => ({
+            ...state,
             isLoaded: true,
             academic_background: {
               ...state.academic_background,
               language: data,
             },
             success: success,
+            updateconfirmed: true,
           }));
         } else {
           alert(resp.data.message);
@@ -131,6 +145,19 @@ class Survey extends React.Component {
     }
     return 0;
   };
+
+  onHide = () => {
+    this.setState({
+      updateconfirmed: false,
+    });
+  };
+
+  setmodalhide = () => {
+    this.setState({
+      updateconfirmed: false,
+    });
+  };
+
   render() {
     const { error, isLoaded } = this.state;
     const style = {
@@ -339,13 +366,14 @@ class Survey extends React.Component {
                         <br />
                         <Button
                           variant="primary"
-                          onClick={() =>
+                          onClick={(e) =>
                             this.handleSubmit_AcademicBackground(
-                              this.state.university
+                              e,
+                              this.state.academic_background.university
                             )
                           }
                         >
-                          Submit
+                          Update
                         </Button>
                         <br />
                       </Col>
@@ -358,7 +386,7 @@ class Survey extends React.Component {
                   </Card.Header>
                   <Card.Body>
                     <Row>
-                      <Col md={6}>
+                      <Col md={4}>
                         <Form.Group controlId="english_certificate">
                           <Form.Label>English Certificate</Form.Label>
                           <Form.Control
@@ -379,7 +407,7 @@ class Survey extends React.Component {
                           </Form.Control>
                         </Form.Group>
                       </Col>
-                      <Col md={6}>
+                      <Col md={4}>
                         <Form.Group controlId="english_score">
                           <Form.Label>English Test Score</Form.Label>
                           <Form.Control
@@ -393,14 +421,46 @@ class Survey extends React.Component {
                                     .english_score
                                 : ""
                             }
+                            disabled={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .english_certificate === "No"
+                                ? true
+                                : false
+                            }
                             onChange={(e) => this.handleChange_Language(e)}
                           />
                         </Form.Group>
                         <br />
                       </Col>
+                      <Col md={4}>
+                        <Form.Group controlId="english_test_date">
+                          <Form.Label>Expected Test Date</Form.Label>
+                          <Form.Control
+                            type="date"
+                            defaultValue={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .english_test_date
+                                ? this.state.academic_background.language
+                                    .english_test_date
+                                : ""
+                            }
+                            disabled={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .english_certificate === "No"
+                                ? false
+                                : true
+                            }
+                            placeholder="Date of English Test"
+                            onChange={(e) => this.handleChange_Language(e)}
+                          />
+                        </Form.Group>
+                      </Col>
                     </Row>
                     <Row>
-                      <Col md={6}>
+                      <Col md={4}>
                         <Form.Group controlId="german_certificate">
                           <Form.Label>German Certificate</Form.Label>
                           <Form.Control
@@ -425,7 +485,7 @@ class Survey extends React.Component {
                           </Form.Control>
                         </Form.Group>
                       </Col>
-                      <Col md={6}>
+                      <Col md={4}>
                         <Form.Group controlId="german_score">
                           <Form.Label>German Test Score</Form.Label>
                           <Form.Control
@@ -439,10 +499,42 @@ class Survey extends React.Component {
                                     .german_score
                                 : ""
                             }
+                            disabled={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .german_certificate === "No"
+                                ? true
+                                : false
+                            }
                             onChange={(e) => this.handleChange_Language(e)}
                           />
                         </Form.Group>
                         <br />
+                      </Col>
+                      <Col md={4}>
+                        <Form.Group controlId="german_test_date">
+                          <Form.Label>Expected Test Date</Form.Label>
+                          <Form.Control
+                            type="date"
+                            defaultValue={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .german_test_date
+                                ? this.state.academic_background.language
+                                    .german_test_date
+                                : ""
+                            }
+                            disabled={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .german_certificate === "No"
+                                ? false
+                                : true
+                            }
+                            placeholder="Date of Germa Test"
+                            onChange={(e) => this.handleChange_Language(e)}
+                          />
+                        </Form.Group>
                       </Col>
                     </Row>
                     <Row>
@@ -450,11 +542,14 @@ class Survey extends React.Component {
                         <br />
                         <Button
                           variant="primary"
-                          onClick={() =>
-                            this.handleSubmit_Language(this.state.language)
+                          onClick={(e) =>
+                            this.handleSubmit_Language(
+                              e,
+                              this.state.academic_background.language
+                            )
                           }
                         >
-                          Submit
+                          Update
                         </Button>
                         <br />
                       </Col>
@@ -502,13 +597,32 @@ class Survey extends React.Component {
                       </Col>
                       <Col md={6}>
                         <br />
-                        <Button variant="primary">Submit</Button>
+                        <Button variant="primary">Update</Button>
                       </Col>
                     </Row>
                   </Card.Body>
                 </Card>
               </Col>
             </Row>
+            <Modal
+              show={this.state.updateconfirmed}
+              onHide={this.onHide}
+              size="sm"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header>
+                <Modal.Title id="contained-modal-title-vcenter">
+                  Update success
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                Academic Background Surney is updated successfully!
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={this.setmodalhide}>Close</Button>
+              </Modal.Footer>
+            </Modal>
           </>
         ) : (
           <></>

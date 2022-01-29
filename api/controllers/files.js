@@ -13,6 +13,7 @@ const {
   sendEditorOutputProgramSpecificFilesEmailToStudent,
   sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
+  sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedFilesRemindForAgentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedFilesRemindForEditorEmail,
@@ -262,22 +263,20 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     console.log(document.path);
     student.profile.push(document);
     await student.save();
-
     res.status(201).send({ success: true, data: student });
-
-    await sendUploadedProfileFilesEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email,
-      },
-      {
-        uploaded_documentname: document.name.replace(/_/g, " "),
-        uploaded_updatedAt: document.updatedAt,
-      }
-    );
-    console.log(student.agents);
     if (user.role == Role.Student) {
+      await sendUploadedProfileFilesEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email,
+        },
+        {
+          uploaded_documentname: document.name.replace(/_/g, " "),
+          uploaded_updatedAt: document.updatedAt,
+        }
+      );
+
       for (let i = 0; i < student.agents.length; i++) {
         console.log(i);
         await sendUploadedProfileFilesRemindForAgentEmail(
@@ -294,6 +293,24 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
           }
         );
       }
+    } else {
+      await sendAgentUploadedProfileFilesForStudentEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email,
+        },
+        {
+          agent_firstname: user.firstname,
+          agent_lastname: user.lastname,
+          uploaded_documentname: document.name.replace(/_/g, " "),
+          uploaded_updatedAt: document.updatedAt,
+        }
+      );
+    }
+
+    console.log(student.agents);
+    if (user.role == Role.Student) {
     }
     return;
   }
@@ -307,20 +324,19 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
-  await sendUploadedProfileFilesEmail(
-    {
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email,
-    },
-    {
-      uploaded_documentname: document.name.replace(/_/g, " "),
-      uploaded_updatedAt: document.updatedAt,
-    }
-  );
-  //Reminder for Agent:
-  console.log(student.agents);
   if (user.role == Role.Student) {
+    await sendUploadedProfileFilesEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        uploaded_documentname: document.name.replace(/_/g, " "),
+        uploaded_updatedAt: document.updatedAt,
+      }
+    );
+    //Reminder for Agent:
     for (let i = 0; i < student.agents.length; i++) {
       console.log(i);
       await sendUploadedProfileFilesRemindForAgentEmail(
@@ -337,7 +353,22 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         }
       );
     }
+  } else {
+    await sendAgentUploadedProfileFilesForStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        agent_firstname: user.firstname,
+        agent_lastname: user.lastname,
+        uploaded_documentname: document.name.replace(/_/g, " "),
+        uploaded_updatedAt: document.updatedAt,
+      }
+    );
   }
+
 });
 
 const downloadProfileFile = asyncHandler(async (req, res, next) => {
@@ -777,22 +808,32 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     body: { university },
   } = req;
   const { firstname, lastname, _id } = student;
-  await Student.findByIdAndUpdate(_id, {
-    "academic_background.university": university,
-  });
+  await Student.findByIdAndUpdate(
+    _id,
+    {
+      "academic_background.university": university,
+    },
+    { upsert: true, new: true }
+  );
   res.status(200).send({ success: true, data: university });
 });
+
 const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const {
     user: student,
     body: { language },
   } = req;
   const { firstname, lastname, _id } = student;
-  await Student.findByIdAndUpdate(_id, {
-    "academic_background.language": language,
-  });
+  await Student.findByIdAndUpdate(
+    _id,
+    {
+      "academic_background.language": language,
+    },
+    { upsert: true, new: true }
+  );
   res.status(200).send({ success: true, data: language });
 });
+
 module.exports = {
   getMyfiles,
   saveFilePath,

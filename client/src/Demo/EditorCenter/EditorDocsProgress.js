@@ -376,9 +376,7 @@ class EditorDocsProgress extends React.Component {
               Warning
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body bsPrefix="break-word">
-            <h5>Do you want to delete {this.state.docName}?</h5>
-          </Modal.Body>
+          <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
           <Modal.Footer>
             {this.state.filetype === "General" ? (
               <Button onClick={this.ConfirmDeleteGeneralFileHandler}>

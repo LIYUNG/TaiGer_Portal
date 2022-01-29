@@ -24,7 +24,7 @@ const ALLOWED_MIME_TYPES = [
  */
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let { studentId, applicationId } = req.params;
+    var { studentId, applicationId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId and applicationId exist
@@ -35,7 +35,8 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check docName exist
-    let { studentId, applicationId, fileCategory } = req.params;
+    var { studentId, applicationId, fileCategory } = req.params;
+    var { user } = req;
 
     Student.findOne({ _id: studentId })
       .populate("applications.programId")
@@ -45,38 +46,66 @@ const storage = multer.diskStorage({
         if (student) {
           // console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
           // console.log(path.extname(file.originalname)); //.pdf
-          // console.log(student.applications);
-          // console.log(student.lastname);
-          // console.log(
-          //   student.applications.find(
-          //     ({ programId }) => programId._id == applicationId
-          //   )
-          // );
-          let application = student.applications.find(
+          var r = /\d+/; //number pattern
+          var version_number_max = 1;
+          var application = student.applications.find(
             ({ programId }) => programId._id == applicationId
           );
-          // console.log(application.programId);
-          let temp_name =
-            student.lastname +
-            "_" +
-            student.firstname +
-            "_" +
-            application.programId.University_ +
-            "_" +
-            application.programId.Program_ +
-            "_" +
-            fileCategory +
-            `${path.extname(file.originalname)}`;
-          temp_name = temp_name.replace(/ /g, "_");
-          const filePath = path.join(
-            UPLOAD_PATH,
-            studentId,
-            applicationId,
-            temp_name
-          );
+          if (user.role === "Student") {
+            application.student_inputs.forEach((student_input) => {
+              if (student_input.name.includes(fileCategory)) {
+                if (
+                  student_input.name.match(r) !== null &&
+                  student_input.name.match(r)[0] > version_number_max
+                ) {
+                  version_number_max = student_input.name.match(r)[0]; // get the max version number
+                }
+              }
+            });
+          } else {
+            application.documents.forEach((editoroutput) => {
+              if (editoroutput.name.includes(fileCategory)) {
+                if (
+                  editoroutput.name.match(r) !== null &&
+                  editoroutput.name.match(r)[0] > version_number_max
+                ) {
+                  version_number_max = editoroutput.name.match(r)[0]; // get the max version number
+                }
+              }
+            });
+          }
 
-          if (fs.existsSync(filePath))
-            return cb(new ErrorResponse(400, "Document already existed!22222"));
+          var version_number = version_number_max;
+          var same_file_name = true;
+          while (same_file_name) {
+            // console.log(application.programId);
+            var temp_name =
+              student.lastname +
+              "_" +
+              student.firstname +
+              "_" +
+              application.programId.University_ +
+              "_" +
+              application.programId.Program_ +
+              "_" +
+              fileCategory +
+              "_v" +
+              version_number +
+              `${path.extname(file.originalname)}`;
+            temp_name = temp_name.replace(/ /g, "_");
+            const filePath = path.join(
+              UPLOAD_PATH,
+              studentId,
+              applicationId,
+              temp_name
+            );
+
+            if (fs.existsSync(filePath)) {
+              version_number++;
+            } else {
+              same_file_name = false;
+            }
+          }
           return {
             fileName: temp_name,
           };
@@ -117,7 +146,7 @@ const upload = multer({
  */
 const storage2 = multer.diskStorage({
   destination: (req, file, cb) => {
-    let { studentId } = req.params;
+    var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
@@ -128,7 +157,7 @@ const storage2 = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check category exist
-    let { studentId, applicationId } = req.params;
+    var { studentId, applicationId } = req.params;
 
     Student.findOne({ _id: studentId })
       .populate("applications.programId")
@@ -136,7 +165,7 @@ const storage2 = multer.diskStorage({
       .exec()
       .then(function (student) {
         if (student) {
-          let temp_name =
+          var temp_name =
             student.lastname +
             "_" +
             student.firstname +
@@ -182,7 +211,7 @@ const upload2 = multer({
 
 const storage3 = multer.diskStorage({
   destination: (req, file, cb) => {
-    let { studentId } = req.params;
+    var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
@@ -193,12 +222,12 @@ const storage3 = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check category exist
-    let { studentId } = req.params;
+    var { studentId } = req.params;
     try {
       User.findOne({ _id: studentId })
         .then(function (student) {
           if (student) {
-            let temp_name =
+            var temp_name =
               student.lastname +
               "_" +
               student.firstname +
@@ -249,7 +278,7 @@ const upload3 = multer({
 
 const storage4 = multer.diskStorage({
   destination: (req, file, cb) => {
-    let { studentId } = req.params;
+    var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId and applicationId exist
@@ -260,29 +289,62 @@ const storage4 = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // TODO: check docName exist
-    let { studentId, fileCategory } = req.params;
-
+    var { studentId, fileCategory } = req.params;
+    var { user } = req;
     Student.findOne({ _id: studentId })
       .then(function (student) {
         if (student) {
-          // console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
-          // console.log(path.extname(file.originalname)); //.pdf
-          let temp_name =
-            student.lastname +
-            "_" +
-            student.firstname +
-            "_" +
-            fileCategory +
-            `${path.extname(file.originalname)}`;
-          temp_name = temp_name.replace(/ /g, "_");
-          const filePath = path.join(
-            UPLOAD_PATH,
-            studentId,
-            "GeneralDocsEdit",
-            temp_name
-          );
-          if (fs.existsSync(filePath))
-            return cb(new ErrorResponse(400, "Document already existed!4444"));
+          var r = /\d+/; //number pattern
+          var version_number_max = 1;
+          if (user.role === "Student") {
+            student.generaldocs.studentinputs.forEach((studentinput) => {
+              if (studentinput.name.includes(fileCategory)) {
+                if (
+                  studentinput.name.match(r) !== null &&
+                  studentinput.name.match(r)[0] > version_number_max
+                ) {
+                  version_number_max = studentinput.name.match(r)[0]; // get the max version number
+                }
+              }
+            });
+          } else {
+            student.generaldocs.editoroutputs.forEach((editoroutput) => {
+              if (editoroutput.name.includes(fileCategory)) {
+                if (
+                  editoroutput.name.match(r) !== null &&
+                  editoroutput.name.match(r)[0] > version_number_max
+                ) {
+                  version_number_max = editoroutput.name.match(r)[0]; // get the max version number
+                }
+              }
+            });
+          }
+          var version_number = version_number_max;
+          var same_file_name = true;
+          while (same_file_name) {
+            var temp_name =
+              student.lastname +
+              "_" +
+              student.firstname +
+              "_" +
+              fileCategory +
+              "_v" +
+              version_number +
+              `${path.extname(file.originalname)}`;
+            temp_name = temp_name.replace(/ /g, "_");
+            const filePath = path.join(
+              UPLOAD_PATH,
+              studentId,
+              "GeneralDocsEdit",
+              temp_name
+            );
+            if (fs.existsSync(filePath)) {
+              version_number++;
+            } else {
+              same_file_name = false;
+            }
+            // return cb(new ErrorResponse(400, "Document already existed!4444"));
+          }
           return {
             fileName: temp_name,
           };

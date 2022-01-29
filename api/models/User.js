@@ -254,11 +254,19 @@ const Student = User.discriminator(
             type: String,
             default: "",
           },
+          english_test_date: {
+            type: String,
+            default: "",
+          },
           german_certificate: {
             type: String,
             default: "",
           },
           german_score: {
+            type: String,
+            default: "",
+          },
+          german_test_date: {
             type: String,
             default: "",
           },

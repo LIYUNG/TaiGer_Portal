@@ -164,6 +164,19 @@ Your agent will review it as soon as possible.
   return sendEmail(recipient, subject, message);
 };
 
+const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
+  const subject = `Your ${msg.uploaded_documentname} is successfully uploaded!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
+
+If you have any question, feel free to contact your agent.
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendUploadedFilesRemindForAgentEmail = async (recipient) => {
   const subject = "Uploaded Files";
   const message = `\
@@ -256,6 +269,7 @@ module.exports = {
   sendEditorOutputProgramSpecificFilesEmailToStudent,
   sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
+  sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedFilesRemindForAgentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedFilesRemindForEditorEmail,

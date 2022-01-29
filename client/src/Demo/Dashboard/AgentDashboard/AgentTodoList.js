@@ -33,7 +33,7 @@ class AgentTodoList extends React.Component {
       if (object_init[key] !== "accepted" && object_init[key] !== "notneeded") {
         return (
           <>
-            <h5>{this.props.documentlist2[key]}</h5>
+            <h6>{this.props.documentlist2[key]}</h6>
           </>
         );
       }
@@ -42,7 +42,7 @@ class AgentTodoList extends React.Component {
       if (object_init[key] === "uploaded") {
         return (
           <>
-            <h5>{this.props.documentlist2[key]}</h5>
+            <h6>{this.props.documentlist2[key]}</h6>
           </>
         );
       }
@@ -53,9 +53,9 @@ class AgentTodoList extends React.Component {
     //   applying_universit = this.props.student.applications.map(
     //     (application, i) => (
     //       <>
-    //         <h5 className="mb-1" key={i}>
+    //         <h6 className="mb-1" key={i}>
     //           {application.programId.University_}
-    //         </h5>
+    //         </h6>
     //       </>
     //     )
     //   );
@@ -63,7 +63,7 @@ class AgentTodoList extends React.Component {
     //   applying_universit = (
     //     <tr>
     //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
+    //         <h6 className="mb-1"> No Program</h6>
     //       </td>
     //     </tr>
     //   );
@@ -73,9 +73,9 @@ class AgentTodoList extends React.Component {
     //   applying_program = this.props.student.applications.map(
     //     (application, i) => (
     //       <>
-    //         <h5 className="mb-1" key={i}>
+    //         <h6 className="mb-1" key={i}>
     //           {application.programId.Program_}
-    //         </h5>
+    //         </h6>
     //       </>
     //     )
     //   );
@@ -83,7 +83,7 @@ class AgentTodoList extends React.Component {
     //   applying_program = (
     //     <tr>
     //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
+    //         <h6 className="mb-1"> No Program</h6>
     //       </td>
     //     </tr>
     //   );
@@ -93,9 +93,9 @@ class AgentTodoList extends React.Component {
     //   application_deadline = this.props.student.applications.map(
     //     (application, i) => (
     //       <>
-    //         <h5 className="mb-1" key={i}>
+    //         <h6 className="mb-1" key={i}>
     //           {application.programId.Application_end_date_}
-    //         </h5>
+    //         </h6>
     //       </>
     //     )
     //   );
@@ -103,7 +103,7 @@ class AgentTodoList extends React.Component {
     //   application_deadline = (
     //     <tr>
     //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
+    //         <h6 className="mb-1"> No Program</h6>
     //       </td>
     //     </tr>
     //   );
@@ -114,12 +114,10 @@ class AgentTodoList extends React.Component {
         <tbody>
           <tr>
             <td>
-              <h5>
+              <h6>
                 {this.props.student.firstname}, {this.props.student.lastname}
-              </h5>
+              </h6>
             </td>
-            <td>{missing_profiles}</td>
-            <td>{to_be_checked_profiles}</td>
           </tr>
         </tbody>
       </>

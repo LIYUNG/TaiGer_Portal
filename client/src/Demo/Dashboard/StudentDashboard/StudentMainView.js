@@ -3,8 +3,8 @@ import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
 import Card from "../../../App/components/MainCard";
 import StudentMyself from "./StudentMyself";
 import StudentTodoList from "./StudentTodoList";
-import AgentReviewing from "./AgentReviewing";
-import EditorReviewing from "./EditorReviewing";
+import AgentReviewing from "../MainViewTab/AgentReview/AgentReviewing";
+import EditorReviewing from "../MainViewTab/EditorReview/EditorReviewing";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
 class StudentMainView extends React.Component {
@@ -65,21 +65,6 @@ class StudentMainView extends React.Component {
       )
     );
 
-    const to_do_student = this.props.students.map((student, i) =>
-      student.agents ? (
-        student.agents.map((agent, i) => (
-          <tr key={i}>
-            <td>
-              {agent.firstname} - {agent.lastname}
-            </td>
-            <td>{agent.email}</td>
-          </tr>
-        ))
-      ) : (
-        <></>
-      )
-    );
-
     const std_todo = this.props.students.map((student, i) => (
       <StudentTodoList
         key={i}
@@ -97,6 +82,7 @@ class StudentMainView extends React.Component {
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing
         key={i}
+        role={this.props.role}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         agenttodolist={this.props.agenttodolist}
@@ -111,6 +97,7 @@ class StudentMainView extends React.Component {
     const editor_reviewing = this.props.students.map((student, i) => (
       <EditorReviewing
         key={i}
+        role={this.props.role}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         agenttodolist={this.props.agenttodolist}
@@ -181,7 +168,7 @@ class StudentMainView extends React.Component {
                 {agent_reviewing}
               </Table>
             </Card>
-          </Col>{" "}
+          </Col>
           <Col md={6}>
             <Card title="Editor Reviewing:">
               <Table responsive bordered hover>

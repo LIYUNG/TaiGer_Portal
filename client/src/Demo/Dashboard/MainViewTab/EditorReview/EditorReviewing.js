@@ -34,67 +34,7 @@ class EditorReviewing extends React.Component {
         return <h6>{key.replace(/_/g, " ")}</h6>;
       }
     });
-    // let applying_program;
-    // let application_deadline;
-    // if (this.props.student.applications) {
-    //   applying_universit = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h5 className="mb-1" key={i}>
-    //           {application.programId.University_}
-    //         </h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   applying_universit = (
-    //     <tr>
-    //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
 
-    // if (this.props.student.applications) {
-    //   applying_program = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h5 className="mb-1" key={i}>
-    //           {application.programId.Program_}
-    //         </h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   applying_program = (
-    //     <tr>
-    //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-
-    // if (this.props.student.applications) {
-    //   application_deadline = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h5 className="mb-1" key={i}>
-    //           {application.programId.Application_end_date_}
-    //         </h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   application_deadline = (
-    //     <tr>
-    //       <td>
-    //         <h5 className="mb-1"> No Program</h5>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
     var applying_university_ML;
     var applying_university;
     var applying_program;
@@ -213,16 +153,40 @@ class EditorReviewing extends React.Component {
           </>
         )
       );
-
+      if (
+        this.props.student.generaldocs === undefined ||
+        this.props.student.generaldocs.editoroutputs === undefined ||
+        this.props.student.generaldocs.editoroutputs.length === 0
+      ) {
+        general_CV_status = <></>;
+        general_RL_status = <></>;
+      } else {
+        //For Editor: (TODO: add another flags: student read, editor read?)
+        general_RL_status =
+          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+            doc.name.includes("RL")
+          ) !== -1 ? (
+            <h6 className="mb-1">RL Revised</h6>
+          ) : (
+            <></>
+          ); // For Editor
+        general_CV_status =
+          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+            doc.name.includes("CV")
+          ) !== -1 ? (
+            <h6 className="mb-1">CV - Revised</h6>
+          ) : (
+            <></>
+          );
+      }
       if (
         this.props.student.generaldocs === undefined ||
         this.props.student.generaldocs.studentinputs === undefined ||
         this.props.student.generaldocs.studentinputs.length === 0
       ) {
-        general_CV_template_filled = <h6 className="mb-1">No</h6>;
-        general_RL_template_filled = <h6 className="mb-1">No</h6>;
-        general_CV_status = <h6 className="mb-1">No</h6>;
-        general_RL_status = <h6 className="mb-1">No</h6>;
+        general_CV_template_filled = <></>;
+        general_RL_template_filled = <></>;
+
         general_CV_Lastupdate = <h6 className="mb-1">Not existed</h6>;
         general_RL_Lastupdate = <h6 className="mb-1">Not existed</h6>;
       } else {
@@ -234,15 +198,7 @@ class EditorReviewing extends React.Component {
           ) : (
             <></>
           );
-        // For Editor
-        general_CV_status =
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("CV")
-          ) !== -1 ? (
-            <h6 className="mb-1">CV - Revised</h6>
-          ) : (
-            <h6 className="mb-1">No</h6>
-          );
+
         general_CV_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
             doc.name.includes("CV_Template")
@@ -275,15 +231,7 @@ class EditorReviewing extends React.Component {
           ) : (
             <></>
           );
-        //For Editor: (TODO: add another flags: student read, editor read?)
-        general_RL_status =
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL")
-          ) !== -1 ? (
-            <h6 className="mb-1">RL Revised</h6>
-          ) : (
-            <></>
-          );
+
         general_RL_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
             doc.name.includes("RL_Template")
@@ -314,11 +262,29 @@ class EditorReviewing extends React.Component {
       <>
         <tbody>
           <tr>
+            {this.props.role !== "Student" ? (
+              <td>
+                {this.props.student.firstname}
+                {" - "}
+                {this.props.student.lastname}
+              </td>
+            ) : (
+              <></>
+            )}
             <td>
               {general_RL_template_filled}
               {general_CV_template_filled}
               {application_ML_template_filled}
             </td>
+            {this.props.role !== "Student" ? (
+              <td>
+                {general_RL_status}
+                {general_CV_status}
+                {application_ML_status}
+              </td>
+            ) : (
+              <></>
+            )}
           </tr>
         </tbody>
       </>

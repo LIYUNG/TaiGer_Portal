@@ -775,7 +775,6 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   const {
     user: student,
     body: { university },
-    params: { background_type },
   } = req;
   const { firstname, lastname, _id } = student;
   await Student.findByIdAndUpdate(_id, {
@@ -787,7 +786,6 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const {
     user: student,
     body: { language },
-    params: { background_type },
   } = req;
   const { firstname, lastname, _id } = student;
   await Student.findByIdAndUpdate(_id, {

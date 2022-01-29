@@ -2,7 +2,11 @@ import React from "react";
 import { Row, Col, Card, Form, Button, Spinner } from "react-bootstrap";
 
 import Aux from "../../hoc/_Aux";
-import { getMyAcademicBackground, updateAcademicBackground } from "../../api";
+import {
+  getMyAcademicBackground,
+  updateAcademicBackground,
+  updateLanguageSkill,
+} from "../../api";
 class Survey extends React.Component {
   state = {
     error: null,
@@ -70,6 +74,7 @@ class Survey extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
+          console.log(data);
           this.setState((state) => ({
             isLoaded: true,
             academic_background: {
@@ -94,7 +99,7 @@ class Survey extends React.Component {
 
   handleSubmit_Language = (language) => {
     console.log(language);
-    updateAcademicBackground(language).then(
+    updateLanguageSkill(language).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -119,7 +124,13 @@ class Survey extends React.Component {
       }
     );
   };
-
+  Bayerische_Formel = (high, low, my) => {
+    if (high - low !== 0) {
+      var Germen_note = 1 + (3 * (high - my)) / (high - low);
+      return Germen_note.toFixed(2);
+    }
+    return 0;
+  };
   render() {
     const { error, isLoaded } = this.state;
     const style = {
@@ -255,7 +266,7 @@ class Survey extends React.Component {
                                 .Highest_GPA_Uni
                                 ? this.state.academic_background.university
                                     .Highest_GPA_Uni
-                                : ""
+                                : 0
                             }
                             onChange={(e) => this.handleChange_Academic(e)}
                           />
@@ -275,7 +286,7 @@ class Survey extends React.Component {
                                 .Passing_GPA_Uni
                                 ? this.state.academic_background.university
                                     .Passing_GPA_Uni
-                                : ""
+                                : 0
                             }
                             onChange={(e) => this.handleChange_Academic(e)}
                           />
@@ -296,7 +307,7 @@ class Survey extends React.Component {
                                 .My_GPA_Uni
                                 ? this.state.academic_background.university
                                     .My_GPA_Uni
-                                : ""
+                                : 0
                             }
                             onChange={(e) => this.handleChange_Academic(e)}
                           />
@@ -307,7 +318,18 @@ class Survey extends React.Component {
                           <Form.Label>
                             Corresponding German GPA System:
                           </Form.Label>
-                          <Form.Control plaintext readOnly defaultValue={1.5} />
+                          <Form.Control
+                            plaintext
+                            readOnly
+                            value={this.Bayerische_Formel(
+                              this.state.academic_background.university
+                                .Highest_GPA_Uni,
+                              this.state.academic_background.university
+                                .Passing_GPA_Uni,
+                              this.state.academic_background.university
+                                .My_GPA_Uni
+                            )}
+                          />
                         </Form.Group>
                         <br />
                       </Col>
@@ -341,7 +363,14 @@ class Survey extends React.Component {
                           <Form.Label>English Certificate</Form.Label>
                           <Form.Control
                             as="select"
-                            defaultValue="No"
+                            defaultValue={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .english_certificate
+                                ? this.state.academic_background.language
+                                    .english_certificate
+                                : ""
+                            }
                             onChange={(e) => this.handleChange_Language(e)}
                           >
                             <option>No</option>
@@ -356,6 +385,14 @@ class Survey extends React.Component {
                           <Form.Control
                             type="text"
                             placeholder="(i.e. TOEFL: 94, or IELTS: 6.5) "
+                            defaultValue={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .english_score
+                                ? this.state.academic_background.language
+                                    .english_score
+                                : ""
+                            }
                             onChange={(e) => this.handleChange_Language(e)}
                           />
                         </Form.Group>
@@ -368,7 +405,14 @@ class Survey extends React.Component {
                           <Form.Label>German Certificate</Form.Label>
                           <Form.Control
                             as="select"
-                            defaultValue="No"
+                            defaultValue={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .german_certificate
+                                ? this.state.academic_background.language
+                                    .german_certificate
+                                : ""
+                            }
                             onChange={(e) => this.handleChange_Language(e)}
                           >
                             <option>No</option>
@@ -387,6 +431,14 @@ class Survey extends React.Component {
                           <Form.Control
                             type="text"
                             placeholder="(i.e. TestDaF: 4, or DSH: 2) "
+                            defaultValue={
+                              this.state.academic_background.language &&
+                              this.state.academic_background.language
+                                .german_score
+                                ? this.state.academic_background.language
+                                    .german_score
+                                : ""
+                            }
                             onChange={(e) => this.handleChange_Language(e)}
                           />
                         </Form.Group>
@@ -399,7 +451,7 @@ class Survey extends React.Component {
                         <Button
                           variant="primary"
                           onClick={() =>
-                            this.handleSubmit_Language(this.state.university)
+                            this.handleSubmit_Language(this.state.language)
                           }
                         >
                           Submit

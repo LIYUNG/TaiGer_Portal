@@ -215,6 +215,8 @@ export const getCertificationArticle = () => getArticle("certification");
 
 //Survey:
 export const updateAcademicBackground = (university) =>
-  request.post(`/api/account/survey`, {university});
+  request.post(`/api/account/survey/university`, { university });
+export const updateLanguageSkill = (language) =>
+  request.post(`/api/account/survey/language`, { language });
 
 export const getMyAcademicBackground = () => request.get("/api/account/survey");

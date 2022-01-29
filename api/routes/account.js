@@ -25,6 +25,7 @@ const {
   downloadXLSX,
   getMyAcademicBackground,
   updateAcademicBackground,
+  updateLanguageSkill,
 } = require("../controllers/files");
 
 const router = Router();
@@ -118,10 +119,16 @@ router
     getMyAcademicBackground
   );
 router
-  .route("/survey")
+  .route("/survey/university")
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateAcademicBackground
+  );
+router
+  .route("/survey/language")
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    updateLanguageSkill
   );
 router
   .route("/download/template/:category")

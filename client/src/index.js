@@ -32,14 +32,6 @@ window.editortodolist = [
 
 window.agenttodolist = [
   {
-    name: "Missing Profiles",
-    prop: "missingprofiles",
-  },
-  {
-    name: "Check Profiles",
-    prop: "checkprofiles",
-  },
-  {
     name: "Course Analysis",
     prop: "courseanalysis",
   },

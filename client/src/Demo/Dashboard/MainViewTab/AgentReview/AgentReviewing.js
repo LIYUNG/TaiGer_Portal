@@ -34,6 +34,15 @@ class AgentReviewing extends React.Component {
         return <h6>{key.replace(/_/g, " ")}</h6>;
       }
     });
+    var missing_profiles = keys.map((key, i) => {
+      if (
+        object_init[key] !== "accepted" &&
+        object_init[key] !== "notneeded" &&
+        object_init[key] !== "uploaded"
+      ) {
+        return <h6>{key.replace(/_/g, " ")}</h6>;
+      }
+    });
     // let applying_program;
     // let application_deadline;
     // if (this.props.student.applications) {
@@ -100,6 +109,18 @@ class AgentReviewing extends React.Component {
       <>
         <tbody>
           <tr>
+            {this.props.role !== "Student" ? (
+              <>
+                <td>
+                  {this.props.student.firstname}
+                  {" - "}
+                  {this.props.student.lastname}
+                </td>
+                <td>{missing_profiles}</td>
+              </>
+            ) : (
+              <></>
+            )}
             <td>{to_be_checked_profiles}</td>
           </tr>
         </tbody>

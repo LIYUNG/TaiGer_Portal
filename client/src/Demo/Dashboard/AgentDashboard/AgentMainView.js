@@ -3,6 +3,8 @@ import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
 import Card from "../../../App/components/MainCard";
 import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
 import AgentTodoList from "./AgentTodoList";
+import AgentReviewing from "../MainViewTab/AgentReview/AgentReviewing";
+import EditorReviewing from "../MainViewTab/EditorReview/EditorReviewing";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
@@ -13,7 +15,6 @@ import {
   deleteFile,
 } from "../../../api";
 class AgentMainView extends React.Component {
-  
   render() {
     const agent_todo = this.props.students.map((student, i) => (
       <AgentTodoList
@@ -45,6 +46,36 @@ class AgentMainView extends React.Component {
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
+    const agent_reviewing = this.props.students.map((student, i) => (
+      <AgentReviewing
+        key={i}
+        role={this.props.role}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
+    const editor_reviewing = this.props.students.map((student, i) => (
+      <EditorReviewing
+        key={i}
+        role={this.props.role}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
+        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
+        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
+        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
     const application_progress = this.props.students.map((student, i) => (
       <ApplicationProgress
         key={i}
@@ -63,6 +94,38 @@ class AgentMainView extends React.Component {
 
     return (
       <>
+        <Row>
+          <Col md={12}>
+            <Card title="Agent Reviewing:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>First-/Lastname</th>
+                    <th>Missing</th>
+                    <th>Under checking</th>
+                  </tr>
+                </thead>
+                {agent_reviewing}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Card title="Editor Progress:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>First-, Last Name</th>
+                    <th>Under Editor's Review:</th>
+                    <th>Waiting Student's Feedback</th>
+                  </tr>
+                </thead>
+                {editor_reviewing}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col sm={12}>
             <Card title="Agent: To Do">

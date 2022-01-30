@@ -145,7 +145,7 @@ class Dashboard extends React.Component {
     var std_idx = stds.findIndex((stud) => stud._id === student_id);
     var applications = [...stds[std_idx].applications];
     let idx = applications.findIndex(
-      (application) => application._id === program_id
+      (application) => application.programId._id === program_id
     );
     if (idx !== -1) {
       applications.splice(idx, 1);

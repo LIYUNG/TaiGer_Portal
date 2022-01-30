@@ -362,11 +362,13 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 
   // console.log(student.applications);
   // console.log(applicationId);
-  const idx = student.applications.findIndex(({ _id }) => _id == applicationId);
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
   // console.log(idx);
 
   const application = student.applications.find(
-    ({ _id }) => _id == applicationId
+    ({ programId }) => programId._id == applicationId
   );
   // console.log(application);
   if (!application) throw new ErrorResponse(400, "Invalid application id");
@@ -395,10 +397,20 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
           if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         }
     }
-  //////// update DB
+
   await Student.findByIdAndUpdate(studentId, {
-    $pull: { applications: { _id: applicationId } },
+    $pull: { applications: { programId: { _id: applicationId } } },
   });
+  const folderPath = path.join(UPLOAD_PATH, studentId, applicationId);
+  try {
+    //TODO: better implementation is to find all document in that folder and remove recursively and finally rmdirSync
+    // See:　https://stackoverflow.com/questions/49025244/error-eperm-operation-not-permitted-while-remove-directory-not-emty/49025300
+    if (fs.existsSync(folderPath)) fs.rmdirSync(folderPath); //failed when folder not empty:EPERM: operation not permitted, unlink 'tmp\files_development\60a116ba6f221e768c0803c7\60a138f6c355006b00684620'
+  } catch (err) {
+    throw new ErrorResponse(500, "Your Application folder not empty!");
+  }
+  //////// update DB
+
   res.status(200).send({ success: true });
 });
 

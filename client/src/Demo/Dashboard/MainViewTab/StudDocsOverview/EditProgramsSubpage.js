@@ -20,7 +20,11 @@ class EditProgramsSubpage extends React.Component {
           <td>
             <Form
               onSubmit={(e) =>
-                this.props.onDeleteProgram(e, this.props.student._id, application._id)
+                this.props.onDeleteProgram(
+                  e,
+                  this.props.student._id,
+                  application.programId._id
+                )
               }
             >
               <Form.Group controlId="exampleForm.ControlSelect1">

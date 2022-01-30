@@ -452,7 +452,6 @@ class AgentCenter extends React.Component {
         documentslist2={this.props.documentslist2}
         documentlist2={window.documentlist2}
         documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
         onFileChange={this.onFileChange}
         onDeleteGeneralFile={this.onDeleteGeneralFile}

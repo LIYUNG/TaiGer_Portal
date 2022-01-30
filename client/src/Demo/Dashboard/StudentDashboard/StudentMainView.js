@@ -25,7 +25,6 @@ class StudentMainView extends React.Component {
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
@@ -70,7 +69,6 @@ class StudentMainView extends React.Component {
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
@@ -85,7 +83,6 @@ class StudentMainView extends React.Component {
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
@@ -100,7 +97,6 @@ class StudentMainView extends React.Component {
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
@@ -190,7 +186,6 @@ class StudentMainView extends React.Component {
                 startEditingProgram={this.props.startEditingProgram}
                 documentslist={this.props.documentslist}
                 documentsprogresslist={this.props.documentsprogresslist}
-                documenheader={this.props.documenheader}
                 startUploadfile={this.props.startUploadfile}
                 onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
                 onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}

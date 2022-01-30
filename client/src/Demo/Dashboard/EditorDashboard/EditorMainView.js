@@ -90,7 +90,6 @@ class EditorMainView extends React.Component {
                   startEditingProgram={this.props.startEditingProgram}
                   documentslist={this.props.documentslist}
                   documentsprogresslist={this.props.documentsprogresslist}
-                  documenheader={this.props.documenheader}
                   startUploadfile={this.props.startUploadfile}
                   onDownloadFilefromstudent={
                     this.props.onDownloadFilefromstudent

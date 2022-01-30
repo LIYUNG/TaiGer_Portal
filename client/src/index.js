@@ -181,23 +181,6 @@ window.documentlist = [
   },
 ];
 
-window.documenheader = {
-  CV_: "CV",
-  ML_: "ML",
-  RL_: "RL",
-  bachelorCertificate_: "B.Sc Cert",
-  bachelorTranscript_: "B.Sc. Trans",
-  highSchoolDiploma_: "H. Sch. Dipl.",
-  highSchoolTranscript_: "H. Sch. Trans",
-  universityEntranceExamination_: "GSAT/SAT",
-  EnglischCertificate_: "TOEFL/IELTS",
-  GermanCertificate_: "TestDaF/B2/C1",
-  Essay_: "Essay",
-  ECTS_conversion_: "ECTS Conv.",
-  CourseDescription_: "Course Descr.",
-  Passport_: "Passport",
-};
-
 window.ProgramlistHeader = [
   {
     name: "University",

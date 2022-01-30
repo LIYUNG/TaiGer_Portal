@@ -12,7 +12,7 @@ import * as actionTypes from "../../../../../../store/actions";
 class NavItem extends Component {
   menuItemFilterByRole = (itemTitle) => {
     if (this.props.role === "Admin") {
-      if (itemTitle === "Academic Survey" || itemTitle === "Application Documents") {
+      if (itemTitle === "Academic Survey") {
         return false;
       }
       return true;
@@ -20,7 +20,6 @@ class NavItem extends Component {
     if (this.props.role === "Agent") {
       if (
         itemTitle === "Academic Survey" ||
-        itemTitle === "Application Documents" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
         itemTitle === "User List"
@@ -32,8 +31,6 @@ class NavItem extends Component {
     if (this.props.role === "Editor") {
       if (
         itemTitle === "Academic Survey" ||
-        itemTitle === "Agent Center" ||
-        itemTitle === "Application Documents" ||
         itemTitle === "Program List" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
@@ -46,8 +43,8 @@ class NavItem extends Component {
     if (this.props.role === "Student") {
       if (
         itemTitle === "Charts" ||
+        itemTitle === "Statistics" ||
         itemTitle === "Map" ||
-        itemTitle === "Application Documents" ||
         itemTitle === "Archiv Students" ||
         itemTitle === "User List"
       ) {
@@ -60,9 +57,9 @@ class NavItem extends Component {
         itemTitle === "Agent Center" ||
         itemTitle === "Dashboard" ||
         itemTitle === "Editor Center" ||
+        itemTitle === "Statistics" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
-        itemTitle === "Application Documents" ||
         itemTitle === "Archiv Students" ||
         itemTitle === "User List"
       ) {

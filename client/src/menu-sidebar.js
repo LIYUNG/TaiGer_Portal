@@ -87,14 +87,6 @@ export default {
           icon: "feather icon-edit-1",
         },
         {
-          id: "profile_upload",
-          title: "Application Documents",
-          type: "item",
-          url: "/upload",
-          classes: "nav-item",
-          icon: "feather icon-upload",
-        },
-        {
           id: "archiv-student",
           title: "Archiv Students",
           type: "item",

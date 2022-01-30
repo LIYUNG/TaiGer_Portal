@@ -115,7 +115,6 @@ class EditorCenter extends React.Component {
         role={this.props.user.role}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}

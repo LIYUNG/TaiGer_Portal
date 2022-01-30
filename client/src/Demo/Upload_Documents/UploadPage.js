@@ -6,7 +6,7 @@ import {
   getMyfiles,
   deleteFile,
   upload,
-  download,
+  downloadProfile,
   templateDownload,
 } from "../../api";
 import {
@@ -151,7 +151,7 @@ class UploadPage extends React.Component {
 
   onDownloadFilefromstudent(e, category, id) {
     e.preventDefault();
-    download(category, id).then(
+    downloadProfile(category, id).then(
       (resp) => {
         const actualFileName =
           resp.headers["content-disposition"].split('"')[1];

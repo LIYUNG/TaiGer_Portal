@@ -17,7 +17,6 @@ const {
 const {
   saveProfileFilePath,
   downloadProfileFile,
-  updateDocumentStatus,
   updateProfileDocumentStatus,
   deleteProfileFile,
 } = require("../controllers/files");
@@ -66,17 +65,20 @@ router
 
 router
   .route("/:studentId/files/:category")
-  .get(permit(Role.Admin, Role.Editor, Role.Agent), downloadProfileFile)
+  .get(
+    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    downloadProfileFile
+  )
   .post(
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     ProfilefileUpload,
     saveProfileFilePath
   )
-  .delete(permit(Role.Admin, Role.Agent), deleteProfileFile);
+  .delete(permit(Role.Admin, Role.Agent, Role.Student), deleteProfileFile);
 
 router
   .route("/:studentId/applications/:applicationId/:docName/status")
-  .post(permit(Role.Admin, Role.Agent), updateDocumentStatus);
+  .post(permit(Role.Admin, Role.Agent), updateProfileDocumentStatus);
 
 router
   .route("/:studentId/:category/status")

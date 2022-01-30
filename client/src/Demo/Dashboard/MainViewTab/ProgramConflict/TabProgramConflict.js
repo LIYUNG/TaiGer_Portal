@@ -52,7 +52,6 @@ class TabProgramConflict extends React.Component {
         conflict_programs={conflict_programs}
         startEditingProgram={this.props.startEditingProgram}
         startUploadfile={this.props.startUploadfile}
-        onDeleteProgram={this.props.onDeleteProgram}
       />
     ));
     return (

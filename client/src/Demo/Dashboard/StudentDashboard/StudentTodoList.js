@@ -128,9 +128,9 @@ class StudentTodoList extends React.Component {
     var applying_university;
     var applying_program;
     var application_deadline;
-    var application_ML_template_filled;
-    var general_RL_template_filled;
-    var general_CV_template_filled;
+    var application_ML_template_ToBefilled;
+    var general_RL_template_ToBefilled;
+    var general_CV_template_ToBefilled;
     var application_ML_status;
     var general_RL_status;
     var general_CV_status;
@@ -203,7 +203,7 @@ class StudentTodoList extends React.Component {
           </>
         )
       );
-      application_ML_template_filled = this.props.student.applications.map(
+      application_ML_template_ToBefilled = this.props.student.applications.map(
         (application, i) => (
           <>
             {application.student_inputs &&
@@ -245,17 +245,46 @@ class StudentTodoList extends React.Component {
 
       if (
         this.props.student.generaldocs === undefined ||
+        this.props.student.generaldocs.editoroutputs === undefined ||
+        this.props.student.generaldocs.editoroutputs.length === 0
+      ) {
+        general_CV_status = <></>;
+        general_RL_status = <></>;
+      } else {
+        general_CV_status =
+          this.props.student.generaldocs.editoroutputs.findIndex(
+            (
+              doc //TODO: get the latest CV and isReceivedFeedback flag
+            ) => doc.name.includes("CV")
+          ) !== -1 ? (
+            <h6 className="mb-1">CV - Revised</h6>
+          ) : (
+            <></>
+          );
+        //For Editor: (TODO: add another flags: student read, editor read?)
+        general_RL_status =
+          this.props.student.generaldocs.editoroutputs.findIndex(
+            (
+              doc //TODO: get the latest RL and isReceivedFeedback flag
+            ) => doc.name.includes("RL")
+          ) !== -1 ? (
+            <h6 className="mb-1">RL Revised</h6>
+          ) : (
+            <></>
+          );
+      }
+
+      if (
+        this.props.student.generaldocs === undefined ||
         this.props.student.generaldocs.studentinputs === undefined ||
         this.props.student.generaldocs.studentinputs.length === 0
       ) {
-        general_CV_template_filled = <h6 className="mb-1">No</h6>;
-        general_RL_template_filled = <h6 className="mb-1">No</h6>;
-        general_CV_status = <h6 className="mb-1">No</h6>;
-        general_RL_status = <h6 className="mb-1">No</h6>;
+        general_CV_template_ToBefilled = <h6 className="mb-1">CV template</h6>;
+        general_RL_template_ToBefilled = <h6 className="mb-1">RL template</h6>;
         general_CV_Lastupdate = <h6 className="mb-1">Not existed</h6>;
         general_RL_Lastupdate = <h6 className="mb-1">Not existed</h6>;
       } else {
-        general_CV_template_filled =
+        general_CV_template_ToBefilled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
             doc.name.includes("CV_Template")
           ) !== -1 ? (
@@ -264,14 +293,7 @@ class StudentTodoList extends React.Component {
             <h6 className="mb-1">CV - Template</h6>
           );
         // For Editor
-        general_CV_status =
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("CV")
-          ) !== -1 ? (
-            <h6 className="mb-1">CV - Revised</h6>
-          ) : (
-            <h6 className="mb-1">No</h6>
-          );
+
         general_CV_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
             doc.name.includes("CV_Template")
@@ -296,7 +318,7 @@ class StudentTodoList extends React.Component {
           ) : (
             <h6 className="mb-1">Not existed</h6>
           );
-        general_RL_template_filled =
+        general_RL_template_ToBefilled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
             doc.name.includes("RL_Template")
           ) !== -1 ? (
@@ -304,15 +326,7 @@ class StudentTodoList extends React.Component {
           ) : (
             <h6 className="mb-1">RL template</h6>
           );
-        //For Editor: (TODO: add another flags: student read, editor read?)
-        general_RL_status =
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL")
-          ) !== -1 ? (
-            <h6 className="mb-1">RL Revised</h6>
-          ) : (
-            <></>
-          );
+
         general_RL_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
             doc.name.includes("RL_Template")
@@ -345,9 +359,9 @@ class StudentTodoList extends React.Component {
           <tr>
             <td>{missing_profiles}</td>
             <td>
-              {general_RL_template_filled}
-              {general_CV_template_filled}
-              {application_ML_template_filled}
+              {general_RL_template_ToBefilled}
+              {general_CV_template_ToBefilled}
+              {application_ML_template_ToBefilled}
             </td>
             <td>
               {general_RL_status}

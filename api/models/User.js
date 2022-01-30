@@ -44,6 +44,66 @@ const UserSchema = new Schema(
       type: String,
       default: "",
     },
+    academic_background: {
+      university: {
+        attended_university: {
+          type: String,
+          default: "",
+        },
+        attended_university_program: {
+          type: String,
+          default: "",
+        },
+        isGraduated: {
+          type: String,
+          default: "No",
+        },
+        expected_grad_date: {
+          type: String,
+          default: "",
+        },
+        Highest_GPA_Uni: {
+          type: Number,
+          default: 0,
+        },
+        Passing_GPA_Uni: {
+          type: Number,
+          default: 0,
+        },
+        My_GPA_Uni: {
+          type: Number,
+          default: 0,
+        },
+        updatedAt: Date,
+      },
+      language: {
+        english_certificate: {
+          type: String,
+          default: "",
+        },
+        english_score: {
+          type: String,
+          default: "",
+        },
+        english_test_date: {
+          type: String,
+          default: "",
+        },
+        german_certificate: {
+          type: String,
+          default: "",
+        },
+        german_score: {
+          type: String,
+          default: "",
+        },
+        german_test_date: {
+          type: String,
+          default: "",
+        },
+        updatedAt: Date,
+      },
+    },
   },
   options
 );
@@ -75,7 +135,16 @@ UserSchema.methods.toJSON = function () {
 
 const User = model("User", UserSchema);
 
-const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
+const Guest = User.discriminator(
+  "Guest",
+  new Schema(
+    {
+      
+    },
+    options
+  ),
+  Role.Guest
+);
 
 const applicationSchema = new Schema({
   programId: { type: ObjectId, ref: "Program" },
@@ -89,6 +158,14 @@ const applicationSchema = new Schema({
         type: String,
         enum: Object.values(DocumentStatus),
         default: DocumentStatus.Missing,
+      },
+      isFinalVersion: {
+        type: Boolean,
+        default: false,
+      },
+      isReceivedFeedback: {
+        type: Boolean,
+        default: false,
       },
       required: {
         type: Boolean,
@@ -112,6 +189,10 @@ const applicationSchema = new Schema({
         type: String,
         enum: Object.values(DocumentStatus),
         default: DocumentStatus.Missing,
+      },
+      isReceivedFeedback: {
+        type: Boolean,
+        default: false,
       },
       required: {
         type: Boolean,
@@ -161,6 +242,10 @@ const Student = User.discriminator(
             type: String,
             default: "",
           },
+          feedback: {
+            type: String,
+            default: "",
+          },
           // TODO: updateBy
           updatedAt: Date,
         },
@@ -178,6 +263,10 @@ const Student = User.discriminator(
               default: DocumentStatus.Missing,
             },
             isFinalVersion: {
+              type: Boolean,
+              default: false,
+            },
+            isReceivedFeedback: {
               type: Boolean,
               default: false,
             },
@@ -204,6 +293,10 @@ const Student = User.discriminator(
               enum: Object.values(DocumentStatus),
               default: DocumentStatus.Missing,
             },
+            isReceivedFeedback: {
+              type: Boolean,
+              default: false,
+            },
             required: {
               type: Boolean,
               required: true,
@@ -216,66 +309,6 @@ const Student = User.discriminator(
             updatedAt: Date,
           },
         ],
-      },
-      academic_background: {
-        university: {
-          attended_university: {
-            type: String,
-            default: "",
-          },
-          attended_university_program: {
-            type: String,
-            default: "",
-          },
-          isGraduated: {
-            type: String,
-            default: "No",
-          },
-          expected_grad_date: {
-            type: String,
-            default: "",
-          },
-          Highest_GPA_Uni: {
-            type: Number,
-            default: 0,
-          },
-          Passing_GPA_Uni: {
-            type: Number,
-            default: 0,
-          },
-          My_GPA_Uni: {
-            type: Number,
-            default: 0,
-          },
-          updatedAt: Date,
-        },
-        language: {
-          english_certificate: {
-            type: String,
-            default: "",
-          },
-          english_score: {
-            type: String,
-            default: "",
-          },
-          english_test_date: {
-            type: String,
-            default: "",
-          },
-          german_certificate: {
-            type: String,
-            default: "",
-          },
-          german_score: {
-            type: String,
-            default: "",
-          },
-          german_test_date: {
-            type: String,
-            default: "",
-          },
-          updatedAt: Date,
-        },
       },
       taigerai: {
         input: {

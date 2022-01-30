@@ -19,32 +19,37 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
-    getStudents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        if (success) {
-          console.log(data);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            personaldata: {
-              firstname: this.props.user.firstname,
-              lastname: this.props.user.lastname,
-            },
-            success: success,
-          }));
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-        console.log(": " + error);
-        this.setState({
-          isLoaded: true,
-          error: true,
-        });
-      }
-    );
+    this.setState((state) => ({
+      ...state,
+      isLoaded: true,
+      success: true,
+    }));
+    // getStudents().then(
+    //   (resp) => {
+    //     const { data, success } = resp.data;
+    //     if (success) {
+    //       console.log(data);
+    //       this.setState((state) => ({
+    //         ...state,
+    //         isLoaded: true,
+    //         personaldata: {
+    //           firstname: this.props.user.firstname,
+    //           lastname: this.props.user.lastname,
+    //         },
+    //         success: success,
+    //       }));
+    //     } else {
+    //       alert(resp.data.message);
+    //     }
+    //   },
+    //   (error) => {
+    //     console.log(": " + error);
+    //     this.setState({
+    //       isLoaded: true,
+    //       error: true,
+    //     });
+    //   }
+    // );
   }
 
   handleChange_PersonalData = (e) => {

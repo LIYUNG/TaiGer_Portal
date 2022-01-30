@@ -18,7 +18,7 @@ const {
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedFilesRemindForEditorEmail,
   sendUploadedGeneralFilesRemindForEditorEmail,
-  sendChangedFileStatusEmail,
+  sendChangedProfileFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,
 } = require("../services/email");
@@ -29,10 +29,6 @@ const getMyfiles = asyncHandler(async (req, res) => {
   console.log("getMyfiles API");
   const student = await Student.findById(studentId);
   // if (!student) throw new ErrorResponse(400, "Invalid student id");
-
-  // document.status = DocumentStatus.Uploaded;
-  // document.path = req.file.path.replace(UPLOAD_PATH, "");
-  // document.updatedAt = new Date();
 
   await student.save();
   return res.status(201).send({ success: true, data: student });
@@ -80,6 +76,8 @@ const saveFilePath = asyncHandler(async (req, res) => {
     student_input_doc.required = true;
     student_input_doc.updatedAt = new Date();
     student.applications[idx].student_inputs.push(student_input_doc);
+
+    // TODO: set flag editors document(filetype) isReceivedFeedback
     await student.save();
     res.status(201).send({ success: true, data: student });
 
@@ -130,6 +128,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
     editor_output_doc.required = true;
     editor_output_doc.updatedAt = new Date();
     student.applications[idx].documents.push(editor_output_doc);
+    // TODO: set flag student document(filetype, feedback) isReceivedFeedback
     await student.save();
     res.status(201).send({ success: true, data: student });
 
@@ -175,12 +174,13 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
       throw new ErrorResponse(400, "Document already existed!");
     student_input_doc = student.generaldocs.studentinputs.create({
       name: req.file.filename,
-    }); //TODO: and rename file name
+    });
     student_input_doc.status = DocumentStatus.Uploaded;
     student_input_doc.path = req.file.path.replace(UPLOAD_PATH, "");
     student_input_doc.required = true;
     student_input_doc.updatedAt = new Date();
-    student.generaldocs.studentinputs.push(student_input_doc); //TODO: and rename file name
+    student.generaldocs.studentinputs.push(student_input_doc);
+    // TODO: set flag editors document(filetype) isReceivedFeedback
     await student.save();
     res.status(201).send({ success: true, data: student });
     //TODO: upload confirmation to Student?
@@ -215,7 +215,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
     editor_output_doc.required = true;
     editor_output_doc.updatedAt = new Date();
     student.generaldocs.editoroutputs.push(editor_output_doc); //TODO: and rename file name
-
+    // TODO: set flag student document(filetype) isReceivedFeedback
     await student.save();
     res.status(201).send({ success: true, data: student });
     await sendEditorOutputGeneralFilesEmailToStudent(
@@ -491,37 +491,9 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
   }
 });
 
-const updateDocumentStatus = asyncHandler(async (req, res, next) => {
-  const { studentId, applicationId, docName } = req.params;
-  const { status } = req.body;
-
-  if (!Object.values(DocumentStatus).includes(status))
-    throw new ErrorResponse(400, "Invalid document status");
-
-  const student = await Student.findOne({
-    _id: studentId,
-    "applications._id": applicationId,
-  });
-  if (!student)
-    throw new ErrorResponse(400, "Invalid student Id or application Id");
-
-  const document = student.applications
-    .id(applicationId)
-    .documents.find(({ name }) => name === docName);
-  if (!document) throw new ErrorResponse(400, "Invalid document name");
-
-  // TODO: validate status, ex: can't be accepted if document.path is empty
-  document.status = status;
-  document.updatedAt = new Date();
-
-  await student.save();
-
-  res.status(200).send({ success: true, data: document });
-});
-
 const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
-  const { status } = req.body;
+  const { status, feedback } = req.body;
 
   if (!Object.values(DocumentStatus).includes(status))
     throw new ErrorResponse(400, "Invalid document status");
@@ -536,6 +508,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     if (!document) {
       document = student.profile.create({ name: category });
       document.status = DocumentStatus.NotNeeded;
+      document.feedback = feedback;
       document.required = true;
       document.updatedAt = new Date();
       document.path = "";
@@ -546,21 +519,33 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-
-  //  throw new ErrorResponse(400, "Invalid document name");
-
+  //TODO: left reject image
+  if (status == DocumentStatus.Rejected) {
+    document.feedback = feedback;
+  }
+  if (status == DocumentStatus.Accepted) {
+    document.feedback = "";
+  }
   // TODO: validate status, ex: can't be accepted if document.path is empty
+
   document.status = status;
   document.updatedAt = new Date();
 
   await student.save();
   res.status(200).send({ success: true, data: student });
   //Reminder for Student:
-  await sendChangedFileStatusEmail({
-    firstname: student.firstname,
-    lastname: student.lastname,
-    address: student.email,
-  });
+  await sendChangedProfileFileStatusEmail(
+    {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email,
+    },
+    {
+      message: feedback,
+      status: status,
+      category: category.replace(/_/g, " "),
+    }
+  );
 });
 
 const deleteFile = asyncHandler(async (req, res, next) => {
@@ -797,7 +782,9 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
     body: { academic_background },
   } = req;
   const { firstname, lastname, _id } = student;
-  var me = await Student.findById(_id);
+  var me = await User.findById(_id);
+  if (me.academic_background === undefined) me.academic_background = {};
+  await me.save();
   res.status(200).send({ success: true, data: me.academic_background });
 });
 
@@ -807,10 +794,13 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     body: { university },
   } = req;
   const { firstname, lastname, _id } = student;
-  await Student.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     _id,
     {
       "academic_background.university": university,
+      // $addToSet: {
+      //   academic_background: { university: university },
+      // },
     },
     { upsert: true, new: true }
   );
@@ -823,10 +813,14 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     body: { language },
   } = req;
   const { firstname, lastname, _id } = student;
-  await Student.findByIdAndUpdate(
+  console.log(language);
+  await User.findByIdAndUpdate(
     _id,
     {
       "academic_background.language": language,
+      // $set: {
+      //   "academic_background.language": language,
+      // },
     },
     { upsert: true, new: true }
   );
@@ -858,7 +852,7 @@ module.exports = {
   downloadTemplateFile,
   downloadFile,
   downloadGeneralFile,
-  updateDocumentStatus,
+  updateProfileDocumentStatus,
   updateProfileDocumentStatus,
   deleteFile,
   deleteGeneralFile,

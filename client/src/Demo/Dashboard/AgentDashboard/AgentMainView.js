@@ -9,11 +9,7 @@ import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDo
 import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
 import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
-import {
-  uploadforstudent,
-  updateDocumentStatus,
-  deleteFile,
-} from "../../../api";
+
 class AgentMainView extends React.Component {
   render() {
     const agent_todo = this.props.students.map((student, i) => (
@@ -25,9 +21,6 @@ class AgentMainView extends React.Component {
         documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
@@ -37,13 +30,6 @@ class AgentMainView extends React.Component {
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
@@ -56,9 +42,6 @@ class AgentMainView extends React.Component {
         documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
@@ -71,9 +54,6 @@ class AgentMainView extends React.Component {
         documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
         startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const application_progress = this.props.students.map((student, i) => (
@@ -86,7 +66,6 @@ class AgentMainView extends React.Component {
         startUploadfile={this.props.startUploadfile}
         onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
@@ -117,7 +96,8 @@ class AgentMainView extends React.Component {
                 <thead>
                   <tr>
                     <th>First-, Last Name</th>
-                    <th>Under Editor's Review:</th>
+                    <th>Waiting Inputs:</th>
+                    <th>Editor reviewing:</th>
                     <th>Waiting Student's Feedback</th>
                   </tr>
                 </thead>
@@ -169,8 +149,6 @@ class AgentMainView extends React.Component {
                   onDownloadFilefromstudent={
                     this.props.onDownloadFilefromstudent
                   }
-                  onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-                  onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
                   updateAgentList={this.props.updateAgentList}
                   handleChangeAgentlist={this.props.handleChangeAgentlist}
                   submitUpdateAgentlist={this.props.submitUpdateAgentlist}
@@ -208,8 +186,6 @@ class AgentMainView extends React.Component {
                   onDownloadFilefromstudent={
                     this.props.onDownloadFilefromstudent
                   }
-                  onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-                  onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
                   onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
               </Tab>

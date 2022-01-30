@@ -173,8 +173,8 @@ const storage2 = multer.diskStorage({
             req.params.category +
             path.extname(file.originalname);
           const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
-          if (fs.existsSync(filePath))
-            return cb(new ErrorResponse(400, "Document already existed!22222"));
+          // if (fs.existsSync(filePath))
+          //   return cb(new ErrorResponse(400, "Document already existed!22222"));
 
           return {
             fileName: temp_name,

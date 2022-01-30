@@ -27,7 +27,6 @@ class StudentMainView extends React.Component {
         documentslist={this.props.documentslist}
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
-        onDeleteProgram={this.props.onDeleteProgram}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onRejectFilefromstudent={this.props.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
@@ -182,31 +181,6 @@ class StudentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        {/* <Card title="To Do:">
-          <Row>
-            <Col md={6}>
-              <Table responsive bordered hover>
-                <thead>
-                  <tr>
-                    <th>Agent Reviewing:</th>
-                  </tr>
-                </thead>
-                <tbody>{std_todo}</tbody>
-              </Table>
-            </Col>
-            <Col md={6}>
-              <Table responsive bordered hover>
-                <thead>
-                  <tr>
-                    <th>Task</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>{to_do_student}</tbody>
-              </Table>{" "}
-            </Col>
-          </Row>
-        </Card> */}
         <Row>
           <Col>
             <Card title="My Editor & Docs Progress">
@@ -219,8 +193,6 @@ class StudentMainView extends React.Component {
                 documenheader={this.props.documenheader}
                 startUploadfile={this.props.startUploadfile}
                 onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-                onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-                onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
                 onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
               />
             </Card>

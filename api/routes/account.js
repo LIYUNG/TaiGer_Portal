@@ -80,21 +80,21 @@ router
     deleteGeneralFile
   );
 
-router
-  .route("/files/:studentId/:category")
-  .get(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    downloadProfileFile
-  )
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    ProfilefileUpload,
-    saveProfileFilePath
-  )
-  .delete(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    deleteProfileFile
-  );
+// router
+//   .route("/files/:studentId/:category")
+//   .get(
+//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+//     downloadProfileFile
+//   )
+//   .post(
+//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+//     ProfilefileUpload,
+//     saveProfileFilePath
+//   )
+//   .delete(
+//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+//     deleteProfileFile
+//   );
 // TODO: check the exact usage
 router
   .route("/transcript/:studentId/:category")

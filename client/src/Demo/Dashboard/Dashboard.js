@@ -19,18 +19,16 @@ import StudentMainView from "./StudentDashboard/StudentMainView";
 import GuestMainView from "./GuestDashboard/GuestMainView";
 import {
   uploadforstudent,
-  updateDocumentStatus,
+  updateProfileDocumentStatus,
   deleteFile,
   getStudents,
   updateArchivStudents,
-  download,
+  downloadProfile,
   removeProgramFromStudent,
   getAgents,
   updateAgents,
   getEditors,
   updateEditors,
-  acceptDocument,
-  rejectDocument,
 } from "../../api";
 
 class Dashboard extends React.Component {
@@ -100,7 +98,7 @@ class Dashboard extends React.Component {
 
   onDownloadFilefromstudent(e, category, id) {
     e.preventDefault();
-    download(category, id).then(
+    downloadProfile(category, id).then(
       (resp) => {
         console.log(resp.data);
         const actualFileName =
@@ -140,33 +138,6 @@ class Dashboard extends React.Component {
     );
   }
 
-  onRejectFilefromstudent = (e, category, studentId) => {
-    //id == student id
-    // e.preventDefault();
-    rejectDocument(category, studentId).then(
-      (result) => {},
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error,
-        });
-      }
-    );
-  };
-
-  onAcceptFilefromstudent = (e, category, studentId) => {
-    //id == student id
-    // e.preventDefault();
-    acceptDocument(category, studentId).then(
-      (result) => {},
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
   onDeleteProgram = (e, student_id, program_id) => {
     //program id
     e.preventDefault();
@@ -443,7 +414,7 @@ class Dashboard extends React.Component {
     let students = [...this.state.students];
 
     console.log(students);
-    updateDocumentStatus(category, student_id, status).then(
+    updateProfileDocumentStatus(category, student_id, status).then(
       (res) => {
         students[student_arrayidx] = res.data.data;
         this.setState({
@@ -543,8 +514,6 @@ class Dashboard extends React.Component {
               startUploadfile={this.startUploadfile}
               onDeleteProgram={this.onDeleteProgram}
               onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onRejectFilefromstudent={this.onRejectFilefromstudent}
-              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
               updateAgentList={this.state.updateAgentList}
               handleChangeAgentlist={this.handleChangeAgentlist}
               submitUpdateAgentlist={this.submitUpdateAgentlist}
@@ -583,8 +552,6 @@ class Dashboard extends React.Component {
               onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
               onDeleteProgram={this.onDeleteProgram}
               onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onRejectFilefromstudent={this.onRejectFilefromstudent}
-              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
               updateAgentList={this.state.updateAgentList}
               handleChangeAgentlist={this.handleChangeAgentlist}
               submitUpdateAgentlist={this.submitUpdateAgentlist}
@@ -621,10 +588,7 @@ class Dashboard extends React.Component {
               documentsprogresslist={window.documentsprogresslist}
               programstatuslist={window.programstatuslist}
               startUploadfile={this.startUploadfile}
-              onDeleteProgram={this.onDeleteProgram}
               onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onRejectFilefromstudent={this.onRejectFilefromstudent}
-              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
               onDeleteFilefromstudent={this.onDeleteFilefromstudent}
               updateAgentList={this.state.updateAgentList}
               handleChangeAgentlist={this.handleChangeAgentlist}
@@ -650,28 +614,14 @@ class Dashboard extends React.Component {
           <Aux>
             <StudentMainView
               role={this.props.user.role}
-              editAgent={this.editAgent}
-              editEditor={this.editEditor}
-              agent_list={this.state.agent_list}
-              editor_list={this.state.editor_list}
-              UpdateAgentlist={this.UpdateAgentlist}
               students={this.state.students}
               documentslist={window.documentlist}
               documentlist2={window.documentlist2}
               documentsprogresslist={window.documentsprogresslist}
               programstatuslist={window.programstatuslist}
               startUploadfile={this.startUploadfile}
-              onDeleteProgram={this.onDeleteProgram}
               onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onRejectFilefromstudent={this.onRejectFilefromstudent}
-              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
               onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-              updateAgentList={this.state.updateAgentList}
-              handleChangeAgentlist={this.handleChangeAgentlist}
-              submitUpdateAgentlist={this.submitUpdateAgentlist}
-              updateEditorList={this.state.updateEditorList}
-              handleChangeEditorlist={this.handleChangeEditorlist}
-              submitUpdateEditorlist={this.submitUpdateEditorlist}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
             {!isLoaded && (
@@ -689,25 +639,11 @@ class Dashboard extends React.Component {
             <GuestMainView
               role={this.props.user.role}
               success={this.state.success}
-              editAgent={this.editAgent}
-              editEditor={this.editEditor}
-              agent_list={this.state.agent_list}
-              editor_list={this.state.editor_list}
-              UpdateAgentlist={this.UpdateAgentlist}
               students={this.state.students}
               documentslist={window.documentlist}
               startUploadfile={this.startUploadfile}
-              onDeleteProgram={this.onDeleteProgram}
               onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onRejectFilefromstudent={this.onRejectFilefromstudent}
-              onAcceptFilefromstudent={this.onAcceptFilefromstudent}
               onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-              updateAgentList={this.state.updateAgentList}
-              handleChangeAgentlist={this.handleChangeAgentlist}
-              submitUpdateAgentlist={this.submitUpdateAgentlist}
-              updateEditorList={this.state.updateEditorList}
-              handleChangeEditorlist={this.handleChangeEditorlist}
-              submitUpdateEditorlist={this.submitUpdateEditorlist}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
 

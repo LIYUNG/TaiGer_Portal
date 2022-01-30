@@ -81,8 +81,9 @@ class EditorMainView extends React.Component {
                 <thead>
                   <tr>
                     <th>First-, Last Name</th>
-                    <th>Uploaded files will be reviewed by your editor:</th>
-                    <th>Waiting Student Feedback</th>
+                    <th>Waiting Inputs:</th>
+                    <th>Editor reviewing:</th>
+                    <th>Waiting Student's Feedback</th>
                   </tr>
                 </thead>
                 {editor_reviewing}
@@ -97,7 +98,6 @@ class EditorMainView extends React.Component {
                 students={this.props.students}
                 startEditingProgram={this.props.startEditingProgram}
                 startUploadfile={this.props.startUploadfile}
-                onDeleteProgram={this.props.onDeleteProgram}
               />
             </Card>
           </Col>

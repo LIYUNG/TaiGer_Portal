@@ -71,12 +71,20 @@ export default {
           icon: "feather icon-file-text",
         },
         {
+          id: "agent_center",
+          title: "Agent Center",
+          type: "item",
+          url: "/agent-center",
+          classes: "nav-item",
+          icon: "feather icon-eye",
+        },
+        {
           id: "editor_center",
           title: "Editor Center",
           type: "item",
           url: "/editor-center",
           classes: "nav-item",
-          icon: "feather icon-edit-2",
+          icon: "feather icon-edit-1",
         },
         {
           id: "profile_upload",

@@ -12,11 +12,7 @@ import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";
 import EditProgramsSubpage from "./EditProgramsSubpage";
 import EditFilesSubpage from "./EditFilesSubpage";
-import {
-  uploadforstudent,
-  updateDocumentStatus,
-  deleteFile,
-} from "../../../../api";
+
 class StudDocsDashboard extends React.Component {
   state = {
     showAgentPage: false,

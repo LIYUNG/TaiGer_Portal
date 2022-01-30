@@ -228,12 +228,29 @@ for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.`; // should be for student
   return sendEmail(recipient, subject, message);
 };
 
-const sendChangedFileStatusEmail = async (recipient) => {
-  const subject = "File Status changes";
-  const message = `\
+const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
+  var subject;
+  var message;
+  if (msg.status === "rejected") {
+    subject = `File Status changes: please upload ${msg.category} again`;
+    message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-a file status has changed.`; // should be for student
+due to the following reason, please upload ${msg.category} again:
+
+${msg.message}
+
+If you have any question, please contact your agent. 
+`; // should be for student
+  } else {
+    subject = `File Status changes: ${msg.category} is valid`;
+    message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your uploaded file ${msg.category} is successfully checked by your agent
+
+and it can be used for the application! `; // should be for student
+  }
 
   return sendEmail(recipient, subject, message);
 };
@@ -274,7 +291,7 @@ module.exports = {
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedFilesRemindForEditorEmail,
   sendUploadedGeneralFilesRemindForEditorEmail,
-  sendChangedFileStatusEmail,
+  sendChangedProfileFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,
 };

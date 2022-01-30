@@ -15,14 +15,12 @@ import TabStudDocsDashboard from "../Dashboard/MainViewTab/StudDocsOverview/TabS
 import {
   getArchivStudents,
   updateArchivStudents,
-  download,
+  downloadProfile,
   removeProgramFromStudent,
   getAgents,
   updateAgents,
   getEditors,
   updateEditors,
-  acceptDocument,
-  rejectDocument,
   deleteFile,
 } from "../../api";
 
@@ -86,7 +84,7 @@ class Dashboard extends React.Component {
 
   onDownloadFilefromstudent(e, category, id) {
     e.preventDefault();
-    download(category, id).then(
+    downloadProfile(category, id).then(
       (resp) => {
         const actualFileName =
           resp.headers["content-disposition"].split('"')[1];
@@ -127,29 +125,6 @@ class Dashboard extends React.Component {
     );
   }
 
-  onRejectFilefromstudent = (e, category, studentId) => {
-    rejectDocument(category, studentId).then(
-      (result) => {},
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error,
-        });
-      }
-    );
-  };
-
-  onAcceptFilefromstudent = (e, category, studentId) => {
-    acceptDocument(category, studentId).then(
-      (result) => {},
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
   onDeleteProgram = (e, student_id, program_id) => {
     //program id
     e.preventDefault();
@@ -394,8 +369,6 @@ class Dashboard extends React.Component {
                         onDownloadFilefromstudent={
                           this.onDownloadFilefromstudent
                         }
-                        onRejectFilefromstudent={this.onRejectFilefromstudent}
-                        onAcceptFilefromstudent={this.onAcceptFilefromstudent}
                         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
                         updateAgentList={this.state.updateAgentList}
                         handleChangeAgentlist={this.handleChangeAgentlist}

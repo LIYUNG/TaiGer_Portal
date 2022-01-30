@@ -3,6 +3,7 @@ import { Button, Table, Col, Form, Modal } from "react-bootstrap";
 import UcFirst from "../../../../App/components/UcFirst";
 import {
   AiOutlineDownload,
+  AiOutlineFieldTime,
   AiFillCloseCircle,
   AiFillQuestionCircle,
 } from "react-icons/ai";
@@ -55,9 +56,9 @@ class EditFilesSubpage extends React.Component {
         return (
           <tr key={i + 1}>
             <th>
-              <AiFillQuestionCircle
+              <AiOutlineFieldTime
                 size={24}
-                color="lightgreen"
+                color="orange"
                 title="Uploaded successfully"
               />
             </th>

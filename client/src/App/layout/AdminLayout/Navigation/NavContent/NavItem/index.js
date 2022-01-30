@@ -32,6 +32,7 @@ class NavItem extends Component {
     if (this.props.role === "Editor") {
       if (
         itemTitle === "Academic Survey" ||
+        itemTitle === "Agent Center" ||
         itemTitle === "Application Documents" ||
         itemTitle === "Program List" ||
         itemTitle === "Charts" ||
@@ -46,6 +47,7 @@ class NavItem extends Component {
       if (
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
+        itemTitle === "Application Documents" ||
         itemTitle === "Archiv Students" ||
         itemTitle === "User List"
       ) {
@@ -55,9 +57,12 @@ class NavItem extends Component {
     }
     if (this.props.role === "Guest") {
       if (
+        itemTitle === "Agent Center" ||
+        itemTitle === "Dashboard" ||
         itemTitle === "Editor Center" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
+        itemTitle === "Application Documents" ||
         itemTitle === "Archiv Students" ||
         itemTitle === "User List"
       ) {

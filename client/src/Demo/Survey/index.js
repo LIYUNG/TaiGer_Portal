@@ -348,14 +348,24 @@ class Survey extends React.Component {
                           <Form.Control
                             plaintext
                             readOnly
-                            value={this.Bayerische_Formel(
+                            value={
+                              this.state.academic_background.university &&
                               this.state.academic_background.university
-                                .Highest_GPA_Uni,
+                                .My_GPA_Uni &&
                               this.state.academic_background.university
-                                .Passing_GPA_Uni,
+                                .Passing_GPA_Uni &&
                               this.state.academic_background.university
-                                .My_GPA_Uni
-                            )}
+                                .Highest_GPA_Uni
+                                ? this.Bayerische_Formel(
+                                    this.state.academic_background.university
+                                      .Highest_GPA_Uni,
+                                    this.state.academic_background.university
+                                      .Passing_GPA_Uni,
+                                    this.state.academic_background.university
+                                      .My_GPA_Uni
+                                  )
+                                : 0
+                            }
                           />
                         </Form.Group>
                         <br />

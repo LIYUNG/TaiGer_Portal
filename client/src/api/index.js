@@ -53,30 +53,22 @@ export const assignProgramToStudent = (studentId, programId) =>
 export const removeProgramFromStudent = (programId, studentId) =>
   request.delete(`/api/students/${studentId}/applications/${programId}`);
 
-export const download = (category, studentId) =>
-  request.get(`/api/account/files/${studentId}/${category}`, {
+export const downloadProfile = (category, studentId) =>
+  request.get(`/api/students/${studentId}/files/${category}`, {
     responseType: "blob",
   });
 
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 
-export const acceptDocument = (category, studentId) =>
-  request.post(`/api/students/${studentId}/${category}/status`, {
-    status: "accepted",
-  });
-
-export const updateDocumentStatus = (category, studentId, status) =>
+export const updateProfileDocumentStatus = (category, studentId, status, message) =>
   request.post(`/api/students/${studentId}/${category}/status`, {
     status: status,
-  });
-export const rejectDocument = (category, studentId) =>
-  request.post(`/api/students/${studentId}/${category}/status`, {
-    status: "rejected",
+    feedback: message,
   });
 
 export const deleteFile = (category, studentId) =>
-  request.delete(`/api/account/files/${studentId}/${category}`);
+  request.delete(`/api/students/${studentId}/files/${category}`);
 
 // Account APIs
 export const getMyfiles = (studentId) =>

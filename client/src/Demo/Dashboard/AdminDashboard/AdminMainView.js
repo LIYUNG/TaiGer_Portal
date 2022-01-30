@@ -3,6 +3,8 @@ import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
 import Card from "../../../App/components/MainCard";
 import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
 import AdminTodoList from "./AdminTodoList";
+import AgentReviewing from "../MainViewTab/AgentReview/AgentReviewing";
+import EditorReviewing from "../MainViewTab/EditorReview/EditorReviewing";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
@@ -45,9 +47,31 @@ class AdminMainView extends React.Component {
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+      />
+    ));
+    const agent_reviewing = this.props.students.map((student, i) => (
+      <AgentReviewing
+        key={i}
+        role={this.props.role}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
+      />
+    ));
+    const editor_reviewing = this.props.students.map((student, i) => (
+      <EditorReviewing
+        key={i}
+        role={this.props.role}
+        student={student}
+        startEditingProgram={this.props.startEditingProgram}
+        agenttodolist={this.props.agenttodolist}
+        documenheader={this.props.documenheader}
+        documentlist2={this.props.documentlist2}
+        startUploadfile={this.props.startUploadfile}
       />
     ));
     return (
@@ -61,6 +85,39 @@ class AdminMainView extends React.Component {
                 startUploadfile={this.props.startUploadfile}
                 onDeleteProgram={this.props.onDeleteProgram}
               />
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Card title="Agent Reviewing:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>First-/Lastname</th>
+                    <th>Missing</th>
+                    <th>Under checking</th>
+                  </tr>
+                </thead>
+                {agent_reviewing}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Card title="Editor Progress:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>First-, Last Name</th>
+                    <th>Waiting Inputs:</th>
+                    <th>Editor reviewing:</th>
+                    <th>Waiting Student's Feedback</th>
+                  </tr>
+                </thead>
+                {editor_reviewing}
+              </Table>
             </Card>
           </Col>
         </Row>
@@ -137,8 +194,6 @@ class AdminMainView extends React.Component {
                   onDownloadFilefromstudent={
                     this.props.onDownloadFilefromstudent
                   }
-                  onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-                  onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
                   onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
               </Tab>

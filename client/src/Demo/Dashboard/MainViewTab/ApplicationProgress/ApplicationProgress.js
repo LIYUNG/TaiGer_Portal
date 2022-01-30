@@ -181,7 +181,6 @@ class ApplicationProgress extends React.Component {
         onFileChange={this.onFileChange}
         submitFile={this.submitFile}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.onRejectFilefromstudent}
         onAcceptFilefromstudent={this.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
       />

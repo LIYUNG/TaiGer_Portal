@@ -13,8 +13,6 @@ class TabEditorDocsProgress extends React.Component {
         documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
         onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
@@ -24,7 +22,7 @@ class TabEditorDocsProgress extends React.Component {
           <thead>
             <tr>
               <>
-                <th></th>
+                {/* <th></th> */}
                 {this.props.role !== "Student" ? (
                   <th>First-, Last Name</th>
                 ) : (

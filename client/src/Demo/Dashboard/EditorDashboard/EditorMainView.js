@@ -14,30 +14,15 @@ class EditorMainView extends React.Component {
       <EditorTodoList
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        editortodolist={this.props.editortodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
@@ -45,14 +30,7 @@ class EditorMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     return (

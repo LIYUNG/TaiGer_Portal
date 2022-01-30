@@ -23,7 +23,7 @@ class AgentCenter extends React.Component {
     isLoaded: false,
     data: null,
     success: false,
-    students: [],
+    students: null,
     file: "",
     student_id: "",
     status: "", //reject, accept... etc
@@ -68,13 +68,7 @@ class AgentCenter extends React.Component {
       }
     );
   }
-  openWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
-  };
 
-  closeWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
   openRejectWarningWindow = () => {
     this.setState((state) => ({ ...state, rejectProfileFileModel: true }));
   };
@@ -119,15 +113,15 @@ class AgentCenter extends React.Component {
     }));
   };
 
-  onDeleteFileWarningPopUp = (e, category, student_id) => {
-    e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      student_id,
-      category,
-      deleteFileWarningModel: true,
-    }));
-  };
+  // onDeleteFileWarningPopUp = (e, category, student_id) => {
+  //   e.preventDefault();
+  //   this.setState((state) => ({
+  //     ...state,
+  //     student_id,
+  //     category,
+  //     deleteFileWarningModel: true,
+  //   }));
+  // };
 
   handleRejectMessage = (e, rejectmessage) => {
     e.preventDefault();
@@ -180,29 +174,33 @@ class AgentCenter extends React.Component {
           );
         } else {
           alert(res.data.message);
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+          }));
         }
       },
       (error) => {}
     );
   };
 
-  onDeleteFilefromstudent = () => {
+  onDeleteFilefromstudent = (category, student_id) => {
     // e.preventDefault();
     let student_arrayidx = this.state.students.findIndex(
-      (student) => student._id === this.state.student_id
+      (student) => student._id === student_id
     );
     let student = this.state.students.find(
-      (student) => student._id === this.state.student_id
+      (student) => student._id === student_id
     );
     let idx = student.profile.findIndex(
-      (doc) => doc.name === this.state.category
+      (doc) => doc.name === category
     );
     let students = [...this.state.students];
     this.setState((state) => ({
       ...state,
       isLoaded: false,
     }));
-    deleteFile(this.state.category, this.state.student_id).then(
+    deleteFile(category, student_id).then(
       (res) => {
         const { data, success } = res.data;
         students[student_arrayidx].profile[idx] = data;
@@ -234,6 +232,10 @@ class AgentCenter extends React.Component {
           // }));
         } else {
           alert(res.data.message);
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+          }));
         }
       },
       (error) => {
@@ -356,6 +358,10 @@ class AgentCenter extends React.Component {
           );
         } else {
           alert(res.data.message);
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+          }));
         }
       },
       (error) => {
@@ -424,7 +430,7 @@ class AgentCenter extends React.Component {
         </div>
       );
     }
-    if (!isLoaded) {
+    if (!isLoaded && !this.state.students) {
       return (
         <div style={style}>
           <Spinner animation="border" role="status">
@@ -452,10 +458,12 @@ class AgentCenter extends React.Component {
         onDeleteGeneralFile={this.onDeleteGeneralFile}
         onDownloadFilefromstudent={this.onDownloadFilefromstudent}
         onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
-        onDeleteFileWarningPopUp={this.onDeleteFileWarningPopUp}
+        // onDeleteFileWarningPopUp={this.onDeleteFileWarningPopUp}
+        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
         SubmitGeneralFile={this.SubmitGeneralFile}
         handleGeneralDocSubmit={this.handleGeneralDocSubmit}
         SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+        isLoaded={this.state.isLoaded}
       />
     ));
     return (
@@ -485,22 +493,24 @@ class AgentCenter extends React.Component {
                       </Button>
                     )}
                   </Col>
-                </Row>{" "}
-                {!isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
+                </Row>
               </Card.Title>
             </Card.Header>
           </Card>
         </Row>
         <Row>
-          <Col sm={12}>{student_profile}</Col>
+          <Col sm={12}>
+            {student_profile}{" "}
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Col>
         </Row>
-        <Modal
+        {/* <Modal
           show={this.state.deleteFileWarningModel}
           onHide={this.closeWarningWindow}
           aria-labelledby="contained-modal-title-vcenter"
@@ -511,12 +521,26 @@ class AgentCenter extends React.Component {
               Warning
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
+          <Modal.Body>
+            Do you want to delete {this.state.docName}?
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.onDeleteFilefromstudent}>Yes</Button>
+            <Button
+              disabled={!this.state.isLoaded}
+              onClick={this.onDeleteFilefromstudent}
+            >
+              Yes
+            </Button>
             <Button onClick={this.closeWarningWindow}>No</Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
         <Modal
           show={this.state.rejectProfileFileModel}
           onHide={this.closeRejectWarningWindow}
@@ -541,9 +565,21 @@ class AgentCenter extends React.Component {
                 onChange={(e) => this.handleRejectMessage(e, e.target.value)}
               />
             </Form.Group>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.onUpdateProfileFilefromstudent}>Yes</Button>
+            <Button
+              disabled={!this.state.isLoaded}
+              onClick={this.onUpdateProfileFilefromstudent}
+            >
+              Yes
+            </Button>
             <Button onClick={this.closeRejectWarningWindow}>No</Button>
           </Modal.Footer>
         </Modal>
@@ -561,9 +597,21 @@ class AgentCenter extends React.Component {
           <Modal.Body>
             {this.state.category} is a valid and can be used for the
             application?
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.onUpdateProfileFilefromstudent}>Yes</Button>
+            <Button
+              disabled={!this.state.isLoaded}
+              onClick={this.onUpdateProfileFilefromstudent}
+            >
+              Yes
+            </Button>
             <Button onClick={this.closeAcceptWarningWindow}>No</Button>
           </Modal.Footer>
         </Modal>

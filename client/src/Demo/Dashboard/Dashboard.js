@@ -179,8 +179,8 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data: agents } = resp.data; //get all agent
         const { agents: student_agents } = student;
-        console.log("editAgent");
-        console.log(resp.data);
+        // console.log("editAgent");
+        // console.log(resp.data);
         const updateAgentList = agents.reduce(
           (prev, { _id }) => ({
             ...prev,
@@ -232,7 +232,7 @@ class Dashboard extends React.Component {
 
   handleChangeAgentlist = (e) => {
     const { value, checked } = e.target;
-    console.log(value + " " + checked);
+    // console.log(value + " " + checked);
     this.setState((prevState) => ({
       updateAgentList: {
         ...prevState.updateAgentList,
@@ -243,7 +243,7 @@ class Dashboard extends React.Component {
 
   handleChangeEditorlist = (e) => {
     const { value, checked } = e.target;
-    console.log(value + " " + checked);
+    // console.log(value + " " + checked);
     this.setState((prevState) => ({
       updateEditorList: {
         ...prevState.updateEditorList,

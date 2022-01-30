@@ -4,7 +4,6 @@ const { Role } = require("../models/User");
 const { protect, permit } = require("../middlewares/auth");
 const {
   fileUpload,
-  ProfilefileUpload,
   TranscriptExcelUpload,
   EditGeneralDocsUpload,
 } = require("../middlewares/file-upload");
@@ -13,12 +12,9 @@ const {
   getMyfiles,
   saveFilePath,
   saveGeneralFilePath,
-  saveProfileFilePath,
-  downloadProfileFile,
   downloadTemplateFile,
   downloadFile,
   downloadGeneralFile,
-  deleteProfileFile,
   deleteFile,
   deleteGeneralFile,
   processTranscript,
@@ -71,36 +67,15 @@ router
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadGeneralFile
-    // (req, res, next) => {
-    //   res.status(200);
-    // }
   )
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     deleteGeneralFile
   );
 
-// router
-//   .route("/files/:studentId/:category")
-//   .get(
-//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-//     downloadProfileFile
-//   )
-//   .post(
-//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-//     ProfilefileUpload,
-//     saveProfileFilePath
-//   )
-//   .delete(
-//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-//     deleteProfileFile
-//   );
-// TODO: check the exact usage
+// TaiGer Transcript Analyser:
 router
   .route("/transcript/:studentId/:category")
-  // .post((req, res, next) =>
-  //   res.status(400).send({ success: false, message: "Not implemented yet" })
-  // );
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     TranscriptExcelUpload,
@@ -108,11 +83,9 @@ router
   );
 router
   .route("/transcript/:studentId/:filename")
-  // .post((req, res, next) =>
-  //   res.status(400).send({ success: false, message: "Not implemented yet" })
-  // );
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);
-// .post(fileUpload, processTranscript);
+
+//Academic Survey for Students
 router
   .route("/survey")
   .get(
@@ -143,6 +116,5 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadTemplateFile
   );
-// .get(downloadXLSX);
 
 module.exports = router;

@@ -8,6 +8,7 @@ import {
   Card,
   Collapse,
   Modal,
+  Spinner,
 } from "react-bootstrap";
 import UcFirst from "../../App/components/UcFirst";
 import { IoMdCloudUpload } from "react-icons/io";
@@ -16,21 +17,71 @@ import {
   AiOutlineFieldTime,
   AiFillCloseCircle,
   AiFillQuestionCircle,
+  AiOutlineComment,
   AiOutlineDelete,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
+import {
+  uploadforstudent,
+  updateProfileDocumentStatus,
+  deleteFile,
+  getStudents,
+  downloadProfile,
+} from "../../api";
+
 class EditFilesSubpage extends React.Component {
   state = {
     student: this.props.student,
     deleteFileWarningModel: false,
-    studentId: "",
+    CommentModel: false,
+    student_id: "",
     applicationId: "",
+    category: "",
     docName: "",
     whoupdate: "",
     file: "",
+    comments: "",
+    isLoaded: this.props.isLoaded,
+  };
+  openWarningWindow = () => {
+    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
   };
 
+  closeWarningWindow = () => {
+    this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
+  };
+
+  openCommentWindow = (comments) => {
+    console.log();
+    this.setState((state) => ({ ...state, CommentModel: true, comments }));
+  };
+
+  closeCommentWindow = () => {
+    this.setState((state) => ({ ...state, CommentModel: false }));
+  };
+
+  onDeleteFileWarningPopUp = (e, category, student_id) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      student_id,
+      category,
+      deleteFileWarningModel: true,
+    }));
+  };
+
+  onDeleteFilefromstudent = (e) => {
+    e.preventDefault();
+    this.props.onDeleteFilefromstudent(
+      this.state.category,
+      this.state.student_id
+    );
+    this.setState((state) => ({
+      ...state,
+      deleteFileWarningModel: false,
+    }));
+  };
   render() {
     const deleteStyle = "danger";
     const graoutStyle = "light";
@@ -132,7 +183,11 @@ class EditFilesSubpage extends React.Component {
                       }
                     >
                       <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button size="sm" type="submit">
+                        <Button
+                          size="sm"
+                          type="submit"
+                          disabled={!this.props.isLoaded}
+                        >
                           Reject
                         </Button>
                       </Form.Group>
@@ -153,7 +208,11 @@ class EditFilesSubpage extends React.Component {
                       }
                     >
                       <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button size="sm" type="submit">
+                        <Button
+                          size="sm"
+                          type="submit"
+                          disabled={!this.props.isLoaded}
+                        >
                           Accept
                         </Button>
                       </Form.Group>
@@ -162,12 +221,14 @@ class EditFilesSubpage extends React.Component {
                 </td>
               </>
             )}
-            {this.props.role === "Student" ? (
+            {this.props.role === "Editor" ? (
+              <td></td>
+            ) : (
               <td>
                 <Col md>
                   <Form
                     onSubmit={(e) =>
-                      this.props.onDeleteFileWarningPopUp(
+                      this.onDeleteFileWarningPopUp(
                         e,
                         k,
                         this.props.student._id
@@ -175,16 +236,19 @@ class EditFilesSubpage extends React.Component {
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button variant={deleteStyle} size="sm" type="submit">
-                        {/* <UcFirst text="Delete" /> */}
+                      <Button
+                        variant={deleteStyle}
+                        size="sm"
+                        type="submit"
+                        title="Delete"
+                        disabled={!this.props.isLoaded}
+                      >
                         <AiOutlineDelete size={16} />
                       </Button>
                     </Form.Group>
                   </Form>
                 </Col>
               </td>
-            ) : (
-              <td></td>
             )}
           </tr>
         );
@@ -219,7 +283,6 @@ class EditFilesSubpage extends React.Component {
                   <Form.Group controlId="exampleForm.ControlSelect1">
                     <Button size="sm" type="submit" title="Download">
                       <AiOutlineDownload size={16} />
-                      {/* Download */}
                     </Button>
                   </Form.Group>
                 </Form>
@@ -256,7 +319,11 @@ class EditFilesSubpage extends React.Component {
                           }
                         >
                           <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Button size="sm" type="submit">
+                            <Button
+                              size="sm"
+                              type="submit"
+                              disabled={!this.props.isLoaded}
+                            >
                               Reject
                             </Button>
                           </Form.Group>
@@ -277,7 +344,11 @@ class EditFilesSubpage extends React.Component {
                           }
                         >
                           <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Button size="sm" type="submit">
+                            <Button
+                              size="sm"
+                              type="submit"
+                              disabled={!this.props.isLoaded}
+                            >
                               Accept
                             </Button>
                           </Form.Group>
@@ -288,7 +359,7 @@ class EditFilesSubpage extends React.Component {
                       <Col>
                         <Form
                           onSubmit={(e) =>
-                            this.props.onDeleteFileWarningPopUp(
+                            this.onDeleteFileWarningPopUp(
                               e,
                               k,
                               this.props.student._id
@@ -300,8 +371,9 @@ class EditFilesSubpage extends React.Component {
                               variant={deleteStyle}
                               size="sm"
                               type="submit"
+                              title="Delete"
+                              disabled={!this.props.isLoaded}
                             >
-                              {/* <UcFirst text="Delete" /> */}
                               <AiOutlineDelete size={16} />
                             </Button>
                           </Form.Group>
@@ -345,7 +417,6 @@ class EditFilesSubpage extends React.Component {
                   <Form.Group controlId="exampleForm.ControlSelect1">
                     <Button size="sm" type="submit" title="Download">
                       <AiOutlineDownload size={16} />
-                      {/* Download */}
                     </Button>
                   </Form.Group>
                 </Form>
@@ -354,7 +425,17 @@ class EditFilesSubpage extends React.Component {
             {this.props.role === "Editor" ? (
               <>
                 <td></td>
-                <td>{object_message[k]}</td>
+                <td>
+                  <Button
+                    size="sm"
+                    type="submit"
+                    disabled={!this.props.isLoaded}
+                    title="Show Comments"
+                    onClick={(e) => this.openCommentWindow(object_message[k])}
+                  >
+                    <AiOutlineComment size={20} />
+                  </Button>
+                </td>
                 <td></td>
               </>
             ) : (
@@ -362,7 +443,19 @@ class EditFilesSubpage extends React.Component {
                 {this.props.role === "Student" ? (
                   <>
                     <td></td>
-                    <td>{object_message[k]}</td>
+                    <td>
+                      <Button
+                        size="sm"
+                        type="submit"
+                        disabled={!this.props.isLoaded}
+                        title="Show Comments"
+                        onClick={(e) =>
+                          this.openCommentWindow(object_message[k])
+                        }
+                      >
+                        <AiOutlineComment size={20} />
+                      </Button>
+                    </td>
                     <td></td>
                   </>
                 ) : (
@@ -380,14 +473,30 @@ class EditFilesSubpage extends React.Component {
                           }
                         >
                           <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Button size="sm" type="submit">
+                            <Button
+                              size="sm"
+                              type="submit"
+                              disabled={!this.props.isLoaded}
+                            >
                               Reject
                             </Button>
                           </Form.Group>
                         </Form>
                       </Col>
                     </td>
-                    <td>{object_message[k]}</td>
+                    <td>
+                      <Button
+                        size="sm"
+                        type="submit"
+                        disabled={!this.props.isLoaded}
+                        title="Show Comments"
+                        onClick={(e) =>
+                          this.openCommentWindow(object_message[k])
+                        }
+                      >
+                        <AiOutlineComment size={20} />
+                      </Button>
+                    </td>
                     <td>
                       <Col>
                         <Form
@@ -401,7 +510,11 @@ class EditFilesSubpage extends React.Component {
                           }
                         >
                           <Form.Group controlId="exampleForm.ControlSelect1">
-                            <Button size="sm" type="submit">
+                            <Button
+                              size="sm"
+                              type="submit"
+                              disabled={!this.props.isLoaded}
+                            >
                               Accept
                             </Button>
                           </Form.Group>
@@ -414,7 +527,7 @@ class EditFilesSubpage extends React.Component {
                   <Col>
                     <Form
                       onSubmit={(e) =>
-                        this.props.onDeleteFileWarningPopUp(
+                        this.onDeleteFileWarningPopUp(
                           e,
                           k,
                           this.props.student._id
@@ -422,8 +535,13 @@ class EditFilesSubpage extends React.Component {
                       }
                     >
                       <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button variant={deleteStyle} size="sm" type="submit">
-                          {/* <UcFirst text="Delete" /> */}
+                        <Button
+                          variant={deleteStyle}
+                          size="sm"
+                          type="submit"
+                          title="Delete"
+                          disabled={!this.props.isLoaded}
+                        >
                           <AiOutlineDelete size={16} />
                         </Button>
                       </Form.Group>
@@ -562,7 +680,12 @@ class EditFilesSubpage extends React.Component {
         );
       }
     });
-
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
     return (
       <>
         <Card className="mt-2" key={this.props.idx}>
@@ -594,7 +717,7 @@ class EditFilesSubpage extends React.Component {
                         <th>File Name:</th>
                         <th></th>
                         <th></th>
-                        <th>Comments:</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>{documentlist22}</tbody>
@@ -605,6 +728,62 @@ class EditFilesSubpage extends React.Component {
             </div>
           </Collapse>
         </Card>
+        <Modal
+          show={this.state.deleteFileWarningModel}
+          onHide={this.closeWarningWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Do you want to delete {this.state.docName}?
+            {!this.state.isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              disabled={!this.state.isLoaded}
+              onClick={(e) => this.onDeleteFilefromstudent(e)}
+            >
+              Yes
+            </Button>
+            <Button onClick={this.closeWarningWindow}>No</Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.CommentModel}
+          onHide={this.closeCommentWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Comments
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {this.state.comments}
+            {!this.state.isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeCommentWindow}>Ok</Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
   }

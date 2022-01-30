@@ -143,7 +143,7 @@ class Programlist extends React.Component {
       <>
         <Row>
           <Col>
-            <ButtonToolbar className="float-right">
+            <ButtonToolbar>
               {this.props.role === "Student" ? (
                 <></>
               ) : (

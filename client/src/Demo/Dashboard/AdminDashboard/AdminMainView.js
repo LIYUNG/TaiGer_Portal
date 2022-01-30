@@ -16,38 +16,21 @@ class AdminMainView extends React.Component {
       <AdminTodoList
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
-        agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
       />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
       />
     ));
     const application_progress = this.props.students.map((student, i) => (
       <ApplicationProgress
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
@@ -55,11 +38,7 @@ class AdminMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
       />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
@@ -67,11 +46,7 @@ class AdminMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
       />
     ));
     return (
@@ -134,14 +109,7 @@ class AdminMainView extends React.Component {
                   documentlist2={this.props.documentlist2}
                   agent_list={this.props.agent_list}
                   editor_list={this.props.editor_list}
-                  onFileChange={this.props.onFileChange}
-                  onSubmitFile={this.props.onSubmitFile}
-                  onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
                   onDeleteProgram={this.props.onDeleteProgram}
-                  onDownloadFilefromstudent={
-                    this.props.onDownloadFilefromstudent
-                  }
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                   updateAgentList={this.props.updateAgentList}
                   handleChangeAgentlist={this.props.handleChangeAgentlist}
                   submitUpdateAgentlist={this.props.submitUpdateAgentlist}
@@ -167,33 +135,11 @@ class AdminMainView extends React.Component {
                   {students_agent_editor}
                 </Table>
               </Tab>
-              {/* <Tab eventKey="x" title="Admin TODO">
-                <Table responsive>
-                  <thead>
-                    <tr>
-                      <>
-                        <th>First-, Last Name</th>
-                      </>
-                      {this.props.agenttodolist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  {agent_todo}
-                </Table>
-              </Tab> */}
               <Tab eventKey="y" title="Editor & Docs Progress">
                 <TabEditorDocsProgress
                   role={this.props.role}
                   students={this.props.students}
-                  startEditingProgram={this.props.startEditingProgram}
-                  documentslist={this.props.documentslist}
                   documentsprogresslist={this.props.documentsprogresslist}
-                  documenheader={this.props.documenheader}
-                  startUploadfile={this.props.startUploadfile}
-                  onDownloadFilefromstudent={
-                    this.props.onDownloadFilefromstudent
-                  }
                   onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
               </Tab>

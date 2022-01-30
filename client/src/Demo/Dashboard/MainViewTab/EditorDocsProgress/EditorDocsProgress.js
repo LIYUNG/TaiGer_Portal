@@ -12,12 +12,6 @@ class EditorDocsProgress extends React.Component {
     student: this.props.student,
     file: "",
   };
-  startEditingProgramFiles = () => {
-    console.log("startEditingProgram");
-    this.setState({
-      showProgramFilesPage: true,
-    });
-  };
 
   setProgramFilesModalhide = () => {
     this.setState({
@@ -237,23 +231,6 @@ class EditorDocsProgress extends React.Component {
       <>
         <tbody>
           <tr>
-            {/* <td>
-              <DropdownButton
-                className="btn ml-2"
-                size="sm"
-                title="Option"
-                variant="primary"
-                id={`dropdown-variants-${this.props.student._id}`}
-                key={this.props.student._id}
-              >
-                <Dropdown.Item
-                  eventKey="4"
-                  onSelect={() => this.startEditingProgramFiles()}
-                >
-                  Edit Files
-                </Dropdown.Item>
-              </DropdownButton>
-            </td> */}
             {this.props.role !== "Student" ? (
               <td>
                 <p>

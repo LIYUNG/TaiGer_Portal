@@ -372,7 +372,22 @@ class Survey extends React.Component {
                       </Col>
                     </Row>
                     <Row>
-                      <Col md={6}>
+                      <Col md={10}>
+                        <br />
+                        <br />
+                        Last update at:{" "}
+                        {this.state.academic_background.university &&
+                        this.state.academic_background.university.updatedAt
+                          ? new Date(
+                              this.state.academic_background.university.updatedAt
+                            ).toLocaleDateString() +
+                            ", " +
+                            new Date(
+                              this.state.academic_background.university.updatedAt
+                            ).toLocaleTimeString()
+                          : ""}
+                      </Col>
+                      <Col md={2}>
                         <br />
                         <Button
                           variant="primary"
@@ -547,8 +562,23 @@ class Survey extends React.Component {
                         </Form.Group>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col md={6}>
+                    <Row >
+                      <Col md={10}>
+                        <br />
+                        <br />
+                        Last update at:{" "}
+                        {this.state.academic_background.language &&
+                        this.state.academic_background.language.updatedAt
+                          ? new Date(
+                              this.state.academic_background.language.updatedAt
+                            ).toLocaleDateString() +
+                            ", " +
+                            new Date(
+                              this.state.academic_background.language.updatedAt
+                            ).toLocaleTimeString()
+                          : ""}
+                      </Col>
+                      <Col md={2}>
                         <br />
                         <Button
                           variant="primary"

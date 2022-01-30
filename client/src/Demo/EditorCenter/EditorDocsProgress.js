@@ -3,7 +3,15 @@ import DEMO from "../../store/constant";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
-import { Row, Col, Button, Card, Collapse, Modal } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Button,
+  Card,
+  Collapse,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import {
   deleteManualFileUpload,
   deleteGenralFileUpload,
@@ -24,7 +32,11 @@ class EditorDocsProgress extends React.Component {
     whoupdate: "",
     file: "",
   };
-
+  componentDidMount() {
+    this.setState((state) => ({
+      isLoaded: true,
+    }));
+  }
   openWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
   };
@@ -32,6 +44,10 @@ class EditorDocsProgress extends React.Component {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
   };
   ConfirmDeleteFileHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
     deleteManualFileUpload(
       this.state.studentId,
       this.state.applicationId,
@@ -42,17 +58,24 @@ class EditorDocsProgress extends React.Component {
         console.log(resp.data.data);
         const { data, success } = resp.data;
         if (success) {
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            student: data,
-            success: success,
-            deleteFileWarningModel: false,
-          }));
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                deleteFileWarningModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+          
         } else {
           alert(resp.data.message);
         }
@@ -64,6 +87,10 @@ class EditorDocsProgress extends React.Component {
   };
 
   ConfirmDeleteGeneralFileHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
     deleteGenralFileUpload(
       this.state.studentId,
       this.state.docName,
@@ -73,17 +100,23 @@ class EditorDocsProgress extends React.Component {
         console.log(resp.data.data);
         const { data, success } = resp.data;
         if (success) {
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            student: data,
-            success: success,
-            deleteFileWarningModel: false,
-          }));
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                deleteFileWarningModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
         } else {
           alert(resp.data.message);
         }
@@ -129,7 +162,10 @@ class EditorDocsProgress extends React.Component {
       e.preventDefault();
       const formData = new FormData();
       formData.append("file", NewFile);
-
+      this.setState((state) => ({
+        ...state,
+        isLoaded: false, //false to reload everything
+      }));
       uploadHandwrittenFileforstudent(
         studentId,
         applicationId,
@@ -140,12 +176,18 @@ class EditorDocsProgress extends React.Component {
           console.log(res.data);
           const { data, success } = res.data;
           if (success) {
-            this.setState({
-              isLoaded: true, //false to reload everything
-              student: data,
-              success: success,
-              file: "",
-            });
+            setTimeout(
+              function () {
+                //Start the timer
+                this.setState({
+                  isLoaded: true, //false to reload everything
+                  student: data,
+                  success: success,
+                  file: "",
+                });
+              }.bind(this),
+              1500
+            );
           } else {
             alert(res.data.message);
           }
@@ -164,7 +206,10 @@ class EditorDocsProgress extends React.Component {
       e.preventDefault();
       const formData = new FormData();
       formData.append("file", NewFile);
-
+      this.setState((state) => ({
+        ...state,
+        isLoaded: false, //false to reload everything
+      }));
       uploadEditGeneralFileforstudent(studentId, fileCategory, formData)
         .then((res) => {
           console.log(res.data);
@@ -291,6 +336,20 @@ class EditorDocsProgress extends React.Component {
       });
   };
   render() {
+    const { error, isLoaded } = this.state;
+    if (error) {
+      return (
+        <div>
+          Error: your session is timeout! Please refresh the page and Login
+        </div>
+      );
+    }
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
     return (
       <>
         <Card className="mt-2" key={this.props.idx}>
@@ -360,10 +419,16 @@ class EditorDocsProgress extends React.Component {
                     />
                   </>
                 ))}
-                {/* {JSON.stringify(student)} */}
               </Card.Body>
             </div>
-          </Collapse>
+          </Collapse>{" "}
+          {!isLoaded && (
+            <div style={style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
         </Card>
         <Modal
           show={this.state.deleteFileWarningModel}
@@ -379,14 +444,29 @@ class EditorDocsProgress extends React.Component {
           <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
           <Modal.Footer>
             {this.state.filetype === "General" ? (
-              <Button onClick={this.ConfirmDeleteGeneralFileHandler}>
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmDeleteGeneralFileHandler}
+              >
                 Yes
               </Button>
             ) : (
-              <Button onClick={this.ConfirmDeleteFileHandler}>Yes</Button>
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmDeleteFileHandler}
+              >
+                Yes
+              </Button>
             )}
 
             <Button onClick={this.closeWarningWindow}>No</Button>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
           </Modal.Footer>
         </Modal>
       </>

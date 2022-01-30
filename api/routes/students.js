@@ -43,17 +43,13 @@ router
     updateStudentsArchivStatus
   );
 
-router.route("/:id/agents").post(permit(Role.Admin), assignAgentToStudent);
+router
+  .route("/:studentId/agents")
+  .post(permit(Role.Admin), assignAgentToStudent);
 
-// router
-//   .route("/:studentId/agents/:agentId")
-//   .delete(permit(Role.Admin), removeAgentFromStudent);
-
-router.route("/:id/editors").post(permit(Role.Admin), assignEditorToStudent);
-
-// router
-//   .route("/:studentId/editors/:editorId")
-//   .delete(permit(Role.Admin), removeEditorFromStudent);
+router
+  .route("/:studentId/editors")
+  .post(permit(Role.Admin), assignEditorToStudent);
 
 router
   .route("/:studentId/applications")

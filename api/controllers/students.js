@@ -1,7 +1,9 @@
 const { ErrorResponse } = require("../common/errors");
+const path = require("path");
 const { asyncHandler } = require("../middlewares/error-handler");
 const { Role, Agent, Student, Editor } = require("../models/User");
 const { Program } = require("../models/Program");
+const { UPLOAD_PATH } = require("../config");
 var async = require("async");
 const fs = require("fs");
 const {
@@ -169,7 +171,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
 
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
-    params: { id: studentId },
+    params: { studentId },
     body: agentsId, // agentsId is json (or agentsId array with boolean)
   } = req;
   const keys = Object.keys(agentsId);
@@ -182,7 +184,6 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       await Agent.findByIdAndUpdate(keys[i], {
         $addToSet: { students: studentId },
       });
-      const stud = await Student.findById(studentId);
       const agent = await Agent.findById(keys[i]);
       updated_agent.push({
         firstname: agent.firstname,
@@ -239,7 +240,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
 
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
-    params: { id: studentId },
+    params: { studentId },
     body: editorsId,
   } = req;
   const keys = Object.keys(editorsId);
@@ -371,15 +372,29 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
   // TODO: iteratively to remove files
-  for (let i = 0; i < application.documents.length; i++) {
-    let document = application.documents[i];
-    if (!document) throw new ErrorResponse(400, "docName not existed");
-    if (document.path !== "") {
-      const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  if (application.documents)
+    for (let i = 0; i < application.documents.length; i++) {
+      var document = application.documents[i];
+      if (!document) throw new ErrorResponse(400, "docName not existed");
+      if (document.path)
+        if (document.path !== "") {
+          const filePath = path.join(UPLOAD_PATH, document.path);
+          // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+          if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
     }
-  }
-
+  //Delete student inputs
+  if (application.student_inputs)
+    for (let i = 0; i < application.student_inputs.length; i++) {
+      var student_input = application.student_inputs[i];
+      if (!student_input) throw new ErrorResponse(400, "docName not existed");
+      if (student_input.path)
+        if (student_input.path !== "") {
+          const filePath = path.join(UPLOAD_PATH, student_input.path);
+          // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+          if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
+    }
   //////// update DB
   await Student.findByIdAndUpdate(studentId, {
     $pull: { applications: { _id: applicationId } },

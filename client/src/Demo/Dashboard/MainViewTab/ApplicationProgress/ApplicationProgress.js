@@ -21,22 +21,9 @@ class ApplicationProgress extends React.Component {
     });
   };
 
-  startEditingProgram = () => {
-    console.log("startEditingProgram");
-    this.setState({
-      showProgramPage: true,
-    });
-  };
-
   setFilesModalhide = () => {
     this.setState({
       showFilePage: false,
-    });
-  };
-
-  startUploadfile = () => {
-    this.setState({
-      showFilePage: true,
     });
   };
 
@@ -84,25 +71,6 @@ class ApplicationProgress extends React.Component {
     let stud = { ...this.state.student };
     stud.uploadedDocs_[category].uploadStatus_ = "unaccepted";
     this.props.onRejectFilefromstudent(e, category, id);
-    this.setState({
-      student: stud,
-    });
-  };
-
-  onAcceptFilefromstudent = (e, category, id) => {
-    let stud = { ...this.state.student };
-    stud.uploadedDocs_[category].uploadStatus_ = "checked";
-    this.props.onAcceptFilefromstudent(e, category, id);
-    this.setState({
-      student: stud,
-    });
-  };
-
-  onDeleteFilefromstudent = (e, category, id) => {
-    // TODO: delete this.state.student[document]
-    let stud = { ...this.state.student };
-    delete stud.uploadedDocs_[category];
-    this.props.onDeleteFilefromstudent(e, category, id);
     this.setState({
       student: stud,
     });
@@ -172,17 +140,12 @@ class ApplicationProgress extends React.Component {
     return (
       <ApplicationStatus
         role={this.props.role}
-        startEditingProgram={this.startEditingProgram}
-        startUploadfile={this.startUploadfile}
         student={this.state.student}
         studentDocOverview={studentDocOverview}
         setProgramModalhide={this.setProgramModalhide}
         setFilesModalhide={this.setFilesModalhide}
         onFileChange={this.onFileChange}
         submitFile={this.submitFile}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
       />
     );
   }

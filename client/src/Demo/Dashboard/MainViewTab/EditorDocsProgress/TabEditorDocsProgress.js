@@ -8,11 +8,6 @@ class TabEditorDocsProgress extends React.Component {
         key={i}
         student={student}
         role={this.props.role}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
-        startUploadfile={this.props.startUploadfile}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
         onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));

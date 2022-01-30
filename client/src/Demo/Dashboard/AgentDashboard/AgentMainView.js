@@ -16,20 +16,14 @@ class AgentMainView extends React.Component {
       <AgentTodoList
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
       />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
       />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
@@ -37,11 +31,7 @@ class AgentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
       />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
@@ -50,10 +40,7 @@ class AgentMainView extends React.Component {
         role={this.props.role}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documenheader={this.props.documenheader}
         documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
       />
     ));
     const application_progress = this.props.students.map((student, i) => (
@@ -62,12 +49,7 @@ class AgentMainView extends React.Component {
         student={student}
         startEditingProgram={this.props.startEditingProgram}
         documentslist={this.props.documentslist}
-        documenheader={this.props.documenheader}
         startUploadfile={this.props.startUploadfile}
-        onDeleteProgram={this.props.onDeleteProgram}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
 

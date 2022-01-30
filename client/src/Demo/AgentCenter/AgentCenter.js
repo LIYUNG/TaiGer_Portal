@@ -32,6 +32,7 @@ class AgentCenter extends React.Component {
     expand: false,
     deleteFileWarningModel: false,
     rejectProfileFileModel: false,
+    acceptProfileFileModel: false,
     // accordionKeys: new Array(-1, this.props.user.students.length), // To collapse all
     accordionKeys:
       this.props.user.role === "Editor" || this.props.user.role === "Agent"
@@ -79,6 +80,13 @@ class AgentCenter extends React.Component {
   };
   closeRejectWarningWindow = () => {
     this.setState((state) => ({ ...state, rejectProfileFileModel: false }));
+  };
+
+  openAcceptWarningWindow = () => {
+    this.setState((state) => ({ ...state, acceptProfileFileModel: true }));
+  };
+  closeAcceptWarningWindow = () => {
+    this.setState((state) => ({ ...state, acceptProfileFileModel: false }));
   };
   singleExpandtHandler = (idx) => {
     let accordionKeys = [...this.state.accordionKeys];
@@ -129,7 +137,7 @@ class AgentCenter extends React.Component {
       feedback: rejectmessage,
     }));
   };
-  onRejectProfileFilefromstudent = () => {
+  onUpdateProfileFilefromstudent = () => {
     let student_arrayidx = this.state.students.findIndex(
       (student) => student._id === this.state.student_id
     );
@@ -164,6 +172,7 @@ class AgentCenter extends React.Component {
                 students: students,
                 success,
                 rejectProfileFileModel: false,
+                acceptProfileFileModel: false,
                 isLoaded: true,
               }));
             }.bind(this),
@@ -283,13 +292,23 @@ class AgentCenter extends React.Component {
 
   onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      student_id,
-      category,
-      status,
-      rejectProfileFileModel: true,
-    }));
+    if (status === "accepted") {
+      this.setState((state) => ({
+        ...state,
+        student_id,
+        category,
+        status,
+        acceptProfileFileModel: true,
+      }));
+    } else {
+      this.setState((state) => ({
+        ...state,
+        student_id,
+        category,
+        status,
+        rejectProfileFileModel: true,
+      }));
+    }
   };
 
   handleGeneralDocSubmit = (e, studentId, fileCategory) => {
@@ -524,8 +543,28 @@ class AgentCenter extends React.Component {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.onRejectProfileFilefromstudent}>Yes</Button>
+            <Button onClick={this.onUpdateProfileFilefromstudent}>Yes</Button>
             <Button onClick={this.closeRejectWarningWindow}>No</Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.acceptProfileFileModel}
+          onHide={this.closeAcceptWarningWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {this.state.category} is a valid and can be used for the
+            application?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.onUpdateProfileFilefromstudent}>Yes</Button>
+            <Button onClick={this.closeAcceptWarningWindow}>No</Button>
           </Modal.Footer>
         </Modal>
       </Aux>

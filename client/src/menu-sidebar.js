@@ -117,6 +117,13 @@ export default {
         },
         {
           id: "charts",
+          title: "Statistics",
+          type: "item",
+          icon: "feather icon-bar-chart-2",
+          url: "/statistics",
+        },
+        {
+          id: "charts",
           title: "Charts",
           type: "item",
           icon: "feather icon-pie-chart",

@@ -11,7 +11,6 @@ import { BsDash } from "react-icons/bs";
 import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";
 import EditProgramsSubpage from "./EditProgramsSubpage";
-import EditFilesSubpage from "./EditFilesSubpage";
 
 class StudDocsDashboard extends React.Component {
   state = {
@@ -202,12 +201,6 @@ class StudDocsDashboard extends React.Component {
                   ) : (
                     <></>
                   )}
-                  <Dropdown.Item
-                    eventKey="4"
-                    onSelect={() => this.startUploadfile()}
-                  >
-                    Edit File Status
-                  </Dropdown.Item>
                   {this.props.isDashboard ? (
                     <Dropdown.Item
                       eventKey="5"
@@ -283,20 +276,7 @@ class StudDocsDashboard extends React.Component {
             setmodalhide={this.setProgramModalhide}
             onDeleteProgram={this.props.onDeleteProgram}
           />
-          <EditFilesSubpage
-            student={this.props.student}
-            role={this.props.role}
-            documentslist={this.props.documentslist}
-            documentlist2={this.props.documentlist2}
-            show={this.state.showFilePage}
-            onHide={this.setFilesModalhide}
-            setmodalhide={this.setFilesModalhide}
-            onFileChange={this.props.onFileChange}
-            onSubmitFile={this.props.onSubmitFile}
-            onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-            onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
-            onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-          />
+  
         </>
       </>
     );

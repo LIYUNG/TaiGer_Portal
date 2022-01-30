@@ -265,6 +265,70 @@ a file status has changed.`; // should be for student
   return sendEmail(recipient, subject, message);
 };
 
+const informAgentNewStudentEmail = async (recipient, msg) => {
+  const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.std_firstname} ${msg.std_lastname} will be your student!
+
+Please say hello to your student!`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informStudentTheirAgentEmail = async (recipient, msg) => {
+  const subject = "Your Agent";
+  var agent;
+  for (let i = 0; i < msg.agents.length; i++) {
+    if (i === 0) {
+      agent = msg.agents[i].firstname + " " + msg.agents[i].lastname;
+    } else {
+      agent += ", " + msg.agents[i].firstname + " " + msg.agents[i].lastname;
+    }
+  }
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${agent} will be your agent!
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informEditorNewStudentEmail = async (recipient, msg) => {
+  const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.std_firstname} ${msg.std_lastname} will be your student!
+
+Please say hello to your student!`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informStudentTheirEditorEmail = async (recipient, msg) => {
+  const subject = "Your Editor";
+  var editor;
+  for (let i = 0; i < msg.editors.length; i++) {
+    if (i === 0) {
+      editor = msg.editors[i].firstname + " " + msg.editors[i].lastname;
+    } else {
+      editor += ", " + msg.editors[i].firstname + " " + msg.editors[i].lastname;
+    }
+  }
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${editor} will be your editor!
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendSomeReminderEmail = async (recipient) => {
   const subject = "File Status changes";
   const message = `\
@@ -294,4 +358,8 @@ module.exports = {
   sendChangedProfileFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,
+  informAgentNewStudentEmail,
+  informStudentTheirAgentEmail,
+  informEditorNewStudentEmail,
+  informStudentTheirEditorEmail,
 };

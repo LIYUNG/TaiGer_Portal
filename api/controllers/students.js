@@ -4,7 +4,12 @@ const { Role, Agent, Student, Editor } = require("../models/User");
 const { Program } = require("../models/Program");
 var async = require("async");
 const fs = require("fs");
-
+const {
+  informAgentNewStudentEmail,
+  informStudentTheirAgentEmail,
+  informEditorNewStudentEmail,
+  informStudentTheirEditorEmail,
+} = require("../services/email");
 const getStudents = asyncHandler(async (req, res) => {
   // const { userId } = req.params;
   // const user = await Student.findById(userId);
@@ -169,12 +174,20 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   } = req;
   const keys = Object.keys(agentsId);
   // console.log(keys);
-  let updated_agent_id = [];
+  var updated_agent_id = [];
+  var updated_agent = [];
   for (let i = 0; i < keys.length; i++) {
     if (agentsId[keys[i]]) {
       updated_agent_id.push(keys[i]);
       await Agent.findByIdAndUpdate(keys[i], {
         $addToSet: { students: studentId },
+      });
+      const stud = await Student.findById(studentId);
+      const agent = await Agent.findById(keys[i]);
+      updated_agent.push({
+        firstname: agent.firstname,
+        lastname: agent.lastname,
+        email: agent.email,
       });
     } else {
       await Agent.findByIdAndUpdate(keys[i], {
@@ -197,7 +210,30 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     .populate("applications.programId agents editors")
     .exec();
   res.status(200).send({ success: true, data: student });
-
+  console.log(updated_agent);
+  for (let i = 0; i < updated_agent.length; i++) {
+    await informAgentNewStudentEmail(
+      {
+        firstname: updated_agent[i].firstname,
+        lastname: updated_agent[i].lastname,
+        address: updated_agent[i].email,
+      },
+      {
+        std_firstname: student.firstname,
+        std_lastname: student.lastname,
+      }
+    );
+  }
+  await informStudentTheirAgentEmail(
+    {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email,
+    },
+    {
+      agents: updated_agent,
+    }
+  );
   //TODO: email inform Student for(assigned agent) and inform Agent for (your new student)
 });
 
@@ -208,13 +244,20 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   } = req;
   const keys = Object.keys(editorsId);
   // console.log(keys);
-  let updated_editor_id = [];
+  var updated_editor_id = [];
+  var updated_editor = [];
   for (let i = 0; i < keys.length; i++) {
     // const agent = await Agent.findById(({ editorsId }) => editorsId);
     if (editorsId[keys[i]]) {
       updated_editor_id.push(keys[i]);
       await Editor.findByIdAndUpdate(keys[i], {
         $addToSet: { students: studentId },
+      });
+      const editor = await Editor.findById(keys[i]);
+      updated_editor.push({
+        firstname: editor.firstname,
+        lastname: editor.lastname,
+        email: editor.email,
       });
     } else {
       await Editor.findByIdAndUpdate(keys[i], {
@@ -236,12 +279,37 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   await Student.findByIdAndUpdate(studentId, {
     editors: updated_editor_id,
   });
+
   const student = await Student.findById(studentId)
     .populate("applications.programId agents editors")
     .exec();
   // console.log(student);
   res.status(200).send({ success: true, data: student });
-
+  console.log(updated_editor);
+  for (let i = 0; i < updated_editor.length; i++) {
+    await informEditorNewStudentEmail(
+      {
+        firstname: updated_editor[i].firstname,
+        lastname: updated_editor[i].lastname,
+        address: updated_editor[i].email,
+      },
+      {
+        std_firstname: student.firstname,
+        std_lastname: student.lastname,
+      }
+    );
+  }
+  await informStudentTheirEditorEmail(
+    {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email,
+    },
+    {
+      editors: updated_editor,
+    }
+  );
+  // for()
   //TODO: email inform Student for(assigned editor) and inform editor for (your new student)
 });
 

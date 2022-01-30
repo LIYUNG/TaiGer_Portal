@@ -36,6 +36,7 @@ const Profile = React.lazy(() => import("./Demo/Profile/index"));
 const Survey = React.lazy(() => import("./Demo/Survey/index"));
 const Settings = React.lazy(() => import("./Demo/Settings/index"));
 const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
+const Statistics = React.lazy(() => import("./Demo/Statistics/Nvd3Chart/index"));
 const GoogleMap = React.lazy(() => import("./Demo/Maps/GoogleMap/index"));
 const DocsApplication = React.lazy(() =>
   import("./Demo/Documentation/Application/Application")
@@ -119,6 +120,12 @@ const routes = [
     exact: true,
     name: "Users Table",
     component: UsersTable,
+  },
+  {
+    path: "/statistics",
+    exact: true,
+    name: "Statistics",
+    component: Statistics,
   },
   {
     path: "/charts/nvd3",

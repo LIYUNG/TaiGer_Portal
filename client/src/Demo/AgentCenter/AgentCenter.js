@@ -30,9 +30,7 @@ class AgentCenter extends React.Component {
     category: "",
     feedback: "",
     expand: false,
-    deleteFileWarningModel: false,
-    rejectProfileFileModel: false,
-    acceptProfileFileModel: false,
+    CommentModel: false,
     // accordionKeys: new Array(-1, this.props.user.students.length), // To collapse all
     accordionKeys:
       this.props.user.role === "Editor" || this.props.user.role === "Agent"
@@ -69,19 +67,6 @@ class AgentCenter extends React.Component {
     );
   }
 
-  openRejectWarningWindow = () => {
-    this.setState((state) => ({ ...state, rejectProfileFileModel: true }));
-  };
-  closeRejectWarningWindow = () => {
-    this.setState((state) => ({ ...state, rejectProfileFileModel: false }));
-  };
-
-  openAcceptWarningWindow = () => {
-    this.setState((state) => ({ ...state, acceptProfileFileModel: true }));
-  };
-  closeAcceptWarningWindow = () => {
-    this.setState((state) => ({ ...state, acceptProfileFileModel: false }));
-  };
   singleExpandtHandler = (idx) => {
     let accordionKeys = [...this.state.accordionKeys];
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
@@ -123,36 +108,30 @@ class AgentCenter extends React.Component {
   //   }));
   // };
 
-  handleRejectMessage = (e, rejectmessage) => {
-    e.preventDefault();
-    // console.log(e.target.value);
-    this.setState((state) => ({
-      ...state,
-      feedback: rejectmessage,
-    }));
-  };
-  onUpdateProfileFilefromstudent = () => {
-    let student_arrayidx = this.state.students.findIndex(
-      (student) => student._id === this.state.student_id
+  // handleRejectMessage = (e, rejectmessage) => {
+  //   e.preventDefault();
+  //   // console.log(e.target.value);
+  //   this.setState((state) => ({
+  //     ...state,
+  //     feedback: rejectmessage,
+  //   }));
+  // };
+  onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
+    var student_arrayidx = this.state.students.findIndex(
+      (student) => student._id === student_id
     );
-    let student = this.state.students.find(
-      (student) => student._id === this.state.student_id
+    var student = this.state.students.find(
+      (student) => student._id === student_id
     );
-    let idx = student.profile.findIndex(
-      (doc) => doc.name === this.state.category
-    );
-    let students = [...this.state.students];
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false,
-    }));
+    var idx = student.profile.findIndex((doc) => doc.name === category);
+    var students = [...this.state.students];
+    // e.preventDefault();
+    // this.setState((state) => ({
+    //   ...state,
+    //   isLoaded: false,
+    // }));
     console.log(students);
-    updateProfileDocumentStatus(
-      this.state.category,
-      this.state.student_id,
-      this.state.status,
-      this.state.feedback
-    ).then(
+    updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (res) => {
         students[student_arrayidx] = res.data.data;
         const { data, success } = res.data;
@@ -165,8 +144,6 @@ class AgentCenter extends React.Component {
                 ...state,
                 students: students,
                 success,
-                rejectProfileFileModel: false,
-                acceptProfileFileModel: false,
                 isLoaded: true,
               }));
             }.bind(this),
@@ -180,7 +157,9 @@ class AgentCenter extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        console.log(error);
+      }
     );
   };
 
@@ -192,14 +171,8 @@ class AgentCenter extends React.Component {
     let student = this.state.students.find(
       (student) => student._id === student_id
     );
-    let idx = student.profile.findIndex(
-      (doc) => doc.name === category
-    );
+    let idx = student.profile.findIndex((doc) => doc.name === category);
     let students = [...this.state.students];
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false,
-    }));
     deleteFile(category, student_id).then(
       (res) => {
         const { data, success } = res.data;
@@ -221,15 +194,6 @@ class AgentCenter extends React.Component {
             }.bind(this),
             1500
           );
-          // this.setState((state) => ({
-          //   ...state,
-          //   student_id: "",
-          //   category: "",
-          //   isLoaded: true,
-          //   students: students,
-          //   success: success,
-          //   deleteFileWarningModel: false,
-          // }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
@@ -286,37 +250,6 @@ class AgentCenter extends React.Component {
     );
   }
 
-  onFileChange = (e) => {
-    this.setState({
-      file: e.target.files[0],
-    });
-  };
-
-  onUpdateProfileDocStatus = (e, category, student_id, status) => {
-    e.preventDefault();
-    if (status === "accepted") {
-      this.setState((state) => ({
-        ...state,
-        student_id,
-        category,
-        status,
-        acceptProfileFileModel: true,
-      }));
-    } else {
-      this.setState((state) => ({
-        ...state,
-        student_id,
-        category,
-        status,
-        rejectProfileFileModel: true,
-      }));
-    }
-  };
-
-  handleGeneralDocSubmit = (e, studentId, fileCategory) => {
-    e.preventDefault();
-    this.SubmitGeneralFile(e, studentId, fileCategory);
-  };
   SubmitGeneralFile = (e, studentId, fileCategory) => {
     this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
   };
@@ -329,10 +262,10 @@ class AgentCenter extends React.Component {
     let student_arrayidx = this.state.students.findIndex(
       (student) => student._id === student_id
     );
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false,
-    }));
+    // this.setState((state) => ({
+    //   ...state,
+    //   isLoaded: false,
+    // }));
     uploadforstudent(category, student_id, formData).then(
       (res) => {
         let students = [...this.state.students];
@@ -448,21 +381,20 @@ class AgentCenter extends React.Component {
         accordionKeys={this.state.accordionKeys}
         singleExpandtHandler={this.singleExpandtHandler}
         role={this.props.user.role}
-        startEditingProgram={this.props.startEditingProgram}
         documentslist2={this.props.documentslist2}
         documentlist2={window.documentlist2}
         documentslist={this.props.documentslist}
-        startUploadfile={this.props.startUploadfile}
-        onFileChange={this.onFileChange}
-        onDeleteGeneralFile={this.onDeleteGeneralFile}
         onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-        onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
-        // onDeleteFileWarningPopUp={this.onDeleteFileWarningPopUp}
-        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
         SubmitGeneralFile={this.SubmitGeneralFile}
+        onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
+        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
         handleGeneralDocSubmit={this.handleGeneralDocSubmit}
         SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-        isLoaded={this.state.isLoaded}
+        isLoaded={isLoaded}
+        deleteFileWarningModel={this.state.deleteFileWarningModel}
+        CommentModel={this.state.CommentModel}
+        rejectProfileFileModel={this.state.rejectProfileFileModel}
+        acceptProfileFileModel={this.state.acceptProfileFileModel}
       />
     ));
     return (
@@ -509,111 +441,6 @@ class AgentCenter extends React.Component {
             )}
           </Col>
         </Row>
-        {/* <Modal
-          show={this.state.deleteFileWarningModel}
-          onHide={this.closeWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to delete {this.state.docName}?
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!this.state.isLoaded}
-              onClick={this.onDeleteFilefromstudent}
-            >
-              Yes
-            </Button>
-            <Button onClick={this.closeWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal> */}
-        <Modal
-          show={this.state.rejectProfileFileModel}
-          onHide={this.closeRejectWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group controlId="rejectmessage">
-              <Form.Label>
-                Please give a reason why the uploaded {this.state.category} is
-                invalied?
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="ex. Poor scanned quality."
-                defaultValue={""}
-                onChange={(e) => this.handleRejectMessage(e, e.target.value)}
-              />
-            </Form.Group>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!this.state.isLoaded}
-              onClick={this.onUpdateProfileFilefromstudent}
-            >
-              Yes
-            </Button>
-            <Button onClick={this.closeRejectWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.acceptProfileFileModel}
-          onHide={this.closeAcceptWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {this.state.category} is a valid and can be used for the
-            application?
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!this.state.isLoaded}
-              onClick={this.onUpdateProfileFilefromstudent}
-            >
-              Yes
-            </Button>
-            <Button onClick={this.closeAcceptWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
       </Aux>
     );
   }

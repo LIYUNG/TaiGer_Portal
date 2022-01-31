@@ -25,96 +25,6 @@ class EditorDocsProgress extends React.Component {
     file: "",
   };
 
-  openWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
-  };
-  closeWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
-  ConfirmDeleteFileHandler = () => {
-    deleteManualFileUpload(
-      this.state.studentId,
-      this.state.applicationId,
-      this.state.docName,
-      this.state.whoupdate
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            student: data,
-            success: success,
-            deleteFileWarningModel: false,
-          }));
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-
-  ConfirmDeleteGeneralFileHandler = () => {
-    deleteGenralFileUpload(
-      this.state.studentId,
-      this.state.docName,
-      this.state.whoupdate
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            student: data,
-            success: success,
-            deleteFileWarningModel: false,
-          }));
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-  onDeleteGeneralFile = (studentId, docName, whoupdate) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      docName,
-      whoupdate,
-      filetype: "General",
-      deleteFileWarningModel: true,
-    }));
-  };
-  onDeleteFile = (studentId, applicationId, docName, whoupdate) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      applicationId,
-      docName,
-      whoupdate,
-      filetype: "ProgramSpecific",
-      deleteFileWarningModel: true,
-    }));
-  };
-
   onSubmitProgramSpecificFile = (
     e,
     NewFile,
@@ -365,30 +275,6 @@ class EditorDocsProgress extends React.Component {
             </div>
           </Collapse>
         </Card>
-        <Modal
-          show={this.state.deleteFileWarningModel}
-          onHide={this.closeWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
-          <Modal.Footer>
-            {this.state.filetype === "General" ? (
-              <Button onClick={this.ConfirmDeleteGeneralFileHandler}>
-                Yes
-              </Button>
-            ) : (
-              <Button onClick={this.ConfirmDeleteFileHandler}>Yes</Button>
-            )}
-
-            <Button onClick={this.closeWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
       </>
     );
   }

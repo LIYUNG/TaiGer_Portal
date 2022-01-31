@@ -5,8 +5,6 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import { Row, Col, Button, Card, Collapse, Modal } from "react-bootstrap";
 import {
-  deleteManualFileUpload,
-  deleteGenralFileUpload,
   uploadHandwrittenFileforstudent,
   uploadEditGeneralFileforstudent,
   downloadHandWrittenFile,

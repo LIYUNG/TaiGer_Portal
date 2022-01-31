@@ -845,6 +845,102 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
   );
   res.status(200).send({ success: true, data: personaldata });
 });
+
+const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, docName, whoupdate },
+    body: { comments },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  // console.log(student);
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  var editor_output_doc;
+  var student_input_doc;
+  if (user.role == Role.Student) {
+    student_input_doc = student.generaldocs.studentinputs.find(
+      ({ name }) => name === docName
+    );
+    if (!student_input_doc)
+      throw new ErrorResponse(400, "Document not existed!");
+
+    student_input_doc.feedback = comments;
+    student_input_doc.updatedAt = new Date();
+    // TODO: set flag editors document(filetype) isReceivedFeedback
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+    //TODO: feedback added email
+  } else {
+    editor_output_doc = student.generaldocs.editoroutputs.find(
+      ({ name }) => name === docName
+    );
+    if (!editor_output_doc)
+      throw new ErrorResponse(400, "Document not existed!");
+    editor_output_doc.feedback = comments;
+    editor_output_doc.updatedAt = new Date();
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+    //TODO: feedback added email
+  }
+});
+
+const updateCommentsProgramSpecificFile = asyncHandler(
+  async (req, res, next) => {
+    const {
+      user,
+      params: { studentId, applicationId, docName, whoupdate },
+      body: { comments },
+    } = req;
+
+    // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+    const student = await Student.findById(studentId)
+      .populate("applications.programId")
+      .populate("students agents editors", "firstname lastname email")
+      .exec();
+
+    if (!student) throw new ErrorResponse(400, "Invalid student id");
+    // console.log(student);
+    const application = student.applications.find(
+      ({ programId }) => programId._id == applicationId
+    );
+    const idx = student.applications.findIndex(
+      ({ programId }) => programId._id == applicationId
+    );
+    if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+    if (user.role == Role.Student) {
+      student_input_doc = application.student_inputs.find(
+        ({ name }) => name === docName
+      );
+      if (!student_input_doc)
+        throw new ErrorResponse(400, "Document not existed!");
+      student_input_doc.feedback = comments;
+      await student.save();
+      res.status(201).send({ success: true, data: student });
+      //TODO: feedback added email
+    } else {
+      editor_output_doc = application.documents.find(
+        ({ name }) => name === docName
+      );
+      if (!editor_output_doc)
+        throw new ErrorResponse(400, "Document not existed!");
+      editor_output_doc.feedback = comments;
+      editor_output_doc.updatedAt = new Date();
+      // TODO: set flag student document(filetype, feedback) isReceivedFeedback
+      await student.save();
+      res.status(201).send({ success: true, data: student });
+      //TODO: feedback added email
+    }
+  }
+);
+
 module.exports = {
   getMyfiles,
   saveFilePath,
@@ -865,4 +961,6 @@ module.exports = {
   updateAcademicBackground,
   updateLanguageSkill,
   updatePersonalData,
+  updateCommentsGeneralFile,
+  updateCommentsProgramSpecificFile,
 };

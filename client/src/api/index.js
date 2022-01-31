@@ -61,7 +61,12 @@ export const downloadProfile = (category, studentId) =>
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 
-export const updateProfileDocumentStatus = (category, studentId, status, message) =>
+export const updateProfileDocumentStatus = (
+  category,
+  studentId,
+  status,
+  message
+) =>
   request.post(`/api/students/${studentId}/${category}/status`, {
     status: status,
     feedback: message,
@@ -115,8 +120,9 @@ export const deleteManualFileUpload = (
 
 export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
   request.delete(
-    `/api/account/files/general/${whoupdate}/${studentId}/${docName}`
+    `/api/account/files/general/${studentId}/${docName}/${whoupdate}`
   );
+
 export const uploadHandwrittenFileforstudent = (
   studentId,
   applicationId,
@@ -128,6 +134,18 @@ export const uploadHandwrittenFileforstudent = (
     data
   );
 
+export const updateHandwrittenFileCommentsforstudent = (
+  studentId,
+  applicationId,
+  docName,
+  whoupdate,
+  comments
+) =>
+  request.post(
+    `/api/account/files/programspecific/comments/${studentId}/${applicationId}/${docName}/${whoupdate}`,
+    { comments }
+  );
+
 export const uploadEditGeneralFileforstudent = (
   studentId,
   fileCategory,
@@ -136,6 +154,17 @@ export const uploadEditGeneralFileforstudent = (
   request.post(
     `/api/account/files/general/upload/${studentId}/${fileCategory}`,
     data
+  );
+
+export const updateEditGeneralFileCommentsforstudent = (
+  studentId,
+  docName,
+  whoupdate,
+  comments
+) =>
+  request.post(
+    `/api/account/files/general/comments/${studentId}/${whoupdate}/${docName}`,
+    { comments }
   );
 
 export const downloadHandWrittenFile = (
@@ -151,13 +180,9 @@ export const downloadHandWrittenFile = (
     }
   );
 
-export const downloadGeneralHandWrittenFile = (
-  studentId,
-  docName,
-  student_inputs
-) =>
+export const downloadGeneralHandWrittenFile = (studentId, docName, student_inputs) =>
   request.get(
-    `/api/account/files/general/${student_inputs}/${studentId}/${docName}`,
+    `/api/account/files/general/${studentId}/${docName}/${student_inputs}`,
     {
       responseType: "blob",
     }

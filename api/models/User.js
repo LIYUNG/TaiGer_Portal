@@ -171,6 +171,10 @@ const applicationSchema = new Schema({
         type: Boolean,
         required: true,
       },
+      feedback: {
+        type: String,
+        default: "",
+      },
       path: {
         type: String,
         default: "",
@@ -201,6 +205,10 @@ const applicationSchema = new Schema({
       file_category: {
         type: String,
         default: "Others",
+      },
+      feedback: {
+        type: String,
+        default: "",
       },
       path: {
         type: String,
@@ -274,6 +282,10 @@ const Student = User.discriminator(
               type: Boolean,
               required: true,
             },
+            feedback: {
+              type: String,
+              default: "",
+            },
             path: {
               type: String,
               default: "",
@@ -300,6 +312,10 @@ const Student = User.discriminator(
             required: {
               type: Boolean,
               required: true,
+            },
+            feedback: {
+              type: String,
+              default: "",
             },
             path: {
               type: String,

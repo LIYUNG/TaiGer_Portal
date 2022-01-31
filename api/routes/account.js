@@ -11,6 +11,8 @@ const {
 const {
   getMyfiles,
   saveFilePath,
+  updateCommentsGeneralFile,
+  updateCommentsProgramSpecificFile,
   saveGeneralFilePath,
   downloadTemplateFile,
   downloadFile,
@@ -36,7 +38,16 @@ router
 
 router
   .route(
-    "/files/programspecific/upload/:studentId/:applicationId/:fileCategory"
+    "/files/programspecific/comments/:studentId/:applicationId/:docName/:whoupdate"
+  )
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    updateCommentsProgramSpecificFile
+  );
+
+router
+  .route(
+    "/files/programspecific/upload/:studentId/:applicationId/:docName"
   )
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
@@ -55,6 +66,13 @@ router
   );
 
 router
+  .route("/files/general/comments/:studentId/:whoupdate/:docName")
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    updateCommentsGeneralFile
+  );
+
+router
   .route("/files/general/upload/:studentId/:fileCategory")
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
@@ -63,7 +81,7 @@ router
   );
 
 router
-  .route("/files/general/:student_inputs/:studentId/:docName")
+  .route("/files/general/:studentId/:docName/:student_inputs")
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadGeneralFile

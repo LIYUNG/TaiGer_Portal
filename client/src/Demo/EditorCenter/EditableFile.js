@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 // import HandWrittenFile from "./HandWrittenFile";
 import { Form, Col, Row, Button } from "react-bootstrap";
-import { AiOutlineDownload, AiOutlineDelete } from "react-icons/ai";
+import {
+  AiOutlineDownload,
+  AiOutlineDelete,
+  AiOutlineComment,
+} from "react-icons/ai";
 class EditableFile extends Component {
-
   handleDeleteGeneralFile = () => {
     this.props.onDeleteGeneralFile(
       this.props.student._id,
@@ -13,11 +16,30 @@ class EditableFile extends Component {
   };
 
   handleDeleteProgramSpecific = () => {
-    this.props.onFormDelete(
+    this.props.onDeleteProgramSpecificFile(
       this.props.student._id,
       this.props.application.programId._id,
       this.props.document.name,
       this.props.whoupdate
+    );
+  };
+
+  handleCommentsGeneralFile = () => {
+    this.props.onCommentsGeneralFile(
+      this.props.student._id,
+      this.props.document.name,
+      this.props.whoupdate,
+      this.props.document.feedback
+    );
+  };
+
+  handleCommentsProgramSpecific = () => {
+    this.props.onCommentsProgramSpecific(
+      this.props.student._id,
+      this.props.application.programId._id,
+      this.props.document.name,
+      this.props.whoupdate,
+      this.props.document.feedback
     );
   };
 
@@ -38,7 +60,7 @@ class EditableFile extends Component {
                 {new Date(this.props.document.updatedAt).toLocaleTimeString()}
               </p>
             </Col>
-            <Col md={2}>
+            <Col md={1}>
               {this.props.filetype === "General" ? (
                 <Button
                   size="sm"
@@ -75,7 +97,35 @@ class EditableFile extends Component {
             {this.props.role === "Editor" ||
             this.props.whoupdate === "student" ? (
               <>
-                <Col md={2}>
+                <Col md={1}>
+                  {this.props.filetype === "General" ? (
+                    <Button
+                      size="sm"
+                      title="Comments"
+                      variant="light"
+                      onClick={this.handleCommentsGeneralFile}
+                    >
+                      <AiOutlineComment size={20} />
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      title="Comments"
+                      variant="light"
+                      onClick={this.handleCommentsProgramSpecific}
+                    >
+                      <AiOutlineComment size={20} />
+                    </Button>
+                  )}
+                </Col>
+              </>
+            ) : (
+              <></>
+            )}{" "}
+            {this.props.role === "Editor" ||
+            this.props.whoupdate === "student" ? (
+              <>
+                <Col md={1}>
                   {this.props.filetype === "General" ? (
                     <Button
                       size="sm"
@@ -106,8 +156,7 @@ class EditableFile extends Component {
     } else {
       fileStatus = (
         <>
-          <Row>
-          </Row>
+          <Row></Row>
         </>
       );
     }

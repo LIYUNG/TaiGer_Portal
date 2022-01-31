@@ -9,6 +9,7 @@ import {
   Button,
   Card,
   Collapse,
+  Form,
   Modal,
   Spinner,
 } from "react-bootstrap";
@@ -17,6 +18,8 @@ import {
   deleteGenralFileUpload,
   uploadHandwrittenFileforstudent,
   uploadEditGeneralFileforstudent,
+  updateHandwrittenFileCommentsforstudent,
+  updateEditGeneralFileCommentsforstudent,
   downloadHandWrittenFile,
   downloadGeneralHandWrittenFile,
 } from "../../api";
@@ -26,10 +29,12 @@ class EditorDocsProgress extends React.Component {
   state = {
     student: this.props.student,
     deleteFileWarningModel: false,
+    CommentsModel: false,
     studentId: "",
     applicationId: "",
     docName: "",
     whoupdate: "",
+    comments: "",
     file: "",
   };
   componentDidMount() {
@@ -43,6 +48,55 @@ class EditorDocsProgress extends React.Component {
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
   };
+  openCommentsWindow = () => {
+    this.setState((state) => ({ ...state, CommentsModel: false }));
+  };
+  closeCommentsWindow = () => {
+    this.setState((state) => ({ ...state, CommentsModel: false }));
+  };
+  ConfirmCommentsProgramSpecificFileHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
+    updateHandwrittenFileCommentsforstudent(
+      this.state.studentId,
+      this.state.applicationId,
+      this.state.docName,
+      this.state.whoupdate,
+      this.state.comments
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        if (success) {
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                CommentsModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
   ConfirmDeleteFileHandler = () => {
     this.setState((state) => ({
       ...state,
@@ -75,7 +129,6 @@ class EditorDocsProgress extends React.Component {
             }.bind(this),
             1500
           );
-          
         } else {
           alert(resp.data.message);
         }
@@ -86,6 +139,47 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
+  ConfirmCommentsGeneralFileHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
+    updateEditGeneralFileCommentsforstudent(
+      this.state.studentId,
+      this.state.docName,
+      this.state.whoupdate,
+      this.state.comments
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        if (success) {
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                CommentsModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
   ConfirmDeleteGeneralFileHandler = () => {
     this.setState((state) => ({
       ...state,
@@ -126,6 +220,45 @@ class EditorDocsProgress extends React.Component {
       }
     );
   };
+
+  handleCommentsMessage = (e, commentsMessage) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      comments: commentsMessage,
+    }));
+  };
+
+  onCommentsGeneralFile = (studentId, docName, whoupdate, feedback) => {
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      docName,
+      whoupdate,
+      filetype: "General",
+      comments: feedback,
+      CommentsModel: true,
+    }));
+  };
+  onCommentsProgramSpecific = (
+    studentId,
+    applicationId,
+    docName,
+    whoupdate,
+    feedback
+  ) => {
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      applicationId,
+      docName,
+      whoupdate,
+      filetype: "ProgramSpecific",
+      comments: feedback,
+      CommentsModel: true,
+    }));
+  };
+
   onDeleteGeneralFile = (studentId, docName, whoupdate) => {
     this.setState((state) => ({
       ...state,
@@ -136,7 +269,12 @@ class EditorDocsProgress extends React.Component {
       deleteFileWarningModel: true,
     }));
   };
-  onDeleteFile = (studentId, applicationId, docName, whoupdate) => {
+  onDeleteProgramSpecificFile = (
+    studentId,
+    applicationId,
+    docName,
+    whoupdate
+  ) => {
     this.setState((state) => ({
       ...state,
       studentId,
@@ -389,6 +527,7 @@ class EditorDocsProgress extends React.Component {
                 <ManualFiles
                   onDeleteGeneralFile={this.onDeleteGeneralFile}
                   onDownloadGeneralFile={this.onDownloadGeneralFile}
+                  onCommentsGeneralFile={this.onCommentsGeneralFile}
                   SubmitGeneralFile={this.SubmitGeneralFile}
                   role={this.props.role}
                   student={this.state.student}
@@ -407,7 +546,10 @@ class EditorDocsProgress extends React.Component {
                     </Row>
 
                     <ManualFiles
-                      onDeleteFile={this.onDeleteFile}
+                      onDeleteProgramSpecificFile={
+                        this.onDeleteProgramSpecificFile
+                      }
+                      onCommentsProgramSpecific={this.onCommentsProgramSpecific}
                       SubmitProgramSpecificFile={this.SubmitProgramSpecificFile}
                       onDownloadProgramSpecificFile={
                         this.onDownloadProgramSpecificFile
@@ -460,6 +602,57 @@ class EditorDocsProgress extends React.Component {
             )}
 
             <Button onClick={this.closeWarningWindow}>No</Button>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.CommentsModel}
+          onHide={this.closeCommentsWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              {this.state.docName}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group controlId="rejectmessage">
+              <Form.Label>
+                Here is editor Feedback for {this.state.docName}.
+              </Form.Label>
+              <Form.Control
+                type="textarea"
+                placeholder="ex. Poor scanned quality."
+                defaultValue={this.state.comments}
+                onChange={(e) => this.handleCommentsMessage(e, e.target.value)}
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            {this.state.filetype === "General" ? (
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmCommentsGeneralFileHandler}
+              >
+                Yes
+              </Button>
+            ) : (
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmCommentsProgramSpecificFileHandler}
+              >
+                Yes
+              </Button>
+            )}
+
+            <Button onClick={this.closeCommentsWindow}>No</Button>
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">

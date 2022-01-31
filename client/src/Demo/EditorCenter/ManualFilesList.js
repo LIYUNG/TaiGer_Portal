@@ -19,6 +19,7 @@ class ManualFilesList extends Component {
               student={this.props.student}
               onFormSubmit={this.props.onFormSubmit}
               onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+              onCommentsGeneralFile={this.props.onCommentsGeneralFile}
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
               role={this.props.role}
@@ -40,6 +41,7 @@ class ManualFilesList extends Component {
               student={this.props.student}
               onFormSubmit={this.props.onFormSubmit}
               onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+              onCommentsGeneralFile={this.props.onCommentsGeneralFile}
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
               role={this.props.role}
@@ -57,10 +59,12 @@ class ManualFilesList extends Component {
             document={document}
             application={this.props.application}
             student={this.props.student}
-            onFormSubmit={this.props.onFormSubmit}
-            onDownloadProgramSpecificFile={this.props.onDownloadProgramSpecificFile}
+            onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
+            onDownloadProgramSpecificFile={
+              this.props.onDownloadProgramSpecificFile
+            }
             onTrashClick={this.props.onTrashClick}
-            onFormDelete={this.props.onFormDelete}
+            onDeleteProgramSpecificFile={this.props.onDeleteProgramSpecificFile}
             role={this.props.role}
             whoupdate={"editor"}
             filetype={this.props.filetype}
@@ -75,10 +79,14 @@ class ManualFilesList extends Component {
               document={student_input}
               application={this.props.application}
               student={this.props.student}
-              onFormSubmit={this.props.onFormSubmit}
-              onDownloadProgramSpecificFile={this.props.onDownloadProgramSpecificFile}
+              onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
+              onDownloadProgramSpecificFile={
+                this.props.onDownloadProgramSpecificFile
+              }
               onTrashClick={this.props.onTrashClick}
-              onFormDelete={this.props.onFormDelete}
+              onDeleteProgramSpecificFile={
+                this.props.onDeleteProgramSpecificFile
+              }
               role={this.props.role}
               whoupdate={"student"}
               filetype={this.props.filetype}
@@ -87,7 +95,6 @@ class ManualFilesList extends Component {
         );
       }
     }
-    
 
     return (
       <>

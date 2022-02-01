@@ -47,7 +47,7 @@ router
 
 router
   .route(
-    "/files/programspecific/upload/:studentId/:applicationId/:docName"
+    "/files/programspecific/upload/:studentId/:applicationId/:fileCategory"
   )
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),

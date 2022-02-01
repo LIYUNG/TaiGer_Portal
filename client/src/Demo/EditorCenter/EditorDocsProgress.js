@@ -353,12 +353,18 @@ class EditorDocsProgress extends React.Component {
           console.log(res.data);
           const { data, success } = res.data;
           if (success) {
-            this.setState({
-              isLoaded: true,
-              student: data,
-              success: success,
-              file: "",
-            });
+            setTimeout(
+              function () {
+                //Start the timer
+                this.setState({
+                  isLoaded: true, //false to reload everything
+                  student: data,
+                  success: success,
+                  file: "",
+                });
+              }.bind(this),
+              1500
+            );
           } else {
             alert(res.data.message);
           }
@@ -612,6 +618,7 @@ class EditorDocsProgress extends React.Component {
           </Modal.Footer>
         </Modal>
         <Modal
+          size="xl"
           show={this.state.CommentsModel}
           onHide={this.closeCommentsWindow}
           aria-labelledby="contained-modal-title-vcenter"
@@ -628,8 +635,9 @@ class EditorDocsProgress extends React.Component {
                 Here is editor Feedback for {this.state.docName}.
               </Form.Label>
               <Form.Control
-                type="textarea"
-                placeholder="ex. Poor scanned quality."
+                as="textarea"
+                rows={30}
+                placeholder="ex. typo."
                 defaultValue={this.state.comments}
                 onChange={(e) => this.handleCommentsMessage(e, e.target.value)}
               />

@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  convertFromHTML,
-  ContentState,
-  convertFromRaw,
-  convertToRaw,
-  EditorState,
-} from "draft-js";
-import DraftPasteProcessor from "draft-js/lib/DraftPasteProcessor";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
+import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
-// import Editor from "@draft-js-plugins/editor";
 import { convertToHTML } from "draft-convert";
-import DOMPurify from "dompurify";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./DraftEditor.css";
 import {
@@ -33,6 +25,7 @@ class DraftEditor extends React.Component {
     student: this.props.student,
     filetype: this.props.filetype,
     ConvertedContent: "",
+    whoupdate: "",
   };
   componentDidMount() {
     // 常見用法（別忘了比較 prop）：
@@ -64,10 +57,11 @@ class DraftEditor extends React.Component {
       prevProps.defaultComments !== this.props.defaultComments
     ) {
       console.log("is update");
+      console.log(this.props.whoupdate);
       console.log(this.props.isLoaded);
       console.log(this.props.defaultComments);
       var initialEditorState = null;
-      if (this.props.defaultComments) {
+      if (this.isJson(this.props.defaultComments)) {
         const rawContentFromStore = convertFromRaw(
           JSON.parse(this.props.defaultComments)
         );
@@ -76,48 +70,30 @@ class DraftEditor extends React.Component {
       } else {
         initialEditorState = EditorState.createEmpty();
       }
+
       this.setState((state) => ({
         ...state,
         editorState: initialEditorState,
         ConvertedContent: initialEditorState,
         isLoaded: this.props.isLoaded,
+        whoupdate: this.props.whoupdate,
       }));
     }
   }
+  isJson(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
 
-  //   const [editorState, setEditorState] = useState(
-  //     initialEditorState // null!!!
-  //     // () => EditorState.createEmpty()
-
-  //     // EditorState.createWithContent(
-  //     //   convertFromRaw(JSON.parse(props.defaultComments))
-  //     // )
-  //   );
-
-  //   setEditorState(initialEditorState);
-  //  console.log(JSON.parse(props.defaultComments)); // TODO: the store string is error!! bug from covertToRaw?
-  //  console.log(JSON.parse(json));
-
-  // }, [props.defaultComments]);
-  //   convertContentToHTML = () => {
-  //     let currentContentAsHTML = convertToHTML(
-  //       this.editorState.getCurrentContent()
-  //     );
-  //     this.setState((state) => ({
-  //       ...state,
-  //       ConvertedContent: currentContentAsHTML,
-  //     }));
-  //   };
   handleEditorChange = (newstate) => {
     this.setState((state) => ({ ...state, editorState: newstate }));
     // this.convertContentToHTML();
   };
 
-  createMarkup = (html) => {
-    return {
-      __html: DOMPurify.sanitize(html),
-    };
-  };
   onClick3 = (e) => {
     var initialEditorState = null;
     if (this.props.defaultComments) {
@@ -175,14 +151,20 @@ class DraftEditor extends React.Component {
         </Modal.Header>
         <Modal.Body>
           {/* <header className="App-header">Rich Text Editor Example</header> */}
-          <Editor
-            //   readOnly={true}
-            editorState={this.state.editorState}
-            onEditorStateChange={this.handleEditorChange}
-            wrapperClassName="wrapper-class"
-            editorClassName="editor-class"
-            toolbarClassName="toolbar-class"
-          />
+          {this.props.role === this.state.whoupdate ? (
+            <Editor
+              //   readOnly={true}
+              editorState={this.state.editorState}
+              onEditorStateChange={this.handleEditorChange}
+              wrapperClassName="wrapper-class"
+              editorClassName="editor-class"
+              toolbarClassName="toolbar-class"
+            />
+          ) : (
+            <>
+              {parse(convertToHTML(this.state.editorState.getCurrentContent()))}
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
           {this.props.filetype === "General" ? (

@@ -23,7 +23,7 @@ class ManualFilesList extends Component {
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
               role={this.props.role}
-              whoupdate={"editor"}
+              whoupdate={"Editor"}
               filetype={this.props.filetype}
             />
           )
@@ -45,7 +45,7 @@ class ManualFilesList extends Component {
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
               role={this.props.role}
-              whoupdate={"student"}
+              whoupdate={"Student"}
               filetype={this.props.filetype}
             />
           )
@@ -66,7 +66,7 @@ class ManualFilesList extends Component {
             onTrashClick={this.props.onTrashClick}
             onDeleteProgramSpecificFile={this.props.onDeleteProgramSpecificFile}
             role={this.props.role}
-            whoupdate={"editor"}
+            whoupdate={"Editor"}
             filetype={this.props.filetype}
           />
         ));
@@ -88,7 +88,7 @@ class ManualFilesList extends Component {
                 this.props.onDeleteProgramSpecificFile
               }
               role={this.props.role}
-              whoupdate={"student"}
+              whoupdate={"Student"}
               filetype={this.props.filetype}
             />
           )

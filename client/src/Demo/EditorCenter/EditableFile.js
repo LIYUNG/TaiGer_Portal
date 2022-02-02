@@ -95,7 +95,7 @@ class EditableFile extends Component {
               )}
             </Col>
             {this.props.role === "Editor" ||
-            this.props.whoupdate === "student" ? (
+            this.props.whoupdate === "Student" ? (
               <>
                 <Col md={1}>
                   {this.props.filetype === "General" ? (
@@ -123,7 +123,7 @@ class EditableFile extends Component {
               <></>
             )}{" "}
             {this.props.role === "Editor" ||
-            this.props.whoupdate === "student" ? (
+            this.props.whoupdate === "Student" ? (
               <>
                 <Col md={1}>
                   {this.props.filetype === "General" ? (

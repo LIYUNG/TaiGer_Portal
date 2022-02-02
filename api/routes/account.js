@@ -56,9 +56,7 @@ router
   );
 
 router
-  .route(
-    "/files/programspecific/:studentId/:applicationId/:docName/:student_inputs"
-  )
+  .route("/files/programspecific/:studentId/:applicationId/:docName/:whoupdate")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
@@ -81,7 +79,7 @@ router
   );
 
 router
-  .route("/files/general/:studentId/:docName/:student_inputs")
+  .route("/files/general/:studentId/:docName/:whoupdate")
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadGeneralFile

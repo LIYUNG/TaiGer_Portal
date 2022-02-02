@@ -122,7 +122,37 @@ export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
   request.delete(
     `/api/account/files/general/${studentId}/${docName}/${whoupdate}`
   );
+export const uploadEditGeneralFileforstudent = (
+  studentId,
+  fileCategory,
+  data
+) =>
+  request.post(
+    `/api/account/files/general/upload/${studentId}/${fileCategory}`,
+    data
+  );
 
+export const updateEditGeneralFileCommentsforstudent = (
+  studentId,
+  docName,
+  whoupdate,
+  comments
+) =>
+  request.post(
+    `/api/account/files/general/comments/${studentId}/${whoupdate}/${docName}`,
+    { comments }
+  );
+export const downloadGeneralHandWrittenFile = (
+  studentId,
+  docName,
+  student_inputs
+) =>
+  request.get(
+    `/api/account/files/general/${studentId}/${docName}/${student_inputs}`,
+    {
+      responseType: "blob",
+    }
+  );
 export const uploadHandwrittenFileforstudent = (
   studentId,
   applicationId,
@@ -146,27 +176,6 @@ export const updateHandwrittenFileCommentsforstudent = (
     { comments }
   );
 
-export const uploadEditGeneralFileforstudent = (
-  studentId,
-  fileCategory,
-  data
-) =>
-  request.post(
-    `/api/account/files/general/upload/${studentId}/${fileCategory}`,
-    data
-  );
-
-export const updateEditGeneralFileCommentsforstudent = (
-  studentId,
-  docName,
-  whoupdate,
-  comments
-) =>
-  request.post(
-    `/api/account/files/general/comments/${studentId}/${whoupdate}/${docName}`,
-    { comments }
-  );
-
 export const downloadHandWrittenFile = (
   studentId,
   applicationId,
@@ -180,13 +189,6 @@ export const downloadHandWrittenFile = (
     }
   );
 
-export const downloadGeneralHandWrittenFile = (studentId, docName, student_inputs) =>
-  request.get(
-    `/api/account/files/general/${studentId}/${docName}/${student_inputs}`,
-    {
-      responseType: "blob",
-    }
-  );
 //obsolete(? double check)
 export const deleteWrittenFile = (
   studentId,

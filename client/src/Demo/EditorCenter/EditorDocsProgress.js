@@ -92,6 +92,16 @@ class EditorDocsProgress extends React.Component {
           );
         } else {
           alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            CommentsModel: false,
+          }));
         }
       },
       (error) => {
@@ -134,6 +144,16 @@ class EditorDocsProgress extends React.Component {
           );
         } else {
           alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            deleteFileWarningModel: false,
+          }));
         }
       },
       (error) => {
@@ -176,6 +196,16 @@ class EditorDocsProgress extends React.Component {
           );
         } else {
           alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            CommentsModel: false,
+          }));
         }
       },
       (error) => {
@@ -216,6 +246,16 @@ class EditorDocsProgress extends React.Component {
           );
         } else {
           alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            deleteFileWarningModel: false,
+          }));
         }
       },
       (error) => {
@@ -223,22 +263,6 @@ class EditorDocsProgress extends React.Component {
       }
     );
   };
-
-  handleCommentsMessage = (commentsMessage) => {
-    // e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      comments: commentsMessage,
-    }));
-  };
-
-  // handleCommentsMessage = (e, commentsMessage) => {
-  //   e.preventDefault();
-  //   this.setState((state) => ({
-  //     ...state,
-  //     comments: commentsMessage,
-  //   }));
-  // };
 
   onCommentsGeneralFile = (studentId, docName, whoupdate, feedback) => {
     this.setState((state) => ({
@@ -637,26 +661,13 @@ class EditorDocsProgress extends React.Component {
             )}
           </Modal.Footer>
         </Modal>
-        {/* <Modal
-          size="xl"
-          show={this.state.CommentsModel}
-          onHide={this.closeCommentsWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              {this.state.docName}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body> */}
         <DraftEditor
           error={error}
+          whoupdate={this.state.whoupdate}
           isLoaded={isLoaded}
           student={this.state.student}
           show={this.state.CommentsModel}
           onHide={this.closeCommentsWindow}
-          handleCommentsMessage={this.handleCommentsMessage}
           defaultComments={this.state.comments}
           onClick1={this.ConfirmCommentsGeneralFileHandler}
           onClick2={this.ConfirmCommentsProgramSpecificFileHandler}

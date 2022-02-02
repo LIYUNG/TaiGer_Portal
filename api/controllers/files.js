@@ -454,7 +454,7 @@ const downloadFile = asyncHandler(async (req, res, next) => {
 const downloadGeneralFile = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, docName, student_inputs },
+    params: { studentId, docName, whoupdate },
   } = req;
   try {
     // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -464,7 +464,7 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
     if (!student) throw new ErrorResponse(400, "Invalid student id");
     //TODO: flag for differenciate students input or edited file
     let document;
-    if (student_inputs === "student") {
+    if (whoupdate === "Student") {
       document = student.generaldocs.studentinputs.find(
         ({ name }) => name === docName
       );
@@ -551,7 +551,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
 const deleteFile = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, applicationId, docName, student_inputs },
+    params: { studentId, applicationId, docName, whoupdate },
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -574,7 +574,7 @@ const deleteFile = asyncHandler(async (req, res, next) => {
 
   var document;
   var student_input;
-  if (student_inputs === "editor") {
+  if (whoupdate === "Editor") {
     document = application.documents.find(({ name }) => name === docName);
     console.log(document);
     if (!document) throw new ErrorResponse(400, "docName not existed");
@@ -853,6 +853,9 @@ const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {
     body: { comments },
   } = req;
   console.log(comments);
+  if (user.role !== whoupdate) {
+    throw new ErrorResponse(400, "You can only modify your own comments!");
+  }
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate("applications.programId")

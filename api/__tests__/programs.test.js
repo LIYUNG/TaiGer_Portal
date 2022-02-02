@@ -14,7 +14,10 @@ jest.mock("../middlewares/auth", () => {
   });
 });
 
-beforeAll(async () => await connectToDatabase(global.__MONGO_URI__));
+beforeAll(async () => {
+  jest.spyOn(console, "log").mockImplementation(jest.fn());
+  await connectToDatabase(global.__MONGO_URI__);
+});
 
 afterAll(disconnectFromDatabase);
 

@@ -14,7 +14,10 @@ jest.mock("../middlewares/auth", () => {
   });
 });
 
-beforeAll(async () => await connectToDatabase(global.__MONGO_URI__));
+beforeAll(async () => {
+  jest.spyOn(console, "log").mockImplementation(jest.fn());
+  await connectToDatabase(global.__MONGO_URI__);
+});
 
 afterAll(disconnectFromDatabase);
 
@@ -47,7 +50,9 @@ describe("PUT /api/users/:id", () => {
     const { _id } = users[0];
     const { name, email } = generateUser();
 
-    const resp = await request(app).put(`/api/users/${_id}`).send({ name, email });
+    const resp = await request(app)
+      .put(`/api/users/${_id}`)
+      .send({ name, email });
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
@@ -81,8 +86,8 @@ describe("GET /api/agents", () => {
     const resp = await request(app).get("/api/agents");
     const { success, data } = resp.body;
 
-    const agentIds = agents.map(({ _id }) => _id).sort()
-    const receivedIds = data.map(({ _id }) => _id).sort()
+    const agentIds = agents.map(({ _id }) => _id).sort();
+    const receivedIds = data.map(({ _id }) => _id).sort();
 
     expect(resp.status).toBe(200);
     expect(success).toBe(true);
@@ -95,8 +100,8 @@ describe("GET /api/editors", () => {
     const resp = await request(app).get("/api/editors");
     const { success, data } = resp.body;
 
-    const editorIds = editors.map(({ _id }) => _id).sort()
-    const receivedIds = data.map(({ _id }) => _id).sort()
+    const editorIds = editors.map(({ _id }) => _id).sort();
+    const receivedIds = data.map(({ _id }) => _id).sort();
 
     expect(resp.status).toBe(200);
     expect(success).toBe(true);
@@ -109,8 +114,8 @@ describe("GET /api/students", () => {
     const resp = await request(app).get("/api/students");
     const { success, data } = resp.body;
 
-    const studentIds = students.map(({ _id }) => _id).sort()
-    const receivedIds = data.map(({ _id }) => _id).sort()
+    const studentIds = students.map(({ _id }) => _id).sort();
+    const receivedIds = data.map(({ _id }) => _id).sort();
 
     expect(resp.status).toBe(200);
     expect(success).toBe(true);

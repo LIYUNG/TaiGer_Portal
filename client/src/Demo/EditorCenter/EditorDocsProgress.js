@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import DEMO from "../../store/constant";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import DraftEditor from "./DraftEditor";
+
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
   Row,
@@ -35,6 +37,7 @@ class EditorDocsProgress extends React.Component {
     docName: "",
     whoupdate: "",
     comments: "",
+    isLoaded: false,
     file: "",
   };
   componentDidMount() {
@@ -139,7 +142,7 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  ConfirmCommentsGeneralFileHandler = () => {
+  ConfirmCommentsGeneralFileHandler = (comments) => {
     this.setState((state) => ({
       ...state,
       isLoaded: false, //false to reload everything
@@ -148,7 +151,7 @@ class EditorDocsProgress extends React.Component {
       this.state.studentId,
       this.state.docName,
       this.state.whoupdate,
-      this.state.comments
+      comments
     ).then(
       (resp) => {
         console.log(resp.data.data);
@@ -221,13 +224,21 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  handleCommentsMessage = (e, commentsMessage) => {
-    e.preventDefault();
+  handleCommentsMessage = (commentsMessage) => {
+    // e.preventDefault();
     this.setState((state) => ({
       ...state,
       comments: commentsMessage,
     }));
   };
+
+  // handleCommentsMessage = (e, commentsMessage) => {
+  //   e.preventDefault();
+  //   this.setState((state) => ({
+  //     ...state,
+  //     comments: commentsMessage,
+  //   }));
+  // };
 
   onCommentsGeneralFile = (studentId, docName, whoupdate, feedback) => {
     this.setState((state) => ({
@@ -494,6 +505,15 @@ class EditorDocsProgress extends React.Component {
       left: "50%",
       transform: "translate(-50%, -50%)",
     };
+    if (!isLoaded && !this.state.student) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
     return (
       <>
         <Card className="mt-2" key={this.props.idx}>
@@ -617,7 +637,7 @@ class EditorDocsProgress extends React.Component {
             )}
           </Modal.Footer>
         </Modal>
-        <Modal
+        {/* <Modal
           size="xl"
           show={this.state.CommentsModel}
           onHide={this.closeCommentsWindow}
@@ -629,8 +649,21 @@ class EditorDocsProgress extends React.Component {
               {this.state.docName}
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <Form.Group controlId="rejectmessage">
+          <Modal.Body> */}
+        <DraftEditor
+          show={this.state.CommentsModel}
+          onHide={this.closeCommentsWindow}
+          handleCommentsMessage={this.handleCommentsMessage}
+          defaultComments={this.state.comments}
+          onClick1={this.ConfirmCommentsGeneralFileHandler}
+          onClick2={this.ConfirmCommentsProgramSpecificFileHandler}
+          onClick3={this.closeCommentsWindow}
+          setMessage={this.setState}
+          docName={this.state.docName}
+          role={this.props.role}
+          filetype={this.state.filetype}
+        />
+        {/* <Form.Group controlId="rejectmessage">
               <Form.Label>
                 Here is editor Feedback for {this.state.docName}.
               </Form.Label>
@@ -641,8 +674,8 @@ class EditorDocsProgress extends React.Component {
                 defaultValue={this.state.comments}
                 onChange={(e) => this.handleCommentsMessage(e, e.target.value)}
               />
-            </Form.Group>
-          </Modal.Body>
+            </Form.Group> */}
+        {/* </Modal.Body>
           <Modal.Footer>
             {this.state.filetype === "General" ? (
               <Button
@@ -669,7 +702,7 @@ class EditorDocsProgress extends React.Component {
               </div>
             )}
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
       </>
     );
   }

@@ -17,7 +17,10 @@ const { protect } = require("../middlewares/auth");
 jest.mock("../middlewares/auth", () => {
   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
     protect: jest.fn(),
-    permit: (...roles) => (req, res, next) => next(),
+    permit:
+      (...roles) =>
+      (req, res, next) =>
+        next(),
   });
 });
 
@@ -31,7 +34,10 @@ const requiredDocuments = ["transcript", "resume"];
 const optionalDocuments = ["certificate", "visa"];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
-beforeAll(async () => await connectToDatabase(global.__MONGO_URI__));
+beforeAll(async () => {
+  jest.spyOn(console, "log").mockImplementation(jest.fn());
+  await connectToDatabase(global.__MONGO_URI__);
+});
 
 afterAll(disconnectFromDatabase);
 

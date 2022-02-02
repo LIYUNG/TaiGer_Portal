@@ -8,6 +8,7 @@ import {
 } from "draft-js";
 import DraftPasteProcessor from "draft-js/lib/DraftPasteProcessor";
 import { Editor } from "react-draft-wysiwyg";
+// import Editor from "@draft-js-plugins/editor";
 import { convertToHTML } from "draft-convert";
 import DOMPurify from "dompurify";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -23,132 +24,206 @@ import {
   Spinner,
 } from "react-bootstrap";
 // See: https://blog.logrocket.com/building-rich-text-editors-in-react-using-draft-js-and-react-draft-wysiwyg/
-const DraftEditor = (props) => {
-  var userData;
-//   try {
-//     // Parse a JSON
-//     userData = JSON.parse(
-//       EditorState.createWithContent(
-//         convertFromRaw(JSON.parse(JSON.stringify(props.defaultComments)))
-//       )
-//     );
-//   } catch (e) {
-//     // You can read e for more info
-//     // Let's assume the error is that we already have parsed the payload
-//     // So just return that
-//     userData = EditorState.createWithContent(
-//       convertFromRaw(JSON.parse(JSON.stringify(props.defaultComments)))
-//     );
-//   }
+// const DraftEditor = (props) => {
+class DraftEditor extends React.Component {
+  state = {
+    isLoaded: false,
+    convertedContent: null,
+    editorState: null,
+    student: this.props.student,
+    filetype: this.props.filetype,
+    ConvertedContent: "",
+  };
+  componentDidMount() {
+    // 常見用法（別忘了比較 prop）：
+    console.log("is update");
+    console.log(this.props.isLoaded);
+    console.log(this.props.defaultComments);
+    var initialEditorState = null;
+    if (this.props.defaultComments) {
+      const rawContentFromStore = convertFromRaw(
+        JSON.parse(this.props.defaultComments)
+      );
+      initialEditorState = EditorState.createWithContent(rawContentFromStore);
+      console.log(initialEditorState);
+    } else {
+      initialEditorState = EditorState.createEmpty();
+    }
+    this.setState((state) => ({
+      ...state,
+      editorState: initialEditorState,
+      ConvertedContent: initialEditorState,
+      isLoaded: this.props.isLoaded,
+    }));
+  }
+  componentDidUpdate(prevProps) {
+    // 常見用法（別忘了比較 prop）：
+    if (
+      this.props.isLoaded !== this.state.isLoaded ||
+      prevProps.defaultComments !== this.props.defaultComments ||
+      prevProps.defaultComments !== this.props.defaultComments
+    ) {
+      console.log("is update");
+      console.log(this.props.isLoaded);
+      console.log(this.props.defaultComments);
+      var initialEditorState = null;
+      if (this.props.defaultComments) {
+        const rawContentFromStore = convertFromRaw(
+          JSON.parse(this.props.defaultComments)
+        );
+        initialEditorState = EditorState.createWithContent(rawContentFromStore);
+        console.log(initialEditorState);
+      } else {
+        initialEditorState = EditorState.createEmpty();
+      }
+      this.setState((state) => ({
+        ...state,
+        editorState: initialEditorState,
+        ConvertedContent: initialEditorState,
+        isLoaded: this.props.isLoaded,
+      }));
+    }
+  }
 
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
+  //   const [editorState, setEditorState] = useState(
+  //     initialEditorState // null!!!
+  //     // () => EditorState.createEmpty()
 
-    // EditorState.createWithContent(
-    //   convertFromRaw(JSON.parse(props.defaultComments))
-    // )
-  );
-  //   useEffect(() => {
-  //     setEditorState(
-  //       EditorState.createWithContent(
-  //         convertFromRaw(
-  //           JSON.parse(props.defaultComments ? props.defaultComments : {})
-  //         )
-  //       )
+  //     // EditorState.createWithContent(
+  //     //   convertFromRaw(JSON.parse(props.defaultComments))
+  //     // )
+  //   );
+
+  //   setEditorState(initialEditorState);
+  //  console.log(JSON.parse(props.defaultComments)); // TODO: the store string is error!! bug from covertToRaw?
+  //  console.log(JSON.parse(json));
+
+  // }, [props.defaultComments]);
+  //   convertContentToHTML = () => {
+  //     let currentContentAsHTML = convertToHTML(
+  //       this.editorState.getCurrentContent()
   //     );
-  //   }, [props.defaultComments]);
-  const [convertedContent, setConvertedContent] = useState(null);
-  const handleEditorChange = (state) => {
-    setEditorState(state);
-    convertContentToHTML();
+  //     this.setState((state) => ({
+  //       ...state,
+  //       ConvertedContent: currentContentAsHTML,
+  //     }));
+  //   };
+  handleEditorChange = (newstate) => {
+    this.setState((state) => ({ ...state, editorState: newstate }));
+    // this.convertContentToHTML();
   };
-  const convertContentToHTML = () => {
-    let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-    setConvertedContent(currentContentAsHTML);
-  };
-  const createMarkup = (html) => {
+
+  createMarkup = (html) => {
     return {
       __html: DOMPurify.sanitize(html),
     };
   };
-  return (
-    <Modal
-      size="xl"
-      show={props.show}
-      onHide={props.onHide}
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header>
-        <Modal.Title id="contained-modal-title-vcenter">
-          {props.docName}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {/* <header className="App-header">Rich Text Editor Example</header> */}
-        <Editor
-          //   readOnly={true}
-          editorState={editorState}
-          onEditorStateChange={handleEditorChange}
-          wrapperClassName="wrapper-class"
-          editorClassName="editor-class"
-          toolbarClassName="toolbar-class"
-        />
+  onClick3 = (e) => {
+    var initialEditorState = null;
+    if (this.props.defaultComments) {
+      const rawContentFromStore = convertFromRaw(
+        JSON.parse(this.props.defaultComments)
+      );
+      initialEditorState = EditorState.createWithContent(rawContentFromStore);
+      console.log(initialEditorState);
+    } else {
+      initialEditorState = EditorState.createEmpty();
+    }
+    this.setState((state) => ({
+      ...state,
+      editorState: this.props.defaultComments,
+    }));
+    this.props.onClick3();
+  };
+  render() {
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
+    const json = '{"result":true, "count":42}';
+    if (this.props.error) {
+      return (
+        <div>
+          Error: your session is timeout! Please refresh the page and Login
+        </div>
+      );
+    }
+    if (!this.state.isLoaded) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
 
-        <h5>{props.defaultComments}</h5>
-        {/* <div
-        className="preview"
-        dangerouslySetInnerHTML={createMarkup(props.defaultComments)}
-      ></div> */}
-        {/* {convertedContent} */}
-        {/* <Form.Group controlId="rejectmessage">
-              <Form.Label>
-                Here is editor Feedback for {this.state.docName}.
-              </Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={30}
-                placeholder="ex. typo."
-                defaultValue={this.state.comments}
-                onChange={(e) => this.handleCommentsMessage(e, e.target.value)}
-              />
-            </Form.Group> */}
-      </Modal.Body>
-      <Modal.Footer>
-        {props.filetype === "General" ? (
-          <Button
-            // disabled={!isLoaded}
-            onClick={() =>
-              props.onClick1(
-                JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-              )
-            }
-          >
-            Yes
-          </Button>
-        ) : (
-          <Button
-            // disabled={!isLoaded}
-            onClick={() =>
-              props.onClick2(
-                JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-              )
-            }
-          >
-            Yes
-          </Button>
-        )}
+    return (
+      <Modal
+        size="xl"
+        show={this.props.show}
+        onHide={this.props.onHide}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {this.props.docName}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* <header className="App-header">Rich Text Editor Example</header> */}
+          <Editor
+            //   readOnly={true}
+            editorState={this.state.editorState}
+            onEditorStateChange={this.handleEditorChange}
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            toolbarClassName="toolbar-class"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          {this.props.filetype === "General" ? (
+            <Button
+              // disabled={!isLoaded}
+              onClick={() =>
+                this.props.onClick1(
+                  JSON.stringify(
+                    convertToRaw(this.state.editorState.getCurrentContent())
+                  )
+                )
+              }
+            >
+              Yes
+            </Button>
+          ) : (
+            <Button
+              // disabled={!isLoaded}
+              onClick={() =>
+                this.props.onClick2(
+                  JSON.stringify(
+                    convertToRaw(this.state.editorState.getCurrentContent())
+                  )
+                )
+              }
+            >
+              Yes
+            </Button>
+          )}
 
-        <Button onClick={() => props.onClick3()}>No</Button>
-        {/* {!isLoaded && (
+          <Button onClick={(e) => this.onClick3(e)}>No</Button>
+          {/* {!isLoaded && (
           <div style={style}>
             <Spinner animation="border" role="status">
               <span className="visually-hidden"></span>
             </Spinner>
           </div>
         )} */}
-      </Modal.Footer>
-    </Modal>
-  );
-};
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+}
 export default DraftEditor;

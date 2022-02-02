@@ -852,7 +852,7 @@ const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {
     params: { studentId, docName, whoupdate },
     body: { comments },
   } = req;
-
+  console.log(comments);
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate("applications.programId")

@@ -57,7 +57,7 @@ class EditorDocsProgress extends React.Component {
   closeCommentsWindow = () => {
     this.setState((state) => ({ ...state, CommentsModel: false }));
   };
-  ConfirmCommentsProgramSpecificFileHandler = () => {
+  ConfirmCommentsProgramSpecificFileHandler = (comments) => {
     this.setState((state) => ({
       ...state,
       isLoaded: false, //false to reload everything
@@ -67,7 +67,7 @@ class EditorDocsProgress extends React.Component {
       this.state.applicationId,
       this.state.docName,
       this.state.whoupdate,
-      this.state.comments
+      comments
     ).then(
       (resp) => {
         console.log(resp.data.data);
@@ -651,6 +651,9 @@ class EditorDocsProgress extends React.Component {
           </Modal.Header>
           <Modal.Body> */}
         <DraftEditor
+          error={error}
+          isLoaded={isLoaded}
+          student={this.state.student}
           show={this.state.CommentsModel}
           onHide={this.closeCommentsWindow}
           handleCommentsMessage={this.handleCommentsMessage}
@@ -663,46 +666,6 @@ class EditorDocsProgress extends React.Component {
           role={this.props.role}
           filetype={this.state.filetype}
         />
-        {/* <Form.Group controlId="rejectmessage">
-              <Form.Label>
-                Here is editor Feedback for {this.state.docName}.
-              </Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={30}
-                placeholder="ex. typo."
-                defaultValue={this.state.comments}
-                onChange={(e) => this.handleCommentsMessage(e, e.target.value)}
-              />
-            </Form.Group> */}
-        {/* </Modal.Body>
-          <Modal.Footer>
-            {this.state.filetype === "General" ? (
-              <Button
-                disabled={!isLoaded}
-                onClick={this.ConfirmCommentsGeneralFileHandler}
-              >
-                Yes
-              </Button>
-            ) : (
-              <Button
-                disabled={!isLoaded}
-                onClick={this.ConfirmCommentsProgramSpecificFileHandler}
-              >
-                Yes
-              </Button>
-            )}
-
-            <Button onClick={this.closeCommentsWindow}>No</Button>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Footer>
-        </Modal> */}
       </>
     );
   }

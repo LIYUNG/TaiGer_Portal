@@ -726,33 +726,44 @@ class EditorDocsProgress extends React.Component {
                 />
                 {this.state.student.applications.map((application, i) => (
                   <>
-                    <Row>
-                      <Col md={6}>
-                        <h5>
-                          {application.programId.University_}
-                          {" - "}
-                          {application.programId.Program_}
-                        </h5>
-                      </Col>
-                    </Row>
+                    {application.decided !== undefined &&
+                    application.decided === true ? (
+                      <>
+                        <Row>
+                          <Col md={6}>
+                            <h5>
+                              {application.programId.University_}
+                              {" - "}
+                              {application.programId.Program_}
+                            </h5>
+                          </Col>
+                        </Row>
 
-                    <ManualFiles
-                      onDeleteProgramSpecificFile={
-                        this.onDeleteProgramSpecificFile
-                      }
-                      onCommentsProgramSpecific={this.onCommentsProgramSpecific}
-                      SubmitProgramSpecificFile={this.SubmitProgramSpecificFile}
-                      onDownloadProgramSpecificFile={
-                        this.onDownloadProgramSpecificFile
-                      }
-                      handleAsFinalProgramSpecific={
-                        this.handleAsFinalProgramSpecific
-                      }
-                      role={this.props.role}
-                      student={this.state.student}
-                      application={application}
-                      filetype={"ProgramSpecific"}
-                    />
+                        <ManualFiles
+                          onDeleteProgramSpecificFile={
+                            this.onDeleteProgramSpecificFile
+                          }
+                          onCommentsProgramSpecific={
+                            this.onCommentsProgramSpecific
+                          }
+                          SubmitProgramSpecificFile={
+                            this.SubmitProgramSpecificFile
+                          }
+                          onDownloadProgramSpecificFile={
+                            this.onDownloadProgramSpecificFile
+                          }
+                          handleAsFinalProgramSpecific={
+                            this.handleAsFinalProgramSpecific
+                          }
+                          role={this.props.role}
+                          student={this.state.student}
+                          application={application}
+                          filetype={"ProgramSpecific"}
+                        />
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </>
                 ))}
               </Card.Body>

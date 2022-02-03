@@ -55,64 +55,99 @@ class EditorReviewing extends React.Component {
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
     ) {
-      applying_university = <h6 className="mb-1"> No University</h6>;
-      applying_program = <h6 className="mb-1"> No Program</h6>;
-      application_deadline = <h6 className="mb-1"> No Date</h6>;
+      applying_university = <></>;
+      applying_program = <></>;
+      application_deadline = <></>;
     } else {
       applying_university_ML = this.props.student.applications.map(
         (application, i) => (
-          <h6 className="mb-1" key={i}>
-            ML
-          </h6>
+          <>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <h6 className="mb-1" key={i}>
+                ML
+              </h6>
+            ) : (
+              <></>
+            )}
+          </>
         )
       );
       applying_university = this.props.student.applications.map(
         (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.programId.University_}
-          </h6>
+          <>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <h6 className="mb-1" key={i}>
+                {application.programId.University_}
+              </h6>
+            ) : (
+              <></>
+            )}
+          </>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.programId.Program_}
-          </h6>
+          <>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <h6 className="mb-1" key={i}>
+                {application.programId.Program_}
+              </h6>
+            ) : (
+              <></>
+            )}
+          </>
         )
       );
       application_deadline = this.props.student.applications.map(
         (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.programId.Application_end_date_}
-          </h6>
+          <>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <h6 className="mb-1" key={i}>
+                {application.programId.Application_end_date_}
+              </h6>
+            ) : (
+              <></>
+            )}
+          </>
         )
       );
       application_ML_Lastupdate = this.props.student.applications.map(
         (application, i) => (
           <>
-            {application.student_inputs &&
-            application.student_inputs.findIndex((doc) =>
-              doc.name.includes("ML_Template")
-            ) !== -1 ? (
-              <h6 className="mb-1">
-                {new Date(
-                  application.student_inputs[
-                    application.student_inputs.findIndex((doc) =>
-                      doc.name.includes("ML_Template")
-                    )
-                  ].updatedAt
-                ).toLocaleDateString()}
-                {", "}
-                {new Date(
-                  application.student_inputs[
-                    application.student_inputs.findIndex((doc) =>
-                      doc.name.includes("ML_Template")
-                    )
-                  ].updatedAt
-                ).toLocaleTimeString()}
-              </h6>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <>
+                {application.student_inputs &&
+                application.student_inputs.findIndex((doc) =>
+                  doc.name.includes("ML_Template")
+                ) !== -1 ? (
+                  <h6 className="mb-1">
+                    {new Date(
+                      application.student_inputs[
+                        application.student_inputs.findIndex((doc) =>
+                          doc.name.includes("ML_Template")
+                        )
+                      ].updatedAt
+                    ).toLocaleDateString()}
+                    {", "}
+                    {new Date(
+                      application.student_inputs[
+                        application.student_inputs.findIndex((doc) =>
+                          doc.name.includes("ML_Template")
+                        )
+                      ].updatedAt
+                    ).toLocaleTimeString()}
+                  </h6>
+                ) : (
+                  <h6 className="mb-1">Not existed</h6>
+                )}
+              </>
             ) : (
-              <h6 className="mb-1">Not existed</h6>
+              <></>
             )}
           </>
         )
@@ -120,17 +155,24 @@ class EditorReviewing extends React.Component {
       application_ML_template_filled = this.props.student.applications.map(
         (application, i) => (
           <>
-            {application.student_inputs &&
-            application.student_inputs.findIndex((doc) =>
-              doc.name.includes("ML_Template")
-            ) !== -1 ? (
-              <h6 className="mb-1">
-                ML - {application.programId.University_}
-                {" - "}
-                {application.programId.Program_}
-              </h6>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <>
+                {application.student_inputs &&
+                application.student_inputs.findIndex((doc) =>
+                  doc.name.includes("ML_Template")
+                ) !== -1 ? (
+                  <h6 className="mb-1">
+                    ML - {application.programId.University_}
+                    {" - "}
+                    {application.programId.Program_}
+                  </h6>
+                ) : (
+                  // TODO: add new case: replace prepared by "programId.requiredML?"
+                  <></>
+                )}
+              </>
             ) : (
-              // TODO: add new case: replace prepared by "programId.requiredML?"
               <></>
             )}
           </>
@@ -140,17 +182,24 @@ class EditorReviewing extends React.Component {
       application_ML_status = this.props.student.applications.map(
         (application, i) => (
           <>
-            {application.documents &&
-            application.documents.findIndex((doc) =>
-              doc.name.includes("_ML")
-            ) !== -1 ? (
-              <h6 className="mb-1">
-                ML - {application.programId.University_}
-                {" - "}
-                {application.programId.Program_}
-              </h6>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <>
+                {application.documents &&
+                application.documents.findIndex((doc) =>
+                  doc.name.includes("_ML")
+                ) !== -1 ? (
+                  <h6 className="mb-1">
+                    ML - {application.programId.University_}
+                    {" - "}
+                    {application.programId.Program_}
+                  </h6>
+                ) : (
+                  // TODO: add new case: replace prepared by "programId.requiredML?"
+                  <></>
+                )}
+              </>
             ) : (
-              // TODO: add new case: replace prepared by "programId.requiredML?"
               <></>
             )}
           </>
@@ -159,18 +208,25 @@ class EditorReviewing extends React.Component {
       application_ML_template_ToBefilled = this.props.student.applications.map(
         (application, i) => (
           <>
-            {application.student_inputs &&
-            application.student_inputs.findIndex((doc) =>
-              doc.name.includes("ML_Template")
-            ) !== -1 ? (
-              <></>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <>
+                {application.student_inputs &&
+                application.student_inputs.findIndex((doc) =>
+                  doc.name.includes("ML_Template")
+                ) !== -1 ? (
+                  <></>
+                ) : (
+                  // TODO: add new case: replace prepared by "programId.requiredML?"
+                  <h6 className="mb-1">
+                    ML - {application.programId.University_}
+                    {" - "}
+                    {application.programId.Program_}
+                  </h6>
+                )}
+              </>
             ) : (
-              // TODO: add new case: replace prepared by "programId.requiredML?"
-              <h6 className="mb-1">
-                ML - {application.programId.University_}
-                {" - "}
-                {application.programId.Program_}
-              </h6>
+              <></>
             )}
           </>
         )
@@ -187,8 +243,10 @@ class EditorReviewing extends React.Component {
     } else {
       //For Editor: (TODO: add another flags: student read, editor read?)
       general_RL_status =
-        this.props.student.generaldocs.editoroutputs.findIndex((doc) =>//TODO: get the latest RL and isReceivedFeedback flag
-          doc.name.includes("RL")
+        this.props.student.generaldocs.editoroutputs.findIndex(
+          (
+            doc //TODO: get the latest RL and isReceivedFeedback flag
+          ) => doc.name.includes("RL")
         ) !== -1 ? (
           <h6 className="mb-1">RL Revised</h6>
         ) : (

@@ -97,7 +97,7 @@ class DraftEditor extends React.Component {
 
   onClick3 = (e) => {
     var initialEditorState = null;
-    if (this.props.defaultComments) {
+    if (this.isJson(this.props.defaultComments)) {
       const rawContentFromStore = convertFromRaw(
         JSON.parse(this.props.defaultComments)
       );
@@ -108,7 +108,7 @@ class DraftEditor extends React.Component {
     }
     this.setState((state) => ({
       ...state,
-      editorState: this.props.defaultComments,
+      editorState: initialEditorState,
     }));
     this.props.onClick3();
   };

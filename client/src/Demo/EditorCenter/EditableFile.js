@@ -139,34 +139,28 @@ class EditableFile extends Component {
                 </Button>
               )}
             </Col>
-            {this.props.role === "Editor" ||
-            this.props.whoupdate === "Student" ? (
-              <>
-                <Col md={1}>
-                  {this.props.filetype === "General" ? (
-                    <Button
-                      size="sm"
-                      title="Comments"
-                      variant="light"
-                      onClick={this.handleCommentsGeneralFile}
-                    >
-                      <AiOutlineComment size={20} />
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      title="Comments"
-                      variant="light"
-                      onClick={this.handleCommentsProgramSpecific}
-                    >
-                      <AiOutlineComment size={20} />
-                    </Button>
-                  )}
-                </Col>
-              </>
-            ) : (
-              <></>
-            )}
+            <Col md={1}>
+              {this.props.filetype === "General" ? (
+                <Button
+                  size="sm"
+                  title="Comments"
+                  variant="light"
+                  onClick={this.handleCommentsGeneralFile}
+                >
+                  <AiOutlineComment size={20} />
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  title="Comments"
+                  variant="light"
+                  onClick={this.handleCommentsProgramSpecific}
+                >
+                  <AiOutlineComment size={20} />
+                </Button>
+              )}
+            </Col>
+
             {this.props.role === "Editor" ||
             this.props.whoupdate === "Student" ? (
               <>

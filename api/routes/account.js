@@ -17,7 +17,9 @@ const {
   downloadTemplateFile,
   downloadFile,
   downloadGeneralFile,
-  deleteFile,
+  SetAsFinalProgramSpecificFile,
+  deleteProgramSpecificFile,
+  SetAsFinalGeneralFile,
   deleteGeneralFile,
   processTranscript,
   downloadXLSX,
@@ -58,9 +60,10 @@ router
 router
   .route("/files/programspecific/:studentId/:applicationId/:docName/:whoupdate")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
+  .put(permit(Role.Admin, Role.Agent, Role.Editor), SetAsFinalProgramSpecificFile) //set as final
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    deleteFile
+    deleteProgramSpecificFile
   );
 
 router
@@ -83,6 +86,10 @@ router
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadGeneralFile
+  )
+  .put(
+    permit(Role.Admin, Role.Agent, Role.Editor), //set as final
+    SetAsFinalGeneralFile
   )
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),

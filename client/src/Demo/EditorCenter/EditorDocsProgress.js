@@ -16,8 +16,10 @@ import {
   Spinner,
 } from "react-bootstrap";
 import {
-  deleteManualFileUpload,
+  deleteProgramSpecificFileUpload,
   deleteGenralFileUpload,
+  SetAsFinalProgramSpecificFile,
+  SetAsFinalGenralFile,
   uploadHandwrittenFileforstudent,
   uploadEditGeneralFileforstudent,
   updateHandwrittenFileCommentsforstudent,
@@ -31,6 +33,7 @@ class EditorDocsProgress extends React.Component {
   state = {
     student: this.props.student,
     deleteFileWarningModel: false,
+    SetAsFinalFileModel: false,
     CommentsModel: false,
     studentId: "",
     applicationId: "",
@@ -45,6 +48,12 @@ class EditorDocsProgress extends React.Component {
       isLoaded: true,
     }));
   }
+  openSetAsFinalFileModelWindow = () => {
+    this.setState((state) => ({ ...state, SetAsFinalFileModel: true }));
+  };
+  closeSetAsFinalFileModelWindow = () => {
+    this.setState((state) => ({ ...state, SetAsFinalFileModel: false }));
+  };
   openWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
   };
@@ -110,12 +119,12 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  ConfirmDeleteFileHandler = () => {
+  ConfirmDeleteProgramSpecificFileHandler = () => {
     this.setState((state) => ({
       ...state,
       isLoaded: false, //false to reload everything
     }));
-    deleteManualFileUpload(
+    deleteProgramSpecificFileUpload(
       this.state.studentId,
       this.state.applicationId,
       this.state.docName,
@@ -162,57 +171,6 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  ConfirmCommentsGeneralFileHandler = (comments) => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false, //false to reload everything
-    }));
-    updateEditGeneralFileCommentsforstudent(
-      this.state.studentId,
-      this.state.docName,
-      this.state.whoupdate,
-      comments
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                CommentsModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            success: success,
-            CommentsModel: false,
-          }));
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
   ConfirmDeleteGeneralFileHandler = () => {
     this.setState((state) => ({
       ...state,
@@ -264,6 +222,160 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
+  ConfirmSetAsFinalSpecificFileHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
+    SetAsFinalProgramSpecificFile(
+      this.state.studentId,
+      this.state.applicationId,
+      this.state.docName,
+      this.state.whoupdate
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        if (success) {
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                SetAsFinalFileModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+        } else {
+          alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            SetAsFinalFileModel: false,
+          }));
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  ConfirmSetAsFinalGeneralFileHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
+    SetAsFinalGenralFile(
+      this.state.studentId,
+      this.state.docName,
+      this.state.whoupdate
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        if (success) {
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                SetAsFinalFileModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+        } else {
+          alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            SetAsFinalFileModel: false,
+          }));
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+  ConfirmCommentsGeneralFileHandler = (comments) => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
+    updateEditGeneralFileCommentsforstudent(
+      this.state.studentId,
+      this.state.docName,
+      this.state.whoupdate,
+      comments
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        if (success) {
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                CommentsModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+        } else {
+          alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            CommentsModel: false,
+          }));
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
   onCommentsGeneralFile = (studentId, docName, whoupdate, feedback) => {
     this.setState((state) => ({
       ...state,
@@ -291,6 +403,34 @@ class EditorDocsProgress extends React.Component {
       filetype: "ProgramSpecific",
       comments: feedback,
       CommentsModel: true,
+    }));
+  };
+
+  handleAsFinalProgramSpecific = (
+    studentId,
+    applicationId,
+    docName,
+    whoupdate
+  ) => {
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      applicationId,
+      docName,
+      whoupdate,
+      filetype: "ProgramSpecific",
+      SetAsFinalFileModel: true, //change
+    }));
+  };
+
+  handleAsFinalGeneralFile = (studentId, docName, whoupdate) => {
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      docName,
+      whoupdate,
+      filetype: "General",
+      SetAsFinalFileModel: true,
     }));
   };
 
@@ -579,6 +719,7 @@ class EditorDocsProgress extends React.Component {
                   onDownloadGeneralFile={this.onDownloadGeneralFile}
                   onCommentsGeneralFile={this.onCommentsGeneralFile}
                   SubmitGeneralFile={this.SubmitGeneralFile}
+                  handleAsFinalGeneralFile={this.handleAsFinalGeneralFile}
                   role={this.props.role}
                   student={this.state.student}
                   filetype={"General"}
@@ -603,6 +744,9 @@ class EditorDocsProgress extends React.Component {
                       SubmitProgramSpecificFile={this.SubmitProgramSpecificFile}
                       onDownloadProgramSpecificFile={
                         this.onDownloadProgramSpecificFile
+                      }
+                      handleAsFinalProgramSpecific={
+                        this.handleAsFinalProgramSpecific
                       }
                       role={this.props.role}
                       student={this.state.student}
@@ -645,13 +789,52 @@ class EditorDocsProgress extends React.Component {
             ) : (
               <Button
                 disabled={!isLoaded}
-                onClick={this.ConfirmDeleteFileHandler}
+                onClick={this.ConfirmDeleteProgramSpecificFileHandler}
               >
                 Yes
               </Button>
             )}
 
             <Button onClick={this.closeWarningWindow}>No</Button>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.SetAsFinalFileModel}
+          onHide={this.closeSetAsFinalFileModelWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
+          <Modal.Footer>
+            {this.state.filetype === "General" ? (
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmSetAsFinalGeneralFileHandler}
+              >
+                Yes
+              </Button>
+            ) : (
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmSetAsFinalSpecificFileHandler}
+              >
+                Yes
+              </Button>
+            )}
+
+            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">

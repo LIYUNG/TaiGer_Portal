@@ -54,7 +54,8 @@ class DraftEditor extends React.Component {
     if (
       this.props.isLoaded !== this.state.isLoaded ||
       prevProps.defaultComments !== this.props.defaultComments ||
-      prevProps.defaultComments !== this.props.defaultComments
+      prevProps.defaultComments !== this.props.defaultComments ||
+      prevProps.whoupdate !== this.props.whoupdate
     ) {
       console.log("is update");
       console.log(this.props.whoupdate);
@@ -135,7 +136,7 @@ class DraftEditor extends React.Component {
         </div>
       );
     }
-
+console.log(this.state.whoupdate);
     return (
       <Modal
         size="xl"
@@ -153,7 +154,6 @@ class DraftEditor extends React.Component {
           {/* <header className="App-header">Rich Text Editor Example</header> */}
           {this.props.role === this.state.whoupdate ? (
             <Editor
-              //   readOnly={true}
               editorState={this.state.editorState}
               onEditorStateChange={this.handleEditorChange}
               wrapperClassName="wrapper-class"

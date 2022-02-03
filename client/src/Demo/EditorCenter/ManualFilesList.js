@@ -22,6 +22,7 @@ class ManualFilesList extends Component {
               onCommentsGeneralFile={this.props.onCommentsGeneralFile}
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+              handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
               role={this.props.role}
               whoupdate={"Editor"}
               filetype={this.props.filetype}
@@ -44,6 +45,7 @@ class ManualFilesList extends Component {
               onCommentsGeneralFile={this.props.onCommentsGeneralFile}
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+              handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
               role={this.props.role}
               whoupdate={"Student"}
               filetype={this.props.filetype}
@@ -65,6 +67,9 @@ class ManualFilesList extends Component {
             }
             onTrashClick={this.props.onTrashClick}
             onDeleteProgramSpecificFile={this.props.onDeleteProgramSpecificFile}
+            handleAsFinalProgramSpecific={
+              this.props.handleAsFinalProgramSpecific
+            }
             role={this.props.role}
             whoupdate={"Editor"}
             filetype={this.props.filetype}
@@ -86,6 +91,9 @@ class ManualFilesList extends Component {
               onTrashClick={this.props.onTrashClick}
               onDeleteProgramSpecificFile={
                 this.props.onDeleteProgramSpecificFile
+              }
+              handleAsFinalProgramSpecific={
+                this.props.handleAsFinalProgramSpecific
               }
               role={this.props.role}
               whoupdate={"Student"}

@@ -108,7 +108,7 @@ export const createManualFileUploadPlace = (
   request.put(
     `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
   );
-export const deleteManualFileUpload = (
+export const deleteProgramSpecificFileUpload = (
   studentId,
   applicationId,
   docName,
@@ -122,6 +122,23 @@ export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
   request.delete(
     `/api/account/files/general/${studentId}/${docName}/${whoupdate}`
   );
+
+
+export const SetAsFinalProgramSpecificFile = (
+  studentId,
+  applicationId,
+  docName,
+  whoupdate
+) =>
+  request.put(
+    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${whoupdate}`
+  );
+
+export const SetAsFinalGenralFile = (studentId, docName, whoupdate) =>
+  request.put(
+    `/api/account/files/general/${studentId}/${docName}/${whoupdate}`
+  );
+
 export const uploadEditGeneralFileforstudent = (
   studentId,
   fileCategory,

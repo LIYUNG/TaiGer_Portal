@@ -4,9 +4,27 @@ import { Form, Col, Row, Button } from "react-bootstrap";
 import {
   AiOutlineDownload,
   AiOutlineDelete,
+  AiOutlineCheck,
   AiOutlineComment,
 } from "react-icons/ai";
 class EditableFile extends Component {
+  handleAsFinalGeneralFile = () => {
+    this.props.handleAsFinalGeneralFile(
+      this.props.student._id,
+      this.props.document.name,
+      this.props.whoupdate
+    );
+  };
+
+  handleAsFinalProgramSpecific = () => {
+    this.props.handleAsFinalProgramSpecific(
+      this.props.student._id,
+      this.props.application.programId._id,
+      this.props.document.name,
+      this.props.whoupdate
+    );
+  };
+
   handleDeleteGeneralFile = () => {
     this.props.onDeleteGeneralFile(
       this.props.student._id,
@@ -51,20 +69,47 @@ class EditableFile extends Component {
       fileStatus = (
         <>
           <Row>
-            <Col md={8}>
-              <p>
-                {documenName}
-                {", updated on "}
-                {new Date(this.props.document.updatedAt).toLocaleDateString()}
-                {", "}
-                {new Date(this.props.document.updatedAt).toLocaleTimeString()}
-              </p>
+            <Col md={1}>
+              {this.props.role === "Editor" ? (
+                <>
+                  <Col md={1}>
+                    {this.props.filetype === "General" ? (
+                      <Button
+                        size="sm"
+                        title="As final version"
+                        onClick={this.handleAsFinalGeneralFile}
+                      >
+                        <AiOutlineCheck size={12} />
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        title="As final version"
+                        onClick={this.handleAsFinalProgramSpecific}
+                      >
+                        <AiOutlineCheck size={12} />
+                      </Button>
+                    )}
+                  </Col>
+                </>
+              ) : (
+                <></>
+              )}
+            </Col>
+            <Col md={5}>
+              <p>{documenName}</p>
+            </Col>
+            <Col md={2}>
+              {new Date(this.props.document.updatedAt).toLocaleDateString()}
+              {", "}
+              {new Date(this.props.document.updatedAt).toLocaleTimeString()}
             </Col>
             <Col md={1}>
               {this.props.filetype === "General" ? (
                 <Button
                   size="sm"
                   title="Download"
+                  on
                   onClick={(e) =>
                     this.props.onDownloadGeneralFile(
                       e,
@@ -121,7 +166,7 @@ class EditableFile extends Component {
               </>
             ) : (
               <></>
-            )}{" "}
+            )}
             {this.props.role === "Editor" ||
             this.props.whoupdate === "Student" ? (
               <>

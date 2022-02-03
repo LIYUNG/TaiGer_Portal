@@ -53,6 +53,7 @@ class ManualFiles extends React.Component {
               onDownloadGeneralFile={this.props.onDownloadGeneralFile}
               onCommentsGeneralFile={this.props.onCommentsGeneralFile}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+              handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
               role={this.props.role}
             />
             {this.props.role === "Agent" ||
@@ -86,6 +87,9 @@ class ManualFiles extends React.Component {
               }
               onDeleteProgramSpecificFile={
                 this.props.onDeleteProgramSpecificFile
+              }
+              handleAsFinalProgramSpecific={
+                this.props.handleAsFinalProgramSpecific
               }
               role={this.props.role}
             />

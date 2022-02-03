@@ -548,7 +548,47 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   );
 });
 
-const deleteFile = asyncHandler(async (req, res, next) => {
+const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, applicationId, docName, whoupdate },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  // console.log(student);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  if (user.role == Role.Student) {
+    throw new ErrorResponse(400, "Can only mark by editor!");
+    //TODO: feedback added email
+  } else {
+    editor_output_doc = application.documents.find(
+      ({ name }) => name === docName
+    );
+    if (!editor_output_doc)
+      throw new ErrorResponse(400, "Document not existed!");
+    editor_output_doc.isFinalVersion = true;
+    editor_output_doc.updatedAt = new Date();
+    // TODO: set flag student document(filetype, feedback) isReceivedFeedback
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+    //TODO: feedback added email
+  }
+});
+
+const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId, applicationId, docName, whoupdate },
@@ -619,11 +659,48 @@ const deleteFile = asyncHandler(async (req, res, next) => {
   await student.save();
   return res.status(201).send({ success: true, data: student });
 });
+const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, docName, whoupdate },
+    body: { comments },
+  } = req;
+  console.log(comments);
+  if (user.role !== whoupdate) {
+    throw new ErrorResponse(400, "You can only modify your own comments!");
+  }
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  // console.log(student);
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  var editor_output_doc;
+  var student_input_doc;
+  if (user.role == Role.Student) {
+    throw new ErrorResponse(400, "Can only marked by editor");
+    //TODO: feedback added email
+  } else {
+    editor_output_doc = student.generaldocs.editoroutputs.find(
+      ({ name }) => name === docName
+    );
+    if (!editor_output_doc)
+      throw new ErrorResponse(400, "Document not existed!");
+    editor_output_doc.isFinalVersion = true;
+    editor_output_doc.updatedAt = new Date();
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+    //TODO: feedback added email
+  }
+});
 
 const deleteGeneralFile = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, docName, student_inputs },
+    params: { studentId, docName, whoupdate },
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -635,7 +712,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
   var document;
   var student_input;
   try {
-    if (student_inputs === "editor") {
+    if (whoupdate === "Editor") {
       document = student.generaldocs.editoroutputs.find(
         ({ name }) => name === docName
       );
@@ -955,7 +1032,9 @@ module.exports = {
   downloadGeneralFile,
   updateProfileDocumentStatus,
   updateProfileDocumentStatus,
-  deleteFile,
+  SetAsFinalProgramSpecificFile,
+  deleteProgramSpecificFile,
+  SetAsFinalGeneralFile,
   deleteGeneralFile,
   deleteProfileFile,
   processTranscript,

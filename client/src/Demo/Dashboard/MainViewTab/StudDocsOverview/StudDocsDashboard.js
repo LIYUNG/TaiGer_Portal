@@ -11,7 +11,6 @@ import { BsDash } from "react-icons/bs";
 import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";
 import EditProgramsSubpage from "./EditProgramsSubpage";
-
 class StudDocsDashboard extends React.Component {
   state = {
     showAgentPage: false,
@@ -85,6 +84,8 @@ class StudDocsDashboard extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);
   };
+
+
   render() {
     let studentDocOverview;
     let keys = Object.keys(this.props.documentlist2);
@@ -275,8 +276,10 @@ class StudDocsDashboard extends React.Component {
             onHide={this.setProgramModalhide}
             setmodalhide={this.setProgramModalhide}
             onDeleteProgram={this.props.onDeleteProgram}
+            onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
+            onSetAsCloseProgram={this.props.onSetAsCloseProgram}
+            onSetAsGetAdmissionProgram={this.props.onSetAsGetAdmissionProgram}
           />
-  
         </>
       </>
     );

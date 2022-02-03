@@ -10,28 +10,37 @@ class TabProgramConflict extends React.Component {
     for (let i = 0; i < this.props.students.length; i++) {
       if (this.props.students[i].applications)
         for (let j = 0; j < this.props.students[i].applications.length; j++) {
+          // on decided program counts!
           if (
-            !Array.isArray(
-              conflict_map[this.props.students[i].applications[j].programId._id]
-            )
+            this.props.students[i].applications[j].decided !== undefined &&
+            this.props.students[i].applications[j].decided === true
           ) {
-            conflict_map[this.props.students[i].applications[j].programId._id] =
-              [this.props.students[i]._id];
-            conflict_programs[
-              this.props.students[i].applications[j].programId._id
-            ] = {
-              University_:
-                this.props.students[i].applications[j].programId.University_,
-              Program_:
-                this.props.students[i].applications[j].programId.Program_,
-              Application_end_date_:
-                this.props.students[i].applications[j].programId
-                  .Application_end_date_,
-            };
-          } else {
-            conflict_map[
-              this.props.students[i].applications[j].programId._id
-            ].push(this.props.students[i]._id);
+            if (
+              !Array.isArray(
+                conflict_map[
+                  this.props.students[i].applications[j].programId._id
+                ]
+              )
+            ) {
+              conflict_map[
+                this.props.students[i].applications[j].programId._id
+              ] = [this.props.students[i]._id];
+              conflict_programs[
+                this.props.students[i].applications[j].programId._id
+              ] = {
+                University_:
+                  this.props.students[i].applications[j].programId.University_,
+                Program_:
+                  this.props.students[i].applications[j].programId.Program_,
+                Application_end_date_:
+                  this.props.students[i].applications[j].programId
+                    .Application_end_date_,
+              };
+            } else {
+              conflict_map[
+                this.props.students[i].applications[j].programId._id
+              ].push(this.props.students[i]._id);
+            }
           }
         }
     }

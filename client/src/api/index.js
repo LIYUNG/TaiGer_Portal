@@ -99,6 +99,12 @@ export const getTemplateDownload = (category) =>
   request.get(`/api/account/download/template/${category}`, {
     responseType: "blob",
   });
+export const SetAsDecidedProgram = (studentId, applicationId) =>
+  request.put(`/api/account/program/decided/${studentId}/${applicationId}`);
+export const SetAsCloseProgram = (studentId, applicationId) =>
+  request.put(`/api/account/program/close/${studentId}/${applicationId}`);
+export const SetAsGetAdmissionProgram = (studentId, applicationId) =>
+  request.put(`/api/account/program/admission/${studentId}/${applicationId}`);
 
 export const createManualFileUploadPlace = (
   studentId,
@@ -122,7 +128,6 @@ export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
   request.delete(
     `/api/account/files/general/${studentId}/${docName}/${whoupdate}`
   );
-
 
 export const SetAsFinalProgramSpecificFile = (
   studentId,

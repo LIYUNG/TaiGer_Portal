@@ -11,11 +11,68 @@ class EditProgramsSubpage extends React.Component {
         <tr key={i}>
           <th></th>
           <td>
-            <h4 className="mb-1">
+            <h5 className="mb-1">
               {application.programId.University_} -{" "}
               {application.programId.Program_}
-            </h4>
+            </h5>
             <h5 className="mb-1">{application.programId.documents}</h5>
+          </td>
+          <td>
+            <Form
+              onSubmit={(e) =>
+                this.props.onSetAsGetAdmissionProgram(
+                  e,
+                  this.props.student._id,
+                  application.programId._id
+                )
+              }
+            >
+              <Form.Group controlId="exampleForm.ControlSelect1">
+                <div className="form-group">
+                  <Button type="submit" variant="success">
+                    Admission
+                  </Button>
+                </div>
+              </Form.Group>
+            </Form>
+          </td>
+          <td>
+            <Form
+              onSubmit={(e) =>
+                this.props.onSetAsCloseProgram(
+                  e,
+                  this.props.student._id,
+                  application.programId._id
+                )
+              }
+            >
+              <Form.Group controlId="exampleForm.ControlSelect1">
+                <div className="form-group">
+                  <Button type="submit" variant="secondary">
+                    Close
+                  </Button>
+                </div>
+              </Form.Group>
+            </Form>
+          </td>
+          <td>
+            <Form
+              onSubmit={(e) =>
+                this.props.onSetAsDecidedProgram(
+                  e,
+                  this.props.student._id,
+                  application.programId._id
+                )
+              }
+            >
+              <Form.Group controlId="exampleForm.ControlSelect1">
+                <div className="form-group">
+                  <Button type="submit" variant="info">
+                    Decide
+                  </Button>
+                </div>
+              </Form.Group>
+            </Form>
           </td>
           <td>
             <Form
@@ -29,7 +86,9 @@ class EditProgramsSubpage extends React.Component {
             >
               <Form.Group controlId="exampleForm.ControlSelect1">
                 <div className="form-group">
-                  <Button type="submit">Delete</Button>
+                  <Button type="submit" variant="danger">
+                    Delete
+                  </Button>
                 </div>
               </Form.Group>
             </Form>

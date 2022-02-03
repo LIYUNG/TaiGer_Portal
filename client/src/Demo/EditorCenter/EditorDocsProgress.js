@@ -609,7 +609,7 @@ class EditorDocsProgress extends React.Component {
         }
       })
       .catch((err) => {
-        alert("The file is not available.");
+        alert(err);
       });
   };
   onDownloadGeneralFile = (e, studentId, docName, student_inputs) => {
@@ -827,7 +827,7 @@ class EditorDocsProgress extends React.Component {
               Warning
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
+          <Modal.Body>Do you want to set {this.state.docName} as final for student?</Modal.Body>
           <Modal.Footer>
             {this.state.filetype === "General" ? (
               <Button

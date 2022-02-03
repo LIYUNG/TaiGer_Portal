@@ -43,6 +43,23 @@ class AgentReviewing extends React.Component {
         return <h6>{key.replace(/_/g, " ")}</h6>;
       }
     });
+    var no_decided_program = this.props.student.applications.map(
+      (application, i) => {
+        if (
+          !application.decided ||
+          (application.decided !== undefined && application.decided === false)
+        ) {
+          return (
+            <h6>
+              {application.programId.University_}
+              {" - "}
+              {application.programId.Program_}
+            </h6>
+          );
+        }
+      }
+    );
+
     // let applying_program;
     // let application_deadline;
     // if (this.props.student.applications) {
@@ -122,6 +139,7 @@ class AgentReviewing extends React.Component {
               <></>
             )}
             <td>{to_be_checked_profiles}</td>
+            <td>{no_decided_program}</td>
           </tr>
         </tbody>
       </>

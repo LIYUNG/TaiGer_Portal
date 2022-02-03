@@ -64,6 +64,7 @@ class AgentMainView extends React.Component {
                     <th>First-/Lastname</th>
                     <th>Missing</th>
                     <th>Under checking</th>
+                    <th>ProgramTobeDecided</th>
                   </tr>
                 </thead>
                 {agent_reviewing}
@@ -128,6 +129,11 @@ class AgentMainView extends React.Component {
                   onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                   onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
                   onDeleteProgram={this.props.onDeleteProgram}
+                  onSetAsCloseProgram={this.props.onSetAsCloseProgram}
+                  onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
+                  onSetAsGetAdmissionProgram={
+                    this.props.onSetAsGetAdmissionProgram
+                  }
                   onDownloadFilefromstudent={
                     this.props.onDownloadFilefromstudent
                   }

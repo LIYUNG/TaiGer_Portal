@@ -8,6 +8,7 @@ class ApplicationStatus extends React.Component {
     var applying_university;
     var applying_program;
     var application_deadline;
+    var application_decided;
     var application_prepared;
     var application_closed;
     var application_admission;
@@ -18,6 +19,7 @@ class ApplicationStatus extends React.Component {
       applying_university = <h6 className="mb-1"> No University</h6>;
       applying_program = <h6 className="mb-1"> No Program</h6>;
       application_deadline = <h6 className="mb-1"> No Date</h6>;
+      application_decided = <h6 className="mb-1"></h6>;
       application_prepared = <h6 className="mb-1"></h6>;
       application_closed = <h6 className="mb-1"></h6>;
     } else {
@@ -42,24 +44,50 @@ class ApplicationStatus extends React.Component {
           </h6>
         )
       );
+      application_decided = this.props.student.applications.map(
+        (application, i) => (
+          <h6 className="mb-1" key={i}>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <h6>O</h6>
+            ) : (
+              <h6>X</h6>
+            )}
+          </h6>
+        )
+      );
       application_prepared = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.prepared ? <h6>True</h6> : <h6>False</h6>}
+            {application.prepared !== undefined && application.prepared === true ? (
+              <h6>O</h6>
+            ) : (
+              <h6>X</h6>
+            )}
           </h6>
         )
       );
       application_closed = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.closed ? <h6>True</h6> : <h6>False</h6>}
+            {application.closed !== undefined &&
+            application.closed === true ? (
+              <h6>O</h6>
+            ) : (
+              <h6>X</h6>
+            )}
           </h6>
         )
       );
       application_admission = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.admission ? <h6>True</h6> : <h6>False</h6>}
+            {application.admission !== undefined &&
+            application.admission === true ? (
+              <h6>O</h6>
+            ) : (
+              <h6>X</h6>
+            )}
           </h6>
         )
       );
@@ -81,7 +109,7 @@ class ApplicationStatus extends React.Component {
             <td>{applying_university}</td>
             <td>{applying_program}</td>
             <td>{application_deadline}</td>
-            <td></td>
+            <td>{application_decided}</td>
             <td>{application_prepared}</td>
             <td>{application_closed}</td>
             <td>{application_admission}</td>

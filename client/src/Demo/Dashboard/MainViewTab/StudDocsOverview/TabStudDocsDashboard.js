@@ -30,6 +30,9 @@ class TabStudDocsDashboard extends React.Component {
         updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         isDashboard={this.props.isDashboard}
         isArchivPage={this.props.isArchivPage}
+        onSetAsCloseProgram={this.props.onSetAsCloseProgram}
+        onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
+        onSetAsGetAdmissionProgram={this.props.onSetAsGetAdmissionProgram}
       />
     ));
     let header = Object.values(this.props.documentlist2);

@@ -29,6 +29,9 @@ import {
   updateAgents,
   getEditors,
   updateEditors,
+  SetAsDecidedProgram,
+  SetAsCloseProgram,
+  SetAsGetAdmissionProgram,
 } from "../../api";
 
 class Dashboard extends React.Component {
@@ -153,9 +156,16 @@ class Dashboard extends React.Component {
     }
     removeProgramFromStudent(program_id, student_id).then(
       (res) => {
-        this.setState({
-          students: stds,
-        });
+        const { success } = res.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            students: stds,
+            success: success,
+          });
+        } else {
+          alert(res.data.message);
+        }
       },
       (error) => {
         this.setState({
@@ -166,13 +176,92 @@ class Dashboard extends React.Component {
     );
   };
 
-  // onDeleteFilefromstudent = (e, category, id) => {
-  //   e.preventDefault();
-  //   deleteFile(category, id).then(
-  //     (resp) => {},
-  //     (error) => {}
-  //   );
-  // };
+  onSetAsDecidedProgram = (e, student_id, program_id) => {
+    //program id
+    e.preventDefault();
+    var stds = this.state.students;
+    var std_idx = stds.findIndex((stud) => stud._id === student_id);
+
+    SetAsDecidedProgram(student_id, program_id).then(
+      (res) => {
+        const { data, success } = res.data;
+        stds[std_idx] = data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            students: stds,
+            success: success,
+          });
+        } else {
+          alert(res.data.message);
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
+  };
+
+  onSetAsCloseProgram = (e, student_id, program_id) => {
+    //program id
+    e.preventDefault();
+    var stds = this.state.students;
+    var std_idx = stds.findIndex((stud) => stud._id === student_id);
+
+    SetAsCloseProgram(student_id, program_id).then(
+      (res) => {
+        const { data, success } = res.data;
+        stds[std_idx] = data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            students: stds,
+            success: success,
+          });
+        } else {
+          alert(res.data.message);
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
+  };
+
+  onSetAsGetAdmissionProgram = (e, student_id, program_id) => {
+    //program id
+    e.preventDefault();
+    var stds = this.state.students;
+    var std_idx = stds.findIndex((stud) => stud._id === student_id);
+
+    SetAsGetAdmissionProgram(student_id, program_id).then(
+      (res) => {
+        const { data, success } = res.data;
+        stds[std_idx] = data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            students: stds,
+            success: success,
+          });
+        } else {
+          alert(res.data.message);
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      }
+    );
+  };
 
   editAgent = (student) => {
     getAgents().then(
@@ -522,6 +611,9 @@ class Dashboard extends React.Component {
               submitUpdateEditorlist={this.submitUpdateEditorlist}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
+              onSetAsCloseProgram={this.onSetAsCloseProgram}
+              onSetAsDecidedProgram={this.onSetAsDecidedProgram}
+              onSetAsGetAdmissionProgram={this.onSetAsGetAdmissionProgram}
               isDashboard={this.state.isDashboard}
             />
             {!isLoaded && (
@@ -561,6 +653,9 @@ class Dashboard extends React.Component {
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
+              onSetAsCloseProgram={this.onSetAsCloseProgram}
+              onSetAsDecidedProgram={this.onSetAsDecidedProgram}
+              onSetAsGetAdmissionProgram={this.onSetAsGetAdmissionProgram}
             />
             {!isLoaded && (
               <div style={style}>

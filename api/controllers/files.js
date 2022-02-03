@@ -417,7 +417,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
 const downloadFile = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, applicationId, docName, student_inputs },
+    params: { studentId, applicationId, docName, whoupdate },
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -432,7 +432,7 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   if (!application) throw new ErrorResponse(400, "Invalid application id");
   //TODO: flag for differenciate students input or edited file
   let document;
-  if (student_inputs === "student") {
+  if (whoupdate === "Student") {
     document = application.student_inputs.find(({ name }) => name === docName);
   } else {
     document = application.documents.find(({ name }) => name === docName);
@@ -546,6 +546,84 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       category: category.replace(/_/g, " "),
     }
   );
+});
+
+const SetAsDecidedProgram = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, applicationId },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  // console.log(student);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  application.decided = true;
+  // TODO: set flag student document(filetype, feedback) isReceivedFeedback
+  await student.save();
+  res.status(201).send({ success: true, data: student });
+  //TODO: feedback added email
+});
+
+const SetAsCloseProgram = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, applicationId },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  // console.log(student);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+  application.closed = true;
+  // TODO: set flag student document(filetype, feedback) isReceivedFeedback
+  await student.save();
+  res.status(201).send({ success: true, data: student });
+  //TODO: feedback added email
+});
+
+const SetAsGetAdmissionProgram = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, applicationId },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  // console.log(student);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+  // console.log("Admission");
+
+  application.admission = true;
+  // TODO: set flag student document(filetype, feedback) isReceivedFeedback
+  await student.save();
+  res.status(201).send({ success: true, data: student });
+  //TODO: feedback added email
 });
 
 const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
@@ -1031,7 +1109,9 @@ module.exports = {
   downloadFile,
   downloadGeneralFile,
   updateProfileDocumentStatus,
-  updateProfileDocumentStatus,
+  SetAsDecidedProgram,
+  SetAsCloseProgram,
+  SetAsGetAdmissionProgram,
   SetAsFinalProgramSpecificFile,
   deleteProgramSpecificFile,
   SetAsFinalGeneralFile,

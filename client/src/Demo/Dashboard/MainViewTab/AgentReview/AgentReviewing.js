@@ -50,7 +50,7 @@ class AgentReviewing extends React.Component {
           (application.decided !== undefined && application.decided === false)
         ) {
           return (
-            <h6>
+            <h6 key={i}>
               {application.programId.University_}
               {" - "}
               {application.programId.Program_}

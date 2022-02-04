@@ -45,51 +45,54 @@ class ApplicationStatus extends React.Component {
         )
       );
       application_decided = this.props.student.applications.map(
-        (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.decided !== undefined &&
-            application.decided === true ? (
-              <h6>O</h6>
-            ) : (
-              <h6>X</h6>
-            )}
-          </h6>
-        )
+        (application, i) =>
+          application.decided !== undefined && application.decided === true ? (
+            <h6 className="mb-1" key={i}>
+              O
+            </h6>
+          ) : (
+            <h6 className="mb-1" key={i}>
+              X
+            </h6>
+          )
       );
       application_prepared = this.props.student.applications.map(
-        (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.prepared !== undefined && application.prepared === true ? (
-              <h6>O</h6>
-            ) : (
-              <h6>X</h6>
-            )}
-          </h6>
-        )
+        (application, i) =>
+          application.prepared !== undefined &&
+          application.prepared === true ? (
+            <h6 className="mb-1" key={i}>
+              O
+            </h6>
+          ) : (
+            <h6 className="mb-1" key={i}>
+              X
+            </h6>
+          )
       );
       application_closed = this.props.student.applications.map(
-        (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.closed !== undefined &&
-            application.closed === true ? (
-              <h6>O</h6>
-            ) : (
-              <h6>X</h6>
-            )}
-          </h6>
-        )
+        (application, i) =>
+          application.closed !== undefined && application.closed === true ? (
+            <h6 className="mb-1" key={i}>
+              O
+            </h6>
+          ) : (
+            <h6 className="mb-1" key={i}>
+              X
+            </h6>
+          )
       );
       application_admission = this.props.student.applications.map(
-        (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.admission !== undefined &&
-            application.admission === true ? (
-              <h6>O</h6>
-            ) : (
-              <h6>X</h6>
-            )}
-          </h6>
-        )
+        (application, i) =>
+          application.admission !== undefined &&
+          application.admission === true ? (
+            <h6 className="mb-1" key={i}>
+              O
+            </h6>
+          ) : (
+            <h6 className="mb-1" key={i}>
+              X
+            </h6>
+          )
       );
     }
 

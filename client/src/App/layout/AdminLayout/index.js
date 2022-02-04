@@ -53,7 +53,7 @@ function AdminLayout(props) {
     ) {
       props.onComponentWillMount();
     }
-  });
+  }, [props.layout]);
 
   const handleOnClickLogout = (e) => {
     e.preventDefault();

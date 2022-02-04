@@ -31,7 +31,7 @@ class EditorReviewing extends React.Component {
     }
     var to_be_checked_profiles = keys.map((key, i) => {
       if (object_init[key] === "uploaded") {
-        return <h6>{key.replace(/_/g, " ")}</h6>;
+        return <h6 key={i}>{key.replace(/_/g, " ")}</h6>;
       }
     });
 
@@ -128,7 +128,7 @@ class EditorReviewing extends React.Component {
                 application.student_inputs.findIndex((doc) =>
                   doc.name.includes("ML_Template")
                 ) !== -1 ? (
-                  <h6 className="mb-1">
+                  <h6 className="mb-1" key={i}>
                     {new Date(
                       application.student_inputs[
                         application.student_inputs.findIndex((doc) =>
@@ -146,7 +146,9 @@ class EditorReviewing extends React.Component {
                     ).toLocaleTimeString()}
                   </h6>
                 ) : (
-                  <h6 className="mb-1">Not existed</h6>
+                  <h6 className="mb-1" key={i}>
+                    Not existed
+                  </h6>
                 )}
               </>
             ) : (
@@ -170,7 +172,7 @@ class EditorReviewing extends React.Component {
                   (doc) =>
                     doc.name.includes("ML") && doc.isFinalVersion === true
                 ) === -1 ? (
-                  <h6 className="mb-1">
+                  <h6 className="mb-1" key={i}>
                     ML - {application.programId.University_}
                     {" - "}
                     {application.programId.Program_}
@@ -205,7 +207,7 @@ class EditorReviewing extends React.Component {
                     <></>
                   ) : (
                     <>
-                      <h6 className="mb-1">
+                      <h6 className="mb-1" key={i}>
                         ML - {application.programId.University_}
                         {" - "}
                         {application.programId.Program_}
@@ -236,7 +238,7 @@ class EditorReviewing extends React.Component {
                     doc.isFinalVersion !== undefined &&
                     doc.isFinalVersion === true
                 ) !== -1 ? (
-                  <h6 className="mb-1">
+                  <h6 className="mb-1" key={i}>
                     ML - {application.programId.University_}
                     {" - "}
                     {application.programId.Program_}
@@ -266,7 +268,7 @@ class EditorReviewing extends React.Component {
                 application.documents.findIndex((doc) =>
                   doc.name.includes("ML")
                 ) === -1 ? (
-                  <h6 className="mb-1">
+                  <h6 className="mb-1" key={i}>
                     ML - {application.programId.University_}
                     {" - "}
                     {application.programId.Program_}

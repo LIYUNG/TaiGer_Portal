@@ -186,6 +186,14 @@ export default {
           ],
         },
         {
+          id: "prev_students_database",
+          title: "Student Database",
+          type: "item",
+          url: "/student-database",
+          classes: "nav-item",
+          icon: "feather icon-cloud",
+        },
+        {
           id: "personaldata",
           title: "Personal Data",
           type: "item",

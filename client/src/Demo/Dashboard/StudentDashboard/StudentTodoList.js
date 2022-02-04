@@ -206,18 +206,29 @@ class StudentTodoList extends React.Component {
       application_ML_template_ToBefilled = this.props.student.applications.map(
         (application, i) => (
           <>
-            {application.student_inputs &&
-            application.student_inputs.findIndex((doc) =>
-              doc.name.includes("ML_Template")
-            ) !== -1 ? (
-              <></>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <>
+                {(application.student_inputs &&
+                  application.student_inputs.findIndex((doc) =>
+                    doc.name.includes("ML_Template")
+                  )) === -1 &&
+                application.documents &&
+                application.documents.findIndex((doc) =>
+                  doc.name.includes("ML")
+                ) === -1 ? (
+                  <h6 className="mb-1" key={application._id}>
+                    ML - {application.programId.University_}
+                    {" - "}
+                    {application.programId.Program_}
+                  </h6>
+                ) : (
+                  // TODO: add new case: replace prepared by "programId.requiredML?"
+                  <> </>
+                )}
+              </>
             ) : (
-              // TODO: add new case: replace prepared by "programId.requiredML?"
-              <h6 className="mb-1">
-                ML - {application.programId.University_}
-                {" - "}
-                {application.programId.Program_}
-              </h6>
+              <></>
             )}
           </>
         )
@@ -226,133 +237,212 @@ class StudentTodoList extends React.Component {
       application_ML_status = this.props.student.applications.map(
         (application, i) => (
           <>
-            {application.documents &&
-            application.documents.findIndex((doc) =>
-              doc.name.includes("_ML")
-            ) !== -1 ? (
-              <h6 className="mb-1">
-                ML - {application.programId.University_}
-                {" - "}
-                {application.programId.Program_}
-              </h6>
+            {application.decided !== undefined &&
+            application.decided === true ? (
+              <>
+                {application.documents &&
+                application.documents.findIndex((doc) =>
+                  doc.name.includes("ML")
+                ) !== -1 ? (
+                  application.documents &&
+                  application.documents.findIndex(
+                    (doc) =>
+                      doc.name.includes("ML") && doc.isFinalVersion === true
+                  ) !== -1 ? (
+                    <></>
+                  ) : application.documents &&
+                    application.documents.findIndex(
+                      (doc) =>
+                        doc.name.includes("ML") &&
+                        (doc.isReceivedFeedback === false ||
+                          doc.isReceivedFeedback === undefined)
+                    ) !== -1 ? (
+                    <>
+                      <h6 className="mb-1" key={application._id}>
+                        ML - {application.programId.University_}
+                        {" - "}
+                        {application.programId.Program_}
+                      </h6>
+                    </>
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  // TODO: add new case: replace prepared by "programId.requiredML?"
+                  <></>
+                )}
+              </>
             ) : (
-              // TODO: add new case: replace prepared by "programId.requiredML?"
               <></>
             )}
           </>
         )
       );
+    }
 
-      if (
-        this.props.student.generaldocs === undefined ||
-        this.props.student.generaldocs.editoroutputs === undefined ||
-        this.props.student.generaldocs.editoroutputs.length === 0
-      ) {
-        general_CV_status = <></>;
-        general_RL_status = <></>;
-      } else {
-        general_CV_status =
-          this.props.student.generaldocs.editoroutputs.findIndex(
-            (
-              doc //TODO: get the latest CV and isReceivedFeedback flag
-            ) => doc.name.includes("CV")
-          ) !== -1 ? (
-            <h6 className="mb-1">CV - Revised</h6>
-          ) : (
-            <></>
-          );
-        //For Editor: (TODO: add another flags: student read, editor read?)
-        general_RL_status =
+    if (
+      this.props.student.generaldocs === undefined ||
+      this.props.student.generaldocs.editoroutputs === undefined ||
+      this.props.student.generaldocs.editoroutputs.length === 0
+    ) {
+      general_CV_status = <></>;
+      general_RL_status = <></>;
+    } else {
+      general_CV_status =
+        this.props.student.generaldocs.editoroutputs.findIndex(
+          (
+            doc //TODO: get the latest CV and isReceivedFeedback flag
+          ) => doc.name.includes("CV")
+        ) !== -1 ? (
           this.props.student.generaldocs.editoroutputs.findIndex(
             (
               doc //TODO: get the latest RL and isReceivedFeedback flag
-            ) => doc.name.includes("RL")
-          ) !== -1 ? (
-            <h6 className="mb-1">RL Revised</h6>
-          ) : (
-            <></>
-          );
-      }
-
-      if (
-        this.props.student.generaldocs === undefined ||
-        this.props.student.generaldocs.studentinputs === undefined ||
-        this.props.student.generaldocs.studentinputs.length === 0
-      ) {
-        general_CV_template_ToBefilled = <h6 className="mb-1">CV template</h6>;
-        general_RL_template_ToBefilled = <h6 className="mb-1">RL template</h6>;
-        general_CV_Lastupdate = <h6 className="mb-1">Not existed</h6>;
-        general_RL_Lastupdate = <h6 className="mb-1">Not existed</h6>;
-      } else {
-        general_CV_template_ToBefilled =
-          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("CV_Template")
+            ) => doc.name.includes("CV") && doc.isFinalVersion === true
           ) !== -1 ? (
             <></>
           ) : (
-            <h6 className="mb-1">CV - Template</h6>
-          );
-        // For Editor
-
-        general_CV_Lastupdate =
-          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("CV_Template")
-          ) !== -1 ? (
-            <h6 className="mb-1">
-              {new Date(
-                this.props.student.generaldocs.studentinputs[
-                  this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("CV_Template")
-                  )
-                ].updatedAt
-              ).toLocaleDateString()}
-              {", "}
-              {new Date(
-                this.props.student.generaldocs.studentinputs[
-                  this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("CV_Template")
-                  )
-                ].updatedAt
-              ).toLocaleTimeString()}
+            <h6 className="mb-1" key={1}>
+              CV Revised
             </h6>
-          ) : (
-            <h6 className="mb-1">Not existed</h6>
-          );
-        general_RL_template_ToBefilled =
-          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_Template")
+          )
+        ) : (
+          <></>
+        );
+      //For Editor: (TODO: add another flags: student read, editor read?)
+      general_RL_status =
+        this.props.student.generaldocs.editoroutputs.findIndex(
+          (
+            doc //TODO: get the latest RL and isReceivedFeedback flag
+          ) => doc.name.includes("RL")
+        ) !== -1 ? (
+          this.props.student.generaldocs.editoroutputs.findIndex(
+            (
+              doc //TODO: get the latest RL and isReceivedFeedback flag
+            ) => doc.name.includes("RL") && doc.isFinalVersion === true
           ) !== -1 ? (
             <></>
           ) : (
-            <h6 className="mb-1">RL template</h6>
-          );
-
-        general_RL_Lastupdate =
-          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_Template")
-          ) !== -1 ? (
-            <h6 className="mb-1">
-              {new Date(
-                this.props.student.generaldocs.studentinputs[
-                  this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_Template")
-                  )
-                ].updatedAt
-              ).toLocaleDateString()}
-              {", "}
-              {new Date(
-                this.props.student.generaldocs.studentinputs[
-                  this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_Template")
-                  )
-                ].updatedAt
-              ).toLocaleTimeString()}
+            <h6 className="mb-1" key={10}>
+              RL Revised
             </h6>
-          ) : (
-            <h6 className="mb-1">Not existed</h6>
-          );
-      }
+          )
+        ) : (
+          <></>
+        );
     }
+
+    if (
+      this.props.student.generaldocs === undefined ||
+      this.props.student.generaldocs.studentinputs === undefined ||
+      this.props.student.generaldocs.studentinputs.length === 0
+    ) {
+      general_CV_template_ToBefilled = (
+        <h6 className="mb-1" key={1}>
+          CV template
+        </h6>
+      );
+      general_RL_template_ToBefilled = (
+        <h6 className="mb-1" key={10}>
+          RL template
+        </h6>
+      );
+      general_CV_Lastupdate = (
+        <h6 className="mb-1" key={1}>
+          Not existed
+        </h6>
+      );
+      general_RL_Lastupdate = (
+        <h6 className="mb-1" key={10}>
+          Not existed
+        </h6>
+      );
+    } else {
+      // For Editor
+
+      general_CV_Lastupdate =
+        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+          doc.name.includes("CV_Template")
+        ) !== -1 ? (
+          <h6 className="mb-1">
+            {new Date(
+              this.props.student.generaldocs.studentinputs[
+                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+                  doc.name.includes("CV_Template")
+                )
+              ].updatedAt
+            ).toLocaleDateString()}
+            {", "}
+            {new Date(
+              this.props.student.generaldocs.studentinputs[
+                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+                  doc.name.includes("CV_Template")
+                )
+              ].updatedAt
+            ).toLocaleTimeString()}
+          </h6>
+        ) : (
+          <h6 className="mb-1">Not existed</h6>
+        );
+
+      general_RL_Lastupdate =
+        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+          doc.name.includes("RL_Template")
+        ) !== -1 ? (
+          <h6 className="mb-1">
+            {new Date(
+              this.props.student.generaldocs.studentinputs[
+                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+                  doc.name.includes("RL_Template")
+                )
+              ].updatedAt
+            ).toLocaleDateString()}
+            {", "}
+            {new Date(
+              this.props.student.generaldocs.studentinputs[
+                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+                  doc.name.includes("RL_Template")
+                )
+              ].updatedAt
+            ).toLocaleTimeString()}
+          </h6>
+        ) : (
+          <h6 className="mb-1">Not existed</h6>
+        );
+    }
+    general_CV_template_ToBefilled =
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.studentinputs !== undefined &&
+      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+        doc.name.includes("CV_Template")
+      ) === -1 &&
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.editoroutputs !== undefined &&
+      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+        doc.name.includes("CV")
+      ) === -1 ? (
+        <h6 className="mb-1" key={1}>
+          CV - Template
+        </h6>
+      ) : (
+        <></>
+      );
+    general_RL_template_ToBefilled =
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.studentinputs !== undefined &&
+      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+        doc.name.includes("RL_Template")
+      ) === -1 &&
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.editoroutputs !== undefined &&
+      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+        doc.name.includes("RL")
+      ) === -1 ? (
+        <h6 className="mb-1" key={10}>
+          RL template
+        </h6>
+      ) : (
+        <></>
+      );
     return (
       <>
         <tbody>

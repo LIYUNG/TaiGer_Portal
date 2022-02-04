@@ -158,6 +158,7 @@ class StudentMainView extends React.Component {
                 <thead>
                   <tr>
                     <th>Uploaded files will be reviewed by your agent:</th>
+                    <th>Programs will be reviewed by your agent:</th>
                   </tr>
                 </thead>
                 {agent_reviewing}

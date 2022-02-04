@@ -67,7 +67,7 @@ class EditorReviewing extends React.Component {
           <>
             {application.decided !== undefined &&
             application.decided === true ? (
-              <h6 className="mb-1" key={i}>
+              <h6 className="mb-1" key={application._id}>
                 ML
               </h6>
             ) : (
@@ -81,7 +81,7 @@ class EditorReviewing extends React.Component {
           <>
             {application.decided !== undefined &&
             application.decided === true ? (
-              <h6 className="mb-1" key={i}>
+              <h6 className="mb-1" key={application._id}>
                 {application.programId.University_}
               </h6>
             ) : (
@@ -95,7 +95,7 @@ class EditorReviewing extends React.Component {
           <>
             {application.decided !== undefined &&
             application.decided === true ? (
-              <h6 className="mb-1" key={i}>
+              <h6 className="mb-1" key={application._id}>
                 {application.programId.Program_}
               </h6>
             ) : (
@@ -109,7 +109,7 @@ class EditorReviewing extends React.Component {
           <>
             {application.decided !== undefined &&
             application.decided === true ? (
-              <h6 className="mb-1" key={i}>
+              <h6 className="mb-1" key={application._id}>
                 {application.programId.Application_end_date_}
               </h6>
             ) : (
@@ -128,7 +128,7 @@ class EditorReviewing extends React.Component {
                 application.student_inputs.findIndex((doc) =>
                   doc.name.includes("ML_Template")
                 ) !== -1 ? (
-                  <h6 className="mb-1" key={i}>
+                  <h6 className="mb-1" key={application._id}>
                     {new Date(
                       application.student_inputs[
                         application.student_inputs.findIndex((doc) =>
@@ -172,11 +172,23 @@ class EditorReviewing extends React.Component {
                   (doc) =>
                     doc.name.includes("ML") && doc.isFinalVersion === true
                 ) === -1 ? (
-                  <h6 className="mb-1" key={i}>
-                    ML - {application.programId.University_}
-                    {" - "}
-                    {application.programId.Program_}
-                  </h6>
+                  application.documents &&
+                  application.documents.findIndex(
+                    (doc) =>
+                      doc.name.includes("ML") &&
+                      (doc.isReceivedFeedback === false ||
+                        doc.isReceivedFeedback === undefined)
+                  ) !== -1 ? (
+                    <></>
+                  ) : (
+                    <>
+                      <h6 className="mb-1" key={application._id}>
+                        ML - {application.programId.University_}
+                        {" - "}
+                        {application.programId.Program_}
+                      </h6>
+                    </>
+                  )
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
                   <></>
@@ -205,14 +217,22 @@ class EditorReviewing extends React.Component {
                       doc.name.includes("ML") && doc.isFinalVersion === true
                   ) !== -1 ? (
                     <></>
-                  ) : (
+                  ) : application.documents &&
+                    application.documents.findIndex(
+                      (doc) =>
+                        doc.name.includes("ML") &&
+                        (doc.isReceivedFeedback === false ||
+                          doc.isReceivedFeedback === undefined)
+                    ) !== -1 ? (
                     <>
-                      <h6 className="mb-1" key={i}>
+                      <h6 className="mb-1" key={application._id}>
                         ML - {application.programId.University_}
                         {" - "}
                         {application.programId.Program_}
                       </h6>
                     </>
+                  ) : (
+                    <></>
                   )
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
@@ -238,7 +258,7 @@ class EditorReviewing extends React.Component {
                     doc.isFinalVersion !== undefined &&
                     doc.isFinalVersion === true
                 ) !== -1 ? (
-                  <h6 className="mb-1" key={i}>
+                  <h6 className="mb-1" key={application._id}>
                     ML - {application.programId.University_}
                     {" - "}
                     {application.programId.Program_}
@@ -268,7 +288,7 @@ class EditorReviewing extends React.Component {
                 application.documents.findIndex((doc) =>
                   doc.name.includes("ML")
                 ) === -1 ? (
-                  <h6 className="mb-1" key={i}>
+                  <h6 className="mb-1" key={application._id}>
                     ML - {application.programId.University_}
                     {" - "}
                     {application.programId.Program_}
@@ -308,11 +328,13 @@ class EditorReviewing extends React.Component {
           ) !== -1 ? (
             <></>
           ) : (
-            <h6 className="mb-1">RL Revised</h6>
+            <h6 className="mb-1" key={10}>
+              RL Revised
+            </h6>
           )
         ) : (
           <></>
-        ); // For Editor
+        );
       general_CV_status =
         this.props.student.generaldocs.editoroutputs.findIndex(
           (
@@ -326,7 +348,9 @@ class EditorReviewing extends React.Component {
           ) !== -1 ? (
             <></>
           ) : (
-            <h6 className="mb-1">CV Revised</h6>
+            <h6 className="mb-1" key={1}>
+              CV Revised
+            </h6>
           )
         ) : (
           <></>
@@ -335,7 +359,9 @@ class EditorReviewing extends React.Component {
         this.props.student.generaldocs.editoroutputs.findIndex(
           (doc) => doc.name.includes("CV") && doc.isFinalVersion
         ) !== -1 ? (
-          <h6 className="mb-1">CV {" - "}- Final</h6>
+          <h6 className="mb-1" key={1}>
+            CV {" - "}- Final
+          </h6>
         ) : (
           // TODO: add new case: replace prepared by "programId.requiredML?"
           <></>
@@ -344,7 +370,9 @@ class EditorReviewing extends React.Component {
         this.props.student.generaldocs.editoroutputs.findIndex(
           (doc) => doc.name.includes("RL") && doc.isFinalVersion
         ) !== -1 ? (
-          <h6 className="mb-1">RL {" - "}- Final</h6>
+          <h6 className="mb-1" key={10}>
+            RL {" - "}- Final
+          </h6>
         ) : (
           // TODO: add new case: replace prepared by "programId.requiredML?"
           <></>
@@ -358,10 +386,26 @@ class EditorReviewing extends React.Component {
     ) {
       general_CV_template_filled = <></>;
       general_RL_template_filled = <></>;
-      general_CV_template_ToBefilled = <h6 className="mb-1">CV template</h6>;
-      general_RL_template_ToBefilled = <h6 className="mb-1">RL template</h6>;
-      general_CV_Lastupdate = <h6 className="mb-1">Not existed</h6>;
-      general_RL_Lastupdate = <h6 className="mb-1">Not existed</h6>;
+      general_CV_template_ToBefilled = (
+        <h6 className="mb-1" key={1}>
+          CV template
+        </h6>
+      );
+      general_RL_template_ToBefilled = (
+        <h6 className="mb-1" key={10}>
+          RL template
+        </h6>
+      );
+      general_CV_Lastupdate = (
+        <h6 className="mb-1" key={1}>
+          Not existed
+        </h6>
+      );
+      general_RL_Lastupdate = (
+        <h6 className="mb-1" key={10}>
+          Not existed
+        </h6>
+      );
     } else {
       general_CV_template_filled =
         this.props.student.generaldocs.studentinputs.findIndex((doc) =>
@@ -370,7 +414,9 @@ class EditorReviewing extends React.Component {
           this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
             doc.name.includes("CV")
           ) === -1 ? (
-            <h6 className="mb-1">CV template filled</h6>
+            <h6 className="mb-1" key={1}>
+              CV template filled
+            </h6>
           ) : (
             <></>
           )
@@ -382,7 +428,7 @@ class EditorReviewing extends React.Component {
         this.props.student.generaldocs.studentinputs.findIndex((doc) =>
           doc.name.includes("CV_Template")
         ) !== -1 ? (
-          <h6 className="mb-1">
+          <h6 className="mb-1" key={1}>
             {new Date(
               this.props.student.generaldocs.studentinputs[
                 this.props.student.generaldocs.studentinputs.findIndex((doc) =>
@@ -400,13 +446,17 @@ class EditorReviewing extends React.Component {
             ).toLocaleTimeString()}
           </h6>
         ) : (
-          <h6 className="mb-1">Not existed</h6>
+          <h6 className="mb-1" key={1}>
+            Not existed
+          </h6>
         );
       general_RL_template_filled =
         this.props.student.generaldocs.studentinputs.findIndex((doc) =>
           doc.name.includes("RL_Template")
         ) !== -1 ? (
-          <h6 className="mb-1">RL template filled</h6>
+          <h6 className="mb-1" key={10}>
+            RL template filled
+          </h6>
         ) : (
           <></>
         );
@@ -415,7 +465,7 @@ class EditorReviewing extends React.Component {
         this.props.student.generaldocs.studentinputs.findIndex((doc) =>
           doc.name.includes("RL_Template")
         ) !== -1 ? (
-          <h6 className="mb-1">
+          <h6 className="mb-1" key={10}>
             {new Date(
               this.props.student.generaldocs.studentinputs[
                 this.props.student.generaldocs.studentinputs.findIndex((doc) =>
@@ -433,7 +483,9 @@ class EditorReviewing extends React.Component {
             ).toLocaleTimeString()}
           </h6>
         ) : (
-          <h6 className="mb-1">Not existed</h6>
+          <h6 className="mb-1" key={10}>
+            Not existed
+          </h6>
         );
     }
     general_RL_template_ToBefilled =
@@ -447,7 +499,9 @@ class EditorReviewing extends React.Component {
       this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
         doc.name.includes("RL")
       ) === -1 ? (
-        <h6 className="mb-1">RL template</h6>
+        <h6 className="mb-1" key={10}>
+          RL template
+        </h6>
       ) : (
         <></>
       );
@@ -463,56 +517,56 @@ class EditorReviewing extends React.Component {
       this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
         doc.name.includes("CV")
       ) === -1 ? (
-        <h6 className="mb-1">CV - Template</h6>
+        <h6 className="mb-1" key={1}>
+          CV - Template
+        </h6>
       ) : (
         <></>
       );
     return (
       <>
-        <tbody>
-          <tr>
-            {this.props.role !== "Student" ? (
-              <>
-                <td>
-                  {this.props.student.firstname}
-                  {" - "}
-                  {this.props.student.lastname}
-                </td>{" "}
-                <td>
-                  {general_RL_template_ToBefilled}
-                  {general_CV_template_ToBefilled}
-                  {application_ML_template_ToBefilled}
-                </td>
-              </>
-            ) : (
-              <></>
-            )}
+        <tr>
+          {this.props.role !== "Student" ? (
+            <>
+              <td>
+                {this.props.student.firstname}
+                {" - "}
+                {this.props.student.lastname}
+              </td>
+              <td>
+                {general_RL_template_ToBefilled}
+                {general_CV_template_ToBefilled}
+                {application_ML_template_ToBefilled}
+              </td>
+            </>
+          ) : (
+            <></>
+          )}
 
+          <td>
+            {general_RL_template_filled}
+            {general_CV_template_filled}
+            {application_ML_template_filled}
+          </td>
+          {this.props.role !== "Student" ? (
             <td>
-              {general_RL_template_filled}
-              {general_CV_template_filled}
-              {application_ML_template_filled}
+              {general_RL_status}
+              {general_CV_status}
+              {application_ML_status}
             </td>
-            {this.props.role !== "Student" ? (
-              <td>
-                {general_RL_status}
-                {general_CV_status}
-                {application_ML_status}
-              </td>
-            ) : (
-              <></>
-            )}
-            {this.props.role !== "Student" ? (
-              <td>
-                {finished_RL}
-                {finished_CV}
-                {finished_application_ML}
-              </td>
-            ) : (
-              <></>
-            )}
-          </tr>
-        </tbody>
+          ) : (
+            <></>
+          )}
+          {this.props.role !== "Student" ? (
+            <td>
+              {finished_RL}
+              {finished_CV}
+              {finished_application_ML}
+            </td>
+          ) : (
+            <></>
+          )}
+        </tr>
       </>
     );
   }

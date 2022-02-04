@@ -84,7 +84,7 @@ class AgentMainView extends React.Component {
                     <th>Waiting Student's Feedback</th>
                   </tr>
                 </thead>
-                {editor_reviewing}
+                <tbody>{editor_reviewing}</tbody>
               </Table>
             </Card>
           </Col>

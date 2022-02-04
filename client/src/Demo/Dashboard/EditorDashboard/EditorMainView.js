@@ -19,7 +19,7 @@ class EditorMainView extends React.Component {
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
-        key={i}
+        key={student._id}
         student={student}
         agent_list={this.props.agent_list}
         editor_list={this.props.editor_list}
@@ -27,7 +27,7 @@ class EditorMainView extends React.Component {
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
       <EditorReviewing
-        key={i}
+        key={student._id}
         role={this.props.role}
         student={student}
         documentlist2={this.props.documentlist2}
@@ -35,23 +35,6 @@ class EditorMainView extends React.Component {
     ));
     return (
       <>
-        {/* <Row>
-          <Col sm={12}>
-            <Card title="Editor: To Do">
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <th>First-, Last Name</th>
-                    {this.props.editortodolist.map((doc, index) => (
-                      <th key={index}>{doc.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                {editor_todo}
-              </Table>
-            </Card>
-          </Col>
-        </Row> */}
         <Row>
           <Col md={12}>
             <Card title="Editor Reviewing:">
@@ -65,7 +48,7 @@ class EditorMainView extends React.Component {
                     <th>Close</th>
                   </tr>
                 </thead>
-                {editor_reviewing}
+                <tbody>{editor_reviewing}</tbody>
               </Table>
             </Card>
           </Col>

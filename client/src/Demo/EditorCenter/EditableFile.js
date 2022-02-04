@@ -6,22 +6,26 @@ import {
   AiOutlineDelete,
   AiOutlineCheck,
   AiOutlineComment,
+  AiOutlineUndo,
 } from "react-icons/ai";
+import { IoCheckmarkCircle } from "react-icons/io5";
 class EditableFile extends Component {
-  handleAsFinalGeneralFile = () => {
+  handleAsFinalGeneralFile = (action) => {
     this.props.handleAsFinalGeneralFile(
       this.props.student._id,
       this.props.document.name,
-      this.props.whoupdate
+      this.props.whoupdate,
+      action
     );
   };
 
-  handleAsFinalProgramSpecific = () => {
+  handleAsFinalProgramSpecific = (action) => {
     this.props.handleAsFinalProgramSpecific(
       this.props.student._id,
       this.props.application.programId._id,
       this.props.document.name,
-      this.props.whoupdate
+      this.props.whoupdate,
+      action
     );
   };
 
@@ -74,18 +78,40 @@ class EditableFile extends Component {
                 <>
                   <Col md={1}>
                     {this.props.filetype === "General" ? (
-                      <Button
-                        size="sm"
-                        title="As final version"
-                        onClick={this.handleAsFinalGeneralFile}
-                      >
-                        <AiOutlineCheck size={12} />
-                      </Button>
+                      this.props.document.isFinalVersion === true ? (
+                        <>
+                          <IoCheckmarkCircle
+                            size={24}
+                            color="limegreen"
+                            title="Final Version"
+                          />
+                        </>
+                      ) : (
+                        <Button
+                          size="sm"
+                          title="As final version"
+                          onClick={() =>
+                            this.handleAsFinalGeneralFile("setfinal")
+                          }
+                        >
+                          <AiOutlineCheck size={12} />
+                        </Button>
+                      )
+                    ) : this.props.document.isFinalVersion === true ? (
+                      <>
+                        <IoCheckmarkCircle
+                          size={24}
+                          color="limegreen"
+                          title="Final Version"
+                        />
+                      </>
                     ) : (
                       <Button
                         size="sm"
                         title="As final version"
-                        onClick={this.handleAsFinalProgramSpecific}
+                        onClick={() =>
+                          this.handleAsFinalProgramSpecific("setfinal")
+                        }
                       >
                         <AiOutlineCheck size={12} />
                       </Button>
@@ -96,7 +122,48 @@ class EditableFile extends Component {
                 <></>
               )}
             </Col>
-            <Col md={5}>
+            <Col md={1}>
+              {this.props.role === "Editor" ? (
+                <>
+                  <Col md={1}>
+                    {this.props.filetype === "General" ? (
+                      this.props.document.isFinalVersion === true ? (
+                        <>
+                          <AiOutlineUndo
+                            size={24}
+                            color="red"
+                            title="Un do Final Version"
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              this.handleAsFinalGeneralFile("undofinal")
+                            }
+                          />
+                        </>
+                      ) : (
+                        <></>
+                      )
+                    ) : this.props.document.isFinalVersion === true ? (
+                      <>
+                        <AiOutlineUndo
+                          size={24}
+                          color="red"
+                          title="Un do Final Version"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            this.handleAsFinalProgramSpecific("undofinal")
+                          }
+                        />
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </Col>
+                </>
+              ) : (
+                <></>
+              )}
+            </Col>
+            <Col md={4}>
               <p>{documenName}</p>
             </Col>
             <Col md={2}>

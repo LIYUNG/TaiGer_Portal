@@ -657,7 +657,15 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
     );
     if (!editor_output_doc)
       throw new ErrorResponse(400, "Document not existed!");
-    editor_output_doc.isFinalVersion = true;
+    if (
+      editor_output_doc.isFinalVersion === undefined ||
+      editor_output_doc.isFinalVersion === false
+    ) {
+      editor_output_doc.isFinalVersion = true;
+    } else {
+      editor_output_doc.isFinalVersion = false;
+    }
+
     editor_output_doc.updatedAt = new Date();
     // TODO: set flag student document(filetype, feedback) isReceivedFeedback
     await student.save();
@@ -767,7 +775,14 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
     );
     if (!editor_output_doc)
       throw new ErrorResponse(400, "Document not existed!");
-    editor_output_doc.isFinalVersion = true;
+    if (
+      editor_output_doc.isFinalVersion === undefined ||
+      editor_output_doc.isFinalVersion === false
+    ) {
+      editor_output_doc.isFinalVersion = true;
+    } else {
+      editor_output_doc.isFinalVersion = false;
+    }
     editor_output_doc.updatedAt = new Date();
     await student.save();
     res.status(201).send({ success: true, data: student });

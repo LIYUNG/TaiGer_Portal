@@ -34,6 +34,7 @@ class EditorDocsProgress extends React.Component {
     student: this.props.student,
     deleteFileWarningModel: false,
     SetAsFinalFileModel: false,
+    UndoFinalFileModel: false,
     CommentsModel: false,
     studentId: "",
     applicationId: "",
@@ -49,10 +50,28 @@ class EditorDocsProgress extends React.Component {
     }));
   }
   openSetAsFinalFileModelWindow = () => {
-    this.setState((state) => ({ ...state, SetAsFinalFileModel: true }));
+    this.setState((state) => ({
+      ...state,
+      SetAsFinalFileModel: true,
+    }));
   };
   closeSetAsFinalFileModelWindow = () => {
-    this.setState((state) => ({ ...state, SetAsFinalFileModel: false }));
+    this.setState((state) => ({
+      ...state,
+      SetAsFinalFileModel: false,
+    }));
+  };
+  openUndoFinalFileModelWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      UndoFinalFileModel: true,
+    }));
+  };
+  closeUndoFinalFileModelWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      UndoFinalFileModel: false,
+    }));
   };
   openWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
@@ -250,6 +269,7 @@ class EditorDocsProgress extends React.Component {
                 student: data,
                 success: success,
                 SetAsFinalFileModel: false,
+                UndoFinalFileModel: false,
               }));
             }.bind(this),
             1500
@@ -265,6 +285,7 @@ class EditorDocsProgress extends React.Component {
             isLoaded: true,
             success: success,
             SetAsFinalFileModel: false,
+            UndoFinalFileModel: false,
           }));
         }
       },
@@ -301,6 +322,7 @@ class EditorDocsProgress extends React.Component {
                 student: data,
                 success: success,
                 SetAsFinalFileModel: false,
+                UndoFinalFileModel: false,
               }));
             }.bind(this),
             1500
@@ -316,6 +338,7 @@ class EditorDocsProgress extends React.Component {
             isLoaded: true,
             success: success,
             SetAsFinalFileModel: false,
+            UndoFinalFileModel: false,
           }));
         }
       },
@@ -410,28 +433,52 @@ class EditorDocsProgress extends React.Component {
     studentId,
     applicationId,
     docName,
-    whoupdate
+    whoupdate,
+    action
   ) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      applicationId,
-      docName,
-      whoupdate,
-      filetype: "ProgramSpecific",
-      SetAsFinalFileModel: true, //change
-    }));
+    if (action === "setfinal") {
+      this.setState((state) => ({
+        ...state,
+        studentId,
+        applicationId,
+        docName,
+        whoupdate,
+        filetype: "ProgramSpecific",
+        SetAsFinalFileModel: true, //change
+      }));
+    } else if (action === "undofinal") {
+      this.setState((state) => ({
+        ...state,
+        studentId,
+        applicationId,
+        docName,
+        whoupdate,
+        filetype: "ProgramSpecific",
+        UndoFinalFileModel: true, //change
+      }));
+    }
   };
 
-  handleAsFinalGeneralFile = (studentId, docName, whoupdate) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      docName,
-      whoupdate,
-      filetype: "General",
-      SetAsFinalFileModel: true,
-    }));
+  handleAsFinalGeneralFile = (studentId, docName, whoupdate, action) => {
+    if (action === "setfinal") {
+      this.setState((state) => ({
+        ...state,
+        studentId,
+        docName,
+        whoupdate,
+        filetype: "General",
+        SetAsFinalFileModel: true,
+      }));
+    } else if (action === "undofinal") {
+      this.setState((state) => ({
+        ...state,
+        studentId,
+        docName,
+        whoupdate,
+        filetype: "General",
+        UndoFinalFileModel: true,
+      }));
+    }
   };
 
   onDeleteGeneralFile = (studentId, docName, whoupdate) => {
@@ -827,7 +874,9 @@ class EditorDocsProgress extends React.Component {
               Warning
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>Do you want to set {this.state.docName} as final for student?</Modal.Body>
+          <Modal.Body>
+            Do you want to set {this.state.docName} as final for student?
+          </Modal.Body>
           <Modal.Footer>
             {this.state.filetype === "General" ? (
               <Button
@@ -846,6 +895,47 @@ class EditorDocsProgress extends React.Component {
             )}
 
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.UndoFinalFileModel}
+          onHide={this.closeUndoFinalFileModelWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Do you want to undo {this.state.docName} as final for student?
+          </Modal.Body>
+          <Modal.Footer>
+            {this.state.filetype === "General" ? (
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmSetAsFinalGeneralFileHandler}
+              >
+                Yes
+              </Button>
+            ) : (
+              <Button
+                disabled={!isLoaded}
+                onClick={this.ConfirmSetAsFinalSpecificFileHandler}
+              >
+                Yes
+              </Button>
+            )}
+
+            <Button onClick={this.closeUndoFinalFileModelWindow}>No</Button>
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">

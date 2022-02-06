@@ -34,9 +34,9 @@ class EditorTodoList extends React.Component {
         return (
           <>
             <h6>
-              {application.programId.University_}
+              {application.programId.school}
               {" - "}
-              {application.programId.Program_}
+              {application.programId.program}
             </h6>
           </>
         );

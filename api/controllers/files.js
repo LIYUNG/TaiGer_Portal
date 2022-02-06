@@ -23,14 +23,12 @@ const {
   sendSomeReminderEmail,
 } = require("../services/email");
 const getMyfiles = asyncHandler(async (req, res) => {
-  const {
-    params: { studentId },
-  } = req;
+  const { user } = req;
   console.log("getMyfiles API");
-  const student = await Student.findById(studentId);
+  const student = await User.findById(user._id);
   // if (!student) throw new ErrorResponse(400, "Invalid student id");
 
-  await student.save();
+  // await student.save();
   return res.status(201).send({ success: true, data: student });
 });
 
@@ -91,8 +89,8 @@ const saveFilePath = asyncHandler(async (req, res) => {
       {
         uploaded_documentname: student_input_doc.name,
         uploaded_updatedAt: student_input_doc.updatedAt,
-        university_name: student2.applications[idx].programId.University_,
-        program_name: student2.applications[idx].programId.Program_,
+        university_name: student2.applications[idx].programId.school,
+        program_name: student2.applications[idx].programId.program,
       }
     );
     for (let i = 0; i < student.editors.length; i++) {
@@ -109,8 +107,8 @@ const saveFilePath = asyncHandler(async (req, res) => {
           fileCategory: fileCategory,
           uploaded_documentname: student_input_doc.name,
           uploaded_updatedAt: student_input_doc.updatedAt,
-          university_name: student2.applications[idx].programId.University_,
-          program_name: student2.applications[idx].programId.Program_,
+          university_name: student2.applications[idx].programId.school,
+          program_name: student2.applications[idx].programId.program,
         }
       );
     }
@@ -143,8 +141,8 @@ const saveFilePath = asyncHandler(async (req, res) => {
         fileCategory: fileCategory,
         uploaded_documentname: editor_output_doc.name,
         uploaded_updatedAt: editor_output_doc.updatedAt,
-        university_name: student2.applications[idx].programId.University_,
-        program_name: student2.applications[idx].programId.Program_,
+        university_name: student2.applications[idx].programId.school,
+        program_name: student2.applications[idx].programId.program,
       }
     );
 
@@ -647,9 +645,28 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
     ({ programId }) => programId._id == applicationId
   );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
+  var editor_output_doc;
+  var student_input_doc;
+  if (whoupdate == Role.Student) {
+    // throw new ErrorResponse(400, "Can only mark by editor!");
+    student_input_doc = application.student_inputs.find(
+      ({ name }) => name === docName
+    );
+    if (!student_input_doc)
+      throw new ErrorResponse(400, "Document not existed!");
+    if (
+      student_input_doc.isFinalVersion === undefined ||
+      student_input_doc.isFinalVersion === false
+    ) {
+      student_input_doc.isFinalVersion = true;
+    } else {
+      student_input_doc.isFinalVersion = false;
+    }
 
-  if (user.role == Role.Student) {
-    throw new ErrorResponse(400, "Can only mark by editor!");
+    student_input_doc.updatedAt = new Date();
+    // TODO: set flag student document(filetype, feedback) isReceivedFeedback
+    await student.save();
+    res.status(201).send({ success: true, data: student });
     //TODO: feedback added email
   } else {
     editor_output_doc = application.documents.find(
@@ -752,9 +769,9 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
     body: { comments },
   } = req;
   console.log(comments);
-  if (user.role !== whoupdate) {
-    throw new ErrorResponse(400, "You can only modify your own comments!");
-  }
+  // if (user.role !== whoupdate) {
+  //   throw new ErrorResponse(400, "You can only modify your own comments!");
+  // }
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate("applications.programId")
@@ -766,8 +783,24 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   var editor_output_doc;
   var student_input_doc;
-  if (user.role == Role.Student) {
-    throw new ErrorResponse(400, "Can only marked by editor");
+  if (whoupdate == Role.Student) {
+    // throw new ErrorResponse(400, "Can only marked by editor");
+    student_input_doc = student.generaldocs.studentinputs.find(
+      ({ name }) => name === docName
+    );
+    if (!student_input_doc)
+      throw new ErrorResponse(400, "Document not existed!");
+    if (
+      student_input_doc.isFinalVersion === undefined ||
+      student_input_doc.isFinalVersion === false
+    ) {
+      student_input_doc.isFinalVersion = true;
+    } else {
+      student_input_doc.isFinalVersion = false;
+    }
+    student_input_doc.updatedAt = new Date();
+    await student.save();
+    res.status(201).send({ success: true, data: student });
     //TODO: feedback added email
   } else {
     editor_output_doc = student.generaldocs.editoroutputs.find(
@@ -887,10 +920,12 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
 
 const processTranscript = asyncHandler(async (req, res, next) => {
   const {
-    params: { category },
+    user,
+    params: { category, studentId },
     file: { filename, path: filePath },
   } = req;
-
+  console.log(filePath);
+  console.log("--------------");
   console.log(
     path.join(
       __dirname,
@@ -914,9 +949,45 @@ const processTranscript = asyncHandler(async (req, res, next) => {
     filePath,
     category,
   ]);
-
+  // var updatedPathAndName = {
+  //         input: {
+  //           name: filePath,
+  //           path: req.file.path.replace(UPLOAD_PATH, ""),
+  //           status: "uploaded",
+  //         },
+  //         output: {
+  //           name: output,
+  //           path: path.join(`${user._id}`, "output", output),
+  //           status: "uploaded",
+  //         },
+  //       }
+  await User.findByIdAndUpdate(
+    studentId,
+    {
+      "taigerai.input.name": filename,
+      "taigerai.input.path": req.file.path.replace(UPLOAD_PATH, ""),
+      "taigerai.input.status": "uploaded",
+      "taigerai.output.name": output,
+      "taigerai.output.path": path.join(`${user._id}`, "output", output),
+      "taigerai.output.status": "uploaded",
+      // $push: {
+      //   taigerai: updatedPathAndName,
+      // },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+  const student = await User.findById(studentId);
+  // const student = await Student.findById(studentId);
+  // student.taigerai.input.name = filePath;
+  // student.taigerai.input.path = req.file.path.replace(UPLOAD_PATH, "");
+  // student.taigerai.input.status = "uploaded";
+  // student.taigerai.output.name = output;
+  // student.taigerai.output.path = path.join(`${student._id}`, "output", output);
+  // student.taigerai.output.status = "uploaded";
+  // await student.save();
   python.on("close", (code) => {
-    if (code === 0) return res.status(200).send({ generatedfile: output });
+    if (code === 0)
+      return res.status(200).send({ success: true, data: student });
 
     next(
       new ErrorResponse(

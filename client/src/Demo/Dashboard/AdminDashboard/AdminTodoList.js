@@ -16,7 +16,7 @@ class AdminTodoList extends React.Component {
     //   applying_universit = this.props.student.applications.map(
     //     (application) => (
     //       <>
-    //         <h5 className="mb-1">{application.programId.University_}</h5>
+    //         <h5 className="mb-1">{application.programId.school}</h5>
     //       </>
     //     )
     //   );
@@ -33,7 +33,7 @@ class AdminTodoList extends React.Component {
     // if (this.props.student.applications) {
     //   applying_program = this.props.student.applications.map((application) => (
     //     <>
-    //       <h5 className="mb-1">{application.programId.Program_}</h5>
+    //       <h5 className="mb-1">{application.programId.program}</h5>
     //     </>
     //   ));
     // } else {

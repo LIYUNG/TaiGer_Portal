@@ -25,7 +25,7 @@ class ProgramConflict extends React.Component {
               <h6>
                 {
                   this.props.conflict_programs[this.props.conf_program_id]
-                    .University_
+                    .school
                 }
               </h6>
             </td>
@@ -33,7 +33,7 @@ class ProgramConflict extends React.Component {
               <h6>
                 {
                   this.props.conflict_programs[this.props.conf_program_id]
-                    .Program_
+                    .program
                 }
               </h6>
             </td>

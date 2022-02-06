@@ -27,8 +27,8 @@ class ProgramForm extends React.Component {
                       e,
                       this.props.userId,
                       this.props.program._id,
-                      this.props.program.University_,
-                      this.props.program.Program_
+                      this.props.program.school,
+                      this.props.program.program
                     )
                   }
                 >
@@ -53,8 +53,8 @@ class ProgramForm extends React.Component {
                   eventKey="2"
                   onSelect={() =>
                     this.props.setModalShow(
-                      this.props.program.University_,
-                      this.props.program.Program_,
+                      this.props.program.school,
+                      this.props.program.program,
                       this.props.program._id
                     )
                   }
@@ -65,8 +65,8 @@ class ProgramForm extends React.Component {
                   eventKey="3"
                   onSelect={() =>
                     this.props.setModalShowDelete(
-                      this.props.program.University_,
-                      this.props.program.Program_,
+                      this.props.program.school,
+                      this.props.program.program,
                       this.props.program._id
                     )
                   }

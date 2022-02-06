@@ -44,8 +44,8 @@ class StudentTodoList extends React.Component {
         (application, i) => (
           <>
             <h6 className="mb-1" key={i}>
-              {application.programId.University_}{" "}
-              {application.programId.Program_}
+              {application.programId.school}{" "}
+              {application.programId.program}
             </h6>
           </>
         )
@@ -57,7 +57,7 @@ class StudentTodoList extends React.Component {
         (application, i) => (
           <>
             <h6 className="mb-1" key={i}>
-              {application.programId.University_}
+              {application.programId.school}
             </h6>
           </>
         )
@@ -70,7 +70,7 @@ class StudentTodoList extends React.Component {
     //     (application, i) => (
     //       <>
     //         <h5 className="mb-1" key={i}>
-    //           {application.programId.University_}
+    //           {application.programId.school}
     //         </h5>
     //       </>
     //     )
@@ -90,7 +90,7 @@ class StudentTodoList extends React.Component {
     //     (application, i) => (
     //       <>
     //         <h5 className="mb-1" key={i}>
-    //           {application.programId.Program_}
+    //           {application.programId.program}
     //         </h5>
     //       </>
     //     )
@@ -155,14 +155,14 @@ class StudentTodoList extends React.Component {
       applying_university = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.programId.University_}
+            {application.programId.school}
           </h6>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.programId.Program_}
+            {application.programId.program}
           </h6>
         )
       );
@@ -218,9 +218,9 @@ class StudentTodoList extends React.Component {
                   doc.name.includes("ML")
                 ) === -1 ? (
                   <h6 className="mb-1" key={application._id}>
-                    ML - {application.programId.University_}
+                    ML - {application.programId.school}
                     {" - "}
-                    {application.programId.Program_}
+                    {application.programId.program}
                   </h6>
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
@@ -259,9 +259,9 @@ class StudentTodoList extends React.Component {
                     ) !== -1 ? (
                     <>
                       <h6 className="mb-1" key={application._id}>
-                        ML - {application.programId.University_}
+                        ML - {application.programId.school}
                         {" - "}
-                        {application.programId.Program_}
+                        {application.programId.program}
                       </h6>
                     </>
                   ) : (

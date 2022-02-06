@@ -248,9 +248,9 @@ class EditorDocsProgress extends React.Component {
                     <Row>
                       <Col md={6}>
                         <h5>
-                          {application.programId.University_}
+                          {application.programId.school}
                           {" - "}
-                          {application.programId.Program_}
+                          {application.programId.program}
                         </h5>
                       </Col>
                     </Row>

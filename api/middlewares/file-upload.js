@@ -84,9 +84,9 @@ const storage = multer.diskStorage({
               "_" +
               student.firstname +
               "_" +
-              application.programId.University_ +
+              application.programId.school +
               "_" +
-              application.programId.Program_ +
+              application.programId.program +
               "_" +
               fileCategory +
               "_v" +

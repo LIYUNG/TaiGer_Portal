@@ -7,6 +7,7 @@ import {
   AiOutlineCheck,
   AiOutlineComment,
   AiOutlineUndo,
+  AiFillMessage,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 class EditableFile extends Component {
@@ -64,7 +65,9 @@ class EditableFile extends Component {
       this.props.document.feedback
     );
   };
-
+  MouseOver = () => {
+    console.log("Mouse Over");
+  };
   render() {
     let fileStatus;
     let documenName = this.props.document.path.replaceAll("\\", "/");
@@ -73,31 +76,11 @@ class EditableFile extends Component {
       fileStatus = (
         <>
           <Row>
-            <Col md={1}>
-              {this.props.role === "Editor" ? (
-                <>
-                  <Col md={1}>
-                    {this.props.filetype === "General" ? (
-                      this.props.document.isFinalVersion === true ? (
-                        <>
-                          <IoCheckmarkCircle
-                            size={24}
-                            color="limegreen"
-                            title="Final Version"
-                          />
-                        </>
-                      ) : (
-                        <Button
-                          size="sm"
-                          title="As final version"
-                          onClick={() =>
-                            this.handleAsFinalGeneralFile("setfinal")
-                          }
-                        >
-                          <AiOutlineCheck size={12} />
-                        </Button>
-                      )
-                    ) : this.props.document.isFinalVersion === true ? (
+            {this.props.role === "Editor" ? (
+              <>
+                <Col md={1}>
+                  {this.props.filetype === "General" ? (
+                    this.props.document.isFinalVersion === true ? (
                       <>
                         <IoCheckmarkCircle
                           size={24}
@@ -110,39 +93,36 @@ class EditableFile extends Component {
                         size="sm"
                         title="As final version"
                         onClick={() =>
-                          this.handleAsFinalProgramSpecific("setfinal")
+                          this.handleAsFinalGeneralFile("setfinal")
                         }
                       >
                         <AiOutlineCheck size={12} />
                       </Button>
-                    )}
-                  </Col>
-                </>
-              ) : (
-                <></>
-              )}
-            </Col>
-            <Col md={1}>
-              {this.props.role === "Editor" ? (
-                <>
-                  <Col md={1}>
-                    {this.props.filetype === "General" ? (
-                      this.props.document.isFinalVersion === true ? (
-                        <>
-                          <AiOutlineUndo
-                            size={24}
-                            color="red"
-                            title="Un do Final Version"
-                            style={{ cursor: "pointer" }}
-                            onClick={() =>
-                              this.handleAsFinalGeneralFile("undofinal")
-                            }
-                          />
-                        </>
-                      ) : (
-                        <></>
-                      )
-                    ) : this.props.document.isFinalVersion === true ? (
+                    )
+                  ) : this.props.document.isFinalVersion === true ? (
+                    <>
+                      <IoCheckmarkCircle
+                        size={24}
+                        color="limegreen"
+                        title="Final Version"
+                        onMouseEnter={this.MouseOver}
+                      />
+                    </>
+                  ) : (
+                    <Button
+                      size="sm"
+                      title="As final version"
+                      onClick={() =>
+                        this.handleAsFinalProgramSpecific("setfinal")
+                      }
+                    >
+                      <AiOutlineCheck size={12} />
+                    </Button>
+                  )}
+                </Col>
+                <Col md={1}>
+                  {this.props.filetype === "General" ? (
+                    this.props.document.isFinalVersion === true ? (
                       <>
                         <AiOutlineUndo
                           size={24}
@@ -150,27 +130,78 @@ class EditableFile extends Component {
                           title="Un do Final Version"
                           style={{ cursor: "pointer" }}
                           onClick={() =>
-                            this.handleAsFinalProgramSpecific("undofinal")
+                            this.handleAsFinalGeneralFile("undofinal")
                           }
                         />
                       </>
                     ) : (
                       <></>
-                    )}
-                  </Col>
-                </>
-              ) : (
-                <></>
-              )}
-            </Col>
-            <Col md={4}>
-              <p>{documenName}</p>
-            </Col>
-            <Col md={2}>
-              {new Date(this.props.document.updatedAt).toLocaleDateString()}
-              {", "}
-              {new Date(this.props.document.updatedAt).toLocaleTimeString()}
-            </Col>
+                    )
+                  ) : this.props.document.isFinalVersion === true ? (
+                    <>
+                      <AiOutlineUndo
+                        size={24}
+                        color="red"
+                        title="Un do Final Version"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          this.handleAsFinalProgramSpecific("undofinal")
+                        }
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </Col>
+                <Col md={4}>
+                  <p>{documenName}</p>
+                </Col>
+                <Col md={2}>
+                  {new Date(this.props.document.updatedAt).toLocaleDateString()}
+                  {", "}
+                  {new Date(this.props.document.updatedAt).toLocaleTimeString()}
+                </Col>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Col md={1}>
+                  {this.props.filetype === "General" ? (
+                    this.props.document.isFinalVersion === true ? (
+                      <>
+                        <IoCheckmarkCircle
+                          size={24}
+                          color="limegreen"
+                          title="Final Version"
+                        />
+                      </>
+                    ) : (
+                      <></>
+                    )
+                  ) : this.props.document.isFinalVersion === true ? (
+                    <>
+                      <IoCheckmarkCircle
+                        size={24}
+                        color="limegreen"
+                        title="Final Version"
+                        onMouseEnter={this.MouseOver}
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}{" "}
+                </Col>
+                <Col md={5}>
+                  <p>{documenName}</p>
+                </Col>
+                <Col md={2}>
+                  {new Date(this.props.document.updatedAt).toLocaleDateString()}
+                  {", "}
+                  {new Date(this.props.document.updatedAt).toLocaleTimeString()}
+                </Col>
+              </>
+            )}
+
             <Col md={1}>
               {this.props.filetype === "General" ? (
                 <Button
@@ -227,7 +258,21 @@ class EditableFile extends Component {
                 </Button>
               )}
             </Col>
-
+            {this.props.role === "Student" &&
+            this.props.whoupdate === "Editor" ? (
+              <Col md={1}>
+                <Button
+                  size="sm"
+                  title="Give Feedback"
+                  variant="light"
+                  onClick={this.handleCommentsProgramSpecific}
+                >
+                  <AiFillMessage size={20} />
+                </Button>
+              </Col>
+            ) : (
+              <></>
+            )}
             {this.props.role === "Editor" ||
             this.props.whoupdate === "Student" ? (
               <>

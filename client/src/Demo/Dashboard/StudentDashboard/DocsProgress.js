@@ -19,14 +19,14 @@ class DocsProgress extends React.Component {
       applying_university = this.props.student.applications.map(
         (application, i) => (
           <h5 className="mb-1" key={i}>
-            {application.programId.University_}
+            {application.programId.school}
           </h5>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
           <h5 className="mb-1" key={i}>
-            {application.programId.Program_}
+            {application.programId.program}
           </h5>
         )
       );

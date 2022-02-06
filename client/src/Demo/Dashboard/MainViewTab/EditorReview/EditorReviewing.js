@@ -1,6 +1,6 @@
 import React from "react";
-// import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
-// import { IoCheckmarkCircle } from "react-icons/io5";
+import { AiFillCloseCircle, AiFillQuestionCircle,AiOutlineUndo } from "react-icons/ai";
+import { IoCheckmarkCircle } from "react-icons/io5";
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 // import { uploadforstudent } from "../../../api";
@@ -82,7 +82,7 @@ class EditorReviewing extends React.Component {
             {application.decided !== undefined &&
             application.decided === true ? (
               <h6 className="mb-1" key={application._id}>
-                {application.programId.University_}
+                {application.programId.school}
               </h6>
             ) : (
               <></>
@@ -96,7 +96,7 @@ class EditorReviewing extends React.Component {
             {application.decided !== undefined &&
             application.decided === true ? (
               <h6 className="mb-1" key={application._id}>
-                {application.programId.Program_}
+                {application.programId.program}
               </h6>
             ) : (
               <></>
@@ -183,9 +183,9 @@ class EditorReviewing extends React.Component {
                   ) : (
                     <>
                       <h6 className="mb-1" key={application._id}>
-                        ML - {application.programId.University_}
+                        ML - {application.programId.school}
                         {" - "}
-                        {application.programId.Program_}
+                        {application.programId.program}
                       </h6>
                     </>
                   )
@@ -226,9 +226,9 @@ class EditorReviewing extends React.Component {
                     ) !== -1 ? (
                     <>
                       <h6 className="mb-1" key={application._id}>
-                        ML - {application.programId.University_}
+                        ML - {application.programId.school}
                         {" - "}
-                        {application.programId.Program_}
+                        {application.programId.program}
                       </h6>
                     </>
                   ) : (
@@ -259,9 +259,14 @@ class EditorReviewing extends React.Component {
                     doc.isFinalVersion === true
                 ) !== -1 ? (
                   <h6 className="mb-1" key={application._id}>
-                    ML - {application.programId.University_}
+                    <IoCheckmarkCircle
+                      size={18}
+                      color="limegreen"
+                      title="Final Version"
+                    />{" "}
+                    ML - {application.programId.school}
                     {" - "}
-                    {application.programId.Program_}
+                    {application.programId.program}
                   </h6>
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
@@ -289,9 +294,14 @@ class EditorReviewing extends React.Component {
                   doc.name.includes("ML")
                 ) === -1 ? (
                   <h6 className="mb-1" key={application._id}>
-                    ML - {application.programId.University_}
+                    <AiFillQuestionCircle
+                      size={18}
+                      color="lightgray"
+                      title="No Document uploaded"
+                    />{" "}
+                    ML - {application.programId.school}
                     {" - "}
-                    {application.programId.Program_}
+                    {application.programId.program}
                   </h6>
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
@@ -359,9 +369,16 @@ class EditorReviewing extends React.Component {
         this.props.student.generaldocs.editoroutputs.findIndex(
           (doc) => doc.name.includes("CV") && doc.isFinalVersion
         ) !== -1 ? (
-          <h6 className="mb-1" key={1}>
-            CV {" - "}- Final
-          </h6>
+          <>
+            <h6 className="mb-1" key={1}>
+              <IoCheckmarkCircle
+                size={18}
+                color="limegreen"
+                title="Final Version"
+              />{" "}
+              CV {" - "}- Final
+            </h6>
+          </>
         ) : (
           // TODO: add new case: replace prepared by "programId.requiredML?"
           <></>
@@ -371,6 +388,11 @@ class EditorReviewing extends React.Component {
           (doc) => doc.name.includes("RL") && doc.isFinalVersion
         ) !== -1 ? (
           <h6 className="mb-1" key={10}>
+            <IoCheckmarkCircle
+              size={18}
+              color="limegreen"
+              title="Final Version"
+            />{" "}
             RL {" - "}- Final
           </h6>
         ) : (
@@ -388,11 +410,21 @@ class EditorReviewing extends React.Component {
       general_RL_template_filled = <></>;
       general_CV_template_ToBefilled = (
         <h6 className="mb-1" key={1}>
+          <AiFillQuestionCircle
+            size={18}
+            color="lightgray"
+            title="No Document uploaded"
+          />{" "}
           CV template
         </h6>
       );
       general_RL_template_ToBefilled = (
         <h6 className="mb-1" key={10}>
+          <AiFillQuestionCircle
+            size={18}
+            color="lightgray"
+            title="No Document uploaded"
+          />{" "}
           RL template
         </h6>
       );
@@ -500,6 +532,11 @@ class EditorReviewing extends React.Component {
         doc.name.includes("RL")
       ) === -1 ? (
         <h6 className="mb-1" key={10}>
+          <AiFillQuestionCircle
+            size={18}
+            color="lightgray"
+            title="No Document uploaded"
+          />{" "}
           RL template
         </h6>
       ) : (
@@ -518,6 +555,11 @@ class EditorReviewing extends React.Component {
         doc.name.includes("CV")
       ) === -1 ? (
         <h6 className="mb-1" key={1}>
+          <AiFillQuestionCircle
+            size={18}
+            color="lightgray"
+            title="No Document uploaded"
+          />{" "}
           CV - Template
         </h6>
       ) : (

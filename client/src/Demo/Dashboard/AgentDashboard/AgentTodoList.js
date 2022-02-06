@@ -54,7 +54,7 @@ class AgentTodoList extends React.Component {
     //     (application, i) => (
     //       <>
     //         <h6 className="mb-1" key={i}>
-    //           {application.programId.University_}
+    //           {application.programId.school}
     //         </h6>
     //       </>
     //     )
@@ -74,7 +74,7 @@ class AgentTodoList extends React.Component {
     //     (application, i) => (
     //       <>
     //         <h6 className="mb-1" key={i}>
-    //           {application.programId.Program_}
+    //           {application.programId.program}
     //         </h6>
     //       </>
     //     )

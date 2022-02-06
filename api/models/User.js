@@ -44,6 +44,50 @@ const UserSchema = new Schema(
       type: String,
       default: "",
     },
+    taigerai: {
+      input: {
+        name: {
+          type: String,
+          default: "",
+        },
+        status: {
+          type: String,
+          enum: Object.values(DocumentStatus),
+          default: DocumentStatus.Missing,
+        },
+        file_category: {
+          type: String,
+          default: "Others",
+        },
+        path: {
+          type: String,
+          default: "",
+        },
+        // TODO: updateBy
+        updatedAt: Date,
+      },
+      output: {
+        name: {
+          type: String,
+          default: "",
+        },
+        status: {
+          type: String,
+          enum: Object.values(DocumentStatus),
+          default: DocumentStatus.Missing,
+        },
+        file_category: {
+          type: String,
+          default: "Others",
+        },
+        path: {
+          type: String,
+          default: "",
+        },
+        // TODO: updateBy
+        updatedAt: Date,
+      },
+    },
     academic_background: {
       university: {
         attended_university: {
@@ -135,16 +179,7 @@ UserSchema.methods.toJSON = function () {
 
 const User = model("User", UserSchema);
 
-const Guest = User.discriminator(
-  "Guest",
-  new Schema(
-    {
-      
-    },
-    options
-  ),
-  Role.Guest
-);
+const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
 
 const applicationSchema = new Schema({
   programId: { type: ObjectId, ref: "Program" },
@@ -193,6 +228,10 @@ const applicationSchema = new Schema({
         type: String,
         enum: Object.values(DocumentStatus),
         default: DocumentStatus.Missing,
+      },
+      isFinalVersion: {
+        type: Boolean,
+        default: false,
       },
       isReceivedFeedback: {
         type: Boolean,
@@ -305,6 +344,10 @@ const Student = User.discriminator(
               enum: Object.values(DocumentStatus),
               default: DocumentStatus.Missing,
             },
+            isFinalVersion: {
+              type: Boolean,
+              default: false,
+            },
             isReceivedFeedback: {
               type: Boolean,
               default: false,
@@ -325,50 +368,6 @@ const Student = User.discriminator(
             updatedAt: Date,
           },
         ],
-      },
-      taigerai: {
-        input: {
-          name: {
-            type: String,
-            default: "",
-          },
-          status: {
-            type: String,
-            enum: Object.values(DocumentStatus),
-            default: DocumentStatus.Missing,
-          },
-          file_category: {
-            type: String,
-            default: "Others",
-          },
-          path: {
-            type: String,
-            default: "",
-          },
-          // TODO: updateBy
-          updatedAt: Date,
-        },
-        output: {
-          name: {
-            type: String,
-            default: "",
-          },
-          status: {
-            type: String,
-            enum: Object.values(DocumentStatus),
-            default: DocumentStatus.Missing,
-          },
-          file_category: {
-            type: String,
-            default: "Others",
-          },
-          path: {
-            type: String,
-            default: "",
-          },
-          // TODO: updateBy
-          updatedAt: Date,
-        },
       },
     },
     options

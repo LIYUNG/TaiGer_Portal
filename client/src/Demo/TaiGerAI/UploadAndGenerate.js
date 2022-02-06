@@ -23,6 +23,8 @@ class UploadAndGenerate extends Component {
     generatedfileExisted: false,
     generatedfilename: "",
     category: "",
+    course_feedback: "",
+    student: this.props.student,
   };
   componentDidMount() {
     this.setState({ isLoaded: true });
@@ -32,7 +34,9 @@ class UploadAndGenerate extends Component {
     console.log(e.target.value);
     this.setState({ category: e.target.value });
   };
-
+  handleContentChange = (e) => {
+    this.setState({ course_feedback: e.target.value });
+  };
   //from /upload
   submitFile = (e, category) => {
     if (!this.state.category) {
@@ -51,20 +55,23 @@ class UploadAndGenerate extends Component {
         formData
       ).then(
         (res) => {
-          if (res.status === 200) {
+          const { data, success } = res.data;
+          console.log(res);
+          if (success) {
             this.setState((state) => ({
               ...state,
               category: "",
-              generatedfilename: res.data.generatedfile,
-              generatedfileExisted: true,
               isLoaded: true,
+              student: data,
+              success: success,
             }));
           } else {
-            alert("Upload failed");
+            alert(res.data.message);
             this.setState((state) => ({
               ...state,
-              generatedfileExisted: false,
+              category: "",
               isLoaded: true,
+              success: success,
             }));
           }
         },
@@ -178,17 +185,21 @@ class UploadAndGenerate extends Component {
                   </Form.File.Label>
                 </Form>
               </Col>
-              <Col md={2}>
-              </Col>
-              {this.state.generatedfileExisted ? (
+              <Col md={2}></Col>
+              {this.state.student.taigerai &&
+              this.state.student.taigerai.output &&
+              this.state.student.taigerai.output.name !== "" ? (
                 <>
                   <Col md={2}>
-                    <h5>Generated file download: </h5>
+                    <h6>Generated file download: </h6>
                   </Col>
                   <Col md={2}>
                     <Form
                       onSubmit={(e) =>
-                        this.onDownloadFile(e, this.state.generatedfilename)
+                        this.onDownloadFile(
+                          e,
+                          this.state.student.taigerai.output.name
+                        )
                       }
                     >
                       <Form.Group controlId="exampleForm.ControlSelect1">
@@ -211,6 +222,20 @@ class UploadAndGenerate extends Component {
                   </Spinner>
                 </div>
               )}
+            </Row>
+            <Row>
+              <h6>Agent Feedback:</h6>
+            </Row>
+            <Row>
+              <Form>
+                <Form.Control
+                  as="textarea"
+                  rows="10"
+                  onChange={this.handleContentChange}
+                  defaultValue={this.props.content}
+                  placeholder="Content"
+                />
+              </Form>
             </Row>
           </Card.Body>
         </Card>

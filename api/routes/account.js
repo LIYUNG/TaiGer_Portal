@@ -38,7 +38,7 @@ router.use(protect);
 
 // TODO: get document status
 router
-  .route("/:studentId/files")
+  .route("/files")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);
 
 router

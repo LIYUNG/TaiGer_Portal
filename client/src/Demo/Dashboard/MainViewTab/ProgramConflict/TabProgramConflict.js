@@ -29,9 +29,9 @@ class TabProgramConflict extends React.Component {
                 this.props.students[i].applications[j].programId._id
               ] = {
                 University_:
-                  this.props.students[i].applications[j].programId.University_,
+                  this.props.students[i].applications[j].programId.school,
                 Program_:
-                  this.props.students[i].applications[j].programId.Program_,
+                  this.props.students[i].applications[j].programId.program,
                 Application_end_date_:
                   this.props.students[i].applications[j].programId
                     .Application_end_date_,

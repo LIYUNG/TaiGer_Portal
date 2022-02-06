@@ -12,8 +12,8 @@ class EditProgramsSubpage extends React.Component {
           <th></th>
           <td>
             <h5 className="mb-1">
-              {application.programId.University_} -{" "}
-              {application.programId.Program_}
+              {application.programId.school} -{" "}
+              {application.programId.program}
             </h5>
             <h5 className="mb-1">{application.programId.documents}</h5>
           </td>

@@ -117,8 +117,8 @@ class EditProgramsFilesSubpage extends React.Component {
             {/* <th></th> */}
             <td>
               <h4 className="mb-1">
-                {application.programId.University_} -{" "}
-                {application.programId.Program_}
+                {application.programId.school} -{" "}
+                {application.programId.program}
               </h4>
               <p className="mb-1">{application.programId.documents}</p>
             </td>

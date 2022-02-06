@@ -2,17 +2,38 @@ import React, { Component } from "react";
 import { Row, Col, Spinner } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import UploadAndGenerate from "../UploadAndGenerate";
-
-
+import {
+  getMyfiles,
+} from "../../../api";
 class CoursesAnalyser extends Component {
   state = {
     error: null,
     isLoaded: false,
+    student: null,
+    success: false,
   };
   componentDidMount() {
-    this.setState({
-      isLoaded: true,
-    });
+    getMyfiles().then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            student: data,
+            success: success,
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        console.log(": " + error);
+        this.setState({
+          isLoaded: true,
+          error: true,
+        });
+      }
+    );
   }
 
   render() {
@@ -30,7 +51,7 @@ class CoursesAnalyser extends Component {
         </div>
       );
     }
-    if (!isLoaded) {
+    if (!isLoaded && !this.state.student) {
       return (
         <div style={style}>
           <Spinner animation="border" role="status">
@@ -46,7 +67,10 @@ class CoursesAnalyser extends Component {
               {this.props.user.role === "Guest" ? (
                 <>This is for Premium only. Please contact our sales!</>
               ) : (
-                <UploadAndGenerate user={this.props.user} />
+                <UploadAndGenerate
+                  user={this.props.user}
+                  student={this.state.student}
+                />
               )}
             </Col>
           </Row>

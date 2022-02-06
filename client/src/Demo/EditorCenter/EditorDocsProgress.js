@@ -28,7 +28,14 @@ import {
   downloadGeneralHandWrittenFile,
 } from "../../api";
 import ManualFiles from "./ManualFiles";
-
+import {
+  AiOutlineDownload,
+  AiOutlineDelete,
+  AiOutlineCheck,
+  AiOutlineMore,
+  AiOutlineUndo,
+  AiFillMessage,
+} from "react-icons/ai";
 class EditorDocsProgress extends React.Component {
   state = {
     student: this.props.student,
@@ -36,12 +43,14 @@ class EditorDocsProgress extends React.Component {
     SetAsFinalFileModel: false,
     UndoFinalFileModel: false,
     CommentsModel: false,
+    ML_Requirements_Modal: false,
     studentId: "",
     applicationId: "",
     docName: "",
     whoupdate: "",
     comments: "",
     isLoaded: false,
+    ml_requirements: "",
     file: "",
   };
   componentDidMount() {
@@ -71,6 +80,20 @@ class EditorDocsProgress extends React.Component {
     this.setState((state) => ({
       ...state,
       UndoFinalFileModel: false,
+    }));
+  };
+  openML_Requirements_ModalWindow = (ml_requirements) => {
+    this.setState((state) => ({
+      ...state,
+      ML_Requirements_Modal: true,
+      ml_requirements,
+    }));
+  };
+  closeML_Requirements_ModalWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      ML_Requirements_Modal: false,
+      ml_requirements: "",
     }));
   };
   openWarningWindow = () => {
@@ -777,13 +800,65 @@ class EditorDocsProgress extends React.Component {
                     application.decided === true ? (
                       <>
                         <Row>
-                          <Col md={6}>
+                          <Col md={3}>
                             <h5>
-                              {application.programId.University_}
+                              {application.programId.school}
                               {" - "}
-                              {application.programId.Program_}
+                              {application.programId.program}
                             </h5>
                           </Col>
+                          <Col md={3}>
+                            {application.programId.ml_requirements !==
+                              undefined &&
+                            application.programId.ml_requirements !== "" ? (
+                              <>
+                                ML Req.: {"           "}{" "}
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="light"
+                                  onClick={() =>
+                                    this.openML_Requirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  <AiOutlineMore size={20} />
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}{" "}
+                            {application.programId.essay_requirements !==
+                              undefined &&
+                            application.programId.essay_requirements !== "" ? (
+                              <>
+                                Essay Req.: {"           "}{" "}
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="light"
+                                  onClick={() =>
+                                    this.openML_Requirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  <AiOutlineMore size={20} />
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                          </Col>
+                          <Col md={3}>
+                            <h5>
+                              {application.programId.school}
+                              {" - "}
+                              {application.programId.program}
+                            </h5>
+                          </Col>
+                          <Col md={3}></Col>
                         </Row>
 
                         <ManualFiles
@@ -936,6 +1011,31 @@ class EditorDocsProgress extends React.Component {
             )}
 
             <Button onClick={this.closeUndoFinalFileModelWindow}>No</Button>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.ML_Requirements_Modal}
+          onHide={this.closeML_Requirements_ModalWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Special ML Requirements
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{this.state.ml_requirements}</Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeML_Requirements_ModalWindow}>
+              Close
+            </Button>
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">

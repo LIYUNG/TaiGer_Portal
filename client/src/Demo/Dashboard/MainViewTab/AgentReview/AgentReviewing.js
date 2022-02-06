@@ -51,9 +51,9 @@ class AgentReviewing extends React.Component {
         ) {
           return (
             <h6 key={i}>
-              {application.programId.University_}
+              {application.programId.school}
               {" - "}
-              {application.programId.Program_}
+              {application.programId.program}
             </h6>
           );
         }
@@ -67,7 +67,7 @@ class AgentReviewing extends React.Component {
     //     (application, i) => (
     //       <>
     //         <h5 className="mb-1" key={i}>
-    //           {application.programId.University_}
+    //           {application.programId.school}
     //         </h5>
     //       </>
     //     )
@@ -87,7 +87,7 @@ class AgentReviewing extends React.Component {
     //     (application, i) => (
     //       <>
     //         <h5 className="mb-1" key={i}>
-    //           {application.programId.Program_}
+    //           {application.programId.program}
     //         </h5>
     //       </>
     //     )

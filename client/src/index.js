@@ -9,6 +9,8 @@ import * as serviceWorker from "./serviceWorker";
 import reducer from "./store/reducer";
 import config from "./config";
 import "./style.css";
+import "./index.css";
+import "mdb-react-ui-kit/dist/css/mdb.min.css";
 
 const store = createStore(
   reducer,
@@ -184,66 +186,66 @@ window.documentlist = [
 window.ProgramlistHeader = [
   {
     name: "University",
-    prop: "University_",
+    prop: "school",
   },
   {
     name: "Program",
-    prop: "Program_",
+    prop: "program",
   },
   {
     name: "TOEFL",
-    prop: "TOEFL_",
+    prop: "toefl",
   },
   {
     name: "IELTS",
-    prop: "IELTS_",
+    prop: "ielts",
   },
   {
     name: "Degree",
-    prop: "Degree_",
+    prop: "degree",
   },
   {
     name: "GRE/GMAT",
-    prop: "GREGMAT_",
+    prop: "gre",
   },
   {
     name: "Application Deadline",
-    prop: "Application_end_date_",
+    prop: "application_deadline",
   },
   {
     name: "Last Update",
-    prop: "LastUpdate_",
+    prop: "updatedAt",
   },
 ];
 
 window.NewProgramHeader = [
   {
     name: "University",
-    prop: "University_",
+    prop: "school",
   },
   {
     name: "Program",
-    prop: "Program_",
+    prop: "program",
   },
   {
     name: "TOEFL",
-    prop: "TOEFL_",
+    prop: "toefl",
   },
   {
     name: "IELTS",
-    prop: "IELTS_",
+    prop: "ielts",
   },
   {
     name: "Degree",
-    prop: "Degree_",
+    prop: "degree",
   },
   {
     name: "GRE/GMAT",
-    prop: "GREGMAT_",
+    prop: "gre",
   },
   {
     name: "Application Deadline",
-    prop: "Application_end_date_",
+    prop: "application_deadline",
   },
   {
     name: "CV Deadline",

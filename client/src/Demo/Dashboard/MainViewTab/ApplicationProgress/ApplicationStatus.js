@@ -26,14 +26,14 @@ class ApplicationStatus extends React.Component {
       applying_university = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.programId.University_}
+            {application.programId.school}
           </h6>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.programId.Program_}
+            {application.programId.program}
           </h6>
         )
       );

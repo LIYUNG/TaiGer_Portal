@@ -37,7 +37,7 @@ class ManualFiles extends React.Component {
         ) : (
           <></>
         )}
-        {/* {this.props.application.programId.University_} */}
+        {/* {this.props.application.programId.school} */}
       </>
     );
   }

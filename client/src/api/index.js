@@ -76,8 +76,8 @@ export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);
 
 // Account APIs
-export const getMyfiles = (studentId) =>
-  request.get(`/api/account/${studentId}/files`);
+export const getMyfiles = () =>
+  request.get(`/api/account/files`);
 
 export const templateDownload = (category) =>
   request.get(`/api/account/files/${category}`, { responseType: "blob" });

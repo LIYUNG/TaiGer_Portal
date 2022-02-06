@@ -279,27 +279,51 @@ class EditableFile extends Component {
               )}
             </Col>
             {this.props.whoupdate === "Editor" ? (
-              <Col md={1}>
-                {this.props.filetype === "General" ? (
-                  <Button
-                    size="sm"
-                    title="Give Feedback"
-                    variant="light"
-                    onClick={this.handleStudentFeebackGeneral}
-                  >
-                    <AiFillMessage size={20} />
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    title="Give Feedback"
-                    variant="light"
-                    onClick={this.handleStudentFeebackProgramSpecific}
-                  >
-                    <AiFillMessage size={20} />
-                  </Button>
-                )}
-              </Col>
+              this.props.role === "Editor" ? (
+                <Col md={1}>
+                  {this.props.filetype === "General" ? (
+                    <Button
+                      size="sm"
+                      title="Student Feedback"
+                      variant="light"
+                      onClick={this.handleStudentFeebackGeneral}
+                    >
+                      <AiFillMessage size={20} />
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      title="Student Feedback"
+                      variant="light"
+                      onClick={this.handleStudentFeebackProgramSpecific}
+                    >
+                      <AiFillMessage size={20} />
+                    </Button>
+                  )}
+                </Col>
+              ) : (
+                <Col md={1}>
+                  {this.props.filetype === "General" ? (
+                    <Button
+                      size="sm"
+                      title="Give Feedback"
+                      variant="light"
+                      onClick={this.handleStudentFeebackGeneral}
+                    >
+                      <AiFillMessage size={20} />
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      title="Give Feedback"
+                      variant="light"
+                      onClick={this.handleStudentFeebackProgramSpecific}
+                    >
+                      <AiFillMessage size={20} />
+                    </Button>
+                  )}
+                </Col>
+              )
             ) : (
               <></>
             )}

@@ -26,6 +26,10 @@ const {
   sendChangedFileStatusForAgentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
+  sendCommentsProgramSpecificFileForEditorEmail,
+  sendCommentsProgramSpecificFileForStudentEmail,
+  sendCommentsGeneralFileForEditorEmail,
+  sendCommentsGeneralFileForStudentEmail,
   sendStudentFeedbackGeneralFileForEditorEmail,
   sendStudentFeedbackProgramSpecificFileForEditorEmail,
   sendSomeReminderEmail,
@@ -1137,7 +1141,7 @@ const processTranscript = asyncHandler(async (req, res, next) => {
       "taigerai.input.path": req.file.path.replace(UPLOAD_PATH, ""),
       "taigerai.input.status": "uploaded",
       "taigerai.output.name": output,
-      "taigerai.output.path": path.join(`${user._id}`, "output", output),
+      "taigerai.output.path": path.join(`${studentId}`, "output", output),
       "taigerai.output.status": "uploaded",
       // $push: {
       //   taigerai: updatedPathAndName,
@@ -1177,11 +1181,11 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 
   const GeneratedfilePath = path.join(
     UPLOAD_PATH,
-    `${_id}`,
+    `${studentId}`,
     "output",
     filename
   );
-  const UploadedfilePath = path.join(UPLOAD_PATH, `${_id}`, filename);
+  const UploadedfilePath = path.join(UPLOAD_PATH, `${studentId}`, filename);
 
   if (fs.existsSync(GeneratedfilePath)) {
     res.download(GeneratedfilePath, (err) => {
@@ -1286,8 +1290,6 @@ const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {
     .exec();
 
   if (!student) throw new ErrorResponse(400, "Invalid student id");
-  // console.log(student);
-  if (!student) throw new ErrorResponse(400, "Invalid student id");
   var editor_output_doc;
   var student_input_doc;
   if (user.role == Role.Student) {
@@ -1303,6 +1305,22 @@ const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {
     await student.save();
     res.status(201).send({ success: true, data: student });
     //TODO: feedback added email
+    // Send Editor Email
+    for (let i = 0; i < student.editors.length; i++) {
+      await sendCommentsGeneralFileForEditorEmail(
+        {
+          firstname: student.editors[i].firstname,
+          lastname: student.editors[i].lastname,
+          address: student.editors[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          feedback_for_documentname: student_input_doc.name,
+          uploaded_updatedAt: student_input_doc.updatedAt,
+        }
+      );
+    }
   } else {
     editor_output_doc = student.generaldocs.editoroutputs.find(
       ({ name }) => name === docName
@@ -1313,7 +1331,20 @@ const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {
     editor_output_doc.updatedAt = new Date();
     await student.save();
     res.status(201).send({ success: true, data: student });
-    //TODO: feedback added email
+    // Send Student Email
+    await sendCommentsGeneralFileForStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        editor_firstname: user.firstname,
+        editor_lastname: user.lastname,
+        feedback_for_documentname: editor_output_doc.name,
+        uploaded_updatedAt: editor_output_doc.updatedAt,
+      }
+    );
   }
 });
 
@@ -1348,9 +1379,26 @@ const updateCommentsProgramSpecificFile = asyncHandler(
       if (!student_input_doc)
         throw new ErrorResponse(400, "Document not existed!");
       student_input_doc.feedback = comments;
+      student_input_doc.updatedAt = new Date();
       await student.save();
       res.status(201).send({ success: true, data: student });
-      //TODO: feedback added email
+      // Send Editor Email
+      for (let i = 0; i < student.editors.length; i++) {
+        await sendCommentsProgramSpecificFileForEditorEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email,
+          },
+          {
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
+            feedback_for_documentname: student_input_doc.name,
+            uploaded_updatedAt: student_input_doc.updatedAt,
+          }
+        );
+      }
+      //TODO: notify Agent?
     } else {
       editor_output_doc = application.documents.find(
         ({ name }) => name === docName
@@ -1363,6 +1411,20 @@ const updateCommentsProgramSpecificFile = asyncHandler(
       await student.save();
       res.status(201).send({ success: true, data: student });
       //TODO: feedback added email
+      await sendCommentsProgramSpecificFileForStudentEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email,
+        },
+        {
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          feedback_for_documentname: editor_output_doc.name,
+          uploaded_updatedAt: editor_output_doc.updatedAt,
+        }
+      );
+      //TODO: notify Agent?
     }
   }
 );
@@ -1374,13 +1436,7 @@ const StudentGiveFeedbackGeneralFile = asyncHandler(async (req, res, next) => {
     body: { student_feedback },
   } = req;
   console.log(student_feedback);
-  // if (user.role !== whoupdate) {
-  //   throw new ErrorResponse(
-  //     400,
-  //     "You can only modify your own student_feedback!"
-  //   );
-  // }
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+
   const student = await Student.findById(studentId)
     .populate("applications.programId")
     .populate("students agents editors", "firstname lastname email")
@@ -1400,7 +1456,7 @@ const StudentGiveFeedbackGeneralFile = asyncHandler(async (req, res, next) => {
     editor_output_doc.student_feedback_updatedAt = new Date();
     await student.save();
     res.status(201).send({ success: true, data: student });
-    // TODO: Send Editor Email
+    // Send Editor Email
     for (let i = 0; i < student.editors.length; i++) {
       await sendStudentFeedbackGeneralFileForEditorEmail(
         {

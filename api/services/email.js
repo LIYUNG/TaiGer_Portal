@@ -474,11 +474,90 @@ Double check this document and finalize the application if applicable.
   return sendEmail(recipient, subject, message);
 };
 
+const sendCommentsGeneralFileForEditorEmail = async (recipient, msg) => {
+  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
+
+ ${msg.feedback_for_documentname}:
+
+on ${msg.uploaded_updatedAt} 
+
+Double check this document and finalize the application if applicable. 
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendCommentsGeneralFileForStudentEmail = async (recipient, msg) => {
+  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.editor_firstname} ${msg.editor_lastname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Your editor ${msg.editor_firstname} ${msg.editor_lastname} has updated a feedback for
+
+ ${msg.feedback_for_documentname}:
+
+on ${msg.uploaded_updatedAt} 
+
+Please reply to your editor as soon as possible!
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendCommentsProgramSpecificFileForEditorEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
+
+ ${msg.feedback_for_documentname}:
+
+on ${msg.uploaded_updatedAt} 
+
+Double check this document and finalize the application if applicable. 
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendCommentsProgramSpecificFileForStudentEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.editor_firstname} ${msg.editor_lastname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Your editor ${msg.editor_firstname} ${msg.editor_lastname} has updated a feedback for
+
+ ${msg.feedback_for_documentname}:
+
+on ${msg.uploaded_updatedAt} 
+
+Please reply to your editor as soon as possible.
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+
 const sendStudentFeedbackGeneralFileForEditorEmail = async (
   recipient,
   msg
 ) => {
-  const subject = `There is new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
+  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
@@ -499,7 +578,7 @@ const sendStudentFeedbackProgramSpecificFileForEditorEmail = async (
   recipient,
   msg
 ) => {
-  const subject = `There is new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
+  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
@@ -546,6 +625,10 @@ module.exports = {
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
+  sendCommentsGeneralFileForEditorEmail,
+  sendCommentsGeneralFileForStudentEmail,
+  sendCommentsProgramSpecificFileForEditorEmail,
+  sendCommentsProgramSpecificFileForStudentEmail,
   sendStudentFeedbackGeneralFileForEditorEmail,
   sendStudentFeedbackProgramSpecificFileForEditorEmail,
 };

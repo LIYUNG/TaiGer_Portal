@@ -381,6 +381,7 @@ class AgentCenter extends React.Component {
         accordionKeys={this.state.accordionKeys}
         singleExpandtHandler={this.singleExpandtHandler}
         role={this.props.user.role}
+        user={this.props.user}
         documentslist2={this.props.documentslist2}
         documentlist2={window.documentlist2}
         documentslist={this.props.documentslist}

@@ -34,6 +34,7 @@ import {
   getStudents,
   downloadProfile,
 } from "../../api";
+import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
 
 class EditFilesSubpage extends React.Component {
   state = {
@@ -225,13 +226,21 @@ class EditFilesSubpage extends React.Component {
                         <th>File Name:</th>
                         <th></th>
                         <th></th>
+                        <th>Feedback</th>
                         <th></th>
+                        <th>Delete</th>
                       </tr>
                     </thead>
                     <tbody>{documentlist22}</tbody>
                   </Table>
                 </Row>
                 <Row>{this.props.SYMBOL_EXPLANATION}</Row>
+                <Row>
+                  <UploadAndGenerate
+                    user={this.state.student}
+                    student={this.state.student}
+                  />
+                </Row>
               </Card.Body>
             </div>
           </Collapse>

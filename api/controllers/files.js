@@ -9,17 +9,25 @@ const { ErrorResponse } = require("../common/errors");
 const { DocumentStatus } = require("../constants");
 const {
   sendEditorOutputGeneralFilesEmailToStudent,
+  sendEditorOutputGeneralFilesEmailToAgent,
   sendUploadedProgramSpecificFilesEmail,
+  sendUploadedGeneralFilesRemindForStudentEmail,
   sendEditorOutputProgramSpecificFilesEmailToStudent,
-  sendUploadedGeneralFilesEmail,
+  sendEditorOutputProgramSpecificFilesEmailToAgent,
   sendUploadedProfileFilesEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedFilesRemindForAgentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
-  sendUploadedFilesRemindForEditorEmail,
+  sendUploadedProgramSpecificFilesRemindForEditorEmail,
+  sendUploadedProgramSpecificFilesRemindForAgentEmail,
   sendUploadedGeneralFilesRemindForEditorEmail,
+  sendUploadedGeneralFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
+  sendSetAsFinalProgramSpecificFileForStudentEmail,
+  sendSetAsFinalProgramSpecificFileForAgentEmail,
+  sendStudentFeedbackGeneralFileForEditorEmail,
+  sendStudentFeedbackProgramSpecificFileForEditorEmail,
   sendSomeReminderEmail,
 } = require("../services/email");
 const getMyfiles = asyncHandler(async (req, res) => {
@@ -95,11 +103,30 @@ const saveFilePath = asyncHandler(async (req, res) => {
     );
     for (let i = 0; i < student.editors.length; i++) {
       console.log(i);
-      await sendUploadedFilesRemindForEditorEmail(
+      await sendUploadedProgramSpecificFilesRemindForEditorEmail(
         {
           firstname: student.editors[i].firstname,
           lastname: student.editors[i].lastname,
           address: student.editors[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          fileCategory: fileCategory,
+          uploaded_documentname: student_input_doc.name,
+          uploaded_updatedAt: student_input_doc.updatedAt,
+          university_name: student2.applications[idx].programId.school,
+          program_name: student2.applications[idx].programId.program,
+        }
+      );
+    }
+    for (let i = 0; i < student.agents.length; i++) {
+      console.log(i);
+      await sendUploadedProgramSpecificFilesRemindForAgentEmail(
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email,
         },
         {
           student_firstname: student.firstname,
@@ -139,6 +166,8 @@ const saveFilePath = asyncHandler(async (req, res) => {
       },
       {
         fileCategory: fileCategory,
+        editor_firstname: user.firstname,
+        editor_lastname: user.lastname,
         uploaded_documentname: editor_output_doc.name,
         uploaded_updatedAt: editor_output_doc.updatedAt,
         university_name: student2.applications[idx].programId.school,
@@ -147,6 +176,30 @@ const saveFilePath = asyncHandler(async (req, res) => {
     );
 
     // TODO: Inform editor themselves as well?
+
+    //uploaded file notification for Agent
+    for (let i = 0; i < student.agents.length; i++) {
+      console.log(i);
+      await sendEditorOutputProgramSpecificFilesEmailToAgent(
+        // Upload success confirmation.
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email,
+        },
+        {
+          fileCategory: fileCategory,
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          uploaded_documentname: editor_output_doc.name,
+          uploaded_updatedAt: editor_output_doc.updatedAt,
+          university_name: student2.applications[idx].programId.school,
+          program_name: student2.applications[idx].programId.program,
+        }
+      );
+    }
   }
 });
 
@@ -181,7 +234,18 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
     // TODO: set flag editors document(filetype) isReceivedFeedback
     await student.save();
     res.status(201).send({ success: true, data: student });
-    //TODO: upload confirmation to Student?
+    await sendUploadedGeneralFilesRemindForStudentEmail(
+      // Upload success confirmation.
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        uploaded_documentname: student_input_doc.name,
+        uploaded_updatedAt: student_input_doc.updatedAt,
+      }
+    );
     for (let i = 0; i < student.editors.length; i++) {
       console.log(i);
       await sendUploadedGeneralFilesRemindForEditorEmail(
@@ -189,6 +253,23 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
           firstname: student.editors[i].firstname,
           lastname: student.editors[i].lastname,
           address: student.editors[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          uploaded_documentname: student_input_doc.name,
+          uploaded_updatedAt: student_input_doc.updatedAt,
+          fileCategory: fileCategory,
+        }
+      );
+    }
+    for (let i = 0; i < student.agents.length; i++) {
+      console.log(i);
+      await sendUploadedGeneralFilesRemindForAgentEmail(
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email,
         },
         {
           student_firstname: student.firstname,
@@ -229,7 +310,28 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
         fileCategory: fileCategory,
       }
     );
-    //TODO: uploaded file confirmation for editor?
+    //TODO: uploaded file confirmation for Editor?
+    //uploaded file notification for Agent?
+    for (let i = 0; i < student.agents.length; i++) {
+      console.log(i);
+      await sendEditorOutputGeneralFilesEmailToAgent(
+        // Upload success confirmation.
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          uploaded_documentname: editor_output_doc.name,
+          uploaded_updatedAt: editor_output_doc.updatedAt,
+          fileCategory: fileCategory,
+        }
+      );
+    }
   }
 
   //Reminder for Editor:
@@ -647,6 +749,9 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
   if (!application) throw new ErrorResponse(400, "Invalid application id");
   var editor_output_doc;
   var student_input_doc;
+  var SetFinal_Flag = 0;
+  var doc_name = "";
+  var doc_updateAt = "";
   if (whoupdate == Role.Student) {
     // throw new ErrorResponse(400, "Can only mark by editor!");
     student_input_doc = application.student_inputs.find(
@@ -659,15 +764,17 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
       student_input_doc.isFinalVersion === false
     ) {
       student_input_doc.isFinalVersion = true;
+      SetFinal_Flag = 1;
+      doc_name = student_input_doc.name;
+      doc_updateAt = student_input_doc.updatedAt;
     } else {
       student_input_doc.isFinalVersion = false;
+      SetFinal_Flag = 2;
     }
-
     student_input_doc.updatedAt = new Date();
     // TODO: set flag student document(filetype, feedback) isReceivedFeedback
     await student.save();
     res.status(201).send({ success: true, data: student });
-    //TODO: feedback added email
   } else {
     editor_output_doc = application.documents.find(
       ({ name }) => name === docName
@@ -679,15 +786,35 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
       editor_output_doc.isFinalVersion === false
     ) {
       editor_output_doc.isFinalVersion = true;
+      SetFinal_Flag = 1;
+      doc_name = editor_output_doc.name;
+      doc_updateAt = editor_output_doc.updatedAt;
     } else {
       editor_output_doc.isFinalVersion = false;
+      SetFinal_Flag = 2;
     }
-
     editor_output_doc.updatedAt = new Date();
     // TODO: set flag student document(filetype, feedback) isReceivedFeedback
     await student.save();
     res.status(201).send({ success: true, data: student });
     //TODO: feedback added email
+  }
+
+  if (SetFinal_Flag === 1) {
+    await sendSetAsFinalProgramSpecificFileForStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        editor_firstname: user.firstname,
+        editor_lastname: user.lastname,
+        uploaded_documentname: doc_name,
+        uploaded_updatedAt: doc_updateAt,
+      }
+    );
+    //TODO: Inform Agent also
   }
 });
 
@@ -766,12 +893,8 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId, docName, whoupdate },
-    body: { comments },
   } = req;
-  console.log(comments);
-  // if (user.role !== whoupdate) {
-  //   throw new ErrorResponse(400, "You can only modify your own comments!");
-  // }
+
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate("applications.programId")
@@ -783,6 +906,9 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   var editor_output_doc;
   var student_input_doc;
+  var SetFinal_Flag = 0;
+  var doc_name = "";
+  var doc_updateAt = "";
   if (whoupdate == Role.Student) {
     // throw new ErrorResponse(400, "Can only marked by editor");
     student_input_doc = student.generaldocs.studentinputs.find(
@@ -795,8 +921,12 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
       student_input_doc.isFinalVersion === false
     ) {
       student_input_doc.isFinalVersion = true;
+      SetFinal_Flag = 1;
+      doc_name = student_input_doc.name;
+      doc_updateAt = student_input_doc.updatedAt;
     } else {
       student_input_doc.isFinalVersion = false;
+      SetFinal_Flag = 2;
     }
     student_input_doc.updatedAt = new Date();
     await student.save();
@@ -813,13 +943,52 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
       editor_output_doc.isFinalVersion === false
     ) {
       editor_output_doc.isFinalVersion = true;
+      SetFinal_Flag = 1;
+      doc_name = editor_output_doc.name;
+      doc_updateAt = editor_output_doc.updatedAt;
     } else {
       editor_output_doc.isFinalVersion = false;
+      SetFinal_Flag = 2;
     }
     editor_output_doc.updatedAt = new Date();
     await student.save();
     res.status(201).send({ success: true, data: student });
     //TODO: feedback added email
+  }
+
+  if (SetFinal_Flag === 1) {
+    //TODO: feedback added email
+    await sendSetAsFinalProgramSpecificFileForStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email,
+      },
+      {
+        editor_firstname: user.firstname,
+        editor_lastname: user.lastname,
+        uploaded_documentname: doc_name,
+        uploaded_updatedAt: doc_updateAt,
+      }
+    );
+    for (let i = 0; i < student.agents.length; i++) {
+      console.log(i);
+      await sendSetAsFinalProgramSpecificFileForAgentEmail(
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          uploaded_documentname: doc_name,
+          uploaded_updatedAt: doc_updateAt,
+        }
+      );
+    }
   }
 });
 
@@ -1006,16 +1175,29 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   } = req;
   const { firstname, lastname, _id } = student;
 
-  const filePath = path.join(UPLOAD_PATH, `${_id}`, "output", filename);
+  const GeneratedfilePath = path.join(
+    UPLOAD_PATH,
+    `${_id}`,
+    "output",
+    filename
+  );
+  const UploadedfilePath = path.join(UPLOAD_PATH, `${_id}`, filename);
 
-  if (!fs.existsSync(filePath))
+  if (fs.existsSync(GeneratedfilePath)) {
+    res.download(GeneratedfilePath, (err) => {
+      if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+
+      res.status(200).end();
+    });
+  } else if (fs.existsSync(UploadedfilePath)) {
+    res.download(UploadedfilePath, (err) => {
+      if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+
+      res.status(200).end();
+    });
+  } else {
     throw new ErrorResponse(400, "File does not exist");
-
-  res.download(filePath, (err) => {
-    if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-
-    res.status(200).end();
-  });
+  }
 });
 const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   const {
@@ -1185,6 +1367,120 @@ const updateCommentsProgramSpecificFile = asyncHandler(
   }
 );
 
+const StudentGiveFeedbackGeneralFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, docName, whoupdate },
+    body: { student_feedback },
+  } = req;
+  console.log(student_feedback);
+  // if (user.role !== whoupdate) {
+  //   throw new ErrorResponse(
+  //     400,
+  //     "You can only modify your own student_feedback!"
+  //   );
+  // }
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  var editor_output_doc;
+  if (user.role == Role.Student) {
+    editor_output_doc = student.generaldocs.editoroutputs.find(
+      ({ name }) => name === docName
+    );
+    if (!editor_output_doc)
+      throw new ErrorResponse(400, "Document not existed!");
+    editor_output_doc.student_feedback = student_feedback;
+    // TODO: mark every isReceivedFeedback flag in same type(i.e. ML) to true!
+    editor_output_doc.isReceivedFeedback = true;
+    editor_output_doc.student_feedback_updatedAt = new Date();
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+    // TODO: Send Editor Email
+    for (let i = 0; i < student.editors.length; i++) {
+      await sendStudentFeedbackGeneralFileForEditorEmail(
+        {
+          firstname: student.editors[i].firstname,
+          lastname: student.editors[i].lastname,
+          address: student.editors[i].email,
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          feedback_for_documentname: editor_output_doc.name,
+          uploaded_updatedAt: editor_output_doc.student_feedback_updatedAt,
+        }
+      );
+    }
+  } else {
+    throw new ErrorResponse(400, "Only Student can leave feedback");
+  }
+});
+
+const StudentGiveFeedbackProgramSpecificFile = asyncHandler(
+  async (req, res, next) => {
+    const {
+      user,
+      params: { studentId, applicationId, docName, whoupdate },
+      body: { student_feedback },
+    } = req;
+
+    // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+    const student = await Student.findById(studentId)
+      .populate("applications.programId")
+      .populate("students agents editors", "firstname lastname email")
+      .exec();
+
+    if (!student) throw new ErrorResponse(400, "Invalid student id");
+    // console.log(student);
+    const application = student.applications.find(
+      ({ programId }) => programId._id == applicationId
+    );
+    const idx = student.applications.findIndex(
+      ({ programId }) => programId._id == applicationId
+    );
+    if (!application) throw new ErrorResponse(400, "Invalid application id");
+    var editor_output_doc;
+    if (user.role == Role.Student) {
+      editor_output_doc = application.documents.find(
+        ({ name }) => name === docName
+      );
+      if (!editor_output_doc)
+        throw new ErrorResponse(400, "Document not existed!");
+      editor_output_doc.student_feedback = student_feedback;
+      // TODO: mark every isReceivedFeedback flag (i.e. same doc type like ML or essay) to true!
+      editor_output_doc.isReceivedFeedback = true;
+      editor_output_doc.student_feedback_updatedAt = new Date();
+
+      await student.save();
+      res.status(201).send({ success: true, data: student });
+      // Send Editor Email
+      for (let i = 0; i < student.editors.length; i++) {
+        await sendStudentFeedbackProgramSpecificFileForEditorEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email,
+          },
+          {
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
+            feedback_for_documentname: editor_output_doc.name,
+            uploaded_updatedAt: editor_output_doc.student_feedback_updatedAt,
+          }
+        );
+      }
+      //TODO: Send Agent Email
+    } else {
+      throw new ErrorResponse(400, "Only Student can leave feedback");
+    }
+  }
+);
+
 module.exports = {
   getMyfiles,
   saveFilePath,
@@ -1211,4 +1507,6 @@ module.exports = {
   updatePersonalData,
   updateCommentsGeneralFile,
   updateCommentsProgramSpecificFile,
+  StudentGiveFeedbackGeneralFile,
+  StudentGiveFeedbackProgramSpecificFile,
 };

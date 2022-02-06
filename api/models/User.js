@@ -184,6 +184,7 @@ const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
 const applicationSchema = new Schema({
   programId: { type: ObjectId, ref: "Program" },
   documents: [
+    //editor output
     {
       name: {
         type: String,
@@ -210,12 +211,17 @@ const applicationSchema = new Schema({
         type: String,
         default: "",
       },
+      student_feedback: {
+        type: String,
+        default: "",
+      },
       path: {
         type: String,
         default: "",
       },
       // TODO: updateBy
       updatedAt: Date,
+      student_feedback_updatedAt: Date,
     },
   ],
   student_inputs: [
@@ -325,12 +331,17 @@ const Student = User.discriminator(
               type: String,
               default: "",
             },
+            student_feedback: {
+              type: String,
+              default: "",
+            },
             path: {
               type: String,
               default: "",
             },
             // TODO: updateBy
             updatedAt: Date,
+            student_feedback_updatedAt: Date,
           },
         ],
         studentinputs: [

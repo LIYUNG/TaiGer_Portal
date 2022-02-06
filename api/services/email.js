@@ -103,6 +103,22 @@ Please review it and confirm with your editor and finalize the document review.
   return sendEmail(recipient, subject, message);
 };
 
+const sendEditorOutputGeneralFilesEmailToAgent = async (recipient, msg) => {
+  const subject = `New output from your Editor for ${msg.student_firstname} ${msg.student_lastname} !`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname}  has uploaded ${msg.uploaded_documentname} for ${msg.student_firstname} ${msg.student_lastname} 
+
+for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
+
+Please double check. If something goes wrong, please talk to editor as soon as possible.
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendUploadedProgramSpecificFilesEmail = async (recipient, msg) => {
   const subject = "Thank you for your input!";
   const message = `\
@@ -118,6 +134,24 @@ Your editor will review it and give you feedback as soon as possible.
   return sendEmail(recipient, subject, message);
 };
 
+const sendUploadedGeneralFilesRemindForStudentEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = "Thank you for your input!";
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+you have uploaded ${msg.uploaded_documentname} 
+
+on ${msg.uploaded_updatedAt}.
+
+Your editor will review it and give you feedback as soon as possible.
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendEditorOutputProgramSpecificFilesEmailToStudent = async (
   recipient,
   msg
@@ -126,11 +160,31 @@ const sendEditorOutputProgramSpecificFilesEmailToStudent = async (
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-your editor has uploaded ${msg.uploaded_documentname} 
+your editor ${msg.editor_firstname} - ${msg.editor_lastname} has uploaded ${msg.uploaded_documentname} 
 
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Please review it and confirm with your editor and finalize the document review.
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendEditorOutputProgramSpecificFilesEmailToAgent = async (
+  recipient,
+  msg
+) => {
+  const subject = `New revised ${msg.fileCategory} for ${msg.university_name} - ${msg.program_name} from Editor for ${msg.student_firstname} - ${msg.student_lastname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} - ${msg.editor_lastname} has uploaded ${msg.uploaded_documentname} 
+
+for student ${msg.student_firstname} - ${msg.student_lastname}
+
+for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
+
+Please double check it and see if something goes wrong.
 `;
 
   return sendEmail(recipient, subject, message);
@@ -201,7 +255,10 @@ on ${msg.uploaded_updatedAt}.`; // should be for student/agent/editor
   return sendEmail(recipient, subject, message);
 };
 
-const sendUploadedFilesRemindForEditorEmail = async (recipient, msg) => {
+const sendUploadedProgramSpecificFilesRemindForEditorEmail = async (
+  recipient,
+  msg
+) => {
   const subject = `New ${msg.fileCategory} input from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
@@ -216,6 +273,24 @@ Please the input from student and give student your feedback as soon as possible
   return sendEmail(recipient, subject, message);
 };
 
+const sendUploadedProgramSpecificFilesRemindForAgentEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `New ${msg.fileCategory} input from ${msg.student_firstname} ${msg.student_lastname}`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
+
+for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
+
+Please double check it. If there is anything wrong, please contact student as soon as possible.
+`; // should be for student/agent/editor
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendUploadedGeneralFilesRemindForEditorEmail = async (recipient, msg) => {
   const subject = `New ${msg.fileCategory} input from  ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
@@ -223,7 +298,24 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
 
-for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.`; // should be for student/agent/editor
+for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
+
+Please give your student feedback as soon as possible.
+`; // should be for student/agent/editor
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendUploadedGeneralFilesRemindForAgentEmail = async (recipient, msg) => {
+  const subject = `New ${msg.fileCategory} input from  ${msg.student_firstname} ${msg.student_lastname}`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
+
+for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
+
+`; // should be for student/agent/editor
 
   return sendEmail(recipient, subject, message);
 };
@@ -339,6 +431,91 @@ Some reminder email template.`; // should be for admin/editor/agent/student
   return sendEmail(recipient, subject, message);
 };
 
+const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `Your docunebt ${msg.uploaded_documentname} is finished!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized
+
+${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} 
+
+for you.
+
+This document is ready for the application. 
+
+If you have any question, feel free to contact your editor.
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is finished!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.editor_firstname} ${msg.editor_lastname} have finalized
+
+${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} 
+
+for ${msg.student_firstname} ${msg.student_lastname}.
+
+Double check this document and finalize the application if applicable. 
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendStudentFeedbackGeneralFileForEditorEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `There is new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
+
+ ${msg.feedback_for_documentname}:
+
+on ${msg.uploaded_updatedAt} 
+
+Double check this document and finalize the application if applicable. 
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendStudentFeedbackProgramSpecificFileForEditorEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `There is new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
+
+ ${msg.feedback_for_documentname}:
+
+on ${msg.uploaded_updatedAt} 
+
+Double check this document and finalize the application if applicable. 
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   sendEmail,
@@ -346,20 +523,29 @@ module.exports = {
   sendForgotPasswordEmail,
   sendPasswordResetEmail,
   sendEditorOutputGeneralFilesEmailToStudent,
+  sendEditorOutputGeneralFilesEmailToAgent,
   sendUploadedProgramSpecificFilesEmail,
+  sendUploadedGeneralFilesRemindForStudentEmail,
   sendEditorOutputProgramSpecificFilesEmailToStudent,
+  sendEditorOutputProgramSpecificFilesEmailToAgent,
   sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedFilesRemindForAgentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
-  sendUploadedFilesRemindForEditorEmail,
+  sendUploadedProgramSpecificFilesRemindForEditorEmail,
+  sendUploadedProgramSpecificFilesRemindForAgentEmail,
   sendUploadedGeneralFilesRemindForEditorEmail,
+  sendUploadedGeneralFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
   sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
+  sendSetAsFinalProgramSpecificFileForStudentEmail,
+  sendSetAsFinalProgramSpecificFileForAgentEmail,
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
+  sendStudentFeedbackGeneralFileForEditorEmail,
+  sendStudentFeedbackProgramSpecificFileForEditorEmail,
 };

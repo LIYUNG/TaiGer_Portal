@@ -12,7 +12,9 @@ const {
   getMyfiles,
   saveFilePath,
   updateCommentsGeneralFile,
+  StudentGiveFeedbackGeneralFile,
   updateCommentsProgramSpecificFile,
+  StudentGiveFeedbackProgramSpecificFile,
   saveGeneralFilePath,
   downloadTemplateFile,
   downloadFile,
@@ -62,6 +64,15 @@ router
 
 router
   .route(
+    "/files/programspecific/studentfeedback/:studentId/:applicationId/:docName/:whoupdate"
+  )
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    StudentGiveFeedbackProgramSpecificFile
+  );
+
+router
+  .route(
     "/files/programspecific/upload/:studentId/:applicationId/:fileCategory"
   )
   .post(
@@ -88,7 +99,12 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     updateCommentsGeneralFile
   );
-
+router
+  .route("/files/general/studentfeedback/:studentId/:whoupdate/:docName")
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    StudentGiveFeedbackGeneralFile
+  );
 router
   .route("/files/general/upload/:studentId/:fileCategory")
   .post(

@@ -76,8 +76,7 @@ export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);
 
 // Account APIs
-export const getMyfiles = () =>
-  request.get(`/api/account/files`);
+export const getMyfiles = () => request.get(`/api/account/files`);
 
 export const templateDownload = (category) =>
   request.get(`/api/account/files/${category}`, { responseType: "blob" });
@@ -154,6 +153,17 @@ export const uploadEditGeneralFileforstudent = (
     data
   );
 
+export const updateStudentFeedbackGeneralFileByStudent = (
+  studentId,
+  docName,
+  whoupdate,
+  student_feedback
+) =>
+  request.post(
+    `/api/account/files/general/studentfeedback/${studentId}/${whoupdate}/${docName}`,
+    { student_feedback }
+  );
+
 export const updateEditGeneralFileCommentsforstudent = (
   studentId,
   docName,
@@ -196,6 +206,18 @@ export const updateHandwrittenFileCommentsforstudent = (
   request.post(
     `/api/account/files/programspecific/comments/${studentId}/${applicationId}/${docName}/${whoupdate}`,
     { comments }
+  );
+
+export const updateStudentFeedbackProgramSpecificFileByStudent = (
+  studentId,
+  applicationId,
+  docName,
+  whoupdate,
+  student_feedback
+) =>
+  request.post(
+    `/api/account/files/programspecific/studentfeedback/${studentId}/${applicationId}/${docName}/${whoupdate}`,
+    { student_feedback }
   );
 
 export const downloadHandWrittenFile = (

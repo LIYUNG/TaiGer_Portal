@@ -3,6 +3,7 @@ import DEMO from "../../store/constant";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import DraftEditor from "./DraftEditor";
+import DraftEditor_StudentFeeback from "./DraftEditor_StudentFeeback";
 
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
@@ -23,6 +24,8 @@ import {
   uploadHandwrittenFileforstudent,
   uploadEditGeneralFileforstudent,
   updateHandwrittenFileCommentsforstudent,
+  updateStudentFeedbackGeneralFileByStudent,
+  updateStudentFeedbackProgramSpecificFileByStudent,
   updateEditGeneralFileCommentsforstudent,
   downloadHandWrittenFile,
   downloadGeneralHandWrittenFile,
@@ -43,12 +46,14 @@ class EditorDocsProgress extends React.Component {
     SetAsFinalFileModel: false,
     UndoFinalFileModel: false,
     CommentsModel: false,
+    StudentFeedbackModel: false,
     ML_Requirements_Modal: false,
     studentId: "",
     applicationId: "",
     docName: "",
     whoupdate: "",
     comments: "",
+    student_feedback: "",
     isLoaded: false,
     ml_requirements: "",
     file: "",
@@ -58,6 +63,18 @@ class EditorDocsProgress extends React.Component {
       isLoaded: true,
     }));
   }
+  openStudentFeebackProgramSpecificFileModelWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      StudentFeedbackModel: true,
+    }));
+  };
+  closeStudentFeebackProgramSpecificFileModelWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      StudentFeedbackModel: false,
+    }));
+  };
   openSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
@@ -108,6 +125,110 @@ class EditorDocsProgress extends React.Component {
   closeCommentsWindow = () => {
     this.setState((state) => ({ ...state, CommentsModel: false }));
   };
+  ConfirmStudentFeedbackGeneralFileHandler = (student_feedback) => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
+    updateStudentFeedbackGeneralFileByStudent(
+      this.state.studentId,
+      this.state.docName,
+      this.state.whoupdate,
+      student_feedback
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        if (success) {
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                StudentFeedbackModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+        } else {
+          alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            StudentFeedbackModel: false,
+          }));
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+  ConfirmStudentFeedbackProgramSpecificFileHandler = (student_feedback) => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false, //false to reload everything
+    }));
+    updateStudentFeedbackProgramSpecificFileByStudent(
+      this.state.studentId,
+      this.state.applicationId,
+      this.state.docName,
+      this.state.whoupdate,
+      student_feedback
+    ).then(
+      (resp) => {
+        console.log(resp.data.data);
+        const { data, success } = resp.data;
+        if (success) {
+          setTimeout(
+            function () {
+              //Start the timer
+              this.setState((state) => ({
+                ...state,
+                studentId: "",
+                applicationId: "",
+                docName: "",
+                whoupdate: "",
+                isLoaded: true,
+                student: data,
+                success: success,
+                StudentFeedbackModel: false,
+              }));
+            }.bind(this),
+            1500
+          );
+        } else {
+          alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            success: success,
+            StudentFeedbackModel: false,
+          }));
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
   ConfirmCommentsProgramSpecificFileHandler = (comments) => {
     this.setState((state) => ({
       ...state,
@@ -452,6 +573,41 @@ class EditorDocsProgress extends React.Component {
     }));
   };
 
+  onStudentFeedbackGeneral = (
+    studentId,
+    docName,
+    whoupdate,
+    student_feedback
+  ) => {
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      docName,
+      whoupdate,
+      filetype: "General",
+      student_feedback,
+      StudentFeedbackModel: true,
+    }));
+  };
+
+  onStudentFeedbackProgramSpecific = (
+    studentId,
+    applicationId,
+    docName,
+    whoupdate,
+    student_feedback
+  ) => {
+    this.setState((state) => ({
+      ...state,
+      studentId,
+      applicationId,
+      docName,
+      whoupdate,
+      filetype: "ProgramSpecific",
+      student_feedback,
+      StudentFeedbackModel: true,
+    }));
+  };
   handleAsFinalProgramSpecific = (
     studentId,
     applicationId,
@@ -788,6 +944,7 @@ class EditorDocsProgress extends React.Component {
                   onDeleteGeneralFile={this.onDeleteGeneralFile}
                   onDownloadGeneralFile={this.onDownloadGeneralFile}
                   onCommentsGeneralFile={this.onCommentsGeneralFile}
+                  onStudentFeedbackGeneral={this.onStudentFeedbackGeneral}
                   SubmitGeneralFile={this.SubmitGeneralFile}
                   handleAsFinalGeneralFile={this.handleAsFinalGeneralFile}
                   role={this.props.role}
@@ -867,6 +1024,9 @@ class EditorDocsProgress extends React.Component {
                           }
                           onCommentsProgramSpecific={
                             this.onCommentsProgramSpecific
+                          }
+                          onStudentFeedbackProgramSpecific={
+                            this.onStudentFeedbackProgramSpecific
                           }
                           SubmitProgramSpecificFile={
                             this.SubmitProgramSpecificFile
@@ -1056,6 +1216,28 @@ class EditorDocsProgress extends React.Component {
           onClick1={this.ConfirmCommentsGeneralFileHandler}
           onClick2={this.ConfirmCommentsProgramSpecificFileHandler}
           onClick3={this.closeCommentsWindow}
+          setMessage={this.setState}
+          docName={this.state.docName}
+          role={this.props.role}
+          filetype={this.state.filetype}
+        />
+        <DraftEditor_StudentFeeback
+          error={error}
+          whoupdate={this.state.whoupdate}
+          isLoaded={isLoaded}
+          student={this.state.student}
+          show={this.state.StudentFeedbackModel}
+          onHide={this.closeStudentFeebackProgramSpecificFileModelWindow}
+          defaultComments={this.state.student_feedback}
+          ConfirmStudentFeedbackProgramSpecificFileHandler={
+            this.ConfirmStudentFeedbackProgramSpecificFileHandler
+          }
+          ConfirmStudentFeedbackGeneralFileHandler={
+            this.ConfirmStudentFeedbackGeneralFileHandler
+          }
+          closeStudentFeebackProgramSpecificFileModelWindow={
+            this.closeStudentFeebackProgramSpecificFileModelWindow
+          }
           setMessage={this.setState}
           docName={this.state.docName}
           role={this.props.role}

@@ -20,6 +20,7 @@ class ManualFilesList extends Component {
               onFormSubmit={this.props.onFormSubmit}
               onDownloadGeneralFile={this.props.onDownloadGeneralFile}
               onCommentsGeneralFile={this.props.onCommentsGeneralFile}
+              onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
               handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
@@ -43,6 +44,7 @@ class ManualFilesList extends Component {
               onFormSubmit={this.props.onFormSubmit}
               onDownloadGeneralFile={this.props.onDownloadGeneralFile}
               onCommentsGeneralFile={this.props.onCommentsGeneralFile}
+              onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
               onTrashClick={this.props.onTrashClick}
               onDeleteGeneralFile={this.props.onDeleteGeneralFile}
               handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
@@ -62,6 +64,10 @@ class ManualFilesList extends Component {
             application={this.props.application}
             student={this.props.student}
             onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
+
+            onStudentFeedbackProgramSpecific={
+              this.props.onStudentFeedbackProgramSpecific
+            }
             onDownloadProgramSpecificFile={
               this.props.onDownloadProgramSpecificFile
             }
@@ -85,6 +91,9 @@ class ManualFilesList extends Component {
               application={this.props.application}
               student={this.props.student}
               onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
+              onStudentFeedbackProgramSpecific={
+                this.props.onStudentFeedbackProgramSpecific
+              }
               onDownloadProgramSpecificFile={
                 this.props.onDownloadProgramSpecificFile
               }

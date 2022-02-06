@@ -486,9 +486,15 @@ class EditorReviewing extends React.Component {
         this.props.student.generaldocs.studentinputs.findIndex((doc) =>
           doc.name.includes("RL_Template")
         ) !== -1 ? (
-          <h6 className="mb-1" key={10}>
-            RL template filled
-          </h6>
+          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+            doc.name.includes("RL")
+          ) === -1 ? (
+            <h6 className="mb-1" key={10}>
+              CV template filled
+            </h6>
+          ) : (
+            <></>
+          )
         ) : (
           <></>
         );

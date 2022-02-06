@@ -65,6 +65,26 @@ class EditableFile extends Component {
       this.props.document.feedback
     );
   };
+
+  handleStudentFeebackGeneral = () => {
+    this.props.onStudentFeedbackGeneral(
+      this.props.student._id,
+      this.props.document.name,
+      this.props.whoupdate,
+      this.props.document.student_feedback
+    );
+  };
+
+  handleStudentFeebackProgramSpecific = () => {
+    this.props.onStudentFeedbackProgramSpecific(
+      this.props.student._id,
+      this.props.application.programId._id,
+      this.props.document.name,
+      this.props.whoupdate,
+      this.props.document.student_feedback
+    );
+  };
+
   MouseOver = () => {
     console.log("Mouse Over");
   };
@@ -258,17 +278,27 @@ class EditableFile extends Component {
                 </Button>
               )}
             </Col>
-            {this.props.role === "Student" &&
-            this.props.whoupdate === "Editor" ? (
+            {this.props.whoupdate === "Editor" ? (
               <Col md={1}>
-                <Button
-                  size="sm"
-                  title="Give Feedback"
-                  variant="light"
-                  onClick={this.handleCommentsProgramSpecific}
-                >
-                  <AiFillMessage size={20} />
-                </Button>
+                {this.props.filetype === "General" ? (
+                  <Button
+                    size="sm"
+                    title="Give Feedback"
+                    variant="light"
+                    onClick={this.handleStudentFeebackGeneral}
+                  >
+                    <AiFillMessage size={20} />
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    title="Give Feedback"
+                    variant="light"
+                    onClick={this.handleStudentFeebackProgramSpecific}
+                  >
+                    <AiFillMessage size={20} />
+                  </Button>
+                )}
               </Col>
             ) : (
               <></>

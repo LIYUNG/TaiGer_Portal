@@ -88,7 +88,7 @@ class UploadAndGenerate extends Component {
     }
   };
 
-  onDownloadFile(e, filename) {
+  onDownloadGeneratedFile(e, filename) {
     e.preventDefault();
     var actualFileName;
     generatedFileDownload(this.props.user._id, filename).then(
@@ -185,7 +185,32 @@ class UploadAndGenerate extends Component {
                   </Form.File.Label>
                 </Form>
               </Col>
-              <Col md={2}></Col>
+              {this.state.student.taigerai &&
+              this.state.student.taigerai.input &&
+              this.state.student.taigerai.input.name !== "" ? (
+                <>
+                  <Col md={2}>
+                    <Form
+                      onSubmit={(e) =>
+                        this.onDownloadGeneratedFile(
+                          e,
+                          this.state.student.taigerai.input.name
+                        )
+                      }
+                    >
+                      <Form.Group controlId="exampleForm.ControlSelect1">
+                        <div className="form-group">
+                          <Button className="btn btn-primary" type="submit">
+                            Download
+                          </Button>
+                        </div>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </>
+              ) : (
+                <></>
+              )}
               {this.state.student.taigerai &&
               this.state.student.taigerai.output &&
               this.state.student.taigerai.output.name !== "" ? (
@@ -196,7 +221,7 @@ class UploadAndGenerate extends Component {
                   <Col md={2}>
                     <Form
                       onSubmit={(e) =>
-                        this.onDownloadFile(
+                        this.onDownloadGeneratedFile(
                           e,
                           this.state.student.taigerai.output.name
                         )

@@ -17,7 +17,7 @@ import {
 } from "react-bootstrap";
 // See: https://blog.logrocket.com/building-rich-text-editors-in-react-using-draft-js-and-react-draft-wysiwyg/
 // const DraftEditor = (props) => {
-class DraftEditor extends React.Component {
+class DraftEditor_StudentFeeback extends React.Component {
   state = {
     isLoaded: false,
     convertedContent: null,
@@ -53,7 +53,6 @@ class DraftEditor extends React.Component {
     // 常見用法（別忘了比較 prop）：
     if (
       this.props.isLoaded !== this.state.isLoaded ||
-      prevProps.defaultComments !== this.props.defaultComments ||
       prevProps.defaultComments !== this.props.defaultComments ||
       prevProps.whoupdate !== this.props.whoupdate
     ) {
@@ -110,7 +109,7 @@ class DraftEditor extends React.Component {
       ...state,
       editorState: initialEditorState,
     }));
-    this.props.onClick3();
+    this.props.closeStudentFeebackProgramSpecificFileModelWindow();
   };
   render() {
     const style = {
@@ -152,7 +151,7 @@ class DraftEditor extends React.Component {
         </Modal.Header>
         <Modal.Body>
           {/* <header className="App-header">Rich Text Editor Example</header> */}
-          {this.props.role === this.state.whoupdate ? (
+          {this.props.role === "Student" ? (
             <Editor
               editorState={this.state.editorState}
               onEditorStateChange={this.handleEditorChange}
@@ -167,12 +166,12 @@ class DraftEditor extends React.Component {
           )}
         </Modal.Body>
         <Modal.Footer>
-          {this.props.role === this.state.whoupdate ? (
+          {this.props.role === "Student" ? (
             this.props.filetype === "General" ? (
               <Button
                 // disabled={!isLoaded}
                 onClick={() =>
-                  this.props.onClick1(
+                  this.props.ConfirmStudentFeedbackGeneralFileHandler(
                     JSON.stringify(
                       convertToRaw(this.state.editorState.getCurrentContent())
                     )
@@ -185,7 +184,7 @@ class DraftEditor extends React.Component {
               <Button
                 // disabled={!isLoaded}
                 onClick={() =>
-                  this.props.onClick2(
+                  this.props.ConfirmStudentFeedbackProgramSpecificFileHandler(
                     JSON.stringify(
                       convertToRaw(this.state.editorState.getCurrentContent())
                     )
@@ -212,4 +211,4 @@ class DraftEditor extends React.Component {
     );
   }
 }
-export default DraftEditor;
+export default DraftEditor_StudentFeeback;

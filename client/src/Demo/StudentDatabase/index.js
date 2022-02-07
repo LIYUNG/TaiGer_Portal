@@ -14,6 +14,7 @@ import TabStudDocsDashboard from "../Dashboard/MainViewTab/StudDocsOverview/TabS
 // import Card from "../../App/components/MainCard";
 
 import {
+  getAllStudents,
   getArchivStudents,
   updateArchivStudents,
   downloadProfile,
@@ -41,7 +42,7 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     console.log(this.props.user);
-    getArchivStudents().then(
+    getAllStudents().then(
       (resp) => {
         console.log(resp.data);
         const { data, success } = resp.data;

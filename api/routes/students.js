@@ -6,7 +6,9 @@ const { fileUpload, ProfilefileUpload } = require("../middlewares/file-upload");
 const { Role, Student } = require("../models/User");
 
 const {
+  getStudent,
   getStudents,
+  getAllStudents,
   getArchivStudent,
   getArchivStudents,
   updateStudentsArchivStatus,
@@ -29,6 +31,14 @@ router.use(protect);
 router
   .route("/")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudents);
+
+router
+  .route("/all")
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getAllStudents);
+
+router
+  .route("/:studentId")
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudent);
 
 router
   .route("/archiv")

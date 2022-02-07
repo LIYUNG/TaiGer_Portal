@@ -1,5 +1,6 @@
 import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
@@ -235,7 +236,9 @@ class StudDocsDashboard extends React.Component {
                 </DropdownButton>
               </td>
               <td>
-                {this.props.student.firstname}, {this.props.student.lastname}
+                <Link to={"/student-database/" + this.props.student._id}>
+                  {this.props.student.firstname}, {this.props.student.lastname}
+                </Link>
                 <br />
                 {this.props.student.email}
               </td>

@@ -12,9 +12,31 @@ const {
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
 } = require("../services/email");
+
+const getStudent = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId },
+  } = req;
+
+  const student = await Student.findById(studentId)
+    .populate("applications.programId agents editors")
+    .lean();
+  res.status(200).send({ success: true, data: student });
+});
+
+const getAllStudents = asyncHandler(async (req, res) => {
+  const {
+    user,
+    // params: { userId },
+  } = req;
+  const students = await Student.find()
+    .populate("applications.programId agents editors")
+    .lean();
+  res.status(200).send({ success: true, data: students });
+});
+
 const getStudents = asyncHandler(async (req, res) => {
-  // const { userId } = req.params;
-  // const user = await Student.findById(userId);
   const {
     user,
     // params: { userId },
@@ -72,6 +94,7 @@ const getArchivStudent = asyncHandler(async (req, res) => {
     .lean();
   res.status(200).send({ success: true, data: students[0] });
 });
+
 const getArchivStudents = asyncHandler(async (req, res) => {
   const {
     user,
@@ -428,6 +451,8 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
+  getStudent,
+  getAllStudents,
   getStudents,
   getArchivStudent,
   getArchivStudents,

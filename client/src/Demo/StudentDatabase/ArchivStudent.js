@@ -8,6 +8,7 @@ import {
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
 import {
+  getStudent,
   getArchivStudent,
   updateProfileDocumentStatus,
   downloadProfile,
@@ -29,7 +30,7 @@ class ArchivStudent extends React.Component {
     error: null,
   };
   componentDidMount() {
-    getArchivStudent(this.props.match.params.studentId).then(
+    getStudent(this.props.match.params.studentId).then(
       (resp) => {
         console.log(resp);
         const { data, success } = resp.data;

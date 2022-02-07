@@ -1,39 +1,17 @@
 import React from "react";
 import {
   Row,
-  Col,
-  Form,
   Table,
-  Button,
   Card,
   Collapse,
-  Modal,
-  Spinner,
 } from "react-bootstrap";
-import UcFirst from "../../App/components/UcFirst";
+// import UcFirst from "../../App/components/UcFirst";
 import ButtonSetUploaded from "./ButtonSetUploaded";
 import ButtonSetAccepted from "./ButtonSetAccepted";
 import ButtonSetRejected from "./ButtonSetRejected";
 import ButtonSetNotNeeded from "./ButtonSetNotNeeded";
 import ButtonSetMissing from "./ButtonSetMissing";
-import { IoMdCloudUpload } from "react-icons/io";
-import {
-  AiOutlineDownload,
-  AiOutlineFieldTime,
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineComment,
-  AiOutlineDelete,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-import {
-  uploadforstudent,
-  updateProfileDocumentStatus,
-  deleteFile,
-  getStudents,
-  downloadProfile,
-} from "../../api";
+
 import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
 
 class EditFilesSubpage extends React.Component {
@@ -190,6 +168,7 @@ class EditFilesSubpage extends React.Component {
               this.props.onUpdateProfileFilefromstudent
             }
             SubmitGeneralFile={this.props.SubmitGeneralFile}
+            handleGeneralDocSubmit={this.handleGeneralDocSubmit}
           />
         );
       }

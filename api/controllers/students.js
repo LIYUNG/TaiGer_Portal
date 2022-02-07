@@ -58,7 +58,20 @@ const getStudents = asyncHandler(async (req, res) => {
     res.status(200).send({ success: true, data: [user] });
   }
 });
+const getArchivStudent = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId },
+  } = req;
 
+  if (user.role === "Guest" || user.role === "Student") {
+    throw new ErrorResponse(400, "Unauthorized access.");
+  }
+  const students = await Student.find({ _id: studentId, archiv: true })
+    .populate("applications.programId agents editors")
+    .lean();
+  res.status(200).send({ success: true, data: students[0] });
+});
 const getArchivStudents = asyncHandler(async (req, res) => {
   const {
     user,
@@ -416,6 +429,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   getStudents,
+  getArchivStudent,
   getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,

@@ -100,7 +100,7 @@ class ButtonSetMissing extends React.Component {
               <Form>
                 <Form.File.Label
                   onChange={(e) =>
-                    this.handleGeneralDocSubmit(
+                    this.props.handleGeneralDocSubmit(
                       e,
                       this.props.k,
                       this.props.student_id

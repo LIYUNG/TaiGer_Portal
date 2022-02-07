@@ -98,24 +98,6 @@ class AgentCenter extends React.Component {
     }));
   };
 
-  // onDeleteFileWarningPopUp = (e, category, student_id) => {
-  //   e.preventDefault();
-  //   this.setState((state) => ({
-  //     ...state,
-  //     student_id,
-  //     category,
-  //     deleteFileWarningModel: true,
-  //   }));
-  // };
-
-  // handleRejectMessage = (e, rejectmessage) => {
-  //   e.preventDefault();
-  //   // console.log(e.target.value);
-  //   this.setState((state) => ({
-  //     ...state,
-  //     feedback: rejectmessage,
-  //   }));
-  // };
   onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
     var student_arrayidx = this.state.students.findIndex(
       (student) => student._id === student_id

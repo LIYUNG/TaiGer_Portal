@@ -43,12 +43,12 @@ class ProgramForm extends React.Component {
                 id={`dropdown-variants-${this.props.program._id}`}
                 key={this.props.program._id}
               >
-                <Dropdown.Item
+                {/* <Dropdown.Item
                   eventKey="1"
                   onSelect={() => this.props.onEditClick(this.props.i)}
                 >
                   Edit
-                </Dropdown.Item>
+                </Dropdown.Item> */}
                 <Dropdown.Item
                   eventKey="2"
                   onSelect={() =>
@@ -61,7 +61,7 @@ class ProgramForm extends React.Component {
                 >
                   Assign to student...
                 </Dropdown.Item>
-                <Dropdown.Item
+                {/* <Dropdown.Item
                   eventKey="3"
                   onSelect={() =>
                     this.props.setModalShowDelete(
@@ -72,7 +72,7 @@ class ProgramForm extends React.Component {
                   }
                 >
                   Delete
-                </Dropdown.Item>
+                </Dropdown.Item> */}
               </DropdownButton>
             )}
           </th>

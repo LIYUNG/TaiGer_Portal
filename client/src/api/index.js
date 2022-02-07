@@ -33,6 +33,8 @@ export const getEditors = () => request.get("/api/editors");
 
 export const getStudents = () => request.get(`/api/students`);
 
+export const getArchivStudent = (studentId) =>
+  request.get(`/api/students/archiv/${studentId}`);
 export const getArchivStudents = () => request.get(`/api/students/archiv`);
 
 export const updateArchivStudents = (studentId, isArchived) =>

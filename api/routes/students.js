@@ -7,6 +7,7 @@ const { Role, Student } = require("../models/User");
 
 const {
   getStudents,
+  getArchivStudent,
   getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,
@@ -38,6 +39,7 @@ router
 
 router
   .route("/archiv/:studentId")
+  .get(permit(Role.Admin, Role.Agent, Role.Editor), getArchivStudent)
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     updateStudentsArchivStatus

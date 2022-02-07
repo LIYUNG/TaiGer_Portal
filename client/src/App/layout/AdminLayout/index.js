@@ -102,9 +102,9 @@ function AdminLayout(props) {
         path={route.path}
         exact={route.exact}
         name={route.name}
-        render={() => (
+        render={(props) => (
           <route.component
-            // {...props}
+            {...props}
             user={userdata.data}
           />
         )}

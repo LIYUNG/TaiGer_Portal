@@ -60,7 +60,7 @@ const programSchema = new mongoose.Schema(
       // required: true,
     },
     ml_required: {
-      type: Boolean,
+      type: String,
       // required: true,
     },
     ml_requirements: {
@@ -68,7 +68,7 @@ const programSchema = new mongoose.Schema(
       // required: true,
     },
     rl_required: {
-      type: Boolean,
+      type: String,
       // required: true,
     },
     rl_requirements: {
@@ -120,8 +120,8 @@ const programSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    requiredDocuments: [String],
-    optionalDocuments: [String],
+    // requiredDocuments: [String],
+    // optionalDocuments: [String],
     url: String,
   },
   { timestamps: true }

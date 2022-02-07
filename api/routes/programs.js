@@ -21,7 +21,7 @@ router
   .post(permit(Role.Admin, Role.Agent), createProgram);
 
 router
-  .route("/:id")
+  .route("/:programId")
   .get(permit(Role.Admin, Role.Agent, Role.Student), getProgram)
   .put(permit(Role.Admin, Role.Agent), updateProgram)
   .delete(permit(Role.Admin, Role.Agent), deleteProgram);

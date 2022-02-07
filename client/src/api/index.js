@@ -246,6 +246,7 @@ export const deleteWrittenFile = (
 
 // Program APIs
 export const getPrograms = () => request.get("/api/programs");
+export const getProgram = (programId) => request.get(`/api/programs/${programId}`);
 
 export const deleteProgram = (id) => request.delete(`/api/programs/${id}`);
 

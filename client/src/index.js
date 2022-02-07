@@ -228,6 +228,30 @@ window.NewProgramHeader = [
     prop: "program",
   },
   {
+    name: "Degree",
+    prop: "degree",
+  },
+  {
+    name: "Semester",
+    prop: "semester",
+  },
+  {
+    name: "Language",
+    prop: "language",
+  },
+  {
+    name: "Application Start",
+    prop: "application_start",
+  },
+  {
+    name: "Application Deadline",
+    prop: "application_deadline",
+  },
+  {
+    name: "Uni Assist",
+    prop: "uni_assist",
+  },
+  {
     name: "TOEFL",
     prop: "toefl",
   },
@@ -236,72 +260,76 @@ window.NewProgramHeader = [
     prop: "ielts",
   },
   {
-    name: "Degree",
-    prop: "degree",
+    name: "TestDaF",
+    prop: "testdaf",
   },
   {
-    name: "GRE/GMAT",
+    name: "GRE",
     prop: "gre",
   },
   {
-    name: "Application Deadline",
-    prop: "application_deadline",
+    name: "GMAT",
+    prop: "gmat",
   },
   {
-    name: "CV Deadline",
-    prop: "CV_",
+    name: "ML Needed?",
+    prop: "ml_required",
   },
   {
-    name: "ML",
-    prop: "ML_",
+    name: "ML Requirements",
+    prop: "ml_requirements",
   },
   {
-    name: "RL",
-    prop: "RL_",
+    name: "RL Needed?",
+    prop: "rl_required",
   },
   {
-    name: "Bachelor Certificate",
-    prop: "bachelorCertificate_",
+    name: "RL Requirements",
+    prop: "rl_requirements",
   },
   {
-    name: "Bachelor Transcript",
-    prop: "bachelorTranscript_",
+    name: "Essay Required",
+    prop: "essay_required",
   },
   {
-    name: "High School Diploma",
-    prop: "highSchoolDiploma_",
+    name: "Essay Requirements",
+    prop: "essay_requirements",
   },
   {
-    name: "High School Transcript",
-    prop: "highSchoolTranscript_",
+    name: "Special Notes",
+    prop: "special_notes",
   },
   {
-    name: "GSAT(基測)",
-    prop: "universityEntranceExamination_",
+    name: "Comments",
+    prop: "comments",
   },
   {
-    name: "English Certificate",
-    prop: "EnglischCertificate_",
+    name: "Application Portal A",
+    prop: "application_portal_a",
   },
   {
-    name: "German Certificate",
-    prop: "GermanCertificate_",
+    name: "Application Portal B",
+    prop: "application_portal_b",
   },
   {
-    name: "Essay",
-    prop: "Essay_",
+    name: "Website",
+    prop: "website",
   },
   {
-    name: "ECTS Conversion",
-    prop: "ECTS_coversion_",
+    name: "FPSO",
+    prop: "fpso",
   },
   {
-    name: "Course Description",
-    prop: "CourseDescription_",
+    name: "Last Update",
+    prop: "updatedAt",
   },
   {
-    name: "Passport",
-    prop: "Passport_",
+    name: "Modified by",
+    prop: "whoupdated",
+  },
+  {
+    name: "Group",
+    prop: "study_group_flag",
   },
 ];
 

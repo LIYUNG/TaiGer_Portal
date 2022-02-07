@@ -1,6 +1,6 @@
 import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
-
+import {Link} from 'react-router-dom'
 class ProgramForm extends React.Component {
   state = {
     program: this.props.program || "",
@@ -77,7 +77,11 @@ class ProgramForm extends React.Component {
             )}
           </th>
           {this.props.header.map((y, k) => (
-            <td key={k}>{this.props.program[y.prop]}</td>
+            <td key={k}>
+              <Link to={"/programs/" + this.props.program._id}>
+                {this.props.program[y.prop]}
+              </Link>
+            </td>
           ))}
         </tr>
       );

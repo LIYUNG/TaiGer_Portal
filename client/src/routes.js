@@ -31,6 +31,7 @@ const EditorCenter = React.lazy(() =>
   import("./Demo/EditorCenter/EditorCenter")
 );
 const ProgramTable = React.lazy(() => import("./Demo/Program/ProgramTable"));
+const SingleProgram = React.lazy(() => import("./Demo/Program/SingleProgram"));
 const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
 const Profile = React.lazy(() => import("./Demo/Profile/index"));
 const Survey = React.lazy(() => import("./Demo/Survey/index"));
@@ -112,6 +113,12 @@ const routes = [
     exact: true,
     name: "Forms Elements",
     component: FormsElements,
+  },
+  {
+    path: "/programs/:programId",
+    exact: true,
+    name: "SingleProgram",
+    component: SingleProgram,
   },
   {
     path: "/programs",

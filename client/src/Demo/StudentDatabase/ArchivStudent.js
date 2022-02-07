@@ -1,5 +1,14 @@
 import React from "react";
-import { Dropdown, Card, Table, Row, Col, Spinner } from "react-bootstrap";
+import {
+  Dropdown,
+  Tabs,
+  Tab,
+  Card,
+  Table,
+  Row,
+  Col,
+  Spinner,
+} from "react-bootstrap";
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
@@ -21,6 +30,8 @@ import ButtonSetRejected from "../AgentCenter/ButtonSetRejected";
 import ButtonSetNotNeeded from "../AgentCenter/ButtonSetNotNeeded";
 import ButtonSetMissing from "../AgentCenter/ButtonSetMissing";
 import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
+import EditorDocsProgress from "../EditorCenter/EditorDocsProgress";
+import SurveyComponent from "../Survey/SurveyComponent";
 
 class ArchivStudent extends React.Component {
   state = {
@@ -338,9 +349,7 @@ class ArchivStudent extends React.Component {
             student_id={this.state.student._id}
             onDownloadFilefromstudent={this.onDownloadFilefromstudent}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.onUpdateProfileFilefromstudent
-            }
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             SubmitGeneralFile={this.props.SubmitGeneralFile}
           />
         );
@@ -357,9 +366,7 @@ class ArchivStudent extends React.Component {
             student_id={this.state.student._id}
             onDownloadFilefromstudent={this.onDownloadFilefromstudent}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.onUpdateProfileFilefromstudent
-            }
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             SubmitGeneralFile={this.props.SubmitGeneralFile}
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
@@ -378,9 +385,7 @@ class ArchivStudent extends React.Component {
             student_id={this.state.student._id}
             onDownloadFilefromstudent={this.onDownloadFilefromstudent}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.onUpdateProfileFilefromstudent
-            }
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             SubmitGeneralFile={this.props.SubmitGeneralFile}
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
@@ -398,9 +403,7 @@ class ArchivStudent extends React.Component {
             student_id={this.state.student._id}
             onDownloadFilefromstudent={this.onDownloadFilefromstudent}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.onUpdateProfileFilefromstudent
-            }
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             SubmitGeneralFile={this.props.SubmitGeneralFile}
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
@@ -419,9 +422,7 @@ class ArchivStudent extends React.Component {
             student_id={this.state.student._id}
             onDownloadFilefromstudent={this.onDownloadFilefromstudent}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.onUpdateProfileFilefromstudent
-            }
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             SubmitGeneralFile={this.SubmitGeneralFile}
             handleGeneralDocSubmit={this.handleGeneralDocSubmit}
           />
@@ -429,7 +430,14 @@ class ArchivStudent extends React.Component {
       }
     });
 
-    console.log(this.state.student);
+    const student_editor = (
+      <EditorDocsProgress
+        student={this.state.student}
+        accordionKeys={1}
+        singleExpandtHandler={this.singleExpandtHandler}
+        role={this.props.user.role}
+      />
+    );
     return (
       <>
         <Card className="mt-2">
@@ -440,7 +448,9 @@ class ArchivStudent extends React.Component {
               {this.state.student.lastname}
             </Card.Title>
           </Card.Header>
-          <Card.Body>
+        </Card>
+        <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
+          <Tab eventKey="w" title="Profile Overview">
             <Row>
               <Table responsive>
                 <thead>
@@ -464,8 +474,19 @@ class ArchivStudent extends React.Component {
                 student={this.state.student}
               />
             </Row>
-          </Card.Body>
-        </Card>
+          </Tab>
+          <Tab eventKey="x" title="Application Files">
+            <Row>
+              <Col sm={12}>{student_editor}</Col>
+            </Row>
+          </Tab>
+          <Tab eventKey="y" title="Background">
+            <SurveyComponent
+              academic_background={this.state.student.academic_background}
+              isLoaded={this.state.isLoaded}
+            />
+          </Tab>
+        </Tabs>
       </>
     );
   }

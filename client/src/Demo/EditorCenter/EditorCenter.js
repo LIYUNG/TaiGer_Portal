@@ -113,13 +113,6 @@ class EditorCenter extends React.Component {
         accordionKeys={this.state.accordionKeys}
         singleExpandtHandler={this.singleExpandtHandler}
         role={this.props.user.role}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        startUploadfile={this.props.startUploadfile}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
 

@@ -42,7 +42,7 @@ class ProgramConflict extends React.Component {
               <h6>
                 {
                   this.props.conflict_programs[this.props.conf_program_id]
-                    .Application_end_date_
+                    .application_deadline
                 }
               </h6>
             </td>

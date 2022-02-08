@@ -4,8 +4,8 @@ import ProgramConflict from "./ProgramConflict";
 
 class TabProgramConflict extends React.Component {
   render() {
-    let conflict_map = {};
-    let conflict_programs = {};
+    var conflict_map = {};
+    var conflict_programs = {};
 
     for (let i = 0; i < this.props.students.length; i++) {
       if (this.props.students[i].applications)
@@ -28,13 +28,13 @@ class TabProgramConflict extends React.Component {
               conflict_programs[
                 this.props.students[i].applications[j].programId._id
               ] = {
-                University_:
+                school:
                   this.props.students[i].applications[j].programId.school,
-                Program_:
+                program:
                   this.props.students[i].applications[j].programId.program,
-                Application_end_date_:
+                application_deadline:
                   this.props.students[i].applications[j].programId
-                    .Application_end_date_,
+                    .application_deadline,
               };
             } else {
               conflict_map[
@@ -44,14 +44,14 @@ class TabProgramConflict extends React.Component {
           }
         }
     }
-    let conflict_program_ids = Object.keys(conflict_map);
+    var conflict_program_ids = Object.keys(conflict_map);
     for (let i = 0; i < conflict_program_ids.length; i++) {
       if (conflict_map[conflict_program_ids[i]].length === 1) {
         delete conflict_map[conflict_program_ids[i]];
         delete conflict_programs[conflict_program_ids[i]];
       }
     }
-    let conflicted_program = Object.keys(conflict_map);
+    var conflicted_program = Object.keys(conflict_map);
     const program_conflict = conflicted_program.map((conf_program_id, i) => (
       <ProgramConflict
         key={i}
@@ -59,8 +59,6 @@ class TabProgramConflict extends React.Component {
         conflict_map={conflict_map}
         conf_program_id={conf_program_id}
         conflict_programs={conflict_programs}
-        startEditingProgram={this.props.startEditingProgram}
-        startUploadfile={this.props.startUploadfile}
       />
     ));
     return (

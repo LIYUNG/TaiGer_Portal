@@ -67,15 +67,6 @@ class ApplicationProgress extends React.Component {
     }
   };
 
-  onRejectFilefromstudent = (e, category, id) => {
-    let stud = { ...this.state.student };
-    stud.uploadedDocs_[category].uploadStatus_ = "unaccepted";
-    this.props.onRejectFilefromstudent(e, category, id);
-    this.setState({
-      student: stud,
-    });
-  };
-
   render() {
     return (
       <ApplicationStatus

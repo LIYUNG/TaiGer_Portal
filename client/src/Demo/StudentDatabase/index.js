@@ -353,43 +353,36 @@ class Dashboard extends React.Component {
           <Aux>
             <Row>
               <Col>
-                <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-                  <Tab eventKey="w" title="Archiv Student Overview">
-                    {this.props.user.role === "Admin" ||
-                    this.props.user.role === "Agent" ||
-                    this.props.user.role === "Editor" ? (
-                      <TabStudDocsDashboard
-                        role={this.props.user.role}
-                        students={this.state.students}
-                        editAgent={this.state.editAgent}
-                        editEditor={this.state.editEditor}
-                        documentslist={window.documentslist}
-                        documentlist2={window.documentlist2}
-                        agent_list={this.state.agent_list}
-                        editor_list={this.state.editor_list}
-                        onDeleteProgram={this.onDeleteProgram}
-                        onDownloadFilefromstudent={
-                          this.onDownloadFilefromstudent
-                        }
-                        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                        updateAgentList={this.state.updateAgentList}
-                        handleChangeAgentlist={this.handleChangeAgentlist}
-                        submitUpdateAgentlist={this.submitUpdateAgentlist}
-                        updateEditorList={this.state.updateEditorList}
-                        handleChangeEditorlist={this.handleChangeEditorlist}
-                        submitUpdateEditorlist={this.submitUpdateEditorlist}
-                        updateStudentArchivStatus={
-                          this.updateStudentArchivStatus
-                        }
-                        isArchivPage={this.state.isArchivPage}
-                        SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                      />
-                    ) : (
-                      <></>
-                    )}
-                    {/* </Card> */}
-                  </Tab>
-                </Tabs>
+                {this.props.user.role === "Admin" ||
+                this.props.user.role === "Agent" ||
+                this.props.user.role === "Editor" ? (
+                  <TabStudDocsDashboard
+                    role={this.props.user.role}
+                    students={this.state.students}
+                    editAgent={this.state.editAgent}
+                    editEditor={this.state.editEditor}
+                    documentslist={window.documentslist}
+                    documentlist2={window.documentlist2}
+                    agent_list={this.state.agent_list}
+                    editor_list={this.state.editor_list}
+                    onDeleteProgram={this.onDeleteProgram}
+                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                    updateAgentList={this.state.updateAgentList}
+                    handleChangeAgentlist={this.handleChangeAgentlist}
+                    submitUpdateAgentlist={this.submitUpdateAgentlist}
+                    updateEditorList={this.state.updateEditorList}
+                    handleChangeEditorlist={this.handleChangeEditorlist}
+                    submitUpdateEditorlist={this.submitUpdateEditorlist}
+                    updateStudentArchivStatus={this.updateStudentArchivStatus}
+                    isArchivPage={this.state.isArchivPage}
+                    SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+                  />
+                ) : (
+                  <></>
+                )}
+                {/* </Card> */}
+
                 {!isLoaded && (
                   <div style={style}>
                     <Spinner animation="border" role="status">

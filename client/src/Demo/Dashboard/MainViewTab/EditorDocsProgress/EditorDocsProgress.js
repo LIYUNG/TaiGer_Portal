@@ -88,7 +88,7 @@ class EditorDocsProgress extends React.Component {
             {application.decided !== undefined &&
             application.decided === true ? (
               <h6 className="mb-1" key={i}>
-                {application.programId.Application_end_date_}
+                {application.programId.application_deadline}
               </h6>
             ) : (
               <></>

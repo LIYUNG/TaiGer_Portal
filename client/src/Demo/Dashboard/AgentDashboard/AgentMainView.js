@@ -47,9 +47,6 @@ class AgentMainView extends React.Component {
       <ApplicationProgress
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        startUploadfile={this.props.startUploadfile}
       />
     ));
 

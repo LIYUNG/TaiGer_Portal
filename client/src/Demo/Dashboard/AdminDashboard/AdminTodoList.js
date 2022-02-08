@@ -9,62 +9,6 @@ import React from "react";
 
 class AdminTodoList extends React.Component {
   render() {
-    // let applying_universit;
-    // let applying_program;
-    // let application_deadline;
-    // if (this.props.student.applications) {
-    //   applying_universit = this.props.student.applications.map(
-    //     (application) => (
-    //       <>
-    //         <h5 className="mb-1">{application.programId.school}</h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   applying_universit = (
-    //     <tr>
-    //       <td>
-    //         <h4 className="mb-1"> No Program</h4>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-
-    // if (this.props.student.applications) {
-    //   applying_program = this.props.student.applications.map((application) => (
-    //     <>
-    //       <h5 className="mb-1">{application.programId.program}</h5>
-    //     </>
-    //   ));
-    // } else {
-    //   applying_program = (
-    //     <tr>
-    //       <td>
-    //         <h4 className="mb-1"> No Program</h4>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-
-    // if (this.props.student.applications) {
-    //   application_deadline = this.props.student.applications.map(
-    //     (application) => (
-    //       <>
-    //         <h5 className="mb-1">
-    //           {application.programId.Application_end_date_}
-    //         </h5>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   application_deadline = (
-    //     <tr>
-    //       <td>
-    //         <h4 className="mb-1"> No Program</h4>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
 
     return (
       <>

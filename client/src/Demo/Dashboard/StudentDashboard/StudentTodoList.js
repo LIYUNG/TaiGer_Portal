@@ -110,7 +110,7 @@ class StudentTodoList extends React.Component {
     //     (application, i) => (
     //       <>
     //         <h5 className="mb-1" key={i}>
-    //           {application.programId.Application_end_date_}
+    //           {application.programId.application_deadline}
     //         </h5>
     //       </>
     //     )
@@ -169,7 +169,7 @@ class StudentTodoList extends React.Component {
       application_deadline = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.programId.Application_end_date_}
+            {application.programId.application_deadline}
           </h6>
         )
       );

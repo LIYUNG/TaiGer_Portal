@@ -47,67 +47,6 @@ class AgentTodoList extends React.Component {
         );
       }
     });
-    // let applying_program;
-    // let application_deadline;
-    // if (this.props.student.applications) {
-    //   applying_universit = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h6 className="mb-1" key={i}>
-    //           {application.programId.school}
-    //         </h6>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   applying_universit = (
-    //     <tr>
-    //       <td>
-    //         <h6 className="mb-1"> No Program</h6>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-
-    // if (this.props.student.applications) {
-    //   applying_program = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h6 className="mb-1" key={i}>
-    //           {application.programId.program}
-    //         </h6>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   applying_program = (
-    //     <tr>
-    //       <td>
-    //         <h6 className="mb-1"> No Program</h6>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-
-    // if (this.props.student.applications) {
-    //   application_deadline = this.props.student.applications.map(
-    //     (application, i) => (
-    //       <>
-    //         <h6 className="mb-1" key={i}>
-    //           {application.programId.Application_end_date_}
-    //         </h6>
-    //       </>
-    //     )
-    //   );
-    // } else {
-    //   application_deadline = (
-    //     <tr>
-    //       <td>
-    //         <h6 className="mb-1"> No Program</h6>
-    //       </td>
-    //     </tr>
-    //   );
-    // }
 
     return (
       <>

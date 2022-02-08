@@ -40,7 +40,7 @@ class ApplicationStatus extends React.Component {
       application_deadline = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.programId.Application_end_date_}
+            {application.programId.application_deadline}
           </h6>
         )
       );

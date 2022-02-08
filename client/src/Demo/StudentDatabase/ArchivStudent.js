@@ -32,6 +32,8 @@ import ButtonSetMissing from "../AgentCenter/ButtonSetMissing";
 import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
 import EditorDocsProgress from "../EditorCenter/EditorDocsProgress";
 import SurveyComponent from "../Survey/SurveyComponent";
+import ApplicationProgress from "../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress";
+import StudentsAgentEditor from "../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
 
 class ArchivStudent extends React.Component {
   state = {
@@ -429,7 +431,6 @@ class ArchivStudent extends React.Component {
         );
       }
     });
-
     const student_editor = (
       <EditorDocsProgress
         student={this.state.student}
@@ -451,6 +452,16 @@ class ArchivStudent extends React.Component {
         </Card>
         <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
           <Tab eventKey="w" title="Profile Overview">
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>First-, Last Name</th>
+                  <th>Agents</th>
+                  <th>Editors</th>
+                </tr>
+              </thead>
+              <StudentsAgentEditor student={this.state.student} />
+            </Table>
             <Row>
               <Table responsive>
                 <thead>
@@ -485,6 +496,28 @@ class ArchivStudent extends React.Component {
               academic_background={this.state.student.academic_background}
               isLoaded={this.state.isLoaded}
             />
+          </Tab>
+          <Tab eventKey="z" title="Applied Schools">
+            <Table responsive>
+              <thead>
+                <tr>
+                  <>
+                    <th>First-, Last Name</th>
+                    <th>University</th>
+                    <th>Programs</th>
+                    <th>Deadline</th>
+                  </>
+                  {window.programstatuslist.map((doc, index) => (
+                    <th key={index}>{doc.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              <ApplicationProgress
+                role={this.props.user.role}
+                student={this.state.student}
+                isLoaded={this.state.isLoaded}
+              />
+            </Table>
           </Tab>
         </Tabs>
       </>

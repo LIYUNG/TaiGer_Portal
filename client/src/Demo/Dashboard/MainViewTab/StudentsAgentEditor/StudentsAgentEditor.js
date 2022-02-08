@@ -14,15 +14,15 @@ class StudentsAgentEditor extends React.Component {
       this.props.student.agents === undefined ||
       this.props.student.agents.length === 0
     ) {
-      studentsAgent = <h5 className="mb-1"> No Agent assigned</h5>;
+      studentsAgent = <h6 className="mb-1"> No Agent assigned</h6>;
     } else {
       studentsAgent = this.props.student.agents.map((agent, i) => (
         <>
-          <h5 className="mb-1" key={i}>
+          <h6 className="mb-1" key={i}>
             {agent.firstname}
             {", "}
             {agent.lastname}
-          </h5>
+          </h6>
           {agent.email}
         </>
       ));
@@ -31,15 +31,15 @@ class StudentsAgentEditor extends React.Component {
       this.props.student.editors === undefined ||
       this.props.student.editors.length === 0
     ) {
-      studentsEditor = <h5 className="mb-1"> No Editor assigned</h5>;
+      studentsEditor = <h6 className="mb-1"> No Editor assigned</h6>;
     } else {
       studentsEditor = this.props.student.editors.map((editor, i) => (
         <>
-          <h5 className="mb-1" key={i}>
+          <h6 className="mb-1" key={i}>
             {editor.firstname}
             {", "}
             {editor.lastname}
-          </h5>
+          </h6>
           {editor.email}
         </>
       ));
@@ -50,9 +50,9 @@ class StudentsAgentEditor extends React.Component {
           <tr>
             {this.props.role !== "Student" ? (
               <td>
-                <h5>
+                <h6>
                   {this.props.student.firstname}, {this.props.student.lastname}
-                </h5>
+                </h6>
                 {this.props.student.email}
               </td>
             ) : (

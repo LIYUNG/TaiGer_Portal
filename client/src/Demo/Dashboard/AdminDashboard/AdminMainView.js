@@ -89,6 +89,7 @@ class AdminMainView extends React.Component {
                     <th>Waiting Inputs:</th>
                     <th>Editor reviewing:</th>
                     <th>Waiting Student's Feedback</th>
+                    <th>Close</th>
                   </tr>
                 </thead>
                 {editor_reviewing}

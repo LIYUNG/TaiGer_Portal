@@ -5,14 +5,17 @@
 ![](/screenshot/demo1.png)
 ## Agent's Overview of Students' Uploaded Documents And Their Status
 - Filtering the files and present them by their status
+- Agent only need to review the latest uploaded file and gives it feedback.
 
 ![](/screenshot/missingfile.png)
 ## Editor's Documents Overview
 - Overview of Editor's files status. (delivered, under student's review, no input and processing)
+- Input missing, under editor's review, under student's review, finished.
 
 ![](/screenshot/editorprogress.png)
 ## FIles and Information Exchange
 - Editor's files/information exchange
+- Files naming convention is implemented, i.e. < user_name >_< file_name >_< version >.pdf
 
 ![](/screenshot/editor.png)
 

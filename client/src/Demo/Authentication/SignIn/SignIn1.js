@@ -1,6 +1,6 @@
 import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { login } from "../../../api";
 
@@ -9,6 +9,9 @@ export default function Signin1({ userData, setUserdata }) {
   const [emailaddress, setEmailaddress] = useState();
   const [password, setPassword] = useState();
   const [buttondisable, setButtondisable] = useState(false);
+  useEffect(() => {
+    // console.log("useEffect");
+  }, []);
   const emailValidation = () => {
     const regex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -92,6 +95,7 @@ export default function Signin1({ userData, setUserdata }) {
               <div className="input-group mb-3">
                 <input
                   type="email"
+                  autoFocus
                   className="form-control"
                   placeholder="Email"
                   onChange={(e) => setEmailaddress(e.target.value)}

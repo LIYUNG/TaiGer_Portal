@@ -2,9 +2,49 @@ import React from "react";
 import { Form, Row, Col, Spinner, Card } from "react-bootstrap";
 class SingleProgramEdit extends React.Component {
   state = {
-    program: null,
+    program: this.props.program,
   };
-  handleChange = () => {};
+  handleChange = (e) => {
+    console.log(e.target.value);
+    console.log(e.target.id);
+    e.preventDefault();
+    var program_temp = { ...this.state.program };
+    program_temp[e.target.id] = e.target.value;
+    console.log(program_temp);
+    this.setState((state) => ({
+      ...state,
+      program: program_temp,
+    }));
+  };
+  handleSubmit_Program = (e, program) => {
+    e.preventDefault();
+    // updateLanguageSkill(language).then(
+    //   (resp) => {
+    //     const { data, success } = resp.data;
+    //     if (success) {
+    //       this.setState((state) => ({
+    //         ...state,
+    //         isLoaded: true,
+    //         academic_background: {
+    //           ...state.academic_background,
+    //           language: data,
+    //         },
+    //         success: success,
+    //         updateconfirmed: true,
+    //       }));
+    //     } else {
+    //       alert(resp.data.message);
+    //     }
+    //   },
+    //   (error) => {
+    //     console.log(": " + error);
+    //     this.setState({
+    //       isLoaded: true,
+    //       error: true,
+    //     });
+    //   }
+    // );
+  };
   render() {
     return (
       <>
@@ -22,8 +62,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="National Taiwan University"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.school
-                          ? this.props.program.school
+                        this.state.program.school
+                          ? this.state.program.school
                           : ""
                       }
                     />
@@ -43,8 +83,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="Electrical Engineering"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.program
-                          ? this.props.program.program
+                        this.state.program.program
+                          ? this.state.program.program
                           : ""
                       }
                     />
@@ -64,8 +104,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="M.Sc."
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.degree
-                          ? this.props.program.degree
+                        this.state.program.degree
+                          ? this.state.program.degree
                           : ""
                       }
                     />
@@ -85,8 +125,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="Winter"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.semester
-                          ? this.props.program.semester
+                        this.state.program.semester
+                          ? this.state.program.semester
                           : ""
                       }
                     />
@@ -107,8 +147,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="English"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.language
-                          ? this.props.program.language
+                        this.state.program.language
+                          ? this.state.program.language
                           : ""
                       }
                     />
@@ -128,8 +168,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="05-31"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.application_start
-                          ? this.props.program.application_start
+                        this.state.program.application_start
+                          ? this.state.program.application_start
                           : ""
                       }
                     />
@@ -149,8 +189,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="05-31"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.application_deadline
-                          ? this.props.program.application_deadline
+                        this.state.program.application_deadline
+                          ? this.state.program.application_deadline
                           : ""
                       }
                     />
@@ -166,15 +206,14 @@ class SingleProgramEdit extends React.Component {
                 <h5>
                   <Form.Group controlId="uni_assist">
                     <Form.Control
-                      type="text"
-                      placeholder="Yes - Full"
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.props.program.uni_assist
-                          ? this.props.program.uni_assist
-                          : ""
-                      }
-                    />
+                      value={this.state.program.uni_assist}
+                    >
+                      <option value="No">No</option>
+                      <option value="Yes - VPD">Yes - VPD</option>
+                      <option value="Yes-Full">Yes-Full</option>
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>
@@ -191,7 +230,7 @@ class SingleProgramEdit extends React.Component {
                       placeholder="88"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.toefl ? this.props.program.toefl : ""
+                        this.state.program.toefl ? this.state.program.toefl : ""
                       }
                     />
                   </Form.Group>
@@ -210,7 +249,7 @@ class SingleProgramEdit extends React.Component {
                       placeholder="6.5"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.ielts ? this.props.program.ielts : ""
+                        this.state.program.ielts ? this.state.program.ielts : ""
                       }
                     />
                   </Form.Group>
@@ -229,8 +268,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="4"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.testdaf
-                          ? this.props.program.testdaf
+                        this.state.program.testdaf
+                          ? this.state.program.testdaf
                           : ""
                       }
                     />
@@ -250,7 +289,7 @@ class SingleProgramEdit extends React.Component {
                       placeholder="V145Q160"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.gre ? this.props.program.gre : ""
+                        this.state.program.gre ? this.state.program.gre : ""
                       }
                     />
                   </Form.Group>
@@ -269,7 +308,7 @@ class SingleProgramEdit extends React.Component {
                       placeholder="640"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.gmat ? this.props.program.gmat : ""
+                        this.state.program.gmat ? this.state.program.gmat : ""
                       }
                     />
                   </Form.Group>
@@ -284,15 +323,17 @@ class SingleProgramEdit extends React.Component {
                 <h5>
                   <Form.Group controlId="ml_required">
                     <Form.Control
-                      type="text"
-                      placeholder="Yes"
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.ml_required
-                          ? this.props.program.ml_required
+                        this.state.program.ml_required
+                          ? this.state.program.ml_required
                           : ""
                       }
-                    />
+                    >
+                      <option value="no">no</option>
+                      <option value="yes">yes</option>
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>
@@ -310,8 +351,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="1200-1500words"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.ml_requirements
-                          ? this.props.program.ml_requirements
+                        this.state.program.ml_requirements
+                          ? this.state.program.ml_requirements
                           : ""
                       }
                     />
@@ -327,15 +368,17 @@ class SingleProgramEdit extends React.Component {
                 <h5>
                   <Form.Group controlId="rl_required">
                     <Form.Control
-                      type="text"
-                      placeholder="Yes"
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.rl_required
-                          ? this.props.program.rl_required
+                        this.state.program.rl_required
+                          ? this.state.program.rl_required
                           : ""
                       }
-                    />
+                    >
+                      <option value="no">no</option>
+                      <option value="yes">yes</option>
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>
@@ -353,8 +396,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="1 page"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.rl_requirements
-                          ? this.props.program.rl_requirements
+                        this.state.program.rl_requirements
+                          ? this.state.program.rl_requirements
                           : ""
                       }
                     />
@@ -363,7 +406,6 @@ class SingleProgramEdit extends React.Component {
               </Col>
             </Row>
             <Row>
-              {" "}
               <Col md={4}>
                 <h5>Essay Required?</h5>
               </Col>
@@ -371,15 +413,17 @@ class SingleProgramEdit extends React.Component {
                 <h5>
                   <Form.Group controlId="essay_required">
                     <Form.Control
-                      type="text"
-                      placeholder="Yes"
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.essay_required
-                          ? this.props.program.essay_required
+                        this.state.program.essay_required
+                          ? this.state.program.essay_required
                           : ""
                       }
-                    />
+                    >
+                      <option value="no">no</option>
+                      <option value="yes">yes</option>
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>
@@ -396,8 +440,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="2000 words"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.essay_requirements
-                          ? this.props.program.essay_requirements
+                        this.state.program.essay_requirements
+                          ? this.state.program.essay_requirements
                           : ""
                       }
                     />
@@ -418,8 +462,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="2000 words"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.special_notes
-                          ? this.props.program.special_notes
+                        this.state.program.special_notes
+                          ? this.state.program.special_notes
                           : ""
                       }
                     />
@@ -441,8 +485,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="2000 words"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.comments
-                          ? this.props.program.comments
+                        this.state.program.comments
+                          ? this.state.program.comments
                           : ""
                       }
                     />
@@ -462,8 +506,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="url"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.application_portal_a
-                          ? this.props.program.application_portal_a
+                        this.state.program.application_portal_a
+                          ? this.state.program.application_portal_a
                           : ""
                       }
                     />
@@ -483,8 +527,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="url"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.application_portal_b
-                          ? this.props.program.application_portal_b
+                        this.state.program.application_portal_b
+                          ? this.state.program.application_portal_b
                           : ""
                       }
                     />
@@ -504,8 +548,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="url"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.website
-                          ? this.props.program.website
+                        this.state.program.website
+                          ? this.state.program.website
                           : ""
                       }
                     />
@@ -525,7 +569,7 @@ class SingleProgramEdit extends React.Component {
                       placeholder="url"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.fpso ? this.props.program.fpso : ""
+                        this.state.program.fpso ? this.state.program.fpso : ""
                       }
                     />
                   </Form.Group>
@@ -544,8 +588,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="2022-05-30"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.updatedAt
-                          ? this.props.program.updatedAt
+                        this.state.program.updatedAt
+                          ? this.state.program.updatedAt
                           : ""
                       }
                     />
@@ -565,8 +609,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="Tina Wang"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.whoupdated
-                          ? this.props.program.whoupdated
+                        this.state.program.whoupdated
+                          ? this.state.program.whoupdated
                           : ""
                       }
                     />
@@ -586,8 +630,8 @@ class SingleProgramEdit extends React.Component {
                       placeholder="ee"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.props.program.study_group_flag
-                          ? this.props.program.study_group_flag
+                        this.state.program.study_group_flag
+                          ? this.state.program.study_group_flag
                           : ""
                       }
                     />

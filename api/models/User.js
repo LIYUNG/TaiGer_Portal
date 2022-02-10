@@ -6,7 +6,7 @@ const {
 const bcrypt = require("bcryptjs");
 const isEmail = require("validator/lib/isEmail");
 
-const { DocumentStatus } = require("../constants");
+const { DocumentStatus, CheckListStatus } = require("../constants");
 
 const Role = {
   Admin: "Admin",
@@ -81,6 +81,14 @@ const UserSchema = new Schema(
           default: "Others",
         },
         path: {
+          type: String,
+          default: "",
+        },
+        // TODO: updateBy
+        updatedAt: Date,
+      },
+      feedback: {
+        message: {
           type: String,
           default: "",
         },
@@ -303,6 +311,56 @@ const Student = User.discriminator(
           updatedAt: Date,
         },
       ],
+      checklist: {
+        course_analysis: {
+          status: {
+            type: String,
+            enum: Object.values(CheckListStatus),
+            default: CheckListStatus.NotStarted,
+          },
+          updatedAt: Date,
+        },
+        uni_assist_instruction: {
+          status: {
+            type: String,
+            enum: Object.values(CheckListStatus),
+            default: CheckListStatus.NotStarted,
+          },
+          updatedAt: Date,
+        },
+        certification_instruction: {
+          status: {
+            type: String,
+            enum: Object.values(CheckListStatus),
+            default: CheckListStatus.NotStarted,
+          },
+          updatedAt: Date,
+        },
+        blocked_account_instruction: {
+          status: {
+            type: String,
+            enum: Object.values(CheckListStatus),
+            default: CheckListStatus.NotStarted,
+          },
+          updatedAt: Date,
+        },
+        health_insurance_instruction: {
+          status: {
+            type: String,
+            enum: Object.values(CheckListStatus),
+            default: CheckListStatus.NotStarted,
+          },
+          updatedAt: Date,
+        },
+        visa_instruction: {
+          status: {
+            type: String,
+            enum: Object.values(CheckListStatus),
+            default: CheckListStatus.NotStarted,
+          },
+          updatedAt: Date,
+        },
+      },
       generaldocs: {
         editoroutputs: [
           {

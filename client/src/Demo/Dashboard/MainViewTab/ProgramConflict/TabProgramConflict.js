@@ -28,8 +28,7 @@ class TabProgramConflict extends React.Component {
               conflict_programs[
                 this.props.students[i].applications[j].programId._id
               ] = {
-                school:
-                  this.props.students[i].applications[j].programId.school,
+                school: this.props.students[i].applications[j].programId.school,
                 program:
                   this.props.students[i].applications[j].programId.program,
                 application_deadline:
@@ -44,6 +43,7 @@ class TabProgramConflict extends React.Component {
           }
         }
     }
+    console.log(conflict_map);
     var conflict_program_ids = Object.keys(conflict_map);
     for (let i = 0; i < conflict_program_ids.length; i++) {
       if (conflict_map[conflict_program_ids[i]].length === 1) {

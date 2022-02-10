@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 // import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 // import { IoCheckmarkCircle } from "react-icons/io5";
 // import { Card, Col, Row } from "react-bootstrap";
@@ -67,9 +68,11 @@ class AgentReviewing extends React.Component {
             {this.props.role !== "Student" ? (
               <>
                 <td>
-                  {this.props.student.firstname}
-                  {" - "}
-                  {this.props.student.lastname}
+                  <Link to={"/student-database/" + this.props.student._id}>
+                    {this.props.student.firstname}
+                    {" - "}
+                    {this.props.student.lastname}
+                  </Link>
                 </td>
                 <td>{missing_profiles}</td>
               </>

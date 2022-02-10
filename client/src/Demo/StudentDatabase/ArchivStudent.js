@@ -486,6 +486,24 @@ class ArchivStudent extends React.Component {
               />
             </Row>
           </Tab>
+          <Tab eventKey="xx" title="Check List">
+            <Row>
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>File Name:</th>
+                    <th></th>
+                    <th></th>
+                    <th>Feedback</th>
+                    <th></th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>{documentlist22}</tbody>
+              </Table>
+            </Row>
+          </Tab>
           <Tab eventKey="x" title="Application Files">
             <Row>
               <Col sm={12}>{student_editor}</Col>

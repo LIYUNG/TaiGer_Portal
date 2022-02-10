@@ -239,11 +239,10 @@ class SurveyComponent extends React.Component {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="expected_grad_date">
-                      <Form.Label>Expected Application Year</Form.Label>
+                      <Form.Label>Expected Graduate Year</Form.Label>
                       <Form.Control
-                        type="text"
-                        placeholder="2022 WS, 2023 SS"
-                        defaultValue={
+                        as="select"
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .expected_grad_date
@@ -252,7 +251,37 @@ class SurveyComponent extends React.Component {
                             : ""
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
-                      />
+                      >
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="expected_application_year">
+                      <Form.Label>Expected Application Year</Form.Label>
+                      <Form.Control
+                        as="select"
+                        value={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university
+                            .expected_application_date
+                            ? this.state.academic_background.university
+                                .expected_application_date
+                            : ""
+                        }
+                        onChange={(e) => this.handleChange_Academic(e)}
+                      >
+                        <option>2022</option>
+                        <option>2023</option>
+                        <option>2024</option>
+                        <option>2025</option>
+                      </Form.Control>
                     </Form.Group>
                     <br />
                   </Col>
@@ -266,13 +295,10 @@ class SurveyComponent extends React.Component {
                       <Form.Control
                         type="number"
                         placeholder="4.3"
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .Highest_GPA_Uni
-                            ? this.state.academic_background.university
-                                .Highest_GPA_Uni
-                            : 0
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       />
@@ -286,13 +312,10 @@ class SurveyComponent extends React.Component {
                       <Form.Control
                         type="number"
                         placeholder="1.7"
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .Passing_GPA_Uni
-                            ? this.state.academic_background.university
-                                .Passing_GPA_Uni
-                            : 0
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       />
@@ -307,12 +330,9 @@ class SurveyComponent extends React.Component {
                       <Form.Control
                         type="number"
                         placeholder="3.8"
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university.My_GPA_Uni
-                            ? this.state.academic_background.university
-                                .My_GPA_Uni
-                            : 0
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       />
@@ -396,7 +416,7 @@ class SurveyComponent extends React.Component {
                       <Form.Label>English Certificate</Form.Label>
                       <Form.Control
                         as="select"
-                        defaultValue={
+                        value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
                             .english_certificate
@@ -406,9 +426,9 @@ class SurveyComponent extends React.Component {
                         }
                         onChange={(e) => this.handleChange_Language(e)}
                       >
-                        <option>No</option>
-                        <option>TOEFL</option>
-                        <option>IELTS</option>
+                        <option value="No">No</option>
+                        <option value="TOEFL">TOEFL</option>
+                        <option value="IELTS">IELTS</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
@@ -469,7 +489,7 @@ class SurveyComponent extends React.Component {
                       <Form.Label>German Certificate</Form.Label>
                       <Form.Control
                         as="select"
-                        defaultValue={
+                        value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
                             .german_certificate
@@ -479,13 +499,21 @@ class SurveyComponent extends React.Component {
                         }
                         onChange={(e) => this.handleChange_Language(e)}
                       >
-                        <option>No</option>
-                        <option>Goethe Zertifikat A2</option>
-                        <option>Goethe Zertifikat B1</option>
-                        <option>Goethe Zertifikat B2</option>
-                        <option>Goethe Zertifikat C1</option>
-                        <option>TestDaF</option>
-                        <option>DSH</option>
+                        <option value="No">No</option>
+                        <option value="Goethe Zertifikat A2">
+                          Goethe Zertifikat A2
+                        </option>
+                        <option value="Goethe Zertifikat B1">
+                          Goethe Zertifikat B1
+                        </option>
+                        <option value="Goethe Zertifikat B2">
+                          Goethe Zertifikat B2
+                        </option>
+                        <option value="Goethe Zertifikat C1">
+                          Goethe Zertifikat C1
+                        </option>
+                        <option value="TestDaF">TestDaF</option>
+                        <option value="DSH">DSH</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>

@@ -30,9 +30,9 @@ const programSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(Languages),
     },
-    application_start: Date,
+    application_start: String,
     application_deadline: {
-      type: Date,
+      type: String,
       // required: true,
     },
     uni_assist: {

@@ -38,16 +38,16 @@ window.agenttodolist = [
     prop: "courseanalysis",
   },
   {
-    name: "Send Portal Instruction",
-    prop: "sendportalinstruction",
+    name: "Instruction working with Editor",
+    prop: "instructionworkingwitheditor",
   },
   {
-    name: "Provide ML template",
-    prop: "providemltemp",
+    name: "Uni-Assist Instruction",
+    prop: "uniassistinstruction",
   },
   {
-    name: "Provide RL template",
-    prop: "providerltemp",
+    name: "Visa Instruction",
+    prop: "visainstruction",
   },
   {
     name: "Assign Editor",

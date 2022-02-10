@@ -5,14 +5,32 @@ import { Link } from "react-router-dom";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
 class ApplicationStatus extends React.Component {
+  getNumberOfDays(start, end) {
+    const date1 = new Date(start);
+    const date2 = new Date(end);
+
+    // One day in milliseconds
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    // Calculating the time difference between two dates
+    const diffInTime = date2.getTime() - date1.getTime();
+
+    // Calculating the no. of days between two dates
+    const diffInDays = Math.round(diffInTime / oneDay);
+
+    return diffInDays;
+  }
   render() {
     var applying_university;
     var applying_program;
     var application_deadline;
+    var application_date_left;
     var application_decided;
     var application_prepared;
     var application_closed;
     var application_admission;
+    var today = new Date();
+    console.log(today);
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
@@ -20,6 +38,7 @@ class ApplicationStatus extends React.Component {
       applying_university = <h6 className="mb-1"> No University</h6>;
       applying_program = <h6 className="mb-1"> No Program</h6>;
       application_deadline = <h6 className="mb-1"> No Date</h6>;
+      application_date_left = <h6 className="mb-1"></h6>;
       application_decided = <h6 className="mb-1"></h6>;
       application_prepared = <h6 className="mb-1"></h6>;
       application_closed = <h6 className="mb-1"></h6>;
@@ -45,7 +64,30 @@ class ApplicationStatus extends React.Component {
       application_deadline = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
+            {this.props.student.academic_background.university
+              .expected_grad_date
+              ? this.props.student.academic_background.university
+                  .expected_grad_date + "-"
+              : ""}
             {application.programId.application_deadline}
+          </h6>
+        )
+      );
+
+      application_date_left = this.props.student.applications.map(
+        (application, i) => (
+          <h6 className="mb-1" key={i}>
+            {application.closed
+              ? ""
+              : this.props.student.academic_background.university
+                  .expected_grad_date &&
+                this.getNumberOfDays(
+                  today,
+                  this.props.student.academic_background.university
+                    .expected_grad_date +
+                    "-" +
+                    application.programId.application_deadline
+                )}
           </h6>
         )
       );
@@ -121,6 +163,7 @@ class ApplicationStatus extends React.Component {
             <td>{application_prepared}</td>
             <td>{application_closed}</td>
             <td>{application_admission}</td>
+            <td>{application_date_left}</td>
           </tr>
         </tbody>
       </>

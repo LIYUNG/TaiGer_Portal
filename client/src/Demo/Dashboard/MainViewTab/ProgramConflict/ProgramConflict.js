@@ -7,16 +7,27 @@ class ProgramConflict extends React.Component {
   };
 
   render() {
-
-    let studs_id = this.props.conflict_map[this.props.conf_program_id];
-    let stds = studs_id.map((k, i) => (
+    var studs_id = this.props.conflict_map[this.props.conf_program_id];
+    var stds = studs_id.map((k, i) => (
       <h6 key={i}>
         {this.props.students.find((stud) => stud._id === studs_id[i]).firstname}
         ,{" "}
         {this.props.students.find((stud) => stud._id === studs_id[i]).lastname}
       </h6>
     ));
-
+    var application_deadline = studs_id.map((k, i) => (
+      <h6 key={i}>
+        {this.props.students.find((stud) => stud._id === studs_id[i])
+          .academic_background.university.expected_grad_date
+          ? this.props.students.find((stud) => stud._id === studs_id[i])
+              .academic_background.university.expected_grad_date + "-"
+          : ""}
+        {
+          this.props.conflict_programs[this.props.conf_program_id]
+            .application_deadline
+        }
+      </h6>
+    ));
     return (
       <>
         <tbody>
@@ -39,12 +50,7 @@ class ProgramConflict extends React.Component {
             </td>
             <td>{stds}</td>
             <td>
-              <h6>
-                {
-                  this.props.conflict_programs[this.props.conf_program_id]
-                    .application_deadline
-                }
-              </h6>
+              <h6>{application_deadline}</h6>
             </td>
           </tr>
         </tbody>

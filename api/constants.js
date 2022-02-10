@@ -6,6 +6,14 @@ const DocumentStatus = {
   NotNeeded: "notneeded",
 };
 
+const CheckListStatus = {
+  NotStarted: "notstarted",
+  Processing: "processing",
+  Finished: "finished",
+  NotNeeded: "notneeded",
+};
+
 module.exports = {
   DocumentStatus,
-}
+  CheckListStatus,
+};

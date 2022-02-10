@@ -74,7 +74,12 @@ class SingleProgram extends React.Component {
             error={error}
             isLoaded={isLoaded}
           />
-          <Button onClick={() => this.handleClick()}>Update</Button>
+          <Button size="sm" onClick={() => this.handleClick()}>
+            Update
+          </Button>
+          <Button size="sm" onClick={() => this.handleClick()}>
+            Cancel
+          </Button>
         </>
       );
     } else {
@@ -85,7 +90,9 @@ class SingleProgram extends React.Component {
             error={error}
             isLoaded={isLoaded}
           />
-          <Button onClick={() => this.handleClick()}>Update</Button>
+          <Button size="sm" onClick={() => this.handleClick()}>
+            Edit
+          </Button>
         </>
       );
     }

@@ -1,9 +1,14 @@
 import React from "react";
-import { AiFillCloseCircle, AiFillQuestionCircle,AiOutlineUndo } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiFillQuestionCircle,
+  AiOutlineUndo,
+} from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 // import { uploadforstudent } from "../../../api";
+import { Link } from "react-router-dom";
 
 class EditorReviewing extends React.Component {
   render() {
@@ -292,7 +297,9 @@ class EditorReviewing extends React.Component {
                 application.documents &&
                 application.documents.findIndex((doc) =>
                   doc.name.includes("ML")
-                ) === -1 ? (
+                ) === -1 &&
+                (application.programId.ml_required === "yes" ||
+                  application.programId.ml_required === "Yes") ? (
                   <h6 className="mb-1" key={application._id}>
                     <AiFillQuestionCircle
                       size={18}
@@ -577,9 +584,11 @@ class EditorReviewing extends React.Component {
           {this.props.role !== "Student" ? (
             <>
               <td>
-                {this.props.student.firstname}
-                {" - "}
-                {this.props.student.lastname}
+                <Link to={"/student-database/" + this.props.student._id}>
+                  {this.props.student.firstname}
+                  {" - "}
+                  {this.props.student.lastname}
+                </Link>
               </td>
               <td>
                 {general_RL_template_ToBefilled}

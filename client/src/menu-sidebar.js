@@ -108,6 +108,13 @@ export default {
           url: "/programs",
         },
         {
+          id: "interview-training",
+          title: "Interview Training",
+          type: "item",
+          icon: "feather icon-briefcase",
+          url: "/interview-training",
+        },
+        {
           id: "statistics",
           title: "Statistics",
           type: "item",

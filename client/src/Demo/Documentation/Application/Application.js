@@ -10,13 +10,31 @@ import {
   createArticle,
   getApplicationArticle,
 } from "../../../api";
+// import { Stepper, Step } from "react-form-stepper";
+import Box from "@mui/material/Box";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import StepButton from "@mui/material/StepButton";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
+const steps = [
+  "Step 1: Get an account",
+  "Step 2: Fill personal information",
+  "Step 3: Choose programs",
+  "Step 4: Pay",
+  "Step 5: Send copy to Germany",
+];
 class Application extends Component {
   state = {
     error: null,
     isLoaded: false,
     articles: [],
     editFormOpen: false,
+    defaultStep: 1,
+    activeStep: 0,
+    completed: {},
   };
   componentDidMount() {
     getApplicationArticle().then(
@@ -151,9 +169,70 @@ class Application extends Component {
       }
     );
   };
+  handleClick = (e) => {
+    this.setState((state) => ({
+      ...state,
+      defaultStep: this.state.defaultStep + 1,
+    }));
+  };
 
+  totalSteps = () => {
+    return steps.length;
+  };
+
+  completedSteps = () => {
+    return Object.keys(this.state.completed).length;
+  };
+
+  isLastStep = () => {
+    return this.state.activeStep === this.totalSteps() - 1;
+  };
+
+  allStepsCompleted = () => {
+    return this.completedSteps() === this.totalSteps();
+  };
+
+  handleNext = () => {
+    const newActiveStep =
+      this.isLastStep() && !this.allStepsCompleted()
+        ? // It's the last step, but not all steps have been completed,
+          // find the first step that has been completed
+          steps.findIndex((step, i) => !(i in this.state.completed))
+        : this.state.activeStep + 1;
+    this.setState({ activeStep: newActiveStep });
+  };
+
+  handleBack = () => {
+    // setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    this.setState((state) => ({
+      ...state,
+      activeStep: this.state.activeStep - 1,
+    }));
+  };
+
+  handleStep = (step) => () => {
+    // setActiveStep(step);
+    this.setState((state) => ({ ...state, activeStep: step }));
+  };
+
+  handleComplete = () => {
+    const newCompleted = this.state.completed;
+    newCompleted[this.state.activeStep] = true;
+    // setCompleted(newCompleted);
+    this.setState((state) => ({
+      ...state,
+      completed: newCompleted,
+    }));
+    this.handleNext();
+  };
+
+  handleReset = () => {
+    // setActiveStep(0);
+    this.setState((state) => ({ ...state, completed: {}, activeStep: 0 }));
+  };
   render() {
     const { error, isLoaded } = this.state;
+    const { completed, activeStep } = this.state;
     const style = {
       position: "fixed",
       top: "40%",
@@ -178,32 +257,99 @@ class Application extends Component {
     }
     return (
       <Aux>
+        {" "}
         <Row>
-          <Col>
-            <ArticleList
-              articles={this.state.articles}
-              category="application"
-              onFormSubmit={this.handleEditFormSubmit}
-              onTrashClick={this.handleTrashClick}
-              role={this.props.user.role}
-            />
-            {this.props.user.role === "Admin" ||
-            this.props.user.role === "Agent" ? (
-              <ToggleableArticleForm
-                category="application"
-                onFormSubmit={this.handleCreateFormSubmit}
-              />
+          <Stepper nonLinear activeStep={this.state.activeStep}>
+            {steps.map((label, index) => (
+              <Step key={label} completed={this.state.completed[index]}>
+                {/* <StepLabel> </StepLabel> */}
+                <StepButton
+                  color="inherit"
+                  onClick={this.handleStep(index)}
+                ></StepButton>
+                {label}
+              </Step>
+            ))}
+          </Stepper>
+        </Row>
+        <br />
+        <br />
+        <Row>
+          <div>
+            {this.allStepsCompleted() ? (
+              <React.Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>
+                  All steps completed - you&apos;re finished
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Button onClick={this.handleReset}>Reset</Button>
+                </Box>
+              </React.Fragment>
             ) : (
-              <></>
+              <React.Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>
+                  Step {activeStep + 1}
+                  <Row>
+                    <Col>
+                      <ArticleList
+                        articles={this.state.articles}
+                        category="application"
+                        onFormSubmit={this.handleEditFormSubmit}
+                        onTrashClick={this.handleTrashClick}
+                        role={this.props.user.role}
+                      />
+                      {this.props.user.role === "Admin" ||
+                      this.props.user.role === "Agent" ? (
+                        <ToggleableArticleForm
+                          category="application"
+                          onFormSubmit={this.handleCreateFormSubmit}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {!isLoaded && (
+                        <div style={style}>
+                          <Spinner animation="border" role="status">
+                            <span className="visually-hidden"></span>
+                          </Spinner>
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={this.handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Button onClick={this.handleNext} sx={{ mr: 1 }}>
+                    Next
+                  </Button>
+                  {activeStep !== steps.length &&
+                    (completed[activeStep] ? (
+                      <Typography
+                        variant="caption"
+                        sx={{ display: "inline-block" }}
+                      >
+                        Step {this.state.activeStep + 1} already completed
+                      </Typography>
+                    ) : (
+                      <Button onClick={this.handleComplete}>
+                        {this.completedSteps() === this.totalSteps() - 1
+                          ? "Finish"
+                          : "Complete Step"}
+                      </Button>
+                    ))}
+                </Box>
+              </React.Fragment>
             )}
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Col>
+          </div>
         </Row>
       </Aux>
     );

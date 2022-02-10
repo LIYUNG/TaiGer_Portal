@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 // import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 // import { Card, Col, Row, Table } from "react-bootstrap";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
@@ -25,16 +26,20 @@ class ApplicationStatus extends React.Component {
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.programId.school}
-          </h6>
+          <Link to={"/programs/" + application.programId._id}>
+            <h6 className="mb-1" key={i}>
+              {application.programId.school}
+            </h6>
+          </Link>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.programId.program}
-          </h6>
+          <Link to={"/programs/" + application.programId._id}>
+            <h6 className="mb-1" key={i}>
+              {application.programId.program}
+            </h6>
+          </Link>
         )
       );
       application_deadline = this.props.student.applications.map(

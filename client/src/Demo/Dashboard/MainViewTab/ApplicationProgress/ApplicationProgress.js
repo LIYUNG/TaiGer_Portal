@@ -1,82 +1,159 @@
 import React from "react";
-import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import { uploadforstudent } from "../../../../api";
-import ApplicationStatus from "./ApplicationStatus";
+import { Link } from "react-router-dom";
 
 class ApplicationProgress extends React.Component {
-  state = {
-    showProgramPage: false,
-    showFilePage: false,
-    student: this.props.student,
-    file: "",
-  };
+  getNumberOfDays(start, end) {
+    const date1 = new Date(start);
+    const date2 = new Date(end);
 
-  setProgramModalhide = () => {
-    this.setState({
-      showProgramPage: false,
-    });
-  };
+    // One day in milliseconds
+    const oneDay = 1000 * 60 * 60 * 24;
 
-  setFilesModalhide = () => {
-    this.setState({
-      showFilePage: false,
-    });
-  };
+    // Calculating the time difference between two dates
+    const diffInTime = date2.getTime() - date1.getTime();
 
-  onFileChange = (e) => {
-    this.setState({
-      file: e.target.files[0],
-    });
-  };
+    // Calculating the no. of days between two dates
+    const diffInDays = Math.round(diffInTime / oneDay);
 
-  onSubmitFile = (e, id, student_id, file) => {
-    // e.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
-    uploadforstudent(id, student_id, formData).then(
-      (res) => {},
-      // Note: it's important to handle errors here
-      // instead of a catch() block so that we don't swallow
-      // exceptions from actual bugs in components.
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
-
-  submitFile = (e, category, student_id) => {
-    if (this.state.file === "") {
-      e.preventDefault();
-      alert("Please select file");
-    } else {
-      // e.preventDefault();
-      let stud = { ...this.state.student };
-      // stud.uploadedDocs_[category].uploadStatus_ = "uploaded";
-      this.onSubmitFile(e, category, student_id, this.state.file);
-      this.setState({
-        student: stud,
-        file: "",
-      });
-    }
-  };
-
+    return diffInDays;
+  }
   render() {
+    var applying_university;
+    var applying_program;
+    var application_deadline;
+    var application_date_left;
+    var application_decided;
+    var application_closed;
+    var application_admission;
+    var today = new Date();
+    console.log(today);
+    if (
+      this.props.student.applications === undefined ||
+      this.props.student.applications.length === 0
+    ) {
+      applying_university = <h6 className="mb-1"> No University</h6>;
+      applying_program = <h6 className="mb-1"> No Program</h6>;
+      application_deadline = <h6 className="mb-1"> No Date</h6>;
+      application_date_left = <h6 className="mb-1"></h6>;
+      application_decided = <h6 className="mb-1"></h6>;
+      application_closed = <h6 className="mb-1"></h6>;
+    } else {
+      applying_university = this.props.student.applications.map(
+        (application, i) => (
+          <Link to={"/programs/" + application.programId._id}>
+            <h6 className="mb-1" key={i}>
+              {application.programId.school}
+            </h6>
+          </Link>
+        )
+      );
+      applying_program = this.props.student.applications.map(
+        (application, i) => (
+          <Link to={"/programs/" + application.programId._id}>
+            <h6 className="mb-1" key={i}>
+              {application.programId.program}
+            </h6>
+          </Link>
+        )
+      );
+      application_deadline = this.props.student.applications.map(
+        (application, i) => (
+          <h6 className="mb-1" key={i}>
+            {this.props.student.academic_background.university
+              .expected_grad_date
+              ? this.props.student.academic_background.university
+                  .expected_grad_date + "-"
+              : ""}
+            {application.programId.application_deadline}
+          </h6>
+        )
+      );
+
+      application_date_left = this.props.student.applications.map(
+        (application, i) => (
+          <h6 className="mb-1" key={i}>
+            {application.closed
+              ? ""
+              : this.props.student.academic_background.university
+                  .expected_grad_date &&
+                this.getNumberOfDays(
+                  today,
+                  this.props.student.academic_background.university
+                    .expected_grad_date +
+                    "-" +
+                    application.programId.application_deadline
+                )}
+          </h6>
+        )
+      );
+      application_decided = this.props.student.applications.map(
+        (application, i) =>
+          application.decided !== undefined && application.decided === true ? (
+            <h6 className="mb-1" key={i}>
+              O
+            </h6>
+          ) : (
+            <h6 className="mb-1" key={i}>
+              X
+            </h6>
+          )
+      );
+      application_closed = this.props.student.applications.map(
+        (application, i) =>
+          application.closed !== undefined && application.closed === true ? (
+            <h6 className="mb-1" key={i}>
+              O
+            </h6>
+          ) : (
+            <h6 className="mb-1" key={i}>
+              X
+            </h6>
+          )
+      );
+      application_admission = this.props.student.applications.map(
+        (application, i) =>
+          application.admission !== undefined &&
+          application.admission === true ? (
+            <h6 className="mb-1" key={i}>
+              O
+            </h6>
+          ) : (
+            <h6 className="mb-1" key={i}>
+              X
+            </h6>
+          )
+      );
+    }
+
     return (
-      <ApplicationStatus
-        role={this.props.role}
-        student={this.props.student}
-        setProgramModalhide={this.setProgramModalhide}
-        setFilesModalhide={this.setFilesModalhide}
-        onFileChange={this.onFileChange}
-        submitFile={this.submitFile}
-      />
+      <>
+        <tbody>
+          <tr>
+            {this.props.role !== "Student" ? (
+              <td>
+                <Link to={"/student-database/" + this.props.student._id}>
+                  <h6>
+                    {this.props.student.firstname},{" "}
+                    {this.props.student.lastname}
+                  </h6>
+                </Link>
+              </td>
+            ) : (
+              <></>
+            )}
+            <td>{applying_university}</td>
+            <td>{applying_program}</td>
+            <td>{application_deadline}</td>
+            <td>{application_decided}</td>
+            <td>{application_closed}</td>
+            <td>{application_admission}</td>
+            <td>{application_date_left}</td>
+          </tr>
+        </tbody>
+      </>
     );
   }
 }

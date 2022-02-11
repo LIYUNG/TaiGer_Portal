@@ -80,10 +80,6 @@ window.programstatuslist = [
     prop: "decided",
   },
   {
-    name: "Preparing",
-    prop: "preparing",
-  },
-  {
     name: "Submitted",
     prop: "Submitted",
   },
@@ -93,16 +89,26 @@ window.programstatuslist = [
   },
 ];
 window.documentlist2 = {
-  Bachelor_Certificate: "B.Sc Cert",
-  Bachelor_Transcript: "B.Sc. Trans",
-  High_School_Diploma: "H. Sch. Dipl.",
+  Bachelor_Certificate: "B.Sc Certificate",
+  Bachelor_Transcript: "B.Sc. Transcript",
+  High_School_Diploma: "H. Sch. Diploma.",
   High_School_Transcript: "H. Sch. Trans",
   University_Entrance_Examination_GSAT: "GSAT/SAT",
   Englisch_Certificate: "TOEFL/IELTS",
   German_Certificate: "TestDaF/B2/C1",
-  ECTS_Conversion: "ECTS Conv.",
-  Course_Description: "Course Descr.",
-  Passport: "Passport",
+  ECTS_Conversion: "ECTS Conversion",
+  Course_Description: "Course Description",
+  Employment_Certificate: "Employment Certificate",
+  Passport: "Passport Copy",
+  Others: "Others",
+};
+
+window.academic_background_header = {
+  School: "School",
+  Program: "Program",
+  English_German: "English/German",
+  Score: "Score",
+  Next_Test_Date: "Next Test Date",
 };
 
 window.templatelist = [

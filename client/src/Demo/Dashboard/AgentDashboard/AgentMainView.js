@@ -22,6 +22,7 @@ class AgentMainView extends React.Component {
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
+        role={this.props.role}
         student={student}
         documentslist={this.props.documentslist}
       />

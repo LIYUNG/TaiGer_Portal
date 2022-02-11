@@ -86,204 +86,116 @@ class StudDocsDashboard extends React.Component {
     this.props.updateStudentArchivStatus(studentId, isArchived);
   };
 
-
   render() {
-    let studentDocOverview;
-    let keys = Object.keys(this.props.documentlist2);
-    let object_init = {};
-    for (let i = 0; i < keys.length; i++) {
-      object_init[keys[i]] = "missing";
-    }
-
-    if (this.props.student.profile) {
-      for (let i = 0; i < this.props.student.profile.length; i++) {
-        if (this.props.student.profile[i].status === "uploaded") {
-          object_init[this.props.student.profile[i].name] = "uploaded";
-        } else if (this.props.student.profile[i].status === "accepted") {
-          object_init[this.props.student.profile[i].name] = "accepted";
-        } else if (this.props.student.profile[i].status === "rejected") {
-          object_init[this.props.student.profile[i].name] = "rejected";
-        } else if (this.props.student.profile[i].status === "missing") {
-          object_init[this.props.student.profile[i].name] = "missing";
-        } else if (this.props.student.profile[i].status === "notneeded") {
-          object_init[this.props.student.profile[i].name] = "notneeded";
-        }
-      }
-    } else {
-    }
-
-    studentDocOverview = keys.map((k, i) => {
-      if (object_init[k] === "uploaded") {
-        return (
-          <td key={i}>
-            <AiOutlineFieldTime
-              size={24}
-              color="orange"
-              title="Uploaded successfully"
-            />
-          </td>
-        );
-      } else if (object_init[k] === "accepted") {
-        return (
-          <td key={i}>
-            <IoCheckmarkCircle
-              size={24}
-              color="limegreen"
-              title="Valid Document"
-            />
-          </td>
-        );
-      } else if (object_init[k] === "rejected") {
-        return (
-          <td key={i}>
-            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
-          </td>
-        );
-      } else if (object_init[k] === "notneeded") {
-        return (
-          <td key={i}>
-            <BsDash size={24} color="lightgray" title="Not needed" />
-          </td>
-        );
-      } else {
-        return (
-          <td key={i}>
-            <AiFillQuestionCircle
-              size={24}
-              color="lightgray"
-              title="No Document uploaded"
-            />{" "}
-          </td>
-        );
-      }
-    });
     return (
       <>
         <tbody>
           <tr>
-            <>
-              <td>
-                <DropdownButton
-                  className="btn ml-2"
-                  size="sm"
-                  title="Option"
-                  variant="primary"
-                  id={`dropdown-variants-${this.props.student._id}`}
-                  key={this.props.student._id}
-                >
-                  {this.props.role === "Admin" && !this.props.isArchivPage ? (
-                    <>
-                      <Dropdown.Item
-                        eventKey="1"
-                        onSelect={() =>
-                          this.startEditingAgent(this.props.student)
-                        }
-                      >
-                        Edit Agent
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey="2"
-                        onSelect={() =>
-                          this.startEditingEditor(this.props.student)
-                        }
-                      >
-                        Edit Editor
-                      </Dropdown.Item>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                  {this.props.role !== "Editor" && !this.props.isArchivPage ? (
-                    <Dropdown.Item
-                      eventKey="3"
-                      onSelect={() => this.startEditingProgram()}
-                    >
-                      Edit Program
-                    </Dropdown.Item>
-                  ) : (
-                    <></>
-                  )}
-                  {this.props.isDashboard ? (
-                    <Dropdown.Item
-                      eventKey="5"
-                      onSelect={() =>
-                        this.updateStudentArchivStatus(
-                          this.props.student._id,
-                          true
-                        )
-                      }
-                    >
-                      Move to Archiv
-                    </Dropdown.Item>
-                  ) : (
-                    <></>
-                  )}
-                  {this.props.isArchivPage ? (
-                    <Dropdown.Item
-                      eventKey="6"
-                      onSelect={() =>
-                        this.updateStudentArchivStatus(
-                          this.props.student._id,
-                          false
-                        )
-                      }
-                    >
-                      Move to Active
-                    </Dropdown.Item>
-                  ) : (
-                    <></>
-                  )}
-                </DropdownButton>
-              </td>
-              <td>
-                <Link to={"/student-database/" + this.props.student._id}>
-                  {this.props.student.firstname}, {this.props.student.lastname}
-                </Link>
-                <br />
-                {this.props.student.email}
-              </td>
-            </>
-            {studentDocOverview}
+            <td>
+              <DropdownButton
+                size="sm"
+                title="Option"
+                variant="primary"
+                id={`dropdown-variants-${this.props.student._id}`}
+                key={this.props.student._id}
+              >
+                {this.props.role !== "Editor" && !this.props.isArchivPage ? (
+                  <Dropdown.Item
+                    eventKey="3"
+                    onSelect={() => this.startEditingProgram()}
+                  >
+                    Edit Program
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+                {this.props.isDashboard ? (
+                  <Dropdown.Item
+                    eventKey="5"
+                    onSelect={() =>
+                      this.updateStudentArchivStatus(
+                        this.props.student._id,
+                        true
+                      )
+                    }
+                  >
+                    Move to Archiv
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+                {this.props.isArchivPage ? (
+                  <Dropdown.Item
+                    eventKey="6"
+                    onSelect={() =>
+                      this.updateStudentArchivStatus(
+                        this.props.student._id,
+                        false
+                      )
+                    }
+                  >
+                    Move to Active
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+              </DropdownButton>
+            </td>
+            <td>
+              <Link to={"/student-database/" + this.props.student._id}>
+                {this.props.student.firstname}, {this.props.student.lastname}
+              </Link>
+              <br />
+              {this.props.student.email}
+            </td>
+            <td>
+              {
+                this.props.student.academic_background.university
+                  .attended_university
+              }
+            </td>{" "}
+            <td>
+              {
+                this.props.student.academic_background.university
+                  .attended_university_program
+              }
+            </td>
+            <td>
+              {
+                this.props.student.academic_background.language
+                  .english_certificate
+              }
+              <br />
+              {
+                this.props.student.academic_background.language
+                  .german_certificate
+              }
+            </td>
+            <td>
+              {this.props.student.academic_background.language.english_score}
+              <br />
+              {this.props.student.academic_background.language.german_score}
+            </td>
+            <td>
+              {
+                this.props.student.academic_background.language
+                  .english_test_date
+              }
+              <br />
+              {this.props.student.academic_background.language.german_test_date}
+            </td>
           </tr>
         </tbody>
-        <>
-          {this.props.role === "Admin" ? (
-            <>
-              <EditAgentsSubpage
-                student={this.props.student}
-                agent_list={this.props.agent_list}
-                show={this.state.showAgentPage}
-                onHide={this.setAgentModalhide}
-                setmodalhide={this.setAgentModalhide}
-                updateAgentList={this.props.updateAgentList}
-                handleChangeAgentlist={this.props.handleChangeAgentlist}
-                submitUpdateAgentlist={this.submitUpdateAgentlist}
-              />
-              <EditEditorsSubpage
-                student={this.props.student}
-                editor_list={this.props.editor_list}
-                show={this.state.showEditorPage}
-                onHide={this.setEditorModalhide}
-                setmodalhide={this.setEditorModalhide}
-                updateEditorList={this.props.updateEditorList}
-                handleChangeEditorlist={this.props.handleChangeEditorlist}
-                submitUpdateEditorlist={this.submitUpdateEditorlist}
-              />
-            </>
-          ) : (
-            <></>
-          )}
-          <EditProgramsSubpage
-            student={this.props.student}
-            show={this.state.showProgramPage}
-            onHide={this.setProgramModalhide}
-            setmodalhide={this.setProgramModalhide}
-            onDeleteProgram={this.props.onDeleteProgram}
-            onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
-            onSetAsCloseProgram={this.props.onSetAsCloseProgram}
-            onSetAsGetAdmissionProgram={this.props.onSetAsGetAdmissionProgram}
-          />
-        </>
+        <EditProgramsSubpage
+          student={this.props.student}
+          show={this.state.showProgramPage}
+          onHide={this.setProgramModalhide}
+          setmodalhide={this.setProgramModalhide}
+          onDeleteProgram={this.props.onDeleteProgram}
+          onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
+          onSetAsCloseProgram={this.props.onSetAsCloseProgram}
+          onSetAsGetAdmissionProgram={this.props.onSetAsGetAdmissionProgram}
+        />
       </>
     );
   }

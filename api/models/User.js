@@ -272,7 +272,6 @@ const applicationSchema = new Schema({
     },
   ],
   decided: { type: Boolean, default: false },
-  prepared: { type: Boolean, default: false },
   closed: { type: Boolean, default: false },
   admission: { type: Boolean, default: false },
 });

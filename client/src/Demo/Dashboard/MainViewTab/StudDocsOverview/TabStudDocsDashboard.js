@@ -14,19 +14,9 @@ class TabStudDocsDashboard extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        editAgent={this.props.editAgent}
-        editEditor={this.props.editEditor}
         documentslist={this.props.documentslist}
         documentlist2={this.props.documentlist2}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
         onDeleteProgram={this.props.onDeleteProgram}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
         updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         isDashboard={this.props.isDashboard}
         isArchivPage={this.props.isArchivPage}
@@ -35,7 +25,7 @@ class TabStudDocsDashboard extends React.Component {
         onSetAsGetAdmissionProgram={this.props.onSetAsGetAdmissionProgram}
       />
     ));
-    let header = Object.values(this.props.documentlist2);
+    let header = Object.values(window.academic_background_header);
     return (
       <>
         <Table responsive bordered hover>

@@ -4,6 +4,7 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import { uploadforstudent } from "../../../../api";
 // import DocsProgress from "./DocsProgress";
+import { Link } from "react-router-dom";
 import EditProgramsFilesSubpage from "./EditProgramsFilesSubpage";
 
 class EditorDocsProgress extends React.Component {
@@ -282,9 +283,12 @@ class EditorDocsProgress extends React.Component {
           <tr>
             {this.props.role !== "Student" ? (
               <td>
-                <p>
-                  {this.props.student.firstname}, {this.props.student.lastname}
-                </p>
+                <Link to={"/student-database/" + this.props.student._id}>
+                  <p>
+                    {this.props.student.firstname},{" "}
+                    {this.props.student.lastname}
+                  </p>
+                </Link>
               </td>
             ) : (
               <></>

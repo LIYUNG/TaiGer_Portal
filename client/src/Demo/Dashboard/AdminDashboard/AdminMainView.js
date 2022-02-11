@@ -22,8 +22,20 @@ class AdminMainView extends React.Component {
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
+        role={this.props.role}
         student={student}
         documentslist={this.props.documentslist}
+        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+        editAgent={this.props.editAgent}
+        editEditor={this.props.editEditor}
+        agent_list={this.props.agent_list}
+        editor_list={this.props.editor_list}
+        updateAgentList={this.props.updateAgentList}
+        handleChangeAgentlist={this.props.handleChangeAgentlist}
+        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+        updateEditorList={this.props.updateEditorList}
+        handleChangeEditorlist={this.props.handleChangeEditorlist}
+        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
       />
     ));
     const application_progress = this.props.students.map((student, i) => (
@@ -104,19 +116,9 @@ class AdminMainView extends React.Component {
                 <TabStudDocsDashboard
                   role={this.props.role}
                   students={this.props.students}
-                  editAgent={this.props.editAgent}
-                  editEditor={this.props.editEditor}
                   documentslist={this.props.documentslist}
                   documentlist2={this.props.documentlist2}
-                  agent_list={this.props.agent_list}
-                  editor_list={this.props.editor_list}
                   onDeleteProgram={this.props.onDeleteProgram}
-                  updateAgentList={this.props.updateAgentList}
-                  handleChangeAgentlist={this.props.handleChangeAgentlist}
-                  submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-                  updateEditorList={this.props.updateEditorList}
-                  handleChangeEditorlist={this.props.handleChangeEditorlist}
-                  submitUpdateEditorlist={this.props.submitUpdateEditorlist}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
                     this.props.updateStudentArchivStatus
@@ -133,6 +135,7 @@ class AdminMainView extends React.Component {
                 <Table responsive>
                   <thead>
                     <tr>
+                      <th></th>
                       <th>First-, Last Name</th>
                       <th>Agents</th>
                       <th>Editors</th>

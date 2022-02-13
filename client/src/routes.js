@@ -142,7 +142,7 @@ const routes = [
     component: StudentDatabase,
   },
   {
-    path: "/student-database/:studentId",
+    path: "/student-database/:studentId/:tab",
     exact: true,
     name: "ArchivStudentDatabase",
     component: ArchivStudentDatabase,

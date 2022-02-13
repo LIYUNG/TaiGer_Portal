@@ -16,7 +16,6 @@ class AgentMainView extends React.Component {
       <AgentTodoList
         key={i}
         student={student}
-        documentlist2={this.props.documentlist2}
       />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
@@ -32,7 +31,6 @@ class AgentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        documentlist2={this.props.documentlist2}
       />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
@@ -41,7 +39,6 @@ class AgentMainView extends React.Component {
         role={this.props.role}
         student={student}
         startEditingProgram={this.props.startEditingProgram}
-        documentlist2={this.props.documentlist2}
       />
     ));
     const application_progress = this.props.students.map((student, i) => (
@@ -97,7 +94,7 @@ class AgentMainView extends React.Component {
                     <>
                       <th>First-, Last Name</th>
                     </>
-                    {this.props.agenttodolist.map((doc, index) => (
+                    {window.agenttodolist.map((doc, index) => (
                       <th key={index}>{doc.name}</th>
                     ))}
                   </tr>
@@ -110,38 +107,17 @@ class AgentMainView extends React.Component {
         <Row>
           <Col sm={12}>
             <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-              <Tab eventKey="w" title="Student Documents Overview">
+              <Tab eventKey="w" title="Student Background Overview">
                 <TabStudDocsDashboard
                   role={this.props.role}
                   students={this.props.students}
-                  editAgent={this.props.editAgent}
-                  editEditor={this.props.editEditor}
-                  startEditingEditor={this.props.startEditingEditor}
                   startEditingProgram={this.props.startEditingProgram}
-                  documentslist={this.props.documentslist}
-                  documentlist2={this.props.documentlist2}
-                  startUploadfile={this.props.startUploadfile}
-                  agent_list={this.props.agent_list}
-                  editor_list={this.props.editor_list}
-                  onFileChange={this.props.onFileChange}
-                  onSubmitFile={this.props.onSubmitFile}
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-                  onUpdateProfileDocStatus={this.props.onUpdateProfileDocStatus}
                   onDeleteProgram={this.props.onDeleteProgram}
                   onSetAsCloseProgram={this.props.onSetAsCloseProgram}
                   onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
                   onSetAsGetAdmissionProgram={
                     this.props.onSetAsGetAdmissionProgram
                   }
-                  onDownloadFilefromstudent={
-                    this.props.onDownloadFilefromstudent
-                  }
-                  updateAgentList={this.props.updateAgentList}
-                  handleChangeAgentlist={this.props.handleChangeAgentlist}
-                  submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-                  updateEditorList={this.props.updateEditorList}
-                  handleChangeEditorlist={this.props.handleChangeEditorlist}
-                  submitUpdateEditorlist={this.props.submitUpdateEditorlist}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
                     this.props.updateStudentArchivStatus
@@ -165,14 +141,6 @@ class AgentMainView extends React.Component {
                 <TabEditorDocsProgress
                   role={this.props.role}
                   students={this.props.students}
-                  startEditingProgram={this.props.startEditingProgram}
-                  documentslist={this.props.documentslist}
-                  documentsprogresslist={this.props.documentsprogresslist}
-                  startUploadfile={this.props.startUploadfile}
-                  onDownloadFilefromstudent={
-                    this.props.onDownloadFilefromstudent
-                  }
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
               </Tab>
               <Tab eventKey="z" title="Application Overview">
@@ -185,7 +153,7 @@ class AgentMainView extends React.Component {
                         <th>Programs</th>
                         <th>Deadline</th>
                       </>
-                      {this.props.programstatuslist.map((doc, index) => (
+                      {window.programstatuslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
                       <th>Days left</th>
@@ -198,7 +166,6 @@ class AgentMainView extends React.Component {
                 <TabProgramConflict
                   students={this.props.students}
                   startEditingProgram={this.props.startEditingProgram}
-                  startUploadfile={this.props.startUploadfile}
                   onDeleteProgram={this.props.onDeleteProgram}
                 />
               </Tab>

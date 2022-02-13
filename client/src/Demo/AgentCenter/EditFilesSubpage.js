@@ -29,8 +29,8 @@ class EditFilesSubpage extends React.Component {
   render() {
     const deleteStyle = "danger";
     const graoutStyle = "light";
-    let value2 = Object.values(this.props.documentlist2);
-    let keys2 = Object.keys(this.props.documentlist2);
+    let value2 = Object.values(window.documentlist2);
+    let keys2 = Object.keys(window.documentlist2);
     let object_init = {};
     let object_message = {};
     let object_date_init = {};
@@ -68,8 +68,8 @@ class EditFilesSubpage extends React.Component {
       }
     } else {
     }
-    var documentlist22;
-    documentlist22 = keys2.map((k, i) => {
+    var file_information;
+    file_information = keys2.map((k, i) => {
       if (object_init[k] === "uploaded") {
         return (
           <ButtonSetUploaded
@@ -210,7 +210,7 @@ class EditFilesSubpage extends React.Component {
                         <th>Delete</th>
                       </tr>
                     </thead>
-                    <tbody>{documentlist22}</tbody>
+                    <tbody>{file_information}</tbody>
                   </Table>
                 </Row>
                 <Row>{this.props.SYMBOL_EXPLANATION}</Row>

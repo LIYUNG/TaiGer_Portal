@@ -283,7 +283,11 @@ class EditorDocsProgress extends React.Component {
           <tr>
             {this.props.role !== "Student" ? (
               <td>
-                <Link to={"/student-database/" + this.props.student._id}>
+                <Link
+                  to={
+                    "/student-database/" + this.props.student._id + "/applied-schools"
+                  }
+                >
                   <p>
                     {this.props.student.firstname},{" "}
                     {this.props.student.lastname}

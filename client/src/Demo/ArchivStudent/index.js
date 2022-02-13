@@ -361,8 +361,6 @@ class Dashboard extends React.Component {
                         students={this.state.students}
                         editAgent={this.state.editAgent}
                         editEditor={this.state.editEditor}
-                        documentslist={window.documentslist}
-                        documentlist2={window.documentlist2}
                         agent_list={this.state.agent_list}
                         editor_list={this.state.editor_list}
                         onDeleteProgram={this.onDeleteProgram}

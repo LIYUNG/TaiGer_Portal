@@ -365,7 +365,6 @@ class AgentCenter extends React.Component {
         role={this.props.user.role}
         user={this.props.user}
         documentslist2={this.props.documentslist2}
-        documentlist2={window.documentlist2}
         documentslist={this.props.documentslist}
         onDownloadFilefromstudent={this.onDownloadFilefromstudent}
         SubmitGeneralFile={this.SubmitGeneralFile}

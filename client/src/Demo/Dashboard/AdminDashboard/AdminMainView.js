@@ -16,7 +16,6 @@ class AdminMainView extends React.Component {
       <AdminTodoList
         key={i}
         student={student}
-        documentslist={this.props.documentslist}
       />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
@@ -24,7 +23,6 @@ class AdminMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        documentslist={this.props.documentslist}
         updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         editAgent={this.props.editAgent}
         editEditor={this.props.editEditor}
@@ -42,7 +40,6 @@ class AdminMainView extends React.Component {
       <ApplicationProgress
         key={i}
         student={student}
-        documentslist={this.props.documentslist}
       />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
@@ -50,7 +47,6 @@ class AdminMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        documentlist2={this.props.documentlist2}
       />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
@@ -58,7 +54,6 @@ class AdminMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        documentlist2={this.props.documentlist2}
       />
     ));
     return (
@@ -68,9 +63,6 @@ class AdminMainView extends React.Component {
             <Card title="Program Conflicts">
               <TabProgramConflict
                 students={this.props.students}
-                startEditingProgram={this.props.startEditingProgram}
-                startUploadfile={this.props.startUploadfile}
-                onDeleteProgram={this.props.onDeleteProgram}
               />
             </Card>
           </Col>
@@ -112,12 +104,10 @@ class AdminMainView extends React.Component {
         <Row>
           <Col>
             <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-              <Tab eventKey="w" title="Student Documents Overview">
+              <Tab eventKey="w" title="Student Background Overview">
                 <TabStudDocsDashboard
                   role={this.props.role}
                   students={this.props.students}
-                  documentslist={this.props.documentslist}
-                  documentlist2={this.props.documentlist2}
                   onDeleteProgram={this.props.onDeleteProgram}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
@@ -148,8 +138,6 @@ class AdminMainView extends React.Component {
                 <TabEditorDocsProgress
                   role={this.props.role}
                   students={this.props.students}
-                  documentsprogresslist={this.props.documentsprogresslist}
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
               </Tab>
               <Tab eventKey="z" title="Application Overview">
@@ -162,7 +150,7 @@ class AdminMainView extends React.Component {
                         <th>Programs</th>
                         <th>Deadline</th>
                       </>
-                      {this.props.programstatuslist.map((doc, index) => (
+                      {window.programstatuslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
                     </tr>

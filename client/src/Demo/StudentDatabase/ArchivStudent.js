@@ -450,8 +450,11 @@ class ArchivStudent extends React.Component {
             </Card.Title>
           </Card.Header>
         </Card>
-        <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-          <Tab eventKey="w" title="Profile Overview">
+        <Tabs
+          defaultActiveKey={this.props.match.params.tab}
+          id="uncontrolled-tab-example"
+        >
+          <Tab eventKey="profile" title="Profile Overview">
             <Table responsive>
               <thead>
                 <tr>
@@ -486,7 +489,7 @@ class ArchivStudent extends React.Component {
               />
             </Row>
           </Tab>
-          <Tab eventKey="xx" title="Check List">
+          <Tab eventKey="checklist" title="Check List">
             <Row>
               <Table responsive>
                 <thead>
@@ -504,18 +507,18 @@ class ArchivStudent extends React.Component {
               </Table>
             </Row>
           </Tab>
-          <Tab eventKey="x" title="Application Files">
+          <Tab eventKey="application-files" title="Application Files">
             <Row>
               <Col sm={12}>{student_editor}</Col>
             </Row>
           </Tab>
-          <Tab eventKey="y" title="Background">
+          <Tab eventKey="background" title="Background">
             <SurveyComponent
               academic_background={this.state.student.academic_background}
               isLoaded={this.state.isLoaded}
             />
           </Tab>
-          <Tab eventKey="z" title="Applied Schools">
+          <Tab eventKey="applied-schools" title="Applied Schools">
             <Table responsive>
               <thead>
                 <tr>

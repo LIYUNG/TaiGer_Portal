@@ -20,34 +20,6 @@ class StudDocsDashboard extends React.Component {
     showFilePage: false,
   };
 
-  setAgentModalhide = () => {
-    this.setState({
-      showAgentPage: false,
-    });
-  };
-
-  startEditingAgent = (student) => {
-    this.props.editAgent(student);
-    this.setState({
-      subpage: 1,
-      showAgentPage: true,
-    });
-  };
-
-  setEditorModalhide = () => {
-    this.setState({
-      showEditorPage: false,
-    });
-  };
-
-  startEditingEditor = (student) => {
-    this.props.editEditor(student);
-    this.setState({
-      subpage: 2,
-      showEditorPage: true,
-    });
-  };
-
   setProgramModalhide = () => {
     this.setState({
       showProgramPage: false,
@@ -60,28 +32,6 @@ class StudDocsDashboard extends React.Component {
     });
   };
 
-  setFilesModalhide = () => {
-    this.setState({
-      showFilePage: false,
-    });
-  };
-
-  startUploadfile = () => {
-    this.setState({
-      showFilePage: true,
-    });
-  };
-  submitUpdateAgentlist = (e, updateAgentList, student_id) => {
-    e.preventDefault();
-    this.setAgentModalhide();
-    this.props.submitUpdateAgentlist(e, updateAgentList, student_id);
-  };
-
-  submitUpdateEditorlist = (e, updateEditorList, student_id) => {
-    e.preventDefault();
-    this.setEditorModalhide();
-    this.props.submitUpdateEditorlist(e, updateEditorList, student_id);
-  };
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);
   };
@@ -142,7 +92,11 @@ class StudDocsDashboard extends React.Component {
               </DropdownButton>
             </td>
             <td>
-              <Link to={"/student-database/" + this.props.student._id}>
+              <Link
+                to={
+                  "/student-database/" + this.props.student._id + "/background"
+                }
+              >
                 {this.props.student.firstname}, {this.props.student.lastname}
               </Link>
               <br />

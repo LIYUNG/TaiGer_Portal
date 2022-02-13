@@ -11,11 +11,7 @@ import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgen
 class EditorMainView extends React.Component {
   render() {
     const editor_todo = this.props.students.map((student, i) => (
-      <EditorTodoList
-        key={i}
-        student={student}
-        documentlist2={this.props.documentlist2}
-      />
+      <EditorTodoList key={i} student={student} />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
@@ -32,7 +28,6 @@ class EditorMainView extends React.Component {
         key={student._id}
         role={this.props.role}
         student={student}
-        documentlist2={this.props.documentlist2}
       />
     ));
     return (
@@ -61,7 +56,6 @@ class EditorMainView extends React.Component {
               <TabProgramConflict
                 students={this.props.students}
                 startEditingProgram={this.props.startEditingProgram}
-                startUploadfile={this.props.startUploadfile}
               />
             </Card>
           </Col>
@@ -75,14 +69,6 @@ class EditorMainView extends React.Component {
                   students={this.props.students}
                   startEditingProgram={this.props.startEditingProgram}
                   documentslist={this.props.documentslist}
-                  documentsprogresslist={this.props.documentsprogresslist}
-                  startUploadfile={this.props.startUploadfile}
-                  onDownloadFilefromstudent={
-                    this.props.onDownloadFilefromstudent
-                  }
-                  onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-                  onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
                 />
               </Tab>
               <Tab eventKey="dz" title="Agents and Editors">
@@ -101,28 +87,8 @@ class EditorMainView extends React.Component {
                 <TabStudDocsDashboard
                   role={this.props.role}
                   students={this.props.students}
-                  editAgent={this.props.editAgent}
-                  editEditor={this.props.editEditor}
-                  startEditingEditor={this.props.startEditingEditor}
-                  startEditingProgram={this.props.startEditingProgram}
                   documentslist={this.props.documentslist}
-                  documentlist2={this.props.documentlist2}
-                  startUploadfile={this.props.startUploadfile}
-                  agent_list={this.props.agent_list}
-                  editor_list={this.props.editor_list}
                   onDeleteProgram={this.props.onDeleteProgram}
-                  onDownloadFilefromstudent={
-                    this.props.onDownloadFilefromstudent
-                  }
-                  onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-                  onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-                  onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-                  updateAgentList={this.props.updateAgentList}
-                  handleChangeAgentlist={this.props.handleChangeAgentlist}
-                  submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-                  updateEditorList={this.props.updateEditorList}
-                  handleChangeEditorlist={this.props.handleChangeEditorlist}
-                  submitUpdateEditorlist={this.props.submitUpdateEditorlist}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
                     this.props.updateStudentArchivStatus

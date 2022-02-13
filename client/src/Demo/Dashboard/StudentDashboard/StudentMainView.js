@@ -14,7 +14,6 @@ class StudentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        documentlist2={this.props.documentlist2}
       />
     ));
 
@@ -23,13 +22,6 @@ class StudentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        documentslist={this.props.documentslist}
-        startUploadfile={this.props.startUploadfile}
-        onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
 
@@ -67,13 +59,6 @@ class StudentMainView extends React.Component {
       <StudentTodoList
         key={i}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
@@ -81,13 +66,6 @@ class StudentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
@@ -95,13 +73,6 @@ class StudentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
-        agenttodolist={this.props.agenttodolist}
-        documentlist2={this.props.documentlist2}
-        startUploadfile={this.props.startUploadfile}
-        onRejectFilefromstudent={this.props.onRejectFilefromstudent}
-        onAcceptFilefromstudent={this.props.onAcceptFilefromstudent}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
 
@@ -184,12 +155,6 @@ class StudentMainView extends React.Component {
               <TabEditorDocsProgress
                 role={this.props.role}
                 students={this.props.students}
-                startEditingProgram={this.props.startEditingProgram}
-                documentslist={this.props.documentslist}
-                documentsprogresslist={this.props.documentsprogresslist}
-                startUploadfile={this.props.startUploadfile}
-                onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-                onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
               />
             </Card>
           </Col>
@@ -210,7 +175,7 @@ class StudentMainView extends React.Component {
                       <th>Programs</th>
                       <th>Deadline</th>
                     </>
-                    {this.props.programstatuslist.map((doc, index) => (
+                    {window.programstatuslist.map((doc, index) => (
                       <th key={index}>{doc.name}</th>
                     ))}
                   </tr>
@@ -230,7 +195,7 @@ class StudentMainView extends React.Component {
                       {/* <>
                         <th>First-, Last Name</th>
                       </> */}
-                      {this.props.documentslist.map((doc, index) => (
+                      {window.documentlist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
                     </tr>

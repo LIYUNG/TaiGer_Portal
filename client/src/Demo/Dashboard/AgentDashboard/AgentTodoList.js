@@ -7,7 +7,7 @@ import React from "react";
 
 class AgentTodoList extends React.Component {
   render() {
-    let keys = Object.keys(this.props.documentlist2);
+    let keys = Object.keys(window.documentlist2);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
@@ -33,7 +33,7 @@ class AgentTodoList extends React.Component {
       if (object_init[key] !== "accepted" && object_init[key] !== "notneeded") {
         return (
           <>
-            <h6>{this.props.documentlist2[key]}</h6>
+            <h6>{window.documentlist2[key]}</h6>
           </>
         );
       }
@@ -42,7 +42,7 @@ class AgentTodoList extends React.Component {
       if (object_init[key] === "uploaded") {
         return (
           <>
-            <h6>{this.props.documentlist2[key]}</h6>
+            <h6>{window.documentlist2[key]}</h6>
           </>
         );
       }
@@ -57,6 +57,11 @@ class AgentTodoList extends React.Component {
                 {this.props.student.firstname}, {this.props.student.lastname}
               </h6>
             </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
         </tbody>
       </>

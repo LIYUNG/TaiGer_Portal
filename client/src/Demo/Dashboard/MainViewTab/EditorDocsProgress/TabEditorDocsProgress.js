@@ -8,7 +8,6 @@ class TabEditorDocsProgress extends React.Component {
         key={i}
         student={student}
         role={this.props.role}
-        onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
       />
     ));
     return (
@@ -23,7 +22,7 @@ class TabEditorDocsProgress extends React.Component {
                 <th></th>
                 <th>Deadline</th>
               </>
-              {this.props.documentsprogresslist.map((doc, index) => (
+              {window.documentsprogresslist.map((doc, index) => (
                 <th key={index}>{doc.name}</th>
               ))}
             </tr>

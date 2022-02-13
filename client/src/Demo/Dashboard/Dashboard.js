@@ -18,9 +18,6 @@ import EditorMainView from "./EditorDashboard/EditorMainView";
 import StudentMainView from "./StudentDashboard/StudentMainView";
 import GuestMainView from "./GuestDashboard/GuestMainView";
 import {
-  uploadforstudent,
-  updateProfileDocumentStatus,
-  deleteFile,
   getStudents,
   updateArchivStudents,
   downloadProfile,
@@ -97,48 +94,6 @@ class Dashboard extends React.Component {
         }
       );
     }
-  }
-
-  onDownloadFilefromstudent(e, category, id) {
-    e.preventDefault();
-    downloadProfile(category, id).then(
-      (resp) => {
-        console.log(resp.data);
-        const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-
-        var filetype = actualFileName.split("."); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === "pdf") {
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
-          );
-
-          //Open the URL on new Window
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert("The file is not available.");
-      }
-    );
   }
 
   onDeleteProgram = (e, student_id, program_id) => {
@@ -427,93 +382,6 @@ class Dashboard extends React.Component {
     );
   };
 
-  onFileChange = (e) => {
-    this.setState({
-      file: e.target.files[0],
-    });
-  };
-
-  onSubmitFile = (e, category, student_id) => {
-    if (this.state.file === "") {
-      e.preventDefault();
-      alert("Please select file");
-    } else {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("file", this.state.file);
-
-      let student_arrayidx = this.state.students.findIndex(
-        (student) => student._id === student_id
-      );
-
-      uploadforstudent(category, student_id, formData).then(
-        (res) => {
-          let students = [...this.state.students];
-          students[student_arrayidx] = res.data.data;
-          console.log(students);
-          this.setState({
-            students: students, // res.data = {success: true, data:{...}}
-            file: "",
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
-    }
-  };
-  onDeleteFilefromstudent = (e, category, student_id) => {
-    // TODO: delete this.state.student[document]
-    console.log("onDeleteFilefromstudent AgentMainView.js");
-    e.preventDefault();
-    let student_arrayidx = this.state.students.findIndex(
-      (student) => student._id === student_id
-    );
-    let student = this.state.students.find(
-      (student) => student._id === student_id
-    );
-    let idx = student.profile.findIndex((doc) => doc.name === category);
-    let students = [...this.state.students];
-    // console.log(students);
-    deleteFile(category, student_id).then(
-      (res) => {
-        students[student_arrayidx].profile[idx] = res.data.data;
-        // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
-        this.setState({
-          students: students,
-        });
-      },
-      (error) => {}
-    );
-  };
-
-  onUpdateProfileDocStatus = (e, category, student_id, status) => {
-    e.preventDefault();
-
-    let student_arrayidx = this.state.students.findIndex(
-      (student) => student._id === student_id
-    );
-    let student = this.state.students.find(
-      (student) => student._id === student_id
-    );
-    let idx = student.profile.findIndex((doc) => doc.name === category);
-    let students = [...this.state.students];
-
-    console.log(students);
-    updateProfileDocumentStatus(category, student_id, status).then(
-      (res) => {
-        students[student_arrayidx] = res.data.data;
-        this.setState({
-          students: students,
-        });
-      },
-      (error) => {}
-    );
-  };
-
   render() {
     const { error, isLoaded } = this.state;
     let FILE_OK_SYMBOL = (
@@ -591,18 +459,7 @@ class Dashboard extends React.Component {
               editor_list={this.state.editor_list}
               UpdateAgentlist={this.UpdateAgentlist}
               students={this.state.students}
-              documentslist={window.documentlist}
-              documentlist2={window.documentlist2}
-              agenttodolist={window.agenttodolist}
-              onFileChange={this.onFileChange}
-              onSubmitFile={this.onSubmitFile}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-              onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
-              documentsprogresslist={window.documentsprogresslist}
-              programstatuslist={window.programstatuslist}
-              startUploadfile={this.startUploadfile}
               onDeleteProgram={this.onDeleteProgram}
-              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
               updateAgentList={this.state.updateAgentList}
               handleChangeAgentlist={this.handleChangeAgentlist}
               submitUpdateAgentlist={this.submitUpdateAgentlist}
@@ -630,26 +487,8 @@ class Dashboard extends React.Component {
           <Aux>
             <AgentMainView
               role={this.props.user.role}
-              UpdateAgentlist={this.UpdateAgentlist}
               students={this.state.students}
-              documentslist={window.documentlist}
-              documentlist2={window.documentlist2}
-              agenttodolist={window.agenttodolist}
-              documentsprogresslist={window.documentsprogresslist}
-              programstatuslist={window.programstatuslist}
-              startUploadfile={this.startUploadfile}
-              onFileChange={this.onFileChange}
-              onSubmitFile={this.onSubmitFile}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-              onUpdateProfileDocStatus={this.onUpdateProfileDocStatus}
               onDeleteProgram={this.onDeleteProgram}
-              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              updateAgentList={this.state.updateAgentList}
-              handleChangeAgentlist={this.handleChangeAgentlist}
-              submitUpdateAgentlist={this.submitUpdateAgentlist}
-              updateEditorList={this.state.updateEditorList}
-              handleChangeEditorlist={this.handleChangeEditorlist}
-              submitUpdateEditorlist={this.submitUpdateEditorlist}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
@@ -675,22 +514,8 @@ class Dashboard extends React.Component {
               editEditor={this.editEditor}
               agent_list={this.state.agent_list}
               editor_list={this.state.editor_list}
-              UpdateAgentlist={this.UpdateAgentlist}
-              editortodolist={window.editortodolist}
               students={this.state.students}
-              documentslist={window.documentlist}
-              documentlist2={window.documentlist2}
-              documentsprogresslist={window.documentsprogresslist}
-              programstatuslist={window.programstatuslist}
-              startUploadfile={this.startUploadfile}
-              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-              updateAgentList={this.state.updateAgentList}
-              handleChangeAgentlist={this.handleChangeAgentlist}
-              submitUpdateAgentlist={this.submitUpdateAgentlist}
               updateEditorList={this.state.updateEditorList}
-              handleChangeEditorlist={this.handleChangeEditorlist}
-              submitUpdateEditorlist={this.submitUpdateEditorlist}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
@@ -710,13 +535,6 @@ class Dashboard extends React.Component {
             <StudentMainView
               role={this.props.user.role}
               students={this.state.students}
-              documentslist={window.documentlist}
-              documentlist2={window.documentlist2}
-              documentsprogresslist={window.documentsprogresslist}
-              programstatuslist={window.programstatuslist}
-              startUploadfile={this.startUploadfile}
-              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
             {!isLoaded && (
@@ -735,10 +553,7 @@ class Dashboard extends React.Component {
               role={this.props.user.role}
               success={this.state.success}
               students={this.state.students}
-              documentslist={window.documentlist}
               startUploadfile={this.startUploadfile}
-              onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-              onDeleteFilefromstudent={this.onDeleteFilefromstudent}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
 

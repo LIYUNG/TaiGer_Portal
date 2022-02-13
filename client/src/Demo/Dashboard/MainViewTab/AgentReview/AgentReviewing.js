@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 class AgentReviewing extends React.Component {
   render() {
-    let keys = Object.keys(this.props.documentlist2);
+    let keys = Object.keys(window.documentlist2);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
@@ -68,7 +68,13 @@ class AgentReviewing extends React.Component {
             {this.props.role !== "Student" ? (
               <>
                 <td>
-                  <Link to={"/student-database/" + this.props.student._id}>
+                  <Link
+                    to={
+                      "/student-database/" +
+                      this.props.student._id +
+                      "/profile"
+                    }
+                  >
                     {this.props.student.firstname}
                     {" - "}
                     {this.props.student.lastname}

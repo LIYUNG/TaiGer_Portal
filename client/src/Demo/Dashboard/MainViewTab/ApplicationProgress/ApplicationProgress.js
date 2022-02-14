@@ -63,9 +63,9 @@ class ApplicationProgress extends React.Component {
         (application, i) => (
           <h6 className="mb-1" key={i}>
             {this.props.student.academic_background.university
-              .expected_grad_date
+              .expected_application_date
               ? this.props.student.academic_background.university
-                  .expected_grad_date + "-"
+                  .expected_application_date + "-"
               : ""}
             {application.programId.application_deadline}
           </h6>
@@ -78,11 +78,11 @@ class ApplicationProgress extends React.Component {
             {application.closed
               ? ""
               : this.props.student.academic_background.university
-                  .expected_grad_date &&
+                  .expected_application_date &&
                 this.getNumberOfDays(
                   today,
                   this.props.student.academic_background.university
-                    .expected_grad_date +
+                    .expected_application_date +
                     "-" +
                     application.programId.application_deadline
                 )}

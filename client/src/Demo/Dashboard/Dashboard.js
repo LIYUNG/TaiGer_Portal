@@ -97,7 +97,6 @@ class Dashboard extends React.Component {
   }
 
   onDeleteProgram = (e, student_id, program_id) => {
-    //program id
     e.preventDefault();
     var stds = this.state.students;
     var std_idx = stds.findIndex((stud) => stud._id === student_id);
@@ -553,7 +552,6 @@ class Dashboard extends React.Component {
               role={this.props.user.role}
               success={this.state.success}
               students={this.state.students}
-              startUploadfile={this.startUploadfile}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
 

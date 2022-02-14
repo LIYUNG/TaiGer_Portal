@@ -18,7 +18,6 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
 import {
   getStudent,
-  getArchivStudent,
   updateProfileDocumentStatus,
   downloadProfile,
   uploadforstudent,

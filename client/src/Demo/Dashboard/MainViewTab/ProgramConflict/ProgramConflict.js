@@ -18,9 +18,9 @@ class ProgramConflict extends React.Component {
     var application_deadline = studs_id.map((k, i) => (
       <h6 key={i}>
         {this.props.students.find((stud) => stud._id === studs_id[i])
-          .academic_background.university.expected_grad_date
+          .academic_background.university.expected_application_date
           ? this.props.students.find((stud) => stud._id === studs_id[i])
-              .academic_background.university.expected_grad_date + "-"
+              .academic_background.university.expected_application_date + "-"
           : ""}
         {
           this.props.conflict_programs[this.props.conf_program_id]

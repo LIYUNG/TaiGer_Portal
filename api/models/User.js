@@ -114,6 +114,10 @@ const UserSchema = new Schema(
           type: String,
           default: "",
         },
+        expected_application_date: {
+          type: String,
+          default: "",
+        },
         Highest_GPA_Uni: {
           type: Number,
           default: 0,

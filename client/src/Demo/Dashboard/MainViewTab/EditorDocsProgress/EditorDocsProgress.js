@@ -285,7 +285,9 @@ class EditorDocsProgress extends React.Component {
               <td>
                 <Link
                   to={
-                    "/student-database/" + this.props.student._id + "/applied-schools"
+                    "/student-database/" +
+                    this.props.student._id +
+                    "/application-files"
                   }
                 >
                   <p>

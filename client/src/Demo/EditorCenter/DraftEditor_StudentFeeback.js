@@ -164,6 +164,8 @@ class DraftEditor_StudentFeeback extends React.Component {
               {parse(convertToHTML(this.state.editorState.getCurrentContent()))}
             </>
           )}
+          Last update: {new Date(this.props.student_feedback_updatedAt).toLocaleDateString()}{" "}
+          {new Date(this.props.student_feedback_updatedAt).toLocaleTimeString()}
         </Modal.Body>
         <Modal.Footer>
           {this.props.role === "Student" ? (

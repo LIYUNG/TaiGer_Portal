@@ -165,6 +165,8 @@ class DraftEditor extends React.Component {
               {parse(convertToHTML(this.state.editorState.getCurrentContent()))}
             </>
           )}
+          Last update: {new Date(this.props.updatedAt).toLocaleDateString()}{" "}
+          {new Date(this.props.updatedAt).toLocaleTimeString()}
         </Modal.Body>
         <Modal.Footer>
           {this.props.role === this.state.whoupdate ? (

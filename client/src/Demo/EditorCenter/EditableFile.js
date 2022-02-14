@@ -52,7 +52,8 @@ class EditableFile extends Component {
       this.props.student._id,
       this.props.document.name,
       this.props.whoupdate,
-      this.props.document.feedback
+      this.props.document.feedback,
+      this.props.document.updatedAt
     );
   };
 
@@ -62,7 +63,8 @@ class EditableFile extends Component {
       this.props.application.programId._id,
       this.props.document.name,
       this.props.whoupdate,
-      this.props.document.feedback
+      this.props.document.feedback,
+      this.props.document.updatedAt
     );
   };
 
@@ -71,7 +73,8 @@ class EditableFile extends Component {
       this.props.student._id,
       this.props.document.name,
       this.props.whoupdate,
-      this.props.document.student_feedback
+      this.props.document.student_feedback,
+      this.props.document.student_feedback_updatedAt
     );
   };
 
@@ -81,7 +84,8 @@ class EditableFile extends Component {
       this.props.application.programId._id,
       this.props.document.name,
       this.props.whoupdate,
-      this.props.document.student_feedback
+      this.props.document.student_feedback,
+      this.props.document.student_feedback_updatedAt
     );
   };
 

@@ -46,6 +46,7 @@ class NavItem extends Component {
         itemTitle === "Statistics" ||
         itemTitle === "Map" ||
         itemTitle === "Archiv Students" ||
+        itemTitle === "Student Database" ||
         itemTitle === "User List"
       ) {
         return false;
@@ -61,6 +62,7 @@ class NavItem extends Component {
         itemTitle === "Charts" ||
         itemTitle === "Map" ||
         itemTitle === "Archiv Students" ||
+        itemTitle === "Student Database" ||
         itemTitle === "User List"
       ) {
         return false;

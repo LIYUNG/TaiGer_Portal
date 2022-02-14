@@ -53,7 +53,9 @@ class EditorDocsProgress extends React.Component {
     docName: "",
     whoupdate: "",
     comments: "",
+    updatedAt: "",
     student_feedback: "",
+    student_feedback_updatedAt: "",
     isLoaded: false,
     ml_requirements: "",
     file: "",
@@ -543,7 +545,13 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  onCommentsGeneralFile = (studentId, docName, whoupdate, feedback) => {
+  onCommentsGeneralFile = (
+    studentId,
+    docName,
+    whoupdate,
+    feedback,
+    updatedAt
+  ) => {
     this.setState((state) => ({
       ...state,
       studentId,
@@ -551,6 +559,7 @@ class EditorDocsProgress extends React.Component {
       whoupdate,
       filetype: "General",
       comments: feedback,
+      updatedAt,
       CommentsModel: true,
     }));
   };
@@ -559,7 +568,8 @@ class EditorDocsProgress extends React.Component {
     applicationId,
     docName,
     whoupdate,
-    feedback
+    feedback,
+    updatedAt
   ) => {
     this.setState((state) => ({
       ...state,
@@ -569,6 +579,7 @@ class EditorDocsProgress extends React.Component {
       whoupdate,
       filetype: "ProgramSpecific",
       comments: feedback,
+      updatedAt,
       CommentsModel: true,
     }));
   };
@@ -577,7 +588,8 @@ class EditorDocsProgress extends React.Component {
     studentId,
     docName,
     whoupdate,
-    student_feedback
+    student_feedback,
+    student_feedback_updatedAt
   ) => {
     this.setState((state) => ({
       ...state,
@@ -586,6 +598,7 @@ class EditorDocsProgress extends React.Component {
       whoupdate,
       filetype: "General",
       student_feedback,
+      student_feedback_updatedAt,
       StudentFeedbackModel: true,
     }));
   };
@@ -595,7 +608,8 @@ class EditorDocsProgress extends React.Component {
     applicationId,
     docName,
     whoupdate,
-    student_feedback
+    student_feedback,
+    student_feedback_updatedAt
   ) => {
     this.setState((state) => ({
       ...state,
@@ -605,6 +619,7 @@ class EditorDocsProgress extends React.Component {
       whoupdate,
       filetype: "ProgramSpecific",
       student_feedback,
+      student_feedback_updatedAt,
       StudentFeedbackModel: true,
     }));
   };
@@ -1213,6 +1228,7 @@ class EditorDocsProgress extends React.Component {
           show={this.state.CommentsModel}
           onHide={this.closeCommentsWindow}
           defaultComments={this.state.comments}
+          updatedAt={this.state.updatedAt}
           onClick1={this.ConfirmCommentsGeneralFileHandler}
           onClick2={this.ConfirmCommentsProgramSpecificFileHandler}
           onClick3={this.closeCommentsWindow}
@@ -1229,6 +1245,7 @@ class EditorDocsProgress extends React.Component {
           show={this.state.StudentFeedbackModel}
           onHide={this.closeStudentFeebackProgramSpecificFileModelWindow}
           defaultComments={this.state.student_feedback}
+          student_feedback_updatedAt={this.state.student_feedback_updatedAt}
           ConfirmStudentFeedbackProgramSpecificFileHandler={
             this.ConfirmStudentFeedbackProgramSpecificFileHandler
           }

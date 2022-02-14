@@ -18,7 +18,15 @@ class ToggleableUploadFileForm extends Component {
             >
               <option value="">Please Select</option>
               <option value="CV_Template_Filled">CV Template</option>
-              <option value="RL_Template_Filled">RL Template</option>
+              <option value="RL_A_Template_Filled">
+                RL Template (Referee A)
+              </option>
+              <option value="RL_B_Template_Filled">
+                RL Template (Referee B)
+              </option>
+              <option value="RL_C_Template_Filled">
+                RL Template (Referee C)
+              </option>
               <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>
@@ -34,7 +42,9 @@ class ToggleableUploadFileForm extends Component {
             >
               <option value="">Please Select</option>
               <option value="CV">CV</option>
-              <option value="RL">RL</option>
+              <option value="RL_A">RL (Referee A)</option>
+              <option value="RL_B">RL (Referee B)</option>
+              <option value="RL_C">RL (Referee C)</option>
               <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>

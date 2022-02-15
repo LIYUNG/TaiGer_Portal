@@ -1,4 +1,10 @@
-# Design Demo
+# TaiGer Portal
+The project of TaiGer portal will increase the efficieny of files exchange and communication between editor, agent and students. With a great overview, agent and editor can follow up the application process of each student. Furthermore, it open a bunch of opportunities to extend the service to students like transcript-analysis. 
+
+## Technology
+TaiGer portal is implemented by JavaScript frame work ExpressJS and backend to serve API requsts and ReactJS as frontend. MongoDB stores all user data. Special service like Transcript-Analysis is implemented in Python. 
+
+## Design Demo Screenshots
 ## Individual Student Data View
 - Download/Delete/Giving Feedback of Student's uploaded files
 
@@ -36,14 +42,17 @@ npm install
 cd client
 npm start
 ```
-## Run Backend
-### Installation
+## Run Backend Server
+### Installation all packages needed for backend server:
 ```
 cd api
 npm install
 ```
-### Backend setup
+### Backend setup 
 - copy `.env.sample` to `.env.production`, `.env.development`, `.env.test` and fill in the values
+
+Before running backend server, make sure you have install MongoDB as database in your machine. 
+
 ### Run the following commands to run Development code:
 ```
 cd api

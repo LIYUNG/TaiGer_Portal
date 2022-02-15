@@ -2,11 +2,12 @@
 The project of TaiGer portal will increase the efficieny of files exchange and communication between editor, agent and students. With a great overview, agent and editor can follow up the application process of each student. Furthermore, it open a bunch of opportunities to extend the service to students like transcript-analysis. 
 
 ## Technology
-TaiGer portal is implemented by JavaScript frame work ExpressJS and backend to serve API requsts and ReactJS as frontend. MongoDB stores all user data. Special service like Transcript-Analysis is implemented in Python. 
+TaiGer portal is implemented by JavaScript framework ExpressJS as backend to serve API requsts and ReactJS as frontend. MongoDB stores all user data. Special service like Transcript-Analysis is implemented in Python. 
 
 ## Design Demo Screenshots
 ## Individual Student Data View
 - Download/Delete/Giving Feedback of Student's uploaded files
+- For students, they can upload their pdf in this page.
 
 ![](/screenshot/demo1.png)
 ## Agent's Overview of Students' Uploaded Documents And Their Status
@@ -26,11 +27,20 @@ TaiGer portal is implemented by JavaScript frame work ExpressJS and backend to s
 ![](/screenshot/editor.png)
 
 ## Student's Survey
+- Student's background survey and German GPA conversion is implemented here. Stduents do not need to calculate themselves as they can just enter their highest possible grade, passing grade and achieved grade.
 - Collecting Student Survey for further data visualization.
 
 ![](/screenshot/Survey.png)
 
+## Student's Background and Program Conflict Overview
+- The same programs that different want to apply are listed.
+- Students' background as well as their English/German Certificate is presented. Each student should maintain their current status. 
+
+![](/screenshot/background_conflict.png)
+
 # How to use?
+TaiGer Portal is running on Node.js. Make sure you already have Node environment and do not forget the package manager npm.\
+In order to run TaiGer Portal on the localhost, one terminal should run backend server (make sure MongoDB is available as it will connect MongoDB and open the port) while another run frontend server.
 ## Run Frontend
 ### Installation
 ```

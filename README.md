@@ -33,7 +33,7 @@ TaiGer portal is implemented by JavaScript framework ExpressJS as backend to ser
 ![](/screenshot/Survey.png)
 
 ## Student's Background and Program Conflict Overview
-- The same programs that different want to apply are listed.
+- The same programs that different students want to apply are listed.
 - Students' background as well as their English/German Certificate is presented. Each student should maintain their current status. 
 
 ![](/screenshot/background_conflict.png)

@@ -44,8 +44,7 @@ class StudentTodoList extends React.Component {
         (application, i) => (
           <>
             <h6 className="mb-1" key={i}>
-              {application.programId.school}{" "}
-              {application.programId.program}
+              {application.programId.school} {application.programId.program}
             </h6>
           </>
         )
@@ -129,7 +128,9 @@ class StudentTodoList extends React.Component {
     var applying_program;
     var application_deadline;
     var application_ML_template_ToBefilled;
-    var general_RL_template_ToBefilled;
+    var general_RL_A_template_ToBefilled;
+    var general_RL_B_template_ToBefilled;
+    var general_RL_C_template_ToBefilled;
     var general_CV_template_ToBefilled;
     var application_ML_status;
     var general_RL_status;
@@ -341,9 +342,19 @@ class StudentTodoList extends React.Component {
           CV template
         </h6>
       );
-      general_RL_template_ToBefilled = (
+      general_RL_A_template_ToBefilled = (
         <h6 className="mb-1" key={10}>
-          RL template
+          RL template (Referee A)
+        </h6>
+      );
+      general_RL_B_template_ToBefilled = (
+        <h6 className="mb-1" key={10}>
+          RL template (Referee B)
+        </h6>
+      );
+      general_RL_C_template_ToBefilled = (
+        <h6 className="mb-1" key={10}>
+          RL template (Referee C)
         </h6>
       );
       general_CV_Lastupdate = (
@@ -426,19 +437,53 @@ class StudentTodoList extends React.Component {
       ) : (
         <></>
       );
-    general_RL_template_ToBefilled =
+    general_RL_A_template_ToBefilled =
       this.props.student.generaldocs !== undefined &&
       this.props.student.generaldocs.studentinputs !== undefined &&
       this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-        doc.name.includes("RL_Template")
+        doc.name.includes("RL_A_Template")
       ) === -1 &&
       this.props.student.generaldocs !== undefined &&
       this.props.student.generaldocs.editoroutputs !== undefined &&
       this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-        doc.name.includes("RL")
+        doc.name.includes("RL_A")
       ) === -1 ? (
         <h6 className="mb-1" key={10}>
-          RL template
+          RL template (Referee A)
+        </h6>
+      ) : (
+        <></>
+      );
+    general_RL_B_template_ToBefilled =
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.studentinputs !== undefined &&
+      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+        doc.name.includes("RL_B_Template")
+      ) === -1 &&
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.editoroutputs !== undefined &&
+      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+        doc.name.includes("RL_B")
+      ) === -1 ? (
+        <h6 className="mb-1" key={10}>
+          RL template (Referee B)
+        </h6>
+      ) : (
+        <></>
+      );
+    general_RL_C_template_ToBefilled =
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.studentinputs !== undefined &&
+      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+        doc.name.includes("RL_C_Template")
+      ) === -1 &&
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.editoroutputs !== undefined &&
+      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+        doc.name.includes("RL_C")
+      ) === -1 ? (
+        <h6 className="mb-1" key={10}>
+          RL template (Referee C)
         </h6>
       ) : (
         <></>
@@ -449,7 +494,9 @@ class StudentTodoList extends React.Component {
           <tr>
             <td>{missing_profiles}</td>
             <td>
-              {general_RL_template_ToBefilled}
+              {general_RL_A_template_ToBefilled}
+              {general_RL_B_template_ToBefilled}
+              {general_RL_C_template_ToBefilled}
               {general_CV_template_ToBefilled}
               {application_ML_template_ToBefilled}
             </td>

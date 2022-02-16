@@ -48,6 +48,7 @@ const signup = asyncHandler(async (req, res) => {
       "An account with this email address already exists"
     );
   }
+  // TODO: check if email address exists in the world!
 
   const user = await Guest.create({ firstname, lastname, email, password });
 

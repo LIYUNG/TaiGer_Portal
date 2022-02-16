@@ -63,7 +63,7 @@ export default function ResetPasswordRequest() {
                 </div>
                 <p className="mb-0 text-muted">
                   Allready have an account?{" "}
-                  <NavLink to="/auth/signin-1">Login</NavLink>
+                  <NavLink to="/auth/login">Login</NavLink>
                 </p>
               </div>
             </div>
@@ -102,7 +102,7 @@ export default function ResetPasswordRequest() {
                 </button>
                 <p className="mb-0 text-muted">
                   Allready have an account?{" "}
-                  <NavLink to="/auth/signin-1">Login</NavLink>
+                  <NavLink to="/auth/login">Login</NavLink>
                 </p>
               </div>
             </form>

@@ -72,7 +72,7 @@ export default function ResetPassword(props) {
                 <h5 className="mb-3">Password change successfully!</h5>
                 <p className="mb-0 text-muted">
                   Please login with your new password
-                  <NavLink to="/auth/signin-1">Login</NavLink>
+                  <NavLink to="/auth/login">Login</NavLink>
                 </p>
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function ResetPassword(props) {
                 </button>
                 <p className="mb-0 text-muted">
                   Allready have an account?{" "}
-                  <NavLink to="/auth/signin-1">Login</NavLink>
+                  <NavLink to="/auth/login">Login</NavLink>
                 </p>
               </div>
             </form>

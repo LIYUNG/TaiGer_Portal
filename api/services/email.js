@@ -8,12 +8,13 @@ const {
   SMTP_USERNAME,
   SMTP_PASSWORD,
   BASE_URL,
+  ORIGIN,
 } = require("../config");
 
-const ACCOUNT_ACTIVATION_URL = path.join(BASE_URL, "account/activation");
-const RESEND_ACTIVATION_URL = path.join(BASE_URL, "account/resend-activation");
-const PASSWORD_RESET_URL = path.join(BASE_URL, "account/reset-password");
-const FORGOT_PASSWORD_URL = path.join(BASE_URL, "account/forgot-password");
+const ACCOUNT_ACTIVATION_URL = path.join(ORIGIN, "account/activation");
+const RESEND_ACTIVATION_URL = path.join(ORIGIN, "account/resend-activation");
+const PASSWORD_RESET_URL = path.join(ORIGIN, "account/reset-password");
+const FORGOT_PASSWORD_URL = path.join(ORIGIN, "account/forgot-password");
 
 const transporter = createTransport({
   host: SMTP_HOST,
@@ -552,11 +553,7 @@ Please reply to your editor as soon as possible.
   return sendEmail(recipient, subject, message);
 };
 
-
-const sendStudentFeedbackGeneralFileForEditorEmail = async (
-  recipient,
-  msg
-) => {
+const sendStudentFeedbackGeneralFileForEditorEmail = async (recipient, msg) => {
   const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 

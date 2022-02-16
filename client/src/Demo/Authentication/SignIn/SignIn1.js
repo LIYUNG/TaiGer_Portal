@@ -119,11 +119,11 @@ export default function Signin1({ userData, setUserdata }) {
               </button>
               <p className="mb-2 text-muted">
                 Forgot password?{" "}
-                <NavLink to="/auth/reset-password-1">Reset</NavLink>
+                <NavLink to="/account/forgot-password">Reset</NavLink>
               </p>
               <p className="mb-0 text-muted">
                 Don’t have an account?{" "}
-                <NavLink to="/auth/signup-1">Sign up</NavLink>
+                <NavLink to="/auth/sign-up">Sign up</NavLink>
               </p>
             </div>
           </form>

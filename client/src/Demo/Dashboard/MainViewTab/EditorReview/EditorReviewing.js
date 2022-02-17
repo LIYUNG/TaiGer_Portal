@@ -266,6 +266,7 @@ class EditorReviewing extends React.Component {
           </>
         )
       );
+      //TODO: Can add program list ML required info to here!
       application_ML_template_ToBefilled = this.props.student.applications.map(
         (application, i) => (
           <>
@@ -385,26 +386,31 @@ class EditorReviewing extends React.Component {
         ) : (
           <></>
         );
+
       general_CV_status =
         this.props.student.generaldocs.editoroutputs.findIndex(
           (
-            doc //TODO: get the latest CV and isReceivedFeedback flag
+            doc //TODO: get the latest RL and isReceivedFeedback flag
           ) => doc.name.includes("CV")
         ) !== -1 ? (
           this.props.student.generaldocs.editoroutputs.findIndex(
             (
               doc //TODO: get the latest RL and isReceivedFeedback flag
-            ) => doc.name.includes("CV") && doc.isFinalVersion === true
+            ) =>
+              doc.name.includes("CV") &&
+              doc.isReceivedFeedback === false &&
+              doc.isFinalVersion === false
           ) !== -1 ? (
-            <></>
-          ) : (
-            <h6 className="mb-1" key={1}>
-              CV Revised
+            <h6 className="mb-1" key={10}>
+              RL (Referee C) Revised
             </h6>
+          ) : (
+            <></>
           )
         ) : (
           <></>
         );
+
       finished_CV =
         this.props.student.generaldocs.editoroutputs.findIndex(
           (doc) => doc.name.includes("CV") && doc.isFinalVersion
@@ -539,17 +545,36 @@ class EditorReviewing extends React.Component {
         ) !== -1 ? (
           this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
             doc.name.includes("CV")
-          ) === -1 ? (
-            <h6 className="mb-1" key={1}>
+          ) !== -1 ? (
+            this.props.student.generaldocs.editoroutputs.findIndex(
+              (doc) =>
+                doc.name.includes("CV") &&
+                doc.isReceivedFeedback === true &&
+                doc.isFinalVersion === false
+            ) !== -1 ? (
+              this.props.student.generaldocs.editoroutputs.findIndex(
+                (doc) =>
+                  doc.name.includes("CV") &&
+                  doc.isReceivedFeedback === false &&
+                  doc.isFinalVersion === false
+              ) !== -1 ? (
+                <></>
+              ) : (
+                <h6 className="mb-1" key={10}>
+                  CV received feedback
+                </h6>
+              )
+            ) : (
+              <></>
+            )
+          ) : (
+            <h6 className="mb-1" key={10}>
               CV template filled
             </h6>
-          ) : (
-            <></>
           )
         ) : (
           <></>
         );
-
       general_CV_Lastupdate =
         this.props.student.generaldocs.studentinputs.findIndex((doc) =>
           doc.name.includes("CV_Template")
@@ -656,7 +681,7 @@ class EditorReviewing extends React.Component {
               this.props.student.generaldocs.editoroutputs.findIndex(
                 (doc) =>
                   doc.name.includes("RL_B") &&
-                  doc.isReceivedFeedback === true &&
+                  doc.isReceivedFeedback === false &&
                   doc.isFinalVersion === false
               ) !== -1 ? (
                 <></>
@@ -720,7 +745,7 @@ class EditorReviewing extends React.Component {
               this.props.student.generaldocs.editoroutputs.findIndex(
                 (doc) =>
                   doc.name.includes("RL_C") &&
-                  doc.isReceivedFeedback === true &&
+                  doc.isReceivedFeedback === false &&
                   doc.isFinalVersion === false
               ) !== -1 ? (
                 <></>

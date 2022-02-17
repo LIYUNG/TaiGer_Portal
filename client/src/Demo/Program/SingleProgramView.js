@@ -3,7 +3,6 @@ import { Dropdown, Row, Col, Spinner, Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { getProgram } from "../../api";
 class SingleProgramView extends React.Component {
- 
   render() {
     return (
       <>
@@ -217,7 +216,10 @@ class SingleProgramView extends React.Component {
                 <h5>Last Update</h5>
               </Col>
               <Col md={4}>
-                <h5>{this.props.program.updatedAt}</h5>
+                <h5>
+                  {new Date(this.props.program.updatedAt).toLocaleDateString()}{", "}
+                  {new Date(this.props.program.updatedAt).toLocaleTimeString()}
+                </h5>
               </Col>
             </Row>
             <Row>

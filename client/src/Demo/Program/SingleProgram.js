@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { getProgram } from "../../api";
 import SingleProgramView from "./SingleProgramView";
 import SingleProgramEdit from "./SingleProgramEdit";
+import { createProgram, updateProgram } from "../../api";
 class SingleProgram extends React.Component {
   state = {
     isLoaded: false,
@@ -36,6 +37,32 @@ class SingleProgram extends React.Component {
       }
     );
   }
+
+  handleSubmit_Program = (program) => {
+    updateProgram(program).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            program: data,
+            success: success,
+            isEdit: !this.state.isEdit,
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        console.log(": " + error);
+        this.setState({
+          isLoaded: true,
+          error: true,
+        });
+      }
+    );
+  };
+
   handleClick = () => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
@@ -73,13 +100,9 @@ class SingleProgram extends React.Component {
             program={program}
             error={error}
             isLoaded={isLoaded}
+            handleSubmit_Program={this.handleSubmit_Program}
+            handleClick={this.handleClick}
           />
-          <Button size="sm" onClick={() => this.handleClick()}>
-            Update
-          </Button>
-          <Button size="sm" onClick={() => this.handleClick()}>
-            Cancel
-          </Button>
         </>
       );
     } else {

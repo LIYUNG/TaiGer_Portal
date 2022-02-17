@@ -3,7 +3,7 @@ const { asyncHandler } = require("../middlewares/error-handler");
 const { Program } = require("../models/Program");
 
 const getPrograms = asyncHandler(async (req, res) => {
-  const programs = await Program.find()
+  const programs = await Program.find();
   res.send({ success: true, data: programs });
 });
 
@@ -15,15 +15,26 @@ const getProgram = asyncHandler(async (req, res) => {
 });
 
 const createProgram = asyncHandler(async (req, res) => {
-  const program = await Program.create(req.body);
+  const { user } = req;
+  const new_program = req.body;
+  if (user.role !== "Admin" || user.role !== "Agent")
+    throw new ErrorResponse(400, "Not authorized operation");
+  new_program.updatedAt = new Date();
+  new_program.whoupdated = user.firstname + " " + user.lastname;
+  const program = await Program.create(new_program);
   return res.status(201).send({ success: true, data: program });
 });
 
 const updateProgram = asyncHandler(async (req, res) => {
+  const { user } = req;
   const fields = req.body;
 
   // TODO: fix consistency when updating `requiredDocuments`/`optionalDocuments`
-
+  if (user.role !== "Admin" || user.role !== "Agent")
+    throw new ErrorResponse(400, "Not authorized operation");
+  console.log(fields);
+  fields.updatedAt = new Date();
+  fields.whoupdated = user.firstname + " " + user.lastname;
   const program = await Program.findByIdAndUpdate(
     req.params.programId,
     fields,

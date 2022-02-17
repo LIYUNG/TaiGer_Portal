@@ -259,7 +259,7 @@ export const createProgram = (program) =>
   request.post("/api/programs", program);
 
 export const updateProgram = (program) =>
-  request.post(`/api/programs/${program._id}`, program);
+  request.put(`/api/programs/${program._id}`, program);
 
 // Docs APIs
 export const deleteDoc = (id) => request.delete(`/api/docs/${id}`);

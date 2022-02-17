@@ -1,7 +1,7 @@
 import React from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
-import {Link} from 'react-router-dom'
-class ProgramForm extends React.Component {
+import { Dropdown, DropdownButton, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
+class Program extends React.Component {
   state = {
     program: this.props.program || "",
     Content_: this.props.content || "",
@@ -11,7 +11,7 @@ class ProgramForm extends React.Component {
     if (this.props.success) {
       return (
         <tr key={this.props.program._id}>
-          <th>
+          <td>
             {this.props.role === "Student" ? (
               <DropdownButton
                 size="sm"
@@ -43,12 +43,6 @@ class ProgramForm extends React.Component {
                 id={`dropdown-variants-${this.props.program._id}`}
                 key={this.props.program._id}
               >
-                {/* <Dropdown.Item
-                  eventKey="1"
-                  onSelect={() => this.props.onEditClick(this.props.i)}
-                >
-                  Edit
-                </Dropdown.Item> */}
                 <Dropdown.Item
                   eventKey="2"
                   onSelect={() =>
@@ -61,6 +55,7 @@ class ProgramForm extends React.Component {
                 >
                   Assign to student...
                 </Dropdown.Item>
+
                 {/* <Dropdown.Item
                   eventKey="3"
                   onSelect={() =>
@@ -75,7 +70,12 @@ class ProgramForm extends React.Component {
                 </Dropdown.Item> */}
               </DropdownButton>
             )}
-          </th>
+          </td>
+          <td>
+            <Form.Group>
+              <Form.Check custom type="checkbox" id={this.props.program._ids} />
+            </Form.Group>
+          </td>
           {this.props.header.map((y, k) => (
             <td key={k}>
               <Link to={"/programs/" + this.props.program._id}>
@@ -114,4 +114,4 @@ class ProgramForm extends React.Component {
   }
 }
 
-export default ProgramForm;
+export default Program;

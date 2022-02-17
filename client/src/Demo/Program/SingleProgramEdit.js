@@ -1,5 +1,6 @@
 import React from "react";
-import { Form, Row, Col, Spinner, Card } from "react-bootstrap";
+import { Form, Row, Col, Spinner, Card, Button } from "react-bootstrap";
+
 class SingleProgramEdit extends React.Component {
   state = {
     program: this.props.program,
@@ -17,33 +18,9 @@ class SingleProgramEdit extends React.Component {
     }));
   };
   handleSubmit_Program = (e, program) => {
+    console.log(program);
     e.preventDefault();
-    // updateLanguageSkill(language).then(
-    //   (resp) => {
-    //     const { data, success } = resp.data;
-    //     if (success) {
-    //       this.setState((state) => ({
-    //         ...state,
-    //         isLoaded: true,
-    //         academic_background: {
-    //           ...state.academic_background,
-    //           language: data,
-    //         },
-    //         success: success,
-    //         updateconfirmed: true,
-    //       }));
-    //     } else {
-    //       alert(resp.data.message);
-    //     }
-    //   },
-    //   (error) => {
-    //     console.log(": " + error);
-    //     this.setState({
-    //       isLoaded: true,
-    //       error: true,
-    //     });
-    //   }
-    // );
+    this.props.handleSubmit_Program(program);
   };
   render() {
     return (
@@ -578,48 +555,6 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Last Update</h5>
-              </Col>
-              <Col md={4}>
-                <h5>
-                  <Form.Group controlId="updatedAt">
-                    <Form.Control
-                      type="text"
-                      placeholder="2022-05-30"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.updatedAt
-                          ? this.state.program.updatedAt
-                          : ""
-                      }
-                    />
-                  </Form.Group>
-                </h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>Updated by</h5>
-              </Col>
-              <Col md={6}>
-                <h5>
-                  <Form.Group controlId="whoupdated">
-                    <Form.Control
-                      type="text"
-                      placeholder="Tina Wang"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.whoupdated
-                          ? this.state.program.whoupdated
-                          : ""
-                      }
-                    />
-                  </Form.Group>
-                </h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
                 <h5>Group</h5>
               </Col>
               <Col md={6}>
@@ -641,6 +576,15 @@ class SingleProgramEdit extends React.Component {
             </Row>
           </Card.Body>
         </Card>
+        <Button
+          size="sm"
+          onClick={(e) => this.handleSubmit_Program(e, this.state.program)}
+        >
+          Update
+        </Button>
+        <Button size="sm" onClick={() => this.props.handleClick()}>
+          Cancel
+        </Button>
       </>
     );
   }

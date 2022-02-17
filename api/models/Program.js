@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
 const Degree = {
-  bachelor: "bachelor",
-  master: "master",
-  doctoral: "doctoral",
+  bachelor_sc: "B.Sc",
+  bachelor_eng: "B.Eng",
+  bachelor_a: "B.A",
+  master_sc: "M.Sc",
+  master_a: "M.A",
+  mba: "MBA",
+  doctoral: "PhD",
 };
 const Languages = {
   english: "English",
@@ -15,15 +19,15 @@ const programSchema = new mongoose.Schema(
     // TODO: school might want it's own schema
     school: {
       type: String,
-      required: true,
+      // required: true,
     },
     prorgam: {
       type: String,
-      required: true,
+      // required: true,
     },
     degree: {
       type: String,
-      enum: Object.values(Degree),
+      // enum: Object.values(Degree),
     },
     semester: String, // TODO: enum?
     language: {

@@ -250,7 +250,7 @@ class EditorDocsProgress extends React.Component {
                         <h5>
                           {application.programId.school}
                           {" - "}
-                          {application.programId.program}
+                          {application.programId.program_name}
                         </h5>
                       </Col>
                     </Row>

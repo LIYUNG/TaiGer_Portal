@@ -1,5 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import {
+  AiFillCloseCircle,
+  AiOutlineLoading3Quarters,
+  AiFillQuestionCircle,
+  AiOutlineUndo,
+} from "react-icons/ai";
 // import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 // import { IoCheckmarkCircle } from "react-icons/io5";
 // import { Card, Col, Row } from "react-bootstrap";
@@ -32,7 +38,17 @@ class AgentReviewing extends React.Component {
     }
     var to_be_checked_profiles = keys.map((key, i) => {
       if (object_init[key] === "uploaded") {
-        return <h6>{key.replace(/_/g, " ")}</h6>;
+        return (
+          <h6>
+            {" "}
+            <AiOutlineLoading3Quarters
+              size={18}
+              color="lightred"
+              title="No Document uploaded"
+            />{" "}
+            {key.replace(/_/g, " ")}
+          </h6>
+        );
       }
     });
     var missing_profiles = keys.map((key, i) => {
@@ -41,7 +57,19 @@ class AgentReviewing extends React.Component {
         object_init[key] !== "notneeded" &&
         object_init[key] !== "uploaded"
       ) {
-        return <h6>{key.replace(/_/g, " ")}</h6>;
+        return (
+          <>
+            <h6>
+              {" "}
+              <AiFillQuestionCircle
+                size={18}
+                color="lightgray"
+                title="No Document uploaded"
+              />{" "}
+              {key.replace(/_/g, " ")}
+            </h6>
+          </>
+        );
       }
     });
     var no_decided_program = this.props.student.applications.map(
@@ -54,7 +82,7 @@ class AgentReviewing extends React.Component {
             <h6 key={i}>
               {application.programId.school}
               {" - "}
-              {application.programId.program}
+              {application.programId.program_name}
             </h6>
           );
         }

@@ -1,9 +1,9 @@
 import React from "react";
 import { Form, Row, Col, Spinner, Card, Button } from "react-bootstrap";
 
-class SingleProgramEdit extends React.Component {
+class NewProgramEdit extends React.Component {
   state = {
-    program: this.props.program,
+    program: {},
   };
   handleChange = (e) => {
     console.log(e.target.value);
@@ -18,7 +18,7 @@ class SingleProgramEdit extends React.Component {
     }));
   };
   handleSubmit_Program = (e, program) => {
-    // console.log(program);
+    console.log(program);
     e.preventDefault();
     this.props.handleSubmit_Program(program);
   };
@@ -580,7 +580,7 @@ class SingleProgramEdit extends React.Component {
           size="sm"
           onClick={(e) => this.handleSubmit_Program(e, this.state.program)}
         >
-          Update
+          Create
         </Button>
         <Button size="sm" onClick={() => this.props.handleClick()}>
           Cancel
@@ -589,4 +589,4 @@ class SingleProgramEdit extends React.Component {
     );
   }
 }
-export default SingleProgramEdit;
+export default NewProgramEdit;

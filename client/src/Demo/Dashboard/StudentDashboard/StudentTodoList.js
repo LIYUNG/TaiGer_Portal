@@ -44,7 +44,8 @@ class StudentTodoList extends React.Component {
         (application, i) => (
           <>
             <h6 className="mb-1" key={i}>
-              {application.programId.school} {application.programId.program}
+              {application.programId.school}{" "}
+              {application.programId.program_name}
             </h6>
           </>
         )
@@ -163,7 +164,7 @@ class StudentTodoList extends React.Component {
       applying_program = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {application.programId.program}
+            {application.programId.program_name}
           </h6>
         )
       );
@@ -221,7 +222,7 @@ class StudentTodoList extends React.Component {
                   <h6 className="mb-1" key={application._id}>
                     ML - {application.programId.school}
                     {" - "}
-                    {application.programId.program}
+                    {application.programId.program_name}
                   </h6>
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
@@ -262,7 +263,7 @@ class StudentTodoList extends React.Component {
                       <h6 className="mb-1" key={application._id}>
                         ML - {application.programId.school}
                         {" - "}
-                        {application.programId.program}
+                        {application.programId.program_name}
                       </h6>
                     </>
                   ) : (

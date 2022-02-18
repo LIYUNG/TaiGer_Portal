@@ -75,7 +75,7 @@ class EditorDocsProgress extends React.Component {
             {application.decided !== undefined &&
             application.decided === true ? (
               <h6 className="mb-1" key={i}>
-                {application.programId.program}
+                {application.programId.program_name}
               </h6>
             ) : (
               <></>

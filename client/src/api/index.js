@@ -50,9 +50,9 @@ export const updateAgents = (agentsId, id) =>
 export const updateEditors = (editorsId, id) =>
   request.post(`/api/students/${id}/editors`, editorsId);
 
-export const assignProgramToStudent = (studentId, programId) =>
+export const assignProgramToStudent = (studentId, program_ids) =>
   request.post(`/api/students/${studentId}/applications`, {
-    programId: programId,
+    program_id_set: program_ids,
   });
 
 export const removeProgramFromStudent = (programId, studentId) =>

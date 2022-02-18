@@ -69,7 +69,11 @@ class ProgramListSubpage extends React.Component {
           </table>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={(e) => this.props.onSubmit2(e)}>Assign</Button>
+          <Button
+            onClick={(e) => this.props.onSubmitAddToStudentProgramList(e)}
+          >
+            Assign
+          </Button>
           <Button onClick={this.props.setModalHide}>Cancel</Button>
         </Modal.Footer>
       </Modal>

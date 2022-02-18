@@ -354,33 +354,41 @@ const createApplication = asyncHandler(async (req, res) => {
   const {
     user,
     params: { studentId },
-    body: { programId },
+    body: { program_id_set },
   } = req;
   const student =
     user.role == Role.Student ? user : await Student.findById(studentId);
-  const programIds = student.applications.map(({ programId }) => programId);
-  if (programIds.includes(programId))
-    throw new ErrorResponse(400, "Duplicate program");
-  const program = await Program.findById(programId);
-  const { requiredDocuments, optionalDocuments } = program;
-  const now = new Date();
-  const application = student.applications.create({ programId });
-  application.documents = [
-    ...requiredDocuments.map((name) => ({
-      name,
-      required: true,
-      updatedAt: now,
-    })),
-    ...optionalDocuments.map((name) => ({
-      name,
-      required: false,
-      updatedAt: now,
-    })),
-  ];
-  student.applications.push(application);
-  await student.save();
+  try {
+    for (var i = 0; i < program_id_set.length; i++) {
+      const programIds = student.applications.map(({ programId }) => programId);
+      if (programIds.includes(program_id_set[i])) continue;
+      const program = await Program.findById(program_id_set[i]);
+      const { requiredDocuments, optionalDocuments } = program;
+      const now = new Date();
+      const application = student.applications.create({
+        programId: program_id_set[i],
+      });
+      application.documents = [
+        ...requiredDocuments.map((name) => ({
+          name,
+          required: true,
+          updatedAt: now,
+        })),
+        ...optionalDocuments.map((name) => ({
+          name,
+          required: false,
+          updatedAt: now,
+        })),
+      ];
+      student.applications.push(application);
+      await student.save();
+    }
+  } catch (err) {
+    console.log(err);
+    throw new ErrorResponse(400, err);
+  }
 
-  res.status(201).send({ success: true, data: application });
+  res.status(201).send({ success: true });
 });
 
 const deleteApplication = asyncHandler(async (req, res, next) => {

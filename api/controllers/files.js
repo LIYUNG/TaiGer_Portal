@@ -102,7 +102,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
         uploaded_documentname: student_input_doc.name,
         uploaded_updatedAt: student_input_doc.updatedAt,
         university_name: student2.applications[idx].programId.school,
-        program_name: student2.applications[idx].programId.program,
+        program_name: student2.applications[idx].programId.program_name,
       }
     );
     for (let i = 0; i < student.editors.length; i++) {
@@ -120,7 +120,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
           uploaded_documentname: student_input_doc.name,
           uploaded_updatedAt: student_input_doc.updatedAt,
           university_name: student2.applications[idx].programId.school,
-          program_name: student2.applications[idx].programId.program,
+          program_name: student2.applications[idx].programId.program_name,
         }
       );
     }
@@ -139,7 +139,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
           uploaded_documentname: student_input_doc.name,
           uploaded_updatedAt: student_input_doc.updatedAt,
           university_name: student2.applications[idx].programId.school,
-          program_name: student2.applications[idx].programId.program,
+          program_name: student2.applications[idx].programId.program_name,
         }
       );
     }
@@ -175,7 +175,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
         uploaded_documentname: editor_output_doc.name,
         uploaded_updatedAt: editor_output_doc.updatedAt,
         university_name: student2.applications[idx].programId.school,
-        program_name: student2.applications[idx].programId.program,
+        program_name: student2.applications[idx].programId.program_name,
       }
     );
 
@@ -200,7 +200,7 @@ const saveFilePath = asyncHandler(async (req, res) => {
           uploaded_documentname: editor_output_doc.name,
           uploaded_updatedAt: editor_output_doc.updatedAt,
           university_name: student2.applications[idx].programId.school,
-          program_name: student2.applications[idx].programId.program,
+          program_name: student2.applications[idx].programId.program_name,
         }
       );
     }

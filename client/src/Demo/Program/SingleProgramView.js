@@ -21,7 +21,7 @@ class SingleProgramView extends React.Component {
                 <h5>Program</h5>
               </Col>
               <Col md={4}>
-                <h5>{this.props.program.program}</h5>
+                <h5>{this.props.program.program_name}</h5>
               </Col>
             </Row>
             <Row>
@@ -217,7 +217,8 @@ class SingleProgramView extends React.Component {
               </Col>
               <Col md={4}>
                 <h5>
-                  {new Date(this.props.program.updatedAt).toLocaleDateString()}{", "}
+                  {new Date(this.props.program.updatedAt).toLocaleDateString()}
+                  {", "}
                   {new Date(this.props.program.updatedAt).toLocaleTimeString()}
                 </h5>
               </Col>

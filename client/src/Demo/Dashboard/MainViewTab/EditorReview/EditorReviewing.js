@@ -11,6 +11,144 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 class EditorReviewing extends React.Component {
+  generalFileLastUpdate = (file_name, file_name_text) => {
+    return this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+      doc.name.includes(file_name + "_Template")
+    ) !== -1 ? (
+      <h6 className="mb-1" key={1}>
+        {new Date(
+          this.props.student.generaldocs.studentinputs[
+            this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+              doc.name.includes(file_name + "_Template")
+            )
+          ].updatedAt
+        ).toLocaleDateString()}
+        {", "}
+        {new Date(
+          this.props.student.generaldocs.studentinputs[
+            this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+              doc.name.includes(file_name + "_Template")
+            )
+          ].updatedAt
+        ).toLocaleTimeString()}
+      </h6>
+    ) : (
+      <h6 className="mb-1" key={1}>
+        Not existed
+      </h6>
+    );
+  };
+
+  generalFileTemplateToBeFilled_Init = (file_name) => {
+    return (
+      <h6 className="mb-1" key={1}>
+        <AiFillQuestionCircle
+          size={18}
+          color="lightgray"
+          title="No Document uploaded"
+        />{" "}
+        file_name
+      </h6>
+    );
+  };
+  generalFileFilledOrReceivedFeedback = (file_name, file_name_text) => {
+    return this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+      doc.name.includes(file_name + "_Template")
+    ) !== -1 ? (
+      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+        doc.name.includes(file_name)
+      ) !== -1 ? (
+        this.props.student.generaldocs.editoroutputs.findIndex(
+          (doc) =>
+            doc.name.includes(file_name) &&
+            doc.isReceivedFeedback === true &&
+            doc.isFinalVersion === false
+        ) !== -1 ? (
+          this.props.student.generaldocs.editoroutputs.findIndex(
+            (doc) =>
+              doc.name.includes(file_name) &&
+              doc.isReceivedFeedback === false &&
+              doc.isFinalVersion === false
+          ) !== -1 ? (
+            <></>
+          ) : (
+            <h6 className="mb-1" key={10}>
+              {file_name_text} received feedback
+            </h6>
+          )
+        ) : (
+          <></>
+        )
+      ) : (
+        <h6 className="mb-1" key={10}>
+          {file_name_text} template filled
+        </h6>
+      )
+    ) : (
+      <></>
+    );
+  };
+
+  GeneralFileTemplateToBeFilled = (file_name, file_name_text) => {
+    return this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.studentinputs !== undefined &&
+      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+        doc.name.includes(file_name + "_Template")
+      ) === -1 &&
+      this.props.student.generaldocs !== undefined &&
+      this.props.student.generaldocs.editoroutputs !== undefined &&
+      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+        doc.name.includes(file_name)
+      ) === -1 ? (
+      <h6 className="mb-1" key={10}>
+        <AiFillQuestionCircle
+          size={18}
+          color="lightgray"
+          title="No Document uploaded"
+        />{" "}
+        {file_name_text}
+      </h6>
+    ) : (
+      <></>
+    );
+  };
+  GeneralFileStatus = (file_name, file_name_text) => {
+    return this.props.student.generaldocs.editoroutputs.findIndex(
+      (
+        doc //TODO: get the latest RL and isReceivedFeedback flag
+      ) => doc.name.includes(file_name)
+    ) !== -1 ? (
+      this.props.student.generaldocs.editoroutputs.findIndex(
+        (
+          doc //TODO: get the latest RL and isReceivedFeedback flag
+        ) =>
+          doc.name.includes(file_name) &&
+          doc.isReceivedFeedback === false &&
+          doc.isFinalVersion === false
+      ) !== -1 ? (
+        <h6 className="mb-1" key={10}>
+          {file_name_text} Revised
+        </h6>
+      ) : (
+        <></>
+      )
+    ) : (
+      <></>
+    );
+  };
+  finishedGeneralFile = (file_name, file_name_text) => {
+    return this.props.student.generaldocs.editoroutputs.findIndex(
+      (doc) => doc.name.includes(file_name) && doc.isFinalVersion
+    ) !== -1 ? (
+      <h6 className="mb-1" key={10}>
+        <IoCheckmarkCircle size={18} color="limegreen" title="Final Version" />{" "}
+        {file_name_text} -- Final
+      </h6>
+    ) : (
+      // TODO: add new case: replace prepared by "programId.requiredML?"
+      <></>
+    );
+  };
   render() {
     var applying_university_ML;
     var applying_university;
@@ -83,7 +221,7 @@ class EditorReviewing extends React.Component {
             {application.decided !== undefined &&
             application.decided === true ? (
               <h6 className="mb-1" key={application._id}>
-                {application.programId.program}
+                {application.programId.program_name}
               </h6>
             ) : (
               <></>
@@ -172,7 +310,7 @@ class EditorReviewing extends React.Component {
                       <h6 className="mb-1" key={application._id}>
                         ML - {application.programId.school}
                         {" - "}
-                        {application.programId.program}
+                        {application.programId.program_name}
                       </h6>
                     </>
                   )
@@ -215,7 +353,7 @@ class EditorReviewing extends React.Component {
                       <h6 className="mb-1" key={application._id}>
                         ML - {application.programId.school}
                         {" - "}
-                        {application.programId.program}
+                        {application.programId.program_name}
                       </h6>
                     </>
                   ) : (
@@ -253,7 +391,7 @@ class EditorReviewing extends React.Component {
                     />{" "}
                     ML - {application.programId.school}
                     {" - "}
-                    {application.programId.program}
+                    {application.programId.program_name}
                   </h6>
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
@@ -291,7 +429,7 @@ class EditorReviewing extends React.Component {
                     />{" "}
                     ML - {application.programId.school}
                     {" - "}
-                    {application.programId.program}
+                    {application.programId.program_name}
                   </h6>
                 ) : (
                   // TODO: add new case: replace prepared by "programId.requiredML?"
@@ -317,166 +455,15 @@ class EditorReviewing extends React.Component {
       general_RL_C_status = <></>;
     } else {
       //For Editor: (TODO: add another flags: student read, editor read?)
-      general_RL_A_status =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (
-            doc //TODO: get the latest RL and isReceivedFeedback flag
-          ) => doc.name.includes("RL_A")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex(
-            (
-              doc //TODO: get the latest RL and isReceivedFeedback flag
-            ) =>
-              doc.name.includes("RL_A") &&
-              doc.isReceivedFeedback === false &&
-              doc.isFinalVersion === false
-          ) !== -1 ? (
-            <h6 className="mb-1" key={10}>
-              RL (Referee A) Revised
-            </h6>
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        );
-      general_RL_B_status =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (
-            doc //TODO: get the latest RL and isReceivedFeedback flag
-          ) => doc.name.includes("RL_B")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex(
-            (
-              doc //TODO: get the latest RL and isReceivedFeedback flag
-            ) =>
-              doc.name.includes("RL_B") &&
-              doc.isReceivedFeedback === false &&
-              doc.isFinalVersion === false
-          ) !== -1 ? (
-            <h6 className="mb-1" key={10}>
-              RL (Referee B) Revised
-            </h6>
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        );
-      general_RL_C_status =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (
-            doc //TODO: get the latest RL and isReceivedFeedback flag
-          ) => doc.name.includes("RL_C")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex(
-            (
-              doc //TODO: get the latest RL and isReceivedFeedback flag
-            ) =>
-              doc.name.includes("RL_C") &&
-              doc.isReceivedFeedback === false &&
-              doc.isFinalVersion === false
-          ) !== -1 ? (
-            <h6 className="mb-1" key={10}>
-              RL (Referee C) Revised
-            </h6>
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        );
+      general_CV_status = this.GeneralFileStatus("CV", "CV");
+      general_RL_A_status = this.GeneralFileStatus("RL_A", "RL (Referee B)");
+      general_RL_B_status = this.GeneralFileStatus("RL_B", "RL (Referee B)");
+      general_RL_C_status = this.GeneralFileStatus("RL_C", "RL (Referee C)");
 
-      general_CV_status =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (
-            doc //TODO: get the latest RL and isReceivedFeedback flag
-          ) => doc.name.includes("CV")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex(
-            (
-              doc //TODO: get the latest RL and isReceivedFeedback flag
-            ) =>
-              doc.name.includes("CV") &&
-              doc.isReceivedFeedback === false &&
-              doc.isFinalVersion === false
-          ) !== -1 ? (
-            <h6 className="mb-1" key={10}>
-              RL (Referee C) Revised
-            </h6>
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        );
-
-      finished_CV =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (doc) => doc.name.includes("CV") && doc.isFinalVersion
-        ) !== -1 ? (
-          <>
-            <h6 className="mb-1" key={1}>
-              <IoCheckmarkCircle
-                size={18}
-                color="limegreen"
-                title="Final Version"
-              />{" "}
-              CV {" - "}- Final
-            </h6>
-          </>
-        ) : (
-          // TODO: add new case: replace prepared by "programId.requiredML?"
-          <></>
-        );
-      finished_RL_A =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (doc) => doc.name.includes("RL_A") && doc.isFinalVersion
-        ) !== -1 ? (
-          <h6 className="mb-1" key={10}>
-            <IoCheckmarkCircle
-              size={18}
-              color="limegreen"
-              title="Final Version"
-            />
-            RL (Referee A)-- Final
-          </h6>
-        ) : (
-          // TODO: add new case: replace prepared by "programId.requiredML?"
-          <></>
-        );
-      finished_RL_B =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (doc) => doc.name.includes("RL_B") && doc.isFinalVersion
-        ) !== -1 ? (
-          <h6 className="mb-1" key={10}>
-            <IoCheckmarkCircle
-              size={18}
-              color="limegreen"
-              title="Final Version"
-            />
-            RL (Referee B)-- Final
-          </h6>
-        ) : (
-          // TODO: add new case: replace prepared by "programId.requiredML?"
-          <></>
-        );
-      finished_RL_C =
-        this.props.student.generaldocs.editoroutputs.findIndex(
-          (doc) => doc.name.includes("RL_C") && doc.isFinalVersion
-        ) !== -1 ? (
-          <h6 className="mb-1" key={10}>
-            <IoCheckmarkCircle
-              size={18}
-              color="limegreen"
-              title="Final Version"
-            />
-            RL (Referee C)-- Final
-          </h6>
-        ) : (
-          // TODO: add new case: replace prepared by "programId.requiredML?"
-          <></>
-        );
+      finished_CV = this.finishedGeneralFile("CV", "CV");
+      finished_RL_A = this.finishedGeneralFile("RL_A", "RL (Referee A)");
+      finished_RL_B = this.finishedGeneralFile("RL_B", "RL (Referee B)");
+      finished_RL_C = this.finishedGeneralFile("RL_C", "RL (Referee C)");
     }
 
     if (
@@ -488,46 +475,18 @@ class EditorReviewing extends React.Component {
       general_RL_A_template_filled = <></>;
       general_RL_B_template_filled = <></>;
       general_RL_C_template_filled = <></>;
-      general_CV_template_ToBefilled = (
-        <h6 className="mb-1" key={1}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          CV template
-        </h6>
-      );
-      general_RL_A_template_ToBefilled = (
-        <h6 className="mb-1" key={10}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          RL template (Referee A)
-        </h6>
-      );
-      general_RL_B_template_ToBefilled = (
-        <h6 className="mb-1" key={10}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          RL template (Referee B)
-        </h6>
-      );
-      general_RL_C_template_ToBefilled = (
-        <h6 className="mb-1" key={10}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          RL template (Referee C)
-        </h6>
-      );
+      general_CV_template_ToBefilled =
+        this.generalFileTemplateToBeFilled_Init("CV Template");
+
+      general_RL_A_template_ToBefilled =
+        this.generalFileTemplateToBeFilled_Init("RL template (Referee A)");
+
+      general_RL_B_template_ToBefilled =
+        this.generalFileTemplateToBeFilled_Init("RL template (Referee B)");
+
+      general_RL_C_template_ToBefilled =
+        this.generalFileTemplateToBeFilled_Init("RL template (Referee C)");
+
       general_CV_Lastupdate = (
         <h6 className="mb-1" key={1}>
           Not existed
@@ -538,350 +497,59 @@ class EditorReviewing extends React.Component {
           Not existed
         </h6>
       );
+      general_RL_B_Lastupdate = (
+        <h6 className="mb-1" key={10}>
+          Not existed
+        </h6>
+      );
+      general_RL_C_Lastupdate = (
+        <h6 className="mb-1" key={10}>
+          Not existed
+        </h6>
+      );
     } else {
-      general_CV_template_filled =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("CV_Template")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("CV")
-          ) !== -1 ? (
-            this.props.student.generaldocs.editoroutputs.findIndex(
-              (doc) =>
-                doc.name.includes("CV") &&
-                doc.isReceivedFeedback === true &&
-                doc.isFinalVersion === false
-            ) !== -1 ? (
-              this.props.student.generaldocs.editoroutputs.findIndex(
-                (doc) =>
-                  doc.name.includes("CV") &&
-                  doc.isReceivedFeedback === false &&
-                  doc.isFinalVersion === false
-              ) !== -1 ? (
-                <></>
-              ) : (
-                <h6 className="mb-1" key={10}>
-                  CV received feedback
-                </h6>
-              )
-            ) : (
-              <></>
-            )
-          ) : (
-            <h6 className="mb-1" key={10}>
-              CV template filled
-            </h6>
-          )
-        ) : (
-          <></>
-        );
-      general_CV_Lastupdate =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("CV_Template")
-        ) !== -1 ? (
-          <h6 className="mb-1" key={1}>
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("CV_Template")
-                )
-              ].updatedAt
-            ).toLocaleDateString()}
-            {", "}
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("CV_Template")
-                )
-              ].updatedAt
-            ).toLocaleTimeString()}
-          </h6>
-        ) : (
-          <h6 className="mb-1" key={1}>
-            Not existed
-          </h6>
-        );
-      general_RL_A_template_filled =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("RL_A_Template")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL_A")
-          ) !== -1 ? (
-            this.props.student.generaldocs.editoroutputs.findIndex(
-              (doc) =>
-                doc.name.includes("RL_A") &&
-                doc.isReceivedFeedback === true &&
-                doc.isFinalVersion === false
-            ) !== -1 ? (
-              this.props.student.generaldocs.editoroutputs.findIndex(
-                (doc) =>
-                  doc.name.includes("RL_A") &&
-                  doc.isReceivedFeedback === false &&
-                  doc.isFinalVersion === false
-              ) !== -1 ? (
-                <></>
-              ) : (
-                <h6 className="mb-1" key={10}>
-                  RL (Referee A) received feedback
-                </h6>
-              )
-            ) : (
-              <></>
-            )
-          ) : (
-            <h6 className="mb-1" key={10}>
-              RL (Referee A) template filled
-            </h6>
-          )
-        ) : (
-          <></>
-        );
-
-      general_RL_A_Lastupdate =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("RL_A_Template")
-        ) !== -1 ? (
-          <h6 className="mb-1" key={10}>
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("RL_A_Template")
-                )
-              ].updatedAt
-            ).toLocaleDateString()}
-            {", "}
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("RL_A_Template")
-                )
-              ].updatedAt
-            ).toLocaleTimeString()}
-          </h6>
-        ) : (
-          <h6 className="mb-1" key={10}>
-            Not existed
-          </h6>
-        );
-
-      general_RL_B_template_filled =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("RL_B_Template")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL_B")
-          ) !== -1 ? (
-            this.props.student.generaldocs.editoroutputs.findIndex(
-              (doc) =>
-                doc.name.includes("RL_B") &&
-                doc.isReceivedFeedback === true &&
-                doc.isFinalVersion === false
-            ) !== -1 ? (
-              this.props.student.generaldocs.editoroutputs.findIndex(
-                (doc) =>
-                  doc.name.includes("RL_B") &&
-                  doc.isReceivedFeedback === false &&
-                  doc.isFinalVersion === false
-              ) !== -1 ? (
-                <></>
-              ) : (
-                <h6 className="mb-1" key={10}>
-                  RL (Referee B) received feedback
-                </h6>
-              )
-            ) : (
-              <></>
-            )
-          ) : (
-            <h6 className="mb-1" key={10}>
-              RL (Referee B) template filled
-            </h6>
-          )
-        ) : (
-          <></>
-        );
-
-      general_RL_B_Lastupdate =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("RL_B_Template")
-        ) !== -1 ? (
-          <h6 className="mb-1" key={10}>
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("RL_B_Template")
-                )
-              ].updatedAt
-            ).toLocaleDateString()}
-            {", "}
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("RL_B_Template")
-                )
-              ].updatedAt
-            ).toLocaleTimeString()}
-          </h6>
-        ) : (
-          <h6 className="mb-1" key={10}>
-            Not existed
-          </h6>
-        );
-
-      general_RL_C_template_filled =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("RL_C_Template")
-        ) !== -1 ? (
-          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL_C")
-          ) !== -1 ? (
-            this.props.student.generaldocs.editoroutputs.findIndex(
-              (doc) =>
-                doc.name.includes("RL_C") &&
-                doc.isReceivedFeedback === true &&
-                doc.isFinalVersion === false
-            ) !== -1 ? (
-              this.props.student.generaldocs.editoroutputs.findIndex(
-                (doc) =>
-                  doc.name.includes("RL_C") &&
-                  doc.isReceivedFeedback === false &&
-                  doc.isFinalVersion === false
-              ) !== -1 ? (
-                <></>
-              ) : (
-                <h6 className="mb-1" key={10}>
-                  RL (Referee C) received feedback
-                </h6>
-              )
-            ) : (
-              <></>
-            )
-          ) : (
-            <h6 className="mb-1" key={10}>
-              RL (Referee C) template filled
-            </h6>
-          )
-        ) : (
-          <></>
-        );
-
-      general_RL_C_Lastupdate =
-        this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-          doc.name.includes("RL_C_Template")
-        ) !== -1 ? (
-          <h6 className="mb-1" key={10}>
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("RL_C_Template")
-                )
-              ].updatedAt
-            ).toLocaleDateString()}
-            {", "}
-            {new Date(
-              this.props.student.generaldocs.studentinputs[
-                this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-                  doc.name.includes("RL_C_Template")
-                )
-              ].updatedAt
-            ).toLocaleTimeString()}
-          </h6>
-        ) : (
-          <h6 className="mb-1" key={10}>
-            Not existed
-          </h6>
-        );
+      general_CV_template_filled = this.generalFileFilledOrReceivedFeedback(
+        "CV",
+        "CV"
+      );
+      general_CV_Lastupdate = this.generalFileLastUpdate("CV", "CV");
+      general_RL_A_template_filled = this.generalFileFilledOrReceivedFeedback(
+        "RL_A",
+        "RL (Referee A)"
+      );
+      general_RL_A_Lastupdate = this.generalFileLastUpdate("RL_A", "RL_A");
+      general_RL_B_template_filled = this.generalFileFilledOrReceivedFeedback(
+        "RL_B",
+        "RL (Referee B)"
+      );
+      general_RL_B_Lastupdate = this.generalFileLastUpdate("RL_B", "RL_B");
+      general_RL_C_template_filled = this.generalFileFilledOrReceivedFeedback(
+        "RL_C",
+        "RL (Referee C)"
+      );
+      general_RL_C_Lastupdate = this.generalFileLastUpdate("RL_C", "RL_C");
     }
-    general_RL_A_template_ToBefilled =
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.studentinputs !== undefined &&
-      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-        doc.name.includes("RL_A_Template")
-      ) === -1 &&
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.editoroutputs !== undefined &&
-      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-        doc.name.includes("RL_A")
-      ) === -1 ? (
-        <h6 className="mb-1" key={10}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          RL template (Referee A)
-        </h6>
-      ) : (
-        <></>
-      );
-    general_RL_B_template_ToBefilled =
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.studentinputs !== undefined &&
-      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-        doc.name.includes("RL_B_Template")
-      ) === -1 &&
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.editoroutputs !== undefined &&
-      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-        doc.name.includes("RL_B")
-      ) === -1 ? (
-        <h6 className="mb-1" key={10}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          RL template (Referee B)
-        </h6>
-      ) : (
-        <></>
-      );
 
-    general_RL_C_template_ToBefilled =
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.studentinputs !== undefined &&
-      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-        doc.name.includes("RL_C_Template")
-      ) === -1 &&
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.editoroutputs !== undefined &&
-      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-        doc.name.includes("RL_C")
-      ) === -1 ? (
-        <h6 className="mb-1" key={10}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          RL template (Referee C)
-        </h6>
-      ) : (
-        <></>
-      );
-    general_CV_template_ToBefilled =
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.studentinputs !== undefined &&
-      this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-        doc.name.includes("CV_Template")
-      ) === -1 &&
-      this.props.student.generaldocs !== undefined &&
-      this.props.student.generaldocs.editoroutputs !== undefined &&
-      this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-        doc.name.includes("CV")
-      ) === -1 ? (
-        <h6 className="mb-1" key={1}>
-          <AiFillQuestionCircle
-            size={18}
-            color="lightgray"
-            title="No Document uploaded"
-          />{" "}
-          CV - Template
-        </h6>
-      ) : (
-        <></>
-      );
+    general_RL_A_template_ToBefilled = this.GeneralFileTemplateToBeFilled(
+      "RL_A",
+      "RL template (Referee A)"
+    );
+
+    general_RL_B_template_ToBefilled = this.GeneralFileTemplateToBeFilled(
+      "RL_B",
+      "RL template (Referee B)"
+    );
+
+    general_RL_C_template_ToBefilled = this.GeneralFileTemplateToBeFilled(
+      "RL_C",
+      "RL template (Referee C)"
+    );
+
+    general_CV_template_ToBefilled = this.GeneralFileTemplateToBeFilled(
+      "CV",
+      "CV - Template"
+    );
+
     return (
       <>
         <tr>

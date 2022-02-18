@@ -30,7 +30,7 @@ class TabProgramConflict extends React.Component {
               ] = {
                 school: this.props.students[i].applications[j].programId.school,
                 program:
-                  this.props.students[i].applications[j].programId.program,
+                  this.props.students[i].applications[j].programId.program_name,
                 application_deadline:
                   this.props.students[i].applications[j].programId
                     .application_deadline,

@@ -196,7 +196,7 @@ window.ProgramlistHeader = [
   },
   {
     name: "Program",
-    prop: "program",
+    prop: "program_name",
   },
   {
     name: "TOEFL",

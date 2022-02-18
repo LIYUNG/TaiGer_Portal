@@ -38,7 +38,6 @@ class AgentMainView extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        startEditingProgram={this.props.startEditingProgram}
       />
     ));
     const application_progress = this.props.students.map((student, i) => (

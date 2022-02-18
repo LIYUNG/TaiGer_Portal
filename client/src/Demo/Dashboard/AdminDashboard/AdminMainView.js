@@ -61,9 +61,7 @@ class AdminMainView extends React.Component {
         <Row>
           <Col sm={12}>
             <Card title="Program Conflicts">
-              <TabProgramConflict
-                students={this.props.students}
-              />
+              <TabProgramConflict students={this.props.students} />
             </Card>
           </Col>
         </Row>
@@ -96,7 +94,7 @@ class AdminMainView extends React.Component {
                     <th>Close</th>
                   </tr>
                 </thead>
-                {editor_reviewing}
+                <tbody>{editor_reviewing}</tbody>
               </Table>
             </Card>
           </Col>
@@ -153,6 +151,7 @@ class AdminMainView extends React.Component {
                       {window.programstatuslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
+                      <th>Days left</th>
                     </tr>
                   </thead>
                   {application_progress}

@@ -54,7 +54,7 @@ class ApplicationProgress extends React.Component {
         (application, i) => (
           <Link to={"/programs/" + application.programId._id}>
             <h6 className="mb-1" key={i}>
-              {application.programId.program}
+              {application.programId.program_name}
             </h6>
           </Link>
         )
@@ -76,7 +76,7 @@ class ApplicationProgress extends React.Component {
         (application, i) => (
           <h6 className="mb-1" key={i}>
             {application.closed
-              ? ""
+              ? "-"
               : this.props.student.academic_background.university
                   .expected_application_date &&
                 this.getNumberOfDays(

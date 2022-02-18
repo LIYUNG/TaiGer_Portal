@@ -2,10 +2,6 @@ import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 
 class User extends React.Component {
-  state = {
-    program: this.props.program || "",
-    Content_: this.props.content || "",
-  };
 
   render() {
     if (this.props.success) {

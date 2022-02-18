@@ -21,7 +21,7 @@ const programSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    prorgam: {
+    program_name: {
       type: String,
       // required: true,
     },

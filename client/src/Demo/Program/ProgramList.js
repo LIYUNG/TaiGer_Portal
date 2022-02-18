@@ -1,24 +1,84 @@
 import React from "react";
-import { Button, Table, Row, Col, ButtonToolbar } from "react-bootstrap";
+import {
+  Button,
+  Table,
+  Row,
+  Col,
+  ButtonToolbar,
+  DropdownButton,
+  Dropdown,
+  Spinner,
+} from "react-bootstrap";
 import Card from "../../App/components/MainCard";
 
 import ProgramListSubpage from "./ProgramListSubpage";
-import NewProgramWindow from "./NewProgramWindow";
 import ProgramDeleteWarning from "./ProgramDeleteWarning";
 import ProgramAddedMyWatchList from "./ProgramAddedMyWatchList";
 import Program from "./Program";
-
+import NewProgramEdit from "./NewProgramEdit";
+import {
+  getPrograms,
+  createProgram,
+  deleteProgram,
+  assignProgramToStudent,
+} from "../../api";
 class Programlist extends React.Component {
   state = {
+    error: null,
+    role: "",
+    isLoaded: false,
+    data: null,
+    programs: null,
+    success: false,
     modalShow: false,
     uni_name: "",
     program_name: "",
     program_id: "",
-    modalShowNewProgram: false,
     modalShowNAddMyWatchList: false,
     deleteProgramWarning: false,
     StudentId: "",
+    newProgramPage: false,
+    programs_id_set: [],
   };
+
+  componentDidMount() {
+    console.log("ProgramTable.js rendered");
+    getPrograms().then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            programs: data,
+            success,
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => this.setState({ isLoaded: true, error })
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.isLoaded === false) {
+      getPrograms().then(
+        (resp) => {
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              programs: data,
+              success,
+            });
+          } else {
+            alert(resp.data.message);
+          }
+        },
+        (error) => this.setState({ isLoaded: true, error })
+      );
+    }
+  }
 
   handleChange2 = (e) => {
     const { value } = e.target;
@@ -27,32 +87,44 @@ class Programlist extends React.Component {
     }));
   };
 
-  onSubmit2 = (e) => {
+  assignProgram = (assign_data) => {
+    const { student_id, program_ids } = assign_data;
+    assignProgramToStudent(student_id, program_ids).then(
+      (resp) => {
+        const { success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            success,
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {}
+    );
+  };
+
+  onSubmitAddToStudentProgramList = (e) => {
     e.preventDefault();
-    const program_id = this.state.program_id;
     const student_id = this.state.StudentId;
-    this.props.assignProgram({ student_id, program_id });
+    this.assignProgram({ student_id, program_ids: this.state.programs_id_set });
     this.setState({
       modalShow: false,
     });
   };
 
-  onSubmit3 = (e, UserId, program_id, uni_name, program_name) => {
+  onSubmitAddToMyProgramList = (e, UserId) => {
     const student_id = UserId;
-    this.props.assignProgram({ student_id, program_id });
+    this.assignProgram({ student_id, program_ids: this.state.programs_id_set });
     this.setState({
       modalShowNAddMyWatchList: true,
-      uni_name: uni_name,
-      program_name: program_name,
     });
   };
 
-  setModalShow = (uni_name, program_name, programID) => {
+  setModalShow = () => {
     this.setState({
       modalShow: true,
-      uni_name: uni_name,
-      program_name: program_name,
-      program_id: programID,
     });
   };
 
@@ -79,18 +151,7 @@ class Programlist extends React.Component {
 
   NewProgram = () => {
     this.setState({
-      modalShowNewProgram: true,
-    });
-  };
-
-  onSubmitNewProgram = (newProgramData) => {
-    this.props.submitNewProgram(newProgramData);
-    this.setModalHide2();
-  };
-
-  setModalHide2 = () => {
-    this.setState({
-      modalShowNewProgram: false,
+      newProgramPage: true,
     });
   };
 
@@ -104,90 +165,236 @@ class Programlist extends React.Component {
       modalShowNAddMyWatchList: false,
     });
   };
+
+  handleSubmit_Program = (program) => {
+    createProgram(program).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            programs: this.state.programs.concat(data),
+            success: success,
+            newProgramPage: !this.state.newProgramPage,
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        console.log(": " + error);
+        this.setState({
+          isLoaded: true,
+          error: true,
+        });
+      }
+    );
+  };
+
+  deleteProgram = (program_id) => {
+    deleteProgram(program_id).then(
+      (resp) => {},
+      (error) => {
+        console.log("deleteProgram error:" + error);
+      }
+    );
+  };
+
+  RemoveProgramHandler3 = (program_id) => {
+    console.log("click delete");
+    console.log("id = " + program_id);
+    this.setState({
+      programs: this.state.programs.filter(
+        (program) => program._id !== program_id
+      ),
+    });
+    this.deleteProgram(program_id);
+    this.setState({
+      isLoaded: false,
+    });
+  };
+
+  handleClick = () => {
+    this.setState((state) => ({
+      ...state,
+      newProgramPage: !this.state.newProgramPage,
+    }));
+  };
+  selectPrograms = (e) => {
+    // e.preventDefault();
+    var program_id_local = e.target.id;
+    var programs_id_set_local = [...this.state.programs_id_set];
+    if (e.target.checked) {
+      console.log(e.target.checked);
+      console.log(e.target.id);
+      programs_id_set_local.push(program_id_local);
+    } else {
+      var index = programs_id_set_local.indexOf(program_id_local);
+      if (index > -1) {
+        programs_id_set_local.splice(index, 1);
+      }
+    }
+    console.log(programs_id_set_local);
+    this.setState((state) => ({
+      ...state,
+      programs_id_set: programs_id_set_local,
+    }));
+  };
   render() {
+    const { error, isLoaded } = this.state;
+    const style = {
+      position: "fixed",
+      top: "40%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    };
+    if (error) {
+      return (
+        <div>
+          Error: your session is timeout! Please refresh the page and Login
+        </div>
+      );
+    }
+    if (!isLoaded && !this.state.programs) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
+
     const headers = (
       <tr>
         <th> </th>
-        {this.props.header.map((x, i) => (
+        {window.ProgramlistHeader.map((x, i) => (
           <th key={i}>{x.name}</th>
         ))}
       </tr>
     );
 
-    const programs = this.props.data.map((program) => (
+    const programs = this.state.programs.map((program) => (
       <Program
         key={program._id}
+        success={this.state.success}
         role={this.props.role}
         userId={this.props.userId}
         program={program}
-        header={this.props.header}
-        onFormSubmit={this.props.onFormSubmit}
         setModalShowDelete={this.setModalShowDelete}
-        RemoveProgramHandler3={this.props.RemoveProgramHandler3}
-        onSubmit3={this.onSubmit3}
-        setModalShow={this.setModalShow}
-        success={this.props.success}
+        RemoveProgramHandler3={this.RemoveProgramHandler3}
+        selectPrograms={this.selectPrograms}
       />
     ));
-    return (
-      <>
-        <Row>
-          <Col>
-            <ButtonToolbar>
-              {this.props.role === "Student" ? (
-                <></>
-              ) : (
-                <Button
-                  className="btn btn-primary"
-                  type="submit"
-                  size="sm"
-                  onClick={() => this.NewProgram()}
+    if (this.state.newProgramPage) {
+      return (
+        <>
+          <NewProgramEdit
+            handleClick={this.handleClick}
+            handleSubmit_Program={this.handleSubmit_Program}
+          />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Row>
+            <Col md={11}>
+              {this.state.programs_id_set.length !== 0 && (
+                <>
+                  {this.props.role === "Student" ? (
+                    <DropdownButton size="sm" title="Option" variant="primary">
+                      <Dropdown.Item
+                        eventKey="2"
+                        onSelect={(e) =>
+                          this.onSubmitAddToMyProgramList(e, this.props.userId)
+                        }
+                      >
+                        Add to my watch list
+                      </Dropdown.Item>
+                    </DropdownButton>
+                  ) : (
+                    <DropdownButton size="sm" title="Option" variant="primary">
+                      <Dropdown.Item eventKey="2" onSelect={this.setModalShow}>
+                        Assign to student...
+                      </Dropdown.Item>
+                      {/* <Dropdown.Item
+                  eventKey="3"
+                  onSelect={() =>
+                    this.props.setModalShowDelete(
+                      this.props.program.school,
+                      this.props.program.program_name,
+                      this.props.program._id
+                    )
+                  }
                 >
-                  New Program
-                </Button>
+                  Delete
+                </Dropdown.Item> */}
+                    </DropdownButton>
+                  )}
+                </>
               )}
-            </ButtonToolbar>
-          </Col>
-        </Row>
-        <Card title={"Program List"}>
-          <Table responsive>
-            <thead>{headers}</thead>
-            <tbody>{programs}</tbody>
-          </Table>
-          <ProgramListSubpage
-            userId={this.props.userId}
-            show={this.state.modalShow}
-            setModalHide={this.setModalHide}
-            uni_name={this.state.uni_name}
-            program_name={this.state.program_name}
-            handleChange2={this.handleChange2}
-            onSubmit2={this.onSubmit2}
-          />
-          <NewProgramWindow
-            show={this.state.modalShowNewProgram}
-            setModalHide2={this.setModalHide2}
-            submitNewProgram={this.onSubmitNewProgram}
-            header={window.NewProgramHeader}
-          />
-          <ProgramDeleteWarning
-            deleteProgramWarning={this.state.deleteProgramWarning}
-            setModalHideDDelete={this.setModalHideDDelete}
-            program_id={this.state.program_id}
-            program_name={this.state.program_name}
-            uni_name={this.state.uni_name}
-            RemoveProgramHandler3={this.props.RemoveProgramHandler3}
-          />
-          <ProgramAddedMyWatchList
-            setModalHide_AddToMyWatchList={this.setModalHide_AddToMyWatchList}
-            modalShowNAddMyWatchList={this.state.modalShowNAddMyWatchList}
-            program_id={this.state.program_id}
-            program_name={this.state.program_name}
-            uni_name={this.state.uni_name}
-            setModalShow_AddToMyWatchList={this.setModalShow_AddToMyWatchList}
-          />
-        </Card>
-      </>
-    );
+            </Col>
+            <Col md={1}>
+              <ButtonToolbar>
+                {this.props.role === "Student" ? (
+                  <></>
+                ) : (
+                  <Button
+                    className="btn btn-primary"
+                    type="submit"
+                    size="sm"
+                    onClick={() => this.NewProgram()}
+                  >
+                    Add
+                  </Button>
+                )}
+              </ButtonToolbar>
+            </Col>
+          </Row>
+          <Card title={"Program List"}>
+            <Table responsive border hover>
+              <thead>{headers}</thead>
+              <tbody>{programs}</tbody>
+            </Table>
+            <ProgramListSubpage
+              userId={this.props.userId}
+              show={this.state.modalShow}
+              setModalHide={this.setModalHide}
+              uni_name={this.state.uni_name}
+              program_name={this.state.program_name}
+              handleChange2={this.handleChange2}
+              onSubmitAddToStudentProgramList={
+                this.onSubmitAddToStudentProgramList
+              }
+            />
+            <ProgramDeleteWarning
+              deleteProgramWarning={this.state.deleteProgramWarning}
+              setModalHideDDelete={this.setModalHideDDelete}
+              program_id={this.state.program_id}
+              program_name={this.state.program_name}
+              uni_name={this.state.uni_name}
+              RemoveProgramHandler3={this.RemoveProgramHandler3}
+            />
+            <ProgramAddedMyWatchList
+              setModalHide_AddToMyWatchList={this.setModalHide_AddToMyWatchList}
+              modalShowNAddMyWatchList={this.state.modalShowNAddMyWatchList}
+              program_id={this.state.program_id}
+              program_name={this.state.program_name}
+              uni_name={this.state.uni_name}
+              setModalShow_AddToMyWatchList={this.setModalShow_AddToMyWatchList}
+            />
+          </Card>
+          {!isLoaded && (
+            <div style={style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
+        </>
+      );
+    }
   }
 }
 

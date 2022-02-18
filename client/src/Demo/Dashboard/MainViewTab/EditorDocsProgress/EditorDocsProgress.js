@@ -25,13 +25,19 @@ class EditorDocsProgress extends React.Component {
     var applying_program;
     var application_deadline;
     var application_ML_template_filled;
-    var application_RL_template_filled;
+    var application_RL_A_template_filled;
+    var application_RL_B_template_filled;
+    var application_RL_C_template_filled;
     var application_CV_template_filled;
     var application_ML_status;
-    var application_RL_status;
+    var application_RL_A_status;
+    var application_RL_B_status;
+    var application_RL_C_status;
     var application_CV_status;
     var application_ML_Lastupdate;
-    var application_RL_Lastupdate;
+    var application_RL_A_Lastupdate;
+    var application_RL_B_Lastupdate;
+    var application_RL_C_Lastupdate;
     var application_CV_Lastupdate;
     if (
       this.props.student.applications === undefined ||
@@ -186,11 +192,17 @@ class EditorDocsProgress extends React.Component {
         this.props.student.generaldocs.studentinputs.length === 0
       ) {
         application_CV_template_filled = <h6 className="mb-1">No</h6>;
-        application_RL_template_filled = <h6 className="mb-1">No</h6>;
+        application_RL_A_template_filled = <h6 className="mb-1">No</h6>;
+        application_RL_B_template_filled = <h6 className="mb-1">No</h6>;
+        application_RL_C_template_filled = <h6 className="mb-1">No</h6>;
         application_CV_status = <h6 className="mb-1">No</h6>;
-        application_RL_status = <h6 className="mb-1">No</h6>;
+        application_RL_A_status = <h6 className="mb-1">No</h6>;
+        application_RL_B_status = <h6 className="mb-1">No</h6>;
+        application_RL_C_status = <h6 className="mb-1">No</h6>;
         application_CV_Lastupdate = <h6 className="mb-1">Not existed</h6>;
-        application_RL_Lastupdate = <h6 className="mb-1">Not existed</h6>;
+        application_RL_A_Lastupdate = <h6 className="mb-1">Not existed</h6>;
+        application_RL_B_Lastupdate = <h6 className="mb-1">Not existed</h6>;
+        application_RL_C_Lastupdate = <h6 className="mb-1">Not existed</h6>;
       } else {
         application_CV_template_filled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
@@ -233,32 +245,64 @@ class EditorDocsProgress extends React.Component {
           ) : (
             <h6 className="mb-1">Not existed</h6>
           );
-        application_RL_template_filled =
+        application_RL_A_template_filled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_Template")
+            doc.name.includes("RL_A_Template")
+          ) !== -1 ? (
+            <h6 className="mb-1">Yes</h6>
+          ) : (
+            <h6 className="mb-1">No</h6>
+          );
+        application_RL_B_template_filled =
+          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+            doc.name.includes("RL_B_Template")
+          ) !== -1 ? (
+            <h6 className="mb-1">Yes</h6>
+          ) : (
+            <h6 className="mb-1">No</h6>
+          );
+        application_RL_C_template_filled =
+          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+            doc.name.includes("RL_C_Template")
           ) !== -1 ? (
             <h6 className="mb-1">Yes</h6>
           ) : (
             <h6 className="mb-1">No</h6>
           );
         //For Editor:
-        application_RL_status =
+        application_RL_A_status =
           this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL")
+            doc.name.includes("RL_A")
           ) !== -1 ? (
             <h6 className="mb-1">Uploaded</h6>
           ) : (
             <h6 className="mb-1">No</h6>
           );
-        application_RL_Lastupdate =
+        application_RL_B_status =
+          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+            doc.name.includes("RL_B")
+          ) !== -1 ? (
+            <h6 className="mb-1">Uploaded</h6>
+          ) : (
+            <h6 className="mb-1">No</h6>
+          );
+        application_RL_C_status =
+          this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
+            doc.name.includes("RL_C")
+          ) !== -1 ? (
+            <h6 className="mb-1">Uploaded</h6>
+          ) : (
+            <h6 className="mb-1">No</h6>
+          );
+        application_RL_A_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_Template")
+            doc.name.includes("RL_A_Template")
           ) !== -1 ? (
             <h6 className="mb-1">
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_Template")
+                    (doc) => doc.name.includes("RL_A_Template")
                   )
                 ].updatedAt
               ).toLocaleDateString()}
@@ -266,7 +310,55 @@ class EditorDocsProgress extends React.Component {
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_Template")
+                    (doc) => doc.name.includes("RL_A_Template")
+                  )
+                ].updatedAt
+              ).toLocaleTimeString()}
+            </h6>
+          ) : (
+            <h6 className="mb-1">Not existed</h6>
+          );
+        application_RL_B_Lastupdate =
+          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+            doc.name.includes("RL_B_Template")
+          ) !== -1 ? (
+            <h6 className="mb-1">
+              {new Date(
+                this.props.student.generaldocs.studentinputs[
+                  this.props.student.generaldocs.studentinputs.findIndex(
+                    (doc) => doc.name.includes("RL_B_Template")
+                  )
+                ].updatedAt
+              ).toLocaleDateString()}
+              {", "}
+              {new Date(
+                this.props.student.generaldocs.studentinputs[
+                  this.props.student.generaldocs.studentinputs.findIndex(
+                    (doc) => doc.name.includes("RL_B_Template")
+                  )
+                ].updatedAt
+              ).toLocaleTimeString()}
+            </h6>
+          ) : (
+            <h6 className="mb-1">Not existed</h6>
+          );
+        application_RL_C_Lastupdate =
+          this.props.student.generaldocs.studentinputs.findIndex((doc) =>
+            doc.name.includes("RL_C_Template")
+          ) !== -1 ? (
+            <h6 className="mb-1">
+              {new Date(
+                this.props.student.generaldocs.studentinputs[
+                  this.props.student.generaldocs.studentinputs.findIndex(
+                    (doc) => doc.name.includes("RL_C_Template")
+                  )
+                ].updatedAt
+              ).toLocaleDateString()}
+              {", "}
+              {new Date(
+                this.props.student.generaldocs.studentinputs[
+                  this.props.student.generaldocs.studentinputs.findIndex(
+                    (doc) => doc.name.includes("RL_C_Template")
                   )
                 ].updatedAt
               ).toLocaleTimeString()}
@@ -300,37 +392,51 @@ class EditorDocsProgress extends React.Component {
               <></>
             )}
             <td>
-              <h6 className="mb-1">RL</h6>
+              <h6 className="mb-1">RL A</h6>
+              <h6 className="mb-1">RL B</h6>
+              <h6 className="mb-1">RL C</h6>
               <h6 className="mb-1">CV</h6>
               {applying_university_ML}
             </td>
             <td>
               <h6 className="mb-1">Recommentation</h6>
+              <h6 className="mb-1">Recommentation</h6>
+              <h6 className="mb-1">Recommentation</h6>
               <h6 className="mb-1">CV</h6>
               {applying_university}
             </td>
             <td>
-              <h6 className="mb-1">Letters</h6>
+              <h6 className="mb-1">Letter</h6>
+              <h6 className="mb-1">Letter</h6>
+              <h6 className="mb-1">Letter</h6>
               <h6 className="mb-1">CV</h6>
               {applying_program}
             </td>
             <td>
               <h6 className="mb-1">// </h6>
+              <h6 className="mb-1">// </h6>
+              <h6 className="mb-1">// </h6>
               <h6 className="mb-1">//</h6>
               {application_deadline}
             </td>
             <td>
-              {application_RL_template_filled}
+              {application_RL_A_template_filled}
+              {application_RL_B_template_filled}
+              {application_RL_C_template_filled}
               {application_CV_template_filled}
               {application_ML_template_filled}
             </td>
             <td>
-              {application_RL_status}
+              {application_RL_A_status}
+              {application_RL_B_status}
+              {application_RL_C_status}
               {application_CV_status}
               {application_ML_status}
             </td>
             <td>
-              {application_RL_Lastupdate}
+              {application_RL_A_Lastupdate}
+              {application_RL_B_Lastupdate}
+              {application_RL_C_Lastupdate}
               {application_CV_Lastupdate}
               {application_ML_Lastupdate}
             </td>

@@ -135,7 +135,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Application Start</h5>
+                <h5>Application Start (MM-DD)</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -156,7 +156,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Application Deadline</h5>
+                <h5>Application Deadline (MM-DD)</h5>
               </Col>
               <Col md={4}>
                 <h5>

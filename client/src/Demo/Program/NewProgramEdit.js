@@ -17,10 +17,21 @@ class NewProgramEdit extends React.Component {
       program: program_temp,
     }));
   };
+  AddValidProgram = (program) => {
+    if (program.school && program.program_name) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   handleSubmit_Program = (e, program) => {
     console.log(program);
-    e.preventDefault();
-    this.props.handleSubmit_Program(program);
+    if (this.AddValidProgram(program)) {
+      e.preventDefault();
+      this.props.handleSubmit_Program(program);
+    } else {
+      alert("Please fill completely");
+    }
   };
   render() {
     return (
@@ -135,7 +146,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Application Start</h5>
+                <h5>Application Start (MM-DD)</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -156,7 +167,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Application Deadline</h5>
+                <h5>Application Deadline (MM-DD)</h5>
               </Col>
               <Col md={4}>
                 <h5>

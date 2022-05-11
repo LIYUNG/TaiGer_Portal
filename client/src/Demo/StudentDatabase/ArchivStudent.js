@@ -341,7 +341,7 @@ class ArchivStudent extends React.Component {
         return (
           <ButtonSetUploaded
             key={i + 1}
-            role={this.props.role}
+            role={this.props.user.role}
             isLoaded={this.state.isLoaded}
             docName={value2[i]}
             date={object_date_init[k]}
@@ -358,7 +358,7 @@ class ArchivStudent extends React.Component {
         return (
           <ButtonSetAccepted
             key={i + 1}
-            role={this.props.role}
+            role={this.props.user.role}
             isLoaded={this.state.isLoaded}
             docName={value2[i]}
             date={object_date_init[k]}
@@ -376,7 +376,7 @@ class ArchivStudent extends React.Component {
         return (
           <ButtonSetRejected
             key={i + 1}
-            role={this.props.role}
+            role={this.props.user.role}
             isLoaded={this.state.isLoaded}
             docName={value2[i]}
             date={object_date_init[k]}
@@ -395,7 +395,7 @@ class ArchivStudent extends React.Component {
         return (
           <ButtonSetNotNeeded
             key={i + 1}
-            role={this.props.role}
+            role={this.props.user.role}
             isLoaded={this.state.isLoaded}
             docName={value2[i]}
             date={object_date_init[k]}
@@ -413,7 +413,7 @@ class ArchivStudent extends React.Component {
         return (
           <ButtonSetMissing
             key={i + 1}
-            role={this.props.role}
+            role={this.props.user.role}
             isLoaded={this.state.isLoaded}
             docName={value2[i]}
             date={object_date_init[k]}

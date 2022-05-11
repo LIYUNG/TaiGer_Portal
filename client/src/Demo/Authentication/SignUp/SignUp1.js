@@ -28,10 +28,16 @@ export default function SignUp1({ userData }) {
         email,
         password,
       });
-      userData(resp);
+      // userData(resp);
+      const { success } = resp.data;
+      if (success) {
+        console.log("sign up success");
+      } else {
+        alert(resp.data.message);
+      }
     } catch (err) {
       // TODO: handle error
-      console.log(err)
+      console.log(err);
     }
   };
 

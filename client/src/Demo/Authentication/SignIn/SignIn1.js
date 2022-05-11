@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { login } from "../../../api";
 
 // export default function Signin1({ setToken }) {
-export default function Signin1({ userData, setUserdata }) {
+export default function Signin1({ setUserdata }) {
   const [emailaddress, setEmailaddress] = useState();
   const [password, setPassword] = useState();
   const [buttondisable, setButtondisable] = useState(false);
@@ -23,6 +23,7 @@ export default function Signin1({ userData, setUserdata }) {
   const setuserdata2 = (resp) => {
     try {
       if (resp) {
+        // TODO: what if status is other!!?
         if (resp.status === 400) {
           alert("This Email is already registered.");
         } else if (resp.status === 401) {

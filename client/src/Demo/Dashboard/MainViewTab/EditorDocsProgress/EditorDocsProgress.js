@@ -89,16 +89,7 @@ class EditorDocsProgress extends React.Component {
           </>
         )
       );
-      // this.props.student.applications.map((application, i) => (
-      //   <h6 className="mb-1" key={i}>
-      //     {this.props.student.academic_background.university
-      //       .expected_application_date
-      //       ? this.props.student.academic_background.university
-      //           .expected_application_date + "-"
-      //       : ""}
-      //     {application.programId.application_deadline}
-      //   </h6>
-      // ));
+
       application_deadline = this.props.student.applications.map(
         (application, i) => (
           <>

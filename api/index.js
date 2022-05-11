@@ -4,6 +4,7 @@ const {
   PORT,
   HTTPS_KEY,
   HTTPS_CERT,
+  HTTPS_CA,
   HTTPS_PORT,
   MONGODB_URI,
 } = require("./config");
@@ -25,15 +26,19 @@ const launch = async () => {
     console.error("Failed to connect to database");
     process.exit(1);
   }
-  // app.listen(PORT, () => {
-  //   console.log(`Server running on port ${PORT}`);
-  // });
+ // app.listen(PORT, () => {
+ //    console.log(`Server running on port ${PORT}`);
+ //  });
   // TODO: launch both http and https server?
-  https
+  console.log(HTTPS_CA);
+console.log(HTTPS_CERT);
+	console.log(HTTPS_KEY);
+	https
     .createServer(
       {
-        key: fs.readFileSync(HTTPS_KEY),
-        cert: fs.readFileSync(HTTPS_CERT),
+        key: fs.readFileSync(HTTPS_KEY,'utf8'),
+        cert: fs.readFileSync(HTTPS_CERT,'utf8'),
+        ca: fs.readFileSync(HTTPS_CA, 'utf8'),
       },
       app
     )
@@ -41,9 +46,9 @@ const launch = async () => {
       console.log(
         "Example app listening on port " +
           HTTPS_PORT +
-          " ! Go to https://localhost:" +
-          HTTPS_PORT +
-          "/"
+         " ! Go to https://localhost:" +
+         HTTPS_PORT +
+         "/"
       );
     });
 };

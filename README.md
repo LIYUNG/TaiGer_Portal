@@ -47,6 +47,8 @@ In order to run TaiGer Portal on the localhost, one terminal should run backend 
 cd client
 npm install
 ```
+This will install all the dependencies inside the package.json file. [Youtube - Everything you need to know about the package.json](https://www.youtube.com/watch?v=-SaZiADGLHs)
+* package.json is the source of truth of all **information** and **dependencies** of a project
 ### Run the following commands to run
 ```
 cd client
@@ -85,3 +87,14 @@ npm start
 
 # Note:
 - [x] fill missing fields in `api/.env.sample`
+
+## Debug
+if you face
+```
+npm ERR! code 1
+npm ERR! path /home/gignu/GitHub/Movie-Subtitles/node_modules/node-sass
+npm ERR! command failed
+```
+check [how-to-solve-npm-install-error-npm-err-code-1](https://stackoverflow.com/a/70915194/19115748)
+* you need to modify the node-sass version number 
+* Once you've found out which dependency is causing the error try to upgrade that dependency to a newer version and then run npm i --force!

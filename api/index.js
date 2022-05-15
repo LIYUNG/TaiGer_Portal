@@ -30,9 +30,9 @@ const launch = async () => {
  //    console.log(`Server running on port ${PORT}`);
  //  });
   // TODO: launch both http and https server?
-  console.log(HTTPS_CA);
-console.log(HTTPS_CERT);
-	console.log(HTTPS_KEY);
+  console.log(`HTTPS_CA: ${HTTPS_CA}`);
+  console.log(`HTTPS_CERT: ${HTTPS_CERT}`);
+  console.log(`HTTPS_KEY: ${HTTPS_KEY}`);
 	https
     .createServer(
       {

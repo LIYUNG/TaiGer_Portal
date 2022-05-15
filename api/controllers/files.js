@@ -1112,20 +1112,44 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not exist");
 
-  const filePath = path.join(UPLOAD_PATH, document.path);
+  // const filePath = path.join(UPLOAD_PATH, document.path);
   // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-  console.log(filePath);
-  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  // console.log(filePath);
+  // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
+  var fileKey = document.path.split(/\\/)[1];
+  var directory = document.path.split(/\\/)[0];
+  console.log("Trying to download file", fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/, "/");
+
+  var s3 = new aws.S3({
+    accessKeyId: AWS_S3_ACCESS_KEY_ID,
+    secretAccessKey: AWS_S3_ACCESS_KEY,
+  });
+  var options = {
+    Key: fileKey,
+    Bucket: directory,
+  };
+
+  s3.deleteObject(options, (error, data) => {
+    if (error) {
+      console.log(err);
+    } else {
+      console.log("Successfully deleted file from bucket");
+      console.log(data);
+      document.status = DocumentStatus.Missing;
+      document.path = "";
+      document.updatedAt = new Date();
+
+      student.save();
+      res.status(200).send({ success: true, data: document });
+    }
+  });
   // await Student.findByIdAndUpdate(studentId, {
   //   $pull: { profile: document._id },
   // });
-  document.status = DocumentStatus.Missing;
-  document.path = "";
-  document.updatedAt = new Date();
-
-  await student.save();
-  res.status(200).send({ success: true, data: document });
+  
 });
 
 const processTranscript = asyncHandler(async (req, res, next) => {

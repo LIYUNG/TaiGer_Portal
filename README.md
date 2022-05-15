@@ -38,11 +38,28 @@ TaiGer portal is implemented by JavaScript framework ExpressJS as backend to ser
 
 ![](/screenshot/background_conflict.png)
 
+
 # How to use?
 TaiGer Portal is running on Node.js. Make sure you already have Node environment and do not forget the package manager npm.\
 In order to run TaiGer Portal on the localhost, one terminal should run backend server (make sure MongoDB is available as it will connect MongoDB and open the port) while another run frontend server.
+
+## Important Librariby version
+* Nodejs v12
+* MongoDB v4.4
+
 ## Run Frontend
-### Installation
+### Installation (One-time setup)
+
+Check your node -v 
+```
+node -v #make sure the output is 12.22.12
+```
+If your node -v is not v.12.22.12, do the following (The reason is in package.json, the node-sass v4.12.0 only compatible with node version v12.22.12, for compatibility check this [table](https://www.npmjs.com/package/node-sass))
+```
+sudo npm install -g n
+n 12.22.22
+```
+
 ```
 cd client
 npm install
@@ -61,9 +78,35 @@ cd api
 npm install
 ```
 ### Backend setup 
+
+**Enviornment setup**
 - copy `.env.sample` to `.env.production`, `.env.development`, `.env.test` and fill in the values
 
+**Install Mongo DB**
 Before running backend server, make sure you have install MongoDB as database in your machine. 
+
+MacOS: [Youtube-Install a local MongoDB Database on macOS](https://www.youtube.com/watch?v=BwVOIRX3VXk)
+```
+brew tap mongodb/brew
+brew install mongodb-community@4.4 # version 4.4
+```
+```
+brew service start monodb-community@4.4 # start the mongodb as a service
+```
+**Create Key and Pem file**
+
+MacOs: [Youtube - Create Your Own SSL Certificate](https://www.youtube.com/watch?v=sR4_YISXNZE)
+
+The following code will generate the key and 
+```
+cd api/cert
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert.key -out cert.pem -config req.cnf -sha256
+```
+After this step, you should have 
+* cert.key
+* cert.pem 
+
+within the cert folder. Do not worry, in the .gitignore it will not commit your certifications into github :)
 
 ### Run the following commands to run Development code:
 ```
@@ -88,13 +131,19 @@ npm start
 # Note:
 - [x] fill missing fields in `api/.env.sample`
 
-## Debug
-if you face
+
+# Debug
+## MacOS
+* Change your client/package.json
+
+Instead of set, change to **export**  [How to specify a port to run a react-app](https://stackoverflow.com/questions/40714583/how-to-specify-a-port-to-run-a-create-react-app-based-project)
 ```
-npm ERR! code 1
-npm ERR! path /home/gignu/GitHub/Movie-Subtitles/node_modules/node-sass
-npm ERR! command failed
+ "scripts": {
+    "start": "export PORT=3006 && react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
 ```
-check [how-to-solve-npm-install-error-npm-err-code-1](https://stackoverflow.com/a/70915194/19115748)
-* you need to modify the node-sass version number 
-* Once you've found out which dependency is causing the error try to upgrade that dependency to a newer version and then run npm i --force!
+## Backend 
+If you open backend first time at Chrome, you need to go to https://localhost:3000/ and set it as safe manually.

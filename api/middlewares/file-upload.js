@@ -5,7 +5,12 @@ const { Program } = require("../models/Program");
 const { Student, User } = require("../models/User");
 
 const { ErrorResponse } = require("../common/errors");
-const { UPLOAD_PATH } = require("../config");
+const {
+  UPLOAD_PATH,
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_BUCKET_NAME,
+} = require("../config");
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_MIME_TYPES = [
@@ -16,6 +21,84 @@ const ALLOWED_MIME_TYPES = [
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
+
+var aws = require("aws-sdk");
+var multerS3 = require("multer-s3");
+
+var s3 = new aws.S3({
+  accessKeyId: AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: AWS_S3_ACCESS_KEY,
+});
+const storage_s3 = multerS3({
+  s3: s3,
+  bucket: function (req, file, cb) {
+    var { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId and applicationId exist
+    var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
+    directory = directory.replace(/\\/, "/");
+    console.log(directory)
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    var { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId and applicationId exist
+    var directory = studentId;
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: function (req, file, cb) {
+    // cb(null, file.originalname + "-" + Date.now().toString());
+    // cb(null, file.originalname);
+    var { studentId, applicationId } = req.params;
+
+    Student.findOne({ _id: studentId })
+      .populate("applications.programId")
+      .lean()
+      .exec()
+      .then(function (student) {
+        if (student) {
+          var temp_name =
+            student.lastname +
+            "_" +
+            student.firstname +
+            "_" +
+            req.params.category +
+            path.extname(file.originalname);
+          const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
+          // if (fs.existsSync(filePath))
+          //   return cb(new ErrorResponse(400, "Document already existed!22222"));
+
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        cb(null, resp.fileName);
+      });
+  },
+});
+var upload_s3 = multer({
+  storage: storage_s3,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(
+          400,
+          "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
+        )
+      );
+    const fileSize = parseInt(req.headers["content-length"]);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, "File size is limited to 5 MB!"));
+    }
+    cb(null, true);
+  },
+});
 
 /**
  * currently used by route
@@ -191,7 +274,7 @@ const storage2 = multer.diskStorage({
 
 //TODO: upload pdf/docx/image
 const upload2 = multer({
-  storage: storage2,
+  storage: storage_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))

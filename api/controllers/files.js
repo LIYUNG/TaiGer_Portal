@@ -34,6 +34,13 @@ const {
   sendStudentFeedbackProgramSpecificFileForEditorEmail,
   sendSomeReminderEmail,
 } = require("../services/email");
+var aws = require("aws-sdk");
+const {
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_BUCKET_NAME,
+} = require("../config");
+
 const getMyfiles = asyncHandler(async (req, res) => {
   const { user } = req;
   console.log("getMyfiles API");
@@ -362,8 +369,8 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    console.log(req.file.path);
-    document.path = req.file.path.replace(UPLOAD_PATH, "");
+    console.log(req.file);
+    document.path = path.join(req.file.metadata.path, req.file.key);
     console.log(document.path);
     student.profile.push(document);
     await student.save();
@@ -421,8 +428,8 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   document.status = DocumentStatus.Uploaded;
   document.required = true;
   document.updatedAt = new Date();
-  console.log(req.file.path);
-  document.path = req.file.path.replace(UPLOAD_PATH, "");
+  console.log(req.file);
+  document.path = path.join(req.file.metadata.path, req.file.key);
   console.log(document.path);
   await student.save();
 
@@ -480,7 +487,28 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
     params: { studentId, category },
   } = req;
 
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  // // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  // const student =
+  //   user.role == Role.Student ? user : await Student.findById(studentId);
+  // if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  // const document = student.profile.find(({ name }) => name === category);
+  // if (!document) throw new ErrorResponse(400, "Invalid document name");
+  // if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
+
+  // const filePath = path.join(UPLOAD_PATH, document.path);
+  // // const filePath = document.path;
+  // console.log(filePath);
+  // // FIXME: clear the filePath for consistency?
+  // if (!fs.existsSync(filePath))
+  //   throw new ErrorResponse(400, "File does not exist");
+
+  // res.status(200).download(filePath, (err) => {
+  //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  // });
+
+  // AWS S3
+  // download the file via aws s3 here
   const student =
     user.role == Role.Student ? user : await Student.findById(studentId);
   if (!student) throw new ErrorResponse(400, "Invalid student id");
@@ -489,16 +517,25 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
 
-  const filePath = path.join(UPLOAD_PATH, document.path);
-  // const filePath = document.path;
-  console.log(filePath);
-  // FIXME: clear the filePath for consistency?
-  if (!fs.existsSync(filePath))
-    throw new ErrorResponse(400, "File does not exist");
+  // var fileKey = path.join(UPLOAD_PATH, document.path);
+  var fileKey = document.path.split(/\\/)[1];
+  var directory = document.path.split(/\\/)[0];
+  console.log("Trying to download file", fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/, "/");
 
-  res.status(200).download(filePath, (err) => {
-    if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  var s3 = new aws.S3({
+    accessKeyId: AWS_S3_ACCESS_KEY_ID,
+    secretAccessKey: AWS_S3_ACCESS_KEY,
   });
+  var options = {
+    Key: fileKey,
+    Bucket: directory,
+  };
+
+  res.attachment(fileKey);
+  var fileStream = s3.getObject(options).createReadStream();
+  fileStream.pipe(res);
 });
 
 const downloadTemplateFile = asyncHandler(async (req, res, next) => {

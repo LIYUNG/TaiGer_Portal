@@ -605,10 +605,13 @@ const downloadProgramSpecificFile = asyncHandler(async (req, res, next) => {
     Key: fileKey,
     Bucket: directory,
   };
-
-  res.attachment(fileKey);
-  var fileStream = s3.getObject(options).createReadStream();
-  fileStream.pipe(res);
+  try {
+    res.attachment(fileKey);
+    var fileStream = s3.getObject(options).createReadStream();
+    fileStream.pipe(res);
+  } catch (err) {
+    throw new ErrorResponse(500, "Error occurs while downloading");
+  }
 });
 
 const downloadGeneralFile = asyncHandler(async (req, res, next) => {
@@ -974,7 +977,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
       // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
       // console.log(filePath);
       // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      var document_split = document.path.replace(/\\/g, "/");
+      var document_split = student_input.path.replace(/\\/g, "/");
       document_split = document_split.split("/");
       var fileKey = document_split[2];
       var directory = path.join(document_split[0], document_split[1]);
@@ -1181,7 +1184,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         // // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
         // console.log(filePath);
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-        var document_split = document.path.replace(/\\/g, "/");
+        var document_split = student_input.path.replace(/\\/g, "/");
         document_split = document_split.split("/");
         var fileKey = document_split[2];
         var directory = path.join(document_split[0], document_split[1]);
@@ -1250,21 +1253,25 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
     Key: fileKey,
     Bucket: directory,
   };
+  try {
+    s3.deleteObject(options, (error, data) => {
+      if (error) {
+        console.log(err);
+      } else {
+        console.log("Successfully deleted file from bucket");
+        console.log(data);
+        document.status = DocumentStatus.Missing;
+        document.path = "";
+        document.updatedAt = new Date();
 
-  s3.deleteObject(options, (error, data) => {
-    if (error) {
-      console.log(err);
-    } else {
-      console.log("Successfully deleted file from bucket");
-      console.log(data);
-      document.status = DocumentStatus.Missing;
-      document.path = "";
-      document.updatedAt = new Date();
+        student.save();
+        res.status(200).send({ success: true, data: document });
+      }
+    });
+  } catch (err) {
+    if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  }
 
-      student.save();
-      res.status(200).send({ success: true, data: document });
-    }
-  });
   // await Student.findByIdAndUpdate(studentId, {
   //   $pull: { profile: document._id },
   // });

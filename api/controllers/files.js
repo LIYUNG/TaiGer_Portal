@@ -236,15 +236,15 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
   var student_input_doc;
   if (user.role == Role.Student) {
     student_input_doc = student.generaldocs.studentinputs.find(
-      ({ name }) => name === req.file.filename
+      ({ name }) => name === req.file.key
     );
     if (student_input_doc)
       throw new ErrorResponse(400, "Document already existed!");
     student_input_doc = student.generaldocs.studentinputs.create({
-      name: req.file.filename,
+      name: req.file.key,
     });
     student_input_doc.status = DocumentStatus.Uploaded;
-    student_input_doc.path = req.file.path.replace(UPLOAD_PATH, "");
+    document.path = path.join(req.file.metadata.path, req.file.key);
     student_input_doc.required = true;
     student_input_doc.updatedAt = new Date();
     student.generaldocs.studentinputs.push(student_input_doc);
@@ -299,15 +299,15 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
     }
   } else {
     editor_output_doc = student.generaldocs.editoroutputs.find(
-      ({ name }) => name === req.file.filename
+      ({ name }) => name === req.file.key
     );
     if (editor_output_doc)
       throw new ErrorResponse(400, "Document already existed!");
     editor_output_doc = student.generaldocs.editoroutputs.create({
-      name: req.file.filename,
+      name: req.file.key,
     }); //TODO: and rename file name
     editor_output_doc.status = DocumentStatus.Uploaded;
-    editor_output_doc.path = req.file.path.replace(UPLOAD_PATH, "");
+    editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
     editor_output_doc.required = true;
     editor_output_doc.updatedAt = new Date();
     student.generaldocs.editoroutputs.push(editor_output_doc); //TODO: and rename file name
@@ -636,16 +636,36 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
     }
     if (!document) throw new ErrorResponse(400, "Invalid document name");
     if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
-    console.log(document);
-    const filePath = path.join(UPLOAD_PATH, document.path);
-    // const filePath = document.path;
-    // FIXME: clear the filePath for consistency?
-    if (!fs.existsSync(filePath))
-      throw new ErrorResponse(400, "File does not exist");
-    console.log(filePath);
-    res.status(200).download(filePath, (err) => {
-      if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-    });
+    // console.log(document);
+    // const filePath = path.join(UPLOAD_PATH, document.path);
+    // // const filePath = document.path;
+    // // FIXME: clear the filePath for consistency?
+    // if (!fs.existsSync(filePath))
+    //   throw new ErrorResponse(400, "File does not exist");
+    // console.log(filePath);
+    // res.status(200).download(filePath, (err) => {
+    //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+    // });
+    var document_split = document.path.split(/\\/);
+    var str_len = document_split.length;
+    var fileKey = document_split[str_len-1];
+    var directory = path.join(
+      document.path.split(/\\/)[0],
+      document.path.split(/\\/)[1]
+    );
+    console.log("Trying to download file", fileKey);
+    directory = path.join(AWS_S3_BUCKET_NAME, directory);
+    console.log(directory);
+    directory = directory.replace(/\\/g, "/");
+
+    var options = {
+      Key: fileKey,
+      Bucket: directory,
+    };
+
+    res.attachment(fileKey);
+    var fileStream = s3.getObject(options).createReadStream();
+    fileStream.pipe(res);
   } catch (err) {
     console.log(err);
     return new ErrorResponse(400, "Strange error!");
@@ -1122,10 +1142,41 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
       console.log(document);
       if (!document) throw new ErrorResponse(400, "docName not existed");
       if (document.path !== "") {
-        const filePath = path.join(UPLOAD_PATH, document.path);
-        // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-        console.log(filePath);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        // const filePath = path.join(UPLOAD_PATH, document.path);
+        // // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+        // console.log(filePath);
+        // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+        var fileKey = document.path.split(/\\/)[2];
+        var directory = path.join(
+          document.path.split(/\\/)[0],
+          document.path.split(/\\/)[1]
+        );
+        console.log("Trying to download file", fileKey);
+        directory = path.join(AWS_S3_BUCKET_NAME, directory);
+        console.log(directory);
+        directory = directory.replace(/\\/g, "/");
+
+        var options = {
+          Key: fileKey,
+          Bucket: directory,
+        };
+
+        s3.deleteObject(options, (error, data) => {
+          if (error) {
+            console.log(err);
+          } else {
+            console.log("Successfully deleted file from bucket");
+            // console.log(data);
+            // document.status = DocumentStatus.Missing;
+            // document.path = "";
+            // document.updatedAt = new Date();
+
+            // student.save();
+            // res.status(200).send({ success: true, data: document });
+          }
+        });
+
       }
       await Student.findOneAndUpdate(
         { _id: studentId },
@@ -1142,10 +1193,35 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
       console.log(student_input);
       if (!student_input) throw new ErrorResponse(400, "docName not existed");
       if (student_input.path !== "") {
-        const filePath = path.join(UPLOAD_PATH, student_input.path);
-        // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-        console.log(filePath);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        // const filePath = path.join(UPLOAD_PATH, student_input.path);
+        // // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+        // console.log(filePath);
+        // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        var fileKey = document.path.split(/\\/)[1];
+        var directory = document.path.split(/\\/)[0];
+        console.log("Trying to delete file", fileKey);
+        directory = path.join(AWS_S3_BUCKET_NAME, directory);
+        directory = directory.replace(/\\/, "/");
+
+        var options = {
+          Key: fileKey,
+          Bucket: directory,
+        };
+
+        s3.deleteObject(options, (error, data) => {
+          if (error) {
+            console.log(err);
+          } else {
+            console.log("Successfully deleted file from bucket");
+            // console.log(data);
+            // document.status = DocumentStatus.Missing;
+            // document.path = "";
+            // document.updatedAt = new Date();
+
+            // student.save();
+            // res.status(200).send({ success: true, data: document });
+          }
+        });
       }
       await Student.findOneAndUpdate(
         { _id: studentId },
@@ -1186,7 +1262,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
 
   var fileKey = document.path.split(/\\/)[1];
   var directory = document.path.split(/\\/)[0];
-  console.log("Trying to download file", fileKey);
+  console.log("Trying to delete file", fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/, "/");
 

@@ -232,18 +232,6 @@ If you have any question, feel free to contact your agent.
   return sendEmail(recipient, subject, message);
 };
 
-const sendUploadedFilesRemindForAgentEmail = async (recipient) => {
-  const subject = "Uploaded Files";
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
-
-for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.`; // should be for student/agent/editor
-
-  return sendEmail(recipient, subject, message);
-};
-
 const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
   const subject = `New ${msg.uploaded_documentname} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
@@ -344,16 +332,6 @@ your uploaded file ${msg.category} is successfully checked by your agent
 
 and it can be used for the application! `; // should be for student
   }
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendChangedFileStatusForAgentEmail = async (recipient) => {
-  const subject = "File Status changes";
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-a file status has changed.`; // should be for student
 
   return sendEmail(recipient, subject, message);
 };
@@ -607,14 +585,12 @@ module.exports = {
   sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
-  sendUploadedFilesRemindForAgentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedProgramSpecificFilesRemindForEditorEmail,
   sendUploadedProgramSpecificFilesRemindForAgentEmail,
   sendUploadedGeneralFilesRemindForEditorEmail,
   sendUploadedGeneralFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
-  sendChangedFileStatusForAgentEmail,
   sendSomeReminderEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,

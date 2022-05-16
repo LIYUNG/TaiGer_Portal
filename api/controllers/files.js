@@ -16,14 +16,12 @@ const {
   sendEditorOutputProgramSpecificFilesEmailToAgent,
   sendUploadedProfileFilesEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
-  sendUploadedFilesRemindForAgentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedProgramSpecificFilesRemindForEditorEmail,
   sendUploadedProgramSpecificFilesRemindForAgentEmail,
   sendUploadedGeneralFilesRemindForEditorEmail,
   sendUploadedGeneralFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
-  sendChangedFileStatusForAgentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   sendCommentsProgramSpecificFileForEditorEmail,
@@ -524,11 +522,13 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
 
   // var fileKey = path.join(UPLOAD_PATH, document.path);
-  var fileKey = document.path.split(/\\/)[1];
-  var directory = document.path.split(/\\/)[0];
+  var document_split = document.path.replace(/\\/g, "/");
+  document_split = document_split.split("/");
+  var fileKey = document_split[1];
+  var directory = document_split[0];
   console.log("Trying to download file", fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/, "/");
+  directory = directory.replace(/\\/g, "/");
 
   var options = {
     Key: fileKey,
@@ -592,11 +592,10 @@ const downloadProgramSpecificFile = asyncHandler(async (req, res, next) => {
   // res.status(200).download(filePath, (err) => {
   //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
   // });
-  var fileKey = document.path.split(/\\/)[2];
-  var directory = path.join(
-    document.path.split(/\\/)[0],
-    document.path.split(/\\/)[1]
-  );
+  var document_split = document.path.replace(/\\/g, "/");
+  document_split = document_split.split("/");
+  var fileKey = document_split[2];
+  var directory = path.join(document_split[0], document_split[1]);
   console.log("Trying to download file", fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   console.log(directory);
@@ -646,13 +645,13 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
     // res.status(200).download(filePath, (err) => {
     //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
     // });
-    var document_split = document.path.split(/\\/);
+    var document_split = document.path.replace(/\\/g, "/");
+    document_split = document_split.split("/");
     var str_len = document_split.length;
-    var fileKey = document_split[str_len-1];
-    var directory = path.join(
-      document.path.split(/\\/)[0],
-      document.path.split(/\\/)[1]
-    );
+    var fileKey = document_split[str_len - 1];
+    console.log(document_split[0]);
+    console.log(document_split[1]);
+    var directory = path.join(document_split[0], document_split[1]);
     console.log("Trying to download file", fileKey);
     directory = path.join(AWS_S3_BUCKET_NAME, directory);
     console.log(directory);
@@ -934,12 +933,10 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
       // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
       // console.log(filePath);
       // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-      var fileKey = document.path.split(/\\/)[2];
-      var directory = path.join(
-        document.path.split(/\\/)[0],
-        document.path.split(/\\/)[1]
-      );
+      var document_split = document.path.replace(/\\/g, "/");
+      document_split = document_split.split("/");
+      var fileKey = document_split[2];
+      var directory = path.join(document_split[0], document_split[1]);
       console.log("Trying to download file", fileKey);
       directory = path.join(AWS_S3_BUCKET_NAME, directory);
       console.log(directory);
@@ -957,7 +954,6 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
           console.log("Successfully deleted file from bucket");
         }
       });
-
     }
     await Student.findOneAndUpdate(
       { _id: studentId, "applications._id": application._id },
@@ -978,12 +974,10 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
       // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
       // console.log(filePath);
       // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-      var fileKey = student_input.path.split(/\\/)[2];
-      var directory = path.join(
-        student_input.path.split(/\\/)[0],
-        student_input.path.split(/\\/)[1]
-      );
+      var document_split = document.path.replace(/\\/g, "/");
+      document_split = document_split.split("/");
+      var fileKey = document_split[2];
+      var directory = path.join(document_split[0], document_split[1]);
       console.log("Trying to download file", fileKey);
       directory = path.join(AWS_S3_BUCKET_NAME, directory);
       console.log(directory);
@@ -1146,13 +1140,11 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         // // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
         // console.log(filePath);
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-        var fileKey = document.path.split(/\\/)[2];
-        var directory = path.join(
-          document.path.split(/\\/)[0],
-          document.path.split(/\\/)[1]
-        );
-        console.log("Trying to download file", fileKey);
+        var document_split = document.path.replace(/\\/g, "/");
+        document_split = document_split.split("/");
+        var fileKey = document_split[2];
+        var directory = path.join(document_split[0], document_split[1]);
+        console.log("Trying to delete file", fileKey);
         directory = path.join(AWS_S3_BUCKET_NAME, directory);
         console.log(directory);
         directory = directory.replace(/\\/g, "/");
@@ -1169,7 +1161,6 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
             console.log("Successfully deleted file from bucket");
           }
         });
-
       }
       await Student.findOneAndUpdate(
         { _id: studentId },
@@ -1190,11 +1181,13 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         // // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
         // console.log(filePath);
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-        var fileKey = student_input.path.split(/\\/)[1];
-        var directory = student_input.path.split(/\\/)[0];
+        var document_split = document.path.replace(/\\/g, "/");
+        document_split = document_split.split("/");
+        var fileKey = document_split[2];
+        var directory = path.join(document_split[0], document_split[1]);
         console.log("Trying to delete file", fileKey);
         directory = path.join(AWS_S3_BUCKET_NAME, directory);
-        directory = directory.replace(/\\/, "/");
+        directory = directory.replace(/\\/g, "/");
 
         var options = {
           Key: fileKey,
@@ -1245,12 +1238,13 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
   // console.log(filePath);
   // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-  var fileKey = document.path.split(/\\/)[1];
-  var directory = document.path.split(/\\/)[0];
+  var document_split = document.path.replace(/\\/g, "/");
+  document_split = document_split.split("/");
+  var fileKey = document_split[1];
+  var directory = document_split[0];
   console.log("Trying to delete file", fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/, "/");
+  directory = directory.replace(/\\/g, "/");
 
   var options = {
     Key: fileKey,
@@ -1274,7 +1268,6 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   // await Student.findByIdAndUpdate(studentId, {
   //   $pull: { profile: document._id },
   // });
-  
 });
 
 const processTranscript = asyncHandler(async (req, res, next) => {

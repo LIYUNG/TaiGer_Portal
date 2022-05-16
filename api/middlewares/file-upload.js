@@ -30,6 +30,9 @@ var s3 = new aws.S3({
   secretAccessKey: AWS_S3_ACCESS_KEY,
 });
 
+const some_str = () => {
+  return "GeneralDocsEdit";
+}
 // Profile file upload
 const storage_s3 = multerS3({
   s3: s3,
@@ -147,8 +150,6 @@ const storage_program_specific_s3 = multerS3({
       .exec()
       .then(function (student) {
         if (student) {
-          // console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
-          // console.log(path.extname(file.originalname)); //.pdf
           var r = /\d+/; //number pattern
           var version_number_max = 1;
           var application = student.applications.find(
@@ -249,7 +250,6 @@ const upload_program_specific_s3 = multer({
 });
 
 
-
 const storage3 = multer.diskStorage({
   destination: (req, file, cb) => {
     var { studentId } = req.params;
@@ -318,91 +318,6 @@ const upload3 = multer({
 });
 
 // General docs: CV
-
-const storage4 = multer.diskStorage({
-  destination: (req, file, cb) => {
-    var { studentId } = req.params;
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId and applicationId exist
-    const directory = path.join(UPLOAD_PATH, studentId, "GeneralDocsEdit");
-    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
-
-    return cb(null, directory);
-  },
-  filename: (req, file, cb) => {
-    // TODO: check docName exist
-    var { studentId, fileCategory } = req.params;
-    var { user } = req;
-    Student.findOne({ _id: studentId })
-      .then(function (student) {
-        if (student) {
-          var r = /\d+/; //number pattern
-          var version_number_max = 1;
-          if (user.role === "Student") {
-            student.generaldocs.studentinputs.forEach((studentinput) => {
-              if (studentinput.name.includes(fileCategory)) {
-                if (
-                  studentinput.name.match(r) !== null &&
-                  studentinput.name.match(r)[0] > version_number_max
-                ) {
-                  version_number_max = studentinput.name.match(r)[0]; // get the max version number
-                }
-              }
-            });
-          } else {
-            student.generaldocs.editoroutputs.forEach((editoroutput) => {
-              if (editoroutput.name.includes(fileCategory)) {
-                if (
-                  editoroutput.name.match(r) !== null &&
-                  editoroutput.name.match(r)[0] > version_number_max
-                ) {
-                  version_number_max = editoroutput.name.match(r)[0]; // get the max version number
-                }
-              }
-            });
-          }
-          var version_number = version_number_max;
-          var same_file_name = true;
-          while (same_file_name) {
-            var temp_name =
-              student.lastname +
-              "_" +
-              student.firstname +
-              "_" +
-              fileCategory +
-              "_v" +
-              version_number +
-              `${path.extname(file.originalname)}`;
-            temp_name = temp_name.replace(/ /g, "_");
-            const filePath = path.join(
-              UPLOAD_PATH,
-              studentId,
-              "GeneralDocsEdit",
-              temp_name
-            );
-            if (fs.existsSync(filePath)) {
-              version_number++;
-            } else {
-              same_file_name = false;
-            }
-            // return cb(new ErrorResponse(400, "Document already existed!4444"));
-          }
-          return {
-            fileName: temp_name,
-          };
-        }
-      })
-      .then(function (resp) {
-        // console.log(resp.fileName);
-        cb(null, resp.fileName);
-      });
-
-    // cb(null, `${req.params.docName}${path.extname(file.originalname)}`);
-  },
-});
-
-
 const storage_general_s3 = multerS3({
   s3: s3,
   bucket: function (req, file, cb) {
@@ -410,11 +325,7 @@ const storage_general_s3 = multerS3({
       if (!studentId) studentId = String(req.user._id);
 
       // TODO: check studentId and applicationId exist
-      var directory = path.join(
-        AWS_S3_BUCKET_NAME,
-        studentId,
-        "GeneralDocsEdit"
-      );
+      var directory = path.join(AWS_S3_BUCKET_NAME, studentId, some_str());
       directory = directory.replace(/\\/g, "/");
       console.log(directory);
       cb(null, directory);
@@ -424,7 +335,7 @@ const storage_general_s3 = multerS3({
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId and applicationId exist
-    var directory = path.join(studentId, "GeneralDocsEdit");
+    var directory = path.join(studentId, some_str());
     directory = directory.replace(/\\/g, "/"); // g>> replace all!
     cb(null, { fieldName: file.fieldname, path: directory });
   },
@@ -498,7 +409,6 @@ const storage_general_s3 = multerS3({
         }
       })
       .then(function (resp) {
-        // console.log(resp.fileName);
         cb(null, resp.fileName);
       });
   },

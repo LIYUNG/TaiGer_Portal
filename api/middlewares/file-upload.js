@@ -29,6 +29,8 @@ var s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
   secretAccessKey: AWS_S3_ACCESS_KEY,
 });
+
+// Profile file upload
 const storage_s3 = multerS3({
   s3: s3,
   bucket: function (req, file, cb) {
@@ -38,7 +40,7 @@ const storage_s3 = multerS3({
     // TODO: check studentId and applicationId exist
     var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
     directory = directory.replace(/\\/, "/");
-    console.log(directory)
+    console.log(directory);
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
@@ -81,30 +83,131 @@ const storage_s3 = multerS3({
       });
   },
 });
-var upload_s3 = multer({
-  storage: storage_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
-      return cb(
-        new ErrorResponse(
-          400,
-          "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
-        )
-      );
-    const fileSize = parseInt(req.headers["content-length"]);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, "File size is limited to 5 MB!"));
-    }
-    cb(null, true);
-  },
-});
 
 /**
+ * program specific files
  * currently used by route
  *   /account/files/:applicationId/:docName (student upload)
  *   /students/:studentId/applications/:applicationId/:docName (admin/agent upload)
  */
+
+const storage_program_specific_s3 = multerS3({
+  s3: s3,
+  bucket: function (req, file, cb) {
+    var { studentId, applicationId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId and applicationId exist
+    var directory = path.join(AWS_S3_BUCKET_NAME, studentId, applicationId);
+    directory = directory.replace(/\\/g, "/"); // g>> replace all!
+    console.log(directory);
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    var { studentId, applicationId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId and applicationId exist
+    var directory = path.join(studentId, applicationId);
+    directory = directory.replace(/\\/g, "/"); // g>> replace all!
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: function (req, file, cb) {
+    var { studentId, applicationId, fileCategory } = req.params;
+    var { user } = req;
+
+    Student.findOne({ _id: studentId })
+      .populate("applications.programId")
+      .lean()
+      .exec()
+      .then(function (student) {
+        if (student) {
+          // console.log(`${file.originalname}${path.extname(file.originalname)}`); //document.pdf.pdf
+          // console.log(path.extname(file.originalname)); //.pdf
+          var r = /\d+/; //number pattern
+          var version_number_max = 1;
+          var application = student.applications.find(
+            ({ programId }) => programId._id == applicationId
+          );
+          if (user.role === "Student") {
+            application.student_inputs.forEach((student_input) => {
+              if (student_input.name.includes(fileCategory)) {
+                if (
+                  student_input.name.match(r) !== null &&
+                  student_input.name.match(r)[0] > version_number_max
+                ) {
+                  version_number_max = student_input.name.match(r)[0]; // get the max version number
+                }
+              }
+            });
+          } else {
+            application.documents.forEach((editoroutput) => {
+              if (editoroutput.name.includes(fileCategory)) {
+                if (
+                  editoroutput.name.match(r) !== null &&
+                  editoroutput.name.match(r)[0] > version_number_max
+                ) {
+                  version_number_max = editoroutput.name.match(r)[0]; // get the max version number
+                }
+              }
+            });
+          }
+
+          var version_number = version_number_max;
+          var same_file_name = true;
+          while (same_file_name) {
+            // console.log(application.programId);
+            var temp_name =
+              student.lastname +
+              "_" +
+              student.firstname +
+              "_" +
+              application.programId.school +
+              "_" +
+              application.programId.program_name +
+              "_" +
+              fileCategory +
+              "_v" +
+              version_number +
+              `${path.extname(file.originalname)}`;
+            temp_name = temp_name.replace(/ /g, "_");
+            //TODO: check if existed in S3?, or in Database
+            const filePath = path.join(
+              UPLOAD_PATH,
+              studentId,
+              applicationId,
+              temp_name
+            );
+
+            let student_input_doc = application.student_inputs.find(
+              ({ name }) => name === temp_name
+            );
+            let editor_output_doc = application.documents.find(
+              ({ name }) => name === temp_name
+            );
+            if (editor_output_doc || student_input_doc) {
+              version_number++;
+            } else {
+              same_file_name = false;
+            }
+            // if (fs.existsSync(filePath)) {
+            //   version_number++;
+            // } else {
+            //   same_file_name = false;
+            // }
+          }
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        // console.log(resp.fileName);
+        cb(null, resp.fileName);
+      });
+  },
+});
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     var { studentId, applicationId } = req.params;
@@ -205,7 +308,7 @@ const storage = multer.diskStorage({
 
 //TODO: upload pdf/docx/image
 const upload = multer({
-  storage,
+  storage: storage_program_specific_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
@@ -227,53 +330,9 @@ const upload = multer({
  * currently used by route
  *   /account/files/:studentId/:docName (student upload)
  */
-const storage2 = multer.diskStorage({
-  destination: (req, file, cb) => {
-    var { studentId } = req.params;
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId exist
-    const directory = path.join(UPLOAD_PATH, studentId);
-    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
-
-    return cb(null, directory);
-  },
-  filename: (req, file, cb) => {
-    // TODO: check category exist
-    var { studentId, applicationId } = req.params;
-
-    Student.findOne({ _id: studentId })
-      .populate("applications.programId")
-      .lean()
-      .exec()
-      .then(function (student) {
-        if (student) {
-          var temp_name =
-            student.lastname +
-            "_" +
-            student.firstname +
-            "_" +
-            req.params.category +
-            path.extname(file.originalname);
-          const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
-          // if (fs.existsSync(filePath))
-          //   return cb(new ErrorResponse(400, "Document already existed!22222"));
-
-          return {
-            fileName: temp_name,
-          };
-        }
-      })
-      .then(function (resp) {
-        cb(null, resp.fileName);
-      });
-
-    // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
-  },
-});
 
 //TODO: upload pdf/docx/image
-const upload2 = multer({
+const upload2_s3 = multer({
   storage: storage_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
@@ -358,6 +417,8 @@ const upload3 = multer({
     cb(null, true);
   },
 });
+
+// General docs: CV
 
 const storage4 = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -464,7 +525,7 @@ const upload4 = multer({
 
 module.exports = {
   fileUpload: upload.single("file"),
-  ProfilefileUpload: upload2.single("file"),
+  ProfilefileUpload: upload2_s3.single("file"),
   TranscriptExcelUpload: upload3.single("file"),
   EditGeneralDocsUpload: upload4.single("file"),
 };

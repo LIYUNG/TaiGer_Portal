@@ -41,6 +41,11 @@ const {
   AWS_S3_BUCKET_NAME,
 } = require("../config");
 
+var s3 = new aws.S3({
+  accessKeyId: AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: AWS_S3_ACCESS_KEY,
+});
+
 const getMyfiles = asyncHandler(async (req, res) => {
   const { user } = req;
   console.log("getMyfiles API");
@@ -51,11 +56,10 @@ const getMyfiles = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: student });
 });
 
-const saveFilePath = asyncHandler(async (req, res) => {
+const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
   const {
     user,
     params: { studentId, applicationId, fileCategory },
-    file: { filename },
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -81,15 +85,16 @@ const saveFilePath = asyncHandler(async (req, res) => {
   var editor_output_doc;
   if (user.role == Role.Student) {
     student_input_doc = application.student_inputs.find(
-      ({ name }) => name === req.file.filename
+      ({ name }) => name === req.file.key
     );
     if (student_input_doc)
       throw new ErrorResponse(400, "Document already existed!");
     student_input_doc = application.student_inputs.create({
-      name: req.file.filename,
+      name: req.file.key,
     });
     student_input_doc.status = DocumentStatus.Uploaded;
-    student_input_doc.path = req.file.path.replace(UPLOAD_PATH, "");
+    console.log(req.file);
+    student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
     student_input_doc.required = true;
     student_input_doc.updatedAt = new Date();
     student.applications[idx].student_inputs.push(student_input_doc);
@@ -152,15 +157,16 @@ const saveFilePath = asyncHandler(async (req, res) => {
     }
   } else {
     editor_output_doc = application.documents.find(
-      ({ name }) => name === req.file.filename
+      ({ name }) => name === req.file.key
     );
     if (editor_output_doc)
       throw new ErrorResponse(400, "Document already existed!");
     editor_output_doc = application.documents.create({
-      name: req.file.filename,
+      name: req.file.key,
     });
     editor_output_doc.status = DocumentStatus.Uploaded;
-    editor_output_doc.path = req.file.path.replace(UPLOAD_PATH, "");
+    console.log(req.file);
+    editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
     editor_output_doc.required = true;
     editor_output_doc.updatedAt = new Date();
     student.applications[idx].documents.push(editor_output_doc);
@@ -524,10 +530,6 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/, "/");
 
-  var s3 = new aws.S3({
-    accessKeyId: AWS_S3_ACCESS_KEY_ID,
-    secretAccessKey: AWS_S3_ACCESS_KEY,
-  });
   var options = {
     Key: fileKey,
     Bucket: directory,
@@ -555,7 +557,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   });
 });
 
-const downloadFile = asyncHandler(async (req, res, next) => {
+const downloadProgramSpecificFile = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId, applicationId, docName, whoupdate },
@@ -581,15 +583,33 @@ const downloadFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
   console.log(document);
-  const filePath = path.join(UPLOAD_PATH, document.path);
-  // const filePath = document.path;
-  // FIXME: clear the filePath for consistency?
-  if (!fs.existsSync(filePath))
-    throw new ErrorResponse(400, "File does not exist");
+  // const filePath = path.join(UPLOAD_PATH, document.path);
+  // // const filePath = document.path;
+  // // FIXME: clear the filePath for consistency?
+  // if (!fs.existsSync(filePath))
+  //   throw new ErrorResponse(400, "File does not exist");
 
-  res.status(200).download(filePath, (err) => {
-    if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-  });
+  // res.status(200).download(filePath, (err) => {
+  //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  // });
+  var fileKey = document.path.split(/\\/)[2];
+  var directory = path.join(
+    document.path.split(/\\/)[0],
+    document.path.split(/\\/)[1]
+  );
+  console.log("Trying to download file", fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  console.log(directory);
+  directory = directory.replace(/\\/g, "/");
+
+  var options = {
+    Key: fileKey,
+    Bucket: directory,
+  };
+
+  res.attachment(fileKey);
+  var fileStream = s3.getObject(options).createReadStream();
+  fileStream.pipe(res);
 });
 
 const downloadGeneralFile = asyncHandler(async (req, res, next) => {
@@ -890,10 +910,34 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     console.log(document);
     if (!document) throw new ErrorResponse(400, "docName not existed");
     if (document.path !== "") {
-      const filePath = path.join(UPLOAD_PATH, document.path);
+      // const filePath = path.join(UPLOAD_PATH, document.path);
       // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-      console.log(filePath);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      // console.log(filePath);
+      // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+      var fileKey = document.path.split(/\\/)[2];
+      var directory = path.join(
+        document.path.split(/\\/)[0],
+        document.path.split(/\\/)[1]
+      );
+      console.log("Trying to download file", fileKey);
+      directory = path.join(AWS_S3_BUCKET_NAME, directory);
+      console.log(directory);
+      directory = directory.replace(/\\/g, "/");
+
+      var options = {
+        Key: fileKey,
+        Bucket: directory,
+      };
+
+      s3.deleteObject(options, (error, data) => {
+        if (error) {
+          console.log(err);
+        } else {
+          console.log("Successfully deleted file from bucket");
+        }
+      });
+
     }
     await Student.findOneAndUpdate(
       { _id: studentId, "applications._id": application._id },
@@ -910,10 +954,33 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     console.log(student_input);
     if (!student_input) throw new ErrorResponse(400, "docName not existed");
     if (student_input.path !== "") {
-      const filePath = path.join(UPLOAD_PATH, student_input.path);
+      // const filePath = path.join(UPLOAD_PATH, student_input.path);
       // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-      console.log(filePath);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      // console.log(filePath);
+      // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+      var fileKey = student_input.path.split(/\\/)[2];
+      var directory = path.join(
+        student_input.path.split(/\\/)[0],
+        student_input.path.split(/\\/)[1]
+      );
+      console.log("Trying to download file", fileKey);
+      directory = path.join(AWS_S3_BUCKET_NAME, directory);
+      console.log(directory);
+      directory = directory.replace(/\\/g, "/");
+
+      var options = {
+        Key: fileKey,
+        Bucket: directory,
+      };
+
+      s3.deleteObject(options, (error, data) => {
+        if (error) {
+          console.log(err);
+        } else {
+          console.log("Successfully deleted file from bucket");
+        }
+      });
     }
     await Student.findOneAndUpdate(
       { _id: studentId, "applications._id": application._id },
@@ -1123,10 +1190,6 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/, "/");
 
-  var s3 = new aws.S3({
-    accessKeyId: AWS_S3_ACCESS_KEY_ID,
-    secretAccessKey: AWS_S3_ACCESS_KEY,
-  });
   var options = {
     Key: fileKey,
     Bucket: directory,
@@ -1600,12 +1663,12 @@ const StudentGiveFeedbackProgramSpecificFile = asyncHandler(
 
 module.exports = {
   getMyfiles,
-  saveFilePath,
+  saveProgramSpecificFilePath,
   saveGeneralFilePath,
   saveProfileFilePath,
   downloadProfileFile,
   downloadTemplateFile,
-  downloadFile,
+  downloadProgramSpecificFile,
   downloadGeneralFile,
   updateProfileDocumentStatus,
   SetAsDecidedProgram,

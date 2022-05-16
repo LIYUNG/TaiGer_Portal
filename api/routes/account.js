@@ -10,14 +10,14 @@ const {
 
 const {
   getMyfiles,
-  saveFilePath,
+  saveProgramSpecificFilePath,
   updateCommentsGeneralFile,
   StudentGiveFeedbackGeneralFile,
   updateCommentsProgramSpecificFile,
   StudentGiveFeedbackProgramSpecificFile,
   saveGeneralFilePath,
   downloadTemplateFile,
-  downloadFile,
+  downloadProgramSpecificFile,
   downloadGeneralFile,
   SetAsDecidedProgram,
   SetAsCloseProgram,
@@ -78,12 +78,12 @@ router
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     fileUpload,
-    saveFilePath
+    saveProgramSpecificFilePath
   );
 
 router
   .route("/files/programspecific/:studentId/:applicationId/:docName/:whoupdate")
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadFile)
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadProgramSpecificFile)
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor),
     SetAsFinalProgramSpecificFile

@@ -95,7 +95,12 @@ class EditableFile extends Component {
   render() {
     let fileStatus;
     let documenName = this.props.document.path.replaceAll("\\", "/");
-    documenName = documenName.includes("/") ? documenName.split("/")[3] : "x";
+    let documenName_split = documenName.split("/");
+    let str_len = documenName_split.length;
+    console.log(documenName_split);
+    documenName = documenName.includes("/")
+      ? documenName_split[str_len - 1]
+      : "x";
     if (this.props.document.status === "uploaded") {
       fileStatus = (
         <>

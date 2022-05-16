@@ -244,7 +244,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
       name: req.file.key,
     });
     student_input_doc.status = DocumentStatus.Uploaded;
-    document.path = path.join(req.file.metadata.path, req.file.key);
+    student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
     student_input_doc.required = true;
     student_input_doc.updatedAt = new Date();
     student.generaldocs.studentinputs.push(student_input_doc);
@@ -1167,13 +1167,6 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
             console.log(err);
           } else {
             console.log("Successfully deleted file from bucket");
-            // console.log(data);
-            // document.status = DocumentStatus.Missing;
-            // document.path = "";
-            // document.updatedAt = new Date();
-
-            // student.save();
-            // res.status(200).send({ success: true, data: document });
           }
         });
 
@@ -1197,8 +1190,8 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         // // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
         // console.log(filePath);
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-        var fileKey = document.path.split(/\\/)[1];
-        var directory = document.path.split(/\\/)[0];
+        var fileKey = student_input.path.split(/\\/)[1];
+        var directory = student_input.path.split(/\\/)[0];
         console.log("Trying to delete file", fileKey);
         directory = path.join(AWS_S3_BUCKET_NAME, directory);
         directory = directory.replace(/\\/, "/");
@@ -1213,13 +1206,6 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
             console.log(err);
           } else {
             console.log("Successfully deleted file from bucket");
-            // console.log(data);
-            // document.status = DocumentStatus.Missing;
-            // document.path = "";
-            // document.updatedAt = new Date();
-
-            // student.save();
-            // res.status(200).send({ success: true, data: document });
           }
         });
       }

@@ -388,7 +388,7 @@ const createApplication = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, err);
   }
 
-  res.status(201).send({ success: true });
+  res.status(201).send({ success: true, data: program_id_set });
 });
 
 const deleteApplication = asyncHandler(async (req, res, next) => {

@@ -10,14 +10,15 @@ const generateProgram = (
 ) => ({
   _id: new ObjectId().toHexString(),
   school: faker.company.companyName(),
-  name: faker.lorem.word(),
-  url: faker.internet.url(),
+  program_name: faker.lorem.word(),
+  degree: faker.lorem.word(),
+  website: faker.internet.url(),
   degree,
   semester: "summer",
-  applicationAvailable: faker.date.recent(),
-  applicationDeadline: faker.date.future(),
-  requiredDocuments,
-  optionalDocuments,
+  application_start: faker.date.recent(),
+  application_deadline: faker.date.future(),
+  // requiredDocuments,
+  // optionalDocuments,
 });
 
 module.exports = {

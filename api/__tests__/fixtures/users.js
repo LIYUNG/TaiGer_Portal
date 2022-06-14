@@ -3,7 +3,8 @@ const faker = require("faker");
 
 const generateUser = (role) => ({
   _id: new ObjectId().toHexString(),
-  name: faker.name.findName(),
+  firstname: faker.name.findName(),
+  lastname: faker.name.findName(),
   email: faker.unique(faker.internet.email).toLowerCase(),
   password: faker.internet.password(10, false, /[0-9A-Z]/),
   role,

@@ -30,9 +30,9 @@ const getAllStudents = asyncHandler(async (req, res) => {
     user,
     // params: { userId },
   } = req;
-  const students = await Student.find()
-    .populate("applications.programId agents editors")
-    .lean();
+  const students = await Student.find();
+    // .populate("applications.programId agents editors");
+    // .lean();
   res.status(200).send({ success: true, data: students });
 });
 
@@ -90,8 +90,8 @@ const getArchivStudent = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, "Unauthorized access.");
   }
   const students = await Student.find({ _id: studentId, archiv: true })
-    .populate("applications.programId agents editors")
-    .lean();
+    .populate("applications.programId agents editors");
+    // .lean();
   res.status(200).send({ success: true, data: students[0] });
 });
 

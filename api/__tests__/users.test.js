@@ -109,16 +109,46 @@ describe("GET /api/editors", () => {
   });
 });
 
-describe("GET /api/students", () => {
+// //TODO: token-specific API!!!
+// describe("GET /api/students", () => {
+//   it("should return role-specific students", async () => {
+//     const resp = await request(app).get("/api/students");
+//     const { success, data } = resp.body;
+
+//     const studentIds = students.map(({ _id }) => _id).sort();
+//     // const receivedIds = data.map(({ _id }) => _id).sort();
+
+//     expect(resp.status).toBe(200);
+//     expect(success).toBe(true);
+//     // expect(receivedIds).toEqual(studentIds);
+//   });
+// });
+
+describe("GET /api/students/all", () => {
   it("should return all students", async () => {
-    const resp = await request(app).get("/api/students");
+    const resp = await request(app).get("/api/students/all");
     const { success, data } = resp.body;
 
     const studentIds = students.map(({ _id }) => _id).sort();
-    // const receivedIds = data.map(({ _id }) => _id).sort();
+    const receivedIds = data.map(({ _id }) => _id).sort();
 
     expect(resp.status).toBe(200);
     expect(success).toBe(true);
-    // expect(receivedIds).toEqual(studentIds);
+    expect(receivedIds).toEqual(studentIds);
   });
 });
+
+// TODO: token-specific API!!!
+// describe("GET /api/students/archiv", () => {
+//   it("should return all archiv students", async () => {
+//     const resp = await request(app).get("/api/students/archiv");
+//     const { success, data } = resp.body;
+
+//     const studentIds = students.map(({ _id }) => _id).sort();
+//     const receivedIds = data.map(({ _id }) => _id).sort();
+
+//     expect(resp.status).toBe(200);
+//     expect(success).toBe(true);
+//     expect(receivedIds).toEqual(studentIds);
+//   });
+// });

@@ -51,21 +51,33 @@ afterEach(() => {
 });
 
 describe("POST /api/students/:id/agents", () => {
-  it("should assign an agent to student", async () => {
+  it("should assign agent(s) to student", async () => {
     const { _id: studentId } = student;
     const { _id: agentId } = agents[0];
 
+    const agents_obj = {};
+    agents.forEach((agent) => {
+      agents_obj[agent._id] = true;
+    });
+
     const resp = await request(app)
       .post(`/api/students/${studentId}/agents`)
-      .send({ id: agentId });
+      .send(agents_obj);
 
     expect(resp.status).toBe(200);
 
-    const updatedStudent = await Student.findById(studentId).lean();
-    expect(updatedStudent.agents.map(String)).toEqual([agentId]);
+    var agents_arr = [];
+    agents.forEach((agent) => {
+      if ((agents_obj[agent._id] = true)) {
+        agents_arr.push(agent._id);
+      }
+    });
 
-    const updatedAgent = await Agent.findById(agentId).lean();
-    expect(updatedAgent.students.map(String)).toEqual([studentId]);
+    const updatedStudent = await Student.findById(studentId).lean();
+    expect(updatedStudent.agents.map(String)).toEqual(agents_arr);
+
+    // const updatedAgent = await Agent.findById(agentId).lean();
+    // expect(updatedAgent.students.map(String)).toEqual([studentId]);
   });
 });
 
@@ -278,84 +290,84 @@ describe("POST /api/students/:id/agents", () => {
 //       .attach("file", Buffer.from("Lorem ipsum"), filename);
 //   });
 
-  // describe("GET /api/students/:studentId/applications/:applicationId/:docName", () => {
-  //   it("should download the previous uploaded file", async () => {
-  //     const resp = await request(app)
-  //       .get(
-  //         `/api/students/${studentId}/applications/${applicationId}/${docName}`
-  //       )
-  //       .buffer();
+// describe("GET /api/students/:studentId/applications/:applicationId/:docName", () => {
+//   it("should download the previous uploaded file", async () => {
+//     const resp = await request(app)
+//       .get(
+//         `/api/students/${studentId}/applications/${applicationId}/${docName}`
+//       )
+//       .buffer();
 
-  //     expect(resp.status).toBe(200);
-  //     expect(resp.headers["content-disposition"]).toEqual(
-  //       `attachment; filename="${docName}${path.extname(filename)}"`
-  //     );
-  //   });
+//     expect(resp.status).toBe(200);
+//     expect(resp.headers["content-disposition"]).toEqual(
+//       `attachment; filename="${docName}${path.extname(filename)}"`
+//     );
+//   });
 
-  //   it("should return 400 with invalid document name", async () => {
-  //     const invalidDoc = "wrong-doc";
-  //     const resp = await request(app)
-  //       .get(
-  //         `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
-  //       )
-  //       .buffer();
+//   it("should return 400 with invalid document name", async () => {
+//     const invalidDoc = "wrong-doc";
+//     const resp = await request(app)
+//       .get(
+//         `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
+//       )
+//       .buffer();
 
-  //     expect(resp.status).toBe(400);
-  //   });
+//     expect(resp.status).toBe(400);
+//   });
 
-  //   it("should return 400 when file not uploaded yet", async () => {
-  //     const emptyDoc = requiredDocuments[1];
-  //     const resp = await request(app)
-  //       .get(
-  //         `/api/students/${studentId}/applications/${applicationId}/${emptyDoc}`
-  //       )
-  //       .buffer();
+//   it("should return 400 when file not uploaded yet", async () => {
+//     const emptyDoc = requiredDocuments[1];
+//     const resp = await request(app)
+//       .get(
+//         `/api/students/${studentId}/applications/${applicationId}/${emptyDoc}`
+//       )
+//       .buffer();
 
-  //     expect(resp.status).toBe(400);
-  //   });
-  // });
+//     expect(resp.status).toBe(400);
+//   });
+// });
 
-  // describe("DELETE /api/students/:studentId/applications/:applicationId/:docName", () => {
-  //   it("should delete previous uploaded file", async () => {
-  //     const resp = await request(app).delete(
-  //       `/api/students/${studentId}/applications/${applicationId}/${docName}`
-  //     );
+// describe("DELETE /api/students/:studentId/applications/:applicationId/:docName", () => {
+//   it("should delete previous uploaded file", async () => {
+//     const resp = await request(app).delete(
+//       `/api/students/${studentId}/applications/${applicationId}/${docName}`
+//     );
 
-  //     const { success, data } = resp.body;
-  //     expect(resp.status).toBe(200);
-  //     expect(success).toBe(true);
-  //     expect(data).toMatchObject({
-  //       status: DocumentStatus.Missing,
-  //       path: "",
-  //     });
+//     const { success, data } = resp.body;
+//     expect(resp.status).toBe(200);
+//     expect(success).toBe(true);
+//     expect(data).toMatchObject({
+//       status: DocumentStatus.Missing,
+//       path: "",
+//     });
 
-  //     const updatedStudent = await Student.findById(studentId);
-  //     const { documents } = updatedStudent.applications.id(applicationId);
-  //     const document = documents.find(({ name }) => name === docName);
-  //     expect(document).toMatchObject({
-  //       status: DocumentStatus.Missing,
-  //       path: "",
-  //     });
-  //   });
-  // });
+//     const updatedStudent = await Student.findById(studentId);
+//     const { documents } = updatedStudent.applications.id(applicationId);
+//     const document = documents.find(({ name }) => name === docName);
+//     expect(document).toMatchObject({
+//       status: DocumentStatus.Missing,
+//       path: "",
+//     });
+//   });
+// });
 
-  // describe("POST /api/students/:studentId/applications/:applicationId/:docName/status", () => {
-  //   it("should update uploaded file status", async () => {
-  //     const status = DocumentStatus.Rejected;
-  //     const resp = await request(app)
-  //       .post(
-  //         `/api/students/${studentId}/applications/${applicationId}/${docName}/status`
-  //       )
-  //       .send({ status });
+// describe("POST /api/students/:studentId/applications/:applicationId/:docName/status", () => {
+//   it("should update uploaded file status", async () => {
+//     const status = DocumentStatus.Rejected;
+//     const resp = await request(app)
+//       .post(
+//         `/api/students/${studentId}/applications/${applicationId}/${docName}/status`
+//       )
+//       .send({ status });
 
-  //     const { success, data } = resp.body;
-  //     expect(resp.status).toBe(200);
-  //     expect(success).toBe(true);
-  //     expect(data).toMatchObject({
-  //       status,
-  //       path: expect.any(String),
-  //       name: docName,
-  //     });
-  //   });
-  // });
+//     const { success, data } = resp.body;
+//     expect(resp.status).toBe(200);
+//     expect(success).toBe(true);
+//     expect(data).toMatchObject({
+//       status,
+//       path: expect.any(String),
+//       name: docName,
+//     });
+//   });
+// });
 // });

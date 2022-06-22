@@ -356,30 +356,29 @@ const createApplication = asyncHandler(async (req, res) => {
     params: { studentId },
     body: { program_id_set },
   } = req;
-  const student =
-    user.role == Role.Student ? user : await Student.findById(studentId);
+  const student = await Student.findById(studentId);
   try {
     for (var i = 0; i < program_id_set.length; i++) {
       const programIds = student.applications.map(({ programId }) => programId);
       if (programIds.includes(program_id_set[i])) continue;
       const program = await Program.findById(program_id_set[i]);
-      const { requiredDocuments, optionalDocuments } = program;
+      // const { requiredDocuments, optionalDocuments } = program;
       const now = new Date();
       const application = student.applications.create({
         programId: program_id_set[i],
       });
-      application.documents = [
-        ...requiredDocuments.map((name) => ({
-          name,
-          required: true,
-          updatedAt: now,
-        })),
-        ...optionalDocuments.map((name) => ({
-          name,
-          required: false,
-          updatedAt: now,
-        })),
-      ];
+      // application.documents = [
+      //   ...requiredDocuments.map((name) => ({
+      //     name,
+      //     required: true,
+      //     updatedAt: now,
+      //   })),
+      //   ...optionalDocuments.map((name) => ({
+      //     name,
+      //     required: false,
+      //     updatedAt: now,
+      //   })),
+      // ];
       student.applications.push(application);
       await student.save();
     }

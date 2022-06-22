@@ -31,6 +31,9 @@ const requiredDocuments = ["transcript", "resume"];
 const optionalDocuments = ["certificate", "visa"];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
+const programs = [...Array(3)].map(() =>
+  generateProgram(requiredDocuments, optionalDocuments)
+);
 beforeAll(async () => {
   jest.spyOn(console, "log").mockImplementation(jest.fn());
   await connectToDatabase(global.__MONGO_URI__);
@@ -53,7 +56,6 @@ afterEach(() => {
 describe("POST /api/students/:id/agents", () => {
   it("should assign agent(s) to student", async () => {
     const { _id: studentId } = student;
-    const { _id: agentId } = agents[0];
 
     const agents_obj = {};
     agents.forEach((agent) => {
@@ -81,6 +83,7 @@ describe("POST /api/students/:id/agents", () => {
   });
 });
 
+// Obsolete
 // describe("DELETE /api/students/:studentId/agents/:agentId", () => {
 //   it("should remove an agent from student", async () => {
 //     const { _id: studentId } = student;
@@ -104,25 +107,38 @@ describe("POST /api/students/:id/agents", () => {
 //   });
 // });
 
-// describe("POST /api/students/:id/editors", () => {
-//   it("should assign an editor to student", async () => {
-//     const { _id: studentId } = student;
-//     const { _id: editorId } = editors[0];
+describe("POST /api/students/:id/editors", () => {
+  it("should assign editors to student", async () => {
+    const { _id: studentId } = student;
+    const { _id: editorId } = editors[0];
 
-//     const resp = await request(app)
-//       .post(`/api/students/${studentId}/editors`)
-//       .send({ id: editorId });
+    const editors_obj = {};
+    editors.forEach((editor) => {
+      editors_obj[editor._id] = true;
+    });
 
-//     expect(resp.status).toBe(200);
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/editors`)
+      .send(editors_obj);
 
-//     const updatedStudent = await Student.findById(studentId).lean();
-//     expect(updatedStudent.editors.map(String)).toEqual([editorId]);
+    expect(resp.status).toBe(200);
 
-//     const updatedEditor = await Editor.findById(editorId).lean();
-//     expect(updatedEditor.students.map(String)).toEqual([studentId]);
-//   });
-// });
+    var editors_arr = [];
+    editors.forEach((editor) => {
+      if ((editors_obj[editor._id] = true)) {
+        editors_arr.push(editor._id);
+      }
+    });
 
+    const updatedStudent = await Student.findById(studentId).lean();
+    expect(updatedStudent.editors.map(String)).toEqual(editors_arr);
+    //TODO: verify editors data
+    // const updatedEditor = await Editor.findById(editorId).lean();
+    // expect(updatedEditor.students.map(String)).toEqual([studentId]);
+  });
+});
+
+// Obsolete
 // describe("DELETE /api/students/:studentId/editors/:editorId", () => {
 //   it("should remove an editor from student", async () => {
 //     const { _id: studentId } = student;
@@ -146,48 +162,54 @@ describe("POST /api/students/:id/agents", () => {
 //   });
 // });
 
-// describe("POST /api/students/:id/applications", () => {
-//   it("should create an application for student", async () => {
-//     const { _id: studentId } = student;
-//     const resp = await request(app)
-//       .post(`/api/students/${studentId}/applications`)
-//       .send({ program_id_set: [program._id] });
+describe("POST /api/students/:studentId/applications", () => {
+  it("should create an application for student", async () => {
+    const { _id: studentId } = student;
+    var programs_arr = [];
+    programs.forEach((pro) => {
+      programs_arr.push(pro._id);
+    });
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/applications`)
+      .send({ program_id_set: programs_arr });
 
-//     const {
-//       status,
-//       body: { success, data },
-//     } = resp;
+    const {
+      status,
+      body: { success, data },
+    } = resp;
 
-//     expect(status).toBe(201);
-//     expect(success).toBe(true);
-//     expect(data).toMatchObject({
-//       _id: expect.any(String),
-//       program_id_set: [program._id],
-//       documents: expect.toBeArrayOfSize(
-//         requiredDocuments.length + optionalDocuments.length
-//       ),
-//     });
+    expect(status).toBe(201);
+    // expect(resp).toBe(201);
+    expect(success).toBe(true);
+    expect(data).toMatchObject(programs_arr);
+    // expect(data).toMatchObject({
+    // _id: expect.any(String),
+    // program_id_set: programs_arr,
+    // documents: expect.toBeArrayOfSize(
+    // requiredDocuments.length + optionalDocuments.length
+    // ),
+    // });
 
-//     const updatedStudent = await Student.findById(studentId).lean();
-//     const { documents } = updatedStudent.applications[0];
-//     expect(documents.map(({ name }) => name).sort()).toEqual(
-//       [...requiredDocuments, ...optionalDocuments].sort()
-//     );
-//   });
+    // const updatedStudent = await Student.findById(studentId).lean();
+    // const { documents } = updatedStudent.applications[0];
+    // expect(documents.map(({ name }) => name).sort()).toEqual(
+    //   [...requiredDocuments, ...optionalDocuments].sort()
+    // );
+  });
 
-//   it("should return 400 when creating application with duplicate program Id", async () => {
-//     const { _id: studentId } = student;
-//     await request(app)
-//       .post(`/api/students/${studentId}/applications`)
-//       .send({ program_id_set: [program._id] });
+  // it("should return 400 when creating application with duplicate program Id", async () => {
+  //   const { _id: studentId } = student;
+  //   await request(app)
+  //     .post(`/api/students/${studentId}/applications`)
+  //     .send({ program_id_set: [program._id] });
 
-//     const resp = await request(app)
-//       .post(`/api/students/${studentId}/applications`)
-//       .send({ program_id_set: [program._id] });
+  //   const resp = await request(app)
+  //     .post(`/api/students/${studentId}/applications`)
+  //     .send({ program_id_set: [program._id] });
 
-//     expect(resp.status).toBe(400);
-//   });
-// });
+  //   expect(resp.status).toBe(400);
+  // });
+});
 
 // describe("DELETE /api/students/:studentId/applications/:applicationId", () => {
 //   it("should delete an application from student", async () => {
@@ -215,55 +237,71 @@ describe("POST /api/students/:id/agents", () => {
 //   );
 // });
 
-// describe("POST /api/students/:studentId/applications/:applicationId/:docName", () => {
-//   const { _id: studentId } = student;
-//   const docName = requiredDocuments[0];
-//   const filename = "my-file.pdf"; // will be overwrite to docName
+describe("POST /api/account/files/programspecific/:studentId/:applicationId/:docName/:whoupdate", () => {
+  const { _id: studentId } = student;
+  const docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
+  const fileCategory = "ML";
 
-//   let applicationId;
-//   beforeEach(async () => {
-//     protect.mockImplementation(async (req, res, next) => {
-//       req.user = await User.findById(admin._id);
-//       next();
-//     });
+  var applicationIds;
+  var applicationId;
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(admin._id);
+      next();
+    });
 
-//     const resp = await request(app)
-//       .post(`/api/students/${studentId}/applications`)
-//       .send({ programId: program._id });
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/applications`)
+      .send({ program_id_set: [program._id] });
 
-//     applicationId = resp.body.data._id;
-//   });
+    applicationIds = resp.body.data;
+    applicationId = applicationIds[0];
+  });
 
-//   it("should save the uploaded file and store the path in db", async () => {
-//     const resp = await request(app)
-//       .post(
-//         `/api/students/${studentId}/applications/${applicationId}/${docName}`
-//       )
-//       .attach("file", Buffer.from("Lorem ipsum"), filename);
+  it("should save the uploaded file and store the path in db", async () => {
+    const resp = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
 
-//     const { status, body } = resp;
-//     expect(status).toBe(201);
-//     expect(body.success).toBe(true);
-//     expect(body.data).toMatchObject({
-//       path: expect.not.stringMatching(/^$/),
-//       name: docName,
-//       status: DocumentStatus.Uploaded,
-//     });
-//   });
+    const { status, body } = resp;
+    expect(status).toBe(201);
+    expect(body.success).toBe(true);
 
-//   it("should return 400 with invalid document name", async () => {
-//     const invalidDoc = "wrong-doc";
-//     const resp = await request(app)
-//       .post(
-//         `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
-//       )
-//       .attach("file", Buffer.from("Lorem ipsum"), filename);
+    var updatedStudent = body.data;
+    const appl_idx = updatedStudent.applications.findIndex(
+      ({ programId }) => programId._id == applicationId
+    );
+    const doc_idx = updatedStudent.applications[appl_idx].documents.findIndex(
+      ({ name }) => name.includes(fileCategory)
+    );
+    // expect(
+    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
+    // ).toMatchObject({
+    //   // path: expect.not.stringMatching(/^$/),
+    //   name: docName,
+    //   // status: DocumentStatus.Uploaded,
+    // });
+    expect(updatedStudent.applications[appl_idx].documents[doc_idx].name).toBe(
+      fileCategory
+    );
+  });
 
-//     const { status, body } = resp;
-//     expect(status).toBe(400);
-//     expect(body.success).toBe(false);
-//   });
-// });
+  it("should return 400 with invalid document name", async () => {
+    const invalidDoc = "wrong-doc";
+    const resp = await request(app)
+      .post(
+        `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
+      )
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+    const { status, body } = resp;
+    expect(status).toBe(400);
+    expect(body.success).toBe(false);
+  });
+});
 
 // describe("Document Read / Update / Delete operations", () => {
 //   const { _id: studentId } = student;

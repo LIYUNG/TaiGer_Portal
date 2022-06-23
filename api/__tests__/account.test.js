@@ -72,11 +72,11 @@ afterEach(() => {
   fs.rmSync(UPLOAD_PATH, { recursive: true, force: true });
 });
 
-
 describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
   const { _id: studentId } = student;
   var docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
+  const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
   const fileCategory = "ML";
   var whoupdate = "Editor";
   var temp_name;
@@ -97,7 +97,31 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     applicationId = applicationIds[0];
   });
 
-  it("should save the uploaded file and store the path in db", async () => {
+  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+    const resp2 = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
+    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const resp2 = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", buffer_10MB, filename);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should save the uploaded program specific file and store the path in db", async () => {
     const resp = await request(app)
       .post(
         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
@@ -163,16 +187,16 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
 
     // Test Download:
 
-     const resp2 = await request(app)
-       .get(
-         `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
-       )
-       .buffer();
+    const resp2 = await request(app)
+      .get(
+        `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+      )
+      .buffer();
 
-     expect(resp2.status).toBe(200);
-     expect(resp2.headers["content-disposition"]).toEqual(
-       `attachment; filename="${temp_name}"`
-     );
+    expect(resp2.status).toBe(200);
+    expect(resp2.headers["content-disposition"]).toEqual(
+      `attachment; filename="${temp_name}"`
+    );
   });
 
   // it("should return 400 with invalid applicationId", async () => {
@@ -194,6 +218,7 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
   const { _id: studentId } = student;
   var docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
+  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
   const fileCategory = "CV";
   var whoupdate = "Editor";
   var temp_name;
@@ -205,11 +230,29 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     });
   });
 
+  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+    const resp2 = await request(app)
+      .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
+      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should return 400 when editor general file (CV, RL) size over 5 MB", async () => {
+    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const resp2 = await request(app)
+      .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
+      .attach("file", buffer_10MB, filename);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
   it("should save the uploaded general CV,RL files and store the path in db", async () => {
     const resp = await request(app)
-      .post(
-        `/api/account/files/general/upload/${studentId}/${fileCategory}`
-      )
+      .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
       .attach("file", Buffer.from("Lorem ipsum"), filename);
 
     const { status, body } = resp;
@@ -268,14 +311,12 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
 
     // Test Download:
 
-    const resp2 = await request(app)
-      .get(
-        `/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`
-      )
+    const resp3 = await request(app)
+      .get(`/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`)
       .buffer();
 
-    expect(resp2.status).toBe(200);
-    expect(resp2.headers["content-disposition"]).toEqual(
+    expect(resp3.status).toBe(200);
+    expect(resp3.headers["content-disposition"]).toEqual(
       `attachment; filename="${temp_name}"`
     );
   });

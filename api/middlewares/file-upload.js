@@ -415,7 +415,7 @@ const storage_general_s3 = multerS3({
 });
 
 //TODO: upload pdf/docx/image
-const upload4 = multer({
+const editor_generaldoc_s3 = multer({
   storage: storage_general_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
@@ -438,5 +438,5 @@ module.exports = {
   fileUpload: upload_program_specific_s3.single("file"),
   ProfilefileUpload: upload_profile_s3.single("file"),
   TranscriptExcelUpload: upload3.single("file"),
-  EditGeneralDocsUpload: upload4.single("file"),
+  EditGeneralDocsUpload: editor_generaldoc_s3.single("file"),
 };

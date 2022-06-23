@@ -424,7 +424,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       );
     }
 
-    console.log(student.agents);
+    // console.log(student.agents);
     if (user.role == Role.Student) {
     }
     return;

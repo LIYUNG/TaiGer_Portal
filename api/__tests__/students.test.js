@@ -270,13 +270,50 @@ describe("POST /api/account/files/programspecific/:studentId/:applicationId/:doc
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
-    var updatedStudent = body.data;
-    const appl_idx = updatedStudent.applications.findIndex(
+    var updatedStudent = await Student.findById(studentId)
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    var application = updatedStudent.applications.find(
       ({ programId }) => programId._id == applicationId
     );
-    const doc_idx = updatedStudent.applications[appl_idx].documents.findIndex(
+    const doc_idx = application.documents.findIndex(
       ({ name }) => name.includes(fileCategory)
     );
+    
+
+    var version_number = 1;
+    var same_file_name = true;
+    while (same_file_name) {
+      // console.log(application.programId);
+      var temp_name =
+        student.lastname +
+        "_" +
+        student.firstname +
+        "_" +
+        application.programId.school +
+        "_" +
+        application.programId.program_name +
+        "_" +
+        fileCategory +
+        "_v" +
+        version_number +
+        `${path.extname(application.documents[doc_idx].path)}`;
+      temp_name = temp_name.replace(/ /g, "_");
+
+      // let student_input_doc = application.student_inputs.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // let editor_output_doc = application.documents.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // if (editor_output_doc || student_input_doc) {
+      //   version_number++;
+      // } else {
+        same_file_name = false;
+      // }
+    }
+
     // expect(
     //   updatedStudent.applications[appl_idx].documents[doc_idx].name
     // ).toMatchObject({
@@ -284,23 +321,23 @@ describe("POST /api/account/files/programspecific/:studentId/:applicationId/:doc
     //   name: docName,
     //   // status: DocumentStatus.Uploaded,
     // });
-    expect(updatedStudent.applications[appl_idx].documents[doc_idx].name).toBe(
-      fileCategory
-    );
+    var file_name_inDB =
+      path.basename(application.documents[doc_idx].path);
+    expect(file_name_inDB).toBe(temp_name);
   });
 
-  it("should return 400 with invalid document name", async () => {
-    const invalidDoc = "wrong-doc";
-    const resp = await request(app)
-      .post(
-        `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
-      )
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+  // it("should return 400 with invalid document name", async () => {
+  //   const invalidDoc = "wrong-doc";
+  //   const resp = await request(app)
+  //     .post(
+  //       `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
+  //     )
+  //     .attach("file", Buffer.from("Lorem ipsum"), filename);
 
-    const { status, body } = resp;
-    expect(status).toBe(400);
-    expect(body.success).toBe(false);
-  });
+  //   const { status, body } = resp;
+  //   expect(status).toBe(400);
+  //   expect(body.success).toBe(false);
+  // });
 });
 
 // describe("Document Read / Update / Delete operations", () => {
@@ -389,23 +426,57 @@ describe("POST /api/account/files/programspecific/:studentId/:applicationId/:doc
 //   });
 // });
 
-// describe("POST /api/students/:studentId/applications/:applicationId/:docName/status", () => {
-//   it("should update uploaded file status", async () => {
-//     const status = DocumentStatus.Rejected;
-//     const resp = await request(app)
-//       .post(
-//         `/api/students/${studentId}/applications/${applicationId}/${docName}/status`
-//       )
-//       .send({ status });
+describe("POST /api/students/:studentId/files/:category", () => {
+  const { _id: studentId } = student;
+  const docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
+  const category = "Bachelor_Transcript";
 
-//     const { success, data } = resp.body;
-//     expect(resp.status).toBe(200);
-//     expect(success).toBe(true);
-//     expect(data).toMatchObject({
-//       status,
-//       path: expect.any(String),
-//       name: docName,
-//     });
-//   });
-// });
+  var temp_name;
+
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(admin._id);
+      next();
+    });
+  });
+
+  it("should save the uploaded profile file and store the path in db", async () => {
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/files/${category}`)
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+    const { status, body } = resp;
+    expect(status).toBe(201);
+    expect(body.success).toBe(true);
+
+    var updatedStudent = body.data;
+    const profile_file_idx = updatedStudent.profile.findIndex(({ name }) =>
+      name.includes(category)
+    );
+    temp_name =
+      student.lastname +
+      "_" +
+      student.firstname +
+      "_" +
+      category +
+      path.extname(updatedStudent.profile[profile_file_idx].path);
+    // expect(
+    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
+    // ).toMatchObject({
+    //   // path: expect.not.stringMatching(/^$/),
+    //   name: docName,
+    //   // status: DocumentStatus.Uploaded,
+    // });
+    var file_name_inDB = path.basename(
+      updatedStudent.profile[profile_file_idx].path
+    );
+    // +
+    // path.extname(updatedStudent.profile[profile_file_idx].path);
+
+    expect(updatedStudent.profile[profile_file_idx].name).toBe(category);
+    expect(file_name_inDB).toBe(temp_name);
+  });
+});
+
 // });

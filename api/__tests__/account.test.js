@@ -61,6 +61,7 @@ afterEach(() => {
 // TODO: refactor with students API, too much duplicate
 describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
   const { _id: studentId } = student;
+
   const docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
   const fileCategory = "CV";
@@ -92,6 +93,8 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     // });
   });
 
+
+  
   // it("should return 400 with invalid document name", async () => {
   //   const invalidDoc = "wrong-doc";
   //   const resp = await request(app)
@@ -104,55 +107,56 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   // });
 });
 
-// describe("GET /api/account/files/:applicationId/:docName", () => {
-//   const { _id: studentId } = student;
-//   const docName = requiredDocuments[0];
-//   const filename = "my-file.pdf"; // will be overwrite to docName
+describe("GET /api/account/files/programspecific/:studentId/:applicationId/:docName/:whoupdate", () => {
+  const { _id: studentId } = student;
+  const docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
 
-//   let applicationId;
-//   beforeEach(async () => {
-//     // FIXME: create fixture directly? it shouldn't depends on students API
-//     const resp = await request(app)
-//       .post(`/api/students/${studentId}/applications`)
-//       .send({ programId: program._id });
+  let applicationId;
+  beforeEach(async () => {
+    // FIXME: create fixture directly? it shouldn't depends on students API
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/applications`)
+      .send({ programId: program._id });
 
-//     applicationId = resp.body.data._id;
+    applicationId = resp.body.data._id;
 
-//     await request(app)
-//       .post(`/api/account/files/${applicationId}/${docName}`)
-//       .attach("file", Buffer.from("Lorem ipsum"), filename);
-//   });
+    await request(app)
+      .post(`/api/account/files/${applicationId}/${docName}`)
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+  });
 
-//   it("should download the previous uploaded file", async () => {
-//     const resp = await request(app)
-//       .get(`/api/account/files/${applicationId}/${docName}`)
-//       .buffer();
+  it("should download the previous uploaded file", async () => {
+    const resp = await request(app)
+      .get(`/api/account/files/${applicationId}/${docName}`)
+      .buffer();
 
-//     expect(resp.status).toBe(200);
-//     expect(resp.headers["content-disposition"]).toEqual(
-//       `attachment; filename="${docName}${path.extname(filename)}"`
-//     );
-//   });
+    expect(resp.status).toBe(200);
+    expect(resp.headers["content-disposition"]).toEqual(
+      `attachment; filename="${docName}${path.extname(filename)}"`
+    );
+  });
 
-//   it("should return 400 with invalid document name", async () => {
-//     const invalidDoc = "wrong-doc";
-//     const resp = await request(app)
-//       .get(`/api/account/files/${applicationId}/${invalidDoc}`)
-//       .buffer();
+  it("should return 400 with invalid document name", async () => {
+    const invalidDoc = "wrong-doc";
+    const resp = await request(app)
+      .get(`/api/account/files/${applicationId}/${invalidDoc}`)
+      .buffer();
 
-//     expect(resp.status).toBe(400);
-//   });
+    expect(resp.status).toBe(400);
+  });
 
-//   it("should return 400 when file not uploaded yet", async () => {
-//     const emptyDoc = requiredDocuments[1];
-//     const resp = await request(app)
-//       .get(`/api/account/files/${applicationId}/${emptyDoc}`)
-//       .buffer();
+  it("should return 400 when file not uploaded yet", async () => {
+    const emptyDoc = requiredDocuments[1];
+    const resp = await request(app)
+      .get(`/api/account/files/${applicationId}/${emptyDoc}`)
+      .buffer();
 
-//     expect(resp.status).toBe(400);
-//   });
-// });
+    expect(resp.status).toBe(400);
+  });
+});
 
+// TODO: uploading transcript for courses analyser
 // describe("POST /api/account/transcript/:category/:group", () => {
 //   it("should run python script on the uploaded file", async () => {
 //     const pythonProcess = new EventEmitter();

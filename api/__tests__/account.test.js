@@ -7,20 +7,29 @@ const request = require("supertest");
 const { UPLOAD_PATH } = require("../config");
 const { app } = require("../app");
 const { connectToDatabase, disconnectFromDatabase } = require("../database");
-const { Role, Student } = require("../models/User");
+const { Role, User, Agent, Editor, Student } = require("../models/User");
 const { Program } = require("../models/Program");
 const { DocumentStatus } = require("../constants");
 const { generateUser } = require("./fixtures/users");
 const { generateProgram } = require("./fixtures/programs");
 const { protect } = require("../middlewares/auth");
 
+// jest.mock("../middlewares/auth", () => {
+//   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
+//     protect: jest.fn(),
+//     permit:
+//       (...roles) =>
+//       (req, res, next) =>
+//         next(),
+//   });
+// });
+
 jest.mock("../middlewares/auth", () => {
+  const passthrough = async (req, res, next) => next();
+
   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
-    protect: jest.fn(),
-    permit:
-      (...roles) =>
-      (req, res, next) =>
-        next(),
+    protect: jest.fn().mockImplementation(passthrough),
+    permit: jest.fn().mockImplementation((...roles) => passthrough),
   });
 });
 
@@ -28,7 +37,12 @@ jest.mock("child_process", () => ({
   spawn: jest.fn(),
 }));
 
+const admin = generateUser(Role.Admin);
+const agents = [...Array(3)].map(() => generateUser(Role.Agent));
+const editor = generateUser(Role.Editor);
 const student = generateUser(Role.Student);
+const users = [admin, ...agents, editor, student];
+// const student = generateUser(Role.Student);
 
 const requiredDocuments = ["transcript", "resume"];
 const optionalDocuments = ["certificate", "visa"];
@@ -42,16 +56,16 @@ beforeAll(async () => {
 afterAll(disconnectFromDatabase);
 
 beforeEach(async () => {
-  await Student.deleteMany();
-  await Student.create(student);
+  await User.deleteMany();
+  await User.insertMany(users);
 
   await Program.deleteMany();
   await Program.create(program);
 
-  protect.mockImplementation(async (req, res, next) => {
-    req.user = await Student.findById(student._id);
-    next();
-  });
+  // protect.mockImplementation(async (req, res, next) => {
+  //   req.user = await Student.findById(student._id);
+  //   next();
+  // });
 });
 
 afterEach(() => {
@@ -59,20 +73,74 @@ afterEach(() => {
 });
 
 // TODO: refactor with students API, too much duplicate
-describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
-  const { _id: studentId } = student;
+// describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
+//   const { _id: studentId } = student;
 
-  const docName = requiredDocuments[0];
+//   const docName = requiredDocuments[0];
+//   const filename = "my-file2.pdf"; // will be overwrite to docName
+//   const fileCategory = "Essay";
+//   var applicationId = program._id;
+//   beforeEach(async () => {
+//     // FIXME: create fixture directly? it shouldn't depends on students API
+//     const resp = await request(app)
+//       .post(`/api/students/${studentId}/applications`)
+//       .send({ program_id_set: [program._id] });
+//     // const { data, success } = resp.body.data;
+//     // applicationId = data[0]; // resp: {data: program_id_set}, program_id_set is array
+//   });
+
+//   it("should save the uploaded file and store the path in db", async () => {
+//     const resp = await request(app)
+//       .post(
+//         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+//       )
+//       .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+//     const { status, body } = resp;
+//     expect(program._id).toBe(applicationId);
+//     expect(status).toBe(201);
+//     expect(body.success).toBe(true);
+//     // expect(body.data).toMatchObject({
+//     //   path: expect.not.stringMatching(/^$/),
+//     //   name: docName,
+//     //   status: DocumentStatus.Uploaded,
+//     // });
+//   });
+
+//   // it("should return 400 with invalid document name", async () => {
+//   //   const invalidDoc = "wrong-doc";
+//   //   const resp = await request(app)
+//   //     .post(`/api/account/files/${applicationId}/${invalidDoc}`)
+//   //     .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+//   //   const { status, body } = resp;
+//   //   expect(status).toBe(400);
+//   //   expect(body.success).toBe(false);
+//   // });
+// });
+
+describe("POST /api/account/files/programspecific/:studentId/:applicationId/:docName/:whoupdate", () => {
+  const { _id: studentId } = student;
+  var docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
-  const fileCategory = "CV";
-  var applicationId = program._id;
+  const fileCategory = "ML";
+  var whoupdate = "Editor";
+  var temp_name;
+  var applicationIds;
+  var applicationId;
+  var file_name_inDB;
   beforeEach(async () => {
-    // FIXME: create fixture directly? it shouldn't depends on students API
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(admin._id);
+      next();
+    });
+
     const resp = await request(app)
       .post(`/api/students/${studentId}/applications`)
       .send({ program_id_set: [program._id] });
-    // const { data, success } = resp.body.data;
-    // applicationId = data[0]; // resp: {data: program_id_set}, program_id_set is array
+
+    applicationIds = resp.body.data;
+    applicationId = applicationIds[0];
   });
 
   it("should save the uploaded file and store the path in db", async () => {
@@ -83,22 +151,82 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
       .attach("file", Buffer.from("Lorem ipsum"), filename);
 
     const { status, body } = resp;
-    expect(program._id).toBe(applicationId);
     expect(status).toBe(201);
     expect(body.success).toBe(true);
-    // expect(body.data).toMatchObject({
-    //   path: expect.not.stringMatching(/^$/),
+
+    var updatedStudent = await Student.findById(studentId)
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    var application = updatedStudent.applications.find(
+      ({ programId }) => programId._id == applicationId
+    );
+    const doc_idx = application.documents.findIndex(({ name }) =>
+      name.includes(fileCategory)
+    );
+
+    var version_number = 1;
+    var same_file_name = true;
+    while (same_file_name) {
+      // console.log(application.programId);
+      temp_name =
+        student.lastname +
+        "_" +
+        student.firstname +
+        "_" +
+        application.programId.school +
+        "_" +
+        application.programId.program_name +
+        "_" +
+        fileCategory +
+        "_v" +
+        version_number +
+        `${path.extname(application.documents[doc_idx].path)}`;
+      temp_name = temp_name.replace(/ /g, "_");
+
+      // let student_input_doc = application.student_inputs.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // let editor_output_doc = application.documents.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // if (editor_output_doc || student_input_doc) {
+      //   version_number++;
+      // } else {
+      same_file_name = false;
+      // }
+    }
+
+    // expect(
+    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
+    // ).toMatchObject({
+    //   // path: expect.not.stringMatching(/^$/),
     //   name: docName,
-    //   status: DocumentStatus.Uploaded,
+    //   // status: DocumentStatus.Uploaded,
     // });
+    file_name_inDB = path.basename(application.documents[doc_idx].path);
+    expect(file_name_inDB).toBe(temp_name);
+
+    // Test Download:
+
+     const resp2 = await request(app)
+       .get(
+         `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+       )
+       .buffer();
+
+     expect(resp2.status).toBe(200);
+     expect(resp2.headers["content-disposition"]).toEqual(
+       `attachment; filename="${temp_name}"`
+     );
   });
 
-
-  
   // it("should return 400 with invalid document name", async () => {
   //   const invalidDoc = "wrong-doc";
   //   const resp = await request(app)
-  //     .post(`/api/account/files/${applicationId}/${invalidDoc}`)
+  //     .post(
+  //       `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
+  //     )
   //     .attach("file", Buffer.from("Lorem ipsum"), filename);
 
   //   const { status, body } = resp;
@@ -107,54 +235,64 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   // });
 });
 
-describe("GET /api/account/files/programspecific/:studentId/:applicationId/:docName/:whoupdate", () => {
-  const { _id: studentId } = student;
-  const docName = requiredDocuments[0];
-  const filename = "my-file.pdf"; // will be overwrite to docName
+// describe("GET /api/account/files/programspecific/:studentId/:applicationId/:docName/:whoupdate", () => {
+//   const { _id: studentId } = student;
+//   const docName = requiredDocuments[0];
+//   const filename = "my-file.pdf"; // will be overwrite to docName
+//   const fileCategory = "ML";
+//   var applicationId;
+//   var whoupdate = "Editor";
+//   beforeEach(async () => {
+//     // FIXME: create fixture directly? it shouldn't depends on students API
+//     protect.mockImplementation(async (req, res, next) => {
+//       req.user = await User.findById(admin._id);
+//       next();
+//     });
 
-  let applicationId;
-  beforeEach(async () => {
-    // FIXME: create fixture directly? it shouldn't depends on students API
-    const resp = await request(app)
-      .post(`/api/students/${studentId}/applications`)
-      .send({ programId: program._id });
+//     const resp = await request(app)
+//       .post(`/api/students/${studentId}/applications`)
+//       .send({ programId: [program._id] });
 
-    applicationId = resp.body.data._id;
+//     applicationId = program._id;
 
-    await request(app)
-      .post(`/api/account/files/${applicationId}/${docName}`)
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
-  });
+//     await request(app)
+//       .post(
+//         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+//       )
+//       .attach("file", Buffer.from("Lorem ipsum"), filename);
+//   });
 
-  it("should download the previous uploaded file", async () => {
-    const resp = await request(app)
-      .get(`/api/account/files/${applicationId}/${docName}`)
-      .buffer();
+//   it("should download the previous uploaded file", async () => {
+//     const resp = await request(app)
+//       .get(
+//         `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${whoupdate}`
+//       )
+//       .buffer();
 
-    expect(resp.status).toBe(200);
-    expect(resp.headers["content-disposition"]).toEqual(
-      `attachment; filename="${docName}${path.extname(filename)}"`
-    );
-  });
+//     expect(resp.status).toBe(200);
+//     expect(resp.headers["content-disposition"]).toEqual(
+//       `attachment; filename="${docName}${path.extname(filename)}"`
+//     );
+//   });
 
-  it("should return 400 with invalid document name", async () => {
-    const invalidDoc = "wrong-doc";
-    const resp = await request(app)
-      .get(`/api/account/files/${applicationId}/${invalidDoc}`)
-      .buffer();
+// it("should return 400 with invalid document name", async () => {
+//   const invalidDoc = "wrong-doc";
+//   const resp = await request(app)
+//     .get(`/api/account/files/${applicationId}/${invalidDoc}`)
+//     .buffer();
 
-    expect(resp.status).toBe(400);
-  });
+//   expect(resp.status).toBe(400);
+// });
 
-  it("should return 400 when file not uploaded yet", async () => {
-    const emptyDoc = requiredDocuments[1];
-    const resp = await request(app)
-      .get(`/api/account/files/${applicationId}/${emptyDoc}`)
-      .buffer();
+// it("should return 400 when file not uploaded yet", async () => {
+//   const emptyDoc = requiredDocuments[1];
+//   const resp = await request(app)
+//     .get(`/api/account/files/${applicationId}/${emptyDoc}`)
+//     .buffer();
 
-    expect(resp.status).toBe(400);
-  });
-});
+//   expect(resp.status).toBe(400);
+// });
+// });
 
 // TODO: uploading transcript for courses analyser
 // describe("POST /api/account/transcript/:category/:group", () => {

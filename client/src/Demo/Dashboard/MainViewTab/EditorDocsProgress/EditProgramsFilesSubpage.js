@@ -6,7 +6,6 @@ import {
   deleteProgramSpecificFileUpload,
   uploadHandwrittenFileforstudent,
   downloadHandWrittenFile,
-  deleteWrittenFile,
 } from "../../../../api";
 class EditProgramsFilesSubpage extends React.Component {
   // edit File subpage
@@ -117,7 +116,7 @@ class EditProgramsFilesSubpage extends React.Component {
 
   onDeleteFile = (e, studentId, applicationId, docName) => {
     e.preventDefault();
-    deleteWrittenFile(studentId, applicationId, docName).then(
+    deleteProgramSpecificFileUpload(studentId, applicationId, docName).then(
       (res) => {
         this.setState({
           student: res.data.data,

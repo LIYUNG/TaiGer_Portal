@@ -10,15 +10,8 @@ class HandWrittenFile extends Component {
     this.props.onFormDelete(
       this.props.student._id,
       this.props.application.programId._id,
-      this.props.document.name
-    );
-  };
-
-  handleSubmitFile = () => {
-    this.props.onFormDelete(
-      this.props.student._id,
-      this.props.application.programId._id,
-      this.props.document.name
+      this.props.document.name,
+      "Editor"
     );
   };
 
@@ -74,7 +67,8 @@ class HandWrittenFile extends Component {
                         e,
                         this.props.student._id,
                         this.props.application.programId._id,
-                        this.props.document.name
+                        this.props.document.name,
+                        "Editor"
                       )
                     }
                   >

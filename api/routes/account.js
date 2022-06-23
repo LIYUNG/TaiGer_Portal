@@ -82,8 +82,11 @@ router
   );
 
 router
-  .route("/files/programspecific/:studentId/:applicationId/:docName/:whoupdate")
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadProgramSpecificFile)
+  .route("/files/programspecific/:studentId/:applicationId/:whoupdate/:docName")
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    downloadProgramSpecificFile
+  )
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor),
     SetAsFinalProgramSpecificFile

@@ -125,7 +125,7 @@ export const deleteProgramSpecificFileUpload = (
   whoupdate
 ) =>
   request.delete(
-    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${whoupdate}`
+    `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${docName}`
   );
 
 export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
@@ -140,7 +140,7 @@ export const SetAsFinalProgramSpecificFile = (
   whoupdate
 ) =>
   request.put(
-    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${whoupdate}`
+    `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${docName}`
   );
 
 export const SetAsFinalGenralFile = (studentId, docName, whoupdate) =>
@@ -232,21 +232,10 @@ export const downloadHandWrittenFile = (
   student_inputs
 ) =>
   request.get(
-    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${student_inputs}`,
+    `/api/account/files/programspecific/${studentId}/${applicationId}/${student_inputs}/${docName}`,
     {
       responseType: "blob",
     }
-  );
-
-//obsolete(? double check)
-export const deleteWrittenFile = (
-  studentId,
-  applicationId,
-  docName,
-  student_inputs
-) =>
-  request.delete(
-    `/api/account/files/programspecific/${studentId}/${applicationId}/${docName}/${student_inputs}`
   );
 
 // Program APIs

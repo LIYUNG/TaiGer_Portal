@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production nodemon index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js --ignore '__tests__/*'",
-    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles"
+    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --coverage"
   },
   "preset": "@shelf/jest-mongodb",
   "dependencies": {

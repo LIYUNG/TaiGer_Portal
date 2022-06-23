@@ -350,7 +350,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
   }
 
   //Reminder for Editor:
-  console.log(student.editors);
+  // console.log(student.editors);
   if (user.role == Role.Student) {
   }
 });

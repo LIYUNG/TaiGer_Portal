@@ -262,43 +262,6 @@ describe("POST /api/students/:studentId/applications", () => {
 //       .attach("file", Buffer.from("Lorem ipsum"), filename);
 //   });
 
-// describe("GET /api/students/:studentId/applications/:applicationId/:docName", () => {
-//   it("should download the previous uploaded file", async () => {
-//     const resp = await request(app)
-//       .get(
-//         `/api/students/${studentId}/applications/${applicationId}/${docName}`
-//       )
-//       .buffer();
-
-//     expect(resp.status).toBe(200);
-//     expect(resp.headers["content-disposition"]).toEqual(
-//       `attachment; filename="${docName}${path.extname(filename)}"`
-//     );
-//   });
-
-//   it("should return 400 with invalid document name", async () => {
-//     const invalidDoc = "wrong-doc";
-//     const resp = await request(app)
-//       .get(
-//         `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
-//       )
-//       .buffer();
-
-//     expect(resp.status).toBe(400);
-//   });
-
-//   it("should return 400 when file not uploaded yet", async () => {
-//     const emptyDoc = requiredDocuments[1];
-//     const resp = await request(app)
-//       .get(
-//         `/api/students/${studentId}/applications/${applicationId}/${emptyDoc}`
-//       )
-//       .buffer();
-
-//     expect(resp.status).toBe(400);
-//   });
-// });
-
 // describe("DELETE /api/students/:studentId/applications/:applicationId/:docName", () => {
 //   it("should delete previous uploaded file", async () => {
 //     const resp = await request(app).delete(

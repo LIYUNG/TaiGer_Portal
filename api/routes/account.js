@@ -117,7 +117,7 @@ router
   );
 
 router
-  .route("/files/general/:studentId/:docName/:whoupdate")
+  .route("/files/general/:studentId/:whoupdate/:docName")
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadGeneralFile

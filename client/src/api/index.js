@@ -130,7 +130,7 @@ export const deleteProgramSpecificFileUpload = (
 
 export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
   request.delete(
-    `/api/account/files/general/${studentId}/${docName}/${whoupdate}`
+    `/api/account/files/general/${studentId}/${whoupdate}/${docName}`
   );
 
 export const SetAsFinalProgramSpecificFile = (
@@ -145,7 +145,7 @@ export const SetAsFinalProgramSpecificFile = (
 
 export const SetAsFinalGenralFile = (studentId, docName, whoupdate) =>
   request.put(
-    `/api/account/files/general/${studentId}/${docName}/${whoupdate}`
+    `/api/account/files/general/${studentId}/${whoupdate}/${docName}`
   );
 
 export const uploadEditGeneralFileforstudent = (
@@ -179,13 +179,9 @@ export const updateEditGeneralFileCommentsforstudent = (
     `/api/account/files/general/comments/${studentId}/${whoupdate}/${docName}`,
     { comments }
   );
-export const downloadGeneralHandWrittenFile = (
-  studentId,
-  docName,
-  student_inputs
-) =>
+export const downloadGeneralHandWrittenFile = (studentId, docName, student_inputs) =>
   request.get(
-    `/api/account/files/general/${studentId}/${docName}/${student_inputs}`,
+    `/api/account/files/general/${studentId}/${student_inputs}/${docName}`,
     {
       responseType: "blob",
     }

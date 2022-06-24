@@ -23,9 +23,22 @@ jest.mock("../middlewares/auth", () => {
 
 const admin = generateUser(Role.Admin);
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
+const agent = generateUser(Role.Agent);
 const editors = [...Array(3)].map(() => generateUser(Role.Editor));
+const editor = generateUser(Role.Editor);
+const students = [...Array(3)].map(() => generateUser(Role.Student));
 const student = generateUser(Role.Student);
-const users = [admin, ...agents, ...editors, student];
+const student2 = generateUser(Role.Student);
+const users = [
+  admin,
+  ...agents,
+  agent,
+  ...editors,
+  editor,
+  ...students,
+  student,
+  student2,
+];
 
 const requiredDocuments = ["transcript", "resume"];
 const optionalDocuments = ["certificate", "visa"];
@@ -54,6 +67,13 @@ afterEach(() => {
 });
 
 describe("POST /api/students/:id/agents", () => {
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(admin._id);
+      next();
+    });
+  });
+
   it("should assign agent(s) to student", async () => {
     const { _id: studentId } = student;
 
@@ -162,7 +182,14 @@ describe("POST /api/students/:id/editors", () => {
 //   });
 // });
 
+// Agent should create applications (programs) to student
 describe("POST /api/students/:studentId/applications", () => {
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(agent._id);
+      next();
+    });
+  });
   it("should create an application for student", async () => {
     const { _id: studentId } = student;
     var programs_arr = [];
@@ -179,7 +206,6 @@ describe("POST /api/students/:studentId/applications", () => {
     } = resp;
 
     expect(status).toBe(201);
-    // expect(resp).toBe(201);
     expect(success).toBe(true);
     expect(data).toMatchObject(programs_arr);
     // expect(data).toMatchObject({
@@ -189,12 +215,6 @@ describe("POST /api/students/:studentId/applications", () => {
     // requiredDocuments.length + optionalDocuments.length
     // ),
     // });
-
-    // const updatedStudent = await Student.findById(studentId).lean();
-    // const { documents } = updatedStudent.applications[0];
-    // expect(documents.map(({ name }) => name).sort()).toEqual(
-    //   [...requiredDocuments, ...optionalDocuments].sort()
-    // );
   });
 
   // it("should return 400 when creating application with duplicate program Id", async () => {
@@ -286,8 +306,12 @@ describe("POST /api/students/:studentId/applications", () => {
 //   });
 // });
 
+// Student uploads profile files
+
+// user: Student
 describe("POST /api/students/:studentId/files/:category", () => {
   const { _id: studentId } = student;
+  const { _id: student2Id } = student2;
   const docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
   const category = "Bachelor_Transcript";
@@ -296,7 +320,7 @@ describe("POST /api/students/:studentId/files/:category", () => {
 
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(admin._id);
+      req.user = await User.findById(student._id);
       next();
     });
   });
@@ -331,12 +355,134 @@ describe("POST /api/students/:studentId/files/:category", () => {
     var file_name_inDB = path.basename(
       updatedStudent.profile[profile_file_idx].path
     );
-    // +
-    // path.extname(updatedStudent.profile[profile_file_idx].path);
 
     expect(updatedStudent.profile[profile_file_idx].name).toBe(category);
     expect(file_name_inDB).toBe(temp_name);
+
+    // Test Download:
+    const resp2 = await request(app)
+      .get(`/api/students/${studentId}/files/${category}`)
+      .buffer();
+
+    expect(resp2.status).toBe(200);
+    expect(resp2.headers["content-disposition"]).toEqual(
+      `attachment; filename="${temp_name}"`
+    );
+
+    // TODO: test download: should not download other students's stuff!
+    // const invalidApplicationId = "invalidapplicationID";
+    // const resp3 = await request(app)
+    //   .get(`/api/students/${studentId}/files/${category}`)
+    //   .buffer();
+
+    // expect(resp3).toBe(400);
+    // expect(resp3.body.success).toBe(false);
+
+    // test delete
+    const resp4 = await request(app).delete(
+      `/api/students/${studentId}/files/${category}`
+    );
+    expect(resp4.status).toBe(200);
+    expect(resp4.body.success).toBe(true);
+
+    // TODO test delete: should not delete other students file
+    const resp5 = await request(app).delete(
+      `/api/students/${student2Id}/files/${category}`
+    );
+    expect(resp5.status).toBe(401);
+    expect(resp5.body.success).toBe(false);
   });
 });
 
-// });
+// user: Agent
+describe("POST /api/students/:studentId/files/:category", () => {
+  const { _id: studentId } = student;
+  const { _id: student2Id } = student2;
+  const docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
+  const category = "Bachelor_Transcript";
+
+  var temp_name;
+
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(agent._id);
+      next();
+    });
+  });
+
+  it("should save the uploaded profile file and store the path in db", async () => {
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/files/${category}`)
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+    const { status, body } = resp;
+    expect(status).toBe(201);
+    expect(body.success).toBe(true);
+
+    var updatedStudent = body.data;
+    const profile_file_idx = updatedStudent.profile.findIndex(({ name }) =>
+      name.includes(category)
+    );
+    temp_name =
+      student.lastname +
+      "_" +
+      student.firstname +
+      "_" +
+      category +
+      path.extname(updatedStudent.profile[profile_file_idx].path);
+    // expect(
+    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
+    // ).toMatchObject({
+    //   // path: expect.not.stringMatching(/^$/),
+    //   name: docName,
+    //   // status: DocumentStatus.Uploaded,
+    // });
+    var file_name_inDB = path.basename(
+      updatedStudent.profile[profile_file_idx].path
+    );
+
+    expect(updatedStudent.profile[profile_file_idx].name).toBe(category);
+    expect(file_name_inDB).toBe(temp_name);
+
+    // Test Download:
+    const resp2 = await request(app)
+      .get(`/api/students/${studentId}/files/${category}`)
+      .buffer();
+
+    expect(resp2.status).toBe(200);
+    expect(resp2.headers["content-disposition"]).toEqual(
+      `attachment; filename="${temp_name}"`
+    );
+
+    // TODO: test download: should not download other students's stuff!
+    // const invalidApplicationId = "invalidapplicationID";
+    // const resp3 = await request(app)
+    //   .get(`/api/students/${studentId}/files/${category}`)
+    //   .buffer();
+
+    // expect(resp3).toBe(400);
+    // expect(resp3.body.success).toBe(false);
+
+    // test update profile status
+    const feedback_str = "too blurred";
+    const resp5 = await request(app)
+      .post(`/api/students/${studentId}/${category}/status`)
+      .send({ status: "rejected", feedback: feedback_str });
+    expect(resp5.status).toBe(201);
+    var updatedStudent2 = resp5.body.data;
+    const updated_doc_idx = updatedStudent2.profile.findIndex(({ name }) =>
+      name.includes(category)
+    );
+    const updated_doc = updatedStudent2.profile[updated_doc_idx];
+    expect(resp5.body.success).toBe(true);
+    expect(updated_doc.feedback).toBe(feedback_str);
+
+    // test delete
+    const resp4 = await request(app).delete(
+      `/api/students/${studentId}/files/${category}`
+    );
+    expect(resp4.status).toBe(200);
+    expect(resp4.body.success).toBe(true);
+  });
+});

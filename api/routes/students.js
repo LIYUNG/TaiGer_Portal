@@ -84,10 +84,6 @@ router
   )
   .delete(permit(Role.Admin, Role.Agent, Role.Student), deleteProfileFile);
 
-// router
-//   .route("/:studentId/applications/:applicationId/:docName/status")
-//   .post(permit(Role.Admin, Role.Agent), updateProfileDocumentStatus);
-
 router
   .route("/:studentId/:category/status")
   .post(permit(Role.Admin, Role.Agent), updateProfileDocumentStatus);

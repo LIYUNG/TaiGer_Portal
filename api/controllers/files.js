@@ -715,7 +715,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   document.updatedAt = new Date();
 
   await student.save();
-  res.status(200).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: student });
   //Reminder for Student:
   await sendChangedProfileFileStatusEmail(
     {
@@ -815,6 +815,12 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
     params: { studentId, applicationId, docName, whoupdate },
   } = req;
 
+  if (user.role === "Student") {
+    // if (studentId !== user._id.toString()) {
+      throw new ErrorResponse(401, "Invalid operation for student");
+    // }
+  }
+
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate("applications.programId")
@@ -907,6 +913,11 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     params: { studentId, applicationId, docName, whoupdate },
   } = req;
 
+  if (user.role === "Student") {
+    if (studentId !== user._id.toString()) {
+      throw new ErrorResponse(401, "Invalid operation for student");
+    }
+  }
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   var student = await Student.findById(studentId).populate(
     "applications.programId"
@@ -1012,13 +1023,19 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     "applications.programId"
   );
   await student.save();
-  return res.status(201).send({ success: true, data: student });
+  return res.status(200).send({ success: true, data: student });
 });
 const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId, docName, whoupdate },
   } = req;
+
+  if (user.role === "Student") {
+    // if (studentId !== user._id.toString()) {
+      throw new ErrorResponse(401, "Invalid operation for student");
+    // }
+  }
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
@@ -1028,7 +1045,6 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
 
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   // console.log(student);
-  if (!student) throw new ErrorResponse(400, "Invalid student id");
   var editor_output_doc;
   var student_input_doc;
   var SetFinal_Flag = 0;
@@ -1122,6 +1138,12 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
     user,
     params: { studentId, docName, whoupdate },
   } = req;
+
+  if (user.role === "Student") {
+    if (studentId !== user._id.toString()) {
+      throw new ErrorResponse(401, "Invalid operation for student");
+    }
+  }
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   var student = await Student.findById(studentId).populate(
@@ -1221,19 +1243,26 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
     "applications.programId"
   );
   await student.save();
-  return res.status(201).send({ success: true, data: student });
+  return res.status(200).send({ success: true, data: student });
 });
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
+  const { user } = req;
+  if (user.role === "Student") {
+    if (studentId !== user._id.toString()) {
+      throw new ErrorResponse(401, "Invalid operation for student");
+    }
+  }
 
   const student = await Student.findOne({
     _id: studentId,
   });
+
   if (!student)
     throw new ErrorResponse(400, "Invalid student Id or application Id");
 
   const document = student.profile.find(({ name }) => name === category);
-  console.log(document);
+  // console.log(document);
   if (!document) throw new ErrorResponse(400, "Invalid document name");
   if (!document.path) throw new ErrorResponse(400, "File not exist");
 
@@ -1460,15 +1489,13 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
     { upsert: true, new: true }
   );
   const updatedStudent = await User.findById(_id);
-  res
-    .status(200)
-    .send({
-      success: true,
-      data: {
-        firstname: updatedStudent.firstname,
-        lastname: updatedStudent.lastname,
-      },
-    });
+  res.status(200).send({
+    success: true,
+    data: {
+      firstname: updatedStudent.firstname,
+      lastname: updatedStudent.lastname,
+    },
+  });
 });
 
 const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {

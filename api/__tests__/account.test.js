@@ -39,10 +39,22 @@ jest.mock("child_process", () => ({
 
 const admin = generateUser(Role.Admin);
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
+const agent = generateUser(Role.Agent);
+const editors = [...Array(3)].map(() => generateUser(Role.Editor));
 const editor = generateUser(Role.Editor);
+const students = [...Array(3)].map(() => generateUser(Role.Student));
 const student = generateUser(Role.Student);
-const users = [admin, ...agents, editor, student];
-// const student = generateUser(Role.Student);
+const student2 = generateUser(Role.Student);
+const users = [
+  admin,
+  ...agents,
+  agent,
+  ...editors,
+  editor,
+  ...students,
+  student,
+  student2,
+];
 
 const requiredDocuments = ["transcript", "resume"];
 const optionalDocuments = ["certificate", "visa"];
@@ -72,6 +84,7 @@ afterEach(() => {
   fs.rmSync(UPLOAD_PATH, { recursive: true, force: true });
 });
 
+// user: Agent
 describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
   const { _id: studentId } = student;
   var docName = requiredDocuments[0];
@@ -85,7 +98,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   var file_name_inDB;
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(admin._id);
+      req.user = await User.findById(agent._id);
       next();
     });
 
@@ -186,7 +199,6 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(file_name_inDB).toBe(temp_name);
 
     // Test Download:
-
     const resp2 = await request(app)
       .get(
         `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
@@ -197,6 +209,13 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(resp2.headers["content-disposition"]).toEqual(
       `attachment; filename="${temp_name}"`
     );
+
+    // Mark as final documents
+    const resp6 = await request(app).put(
+      `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp6.status).toBe(201);
+    expect(resp6.body.success).toBe(true);
 
     // test download: should return 400 with invalid applicationId
     const invalidApplicationId = "invalidapplicationID";
@@ -213,12 +232,364 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     const resp4 = await request(app).delete(
       `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
     );
-    expect(resp4.status).toBe(201);
+    expect(resp4.status).toBe(200);
+    expect(resp4.body.success).toBe(true);
+
+    // Mark program as "GetAdmission"
+    const resp7 = await request(app).put(
+      `/api/account/program/admission/${studentId}/${applicationId}`
+    );
+    expect(resp7.status).toBe(201);
+    expect(resp7.body.success).toBe(true);
+
+    const resp8 = await request(app).put(
+      `/api/account/program/admission/${studentId}/${invalidApplicationId}`
+    );
+    expect(resp8.status).toBe(400);
+    expect(resp8.body.success).toBe(false);
+
+    // Mark program as "Close"
+    const resp9 = await request(app).put(
+      `/api/account/program/close/${studentId}/${applicationId}`
+    );
+    expect(resp9.status).toBe(201);
+    expect(resp9.body.success).toBe(true);
+
+    const resp10 = await request(app).put(
+      `/api/account/program/close/${studentId}/${invalidApplicationId}`
+    );
+    expect(resp10.status).toBe(400);
+    expect(resp10.body.success).toBe(false);
+
+    // Mark program as "Decided"
+    const resp11 = await request(app).put(
+      `/api/account/program/decided/${studentId}/${applicationId}`
+    );
+    expect(resp11.status).toBe(201);
+    expect(resp11.body.success).toBe(true);
+
+    const resp12 = await request(app).put(
+      `/api/account/program/decided/${studentId}/${invalidApplicationId}`
+    );
+    expect(resp12.status).toBe(400);
+    expect(resp12.body.success).toBe(false);
+  });
+
+});
+
+// user: Editor
+describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
+  const { _id: studentId } = student;
+  var docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
+  const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
+  const fileCategory = "ML";
+  var whoupdate = "Editor";
+  var temp_name;
+  var applicationIds;
+  var applicationId;
+  var file_name_inDB;
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(editor._id);
+      next();
+    });
+
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/applications`)
+      .send({ program_id_set: [program._id] });
+
+    applicationIds = resp.body.data;
+    applicationId = applicationIds[0];
+  });
+
+  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+    const resp2 = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
+    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const resp2 = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", buffer_10MB, filename);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should save the uploaded program specific file and store the path in db", async () => {
+    const resp = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+    const { status, body } = resp;
+    expect(status).toBe(201);
+    expect(body.success).toBe(true);
+
+    var updatedStudent = await Student.findById(studentId)
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    var application = updatedStudent.applications.find(
+      ({ programId }) => programId._id == applicationId
+    );
+    const doc_idx = application.documents.findIndex(({ name }) =>
+      name.includes(fileCategory)
+    );
+
+    var version_number = 1;
+    var same_file_name = true;
+    while (same_file_name) {
+      // console.log(application.programId);
+      temp_name =
+        student.lastname +
+        "_" +
+        student.firstname +
+        "_" +
+        application.programId.school +
+        "_" +
+        application.programId.program_name +
+        "_" +
+        fileCategory +
+        "_v" +
+        version_number +
+        `${path.extname(application.documents[doc_idx].path)}`;
+      temp_name = temp_name.replace(/ /g, "_");
+
+      // let student_input_doc = application.student_inputs.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // let editor_output_doc = application.documents.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // if (editor_output_doc || student_input_doc) {
+      //   version_number++;
+      // } else {
+      same_file_name = false;
+      // }
+    }
+
+    // expect(
+    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
+    // ).toMatchObject({
+    //   // path: expect.not.stringMatching(/^$/),
+    //   name: docName,
+    //   // status: DocumentStatus.Uploaded,
+    // });
+    file_name_inDB = path.basename(application.documents[doc_idx].path);
+    expect(file_name_inDB).toBe(temp_name);
+
+    // Test Download:
+    const resp2 = await request(app)
+      .get(
+        `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+      )
+      .buffer();
+
+    expect(resp2.status).toBe(200);
+    expect(resp2.headers["content-disposition"]).toEqual(
+      `attachment; filename="${temp_name}"`
+    );
+
+    // Mark as final documents
+    const resp6 = await request(app).put(
+      `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp6.status).toBe(201);
+    expect(resp6.body.success).toBe(true);
+
+    // test download: should return 400 with invalid applicationId
+    const invalidApplicationId = "invalidapplicationID";
+    const resp3 = await request(app)
+      .get(
+        `/api/account/files/programspecific/${studentId}/${invalidApplicationId}/${whoupdate}/${temp_name}`
+      )
+      .buffer();
+
+    expect(resp3.status).toBe(400);
+    expect(resp3.body.success).toBe(false);
+
+    // test delete
+    const resp4 = await request(app).delete(
+      `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
   });
 });
 
-// TODO: uploading edutir general files like CV, RL_1, RL_2
+// user: Student
+describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
+  const { _id: studentId } = student;
+  const { _id: student2Id } = student2;
+  var docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
+  const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
+  const fileCategory = "ML";
+  var whoupdate = "Student";
+  var temp_name;
+  var applicationIds;
+  var applicationId;
+  var file_name_inDB;
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(student._id);
+      next();
+    });
+
+    const resp = await request(app)
+      .post(`/api/students/${studentId}/applications`)
+      .send({ program_id_set: [program._id] });
+
+    applicationIds = resp.body.data;
+    applicationId = applicationIds[0];
+  });
+
+  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+    const resp2 = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
+    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const resp2 = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", buffer_10MB, filename);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should save the uploaded program specific file and store the path in db", async () => {
+    const resp = await request(app)
+      .post(
+        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+      )
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+    const { status, body } = resp;
+    expect(status).toBe(201);
+    expect(body.success).toBe(true);
+
+    var updatedStudent = await Student.findById(studentId)
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    var application = updatedStudent.applications.find(
+      ({ programId }) => programId._id == applicationId
+    );
+    const doc_idx = application.student_inputs.findIndex(({ name }) =>
+      name.includes(fileCategory)
+    );
+
+    var version_number = 1;
+    var same_file_name = true;
+    while (same_file_name) {
+      temp_name =
+        student.lastname +
+        "_" +
+        student.firstname +
+        "_" +
+        application.programId.school +
+        "_" +
+        application.programId.program_name +
+        "_" +
+        fileCategory +
+        "_v" +
+        version_number +
+        `${path.extname(application.student_inputs[doc_idx].path)}`;
+      temp_name = temp_name.replace(/ /g, "_");
+
+      // let student_input_doc = application.student_inputs.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // let editor_output_doc = application.student_inputs.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // if (editor_output_doc || student_input_doc) {
+      //   version_number++;
+      // } else {
+      same_file_name = false;
+      // }
+    }
+
+    // expect(
+    //   updatedStudent.applications[appl_idx].student_inputs[doc_idx].name
+    // ).toMatchObject({
+    //   // path: expect.not.stringMatching(/^$/),
+    //   name: docName,
+    //   // status: DocumentStatus.Uploaded,
+    // });
+    file_name_inDB = path.basename(application.student_inputs[doc_idx].path);
+    expect(file_name_inDB).toBe(temp_name);
+
+    // Test Download:
+    const resp2 = await request(app)
+      .get(
+        `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+      )
+      .buffer();
+    expect(resp2.status).toBe(200);
+    expect(resp2.headers["content-disposition"]).toEqual(
+      `attachment; filename="${temp_name}"`
+    );
+
+    // test download: should return 400 with invalid applicationId
+    const invalidApplicationId = "invalidapplicationID";
+    const resp3 = await request(app)
+      .get(
+        `/api/account/files/programspecific/${studentId}/${invalidApplicationId}/${whoupdate}/${temp_name}`
+      )
+      .buffer();
+
+    expect(resp3.status).toBe(400);
+    expect(resp3.body.success).toBe(false);
+
+    // Mark as final documents (Invalid operation for student)
+    const resp6 = await request(app).put(
+      `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp6.status).toBe(401);
+    expect(resp6.body.success).toBe(false);
+
+    // test delete
+    const resp4 = await request(app).delete(
+      `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp4.status).toBe(200);
+    expect(resp4.body.success).toBe(true);
+
+    // test delete: student can not delete other student's file
+    const resp5 = await request(app).delete(
+      `/api/account/files/programspecific/${student2Id}/${applicationId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp5.status).toBe(401);
+    expect(resp5.body.success).toBe(false);
+  });
+});
+
+// uploading edutir general files like CV, RL_1, RL_2, by Editor (Admin, Agent)
 describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () => {
   const { _id: studentId } = student;
   var docName = requiredDocuments[0];
@@ -325,12 +696,150 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       `attachment; filename="${temp_name}"`
     );
 
+    // Mark as final documents
+    const resp6 = await request(app).put(
+      `/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp6.status).toBe(201);
+    expect(resp6.body.success).toBe(true);
+
     // test delete
     const resp4 = await request(app).delete(
       `/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`
     );
-    expect(resp4.status).toBe(201);
+    expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
+  });
+});
+
+// uploading edutir general files like CV, RL_1, RL_2, by Editor (Student)
+describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () => {
+  const { _id: studentId } = student;
+  const { _id: student2Id } = student2;
+  var docName = requiredDocuments[0];
+  const filename = "my-file.pdf"; // will be overwrite to docName
+  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
+  const fileCategory = "CV";
+  var whoupdate = "Student";
+  var temp_name;
+  var file_name_inDB;
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = await User.findById(student._id);
+      next();
+    });
+  });
+
+  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+    const resp2 = await request(app)
+      .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
+      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should return 400 when editor general file (CV, RL) size over 5 MB", async () => {
+    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const resp2 = await request(app)
+      .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
+      .attach("file", buffer_10MB, filename);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+
+  it("should save the uploaded general CV,RL files and store the path in db", async () => {
+    const resp = await request(app)
+      .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
+      .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+    const { status, body } = resp;
+    expect(status).toBe(201);
+    expect(body.success).toBe(true);
+
+    var updatedStudent = await Student.findById(studentId)
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    var studentinput_idx = updatedStudent.generaldocs.studentinputs.findIndex(
+      ({ name }) => name.includes(fileCategory)
+    );
+
+    var version_number = 1;
+    var same_file_name = true;
+    while (same_file_name) {
+      // console.log(application.programId);
+      temp_name =
+        student.lastname +
+        "_" +
+        student.firstname +
+        "_" +
+        fileCategory +
+        "_v" +
+        version_number +
+        `${path.extname(
+          updatedStudent.generaldocs.studentinputs[studentinput_idx].path
+        )}`;
+      temp_name = temp_name.replace(/ /g, "_");
+
+      // let student_input_doc = application.student_inputs.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // let editor_output_doc = application.documents.find(
+      //   ({ name }) => name === temp_name
+      // );
+      // if (editor_output_doc || student_input_doc) {
+      //   version_number++;
+      // } else {
+      same_file_name = false;
+      // }
+    }
+
+    // expect(
+    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
+    // ).toMatchObject({
+    //   // path: expect.not.stringMatching(/^$/),
+    //   name: docName,
+    //   // status: DocumentStatus.Uploaded,
+    // });
+    file_name_inDB = path.basename(
+      updatedStudent.generaldocs.studentinputs[studentinput_idx].path
+    );
+    expect(file_name_inDB).toBe(temp_name);
+
+    // Test Download:
+
+    const resp3 = await request(app)
+      .get(`/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`)
+      .buffer();
+
+    expect(resp3.status).toBe(200);
+    expect(resp3.headers["content-disposition"]).toEqual(
+      `attachment; filename="${temp_name}"`
+    );
+
+    // Mark as final documents (Invalid operation for student)
+    const resp6 = await request(app).put(
+      `/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp6.status).toBe(401);
+    expect(resp6.body.success).toBe(false);
+
+    // test delete
+    const resp4 = await request(app).delete(
+      `/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp4.status).toBe(200);
+    expect(resp4.body.success).toBe(true);
+
+    // test delete: student can not delete other student's file
+    const resp5 = await request(app).delete(
+      `/api/account/files/general/${student2Id}/${whoupdate}/${temp_name}`
+    );
+    expect(resp5.status).toBe(401);
+    expect(resp5.body.success).toBe(false);
   });
 });
 

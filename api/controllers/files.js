@@ -954,7 +954,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
         if (error) {
           console.log(err);
         } else {
-          console.log("Successfully deleted file from bucket");
+          // console.log("Successfully deleted file from bucket");
         }
       });
     }
@@ -995,7 +995,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
         if (error) {
           console.log(err);
         } else {
-          console.log("Successfully deleted file from bucket");
+          // console.log("Successfully deleted file from bucket");
         }
       });
     }
@@ -1161,7 +1161,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
           if (error) {
             console.log(err);
           } else {
-            console.log("Successfully deleted file from bucket");
+            // console.log("Successfully deleted file from bucket");
           }
         });
       }
@@ -1201,7 +1201,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
           if (error) {
             console.log(err);
           } else {
-            console.log("Successfully deleted file from bucket");
+            // console.log("Successfully deleted file from bucket");
           }
         });
       }
@@ -1258,8 +1258,8 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
       if (error) {
         console.log(err);
       } else {
-        console.log("Successfully deleted file from bucket");
-        console.log(data);
+        // console.log("Successfully deleted file from bucket");
+        // console.log(data);
         document.status = DocumentStatus.Missing;
         document.path = "";
         document.updatedAt = new Date();
@@ -1439,7 +1439,10 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     },
     { upsert: true, new: true }
   );
-  res.status(200).send({ success: true, data: language });
+  const updatedStudent = await User.findById(_id);
+  res
+    .status(200)
+    .send({ success: true, data: updatedStudent.academic_background.language });
 });
 
 const updatePersonalData = asyncHandler(async (req, res, next) => {
@@ -1456,7 +1459,16 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
     },
     { upsert: true, new: true }
   );
-  res.status(200).send({ success: true, data: personaldata });
+  const updatedStudent = await User.findById(_id);
+  res
+    .status(200)
+    .send({
+      success: true,
+      data: {
+        firstname: updatedStudent.firstname,
+        lastname: updatedStudent.lastname,
+      },
+    });
 });
 
 const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {

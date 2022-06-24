@@ -197,20 +197,25 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(resp2.headers["content-disposition"]).toEqual(
       `attachment; filename="${temp_name}"`
     );
+
+    // test download: should return 400 with invalid applicationId
+    const invalidApplicationId = "invalidapplicationID";
+    const resp3 = await request(app)
+      .get(
+        `/api/account/files/programspecific/${studentId}/${invalidApplicationId}/${whoupdate}/${temp_name}`
+      )
+      .buffer();
+
+    expect(resp3.status).toBe(400);
+    expect(resp3.body.success).toBe(false);
+
+    // test delete
+    const resp4 = await request(app).delete(
+      `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp4.status).toBe(201);
+    expect(resp4.body.success).toBe(true);
   });
-
-  // it("should return 400 with invalid applicationId", async () => {
-  //   const invalidDoc = "wrong-doc";
-  //   const resp = await request(app)
-  //     .post(
-  //       `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
-  //     )
-  //     .attach("file", Buffer.from("Lorem ipsum"), filename);
-
-  //   const { status, body } = resp;
-  //   expect(status).toBe(400);
-  //   expect(body.success).toBe(false);
-  // });
 });
 
 // TODO: uploading edutir general files like CV, RL_1, RL_2
@@ -319,20 +324,14 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     expect(resp3.headers["content-disposition"]).toEqual(
       `attachment; filename="${temp_name}"`
     );
+
+    // test delete
+    const resp4 = await request(app).delete(
+      `/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`
+    );
+    expect(resp4.status).toBe(201);
+    expect(resp4.body.success).toBe(true);
   });
-
-  // it("should return 400 with invalid document name", async () => {
-  //   const invalidDoc = "wrong-doc";
-  //   const resp = await request(app)
-  //     .post(
-  //       `/api/students/${studentId}/applications/${applicationId}/${invalidDoc}`
-  //     )
-  //     .attach("file", Buffer.from("Lorem ipsum"), filename);
-
-  //   const { status, body } = resp;
-  //   expect(status).toBe(400);
-  //   expect(body.success).toBe(false);
-  // });
 });
 
 // TODO: uploading transcript for courses analyser
@@ -382,3 +381,56 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
 // describe("GET /api/account/download/:category/:filename", () => {
 //   it.todo("should download the analyzed report");
 // });
+
+describe("POST /api/account/profile", () => {
+  it("should update personal data", async () => {
+    const resp = await request(app)
+      .post(`/api/account/profile`)
+      .send({
+        personaldata: { firstname: "New_FirstName", lastname: "New_LastName" },
+      });
+    const { status, body } = resp;
+    expect(status).toBe(200);
+    expect(body.success).toBe(true);
+    expect(body.data).toMatchObject({
+      firstname: "New_FirstName",
+      lastname: "New_LastName",
+    });
+  });
+});
+
+describe("POST /api/account/survey/language", () => {
+  const language_obj = {
+    language: {
+      english_certificate: "TOEFL",
+      english_score: "95",
+      english_test_date: "",
+      german_certificate: "",
+      german_score: "",
+      german_test_date: "",
+    },
+  };
+  it("should update language status", async () => {
+    const resp = await request(app)
+      .post(`/api/account/survey/language`)
+      .send(language_obj);
+    const { status, body } = resp;
+    expect(status).toBe(200);
+    expect(body.success).toBe(true);
+    // expect(body.data).toMatchObject(language_obj);
+    expect(body.data.english_certificate).toBe(
+      language_obj.language.english_certificate
+    );
+    expect(body.data.english_score).toBe(language_obj.language.english_score);
+    expect(body.data.english_test_date).toBe(
+      language_obj.language.english_test_date
+    );
+    expect(body.data.german_certificate).toBe(
+      language_obj.language.german_certificate
+    );
+    expect(body.data.german_score).toBe(language_obj.language.german_score);
+    expect(body.data.german_test_date).toBe(
+      language_obj.language.german_test_date
+    );
+  });
+});

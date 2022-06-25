@@ -1220,11 +1220,11 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         };
 
         s3.deleteObject(options, (error, data) => {
-          if (error) {
-            console.log(err);
-          } else {
-            // console.log("Successfully deleted file from bucket");
-          }
+          // if (error) {
+          //   console.log(err);
+          // } else {
+          //   console.log("Successfully deleted file from bucket");
+          // }
         });
       }
       await Student.findOneAndUpdate(

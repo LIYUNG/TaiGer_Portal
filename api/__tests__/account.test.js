@@ -274,7 +274,6 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(resp12.status).toBe(400);
     expect(resp12.body.success).toBe(false);
   });
-
 });
 
 // user: Editor
@@ -601,7 +600,7 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
   var file_name_inDB;
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(admin._id);
+      req.user = await User.findById(editor._id);
       next();
     });
   });
@@ -646,7 +645,6 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     var version_number = 1;
     var same_file_name = true;
     while (same_file_name) {
-      // console.log(application.programId);
       temp_name =
         student.lastname +
         "_" +
@@ -696,12 +694,32 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       `attachment; filename="${temp_name}"`
     );
 
+    // Test update comments of general file (Editor part)
+    const resp7 = await request(app)
+      .post(
+        `/api/account/files/general/comments/${studentId}/${whoupdate}/${temp_name}`
+      )
+      .send({ comments: "My comments" });
+    expect(resp7.status).toBe(201);
+
+    var updated2Student = await Student.findById(studentId)
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    var editoroutput2_idx = updatedStudent.generaldocs.editoroutputs.findIndex(
+      ({ name }) => name.includes(fileCategory)
+    );
+    expect(
+      updated2Student.generaldocs.editoroutputs[editoroutput2_idx].feedback
+    ).toBe("My comments");
+
     // Mark as final documents
     const resp6 = await request(app).put(
       `/api/account/files/general/${studentId}/${whoupdate}/${temp_name}`
     );
     expect(resp6.status).toBe(201);
     expect(resp6.body.success).toBe(true);
+    //TODO: check if it is really flagged with final: true
 
     // test delete
     const resp4 = await request(app).delete(
@@ -808,6 +826,25 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       updatedStudent.generaldocs.studentinputs[studentinput_idx].path
     );
     expect(file_name_inDB).toBe(temp_name);
+
+    // Test update comments of general file (Student part)
+    const resp7 = await request(app)
+      .post(
+        `/api/account/files/general/comments/${studentId}/${whoupdate}/${temp_name}`
+      )
+      .send({ comments: "My comments2" });
+    expect(resp7.status).toBe(201);
+
+    var updated2Student = await Student.findById(studentId)
+      .populate("applications.programId")
+      .lean()
+      .exec();
+    var studentinput2_idx = updatedStudent.generaldocs.studentinputs.findIndex(
+      ({ name }) => name.includes(fileCategory)
+    );
+    expect(
+      updated2Student.generaldocs.studentinputs[studentinput2_idx].feedback
+    ).toBe("My comments2");
 
     // Test Download:
 
@@ -940,6 +977,43 @@ describe("POST /api/account/survey/language", () => {
     expect(body.data.german_score).toBe(language_obj.language.german_score);
     expect(body.data.german_test_date).toBe(
       language_obj.language.german_test_date
+    );
+  });
+});
+
+describe("POST /api/account/survey/university", () => {
+  const university_obj = {
+    university: {
+      attended_university: "National Chiao Tung University",
+      attended_university_program: "Electronics Engineering",
+      isGraduated: "No",
+    },
+  };
+  it("should update university (academic background) ", async () => {
+    const resp = await request(app)
+      .post(`/api/account/survey/university`)
+      .send(university_obj);
+    const { status, body } = resp;
+    expect(status).toBe(200);
+    expect(body.success).toBe(true);
+    expect(body.data.attended_university).toBe(
+      university_obj.university.attended_university
+    );
+    expect(body.data.attended_university_program).toBe(
+      university_obj.university.attended_university_program
+    );
+    expect(body.data.isGraduated).toBe(university_obj.university.isGraduated);
+
+    const resp2 = await request(app).get(`/api/account/survey`);
+    const academic_backgroud = resp2.body.data;
+    expect(academic_backgroud.university.attended_university).toBe(
+      university_obj.university.attended_university
+    );
+    expect(academic_backgroud.university.attended_university_program).toBe(
+      university_obj.university.attended_university_program
+    );
+    expect(academic_backgroud.university.isGraduated).toBe(
+      university_obj.university.isGraduated
     );
   });
 });

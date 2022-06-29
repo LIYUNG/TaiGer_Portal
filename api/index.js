@@ -20,9 +20,10 @@ process.on("SIGINT", () => {
 
 const launch = async () => {
   try {
-    const conn = await connectToDatabase(MONGODB_URI, 1000);
+    const conn = await connectToDatabase(MONGODB_URI, 5000);
     console.log(`Database connected: ${conn.host}`);
   } catch (err) {
+    console.log(err);
     console.error("Failed to connect to database");
     process.exit(1);
   }

@@ -3,4 +3,5 @@ module.exports = {
   watchPathIgnorePatterns: ["globalConfig"],
   testRegex: "/__tests__/.*\\.(test|spec)\\.jsx?$",
   setupFilesAfterEnv: ["jest-extended"],
+  testTimeout: 60000,
 };

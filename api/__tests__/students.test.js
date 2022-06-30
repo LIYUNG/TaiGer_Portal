@@ -103,30 +103,6 @@ describe("POST /api/students/:id/agents", () => {
   });
 });
 
-// Obsolete
-// describe("DELETE /api/students/:studentId/agents/:agentId", () => {
-//   it("should remove an agent from student", async () => {
-//     const { _id: studentId } = student;
-//     const { _id: agentId } = agents[0];
-
-//     await request(app)
-//       .post(`/api/students/${studentId}/agents`)
-//       .send({ id: agentId });
-
-//     const resp = await request(app).delete(
-//       `/api/students/${studentId}/agents/${agentId}`
-//     );
-
-//     expect(resp.status).toBe(200);
-
-//     const updatedStudent = await Student.findById(studentId).lean();
-//     expect(updatedStudent.agents.map(String)).toEqual([]);
-
-//     const updatedAgent = await Agent.findById(agentId).lean();
-//     expect(updatedAgent.students.map(String)).toEqual([]);
-//   });
-// });
-
 describe("POST /api/students/:id/editors", () => {
   it("should assign editors to student", async () => {
     const { _id: studentId } = student;
@@ -158,29 +134,6 @@ describe("POST /api/students/:id/editors", () => {
   });
 });
 
-// Obsolete
-// describe("DELETE /api/students/:studentId/editors/:editorId", () => {
-//   it("should remove an editor from student", async () => {
-//     const { _id: studentId } = student;
-//     const { _id: editorId } = editors[0];
-
-//     await request(app)
-//       .post(`/api/students/${studentId}/editors`)
-//       .send({ id: editorId });
-
-//     const resp = await request(app).delete(
-//       `/api/students/${studentId}/editors/${editorId}`
-//     );
-
-//     expect(resp.status).toBe(200);
-
-//     const updatedStudent = await Student.findById(studentId).lean();
-//     expect(updatedStudent.editors.map(String)).toEqual([]);
-
-//     const updatedEditor = await Editor.findById(editorId).lean();
-//     expect(updatedEditor.students.map(String)).toEqual([]);
-//   });
-// });
 
 // Agent should create applications (programs) to student
 describe("POST /api/students/:studentId/applications", () => {
@@ -307,11 +260,11 @@ describe("POST /api/students/:studentId/applications", () => {
 // });
 
 // Student uploads profile files
-
 // user: Student
 describe("POST /api/students/:studentId/files/:category", () => {
   const { _id: studentId } = student;
   const { _id: student2Id } = student2;
+  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
   const docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
   const category = "Bachelor_Transcript";
@@ -323,6 +276,26 @@ describe("POST /api/students/:studentId/files/:category", () => {
       req.user = await User.findById(student._id);
       next();
     });
+  });
+
+    it("should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+    const resp2 = await request(app)
+      .post(`/api/students/${studentId}/files/${category}`)
+      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
+  });
+  
+  it("should return 400 when profile size over 5 MB", async () => {
+    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const resp2 = await request(app)
+      .post(`/api/students/${studentId}/files/${category}`)
+      .attach("file", buffer_10MB, filename);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
   });
 
   it("should save the uploaded profile file and store the path in db", async () => {
@@ -398,7 +371,7 @@ describe("POST /api/students/:studentId/files/:category", () => {
 describe("POST /api/students/:studentId/files/:category", () => {
   const { _id: studentId } = student;
   const { _id: student2Id } = student2;
-  const docName = requiredDocuments[0];
+  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
   const filename = "my-file.pdf"; // will be overwrite to docName
   const category = "Bachelor_Transcript";
 
@@ -409,6 +382,34 @@ describe("POST /api/students/:studentId/files/:category", () => {
       req.user = await User.findById(agent._id);
       next();
     });
+  });
+
+  
+  it.each([
+    ["my-file.exe", 400, false],
+    ["my-file.a2l", 400, false],
+    ["my-file.pdf", 201, true],
+  ])(
+    "should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx",
+    async (File_Name, status, success) => {
+      const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+      const resp2 = await request(app)
+        .post(`/api/students/${studentId}/files/${category}`)
+        .attach("file", buffer_2MB_exe, File_Name);
+
+      expect(resp2.status).toBe(status);
+      expect(resp2.body.success).toBe(success);
+    }
+  );
+
+  it("should return 400 when profile size over 5 MB", async () => {
+    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const resp2 = await request(app)
+      .post(`/api/students/${studentId}/files/${category}`)
+      .attach("file", buffer_10MB, filename);
+
+    expect(resp2.status).toBe(400);
+    expect(resp2.body.success).toBe(false);
   });
 
   it("should save the uploaded profile file and store the path in db", async () => {

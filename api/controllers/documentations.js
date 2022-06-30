@@ -18,7 +18,8 @@ const createDocumentation = asyncHandler(async (req, res) => {
 
 const updateDocumentation = asyncHandler(async (req, res) => {
   await Documentation.findByIdAndUpdate(req.params.id, req.body);
-  return res.send({ success: true });
+  const updated_doc = await Documentation.findById(req.params.id);
+  return res.status(201).send({ success: true, data: updated_doc });
 });
 
 const deleteDocumentation = asyncHandler(async (req, res) => {

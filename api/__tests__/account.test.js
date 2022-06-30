@@ -91,7 +91,10 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   const filename = "my-file.pdf"; // will be overwrite to docName
   const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
   const fileCategory = "ML";
+  var r = /\d+/; //number pattern
   var whoupdate = "Editor";
+  let version_number_max = 0;
+  let db_file_name;
   var temp_name;
   var applicationIds;
   var applicationId;
@@ -110,17 +113,24 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     applicationId = applicationIds[0];
   });
 
-  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
-    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
-    const resp2 = await request(app)
-      .post(
-        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
-      )
-      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+  it.each([
+    ["my-file.exe", 400, false],
+    ["my-file.a2l", 400, false],
+    ["my-file.pdf", 201, true],
+  ])(
+    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    async (File_Name, status, success) => {
+      const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+      const resp2 = await request(app)
+        .post(
+          `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+        )
+        .attach("file", buffer_2MB_exe, File_Name);
 
-    expect(resp2.status).toBe(400);
-    expect(resp2.body.success).toBe(false);
-  });
+      expect(resp2.status).toBe(status);
+      expect(resp2.body.success).toBe(success);
+    }
+  );
 
   it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
@@ -152,14 +162,21 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     var application = updatedStudent.applications.find(
       ({ programId }) => programId._id == applicationId
     );
-    const doc_idx = application.documents.findIndex(({ name }) =>
-      name.includes(fileCategory)
-    );
 
-    var version_number = 1;
+    application.documents.forEach((editoroutput) => {
+      if (editoroutput.name.includes(fileCategory)) {
+        if (
+          editoroutput.name.match(r) !== null &&
+          editoroutput.name.match(r)[0] > version_number_max
+        ) {
+          version_number_max = editoroutput.name.match(r)[0]; // get the max version number
+        }
+      }
+    });
+
+    var version_number = version_number_max;
     var same_file_name = true;
     while (same_file_name) {
-      // console.log(application.programId);
       temp_name =
         student.lastname +
         "_" +
@@ -172,7 +189,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
         fileCategory +
         "_v" +
         version_number +
-        `${path.extname(application.documents[doc_idx].path)}`;
+        `${path.extname(filename)}`;
       temp_name = temp_name.replace(/ /g, "_");
 
       // let student_input_doc = application.student_inputs.find(
@@ -185,16 +202,13 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
       //   version_number++;
       // } else {
       same_file_name = false;
+      db_file_name = temp_name;
       // }
     }
+    const doc_idx = application.documents.findIndex(({ name }) =>
+      name.includes(db_file_name)
+    );
 
-    // expect(
-    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
-    // ).toMatchObject({
-    //   // path: expect.not.stringMatching(/^$/),
-    //   name: docName,
-    //   // status: DocumentStatus.Uploaded,
-    // });
     file_name_inDB = path.basename(application.documents[doc_idx].path);
     expect(file_name_inDB).toBe(temp_name);
 
@@ -284,10 +298,13 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
   const fileCategory = "ML";
   var whoupdate = "Editor";
-  var temp_name;
+  let version_number_max = 0;
+  let temp_name;
+  let db_file_name;
   var applicationIds;
   var applicationId;
   var file_name_inDB;
+  var r = /\d+/; //number pattern
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
       req.user = await User.findById(editor._id);
@@ -337,6 +354,21 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
+    // const resp_dup = await request(app)
+    //   .post(
+    //     `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+    //   )
+    //   .attach("file", Buffer.from("Lorem ipsum"), filename);
+    // expect(resp_dup.status).toBe(201);
+    // expect(resp_dup.body.success).toBe(true);
+
+    // // test delete first
+    // const resp4 = await request(app).delete(
+    //   `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
+    // );
+    // expect(resp4.status).toBe(200);
+    // expect(resp4.body.success).toBe(true);
+
     var updatedStudent = await Student.findById(studentId)
       .populate("applications.programId")
       .lean()
@@ -344,14 +376,21 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     var application = updatedStudent.applications.find(
       ({ programId }) => programId._id == applicationId
     );
-    const doc_idx = application.documents.findIndex(({ name }) =>
-      name.includes(fileCategory)
-    );
 
-    var version_number = 1;
+    application.documents.forEach((editoroutput) => {
+      if (editoroutput.name.includes(fileCategory)) {
+        if (
+          editoroutput.name.match(r) !== null &&
+          editoroutput.name.match(r)[0] > version_number_max
+        ) {
+          version_number_max = editoroutput.name.match(r)[0]; // get the max version number
+        }
+      }
+    });
+
+    let version_number = version_number_max;
     var same_file_name = true;
     while (same_file_name) {
-      // console.log(application.programId);
       temp_name =
         student.lastname +
         "_" +
@@ -364,7 +403,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
         fileCategory +
         "_v" +
         version_number +
-        `${path.extname(application.documents[doc_idx].path)}`;
+        `${path.extname(filename)}`;
       temp_name = temp_name.replace(/ /g, "_");
 
       // let student_input_doc = application.student_inputs.find(
@@ -377,18 +416,17 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
       //   version_number++;
       // } else {
       same_file_name = false;
+      db_file_name = temp_name;
       // }
     }
 
-    // expect(
-    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
-    // ).toMatchObject({
-    //   // path: expect.not.stringMatching(/^$/),
-    //   name: docName,
-    //   // status: DocumentStatus.Uploaded,
-    // });
+    const doc_idx = application.documents.findIndex(({ name }) =>
+      // name.includes(version_number.toString())
+      name.includes(db_file_name)
+    );
+
     file_name_inDB = path.basename(application.documents[doc_idx].path);
-    expect(file_name_inDB).toBe(temp_name);
+    expect(file_name_inDB).toBe(db_file_name);
 
     // Test Download:
     const resp2 = await request(app)
@@ -437,8 +475,11 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   const filename = "my-file.pdf"; // will be overwrite to docName
   const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
   const fileCategory = "ML";
+  let version_number_max = 0;
+  var r = /\d+/; //number pattern
   var whoupdate = "Student";
-  var temp_name;
+  let temp_name;
+  let db_file_name;
   var applicationIds;
   var applicationId;
   var file_name_inDB;
@@ -491,6 +532,15 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
+    // const resp_dup = await request(app)
+    //   .post(
+    //     `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+    //   )
+    //   .attach("file", Buffer.from("Lorem ipsum"), filename);
+
+    // expect(resp_dup.status).toBe(201);
+    // expect(resp_dup.body.success).toBe(true);
+
     var updatedStudent = await Student.findById(studentId)
       .populate("applications.programId")
       .lean()
@@ -498,11 +548,19 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     var application = updatedStudent.applications.find(
       ({ programId }) => programId._id == applicationId
     );
-    const doc_idx = application.student_inputs.findIndex(({ name }) =>
-      name.includes(fileCategory)
-    );
 
-    var version_number = 1;
+    application.student_inputs.forEach((student_input) => {
+      if (student_input.name.includes(fileCategory)) {
+        if (
+          student_input.name.match(r) !== null &&
+          student_input.name.match(r)[0] > version_number_max
+        ) {
+          version_number_max = student_input.name.match(r)[0]; // get the max version number
+        }
+      }
+    });
+
+    let version_number = version_number_max;
     var same_file_name = true;
     while (same_file_name) {
       temp_name =
@@ -517,7 +575,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
         fileCategory +
         "_v" +
         version_number +
-        `${path.extname(application.student_inputs[doc_idx].path)}`;
+        `${path.extname(filename)}`;
       temp_name = temp_name.replace(/ /g, "_");
 
       // let student_input_doc = application.student_inputs.find(
@@ -530,9 +588,14 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
       //   version_number++;
       // } else {
       same_file_name = false;
+      db_file_name = temp_name;
       // }
     }
 
+    const doc_idx = application.student_inputs.findIndex(({ name }) =>
+      // name.includes(version_number.toString())
+      name.includes(db_file_name)
+    );
     // expect(
     //   updatedStudent.applications[appl_idx].student_inputs[doc_idx].name
     // ).toMatchObject({
@@ -541,7 +604,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     //   // status: DocumentStatus.Uploaded,
     // });
     file_name_inDB = path.basename(application.student_inputs[doc_idx].path);
-    expect(file_name_inDB).toBe(temp_name);
+    expect(file_name_inDB).toBe(db_file_name);
 
     // Test Download:
     const resp2 = await request(app)

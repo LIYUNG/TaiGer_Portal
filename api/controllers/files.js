@@ -1360,8 +1360,9 @@ const processTranscript = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { category, studentId },
-    file: { filename, path: filePath },
   } = req;
+  var filename = req.file.key; // key is updated file name
+  var filePath = path.join(req.file.metadata.path, req.file.key);
   console.log(filePath);
   console.log("--------------");
   console.log(
@@ -1376,6 +1377,7 @@ const processTranscript = asyncHandler(async (req, res, next) => {
   console.log(filePath);
   // FIXME: better pass output filepath as argument to python script instead of hard code value
   const output = `analyzed_${filename}`;
+  var output_filePath = path.join(req.file.metadata.path, "output", output);
   const python = spawn("python", [
     path.join(
       __dirname,
@@ -1403,10 +1405,10 @@ const processTranscript = asyncHandler(async (req, res, next) => {
     studentId,
     {
       "taigerai.input.name": filename,
-      "taigerai.input.path": req.file.path.replace(UPLOAD_PATH, ""),
+      "taigerai.input.path": filePath,
       "taigerai.input.status": "uploaded",
       "taigerai.output.name": output,
-      "taigerai.output.path": path.join(`${studentId}`, "output", output),
+      "taigerai.output.path": output_filePath,
       "taigerai.output.status": "uploaded",
       // $push: {
       //   taigerai: updatedPathAndName,
@@ -1437,36 +1439,85 @@ const processTranscript = asyncHandler(async (req, res, next) => {
 });
 
 // FIXME: refactor this
+// Download original transcript excel
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
-    user: student,
+    user,
     params: { studentId, filename },
   } = req;
-  const { firstname, lastname, _id } = student;
+  // const { firstname, lastname, _id } = student;
 
-  const GeneratedfilePath = path.join(
-    UPLOAD_PATH,
-    `${studentId}`,
-    "output",
-    filename
-  );
-  const UploadedfilePath = path.join(UPLOAD_PATH, `${studentId}`, filename);
+  // const GeneratedfilePath = path.join(
+  //   UPLOAD_PATH,
+  //   `${studentId}`,
+  //   "output",
+  //   filename
+  // );
+  // const UploadedfilePath = path.join(UPLOAD_PATH, `${studentId}`, filename);
 
-  if (fs.existsSync(GeneratedfilePath)) {
-    res.download(GeneratedfilePath, (err) => {
-      if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  // if (fs.existsSync(GeneratedfilePath)) {
+  //   res.download(GeneratedfilePath, (err) => {
+  //     if (err) throw new ErrorResponse(500, "Error occurs while downloading");
 
-      res.status(200).end();
-    });
-  } else if (fs.existsSync(UploadedfilePath)) {
-    res.download(UploadedfilePath, (err) => {
-      if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+  //     res.status(200).end();
+  //   });
+  // } else if (fs.existsSync(UploadedfilePath)) {
+  //   res.download(UploadedfilePath, (err) => {
+  //     if (err) throw new ErrorResponse(500, "Error occurs while downloading");
 
-      res.status(200).end();
-    });
+  //     res.status(200).end();
+  //   });
+  // } else {
+  //   throw new ErrorResponse(400, "File does not exist");
+  // }
+  /////////////////
+  var student;
+  if (user.role === "Student" || user.role === "Guest") {
+    student = await Student.findById(user._id);
   } else {
-    throw new ErrorResponse(400, "File does not exist");
+    student = await Student.findById(studentId);
   }
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+
+  const input_transcript_excel = student.taigerai.input;
+  if (!input_transcript_excel)
+    throw new ErrorResponse(400, "Invalid input_transcript_excel name");
+  if (!input_transcript_excel.path)
+    throw new ErrorResponse(400, "File not uploaded yet");
+
+  // var fileKey = path.join(UPLOAD_PATH, document.path);
+  var input_transcript_excel_split = input_transcript_excel.path.replace(
+    /\\/g,
+    "/"
+  );
+  input_transcript_excel_split = input_transcript_excel_split.split("/");
+  var fileKey = input_transcript_excel_split[1];
+  var directory = input_transcript_excel_split[0];
+  console.log("Trying to download transcript excel file", fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/g, "/");
+  var options = {
+    Key: fileKey,
+    Bucket: directory,
+  };
+
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(fileKey);
+      var fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        console.log(error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
 });
 const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   const {

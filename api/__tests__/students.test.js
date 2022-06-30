@@ -371,7 +371,6 @@ describe("POST /api/students/:studentId/files/:category", () => {
 describe("POST /api/students/:studentId/files/:category", () => {
   const { _id: studentId } = student;
   const { _id: student2Id } = student2;
-  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
   const filename = "my-file.pdf"; // will be overwrite to docName
   const category = "Bachelor_Transcript";
 
@@ -387,15 +386,14 @@ describe("POST /api/students/:studentId/files/:category", () => {
   
   it.each([
     ["my-file.exe", 400, false],
-    ["my-file.a2l", 400, false],
     ["my-file.pdf", 201, true],
   ])(
     "should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx",
     async (File_Name, status, success) => {
-      const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+      const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
         .post(`/api/students/${studentId}/files/${category}`)
-        .attach("file", buffer_2MB_exe, File_Name);
+        .attach("file", buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
       expect(resp2.body.success).toBe(success);

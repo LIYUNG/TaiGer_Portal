@@ -115,17 +115,16 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
 
   it.each([
     ["my-file.exe", 400, false],
-    ["my-file.a2l", 400, false],
     ["my-file.pdf", 201, true],
   ])(
     "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
     async (File_Name, status, success) => {
-      const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+      const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
         .post(
           `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
         )
-        .attach("file", buffer_2MB_exe, File_Name);
+        .attach("file", buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
       expect(resp2.body.success).toBe(success);
@@ -295,7 +294,6 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   const { _id: studentId } = student;
   var docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
-  const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
   const fileCategory = "ML";
   var whoupdate = "Editor";
   let version_number_max = 0;
@@ -319,25 +317,31 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     applicationId = applicationIds[0];
   });
 
-  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
-    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
-    const resp2 = await request(app)
-      .post(
-        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
-      )
-      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+  it.each([
+    ["my-file.exe", 400, false],
+    ["my-file.pdf", 201, true],
+  ])(
+    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    async (File_Name, status, success) => {
+      const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
+      const resp2 = await request(app)
+        .post(
+          `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+        )
+        .attach("file", buffer_1MB_exe, File_Name);
 
-    expect(resp2.status).toBe(400);
-    expect(resp2.body.success).toBe(false);
-  });
+      expect(resp2.status).toBe(status);
+      expect(resp2.body.success).toBe(success);
+    }
+  );
 
   it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
-    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(
         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
       )
-      .attach("file", buffer_10MB, filename);
+      .attach("file", buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
@@ -473,7 +477,6 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   const { _id: student2Id } = student2;
   var docName = requiredDocuments[0];
   const filename = "my-file.pdf"; // will be overwrite to docName
-  const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
   const fileCategory = "ML";
   let version_number_max = 0;
   var r = /\d+/; //number pattern
@@ -497,25 +500,31 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     applicationId = applicationIds[0];
   });
 
-  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
-    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
-    const resp2 = await request(app)
-      .post(
-        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
-      )
-      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+  it.each([
+    ["my-file.exe", 400, false],
+    ["my-file.pdf", 201, true],
+  ])(
+    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    async (File_Name, status, success) => {
+      const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
+      const resp2 = await request(app)
+        .post(
+          `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
+        )
+        .attach("file", buffer_1MB_exe, File_Name);
 
-    expect(resp2.status).toBe(400);
-    expect(resp2.body.success).toBe(false);
-  });
+      expect(resp2.status).toBe(status);
+      expect(resp2.body.success).toBe(success);
+    }
+  );
 
   it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
-    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(
         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
       )
-      .attach("file", buffer_10MB, filename);
+      .attach("file", buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
@@ -668,21 +677,26 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     });
   });
 
-  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
-    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
-    const resp2 = await request(app)
-      .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+  it.each([
+    ["my-file.exe", 400, false],
+    ["my-file.pdf", 201, true],
+  ])(
+    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    async (File_Name, status, success) => {
+      const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
+      const resp2 = await request(app)
+        .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
+        .attach("file", buffer_1MB_exe, File_Name);
 
-    expect(resp2.status).toBe(400);
-    expect(resp2.body.success).toBe(false);
-  });
-
+      expect(resp2.status).toBe(status);
+      expect(resp2.body.success).toBe(success);
+    }
+  );
   it("should return 400 when editor general file (CV, RL) size over 5 MB", async () => {
-    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", buffer_10MB, filename);
+      .attach("file", buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
@@ -812,20 +826,20 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
   });
 
   it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
-    const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
+    const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
     const resp2 = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+      .attach("file", buffer_1MB_exe, filename_invalid_ext);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
   it("should return 400 when editor general file (CV, RL) size over 5 MB", async () => {
-    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+    const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", buffer_10MB, filename);
+      .attach("file", buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);

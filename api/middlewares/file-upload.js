@@ -32,7 +32,7 @@ var s3 = new aws.S3({
 
 const some_str = () => {
   return "GeneralDocsEdit";
-}
+};
 // Profile file upload
 const storage_s3 = multerS3({
   s3: s3,
@@ -249,57 +249,109 @@ const upload_program_specific_s3 = multer({
   },
 });
 
+// const transcript_excel_storage3 = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     var { studentId } = req.params;
+//     if (!studentId) studentId = String(req.user._id);
 
-const storage3 = multer.diskStorage({
-  destination: (req, file, cb) => {
+//     // TODO: check studentId exist
+//     const directory = path.join(UPLOAD_PATH, studentId);
+//     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
+
+//     return cb(null, directory);
+//   },
+//   filename: (req, file, cb) => {
+//     // TODO: check category exist
+//     var { studentId } = req.params;
+//     try {
+//       User.findOne({ _id: studentId })
+//         .then(function (student) {
+//           if (student) {
+//             var temp_name =
+//               student.lastname +
+//               "_" +
+//               student.firstname +
+//               "_" +
+//               "TaiGerTranscriptAI" +
+//               path.extname(file.originalname);
+//             // console.log(temp_name);
+//             const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
+//             // if (fs.existsSync(filePath))
+//             //   return cb(
+//             //     new ErrorResponse(400, "Document already existed!33333")
+//             //   );
+//             return {
+//               fileName: temp_name,
+//             };
+//           }
+//         })
+//         .then(function (resp) {
+//           cb(null, resp.fileName);
+//         });
+//     } catch (err) {
+//       console.log(err);
+//     }
+
+//     // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
+//   },
+// });
+
+//TODO: upload pdf/docx/image
+// TranscriptExcelUpload
+
+const transcript_excel_storage3 = multerS3({
+  s3: s3,
+  bucket: function (req, file, cb) {
     var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
-    // TODO: check studentId exist
-    const directory = path.join(UPLOAD_PATH, studentId);
-    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
-
-    return cb(null, directory);
+    // TODO: check studentId and applicationId exist
+    var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
+    directory = directory.replace(/\\/g, "/");
+    console.log(directory);
+    cb(null, directory);
   },
-  filename: (req, file, cb) => {
-    // TODO: check category exist
+  metadata: function (req, file, cb) {
     var { studentId } = req.params;
-    try {
-      User.findOne({ _id: studentId })
-        .then(function (student) {
-          if (student) {
-            var temp_name =
-              student.lastname +
-              "_" +
-              student.firstname +
-              "_" +
-              "TaiGerTranscriptAI" +
-              path.extname(file.originalname);
-            // console.log(temp_name);
-            const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
-            // if (fs.existsSync(filePath))
-            //   return cb(
-            //     new ErrorResponse(400, "Document already existed!33333")
-            //   );
-            return {
-              fileName: temp_name,
-            };
-          }
-        })
-        .then(function (resp) {
-          cb(null, resp.fileName);
-        });
-    } catch (err) {
-      console.log(err);
-    }
+    if (!studentId) studentId = String(req.user._id);
 
-    // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
+    // TODO: check studentId and applicationId exist
+    var directory = studentId;
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: function (req, file, cb) {
+    var { studentId, applicationId, fileCategory } = req.params;
+    var { user } = req;
+
+    User.findOne({ _id: studentId })
+      .then(function (student) {
+        if (student) {
+          var temp_name =
+            student.lastname +
+            "_" +
+            student.firstname +
+            "_" +
+            "TaiGerTranscriptAI" +
+            path.extname(file.originalname);
+          // console.log(temp_name);
+          const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
+          // if (fs.existsSync(filePath))
+          //   return cb(
+          //     new ErrorResponse(400, "Document already existed!33333")
+          //   );
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        cb(null, resp.fileName);
+      });
   },
 });
 
-//TODO: upload pdf/docx/image
-const upload3 = multer({
-  storage: storage3,
+const upload_transcript_s3 = multer({
+  storage: transcript_excel_storage3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
@@ -321,14 +373,14 @@ const upload3 = multer({
 const storage_general_s3 = multerS3({
   s3: s3,
   bucket: function (req, file, cb) {
-      var { studentId } = req.params;
-      if (!studentId) studentId = String(req.user._id);
+    var { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
 
-      // TODO: check studentId and applicationId exist
-      var directory = path.join(AWS_S3_BUCKET_NAME, studentId, some_str());
-      directory = directory.replace(/\\/g, "/");
-      console.log(directory);
-      cb(null, directory);
+    // TODO: check studentId and applicationId exist
+    var directory = path.join(AWS_S3_BUCKET_NAME, studentId, some_str());
+    directory = directory.replace(/\\/g, "/");
+    console.log(directory);
+    cb(null, directory);
   },
   metadata: function (req, file, cb) {
     var { studentId } = req.params;
@@ -437,6 +489,6 @@ const editor_generaldoc_s3 = multer({
 module.exports = {
   fileUpload: upload_program_specific_s3.single("file"),
   ProfilefileUpload: upload_profile_s3.single("file"),
-  TranscriptExcelUpload: upload3.single("file"),
+  TranscriptExcelUpload: upload_transcript_s3.single("file"),
   EditGeneralDocsUpload: editor_generaldoc_s3.single("file"),
 };

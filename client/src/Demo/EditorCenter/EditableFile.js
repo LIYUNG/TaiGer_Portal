@@ -97,7 +97,7 @@ class EditableFile extends Component {
     let documenName = this.props.document.path.replaceAll("\\", "/");
     let documenName_split = documenName.split("/");
     let str_len = documenName_split.length;
-    console.log(documenName_split);
+    // console.log(documenName_split);
     documenName = documenName.includes("/")
       ? documenName_split[str_len - 1]
       : "x";

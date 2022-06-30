@@ -816,37 +816,42 @@ class EditorDocsProgress extends React.Component {
     downloadHandWrittenFile(studentId, applicationId, docName, student_inputs)
       .then((resp) => {
         console.log(resp);
-        const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
+        const { status } = resp;
+        if (status === 200) {
+          const actualFileName =
+            resp.headers["content-disposition"].split('"')[1];
+          const { data: blob } = resp;
+          if (blob.size === 0) return;
 
-        var filetype = actualFileName.split("."); //split file name
-        filetype = filetype.pop(); //get the file type
+          var filetype = actualFileName.split("."); //split file name
+          filetype = filetype.pop(); //get the file type
 
-        if (filetype === "pdf") {
-          console.log(blob);
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
-          );
+          if (filetype === "pdf") {
+            console.log(blob);
+            const url = window.URL.createObjectURL(
+              new Blob([blob], { type: "application/pdf" })
+            );
 
-          //Open the URL on new Window
-          console.log(url);
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
+            //Open the URL on new Window
+            console.log(url);
+            window.open(url); //TODO: having a reasonable file name, pdf viewer
+          } else {
+            //if not pdf, download instead.
+
+            const url = window.URL.createObjectURL(new Blob([blob]));
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", actualFileName);
+            // Append to html link element page
+            document.body.appendChild(link);
+            // Start download
+            link.click();
+            // Clean up and remove the link
+            link.parentNode.removeChild(link);
+          }
         } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
+          alert("resp.data.message");
         }
       })
       .catch((err) => {
@@ -858,37 +863,42 @@ class EditorDocsProgress extends React.Component {
     downloadGeneralHandWrittenFile(studentId, docName, student_inputs)
       .then((resp) => {
         console.log(resp);
-        const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
+        const { status } = resp;
+        if (status === 200) {
+          const actualFileName =
+            resp.headers["content-disposition"].split('"')[1];
+          const { data: blob } = resp;
+          if (blob.size === 0) return;
 
-        var filetype = actualFileName.split("."); //split file name
-        filetype = filetype.pop(); //get the file type
+          var filetype = actualFileName.split("."); //split file name
+          filetype = filetype.pop(); //get the file type
 
-        if (filetype === "pdf") {
-          console.log(blob);
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
-          );
+          if (filetype === "pdf") {
+            console.log(blob);
+            const url = window.URL.createObjectURL(
+              new Blob([blob], { type: "application/pdf" })
+            );
 
-          //Open the URL on new Window
-          console.log(url);
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
+            //Open the URL on new Window
+            console.log(url);
+            window.open(url); //TODO: having a reasonable file name, pdf viewer
+          } else {
+            //if not pdf, download instead.
+
+            const url = window.URL.createObjectURL(new Blob([blob]));
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", actualFileName);
+            // Append to html link element page
+            document.body.appendChild(link);
+            // Start download
+            link.click();
+            // Clean up and remove the link
+            link.parentNode.removeChild(link);
+          }
         } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
+          alert("resp.data.message");
         }
       })
       .catch((err) => {

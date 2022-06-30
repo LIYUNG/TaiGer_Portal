@@ -526,18 +526,31 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   document_split = document_split.split("/");
   var fileKey = document_split[1];
   var directory = document_split[0];
-  console.log("Trying to download file", fileKey);
+  console.log("Trying to download profile file", fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, "/");
-
   var options = {
     Key: fileKey,
     Bucket: directory,
   };
 
-  res.attachment(fileKey);
-  var fileStream = s3.getObject(options).createReadStream();
-  fileStream.pipe(res);
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(fileKey);
+      var fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        console.log(error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
 });
 
 const downloadTemplateFile = asyncHandler(async (req, res, next) => {
@@ -605,13 +618,32 @@ const downloadProgramSpecificFile = asyncHandler(async (req, res, next) => {
     Key: fileKey,
     Bucket: directory,
   };
-  try {
-    res.attachment(fileKey);
-    var fileStream = s3.getObject(options).createReadStream();
-    fileStream.pipe(res);
-  } catch (err) {
-    throw new ErrorResponse(500, "Error occurs while downloading");
-  }
+
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(fileKey);
+      var fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        console.log(error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
+
+  // try {
+  //   res.attachment(fileKey);
+  //   var fileStream = s3.getObject(options).createReadStream();
+  //   fileStream.pipe(res);
+  // } catch (err) {
+  //   throw new ErrorResponse(500, "Error occurs while downloading");
+  // }
 });
 
 const downloadGeneralFile = asyncHandler(async (req, res, next) => {
@@ -665,9 +697,27 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
       Bucket: directory,
     };
 
-    res.attachment(fileKey);
-    var fileStream = s3.getObject(options).createReadStream();
-    fileStream.pipe(res);
+    s3.headObject(options)
+      .promise()
+      .then(() => {
+        // This will not throw error anymore
+        res.attachment(fileKey);
+        var fileStream = s3.getObject(options).createReadStream();
+        fileStream.pipe(res);
+      })
+      .catch((error) => {
+        if (error.statusCode === 404) {
+          // Catching NoSuchKey
+          console.log(error);
+        }
+        return res
+          .status(error.statusCode)
+          .json({ success: false, message: error.message });
+      });
+
+    // res.attachment(fileKey);
+    // var fileStream = s3.getObject(options).createReadStream();
+    // fileStream.pipe(res);
   } catch (err) {
     console.log(err);
     return new ErrorResponse(400, "Strange error!");
@@ -817,7 +867,7 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
 
   if (user.role === "Student") {
     // if (studentId !== user._id.toString()) {
-      throw new ErrorResponse(401, "Invalid operation for student");
+    throw new ErrorResponse(401, "Invalid operation for student");
     // }
   }
 
@@ -1033,7 +1083,7 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
 
   if (user.role === "Student") {
     // if (studentId !== user._id.toString()) {
-      throw new ErrorResponse(401, "Invalid operation for student");
+    throw new ErrorResponse(401, "Invalid operation for student");
     // }
   }
 

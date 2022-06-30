@@ -80,7 +80,7 @@ export default {
         },
         {
           id: "editor_center",
-          title: "Editor Center",
+          title: "CV/ML/RL Center",
           type: "item",
           url: "/editor-center",
           classes: "nav-item",

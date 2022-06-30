@@ -29,7 +29,7 @@ import ButtonSetRejected from "../AgentCenter/ButtonSetRejected";
 import ButtonSetNotNeeded from "../AgentCenter/ButtonSetNotNeeded";
 import ButtonSetMissing from "../AgentCenter/ButtonSetMissing";
 import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
-import EditorDocsProgress from "../EditorCenter/EditorDocsProgress";
+import EditorDocsProgress from "../CVMLRLCenter/EditorDocsProgress";
 import SurveyComponent from "../Survey/SurveyComponent";
 import ApplicationProgress from "../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress";
 import StudentsAgentEditor from "../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor";

@@ -57,7 +57,7 @@ class NavItem extends Component {
       if (
         itemTitle === "Agent Center" ||
         itemTitle === "Dashboard" ||
-        itemTitle === "Editor Center" ||
+        itemTitle === "CV/ML/RL Center" ||
         itemTitle === "Statistics" ||
         itemTitle === "Charts" ||
         itemTitle === "Map" ||

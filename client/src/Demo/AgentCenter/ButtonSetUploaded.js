@@ -244,7 +244,7 @@ class ButtonSetUploaded extends React.Component {
           <td></td>
         ) : (
           <td>
-            {console.log(this.props.role)}
+            {/* {console.log(this.props.role)} */}
             <Col md>
               <Form
                 onSubmit={(e) =>

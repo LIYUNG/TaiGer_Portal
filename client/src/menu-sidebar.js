@@ -87,6 +87,14 @@ export default {
           icon: "feather icon-edit-1",
         },
         {
+          id: "student_task",
+          title: "Task Overview",
+          type: "item",
+          url: "/task",
+          classes: "nav-item",
+          icon: "feather icon-eye",
+        },
+        {
           id: "archiv-student",
           title: "Archiv Students",
           type: "item",

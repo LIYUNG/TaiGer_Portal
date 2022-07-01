@@ -91,7 +91,7 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
       name: req.file.key,
     });
     student_input_doc.status = DocumentStatus.Uploaded;
-    console.log(req.file);
+    // console.log(req.file);
     student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
     student_input_doc.required = true;
     student_input_doc.updatedAt = new Date();
@@ -116,7 +116,7 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
       }
     );
     for (let i = 0; i < student.editors.length; i++) {
-      console.log(i);
+      // console.log(i);
       await sendUploadedProgramSpecificFilesRemindForEditorEmail(
         {
           firstname: student.editors[i].firstname,
@@ -135,7 +135,7 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
       );
     }
     for (let i = 0; i < student.agents.length; i++) {
-      console.log(i);
+      // console.log(i);
       await sendUploadedProgramSpecificFilesRemindForAgentEmail(
         {
           firstname: student.agents[i].firstname,
@@ -163,7 +163,7 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
       name: req.file.key,
     });
     editor_output_doc.status = DocumentStatus.Uploaded;
-    console.log(req.file);
+    // console.log(req.file);
     editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
     editor_output_doc.required = true;
     editor_output_doc.updatedAt = new Date();
@@ -194,7 +194,7 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
 
     //uploaded file notification for Agent
     for (let i = 0; i < student.agents.length; i++) {
-      console.log(i);
+      // console.log(i);
       await sendEditorOutputProgramSpecificFilesEmailToAgent(
         // Upload success confirmation.
         {
@@ -262,7 +262,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
       }
     );
     for (let i = 0; i < student.editors.length; i++) {
-      console.log(i);
+      // console.log(i);
       await sendUploadedGeneralFilesRemindForEditorEmail(
         {
           firstname: student.editors[i].firstname,
@@ -279,7 +279,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
       );
     }
     for (let i = 0; i < student.agents.length; i++) {
-      console.log(i);
+      // console.log(i);
       await sendUploadedGeneralFilesRemindForAgentEmail(
         {
           firstname: student.agents[i].firstname,
@@ -328,7 +328,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
     //TODO: uploaded file confirmation for Editor?
     //uploaded file notification for Agent?
     for (let i = 0; i < student.agents.length; i++) {
-      console.log(i);
+      // console.log(i);
       await sendEditorOutputGeneralFilesEmailToAgent(
         // Upload success confirmation.
         {
@@ -373,9 +373,9 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    console.log(req.file);
+    // console.log(req.file);
     document.path = path.join(req.file.metadata.path, req.file.key);
-    console.log(document.path);
+    // console.log(document.path);
     student.profile.push(document);
     await student.save();
     res.status(201).send({ success: true, data: student });
@@ -393,7 +393,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       );
 
       for (let i = 0; i < student.agents.length; i++) {
-        console.log(i);
+        // console.log(i);
         await sendUploadedProfileFilesRemindForAgentEmail(
           {
             firstname: student.agents[i].firstname,
@@ -432,9 +432,9 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   document.status = DocumentStatus.Uploaded;
   document.required = true;
   document.updatedAt = new Date();
-  console.log(req.file);
+  // console.log(req.file);
   document.path = path.join(req.file.metadata.path, req.file.key);
-  console.log(document.path);
+  // console.log(document.path);
   await student.save();
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -453,7 +453,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     );
     //Reminder for Agent:
     for (let i = 0; i < student.agents.length; i++) {
-      console.log(i);
+      // console.log(i);
       await sendUploadedProfileFilesRemindForAgentEmail(
         {
           firstname: student.agents[i].firstname,

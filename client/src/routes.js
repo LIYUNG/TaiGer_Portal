@@ -43,6 +43,9 @@ const Statistics = React.lazy(() =>
 const StudentDatabase = React.lazy(() =>
   import("./Demo/StudentDatabase/index")
 );
+const Task = React.lazy(() =>
+  import("./Demo/Task/Task")
+);
 const ArchivStudentDatabase = React.lazy(() =>
   import("./Demo/StudentDatabase/ArchivStudent")
 );
@@ -122,6 +125,12 @@ const routes = [
     exact: true,
     name: "SingleProgram",
     component: SingleProgram,
+  },
+  {
+    path: "/task",
+    exact: true,
+    name: "Task Overview",
+    component: Task,
   },
   {
     path: "/programs",

@@ -43,9 +43,12 @@ const Statistics = React.lazy(() =>
 const StudentDatabase = React.lazy(() =>
   import("./Demo/StudentDatabase/index")
 );
-const Task = React.lazy(() =>
-  import("./Demo/Task/Task")
+const CVMLRL_Modification_Thread = React.lazy(() =>
+  import(
+    "./Demo/CVMLRLCenter/DocModificationThreadPage/DocModificationThreadPage"
+  )
 );
+const Task = React.lazy(() => import("./Demo/Task/Task"));
 const ArchivStudentDatabase = React.lazy(() =>
   import("./Demo/StudentDatabase/ArchivStudent")
 );
@@ -131,6 +134,18 @@ const routes = [
     exact: true,
     name: "Task Overview",
     component: Task,
+  },
+  {
+    path: "/task/:studentId",
+    exact: true,
+    name: "Task Overview",
+    component: Task,
+  },
+  {
+    path: "/document-modification/:documentsthreadId",
+    exact: true,
+    name: "CVMLRL Modification Thread",
+    component: CVMLRL_Modification_Thread,
   },
   {
     path: "/programs",

@@ -195,6 +195,31 @@ const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
 
 const applicationSchema = new Schema({
   programId: { type: ObjectId, ref: "Program" },
+  doc_modification_thread: [
+    {
+      isFinalVersion: {
+        type: Boolean,
+        default: false,
+      },
+      isReceivedEditorFeedback: {
+        type: Boolean,
+        default: false,
+      },
+      isReceivedStudentFeedback: {
+        type: Boolean,
+        default: false,
+      },
+      StudentRead: {
+        type: Boolean,
+        default: false,
+      },
+      EditorRead: {
+        type: Boolean,
+        default: false,
+      },
+      doc_thread_id: { type: ObjectId, ref: "Documentthread" },
+    },
+  ],
   documents: [
     //editor output
     {

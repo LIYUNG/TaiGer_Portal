@@ -5,19 +5,15 @@ const {
 } = require("mongoose");
 const mongoose = require("mongoose");
 
-const { DocumentStatus, CheckListStatus } = require("../constants");
+const { TaskStatus, CheckListStatus } = require("../constants");
 
 const TaskSchema = new Schema({
   student_id: { type: ObjectId, ref: "User" },
   profile_documents: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -27,14 +23,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   cvmlrl_documents: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -44,14 +36,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   program_selection: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -61,14 +49,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   program_decision: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -78,14 +62,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   program_submission: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -95,14 +75,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   cvmlrl_template: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -112,14 +88,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   uni_assist_process: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -129,14 +101,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   copies_certification: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -146,14 +114,10 @@ const TaskSchema = new Schema({
     updatedAt: Date,
   },
   visa_progress: {
-    name: {
-      type: String,
-      default: "",
-    },
     status: {
       type: String,
-      enum: Object.values(DocumentStatus),
-      default: DocumentStatus.Missing,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.Locked,
     },
     comments: {
       type: String,
@@ -171,8 +135,8 @@ const TaskSchema = new Schema({
       },
       status: {
         type: String,
-        enum: Object.values(DocumentStatus),
-        default: DocumentStatus.Missing,
+        enum: Object.values(TaskStatus),
+        default: TaskStatus.Locked,
       },
       comments: {
         type: String,

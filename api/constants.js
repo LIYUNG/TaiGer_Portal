@@ -13,7 +13,16 @@ const CheckListStatus = {
   NotNeeded: "notneeded",
 };
 
+const TaskStatus = {
+  Finished: "finished",
+  Locked: "locked",
+  Open: "Open",
+  Pending: "pending",
+  NotNeeded: "notneeded",
+};
+
 module.exports = {
   DocumentStatus,
   CheckListStatus,
+  TaskStatus,
 };

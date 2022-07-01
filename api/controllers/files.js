@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
+const { Documentthread } = require("../models/Documentthread");
 
 const { asyncHandler } = require("../middlewares/error-handler");
 const { Role, Student, User } = require("../models/User");
@@ -1863,6 +1864,76 @@ const StudentGiveFeedbackProgramSpecificFile = asyncHandler(
   }
 );
 
+const PostMessageInThread = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, applicationId, fileCategory },
+  } = req;
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+  const student2 = await Student.findById({ _id: studentId })
+    .populate("applications.programId")
+    .lean()
+    .exec();
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  // console.log(student);
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  var student_input_doc;
+  var editor_output_doc;
+  if (user.role == Role.Student) {
+    student_input_doc = application.student_inputs.find(
+      ({ name }) => name === req.file.key
+    );
+    if (student_input_doc)
+      throw new ErrorResponse(400, "Document already existed!");
+    student_input_doc = application.student_inputs.create({
+      name: req.file.key,
+    });
+    student_input_doc.status = DocumentStatus.Uploaded;
+    // console.log(req.file);
+    student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
+    student_input_doc.required = true;
+    student_input_doc.updatedAt = new Date();
+    student.applications[idx].student_inputs.push(student_input_doc);
+
+    // TODO: set flag editors document(filetype) isReceivedFeedback
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+    // TODO: Inform editor themselves as well?
+  } else {
+    editor_output_doc = application.documents.find(
+      ({ name }) => name === req.file.key
+    );
+    if (editor_output_doc)
+      throw new ErrorResponse(400, "Document already existed!");
+    editor_output_doc = application.documents.create({
+      name: req.file.key,
+    });
+    editor_output_doc.status = DocumentStatus.Uploaded;
+    // console.log(req.file);
+    editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
+    editor_output_doc.required = true;
+    editor_output_doc.updatedAt = new Date();
+    student.applications[idx].documents.push(editor_output_doc);
+    // TODO: set flag student document(filetype, feedback) isReceivedFeedback
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+
+    // TODO: Inform editor themselves as well?
+  }
+});
+
 module.exports = {
   getMyfiles,
   saveProgramSpecificFilePath,
@@ -1891,4 +1962,5 @@ module.exports = {
   updateCommentsProgramSpecificFile,
   StudentGiveFeedbackGeneralFile,
   StudentGiveFeedbackProgramSpecificFile,
+  PostMessageInThread,
 };

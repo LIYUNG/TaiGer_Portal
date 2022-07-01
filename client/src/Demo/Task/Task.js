@@ -34,9 +34,12 @@ class Application extends Component {
     editFormOpen: false,
     defaultStep: 1,
     activeStep: 0,
+    editorState: null,
     completed: {},
   };
   componentDidMount() {
+    // getStudent(this.props.match.params.studentId).then(
+
     getApplicationArticle().then(
       (resp) => {
         const { success, data } = resp.data;
@@ -61,6 +64,11 @@ class Application extends Component {
 
   handleCreateFormSubmit = (article) => {
     this.createArticle(article);
+  };
+
+  handleEditorChange = (newstate) => {
+    this.setState((state) => ({ ...state, editorState: newstate }));
+    // this.convertContentToHTML();
   };
 
   createArticle = (article) => {

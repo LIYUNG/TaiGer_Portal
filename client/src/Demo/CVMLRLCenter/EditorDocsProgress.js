@@ -18,7 +18,6 @@ import {
 } from "react-bootstrap";
 import {
   deleteProgramSpecificFileUpload,
-  deleteGenralFileUpload,
   deleteGenralFileThread,
   SetAsFinalProgramSpecificFile,
   SetAsFinalGenralFile,

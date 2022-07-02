@@ -18,7 +18,7 @@ import routes2 from "../../../route";
 import ScrollToTop from "../ScrollToTop";
 import { verify } from "../../../api";
 
-import "./app.scss";
+// import "./app.scss";
 import { logout } from "../../../api";
 
 function AdminLayout(props) {

@@ -18,13 +18,12 @@ class Message extends Component {
   };
   componentDidMount() {
     var initialEditorState = null;
-    console.log(this.props.message.message);
     if (this.props.message.message) {
       const rawContentFromStore = convertFromRaw(
         JSON.parse(this.props.message.message)
       );
       initialEditorState = EditorState.createWithContent(rawContentFromStore);
-      console.log(initialEditorState);
+      // console.log(initialEditorState);
     } else {
       initialEditorState = EditorState.createEmpty();
     }
@@ -55,7 +54,11 @@ class Message extends Component {
         </div>
       );
     }
-
+    const files_info = this.props.message.file.map((file) => (
+      <>
+        <div>{file.name}</div>
+      </>
+    ));
     return (
       <Card key={this.props.id}>
         <Card.Header>
@@ -70,7 +73,15 @@ class Message extends Component {
         </Card.Header>
         <Card.Body>
           {/* {this.props.message.message} */}
-          {parse(convertToHTML(this.state.editorState.getCurrentContent()))}
+          {/* {parse(convertToHTML(this.state.editorState.getCurrentContent()))} */}
+          <Editor
+            spellCheck={true}
+            readOnly={true}
+            toolbarHidden={true}
+            editorState={this.state.editorState}
+            onEditorStateChange={this.handleEditorChange}
+          />
+          {files_info}
         </Card.Body>
       </Card>
     );

@@ -128,10 +128,6 @@ export const deleteProgramSpecificFileUpload = (
     `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${docName}`
   );
 
-export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
-  request.delete(
-    `/api/account/files/general/${studentId}/${whoupdate}/${docName}`
-  );
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);
 
@@ -269,13 +265,12 @@ const getArticle = (type) => request.get(`/api/docs/${type}`);
 export const getApplicationArticle = () => getArticle("application");
 export const SubmitMessageWithAttachment = (
   documentsthreadId,
-  userId,
-  message
-) =>
-  request.post(`/api/document-threads/${documentsthreadId}`, {
-    userId,
-    message,
-  });
+  // userId,
+  // studentId,
+  // file_type,
+  // message,
+  newFile
+) => request.post(`/api/document-threads/${documentsthreadId}`, newFile);
 
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);

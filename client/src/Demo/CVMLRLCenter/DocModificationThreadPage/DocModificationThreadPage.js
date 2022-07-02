@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col, Spinner, Button, Card } from "react-bootstrap";
+import { Row, Col, Spinner, Button, Card, Form } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import MessageList from "./MessageList";
 import ToggleableArticleForm from "./ToggleableArticleForm";
@@ -29,6 +29,7 @@ const steps = [
 class Application extends Component {
   state = {
     error: null,
+    file: null,
     isLoaded: false,
     articles: [],
     thread: [],
@@ -39,12 +40,12 @@ class Application extends Component {
     completed: {},
   };
   componentDidMount() {
-    console.log(this.props.match.params.documentsthreadId);
+    // console.log(this.props.match.params.documentsthreadId);
 
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
         const { success, data } = resp.data;
-        console.log(data);
+        // console.log(data);
         if (success) {
           this.setState({
             success,
@@ -64,13 +65,18 @@ class Application extends Component {
     );
   }
 
+  onFileChange = (e) => {
+    e.preventDefault();
+    console.log(e.target.files[0]);
+    this.setState({ file: e.target.files[0] });
+  };
+
   handleCreateFormSubmit = (article) => {
     this.createArticle(article);
   };
 
   handleEditorChange = (newstate) => {
     this.setState((state) => ({ ...state, editorState: newstate }));
-    // this.convertContentToHTML();
   };
 
   ConfirmSubmitMessageHandler = (editorState) => {
@@ -79,10 +85,30 @@ class Application extends Component {
     //   ...state,
     //   isLoaded: false, //false to reload everything
     // }));
+    const formData = new FormData();
+    formData.append("file", this.state.file);
+    console.log(this.state.file);
+    const userData = {
+      userId: this.state.userId,
+      studentId: this.state.thread.student_id._id,
+      file_type: this.state.thread.file_type,
+      message: message,
+      file: JSON.stringify(this.state.file),
+    };
+    var json = JSON.stringify(userData);
+    const blob = new Blob([json], {
+      type: "application/json",
+    });
+    formData.append("messageData", blob);
+    console.log(JSON.stringify(formData));
+
     SubmitMessageWithAttachment(
       this.props.match.params.documentsthreadId,
-      this.state.userId,
-      message
+      // this.state.userId,
+      // this.state.thread.student_id._id,
+      // this.state.thread.file_type,
+      // message,
+      formData
     ).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -90,6 +116,7 @@ class Application extends Component {
         if (success) {
           this.setState({
             success,
+            editorState: null,
             thread: data,
             isLoaded: true,
           });
@@ -283,6 +310,13 @@ class Application extends Component {
       <Aux>
         <Row>
           <div>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
             <Row>
               <Col>
                 {this.state.thread.student_id.firstname}{" "}
@@ -294,13 +328,6 @@ class Application extends Component {
             </Row>
             <Row>
               <Col>
-                {!isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
                 <MessageList
                   thread={this.state.thread}
                   category="application"
@@ -330,23 +357,26 @@ class Application extends Component {
                   </Card.Header>
                   <Card.Body>
                     <Editor
+                      spellCheck={true}
+                      // onFocus={onClick={this.handle}}
+                      placeholder={"Write comments"}
                       editorState={this.state.editorState}
                       onEditorStateChange={this.handleEditorChange}
-                      // wrapperClassName="wrapper-class"
+                      wrapperClassName="wrapper-class"
                       editorClassName="editor-class"
                       toolbarClassName="toolbar-class"
                       toolbar={{
-                        options: [
-                          "inline",
-                          "fontSize",
-                          "fontFamily",
-                          "list",
-                          "textAlign",
-                          // "colorPicker",
-                          "link",
-                          "image",
-                          // "file",
-                        ],
+                        // options: [
+                        //   "inline",
+                        //   "fontSize",
+                        //   "fontFamily",
+                        //   "list",
+                        //   "textAlign",
+                        //   "colorPicker",
+                        //   "link",
+                        //   "image",
+                        //   // "file",
+                        // ],
                         link: {
                           defaultTargetOption: "_blank",
                           popupClassName: "mail-editor-link",
@@ -366,11 +396,30 @@ class Application extends Component {
                       }}
                     />
                     <Row>
-                      <FileUploader />
+                      {/* <FileUploader
+                        handleChange={this.onFileChange}
+                        name="file"
+                        // types={["JPG", "PNG", "GIF"]}
+                        // handleChange={(e) => this.onFileChange(e)}
+                        // id={this.props.id}
+                      /> */}
+                      <Form>
+                        <Form.File.Label
+                        // onClick={(e) => (e.target.value = null)}
+                        >
+                          <Form.File.Input
+                            onChange={(e) => this.onFileChange(e)}
+                          />
+                          {/* <IoMdCloudUpload size={32} /> */}
+                        </Form.File.Label>
+                      </Form>
                     </Row>
                     <Row>
                       <Button
-                        // disabled={!isLoaded}
+                        disabled={
+                          !this.state.editorState ||
+                          !this.state.editorState.getCurrentContent().hasText()
+                        }
                         className="float-right"
                         onClick={() =>
                           this.ConfirmSubmitMessageHandler(

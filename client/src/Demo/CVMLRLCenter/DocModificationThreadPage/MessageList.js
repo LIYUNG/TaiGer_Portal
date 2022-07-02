@@ -5,8 +5,8 @@ class MessageList extends Component {
   render() {
     const thread = this.props.thread.messages.map((message) => (
       <Message
-        id={message.id}
-        key={message.id}
+        id={message._id}
+        key={message._id}
         message={message}
         onTrashClick={this.props.onTrashClick}
         lastupdate={this.props.lastupdate}

@@ -3,6 +3,7 @@ const path = require("path");
 const multer = require("multer");
 const { Program } = require("../models/Program");
 const { Student, User } = require("../models/User");
+const { asyncHandler } = require("../middlewares/error-handler");
 
 const { ErrorResponse } = require("../common/errors");
 const {
@@ -92,9 +93,123 @@ const storage_s3 = multerS3({
  *   /account/files/:studentId/:docName (student upload)
  */
 
-//TODO: upload pdf/docx/image
+// upload profile pdf/docx/image
 const upload_profile_s3 = multer({
   storage: storage_s3,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(
+          400,
+          "Only .pdf .png, .jpg and .jpeg .docx format are allowed"
+        )
+      );
+    const fileSize = parseInt(req.headers["content-length"]);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, "File size is limited to 5 MB!"));
+    }
+    cb(null, true);
+  },
+});
+
+// Message thread file upload (general)
+const storage_messagesthread_file_s3 = multerS3({
+  s3: s3,
+  bucket: function (req, file, cb) {
+    var { messagesThreadId } = req.params;
+    var { studentId } = req.body;
+    // console.log(messagesThreadId);
+    console.log(req);
+    console.log(req.body);
+    console.log(req.file);
+    // TODO: check studentId and messagesThreadId exist
+    var directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
+    directory = directory.replace(/\\/, "/");
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    var { messagesThreadId } = req.params;
+    var { studentId } = req.body;
+
+    // TODO: check studentId and messagesThreadId exist
+    var directory = path.join(studentId, messagesThreadId);
+    directory = directory.replace(/\\/g, "/"); // g>> replace all!
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: function (req, file, cb) {
+    // cb(null, file.originalname + "-" + Date.now().toString());
+    // cb(null, file.originalname);
+    var { studentId, file_type } = req.body;
+    var { messagesThreadId } = req.params;
+    Student.findOne({ _id: studentId })
+      .then(function (student) {
+        if (student) {
+          var r = /\d+/; //number pattern
+          var version_number_max = 1;
+          var thread = student.generaldocs_threads.find(
+            (generaldocs_thread) => {
+              generaldocs_thread.doc_thread_id._id === messagesThreadId;
+            }
+          );
+          thread.messages.forEach((message) => {
+            message.file.forEach((file) => {
+              if (file.name.includes(file_type)) {
+                if (
+                  file.name.match(r) !== null &&
+                  file.name.match(r)[0] > version_number_max
+                ) {
+                  version_number_max = file.name.match(r)[0]; // get the max version number
+                }
+              }
+            });
+          });
+
+          var version_number = version_number_max;
+          var same_file_name = true;
+          while (same_file_name) {
+            var temp_name =
+              student.lastname +
+              "_" +
+              student.firstname +
+              "_" +
+              file_type +
+              "_v" +
+              version_number +
+              `${path.extname(file.originalname)}`;
+            temp_name = temp_name.replace(/ /g, "_");
+            const filePath = path.join(
+              UPLOAD_PATH,
+              studentId,
+              "GeneralDocsEdit",
+              temp_name
+            );
+
+            let student_input_doc = student.generaldocs.studentinputs.find(
+              ({ name }) => name === temp_name
+            );
+            let editor_output_doc = student.generaldocs.editoroutputs.find(
+              ({ name }) => name === temp_name
+            );
+            if (editor_output_doc || student_input_doc) {
+              version_number++;
+            } else {
+              same_file_name = false;
+            }
+          }
+          return {
+            fileName: temp_name,
+          };
+        }
+      })
+      .then(function (resp) {
+        cb(null, resp.fileName);
+      });
+  },
+});
+
+const upload_messagesthread_file_s3 = multer({
+  storage: storage_messagesthread_file_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
@@ -229,7 +344,7 @@ const storage_program_specific_s3 = multerS3({
   },
 });
 
-//TODO: upload pdf/docx/image
+// upload pdf/docx/image
 const upload_program_specific_s3 = multer({
   storage: storage_program_specific_s3,
   limits: { fileSize: MAX_FILE_SIZE },
@@ -486,9 +601,36 @@ const editor_generaldoc_s3 = multer({
   },
 });
 
+const test_file_json = (req, res, next) => {
+  const {
+    user,
+    // params: { messagesThreadId },
+  } = req;
+  var { messagesThreadId } = req.params;
+  var { studentId } = req.body;
+  // console.log(req);
+  console.log(req);
+  console.log(req.body);
+  console.log(messagesThreadId);
+  // const document_thread = await Documentthread.findById(
+  //   messagesThreadId
+  // ).populate("student_id application_id messages.user_id");
+
+  // if (!document_thread)
+  //   throw new ErrorResponse(400, "Invalid message thread id");
+
+  // console.log(messagesThreadId);
+
+  next();
+};
+var upload = multer({ dest: "./public/uploads/" });
+
 module.exports = {
   fileUpload: upload_program_specific_s3.single("file"),
   ProfilefileUpload: upload_profile_s3.single("file"),
   TranscriptExcelUpload: upload_transcript_s3.single("file"),
   EditGeneralDocsUpload: editor_generaldoc_s3.single("file"),
+  MessagesThreadUpload: upload_messagesthread_file_s3.single("file"),
+  test_file_json,
+  upload: upload.single("file"),
 };

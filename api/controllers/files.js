@@ -362,6 +362,8 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     params: { studentId, category },
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  console.log(req);
+  console.log(req.file);
   const student =
     user.role == Role.Student
       ? user

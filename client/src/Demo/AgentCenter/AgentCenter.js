@@ -238,6 +238,7 @@ class AgentCenter extends React.Component {
   }
 
   SubmitGeneralFile = (e, studentId, fileCategory) => {
+    console.log(e.target.files[0]);
     this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
   };
 
@@ -245,6 +246,8 @@ class AgentCenter extends React.Component {
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", NewFile);
+    console.log(NewFile);
+    console.log(formData);
 
     let student_arrayidx = this.state.students.findIndex(
       (student) => student._id === student_id
@@ -375,7 +378,6 @@ class AgentCenter extends React.Component {
         SubmitGeneralFile={this.SubmitGeneralFile}
         onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-        handleGeneralDocSubmit={this.handleGeneralDocSubmit}
         SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
         isLoaded={isLoaded}
         deleteFileWarningModel={this.state.deleteFileWarningModel}

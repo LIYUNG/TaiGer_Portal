@@ -150,18 +150,26 @@ const postMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId },
   } = req;
-  const { userId, message } = req.body;
+  const { userId, message, studentId } = req.body;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
-
+  console.log(req);
+  // console.log(JSON.parse(req.userData));
+  // console.log(JSON.parse(req.file));
+  console.log(req.file);
   if (!document_thread)
     throw new ErrorResponse(400, "Invalid message thread id");
-
+  //TODO: to save file when file attached
   var new_message = {
     user_id: user._id,
     message: message,
     createdAt: new Date(),
-    // file,
+    // file: [
+    //   {
+    //     name: req.file.key,
+    //     path: path.join(req.file.metadata.path, req.file.key),
+    //   },
+    // ],
   };
   document_thread.messages.push(new_message);
   await document_thread.save();
@@ -194,7 +202,6 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
   const student2 = await Student.findById(studentId)
     .populate("generaldocs_threads.doc_thread_id")
     .populate("applications.programId");
-  //TODO delete from student
   res.status(200).send({ success: true, data: student2 });
 });
 

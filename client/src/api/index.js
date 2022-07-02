@@ -141,9 +141,9 @@ export const SetAsFinalProgramSpecificFile = (
     `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${docName}`
   );
 
-export const SetAsFinalGenralFile = (studentId, docName, whoupdate) =>
+export const SetAsFinalGenralFile = (documentsthreadId, studentId) =>
   request.put(
-    `/api/account/files/general/${studentId}/${whoupdate}/${docName}`
+    `/api/document-threads/${documentsthreadId}/${studentId}`
   );
 
 export const uploadEditGeneralFileforstudent = (
@@ -265,12 +265,18 @@ const getArticle = (type) => request.get(`/api/docs/${type}`);
 export const getApplicationArticle = () => getArticle("application");
 export const SubmitMessageWithAttachment = (
   documentsthreadId,
-  // userId,
-  // studentId,
-  // file_type,
-  // message,
+  userId,
+  studentId,
+  file_type,
+  message,
   newFile
-) => request.post(`/api/document-threads/${documentsthreadId}`, newFile);
+) =>
+  request.post(`/api/document-threads/${documentsthreadId}`, {
+    userId,
+    studentId,
+    file_type,
+    message,
+  });
 
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);

@@ -13,7 +13,6 @@ class MessageList extends Component {
         message={message}
         onTrashClick={this.props.onTrashClick}
         lastupdate={this.props.lastupdate}
-        role={this.props.role}
         isLoaded={this.props.isLoaded}
       />
     ));

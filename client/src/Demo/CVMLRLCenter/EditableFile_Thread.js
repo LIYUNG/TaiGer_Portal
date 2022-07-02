@@ -13,35 +13,26 @@ import {
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 class EditableFile_Thread extends Component {
-  handleAsFinalGeneralFile = (action) => {
-    this.props.handleAsFinalGeneralFile(
-      this.props.student._id,
-      this.props.thread.name,
-      this.props.whoupdate,
-      action
-    );
-  };
-
-  handleAsFinalProgramSpecific = (action) => {
-    this.props.handleAsFinalProgramSpecific(
-      this.props.student._id,
-      this.props.application.programId._id,
-      this.props.thread.name,
-      this.props.whoupdate,
-      action
-    );
-  };
-
-  handleDeleteGeneralFileThread = () => {
-    this.props.onDeleteGeneralFileThread(
+  handleAsFinalFileThread = (action) => {
+    this.props.handleAsFinalFile(
       this.props.thread.doc_thread_id._id,
+      action
+    );
+  };
+
+  handleDeleteFileThread = () => {
+    this.props.onDeleteFileThread(
+      this.props.thread.doc_thread_id._id,
+      // this.props.application.programId._id,
       this.props.student._id
     );
   };
 
   handleDeleteProgramSpecificFileThread = () => {
     this.props.onDeleteProgramSpecificThread(
-      this.props.thread.doc_thread_id._id
+      this.props.thread.doc_thread_id._id,
+      this.props.application.programId._id,
+      this.props.student._id
     );
   };
 
@@ -107,70 +98,34 @@ class EditableFile_Thread extends Component {
       <>
         <Row>
           <Col md={1}>
-            {this.props.thread.doc_thread_id.file_type === "CV" ? (
-              this.props.thread.isFinalVersion === true ? (
-                <>
-                  <IoCheckmarkCircle
-                    size={24}
-                    color="limegreen"
-                    title="Final Version"
-                  />
-                </>
-              ) : (
-                <Button
-                  size="sm"
-                  title="As final version"
-                  onClick={() => this.handleAsFinalGeneralFile("setfinal")}
-                >
-                  <AiOutlineCheck size={12} />
-                </Button>
-              )
-            ) : this.props.thread.isFinalVersion === true ? (
+            {this.props.thread.isFinalVersion ? (
               <>
                 <IoCheckmarkCircle
                   size={24}
                   color="limegreen"
                   title="Final Version"
-                  onMouseEnter={this.MouseOver}
+                  // onMouseEnter={this.MouseOver}
                 />
               </>
             ) : (
               <Button
                 size="sm"
                 title="As final version"
-                onClick={() => this.handleAsFinalProgramSpecific("setfinal")}
+                onClick={() => this.handleAsFinalFileThread("setfinal")}
               >
                 <AiOutlineCheck size={12} />
               </Button>
             )}
           </Col>
           <Col md={1}>
-            {this.props.thread.doc_thread_id.file_type === "CV" ? (
-              this.props.thread.isFinalVersion === true ? (
-                <>
-                  <AiOutlineUndo
-                    size={24}
-                    color="red"
-                    title="Un do Final Version"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => this.handleAsFinalGeneralFile("undofinal")}
-                  />
-                </>
-              ) : (
-                <></>
-              )
-            ) : this.props.thread.isFinalVersion === true ? (
-              <>
-                <AiOutlineUndo
-                  size={24}
-                  color="red"
-                  title="Un do Final Version"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => this.handleAsFinalProgramSpecific("undofinal")}
-                />
-              </>
-            ) : (
-              <></>
+            {this.props.thread.isFinalVersion && (
+              <AiOutlineUndo
+                size={24}
+                color="red"
+                title="Un do Final Version"
+                style={{ cursor: "pointer" }}
+                onClick={() => this.handleAsFinalFileThread("undofinal")}
+              />
             )}
           </Col>
           <Col md={4}>
@@ -197,7 +152,7 @@ class EditableFile_Thread extends Component {
               size="sm"
               title="Delete"
               variant="danger"
-              onClick={this.handleDeleteGeneralFileThread}
+              onClick={this.handleDeleteFileThread}
             >
               <AiOutlineDelete size={20} />
             </Button>

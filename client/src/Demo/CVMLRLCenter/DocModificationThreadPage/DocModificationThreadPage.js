@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Row, Col, Spinner, Button, Card, Form } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import MessageList from "./MessageList";
-import ToggleableArticleForm from "./ToggleableArticleForm";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
@@ -13,8 +12,6 @@ import { FileUploader } from "react-drag-drop-files";
 import {
   updateDoc,
   deleteDoc,
-  createArticle,
-  getApplicationArticle,
   SubmitMessageWithAttachment,
   getMessagThread,
 } from "../../../api";
@@ -75,9 +72,6 @@ class Application extends Component {
     this.setState({ file: e.target.files[0] });
   };
 
-  handleCreateFormSubmit = (article) => {
-    this.createArticle(article);
-  };
 
   handleEditorChange = (newstate) => {
     this.setState((state) => ({ ...state, editorState: newstate }));
@@ -103,15 +97,15 @@ class Application extends Component {
     const blob = new Blob([json], {
       type: "application/json",
     });
-    formData.append("messageData", blob);
+    // formData.append("messageData", blob);
     console.log(JSON.stringify(formData));
 
     SubmitMessageWithAttachment(
       this.props.match.params.documentsthreadId,
-      // this.state.userId,
-      // this.state.thread.student_id._id,
-      // this.state.thread.file_type,
-      // message,
+      this.state.userId,
+      this.state.thread.student_id._id,
+      this.state.thread.file_type,
+      message,
       formData
     ).then(
       (resp) => {
@@ -172,35 +166,6 @@ class Application extends Component {
     // );
   };
 
-  createArticle = (article) => {
-    let article_temp = {};
-    Object.assign(article_temp, {
-      Titel_: article.Titel_,
-      Content_: article.Content_,
-      Category_: article.Category_,
-      LastUpdate_: article.LastUpdate_,
-    });
-    // delete article_temp._id;
-    // console.log("article_temp : " + JSON.stringify(article_temp));
-    createArticle(article_temp).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        if (success) {
-          this.setState({
-            articles: this.state.articles.concat(data),
-          });
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error,
-        });
-      }
-    );
-  };
 
   handleEditFormSubmit = (update_article) => {
     this.updateArticle(update_article);
@@ -385,21 +350,11 @@ class Application extends Component {
                   accordionKeys={this.state.accordionKeys}
                   singleExpandtHandler={this.singleExpandtHandler}
                   thread={this.state.thread}
-                  category="application"
                   onFormSubmit={this.handleEditFormSubmit}
                   onTrashClick={this.handleTrashClick}
-                  role={this.props.user.role}
+                  // role={this.props.user.role}
                   isLoaded={this.state.isLoaded}
                 />
-                {this.props.user.role === "Admin" ||
-                this.props.user.role === "Agent" ? (
-                  <ToggleableArticleForm
-                    category="application"
-                    onFormSubmit={this.handleCreateFormSubmit}
-                  />
-                ) : (
-                  <></>
-                )}
               </Col>
             </Row>
             <Row>

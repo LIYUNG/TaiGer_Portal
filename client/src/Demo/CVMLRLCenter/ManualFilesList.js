@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import EditableFile from "./EditableFile";
+// import EditableFile from "./EditableFile";
 import EditableFile_Thread from "./EditableFile_Thread";
 import { Row, Col } from "react-bootstrap";
 
@@ -23,8 +23,8 @@ class ManualFilesList extends Component {
               onDeleteProgramSpecificThread={
                 this.props.onDeleteProgramSpecificThread
               }
-              onDeleteGeneralFileThread={this.props.onDeleteGeneralFileThread}
-              handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
+              onDeleteFileThread={this.props.onDeleteFileThread}
+              handleAsFinalFile={this.props.handleAsFinalFile}
               role={this.props.role}
               whoupdate={"Editor"}
               filetype={this.props.filetype}
@@ -35,7 +35,7 @@ class ManualFilesList extends Component {
     } else {
       if (this.props.application && this.props.application.documents) {
         editor_outputs = this.props.application.documents.map((document) => (
-          <EditableFile
+          <EditableFile_Thread
             key={document._id}
             document={document}
             application={this.props.application}
@@ -48,7 +48,9 @@ class ManualFilesList extends Component {
               this.props.onDownloadProgramSpecificFile
             }
             onTrashClick={this.props.onTrashClick}
-            onDeleteProgramSpecificThread={this.props.onDeleteProgramSpecificThread}
+            onDeleteProgramSpecificThread={
+              this.props.onDeleteProgramSpecificThread
+            }
             handleAsFinalProgramSpecific={
               this.props.handleAsFinalProgramSpecific
             }
@@ -58,35 +60,35 @@ class ManualFilesList extends Component {
           />
         ));
       }
-      if (this.props.application && this.props.application.student_inputs) {
-        student_inputs = this.props.application.student_inputs.map(
-          (student_input) => (
-            <EditableFile
-              key={student_input._id}
-              document={student_input}
-              application={this.props.application}
-              student={this.props.student}
-              onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
-              onStudentFeedbackProgramSpecific={
-                this.props.onStudentFeedbackProgramSpecific
-              }
-              onDownloadProgramSpecificFile={
-                this.props.onDownloadProgramSpecificFile
-              }
-              onTrashClick={this.props.onTrashClick}
-              onDeleteProgramSpecificThread={
-                this.props.onDeleteProgramSpecificThread
-              }
-              handleAsFinalProgramSpecific={
-                this.props.handleAsFinalProgramSpecific
-              }
-              role={this.props.role}
-              whoupdate={"Student"}
-              filetype={this.props.filetype}
-            />
-          )
-        );
-      }
+      // if (this.props.application && this.props.application.student_inputs) {
+      //   student_inputs = this.props.application.student_inputs.map(
+      //     (student_input) => (
+      //       <EditableFile
+      //         key={student_input._id}
+      //         document={student_input}
+      //         application={this.props.application}
+      //         student={this.props.student}
+      //         onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
+      //         onStudentFeedbackProgramSpecific={
+      //           this.props.onStudentFeedbackProgramSpecific
+      //         }
+      //         onDownloadProgramSpecificFile={
+      //           this.props.onDownloadProgramSpecificFile
+      //         }
+      //         onTrashClick={this.props.onTrashClick}
+      //         onDeleteProgramSpecificThread={
+      //           this.props.onDeleteProgramSpecificThread
+      //         }
+      //         handleAsFinalProgramSpecific={
+      //           this.props.handleAsFinalProgramSpecific
+      //         }
+      //         role={this.props.role}
+      //         whoupdate={"Student"}
+      //         filetype={this.props.filetype}
+      //       />
+      //     )
+      //   );
+      // }
     }
 
     return (

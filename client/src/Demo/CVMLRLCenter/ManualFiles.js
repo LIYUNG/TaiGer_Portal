@@ -91,9 +91,9 @@ class ManualFiles extends React.Component {
                   student={this.props.student}
                   onDownloadGeneralFile={this.props.onDownloadGeneralFile}
                   onCommentsGeneralFile={this.props.onCommentsGeneralFile}
-                  onDeleteGeneralFileThread={this.props.onDeleteGeneralFileThread}
+                  onDeleteFileThread={this.props.onDeleteFileThread}
                   onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
-                  handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
+                  handleAsFinalFile={this.props.handleAsFinalFile}
                   role={this.props.role}
                 />
               </tbody>

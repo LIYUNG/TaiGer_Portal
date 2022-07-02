@@ -178,7 +178,31 @@ const postMessages = asyncHandler(async (req, res) => {
   ).populate("student_id application_id messages.user_id");
   res.status(200).send({ success: true, data: document_thread2 });
 });
+const SetStatusMessagesThread = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { messagesThreadId, studentId },
+  } = req;
 
+  const document_thread = await Documentthread.findById(messagesThreadId);
+  const student = await Student.findById(studentId);
+
+  if (!document_thread)
+    throw new ErrorResponse(400, "Invalid message thread id");
+  if (!student) throw new ErrorResponse(400, "Invalid student id id");
+  // TODO: before delete the thread, please delete all of the files in the thread!!
+  await Documentthread.findByIdAndDelete(messagesThreadId);
+  // await Student.findByIdAndUpdate(studentId, {
+  //   $pull: {
+  //     generaldocs_threads: { doc_thread_id: { _id: messagesThreadId } },
+  //   },
+  // });
+
+  const student2 = await Student.findById(studentId)
+    .populate("generaldocs_threads.doc_thread_id")
+    .populate("applications.programId");
+  res.status(200).send({ success: true, data: student2 });
+});
 const deleteMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -210,5 +234,6 @@ module.exports = {
   initApplicationMessagesThread,
   getMessages,
   postMessages,
+  SetStatusMessagesThread,
   deleteMessagesThread,
 };

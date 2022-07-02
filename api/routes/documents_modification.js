@@ -15,6 +15,7 @@ const {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  SetStatusMessagesThread,
   deleteMessagesThread,
   postMessages,
 } = require("../controllers/documents_modification");
@@ -39,6 +40,10 @@ router
 
 router
   .route("/:messagesThreadId/:studentId")
+  .put(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    SetStatusMessagesThread
+  )
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     deleteMessagesThread
@@ -52,9 +57,9 @@ router
   .route("/:messagesThreadId")
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    // MessagesThreadUpload,
+    MessagesThreadUpload,
     // test_file_json,
-    upload,
+    // upload,
     postMessages
   );
 

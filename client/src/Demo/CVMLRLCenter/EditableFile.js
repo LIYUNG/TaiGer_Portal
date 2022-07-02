@@ -11,8 +11,8 @@ import {
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
 class EditableFile extends Component {
-  handleAsFinalGeneralFile = (action) => {
-    this.props.handleAsFinalGeneralFile(
+  handleAsFinalFileThread = (action) => {
+    this.props.handleAsFinalFile(
       this.props.student._id,
       this.props.document.name,
       this.props.whoupdate,
@@ -108,65 +108,26 @@ class EditableFile extends Component {
             {this.props.role === "Editor" ? (
               <>
                 <Col md={1}>
-                  {this.props.filetype === "General" ? (
-                    this.props.document.isFinalVersion === true ? (
-                      <>
-                        <IoCheckmarkCircle
-                          size={24}
-                          color="limegreen"
-                          title="Final Version"
-                        />
-                      </>
-                    ) : (
-                      <Button
-                        size="sm"
-                        title="As final version"
-                        onClick={() =>
-                          this.handleAsFinalGeneralFile("setfinal")
-                        }
-                      >
-                        <AiOutlineCheck size={12} />
-                      </Button>
-                    )
-                  ) : this.props.document.isFinalVersion === true ? (
+                  {this.props.document.isFinalVersion === true ? (
                     <>
                       <IoCheckmarkCircle
                         size={24}
                         color="limegreen"
                         title="Final Version"
-                        onMouseEnter={this.MouseOver}
                       />
                     </>
                   ) : (
                     <Button
                       size="sm"
                       title="As final version"
-                      onClick={() =>
-                        this.handleAsFinalProgramSpecific("setfinal")
-                      }
+                      onClick={() => this.handleAsFinalFileThread("setfinal")}
                     >
                       <AiOutlineCheck size={12} />
                     </Button>
                   )}
                 </Col>
                 <Col md={1}>
-                  {this.props.filetype === "General" ? (
-                    this.props.document.isFinalVersion === true ? (
-                      <>
-                        <AiOutlineUndo
-                          size={24}
-                          color="red"
-                          title="Un do Final Version"
-                          style={{ cursor: "pointer" }}
-                          onClick={() =>
-                            this.handleAsFinalGeneralFile("undofinal")
-                          }
-                        />
-                      </>
-                    ) : (
-                      <></>
-                    )
-                  ) : this.props.document.isFinalVersion === true ? (
+                  {this.props.document.isFinalVersion === true ? (
                     <>
                       <AiOutlineUndo
                         size={24}
@@ -174,7 +135,7 @@ class EditableFile extends Component {
                         title="Un do Final Version"
                         style={{ cursor: "pointer" }}
                         onClick={() =>
-                          this.handleAsFinalProgramSpecific("undofinal")
+                          this.handleAsFinalFileThread("undofinal")
                         }
                       />
                     </>
@@ -195,25 +156,12 @@ class EditableFile extends Component {
               <>
                 {" "}
                 <Col md={1}>
-                  {this.props.filetype === "General" ? (
-                    this.props.document.isFinalVersion === true ? (
-                      <>
-                        <IoCheckmarkCircle
-                          size={24}
-                          color="limegreen"
-                          title="Final Version"
-                        />
-                      </>
-                    ) : (
-                      <></>
-                    )
-                  ) : this.props.document.isFinalVersion === true ? (
+                  {this.props.document.isFinalVersion === true ? (
                     <>
                       <IoCheckmarkCircle
                         size={24}
                         color="limegreen"
                         title="Final Version"
-                        onMouseEnter={this.MouseOver}
                       />
                     </>
                   ) : (
@@ -232,42 +180,24 @@ class EditableFile extends Component {
             )}
 
             <Col md={1}>
-              {this.props.filetype === "General" ? (
-                <Button
-                  size="sm"
-                  title="Download"
-                  on
-                  onClick={(e) =>
-                    this.props.onDownloadGeneralFile(
-                      e,
-                      this.props.student._id,
-                      this.props.document.name,
-                      this.props.whoupdate
-                    )
-                  }
-                >
-                  <AiOutlineDownload size={20} />
-                </Button>
-              ) : (
-                <Button
-                  size="sm"
-                  title="Download"
-                  onClick={(e) =>
-                    this.props.onDownloadProgramSpecificFile(
-                      e,
-                      this.props.student._id,
-                      this.props.application.programId._id,
-                      this.props.document.name,
-                      this.props.whoupdate
-                    )
-                  }
-                >
-                  <AiOutlineDownload size={20} />
-                </Button>
-              )}
+              <Button
+                size="sm"
+                title="Download"
+                on
+                onClick={(e) =>
+                  this.props.onDownloadGeneralFile(
+                    e,
+                    this.props.student._id,
+                    this.props.document.name,
+                    this.props.whoupdate
+                  )
+                }
+              >
+                <AiOutlineDownload size={20} />
+              </Button>
             </Col>
             <Col md={1}>
-              {this.props.filetype === "General" ? (
+              {
                 <Button
                   size="sm"
                   title="Comments"
@@ -276,93 +206,29 @@ class EditableFile extends Component {
                 >
                   <AiOutlineComment size={20} />
                 </Button>
-              ) : (
+              }
+            </Col>
+            <Col md={1}>
+              <Button
+                size="sm"
+                title="Student Feedback"
+                variant="light"
+                onClick={this.handleStudentFeebackGeneral}
+              >
+                <AiFillMessage size={20} />
+              </Button>
+            </Col>
+            {this.props.role !== "Editor" && (
+              <Col md={1}>
                 <Button
                   size="sm"
-                  title="Comments"
-                  variant="light"
-                  onClick={this.handleCommentsProgramSpecific}
+                  title="Delete"
+                  variant="danger"
+                  onClick={this.handleDeleteGeneralFile}
                 >
-                  <AiOutlineComment size={20} />
+                  <AiOutlineDelete size={20} />
                 </Button>
-              )}
-            </Col>
-            {this.props.whoupdate === "Editor" ? (
-              this.props.role === "Editor" ? (
-                <Col md={1}>
-                  {this.props.filetype === "General" ? (
-                    <Button
-                      size="sm"
-                      title="Student Feedback"
-                      variant="light"
-                      onClick={this.handleStudentFeebackGeneral}
-                    >
-                      <AiFillMessage size={20} />
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      title="Student Feedback"
-                      variant="light"
-                      onClick={this.handleStudentFeebackProgramSpecific}
-                    >
-                      <AiFillMessage size={20} />
-                    </Button>
-                  )}
-                </Col>
-              ) : (
-                <Col md={1}>
-                  {this.props.filetype === "General" ? (
-                    <Button
-                      size="sm"
-                      title="Give Feedback"
-                      variant="light"
-                      onClick={this.handleStudentFeebackGeneral}
-                    >
-                      <AiFillMessage size={20} />
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      title="Give Feedback"
-                      variant="light"
-                      onClick={this.handleStudentFeebackProgramSpecific}
-                    >
-                      <AiFillMessage size={20} />
-                    </Button>
-                  )}
-                </Col>
-              )
-            ) : (
-              <></>
-            )}
-            {this.props.role === "Editor" ||
-            this.props.whoupdate === "Student" ? (
-              <>
-                <Col md={1}>
-                  {this.props.filetype === "General" ? (
-                    <Button
-                      size="sm"
-                      title="Delete"
-                      variant="danger"
-                      onClick={this.handleDeleteGeneralFile}
-                    >
-                      <AiOutlineDelete size={20} />
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      title="Delete"
-                      variant="danger"
-                      onClick={this.handleDeleteProgramSpecific}
-                    >
-                      <AiOutlineDelete size={20} />
-                    </Button>
-                  )}
-                </Col>
-              </>
-            ) : (
-              <></>
+              </Col>
             )}
           </Row>
         </>

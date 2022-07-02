@@ -12,6 +12,7 @@ const {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  deleteMessagesThread,
   postMessages,
 } = require("../controllers/documents_modification");
 
@@ -31,6 +32,13 @@ router
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initApplicationMessagesThread
+  );
+
+router
+  .route("/:messagesThreadId/:studentId")
+  .delete(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    deleteMessagesThread
   );
 
 router

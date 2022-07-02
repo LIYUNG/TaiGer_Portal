@@ -19,6 +19,7 @@ import {
 import {
   deleteProgramSpecificFileUpload,
   deleteGenralFileUpload,
+  deleteGenralFileThread,
   SetAsFinalProgramSpecificFile,
   SetAsFinalGenralFile,
   uploadHandwrittenFileforstudent,
@@ -52,6 +53,7 @@ class EditorDocsProgress extends React.Component {
     StudentFeedbackModel: false,
     ML_Requirements_Modal: false,
     studentId: "",
+    doc_thread_id: "",
     applicationId: "",
     docName: "",
     whoupdate: "",
@@ -287,67 +289,14 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  ConfirmDeleteProgramSpecificFileHandler = () => {
+  ConfirmDeleteGeneralFileThreadHandler = () => {
     this.setState((state) => ({
       ...state,
       isLoaded: false, //false to reload everything
     }));
-    deleteProgramSpecificFileUpload(
-      this.state.studentId,
-      this.state.applicationId,
-      this.state.docName,
-      this.state.whoupdate
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                deleteFileWarningModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            success: success,
-            deleteFileWarningModel: false,
-          }));
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-
-  ConfirmDeleteGeneralFileHandler = () => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false, //false to reload everything
-    }));
-    deleteGenralFileUpload(
-      this.state.studentId,
-      this.state.docName,
-      this.state.whoupdate
+    deleteGenralFileThread(
+      this.state.doc_thread_id,
+      this.state.student_id
     ).then(
       (resp) => {
         console.log(resp.data.data);
@@ -678,29 +627,18 @@ class EditorDocsProgress extends React.Component {
     }
   };
 
-  onDeleteGeneralFile = (studentId, docName, whoupdate) => {
+  onDeleteGeneralFileThread = (doc_thread_id, studentId) => {
     this.setState((state) => ({
       ...state,
-      studentId,
-      docName,
-      whoupdate,
-      filetype: "General",
+      doc_thread_id,
+      student_id: studentId,
       deleteFileWarningModel: true,
     }));
   };
-  onDeleteProgramSpecificFile = (
-    studentId,
-    applicationId,
-    docName,
-    whoupdate
-  ) => {
+  onDeleteProgramSpecificThread = (doc_thread_id) => {
     this.setState((state) => ({
       ...state,
-      studentId,
-      applicationId,
-      docName,
-      whoupdate,
-      filetype: "ProgramSpecific",
+      doc_thread_id,
       deleteFileWarningModel: true,
     }));
   };
@@ -1032,7 +970,10 @@ class EditorDocsProgress extends React.Component {
                   </Col>
                 </Row>
                 <ManualFiles
-                  onDeleteGeneralFile={this.onDeleteGeneralFile}
+                  onDeleteGeneralFileThread={this.onDeleteGeneralFileThread}
+                  onDeleteProgramSpecificThread={
+                    this.onDeleteProgramSpecificThread
+                  }
                   onDownloadGeneralFile={this.onDownloadGeneralFile}
                   onCommentsGeneralFile={this.onCommentsGeneralFile}
                   onStudentFeedbackGeneral={this.onStudentFeedbackGeneral}
@@ -1114,8 +1055,8 @@ class EditorDocsProgress extends React.Component {
                         </Row>
 
                         <ManualFiles
-                          onDeleteProgramSpecificFile={
-                            this.onDeleteProgramSpecificFile
+                          onDeleteProgramSpecificThread={
+                            this.onDeleteProgramSpecificThread
                           }
                           onCommentsProgramSpecific={
                             this.onCommentsProgramSpecific
@@ -1171,21 +1112,12 @@ class EditorDocsProgress extends React.Component {
           </Modal.Header>
           <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
           <Modal.Footer>
-            {this.state.filetype === "General" ? (
-              <Button
-                disabled={!isLoaded}
-                onClick={this.ConfirmDeleteGeneralFileHandler}
-              >
-                Yes
-              </Button>
-            ) : (
-              <Button
-                disabled={!isLoaded}
-                onClick={this.ConfirmDeleteProgramSpecificFileHandler}
-              >
-                Yes
-              </Button>
-            )}
+            <Button
+              disabled={!isLoaded}
+              onClick={this.ConfirmDeleteGeneralFileThreadHandler}
+            >
+              Yes
+            </Button>
 
             <Button onClick={this.closeWarningWindow}>No</Button>
             {!isLoaded && (

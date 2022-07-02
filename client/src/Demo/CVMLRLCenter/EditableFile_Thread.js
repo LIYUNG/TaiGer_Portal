@@ -32,20 +32,16 @@ class EditableFile_Thread extends Component {
     );
   };
 
-  handleDeleteGeneralFile = () => {
-    this.props.onDeleteGeneralFile(
-      this.props.student._id,
-      this.props.thread.name,
-      this.props.whoupdate
+  handleDeleteGeneralFileThread = () => {
+    this.props.onDeleteGeneralFileThread(
+      this.props.thread.doc_thread_id._id,
+      this.props.student._id
     );
   };
 
-  handleDeleteProgramSpecific = () => {
-    this.props.onDeleteProgramSpecificFile(
-      this.props.student._id,
-      this.props.application.programId._id,
-      this.props.thread.name,
-      this.props.whoupdate
+  handleDeleteProgramSpecificFileThread = () => {
+    this.props.onDeleteProgramSpecificThread(
+      this.props.thread.doc_thread_id._id
     );
   };
 
@@ -197,25 +193,14 @@ class EditableFile_Thread extends Component {
           </Col>
 
           <Col md={1}>
-            {this.props.thread.doc_thread_id.file_type === "CV" ? (
-              <Button
-                size="sm"
-                title="Delete"
-                variant="danger"
-                onClick={this.handleDeleteGeneralFile}
-              >
-                <AiOutlineDelete size={20} />
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                title="Delete"
-                variant="danger"
-                onClick={this.handleDeleteProgramSpecific}
-              >
-                <AiOutlineDelete size={20} />
-              </Button>
-            )}
+            <Button
+              size="sm"
+              title="Delete"
+              variant="danger"
+              onClick={this.handleDeleteGeneralFileThread}
+            >
+              <AiOutlineDelete size={20} />
+            </Button>
           </Col>
         </Row>
       </>

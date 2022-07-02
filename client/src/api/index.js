@@ -132,6 +132,8 @@ export const deleteGenralFileUpload = (studentId, docName, whoupdate) =>
   request.delete(
     `/api/account/files/general/${studentId}/${whoupdate}/${docName}`
   );
+export const deleteGenralFileThread = (documentsthreadId, studentId) =>
+  request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);
 
 export const SetAsFinalProgramSpecificFile = (
   studentId,

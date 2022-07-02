@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col, Spinner, Button } from "react-bootstrap";
+import { Row, Col, Spinner, Button, Card } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import MessageList from "./MessageList";
 import ToggleableArticleForm from "./ToggleableArticleForm";
@@ -9,12 +9,13 @@ import { Editor } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./DraftEditor.css";
-
+import { FileUploader } from "react-drag-drop-files";
 import {
   updateDoc,
   deleteDoc,
   createArticle,
   getApplicationArticle,
+  SubmitMessageWithAttachment,
 } from "../../../api";
 
 const steps = [
@@ -74,6 +75,16 @@ class Application extends Component {
       ...state,
       isLoaded: false, //false to reload everything
     }));
+    SubmitMessageWithAttachment(
+      this.props.match.params.documentsthreadId,
+      this.state.userId,
+      message
+    ).then(
+      (resp) => {},
+      (error) => {
+        console.log(error);
+      }
+    );
     // updateEditGeneralFileCommentsforstudent(
     //   this.props.match.params.documentsthreadId,
     //   this.state.userId,
@@ -93,23 +104,23 @@ class Application extends Component {
     //             student: data,
     //             success: success,
     //             CommentsModel: false,
-      //         }));
-      //       }.bind(this),
-      //       1500
-      //     );
-      //   } else {
-      //     alert(resp.data.message);
-      //     this.setState((state) => ({
-      //       ...state,
-      //       studentId: "",
-      //       isLoaded: true,
-      //       success: success,
-      //       CommentsModel: false,
-      //     }));
-      //   }
-      // },
-      // (error) => {
-      //   console.log(error);
+    //         }));
+    //       }.bind(this),
+    //       1500
+    //     );
+    //   } else {
+    //     alert(resp.data.message);
+    //     this.setState((state) => ({
+    //       ...state,
+    //       studentId: "",
+    //       isLoaded: true,
+    //       success: success,
+    //       CommentsModel: false,
+    //     }));
+    //   }
+    // },
+    // (error) => {
+    //   console.log(error);
     //   }
     // );
   };
@@ -284,25 +295,75 @@ class Application extends Component {
                 )}
               </Col>
             </Row>
-            <Editor
-              editorState={this.state.editorState}
-              onEditorStateChange={this.handleEditorChange}
-              wrapperClassName="wrapper-class"
-              editorClassName="editor-class"
-              toolbarClassName="toolbar-class"
-            />
-            <Button
-              // disabled={!isLoaded}
-              onClick={() =>
-                this.ConfirmCommentsGeneralFileHandler(
-                  JSON.stringify(
-                    convertToRaw(this.state.editorState.getCurrentContent())
-                  )
-                )
-              }
-            >
-              Yes
-            </Button>
+            <Row>
+              <Col>
+                <Card>
+                  <Card.Header>
+                    <Card.Title as="h5">
+                      {this.props.user.firstname} {this.props.user.lastname}
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    <Editor
+                      editorState={this.state.editorState}
+                      onEditorStateChange={this.handleEditorChange}
+                      // wrapperClassName="wrapper-class"
+                      editorClassName="editor-class"
+                      toolbarClassName="toolbar-class"
+                      toolbar={{
+                        options: [
+                          "inline",
+                          "fontSize",
+                          "fontFamily",
+                          "list",
+                          "textAlign",
+                          // "colorPicker",
+                          "link",
+                          "image",
+                          // "file",
+                        ],
+                        link: {
+                          defaultTargetOption: "_blank",
+                          popupClassName: "mail-editor-link",
+                        },
+                        image: {
+                          urlEnabled: true,
+                          uploadEnabled: true,
+                          uploadCallback: this.uploadImageCallBack,
+                          alignmentEnabled: true,
+                          defaultSize: {
+                            height: "auto",
+                            width: "auto",
+                          },
+                          inputAccept:
+                            "application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel",
+                        },
+                      }}
+                    />
+                    <Row>
+                      <FileUploader />
+                    </Row>
+                    <Row>
+                      <Button
+                        // disabled={!isLoaded}
+                        className="float-right"
+                        onClick={() =>
+                          this.ConfirmCommentsGeneralFileHandler(
+                            JSON.stringify(
+                              convertToRaw(
+                                this.state.editorState.getCurrentContent()
+                              )
+                            )
+                          )
+                        }
+                      >
+                        Submit
+                      </Button>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
           </div>
         </Row>
       </Aux>

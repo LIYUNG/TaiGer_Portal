@@ -29,6 +29,9 @@ import {
   updateEditGeneralFileCommentsforstudent,
   downloadHandWrittenFile,
   downloadGeneralHandWrittenFile,
+  initGeneralMessageThread,
+  initApplicationMessageThread,
+  SubmitMessageWithAttachment,
 } from "../../api";
 import ManualFiles from "./ManualFiles";
 import {
@@ -805,6 +808,77 @@ class EditorDocsProgress extends React.Component {
     this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
   };
 
+  initProgramSpecificFileThread = (
+    e,
+    studentId,
+    applicationId,
+    document_catgory
+  ) => {
+    if ("1" === "") {
+      e.preventDefault();
+      alert("Please select file group");
+    } else {
+      e.preventDefault();
+      initApplicationMessageThread(studentId, applicationId, document_catgory)
+        .then((res) => {
+          console.log(res.data);
+          const { data, success } = res.data;
+          if (success) {
+            setTimeout(
+              function () {
+                //Start the timer
+                this.setState({
+                  isLoaded: true, //false to reload everything
+                  // student: data,
+                  success: success,
+                  file: "",
+                });
+              }.bind(this),
+              1500
+            );
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  initGeneralFileThread = (e, studentId, document_catgory) => {
+    if ("1" === "") {
+      e.preventDefault();
+      alert("Please select file group");
+    } else {
+      e.preventDefault();
+      initGeneralMessageThread(studentId, document_catgory)
+        .then((res) => {
+          console.log(res.data);
+          const { data, success } = res.data;
+          if (success) {
+            setTimeout(
+              function () {
+                //Start the timer
+                this.setState({
+                  isLoaded: true, //false to reload everything
+                  // student: data,
+                  success: success,
+                  file: "",
+                });
+              }.bind(this),
+              1500
+            );
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   onDownloadProgramSpecificFile = (
     e,
     studentId,
@@ -975,6 +1049,10 @@ class EditorDocsProgress extends React.Component {
                   role={this.props.role}
                   student={this.state.student}
                   filetype={"General"}
+                  initGeneralFileThread={this.initGeneralFileThread}
+                  initProgramSpecificFileThread={
+                    this.initProgramSpecificFileThread
+                  }
                 />
                 {this.state.student.applications.map((application, i) => (
                   <>
@@ -1066,6 +1144,10 @@ class EditorDocsProgress extends React.Component {
                           student={this.state.student}
                           application={application}
                           filetype={"ProgramSpecific"}
+                          initGeneralFileThread={this.initGeneralFileThread}
+                          initProgramSpecificFileThread={
+                            this.initProgramSpecificFileThread
+                          }
                         />
                       </>
                     ) : (

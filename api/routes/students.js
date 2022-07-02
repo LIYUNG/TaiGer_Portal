@@ -24,7 +24,6 @@ const {
   deleteProfileFile,
 } = require("../controllers/files");
 
-const { getTasks, initTasks, updateTasks } = require("../controllers/tasks");
 
 const router = Router();
 
@@ -48,9 +47,6 @@ router
     getArchivStudents
   );
 
-router
-  .route("/tasks")
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getTasks);
 
 router
   .route("/archiv/:studentId")
@@ -67,11 +63,7 @@ router
   .route("/:studentId/agents")
   .post(permit(Role.Admin), assignAgentToStudent);
 
-router.route("/:studentId/tasks").post(initTasks);
 
-router
-  .route("/:studentId/tasks")
-  .put(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), updateTasks);
 
 router
   .route("/:studentId/editors")

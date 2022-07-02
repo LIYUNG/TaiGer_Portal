@@ -102,41 +102,68 @@ class ToggleableUploadFileForm extends Component {
 
         <Col md={1}>
           {this.props.filetype === "General" ? (
-            <Form>
-              <Form.File.Label
-                onChange={(e) =>
-                  this.props.handleGeneralDocSubmit(
-                    e,
-                    this.props.student._id,
-                    this.props.category
-                  )
-                }
-                onClick={(e) => (e.target.value = null)}
-              >
-                <Form.File.Input hidden />
-                <IoMdCloudUpload size={32} />
-              </Form.File.Label>
-            </Form>
+            // <Form>
+            //   <Form.File.Label
+            //     onChange={(e) =>
+            //       this.props.handleGeneralDocSubmit(
+            //         e,
+            //         this.props.student._id,
+            //         this.props.category
+            //       )
+            //     }
+            //     onClick={(e) => (e.target.value = null)}
+            //   >
+            //     <Form.File.Input hidden />
+            //     <IoMdCloudUpload size={32} />
+            //   </Form.File.Label>
+            // </Form>
+            <Button
+              variant="primary"
+              onClick={(e) =>
+                this.props.handleCreateGeneralMessageThread(
+                  e,
+                  this.props.student._id,
+                  this.props.category
+                )
+              }
+            >
+              Create
+            </Button>
           ) : (
-            <Form>
-              <Form.File.Label
-                onChange={(e) =>
-                  this.props.handleProgramSpecificFormSubmit(
-                    e,
-                    this.props.student._id,
-                    this.props.application.programId._id,
-                    this.props.category
-                  )
-                }
-                onClick={(e) => (e.target.value = null)}
-              >
-                <Form.File.Input hidden />
-                <IoMdCloudUpload size={32} />
-              </Form.File.Label>
-            </Form>
+            // <Form>
+            //   <Form.File.Label
+            //     onChange={(e) =>
+            //       this.props.handleCreateProgramSpecificMessageThread(
+            //         e,
+            //         this.props.student._id,
+            //         this.props.application.programId._id,
+            //         this.props.category
+            //       )
+            //     }
+            //     onClick={(e) => (e.target.value = null)}
+            //   >
+            //     <Form.File.Input hidden />
+            //     <IoMdCloudUpload size={32} />
+            //   </Form.File.Label>
+            // </Form>
+            <Button
+              variant="primary"
+              onClick={(e) =>
+                this.props.handleCreateProgramSpecificMessageThread(
+                  e,
+                  this.props.student._id,
+                  this.props.application.programId._id,
+                  this.props.category
+                )
+              }
+            >
+              Create
+            </Button>
           )}
         </Col>
-         <Col md={2}><>(File size max: 5 MB)</></Col>
+        {/* <Col md={2}>
+          <>(File size max: 5 MB)</>
+        </Col> */}
         {this.props.role === "Student" ? (
           <></>
         ) : (

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import EditableFile from "./EditableFile";
+import EditableFile_Thread from "./EditableFile_Thread";
 import { Row, Col } from "react-bootstrap";
 
 class ManualFilesList extends Component {
@@ -11,11 +12,30 @@ class ManualFilesList extends Component {
         this.props.student.generaldocs &&
         this.props.student.generaldocs.editoroutputs
       ) {
-        editor_outputs = this.props.student.generaldocs.editoroutputs.map(
-          (editoroutput) => (
-            <EditableFile
-              key={editoroutput._id}
-              document={editoroutput}
+        // editor_outputs = this.props.student.generaldocs.editoroutputs.map(
+        //   (editoroutput) => (
+        //     <EditableFile
+        //       key={editoroutput._id}
+        //       document={editoroutput}
+        //       student={this.props.student}
+        //       onFormSubmit={this.props.onFormSubmit}
+        //       onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+        //       onCommentsGeneralFile={this.props.onCommentsGeneralFile}
+        //       onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
+        //       onTrashClick={this.props.onTrashClick}
+        //       onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+        //       handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
+        //       role={this.props.role}
+        //       whoupdate={"Editor"}
+        //       filetype={this.props.filetype}
+        //     />
+        //   )
+        // );
+        editor_outputs = this.props.student.generaldocs_threads.map(
+          (thread) => (
+            <EditableFile_Thread
+              key={thread._id}
+              thread={thread}
               student={this.props.student}
               onFormSubmit={this.props.onFormSubmit}
               onDownloadGeneralFile={this.props.onDownloadGeneralFile}
@@ -35,6 +55,25 @@ class ManualFilesList extends Component {
         this.props.student.generaldocs &&
         this.props.student.generaldocs.studentinputs
       ) {
+        // student_inputs = this.props.student.generaldocs.studentinputs.map(
+        //   (studentinput) => (
+        //     <EditableFile
+        //       key={studentinput._id}
+        //       document={studentinput}
+        //       student={this.props.student}
+        //       onFormSubmit={this.props.onFormSubmit}
+        //       onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+        //       onCommentsGeneralFile={this.props.onCommentsGeneralFile}
+        //       onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
+        //       onTrashClick={this.props.onTrashClick}
+        //       onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+        //       handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
+        //       role={this.props.role}
+        //       whoupdate={"Student"}
+        //       filetype={this.props.filetype}
+        //     />
+        //   )
+        // );
         student_inputs = this.props.student.generaldocs.studentinputs.map(
           (studentinput) => (
             <EditableFile

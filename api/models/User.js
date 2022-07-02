@@ -389,6 +389,31 @@ const Student = User.discriminator(
           updatedAt: Date,
         },
       },
+      generaldocs_threads: [
+        {
+          isFinalVersion: {
+            type: Boolean,
+            default: false,
+          },
+          isReceivedEditorFeedback: {
+            type: Boolean,
+            default: false,
+          },
+          isReceivedStudentFeedback: {
+            type: Boolean,
+            default: false,
+          },
+          StudentRead: {
+            type: Boolean,
+            default: false,
+          },
+          EditorRead: {
+            type: Boolean,
+            default: false,
+          },
+          doc_thread_id: { type: ObjectId, ref: "Documentthread" },
+        },
+      ],
       generaldocs: {
         editoroutputs: [
           {

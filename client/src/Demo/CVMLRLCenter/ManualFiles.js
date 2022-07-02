@@ -1,6 +1,7 @@
 import React from "react";
 import ManualFilesList from "./ManualFilesList";
 import ToggleableUploadFileForm from "./ToggleableUploadFileForm";
+import { Row, Col, Tabs, Tab, Table } from "react-bootstrap";
 
 class ManualFiles extends React.Component {
   state = {
@@ -37,6 +38,39 @@ class ManualFiles extends React.Component {
       this.setState({ category: "" });
     }
   };
+
+  handleCreateGeneralMessageThread = (e, studentId, fileCategory) => {
+    e.preventDefault();
+    // console.log(e.target.files);
+    if (!this.state.category) {
+      alert("Please select file type");
+    } else {
+      this.props.initGeneralFileThread(e, studentId, fileCategory);
+      this.setState({ category: "" });
+    }
+  };
+
+  handleCreateProgramSpecificMessageThread = (
+    e,
+    studentId,
+    programId,
+    fileCategory
+  ) => {
+    e.preventDefault();
+    // console.log(e.target.files);
+    if (!this.state.category) {
+      alert("Please select file type");
+    } else {
+      this.props.initProgramSpecificFileThread(
+        e,
+        studentId,
+        programId,
+        fileCategory
+      );
+      this.setState({ category: "" });
+    }
+  };
+
   handleSelect = (e) => {
     e.preventDefault();
     // console.log(e.target.value);
@@ -47,16 +81,23 @@ class ManualFiles extends React.Component {
       <>
         {this.props.filetype === "General" ? (
           <>
-            <ManualFilesList
-              filetype={this.props.filetype}
-              student={this.props.student}
-              onDownloadGeneralFile={this.props.onDownloadGeneralFile}
-              onCommentsGeneralFile={this.props.onCommentsGeneralFile}
-              onDeleteGeneralFile={this.props.onDeleteGeneralFile}
-              onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
-              handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
-              role={this.props.role}
-            />
+            <Table>
+              <thead>
+                <tr></tr>
+              </thead>
+              <tbody>
+                <ManualFilesList
+                  filetype={this.props.filetype}
+                  student={this.props.student}
+                  onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+                  onCommentsGeneralFile={this.props.onCommentsGeneralFile}
+                  onDeleteGeneralFile={this.props.onDeleteGeneralFile}
+                  onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
+                  handleAsFinalGeneralFile={this.props.handleAsFinalGeneralFile}
+                  role={this.props.role}
+                />
+              </tbody>
+            </Table>
             {this.props.role === "Agent" ||
             this.props.role === "Admin" ||
             this.props.role === "Editor" ||
@@ -69,6 +110,12 @@ class ManualFiles extends React.Component {
                   this.handleProgramSpecificFormSubmit
                 }
                 handleGeneralDocSubmit={this.handleGeneralDocSubmit}
+                handleCreateGeneralMessageThread={
+                  this.handleCreateGeneralMessageThread
+                }
+                handleCreateProgramSpecificMessageThread={
+                  this.handleCreateProgramSpecificMessageThread
+                }
                 category={this.state.category}
                 filetype={this.props.filetype}
               />
@@ -78,25 +125,35 @@ class ManualFiles extends React.Component {
           </>
         ) : (
           <>
-            <ManualFilesList
-              filetype={this.props.filetype}
-              application={this.props.application}
-              student={this.props.student}
-              onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
-              onStudentFeedbackProgramSpecific={
-                this.props.onStudentFeedbackProgramSpecific
-              }
-              onDownloadProgramSpecificFile={
-                this.props.onDownloadProgramSpecificFile
-              }
-              onDeleteProgramSpecificFile={
-                this.props.onDeleteProgramSpecificFile
-              }
-              handleAsFinalProgramSpecific={
-                this.props.handleAsFinalProgramSpecific
-              }
-              role={this.props.role}
-            />
+            <Table>
+              <thead>
+                <tr></tr>
+              </thead>
+              <tbody>
+                <ManualFilesList
+                  filetype={this.props.filetype}
+                  application={this.props.application}
+                  student={this.props.student}
+                  onCommentsProgramSpecific={
+                    this.props.onCommentsProgramSpecific
+                  }
+                  onStudentFeedbackProgramSpecific={
+                    this.props.onStudentFeedbackProgramSpecific
+                  }
+                  onDownloadProgramSpecificFile={
+                    this.props.onDownloadProgramSpecificFile
+                  }
+                  onDeleteProgramSpecificFile={
+                    this.props.onDeleteProgramSpecificFile
+                  }
+                  handleAsFinalProgramSpecific={
+                    this.props.handleAsFinalProgramSpecific
+                  }
+                  role={this.props.role}
+                />
+              </tbody>
+            </Table>
+
             {this.props.role === "Agent" ||
             this.props.role === "Admin" ||
             this.props.role === "Editor" ||
@@ -110,6 +167,12 @@ class ManualFiles extends React.Component {
                   this.handleProgramSpecificFormSubmit
                 }
                 handleGeneralDocSubmit={this.handleGeneralDocSubmit}
+                handleCreateGeneralMessageThread={
+                  this.handleCreateGeneralMessageThread
+                }
+                handleCreateProgramSpecificMessageThread={
+                  this.handleCreateProgramSpecificMessageThread
+                }
                 category={this.state.category}
                 application={this.props.application}
               />

@@ -1,31 +1,43 @@
+const {
+  model,
+  Schema,
+  Types: { ObjectId },
+} = require("mongoose");
 const mongoose = require("mongoose");
 const documentthreadsSchema = new mongoose.Schema({
-  user_id: {
-    type: String,
-    default: "",
-  },
-  message: {
-    type: String,
-    default: "",
-  },
-  files: [
+  student_id: { type: ObjectId, ref: "User" },
+  file_type: { type: String, ref: "User" },
+  application_id: { type: ObjectId, ref: "Program" },
+  messages: [
     {
-      name: {
+      user_id: {
         type: String,
-        required: true,
+        default: "",
       },
-      path: {
+      message: {
         type: String,
-        required: true,
+        default: "",
       },
+      file: [
+        {
+          name: {
+            type: String,
+            required: true,
+          },
+          path: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
     },
   ],
   updatedAt: Date,
 });
-const Documentthreads = mongoose.model(
-  "Documentthreads",
+const Documentthread = mongoose.model(
+  "Documentthread",
   documentthreadsSchema
 );
 module.exports = {
-  Documentthreads,
+  Documentthread,
 };

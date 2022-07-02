@@ -46,6 +46,7 @@ const getStudents = asyncHandler(async (req, res) => {
       $or: [{ archiv: { $exists: false } }, { archiv: false }],
     })
       .populate("applications.programId agents editors")
+      // .populate("generaldocs_threads.doc_thread_id")
       .lean();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Agent") {
@@ -54,6 +55,7 @@ const getStudents = asyncHandler(async (req, res) => {
       $or: [{ archiv: { $exists: false } }, { archiv: false }],
     })
       .populate("applications.programId agents editors")
+      .populate("generaldocs_threads.doc_thread_id")
       .lean()
       .exec();
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
@@ -65,7 +67,10 @@ const getStudents = asyncHandler(async (req, res) => {
     const students = await Student.find({
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }],
-    }).populate("applications.programId agents editors");
+    })
+      .populate("applications.programId agents editors")
+      .populate("generaldocs_threads.doc_thread_id");
+
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Student") {
     const student = await Student.findById(user._id)

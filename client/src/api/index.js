@@ -37,7 +37,7 @@ export const getAllStudents = () => request.get(`/api/students/all`);
 
 export const getStudent = (studentId) =>
   request.get(`/api/students/${studentId}`);
-  
+
 export const getArchivStudents = () => request.get(`/api/students/archiv`);
 
 export const updateArchivStudents = (studentId, isArchived) =>
@@ -179,7 +179,11 @@ export const updateEditGeneralFileCommentsforstudent = (
     `/api/account/files/general/comments/${studentId}/${whoupdate}/${docName}`,
     { comments }
   );
-export const downloadGeneralHandWrittenFile = (studentId, docName, student_inputs) =>
+export const downloadGeneralHandWrittenFile = (
+  studentId,
+  docName,
+  student_inputs
+) =>
   request.get(
     `/api/account/files/general/${studentId}/${student_inputs}/${docName}`,
     {
@@ -236,7 +240,8 @@ export const downloadHandWrittenFile = (
 
 // Program APIs
 export const getPrograms = () => request.get("/api/programs");
-export const getProgram = (programId) => request.get(`/api/programs/${programId}`);
+export const getProgram = (programId) =>
+  request.get(`/api/programs/${programId}`);
 
 export const deleteProgram = (id) => request.delete(`/api/programs/${id}`);
 
@@ -260,6 +265,28 @@ export const updateArticle = (id, article) =>
 const getArticle = (type) => request.get(`/api/docs/${type}`);
 
 export const getApplicationArticle = () => getArticle("application");
+export const SubmitMessageWithAttachment = (
+  documentsthreadId,
+  userId,
+  message
+) =>
+  request.post(`/api/document-threads/${documentsthreadId}`, {
+    userId,
+    message,
+  });
+
+export const initGeneralMessageThread = (studentId, document_catgory) =>
+  request.post(
+    `/api/document-threads/init/general/${studentId}/${document_catgory}`
+  );
+export const initApplicationMessageThread = (
+  studentId,
+  applicationId,
+  document_catgory
+) =>
+  request.post(
+    `/api/document-threads/init/application/${studentId}/${applicationId}/${document_catgory}`
+  );
 
 export const getVisaArticle = () => getArticle("visa");
 

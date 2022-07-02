@@ -38,6 +38,8 @@ class Application extends Component {
     activeStep: 0,
     editorState: null,
     completed: {},
+    expand: true,
+    accordionKeys: [0], // to expand all]
   };
   componentDidMount() {
     // console.log(this.props.match.params.documentsthreadId);
@@ -45,12 +47,14 @@ class Application extends Component {
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
         const { success, data } = resp.data;
-        // console.log(data);
+        console.log(data);
         if (success) {
           this.setState({
             success,
             thread: data,
             isLoaded: true,
+            accordionKeys: new Array(data.messages.length).fill().map((x, i) => i), // to expand all
+            //   accordionKeys: new Array(-1, data.length), // to collapse all
           });
         } else {
           alert(resp.data.message);
@@ -281,6 +285,31 @@ class Application extends Component {
     }));
   };
 
+  singleExpandtHandler = (idx) => {
+    let accordionKeys = [...this.state.accordionKeys];
+    accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
+    this.setState((state) => ({
+      ...state,
+      accordionKeys: accordionKeys,
+    }));
+  };
+
+  AllCollapsetHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      expand: false,
+      accordionKeys: new Array(this.state.thread.messages.length).fill().map((x, i) => -1), // to collapse all]
+    }));
+  };
+
+  AllExpandtHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      expand: true,
+      accordionKeys: new Array(this.state.thread.messages.length).fill().map((x, i) => i), // to expand all]
+    }));
+  };
+
   render() {
     const { error, isLoaded } = this.state;
     const { completed, activeStep } = this.state;
@@ -308,27 +337,53 @@ class Application extends Component {
     }
     return (
       <Aux>
+        {!isLoaded && (
+          <div style={style}>
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden"></span>
+            </Spinner>
+          </div>
+        )}
+        <Row>
+          <Card className="mt-0">
+            <Card.Header>
+              <Card.Title as="h5">
+                <h4>
+                  {this.state.thread.student_id.firstname}{" "}
+                  {this.state.thread.student_id.lastname}
+                  {" - "}
+                  {this.state.thread.application_id
+                    ? this.state.thread.application_id.program_name
+                    : this.state.thread.file_type}{" "}
+                  {" Discussion thread"}
+                  {"   "}
+                  {this.state.expand ? (
+                    <Button
+                      className="btn-sm float-right"
+                      onClick={() => this.AllCollapsetHandler()}
+                    >
+                      Collaspse
+                    </Button>
+                  ) : (
+                    <Button
+                      className="btn-sm float-right"
+                      onClick={() => this.AllExpandtHandler()}
+                    >
+                      Expand
+                    </Button>
+                  )}
+                </h4>
+              </Card.Title>
+            </Card.Header>
+          </Card>
+        </Row>
         <Row>
           <div>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-            <Row>
-              <Col>
-                {this.state.thread.student_id.firstname}{" "}
-                {this.state.thread.student_id.lastname}
-                {this.state.thread.application_id
-                  ? this.state.thread.application_id.program_name
-                  : ""}
-              </Col>
-            </Row>
             <Row>
               <Col>
                 <MessageList
+                  accordionKeys={this.state.accordionKeys}
+                  singleExpandtHandler={this.singleExpandtHandler}
                   thread={this.state.thread}
                   category="application"
                   onFormSubmit={this.handleEditFormSubmit}

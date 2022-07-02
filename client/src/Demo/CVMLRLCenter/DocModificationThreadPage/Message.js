@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import Card from "../../../App/components/MainCard";
 import { AiFillEdit } from "react-icons/ai";
-import { Card, Spinner } from "react-bootstrap";
+import { Card, Spinner, Collapse } from "react-bootstrap";
 
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import parse from "html-react-parser";
@@ -61,8 +61,16 @@ class Message extends Component {
     ));
     return (
       <Card key={this.props.id}>
-        <Card.Header>
-          <Card.Title as="h5">
+        <Card.Header
+          onClick={() => this.props.singleExpandtHandler(this.props.idx)}
+        >
+          <Card.Title
+            as="h5"
+            aria-controls={"accordion" + this.props.idx}
+            aria-expanded={
+              this.props.accordionKeys[this.props.idx] === this.props.idx
+            }
+          >
             {this.props.message.user_id.firstname}{" "}
             {this.props.message.user_id.lastname}
             {" on "}
@@ -71,18 +79,22 @@ class Message extends Component {
             {new Date(this.props.message.createdAt).toLocaleDateString()}
           </Card.Title>
         </Card.Header>
-        <Card.Body>
-          {/* {this.props.message.message} */}
-          {/* {parse(convertToHTML(this.state.editorState.getCurrentContent()))} */}
-          <Editor
-            spellCheck={true}
-            readOnly={true}
-            toolbarHidden={true}
-            editorState={this.state.editorState}
-            onEditorStateChange={this.handleEditorChange}
-          />
-          {files_info}
-        </Card.Body>
+        <Collapse
+          in={this.props.accordionKeys[this.props.idx] === this.props.idx}
+        >
+          <Card.Body>
+            {/* {this.props.message.message} */}
+            {/* {parse(convertToHTML(this.state.editorState.getCurrentContent()))} */}
+            <Editor
+              spellCheck={true}
+              readOnly={true}
+              toolbarHidden={true}
+              editorState={this.state.editorState}
+              onEditorStateChange={this.handleEditorChange}
+            />
+            {files_info}
+          </Card.Body>
+        </Collapse>
       </Card>
     );
   }

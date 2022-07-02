@@ -18,9 +18,10 @@ class Message extends Component {
   };
   componentDidMount() {
     var initialEditorState = null;
-    if (this.props.content) {
+    console.log(this.props.message.message);
+    if (this.props.message.message) {
       const rawContentFromStore = convertFromRaw(
-        JSON.parse(this.props.content)
+        JSON.parse(this.props.message.message)
       );
       initialEditorState = EditorState.createWithContent(rawContentFromStore);
       console.log(initialEditorState);
@@ -37,33 +38,8 @@ class Message extends Component {
   handleTrashClick = () => {
     this.props.onTrashClick(this.props.id);
   };
-  renderText() {
-    let parts = this.props.content.split("\n"); // re is a matching regular expression
-    for (let i = 0; i < parts.length; i += 1) {
-      if (parts[i].includes("http")) {
-        parts[i] = (
-          <span key={i}>
-            <span>
-              <a key={"link" + i} href={parts[i]}>
-                {parts[i]}
-              </a>
-            </span>
-            <br />
-          </span>
-        );
-      } else {
-        parts[i] = (
-          <span key={i}>
-            <span>{parts[i]}</span>
-            <br />
-          </span>
-        );
-      }
-    }
-    return parts;
-  }
+
   render() {
-    let text2 = this.renderText();
     const style = {
       position: "fixed",
       top: "40%",
@@ -84,32 +60,18 @@ class Message extends Component {
       <Card key={this.props.id}>
         <Card.Header>
           <Card.Title as="h5">
-            {this.props.name}
-            {this.props.title}
+            {this.props.message.user_id.firstname}{" "}
+            {this.props.message.user_id.lastname}
             {" on "}
-            {new Date(this.props.lastupdate).toLocaleTimeString()}
+            {new Date(this.props.message.createdAt).toLocaleTimeString()}
             {", "}
-            {new Date(this.props.lastupdate).toLocaleDateString()}
+            {new Date(this.props.message.createdAt).toLocaleDateString()}
           </Card.Title>
         </Card.Header>
         <Card.Body>
-          {/* {text2} */}
+          {/* {this.props.message.message} */}
           {parse(convertToHTML(this.state.editorState.getCurrentContent()))}
         </Card.Body>
-        {/* <div>
-          {this.props.role === "Admin" || this.props.role === "Agent" ? (
-            <>
-              <span className="right">
-                <AiFillEdit onClick={this.props.onEditClick} />
-              </span>
-              <span className="right">
-                <BsTrash onClick={this.handleTrashClick} />
-              </span>
-            </>
-          ) : (
-            <></>
-          )}
-        </div> */}
       </Card>
     );
   }

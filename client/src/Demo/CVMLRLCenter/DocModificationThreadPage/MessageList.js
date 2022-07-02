@@ -1,24 +1,20 @@
 import React, { Component } from "react";
-import EditableMessage from "./EditableMessage";
+import Message from "./Message";
 
 class MessageList extends Component {
-
   render() {
-    const articles = this.props.articles.map((article) => (
-      <EditableMessage
-        key={article._id}
-        id={article._id}
-        title={article.Titel_}
-        content={article.Content_}
-        lastupdate={article.LastUpdate_}
-        category={this.props.category}
-        onFormSubmit={this.props.onFormSubmit}
+    const thread = this.props.thread.messages.map((message) => (
+      <Message
+        id={message.id}
+        key={message.id}
+        message={message}
         onTrashClick={this.props.onTrashClick}
+        lastupdate={this.props.lastupdate}
         role={this.props.role}
         isLoaded={this.props.isLoaded}
       />
     ));
-    return <div>{articles}</div>;
+    return <div>{thread}</div>;
   }
 }
 

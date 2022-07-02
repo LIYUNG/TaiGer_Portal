@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import MessageForm from "./MessageForm";
 import { IoMdAdd } from "react-icons/io";
 import { Button } from "react-bootstrap";
 
@@ -22,26 +21,13 @@ class ToggleableMessageForm extends Component {
   };
 
   render() {
-    if (this.state.isOpen) {
-      return (
-        <MessageForm
-          category={this.props.category}
-          onFormSubmit={this.handleFormSubmit}
-          onFormClose={this.handleFormClose}
-        />
-      );
-    } else {
-      return (
-        <div className="ui basic content center aligned segment">
-          <Button
-            className="ui basic button icon"
-            onClick={this.handleFormOpen}
-          >
-            <IoMdAdd />
-          </Button>
-        </div>
-      );
-    }
+    return (
+      <div className="ui basic content center aligned segment">
+        <Button className="ui basic button icon" onClick={this.handleFormOpen}>
+          <IoMdAdd />
+        </Button>
+      </div>
+    );
   }
 }
 

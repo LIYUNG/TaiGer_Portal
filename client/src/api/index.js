@@ -275,6 +275,8 @@ export const SubmitMessageWithAttachment = (
     message,
   });
 
+export const getMessagThread = (documentsthreadId) =>
+  request.get(`/api/document-threads/${documentsthreadId}`);
 export const initGeneralMessageThread = (studentId, document_catgory) =>
   request.post(
     `/api/document-threads/init/general/${studentId}/${document_catgory}`

@@ -16,6 +16,7 @@ import {
   createArticle,
   getApplicationArticle,
   SubmitMessageWithAttachment,
+  getMessagThread,
 } from "../../../api";
 
 const steps = [
@@ -30,6 +31,7 @@ class Application extends Component {
     error: null,
     isLoaded: false,
     articles: [],
+    thread: [],
     editFormOpen: false,
     defaultStep: 1,
     activeStep: 0,
@@ -39,13 +41,14 @@ class Application extends Component {
   componentDidMount() {
     console.log(this.props.match.params.documentsthreadId);
 
-    getApplicationArticle().then(
+    getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
         const { success, data } = resp.data;
+        console.log(data);
         if (success) {
           this.setState({
             success,
-            articles: data,
+            thread: data,
             isLoaded: true,
           });
         } else {
@@ -70,17 +73,30 @@ class Application extends Component {
     // this.convertContentToHTML();
   };
 
-  ConfirmCommentsGeneralFileHandler = (message) => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false, //false to reload everything
-    }));
+  ConfirmSubmitMessageHandler = (editorState) => {
+    var message = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
+    // this.setState((state) => ({
+    //   ...state,
+    //   isLoaded: false, //false to reload everything
+    // }));
     SubmitMessageWithAttachment(
       this.props.match.params.documentsthreadId,
       this.state.userId,
       message
     ).then(
-      (resp) => {},
+      (resp) => {
+        const { success, data } = resp.data;
+        console.log(data);
+        if (success) {
+          this.setState({
+            success,
+            thread: data,
+            isLoaded: true,
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
       (error) => {
         console.log(error);
       }
@@ -269,8 +285,24 @@ class Application extends Component {
           <div>
             <Row>
               <Col>
+                {this.state.thread.student_id.firstname}{" "}
+                {this.state.thread.student_id.lastname}
+                {this.state.thread.application_id
+                  ? this.state.thread.application_id.program_name
+                  : ""}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {!isLoaded && (
+                  <div style={style}>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  </div>
+                )}
                 <MessageList
-                  articles={this.state.articles}
+                  thread={this.state.thread}
                   category="application"
                   onFormSubmit={this.handleEditFormSubmit}
                   onTrashClick={this.handleTrashClick}
@@ -285,13 +317,6 @@ class Application extends Component {
                   />
                 ) : (
                   <></>
-                )}
-                {!isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
                 )}
               </Col>
             </Row>
@@ -348,12 +373,8 @@ class Application extends Component {
                         // disabled={!isLoaded}
                         className="float-right"
                         onClick={() =>
-                          this.ConfirmCommentsGeneralFileHandler(
-                            JSON.stringify(
-                              convertToRaw(
-                                this.state.editorState.getCurrentContent()
-                              )
-                            )
+                          this.ConfirmSubmitMessageHandler(
+                            this.state.editorState
                           )
                         }
                       >

@@ -862,7 +862,7 @@ class EditorDocsProgress extends React.Component {
                 //Start the timer
                 this.setState({
                   isLoaded: true, //false to reload everything
-                  // student: data,
+                  student: data,
                   success: success,
                   file: "",
                 });
@@ -1026,14 +1026,6 @@ class EditorDocsProgress extends React.Component {
           >
             <div id="accordion1">
               <Card.Body>
-                <Row>
-                  <Col md={6}>
-                    <h6>Editor output</h6>
-                  </Col>
-                  <Col md={6}>
-                    <h6>Student input</h6>
-                  </Col>
-                </Row>
                 <Row>
                   <Col md={8}>
                     <h5>General Documents (CV, Recommendation Letters)</h5>

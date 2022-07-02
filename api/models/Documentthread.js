@@ -6,18 +6,16 @@ const {
 const mongoose = require("mongoose");
 const documentthreadsSchema = new mongoose.Schema({
   student_id: { type: ObjectId, ref: "User" },
-  file_type: { type: String, ref: "User" },
+  file_type: { type: String, default: "" },
   application_id: { type: ObjectId, ref: "Program" },
   messages: [
     {
-      user_id: {
-        type: String,
-        default: "",
-      },
+      user_id: { type: ObjectId, ref: "User" },
       message: {
         type: String,
         default: "",
       },
+      createdAt: Date,
       file: [
         {
           name: {
@@ -34,10 +32,7 @@ const documentthreadsSchema = new mongoose.Schema({
   ],
   updatedAt: Date,
 });
-const Documentthread = mongoose.model(
-  "Documentthread",
-  documentthreadsSchema
-);
+const Documentthread = mongoose.model("Documentthread", documentthreadsSchema);
 module.exports = {
   Documentthread,
 };

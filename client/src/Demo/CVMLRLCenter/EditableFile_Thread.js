@@ -200,135 +200,23 @@ class EditableFile_Thread extends Component {
             {this.props.thread.doc_thread_id.file_type === "CV" ? (
               <Button
                 size="sm"
-                title="Download"
-                on
-                onClick={(e) =>
-                  this.props.onDownloadGeneralFile(
-                    e,
-                    this.props.student._id,
-                    this.props.thread.name,
-                    this.props.whoupdate
-                  )
-                }
+                title="Delete"
+                variant="danger"
+                onClick={this.handleDeleteGeneralFile}
               >
-                <AiOutlineDownload size={20} />
+                <AiOutlineDelete size={20} />
               </Button>
             ) : (
               <Button
                 size="sm"
-                title="Download"
-                onClick={(e) =>
-                  this.props.onDownloadProgramSpecificFile(
-                    e,
-                    this.props.student._id,
-                    this.props.application.programId._id,
-                    this.props.thread.name,
-                    this.props.whoupdate
-                  )
-                }
+                title="Delete"
+                variant="danger"
+                onClick={this.handleDeleteProgramSpecific}
               >
-                <AiOutlineDownload size={20} />
+                <AiOutlineDelete size={20} />
               </Button>
             )}
           </Col>
-          <Col md={1}>
-            {this.props.thread.doc_thread_id.file_type === "CV" ? (
-              <Button
-                size="sm"
-                title="Comments"
-                variant="light"
-                onClick={this.handleCommentsGeneralFile}
-              >
-                <AiOutlineComment size={20} />
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                title="Comments"
-                variant="light"
-                onClick={this.handleCommentsProgramSpecific}
-              >
-                <AiOutlineComment size={20} />
-              </Button>
-            )}
-          </Col>
-          {this.props.whoupdate === "Editor" ? (
-            this.props.role === "Editor" ? (
-              <Col md={1}>
-                {this.props.thread.doc_thread_id.file_type === "CV" ? (
-                  <Button
-                    size="sm"
-                    title="Student Feedback"
-                    variant="light"
-                    onClick={this.handleStudentFeebackGeneral}
-                  >
-                    <AiFillMessage size={20} />
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    title="Student Feedback"
-                    variant="light"
-                    onClick={this.handleStudentFeebackProgramSpecific}
-                  >
-                    <AiFillMessage size={20} />
-                  </Button>
-                )}
-              </Col>
-            ) : (
-              <Col md={1}>
-                {this.props.thread.doc_thread_id.file_type === "CV" ? (
-                  <Button
-                    size="sm"
-                    title="Give Feedback"
-                    variant="light"
-                    onClick={this.handleStudentFeebackGeneral}
-                  >
-                    <AiFillMessage size={20} />
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    title="Give Feedback"
-                    variant="light"
-                    onClick={this.handleStudentFeebackProgramSpecific}
-                  >
-                    <AiFillMessage size={20} />
-                  </Button>
-                )}
-              </Col>
-            )
-          ) : (
-            <></>
-          )}
-          {this.props.role === "Editor" ||
-          this.props.whoupdate === "Student" ? (
-            <>
-              <Col md={1}>
-                {this.props.thread.doc_thread_id.file_type === "CV" ? (
-                  <Button
-                    size="sm"
-                    title="Delete"
-                    variant="danger"
-                    onClick={this.handleDeleteGeneralFile}
-                  >
-                    <AiOutlineDelete size={20} />
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    title="Delete"
-                    variant="danger"
-                    onClick={this.handleDeleteProgramSpecific}
-                  >
-                    <AiOutlineDelete size={20} />
-                  </Button>
-                )}
-              </Col>
-            </>
-          ) : (
-            <></>
-          )}
         </Row>
       </>
     );

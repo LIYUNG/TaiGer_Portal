@@ -12,18 +12,28 @@ const {
 } = require("../middlewares/file-upload");
 
 const {
+  getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
   getMessageFile,
   SetStatusMessagesThread,
   deleteMessagesThread,
+  deleteProgramSpecificMessagesThread,
   postMessages,
 } = require("../controllers/documents_modification");
 
 const router = Router();
 
 router.use(protect);
+
+router
+  .route("/overview")
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getCVMLRLOverview
+  );
+
 
 router
   .route("/init/general/:studentId/:document_catgory")
@@ -57,6 +67,13 @@ router
 router
   .route("/:messagesThreadId/:messageId/:fileId")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessageFile);
+
+router
+  .route("/:messagesThreadId/:applicationId/:studentId")
+  .delete(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    deleteProgramSpecificMessagesThread
+  );
 
 
 router.route("/:studentId/:messagesThreadId").post(

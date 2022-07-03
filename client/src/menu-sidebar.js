@@ -82,7 +82,7 @@ export default {
           id: "editor_center",
           title: "CV/ML/RL Center",
           type: "item",
-          url: "/editor-center",
+          url: "/cv-ml-rl-center",
           classes: "nav-item",
           icon: "feather icon-edit-1",
         },

@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Spinner, Button, Card } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 import DEMO from "../../store/constant";
-import { getStudents } from "../../api";
+import { getCVMLRLOverview } from "../../api";
 import EditorDocsProgress from "./EditorDocsProgress";
 import ManualFiles from "./ManualFiles";
 
@@ -24,7 +24,7 @@ class EditorCenter extends React.Component {
 
   componentDidMount() {
     console.log(this.props.user);
-    getStudents().then(
+    getCVMLRLOverview().then(
       (resp) => {
         console.log(resp.data);
         const { data, success } = resp.data;

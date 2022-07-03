@@ -218,6 +218,7 @@ const applicationSchema = new Schema({
         default: false,
       },
       doc_thread_id: { type: ObjectId, ref: "Documentthread" },
+      createdAt: Date,
     },
   ],
   documents: [
@@ -412,6 +413,7 @@ const Student = User.discriminator(
             default: false,
           },
           doc_thread_id: { type: ObjectId, ref: "Documentthread" },
+          createdAt: Date,
         },
       ],
       generaldocs: {

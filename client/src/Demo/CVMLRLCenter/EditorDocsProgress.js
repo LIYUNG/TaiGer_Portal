@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import DEMO from "../../store/constant";
 import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import DraftEditor from "./DraftEditor";
-import DraftEditor_StudentFeeback from "./DraftEditor_StudentFeeback";
 
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
@@ -19,6 +17,7 @@ import {
 import {
   deleteProgramSpecificFileUpload,
   deleteGenralFileThread,
+  deleteProgramSpecificFileThread,
   SetAsFinalProgramSpecificFile,
   SetAsFinalGenralFile,
   uploadHandwrittenFileforstudent,
@@ -186,23 +185,17 @@ class EditorDocsProgress extends React.Component {
         console.log(resp.data.data);
         const { data, success } = resp.data;
         if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                StudentFeedbackModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            student: data,
+            success: success,
+            StudentFeedbackModel: false,
+          }));
         } else {
           alert(resp.data.message);
           this.setState((state) => ({
@@ -239,23 +232,17 @@ class EditorDocsProgress extends React.Component {
         console.log(resp.data.data);
         const { data, success } = resp.data;
         if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                CommentsModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            student: data,
+            success: success,
+            CommentsModel: false,
+          }));
         } else {
           alert(resp.data.message);
           this.setState((state) => ({
@@ -281,49 +268,84 @@ class EditorDocsProgress extends React.Component {
       ...state,
       isLoaded: false, //false to reload everything
     }));
-    deleteGenralFileThread(
-      this.state.doc_thread_id,
-      this.state.student_id
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                deleteFileWarningModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            success: success,
-            deleteFileWarningModel: false,
-          }));
+    if (this.state.applicationId == null) {
+      deleteGenralFileThread(
+        this.state.doc_thread_id,
+        this.state.student_id
+      ).then(
+        (resp) => {
+          console.log(resp.data.data);
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState((state) => ({
+              ...state,
+              studentId: "",
+              applicationId: "",
+              docName: "",
+              whoupdate: "",
+              isLoaded: true,
+              student: data,
+              success: success,
+              deleteFileWarningModel: false,
+            }));
+          } else {
+            alert(resp.data.message);
+            this.setState((state) => ({
+              ...state,
+              studentId: "",
+              applicationId: "",
+              docName: "",
+              whoupdate: "",
+              isLoaded: true,
+              success: success,
+              deleteFileWarningModel: false,
+            }));
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+      );
+    } else {
+      deleteProgramSpecificFileThread(
+        this.state.doc_thread_id,
+        this.state.applicationId,
+        this.state.student_id
+      ).then(
+        (resp) => {
+          console.log(resp.data.data);
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState((state) => ({
+              ...state,
+              studentId: "",
+              applicationId: "",
+              docName: "",
+              whoupdate: "",
+              isLoaded: true,
+              student: data,
+              success: success,
+              deleteFileWarningModel: false,
+            }));
+          } else {
+            alert(resp.data.message);
+            this.setState((state) => ({
+              ...state,
+              studentId: "",
+              applicationId: "",
+              docName: "",
+              whoupdate: "",
+              isLoaded: true,
+              success: success,
+              deleteFileWarningModel: false,
+            }));
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
   };
 
   ConfirmSetAsFinalSpecificFileHandler = () => {
@@ -601,14 +623,16 @@ class EditorDocsProgress extends React.Component {
     }
   };
 
-  onDeleteFileThread = (doc_thread_id, studentId) => {
+  onDeleteFileThread = (doc_thread_id, application, studentId) => {
     this.setState((state) => ({
       ...state,
       doc_thread_id,
+      applicationId: application ? application._id : null,
       student_id: studentId,
       deleteFileWarningModel: true,
     }));
   };
+
   onDeleteProgramSpecificThread = (doc_thread_id) => {
     this.setState((state) => ({
       ...state,
@@ -741,7 +765,7 @@ class EditorDocsProgress extends React.Component {
                 //Start the timer
                 this.setState({
                   isLoaded: true, //false to reload everything
-                  // student: data,
+                  student: data,
                   success: success,
                   file: "",
                 });
@@ -960,6 +984,7 @@ class EditorDocsProgress extends React.Component {
                   initProgramSpecificFileThread={
                     this.initProgramSpecificFileThread
                   }
+                  application={null}
                 />
                 {this.state.student.applications.map((application, i) => (
                   <>
@@ -967,14 +992,14 @@ class EditorDocsProgress extends React.Component {
                     application.decided === true ? (
                       <>
                         <Row>
-                          <Col md={3}>
+                          <Col>
                             <h5>
                               {application.programId.school}
                               {" - "}
                               {application.programId.program_name}
                             </h5>
                           </Col>
-                          <Col md={3}>
+                          <Col>
                             {application.programId.ml_requirements !==
                               undefined &&
                             application.programId.ml_requirements !== "" ? (
@@ -1018,17 +1043,10 @@ class EditorDocsProgress extends React.Component {
                               <></>
                             )}
                           </Col>
-                          <Col md={3}>
-                            <h5>
-                              {application.programId.school}
-                              {" - "}
-                              {application.programId.program_name}
-                            </h5>
-                          </Col>
-                          <Col md={3}></Col>
                         </Row>
 
                         <ManualFiles
+                          onDeleteFileThread={this.onDeleteFileThread}
                           onDeleteProgramSpecificThread={
                             this.onDeleteProgramSpecificThread
                           }
@@ -1084,7 +1102,9 @@ class EditorDocsProgress extends React.Component {
               Warning
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>Do you want to delete {this.state.docName}?</Modal.Body>
+          <Modal.Body>
+            Do you want to delete {this.state.applicationId}?
+          </Modal.Body>
           <Modal.Footer>
             <Button
               disabled={!isLoaded}
@@ -1169,46 +1189,6 @@ class EditorDocsProgress extends React.Component {
             )}
           </Modal.Footer>
         </Modal>
-        <DraftEditor
-          error={error}
-          whoupdate={this.state.whoupdate}
-          isLoaded={isLoaded}
-          student={this.state.student}
-          show={this.state.CommentsModel}
-          onHide={this.closeCommentsWindow}
-          defaultComments={this.state.comments}
-          updatedAt={this.state.updatedAt}
-          onClick1={this.ConfirmCommentsGeneralFileHandler}
-          onClick2={this.ConfirmCommentsProgramSpecificFileHandler}
-          onClick3={this.closeCommentsWindow}
-          setMessage={this.setState}
-          docName={this.state.docName}
-          role={this.props.role}
-          filetype={this.state.filetype}
-        />
-        <DraftEditor_StudentFeeback
-          error={error}
-          whoupdate={this.state.whoupdate}
-          isLoaded={isLoaded}
-          student={this.state.student}
-          show={this.state.StudentFeedbackModel}
-          onHide={this.closeStudentFeebackProgramSpecificFileModelWindow}
-          defaultComments={this.state.student_feedback}
-          student_feedback_updatedAt={this.state.student_feedback_updatedAt}
-          ConfirmStudentFeedbackProgramSpecificFileHandler={
-            this.ConfirmStudentFeedbackProgramSpecificFileHandler
-          }
-          ConfirmStudentFeedbackGeneralFileHandler={
-            this.ConfirmStudentFeedbackGeneralFileHandler
-          }
-          closeStudentFeebackProgramSpecificFileModelWindow={
-            this.closeStudentFeebackProgramSpecificFileModelWindow
-          }
-          setMessage={this.setState}
-          docName={this.state.docName}
-          role={this.props.role}
-          filetype={this.state.filetype}
-        />
       </>
     );
   }

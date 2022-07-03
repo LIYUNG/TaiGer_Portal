@@ -31,8 +31,8 @@ const getAllStudents = asyncHandler(async (req, res) => {
     // params: { userId },
   } = req;
   const students = await Student.find();
-    // .populate("applications.programId agents editors");
-    // .lean();
+  // .populate("applications.programId agents editors");
+  // .lean();
   res.status(200).send({ success: true, data: students });
 });
 
@@ -46,7 +46,7 @@ const getStudents = asyncHandler(async (req, res) => {
       $or: [{ archiv: { $exists: false } }, { archiv: false }],
     })
       .populate("applications.programId agents editors")
-      // .populate("generaldocs_threads.doc_thread_id")
+      .populate("generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id")
       .lean();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === "Agent") {
@@ -85,6 +85,7 @@ const getStudents = asyncHandler(async (req, res) => {
     res.status(200).send({ success: true, data: [user] });
   }
 });
+
 const getArchivStudent = asyncHandler(async (req, res) => {
   const {
     user,
@@ -94,9 +95,11 @@ const getArchivStudent = asyncHandler(async (req, res) => {
   if (user.role === "Guest" || user.role === "Student") {
     throw new ErrorResponse(400, "Unauthorized access.");
   }
-  const students = await Student.find({ _id: studentId, archiv: true })
-    .populate("applications.programId agents editors");
-    // .lean();
+  const students = await Student.find({
+    _id: studentId,
+    archiv: true,
+  }).populate("applications.programId agents editors");
+  // .lean();
   res.status(200).send({ success: true, data: students[0] });
 });
 

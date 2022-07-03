@@ -25,6 +25,67 @@ var s3 = new aws.S3({
   secretAccessKey: AWS_S3_ACCESS_KEY,
 });
 
+const getCVMLRLOverview = asyncHandler(async (req, res) => {
+  const {
+    user,
+    // params: { userId },
+  } = req;
+  if (user.role === "Admin") {
+    const students = await Student.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }],
+    })
+      .populate("applications.programId generaldocs_threads.doc_thread_id")
+      .populate(
+        "applications.doc_modification_thread.doc_thread_id",
+        "file_type updatedAt"
+      )
+      .lean();
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Agent") {
+    const students = await Student.find({
+      _id: { $in: user.students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }],
+    })
+      .populate("applications.programId generaldocs_threads.doc_thread_id")
+      .populate(
+        "applications.doc_modification_thread.doc_thread_id",
+        "file_type updatedAt"
+      )
+      .lean()
+      .exec();
+    // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
+    // console.log(students[0].applications[0].programId); // looks ok!
+    // console.log(students[0].applications[0].programId.school);
+
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Editor") {
+    const students = await Student.find({
+      _id: { $in: user.students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }],
+    })
+      .populate("applications.programId generaldocs_threads.doc_thread_id")
+      .populate(
+        "applications.doc_modification_thread.doc_thread_id",
+        "file_type updatedAt"
+      );
+
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === "Student") {
+    const student = await Student.findById(user._id)
+      .populate("applications.programId generaldocs_threads.doc_thread_id")
+      .populate(
+        "applications.doc_modification_thread.doc_thread_id",
+        "file_type updatedAt"
+      )
+      .lean()
+      .exec();
+    res.status(200).send({ success: true, data: [student] });
+  } else {
+    // Guest
+    res.status(200).send({ success: true, data: [user] });
+  }
+});
+
 const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -37,14 +98,31 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   if (!student) throw new ErrorResponse(400, "Invalid student id");
   var generaldocs_thread_existed;
   var doc_thread_existed;
+  //TODO: what if same file_type and same student_id? (ex. ML for 2 programs)
   doc_thread_existed = await Documentthread.find({
     student_id: studentId,
     file_type: document_catgory,
   });
 
-  if (doc_thread_existed.length > 0)
+  if (doc_thread_existed.length > 0) {
+    //TODO: should push the existing one to student
     throw new ErrorResponse(400, "Document Thread already existed!");
+    // const application = student.generaldocs_threads.find(
+    //   ({ doc_thread_id }) => doc_thread_id._id == studentId
+    // );
 
+    // var temp;
+    // temp = student.generaldocs_threads.create({
+    //   doc_thread_id: doc_thread_existed._id,
+    // });
+    // temp.student_id = studentId;
+    // student.generaldocs_threads.push(temp);
+    // await student.save();
+    // const student2 = await Student.findById(studentId)
+    //   .populate("generaldocs_threads.doc_thread_id")
+    //   .populate("applications.programId");
+    // return res.status(200).send({ success: true, data: student2 });
+  }
   const new_doc_thread = new Documentthread({
     student_id: studentId,
     file_type: document_catgory,
@@ -60,88 +138,93 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   student.generaldocs_threads.push(temp);
   await student.save();
   const student2 = await Student.findById(studentId)
-    .populate("generaldocs_threads.doc_thread_id")
-    .populate("applications.programId");
+    .populate("applications.programId generaldocs_threads.doc_thread_id")
+    .populate(
+      "applications.doc_modification_thread.doc_thread_id",
+      "file_type updatedAt"
+    );
   res.status(200).send({ success: true, data: student2 });
   //TODO: Email notification
 });
 
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
-  const { user } = req;
-  res
-    .status(200)
-    .send({ success: true, data: ["initApplicationMessagesThread success!"] });
+  const {
+    user,
+    params: { studentId, applicationId, document_catgory },
+  } = req;
+
+  const student = await Student.findById(studentId)
+    .populate("applications.programId")
+    .populate("students agents editors", "firstname lastname email")
+    .exec();
+
+  if (!student) throw new ErrorResponse(400, "Invalid student id");
+  var generaldocs_thread_existed;
+  //TODO: what if same file_type and same student_id? (ex. ML for 2 programs)
+  var doc_thread_existed = await Documentthread.find({
+    student_id: studentId,
+    file_type: document_catgory,
+  });
+
+  if (doc_thread_existed.length > 0) {
+    //TODO: should push the existing one to student
+    throw new ErrorResponse(400, "Document Thread already existed!");
+    // const application = student.generaldocs_threads.find(
+    //   ({ doc_thread_id }) => doc_thread_id._id == studentId
+    // );
+
+    // var temp;
+    // temp = student.generaldocs_threads.create({
+    //   doc_thread_id: doc_thread_existed._id,
+    // });
+    // temp.student_id = studentId;
+    // student.generaldocs_threads.push(temp);
+    // await student.save();
+    // const student2 = await Student.findById(studentId)
+    //   .populate("generaldocs_threads.doc_thread_id")
+    //   .populate("applications.programId");
+    // return res.status(200).send({ success: true, data: student2 });
+  }
+
+  const application = student.applications.find(
+    ({ programId }) => programId._id == applicationId
+  );
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
+  if (!application) throw new ErrorResponse(400, "Invalid application id");
+
+  var student_input_doc = application.doc_modification_thread.find(
+    (doc_thread_id) => doc_thread_id._id == doc_thread_existed._id
+  );
+  if (student_input_doc)
+    throw new ErrorResponse(400, "Thread already existed in student database!");
+
+  const new_doc_thread = new Documentthread({
+    student_id: studentId,
+    file_type: document_catgory,
+    application_id: application.programId._id,
+    updatedAt: new Date(),
+  });
+
+  await new_doc_thread.save();
+  var temp;
+  temp = student.applications[idx].doc_modification_thread.create({
+    doc_thread_id: new_doc_thread._id,
+    createdAt: new Date(),
+  });
+  temp.student_id = studentId;
+  student.applications[idx].doc_modification_thread.push(temp);
+  await student.save();
+
+  const student2 = await Student.findById(studentId)
+    .populate("applications.programId generaldocs_threads.doc_thread_id")
+    .populate(
+      "applications.doc_modification_thread.doc_thread_id",
+      "file_type updatedAt"
+    );
+  res.status(200).send({ success: true, data: student2 });
 });
-
-// const PostMessageInThread = asyncHandler(async (req, res) => {
-//   const {
-//     user,
-//     params: { studentId, applicationId, fileCategory },
-//   } = req;
-
-//   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-//   const student = await Student.findById(studentId)
-//     .populate("applications.programId")
-//     .populate("students agents editors", "firstname lastname email")
-//     .exec();
-//   const student2 = await Student.findById({ _id: studentId })
-//     .populate("applications.programId")
-//     .lean()
-//     .exec();
-//   if (!student) throw new ErrorResponse(400, "Invalid student id");
-//   // console.log(student);
-//   const application = student.applications.find(
-//     ({ programId }) => programId._id == applicationId
-//   );
-//   const idx = student.applications.findIndex(
-//     ({ programId }) => programId._id == applicationId
-//   );
-//   if (!application) throw new ErrorResponse(400, "Invalid application id");
-
-//   var student_input_doc;
-//   var editor_output_doc;
-//   if (user.role == Role.Student) {
-//     student_input_doc = application.student_inputs.find(
-//       ({ name }) => name === req.file.key
-//     );
-//     if (student_input_doc)
-//       throw new ErrorResponse(400, "Document already existed!");
-//     student_input_doc = application.student_inputs.create({
-//       name: req.file.key,
-//     });
-//     student_input_doc.status = DocumentStatus.Uploaded;
-//     // console.log(req.file);
-//     student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
-//     student_input_doc.required = true;
-//     student_input_doc.updatedAt = new Date();
-//     student.applications[idx].student_inputs.push(student_input_doc);
-
-//     // TODO: set flag editors document(filetype) isReceivedFeedback
-//     await student.save();
-//     res.status(201).send({ success: true, data: student });
-//     // TODO: Inform editor themselves as well?
-//   } else {
-//     editor_output_doc = application.documents.find(
-//       ({ name }) => name === req.file.key
-//     );
-//     if (editor_output_doc)
-//       throw new ErrorResponse(400, "Document already existed!");
-//     editor_output_doc = application.documents.create({
-//       name: req.file.key,
-//     });
-//     editor_output_doc.status = DocumentStatus.Uploaded;
-//     // console.log(req.file);
-//     editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
-//     editor_output_doc.required = true;
-//     editor_output_doc.updatedAt = new Date();
-//     student.applications[idx].documents.push(editor_output_doc);
-//     // TODO: set flag student document(filetype, feedback) isReceivedFeedback
-//     await student.save();
-//     res.status(201).send({ success: true, data: student });
-
-//     // TODO: Inform editor themselves as well?
-//   }
-// });
 
 const getMessages = asyncHandler(async (req, res) => {
   const {
@@ -196,6 +279,7 @@ const postMessages = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: document_thread2 });
 });
 
+// Download file in a message in a thread
 const getMessageFile = asyncHandler(async (req, res) => {
   const {
     user,
@@ -271,8 +355,11 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   // });
 
   const student2 = await Student.findById(studentId)
-    .populate("generaldocs_threads.doc_thread_id")
-    .populate("applications.programId");
+    .populate("applications.programId generaldocs_threads.doc_thread_id")
+    .populate(
+      "applications.doc_modification_thread.doc_thread_id",
+      "file_type updatedAt"
+    );
   res.status(200).send({ success: true, data: student2 });
 });
 
@@ -304,23 +391,22 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
     Prefix: directory,
   };
   const listedObjects = await s3.listObjectsV2(listParams).promise();
-  if (listedObjects.Contents.length === 0)
-    throw new ErrorResponse(400, "Invalid student id");
 
-  const deleteParams = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Delete: { Objects: [] },
-  };
+  if (listedObjects.Contents.length > 0) {
+    const deleteParams = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] },
+    };
 
-  listedObjects.Contents.forEach(({ Key }) => {
-    deleteParams.Delete.Objects.push({ Key });
-    console.log(Key);
-  });
+    listedObjects.Contents.forEach(({ Key }) => {
+      deleteParams.Delete.Objects.push({ Key });
+      console.log(Key);
+    });
 
-  await s3.deleteObjects(deleteParams).promise();
+    await s3.deleteObjects(deleteParams).promise();
 
-  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-
+    if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+  }
   await Documentthread.findByIdAndDelete(messagesThreadId);
   await Student.findByIdAndUpdate(studentId, {
     $pull: {
@@ -329,8 +415,76 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
   });
 
   const student2 = await Student.findById(studentId)
-    .populate("generaldocs_threads.doc_thread_id")
-    .populate("applications.programId");
+    .populate("applications.programId generaldocs_threads.doc_thread_id")
+    .populate(
+      "applications.doc_modification_thread.doc_thread_id",
+      "file_type updatedAt"
+    );
+  res.status(200).send({ success: true, data: student2 });
+});
+
+const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { messagesThreadId, applicationId, studentId },
+  } = req;
+
+  const document_thread = await Documentthread.findById(messagesThreadId);
+  const student = await Student.findById(studentId);
+
+  if (!document_thread)
+    throw new ErrorResponse(400, "Invalid message thread id");
+  if (!student) throw new ErrorResponse(400, "Invalid student id id");
+  // TODO: before delete the thread, please delete all of the files in the thread!!
+
+  var to_be_delete_thread = await Documentthread.findById(messagesThreadId);
+  if (!to_be_delete_thread)
+    throw new ErrorResponse(400, "Invalid message thread id");
+
+  // Delete folder
+  var directory = path.join(studentId, messagesThreadId);
+  console.log("Trying to delete message thread and folder");
+  directory = directory.replace(/\\/g, "/");
+
+  var listParams = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Prefix: directory,
+  };
+  const listedObjects = await s3.listObjectsV2(listParams).promise();
+
+  if (listedObjects.Contents.length > 0) {
+    const deleteParams = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] },
+    };
+
+    listedObjects.Contents.forEach(({ Key }) => {
+      deleteParams.Delete.Objects.push({ Key });
+      console.log(Key);
+    });
+
+    await s3.deleteObjects(deleteParams).promise();
+
+    if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+  }
+  await Student.findOneAndUpdate(
+    { _id: studentId, "applications._id": applicationId },
+    {
+      $pull: {
+        "applications.$.doc_modification_thread": {
+          doc_thread_id: messagesThreadId,
+        },
+      },
+    }
+  );
+  await Documentthread.findByIdAndDelete(messagesThreadId);
+
+  const student2 = await Student.findById(studentId)
+    .populate("applications.programId generaldocs_threads.doc_thread_id")
+    .populate(
+      "applications.doc_modification_thread.doc_thread_id",
+      "file_type updatedAt"
+    );
   res.status(200).send({ success: true, data: student2 });
 });
 
@@ -375,12 +529,16 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   }
 
   const student2 = await Student.findById(studentId)
-    .populate("generaldocs_threads.doc_thread_id")
-    .populate("applications.programId");
+    .populate("applications.programId generaldocs_threads.doc_thread_id")
+    .populate(
+      "applications.doc_modification_thread.doc_thread_id",
+      "file_type updatedAt"
+    );
   res.status(200).send({ success: true, data: student2 });
 });
 
 module.exports = {
+  getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
@@ -388,5 +546,6 @@ module.exports = {
   postMessages,
   SetStatusMessagesThread,
   deleteMessagesThread,
+  deleteProgramSpecificMessagesThread,
   deleteAMessageInThread,
 };

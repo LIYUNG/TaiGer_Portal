@@ -27,8 +27,8 @@ const UIBasicBasicTypography = React.lazy(() =>
 );
 const FormsElements = React.lazy(() => import("./Demo/Forms/FormsElements"));
 const AgentCenter = React.lazy(() => import("./Demo/AgentCenter/AgentCenter"));
-const EditorCenter = React.lazy(() =>
-  import("./Demo/CVMLRLCenter/EditorCenter")
+const CVMLRLCenter = React.lazy(() =>
+  import("./Demo/CVMLRLCenter/CVMLRLCenter")
 );
 const ProgramTable = React.lazy(() => import("./Demo/Program/ProgramTable"));
 const SingleProgram = React.lazy(() => import("./Demo/Program/SingleProgram"));
@@ -232,10 +232,10 @@ const routes = [
     component: AgentCenter,
   },
   {
-    path: "/editor-center",
+    path: "/cv-ml-rl-center",
     exact: true,
     name: "CV/ML/RL Center",
-    component: EditorCenter,
+    component: CVMLRLCenter,
   },
   {
     path: "/settings",

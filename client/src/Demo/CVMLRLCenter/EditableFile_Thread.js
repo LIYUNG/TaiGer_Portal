@@ -23,7 +23,7 @@ class EditableFile_Thread extends Component {
   handleDeleteFileThread = () => {
     this.props.onDeleteFileThread(
       this.props.thread.doc_thread_id._id,
-      // this.props.application.programId._id,
+      this.props.application,
       this.props.student._id
     );
   };
@@ -40,7 +40,6 @@ class EditableFile_Thread extends Component {
     this.props.onCommentsGeneralFile(
       this.props.student._id,
       this.props.thread.name,
-      this.props.whoupdate,
       this.props.thread.feedback,
       this.props.thread.updatedAt
     );
@@ -51,7 +50,6 @@ class EditableFile_Thread extends Component {
       this.props.student._id,
       this.props.application.programId._id,
       this.props.thread.name,
-      this.props.whoupdate,
       this.props.thread.feedback,
       this.props.thread.updatedAt
     );
@@ -61,7 +59,6 @@ class EditableFile_Thread extends Component {
     this.props.onStudentFeedbackGeneral(
       this.props.student._id,
       this.props.thread.name,
-      this.props.whoupdate,
       this.props.thread.student_feedback,
       this.props.thread.student_feedback_updatedAt
     );
@@ -72,7 +69,6 @@ class EditableFile_Thread extends Component {
       this.props.student._id,
       this.props.application.programId._id,
       this.props.thread.name,
-      this.props.whoupdate,
       this.props.thread.student_feedback,
       this.props.thread.student_feedback_updatedAt
     );
@@ -84,9 +80,6 @@ class EditableFile_Thread extends Component {
   render() {
     let fileStatus;
     let documenName;
-
-    // console.log(this.props.thread.doc_thread_id);
-
     documenName =
       this.props.student.firstname +
       " " +

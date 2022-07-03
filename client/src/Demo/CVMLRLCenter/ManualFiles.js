@@ -79,108 +79,40 @@ class ManualFiles extends React.Component {
   render() {
     return (
       <>
-        {this.props.filetype === "General" ? (
-          <>
-            <Table>
-              <thead>
-                <tr></tr>
-              </thead>
-              <tbody>
-                <ManualFilesList
-                  filetype={this.props.filetype}
-                  student={this.props.student}
-                  onDownloadGeneralFile={this.props.onDownloadGeneralFile}
-                  onCommentsGeneralFile={this.props.onCommentsGeneralFile}
-                  onDeleteFileThread={this.props.onDeleteFileThread}
-                  onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
-                  handleAsFinalFile={this.props.handleAsFinalFile}
-                  role={this.props.role}
-                />
-              </tbody>
-            </Table>
-            {this.props.role === "Agent" ||
-            this.props.role === "Admin" ||
-            this.props.role === "Editor" ||
-            this.props.role === "Student" ? (
-              <ToggleableUploadFileForm
-                role={this.props.role}
-                student={this.props.student}
-                handleSelect={this.handleSelect}
-                handleProgramSpecificFormSubmit={
-                  this.handleProgramSpecificFormSubmit
-                }
-                handleGeneralDocSubmit={this.handleGeneralDocSubmit}
-                handleCreateGeneralMessageThread={
-                  this.handleCreateGeneralMessageThread
-                }
-                handleCreateProgramSpecificMessageThread={
-                  this.handleCreateProgramSpecificMessageThread
-                }
-                category={this.state.category}
-                filetype={this.props.filetype}
-              />
-            ) : (
-              <></>
-            )}
-          </>
-        ) : (
-          <>
-            <Table>
-              <thead>
-                <tr></tr>
-              </thead>
-              <tbody>
-                <ManualFilesList
-                  filetype={this.props.filetype}
-                  application={this.props.application}
-                  student={this.props.student}
-                  onCommentsProgramSpecific={
-                    this.props.onCommentsProgramSpecific
-                  }
-                  onStudentFeedbackProgramSpecific={
-                    this.props.onStudentFeedbackProgramSpecific
-                  }
-                  onDownloadProgramSpecificFile={
-                    this.props.onDownloadProgramSpecificFile
-                  }
-                  onDeleteProgramSpecificThread={
-                    this.props.onDeleteProgramSpecificThread
-                  }
-                  handleAsFinalProgramSpecific={
-                    this.props.handleAsFinalProgramSpecific
-                  }
-                  role={this.props.role}
-                />
-              </tbody>
-            </Table>
-
-            {this.props.role === "Agent" ||
-            this.props.role === "Admin" ||
-            this.props.role === "Editor" ||
-            this.props.role === "Student" ? (
-              <ToggleableUploadFileForm
-                role={this.props.role}
-                student={this.props.student}
-                filetype={this.props.filetype}
-                handleSelect={this.handleSelect}
-                handleProgramSpecificFormSubmit={
-                  this.handleProgramSpecificFormSubmit
-                }
-                handleGeneralDocSubmit={this.handleGeneralDocSubmit}
-                handleCreateGeneralMessageThread={
-                  this.handleCreateGeneralMessageThread
-                }
-                handleCreateProgramSpecificMessageThread={
-                  this.handleCreateProgramSpecificMessageThread
-                }
-                category={this.state.category}
-                application={this.props.application}
-              />
-            ) : (
-              <></>
-            )}
-          </>
-        )}
+        <Table>
+          <thead>
+            <tr></tr>
+          </thead>
+          <tbody>
+            <ManualFilesList
+              filetype={this.props.filetype}
+              student={this.props.student}
+              onDownloadGeneralFile={this.props.onDownloadGeneralFile}
+              onCommentsGeneralFile={this.props.onCommentsGeneralFile}
+              onDeleteFileThread={this.props.onDeleteFileThread}
+              onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
+              handleAsFinalFile={this.props.handleAsFinalFile}
+              role={this.props.role}
+              application={this.props.application}
+            />
+          </tbody>
+        </Table>
+        <ToggleableUploadFileForm
+          role={this.props.role}
+          student={this.props.student}
+          handleSelect={this.handleSelect}
+          handleProgramSpecificFormSubmit={this.handleProgramSpecificFormSubmit}
+          handleGeneralDocSubmit={this.handleGeneralDocSubmit}
+          handleCreateGeneralMessageThread={
+            this.handleCreateGeneralMessageThread
+          }
+          handleCreateProgramSpecificMessageThread={
+            this.handleCreateProgramSpecificMessageThread
+          }
+          category={this.state.category}
+          filetype={this.props.filetype}
+          application={this.props.application}
+        />
       </>
     );
   }

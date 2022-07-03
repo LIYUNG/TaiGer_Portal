@@ -5,16 +5,15 @@ import { Row, Col } from "react-bootstrap";
 
 class ManualFilesList extends Component {
   render() {
-    let editor_outputs;
-    let student_inputs;
-    if (this.props.filetype === "General") {
-      if (this.props.student.generaldocs_threads) {
-        editor_outputs = this.props.student.generaldocs_threads.map(
-          (thread) => (
+    let message_threads;
+    if (this.props.application === null) {
+      message_threads = this.props.student.generaldocs_threads
+        ? this.props.student.generaldocs_threads.map((thread) => (
             <EditableFile_Thread
               key={thread._id}
               thread={thread}
               student={this.props.student}
+              application={this.props.application}
               onFormSubmit={this.props.onFormSubmit}
               onDownloadGeneralFile={this.props.onDownloadGeneralFile}
               onCommentsGeneralFile={this.props.onCommentsGeneralFile}
@@ -26,76 +25,44 @@ class ManualFilesList extends Component {
               onDeleteFileThread={this.props.onDeleteFileThread}
               handleAsFinalFile={this.props.handleAsFinalFile}
               role={this.props.role}
-              whoupdate={"Editor"}
-              filetype={this.props.filetype}
             />
-          )
-        );
-      }
+          ))
+        : "";
     } else {
-      if (this.props.application && this.props.application.documents) {
-        editor_outputs = this.props.application.documents.map((document) => (
-          <EditableFile_Thread
-            key={document._id}
-            document={document}
-            application={this.props.application}
-            student={this.props.student}
-            onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
-            onStudentFeedbackProgramSpecific={
-              this.props.onStudentFeedbackProgramSpecific
-            }
-            onDownloadProgramSpecificFile={
-              this.props.onDownloadProgramSpecificFile
-            }
-            onTrashClick={this.props.onTrashClick}
-            onDeleteProgramSpecificThread={
-              this.props.onDeleteProgramSpecificThread
-            }
-            handleAsFinalProgramSpecific={
-              this.props.handleAsFinalProgramSpecific
-            }
-            role={this.props.role}
-            whoupdate={"Editor"}
-            filetype={this.props.filetype}
-          />
-        ));
-      }
-      // if (this.props.application && this.props.application.student_inputs) {
-      //   student_inputs = this.props.application.student_inputs.map(
-      //     (student_input) => (
-      //       <EditableFile
-      //         key={student_input._id}
-      //         document={student_input}
-      //         application={this.props.application}
-      //         student={this.props.student}
-      //         onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
-      //         onStudentFeedbackProgramSpecific={
-      //           this.props.onStudentFeedbackProgramSpecific
-      //         }
-      //         onDownloadProgramSpecificFile={
-      //           this.props.onDownloadProgramSpecificFile
-      //         }
-      //         onTrashClick={this.props.onTrashClick}
-      //         onDeleteProgramSpecificThread={
-      //           this.props.onDeleteProgramSpecificThread
-      //         }
-      //         handleAsFinalProgramSpecific={
-      //           this.props.handleAsFinalProgramSpecific
-      //         }
-      //         role={this.props.role}
-      //         whoupdate={"Student"}
-      //         filetype={this.props.filetype}
-      //       />
-      //     )
-      //   );
-      // }
+      message_threads =
+        this.props.application && this.props.application.doc_modification_thread
+          ? this.props.application.doc_modification_thread.map((thread) => (
+              <EditableFile_Thread
+                key={thread._id}
+                thread={thread}
+                application={this.props.application}
+                student={this.props.student}
+                onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
+                onStudentFeedbackProgramSpecific={
+                  this.props.onStudentFeedbackProgramSpecific
+                }
+                onDownloadProgramSpecificFile={
+                  this.props.onDownloadProgramSpecificFile
+                }
+                onTrashClick={this.props.onTrashClick}
+                onDeleteProgramSpecificThread={
+                  this.props.onDeleteProgramSpecificThread
+                }
+                handleAsFinalProgramSpecific={
+                  this.props.handleAsFinalProgramSpecific
+                }
+                onDeleteFileThread={this.props.onDeleteFileThread}
+                role={this.props.role}
+              />
+            ))
+          : "";
     }
 
     return (
       <>
         <Row>
           <>
-            <Col>{editor_outputs}</Col>
+            <Col>{message_threads}</Col>
             {/* <Col md={6}>{student_inputs}</Col> */}
           </>
         </Row>

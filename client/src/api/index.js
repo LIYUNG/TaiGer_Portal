@@ -131,6 +131,18 @@ export const deleteProgramSpecificFileUpload = (
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${studentId}/${documentsthreadId}`);
 
+  export const deleteProgramSpecificFileThread = (
+    documentsthreadId,
+    programId,
+    studentId
+  ) =>
+    request.delete(
+      `/api/document-threads/${documentsthreadId}/${programId}/${studentId}`
+    );
+
+export const getCVMLRLOverview = () =>
+  request.get(`/api/document-threads/overview`);
+
 export const SetAsFinalProgramSpecificFile = (
   studentId,
   applicationId,

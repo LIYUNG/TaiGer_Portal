@@ -13,6 +13,18 @@ const {
   informStudentTheirEditorEmail,
 } = require("../services/email");
 
+var aws = require("aws-sdk");
+const {
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_BUCKET_NAME,
+} = require("../config");
+
+var s3 = new aws.S3({
+  accessKeyId: AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: AWS_S3_ACCESS_KEY,
+});
+
 const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -145,6 +157,7 @@ const getMessages = asyncHandler(async (req, res) => {
 
   res.status(200).send({ success: true, data: document_thread });
 });
+
 const postMessages = asyncHandler(async (req, res) => {
   const {
     user,
@@ -182,6 +195,61 @@ const postMessages = asyncHandler(async (req, res) => {
   ).populate("student_id application_id messages.user_id");
   res.status(200).send({ success: true, data: document_thread2 });
 });
+
+const getMessageFile = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { messagesThreadId, messageId, fileId },
+  } = req;
+
+  const document_thread = await Documentthread.findById(messagesThreadId);
+  if (!document_thread) throw new ErrorResponse(400, "thread not found");
+
+  if (
+    user.role === "Student" &&
+    document_thread.student_id.toString() !== user._id.toString()
+  ) {
+    throw new ErrorResponse(400, "Not authorized");
+  }
+
+  var message = document_thread.messages.find(
+    (message) => message._id == messageId
+  );
+  if (!message) throw new ErrorResponse(400, "message not found");
+
+  var file = message.file.find((file) => file._id == fileId);
+  if (!file) throw new ErrorResponse(400, "file not found");
+
+  var path_split = file.path.replace(/\\/g, "/");
+  path_split = path_split.split("/");
+  var fileKey = path_split[2];
+  console.log("Trying to download message file", fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, path_split[0], path_split[1]);
+  directory = directory.replace(/\\/g, "/");
+  var options = {
+    Key: fileKey,
+    Bucket: directory,
+  };
+
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(fileKey);
+      var fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        console.log(error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
+});
+
 const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -207,6 +275,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     .populate("applications.programId");
   res.status(200).send({ success: true, data: student2 });
 });
+
 const deleteMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -222,45 +291,36 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
   // TODO: before delete the thread, please delete all of the files in the thread!!
 
   var to_be_delete_thread = await Documentthread.findById(messagesThreadId);
+  if (!to_be_delete_thread)
+    throw new ErrorResponse(400, "Invalid message thread id");
 
-  if (to_be_delete_thread) {
-    if (!to_be_delete_thread)
-      throw new ErrorResponse(400, "Invalid message thread id");
+  // Delete folder
+  var directory = path.join(studentId, messagesThreadId);
+  console.log("Trying to delete message thread and folder");
+  directory = directory.replace(/\\/g, "/");
 
-    // to_be_delete_thread.messages.forEach((message) => {
-    //   message.file.forEach((file) => {
-    //     var fileversion = 0;
-    //     fileversion = parseInt(file.name.replace(/[^\d]/g, ""));
+  var listParams = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Prefix: directory,
+  };
+  const listedObjects = await s3.listObjectsV2(listParams).promise();
+  if (listedObjects.Contents.length === 0)
+    throw new ErrorResponse(400, "Invalid student id");
 
-    //     if (fileversion > version_number_max) {
-    //       version_number_max = fileversion; // get the max version number
-    //     }
-    //   });
-    // });
-    var document_split = document.path.replace(/\\/g, "/");
-    document_split = document_split.split("/");
-    var fileKey = document_split[2];
-    var directory = path.join(document_split[0], document_split[1]);
-    console.log("Trying to delete message thread ", fileKey);
-    directory = path.join(AWS_S3_BUCKET_NAME, directory);
-    console.log(directory);
-    directory = directory.replace(/\\/g, "/");
+  const deleteParams = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Delete: { Objects: [] },
+  };
 
-    var options = {
-      Key: fileKey,
-      Bucket: directory,
-    };
+  listedObjects.Contents.forEach(({ Key }) => {
+    deleteParams.Delete.Objects.push({ Key });
+    console.log(Key);
+  });
 
-    s3.deleteObject(options, (error, data) => {
-      if (error) {
-        console.log(err);
-      } else {
-        // console.log("Successfully deleted file from bucket");
-      }
-    });
-  }
+  await s3.deleteObjects(deleteParams).promise();
 
-  // TODO:
+  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+
   await Documentthread.findByIdAndDelete(messagesThreadId);
   await Student.findByIdAndUpdate(studentId, {
     $pull: {
@@ -274,11 +334,59 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: student2 });
 });
 
+const deleteAMessageInThread = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { messagesThreadId, messageId, studentId },
+  } = req;
+
+  const student = await Student.findById(studentId);
+  if (!student) throw new ErrorResponse(400, "Invalid student id id");
+
+  var thread = await Documentthread.findById(messagesThreadId);
+  if (!thread) throw new ErrorResponse(400, "Invalid message thread id");
+
+  if (thread) {
+    const deleteParams = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] },
+    };
+    var message = thread.messages.find((message) => message._id == messageId);
+    message.file.forEach(({ path }) => {
+      deleteParams.Delete.Objects.push({ Key: path });
+      console.log(path);
+    });
+
+    await s3.deleteObject(deleteParams).promise();
+    // s3.deleteObject(options, (error, data) => {
+    //   if (error) {
+    //     console.log(err);
+    //   } else {
+    //     // console.log("Successfully deleted file from bucket");
+    //   }
+    // });
+    //TODO: To be test
+    await Documentthread.findByIdAndUpdate(messagesThreadId, {
+      $pull: {
+        messages: { _id: messageId },
+      },
+    });
+    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+  }
+
+  const student2 = await Student.findById(studentId)
+    .populate("generaldocs_threads.doc_thread_id")
+    .populate("applications.programId");
+  res.status(200).send({ success: true, data: student2 });
+});
+
 module.exports = {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  getMessageFile,
   postMessages,
   SetStatusMessagesThread,
   deleteMessagesThread,
+  deleteAMessageInThread,
 };

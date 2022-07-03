@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 // import Card from "../../../App/components/MainCard";
 import { AiFillEdit } from "react-icons/ai";
-import { Card, Spinner, Collapse } from "react-bootstrap";
-
+import { Card, Spinner, Collapse, Button } from "react-bootstrap";
+import { FiMoreHorizontal } from "react-icons/fi";
+import { RiMoreFill } from "react-icons/ri";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
@@ -56,11 +57,24 @@ class Message extends Component {
     }
     const files_info = this.props.message.file.map((file) => (
       <>
+        <div>{file._id}</div>
         <div>{file.name}</div>
+        <Button
+          size="sm"
+          onClick={(e) =>
+            this.props.onDownloadFileInMessage(
+              e,
+              this.props.message._id,
+              file._id
+            )
+          }
+        ></Button>
       </>
     ));
+
+
     return (
-      <Card key={this.props.id}>
+      <Card border="primary" key={this.props.id}>
         <Card.Header
           onClick={() => this.props.singleExpandtHandler(this.props.idx)}
         >
@@ -78,6 +92,8 @@ class Message extends Component {
             {", "}
             {new Date(this.props.message.createdAt).toLocaleDateString()}
           </Card.Title>
+          <FiMoreHorizontal />
+          <RiMoreFill />
         </Card.Header>
         <Collapse
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}
@@ -93,6 +109,7 @@ class Message extends Component {
               onEditorStateChange={this.handleEditorChange}
             />
             {files_info}
+            
           </Card.Body>
         </Collapse>
       </Card>

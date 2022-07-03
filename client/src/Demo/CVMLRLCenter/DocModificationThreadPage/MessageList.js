@@ -5,6 +5,7 @@ class MessageList extends Component {
   render() {
     const thread = this.props.thread.messages.map((message, i) => (
       <Message
+        onDownloadFileInMessage={this.props.onDownloadFileInMessage}
         accordionKeys={this.props.accordionKeys}
         singleExpandtHandler={this.props.singleExpandtHandler}
         id={message._id}

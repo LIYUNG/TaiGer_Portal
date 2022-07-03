@@ -144,7 +144,7 @@ const storage_messagesthread_file_s3 = multerS3({
       .then(function (thread) {
         if (thread) {
           var r2 = /[^\d]/;
-          var version_number_max = 1;
+          var version_number_max = 0;
 
           if (!thread)
             throw new ErrorResponse(400, "Invalid message thread id");

@@ -494,26 +494,6 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
     params: { studentId, category },
   } = req;
 
-  // // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  // const student =
-  //   user.role == Role.Student ? user : await Student.findById(studentId);
-  // if (!student) throw new ErrorResponse(400, "Invalid student id");
-
-  // const document = student.profile.find(({ name }) => name === category);
-  // if (!document) throw new ErrorResponse(400, "Invalid document name");
-  // if (!document.path) throw new ErrorResponse(400, "File not uploaded yet");
-
-  // const filePath = path.join(UPLOAD_PATH, document.path);
-  // // const filePath = document.path;
-  // console.log(filePath);
-  // // FIXME: clear the filePath for consistency?
-  // if (!fs.existsSync(filePath))
-  //   throw new ErrorResponse(400, "File does not exist");
-
-  // res.status(200).download(filePath, (err) => {
-  //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-  // });
-
   // AWS S3
   // download the file via aws s3 here
   const student =
@@ -1045,7 +1025,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
       document_split = document_split.split("/");
       var fileKey = document_split[2];
       var directory = path.join(document_split[0], document_split[1]);
-      console.log("Trying to download file", fileKey);
+      console.log("Trying to delete file", fileKey);
       directory = path.join(AWS_S3_BUCKET_NAME, directory);
       console.log(directory);
       directory = directory.replace(/\\/g, "/");
@@ -1298,6 +1278,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
   await student.save();
   return res.status(200).send({ success: true, data: student });
 });
+
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
   const { user } = req;
@@ -1351,7 +1332,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
       }
     });
   } catch (err) {
-    if (err) throw new ErrorResponse(500, "Error occurs while downloading");
+    if (err) throw new ErrorResponse(500, "Error occurs while deleting");
   }
 
   // await Student.findByIdAndUpdate(studentId, {
@@ -1446,34 +1427,9 @@ const processTranscript = asyncHandler(async (req, res, next) => {
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, filename },
+    params: { studentId },
   } = req;
-  // const { firstname, lastname, _id } = student;
-
-  // const GeneratedfilePath = path.join(
-  //   UPLOAD_PATH,
-  //   `${studentId}`,
-  //   "output",
-  //   filename
-  // );
-  // const UploadedfilePath = path.join(UPLOAD_PATH, `${studentId}`, filename);
-
-  // if (fs.existsSync(GeneratedfilePath)) {
-  //   res.download(GeneratedfilePath, (err) => {
-  //     if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-
-  //     res.status(200).end();
-  //   });
-  // } else if (fs.existsSync(UploadedfilePath)) {
-  //   res.download(UploadedfilePath, (err) => {
-  //     if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-
-  //     res.status(200).end();
-  //   });
-  // } else {
-  //   throw new ErrorResponse(400, "File does not exist");
-  // }
-  /////////////////
+  
   var student;
   if (user.role === "Student" || user.role === "Guest") {
     student = await Student.findById(user._id);
@@ -1522,6 +1478,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
         .json({ success: false, message: error.message });
     });
 });
+
 const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   const {
     user: student,

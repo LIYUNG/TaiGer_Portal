@@ -13,6 +13,7 @@ import {
   updateDoc,
   deleteDoc,
   SubmitMessageWithAttachment,
+  getMessageFileDownload,
   getMessagThread,
 } from "../../../api";
 
@@ -39,7 +40,7 @@ class Application extends Component {
     accordionKeys: [0], // to expand all]
   };
   componentDidMount() {
-    // console.log(this.props.match.params.documentsthreadId);
+    console.log(this.props.match.params.documentsthreadId);
 
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
@@ -50,6 +51,7 @@ class Application extends Component {
             success,
             thread: data,
             isLoaded: true,
+            documentsthreadId: this.props.match.params.documentsthreadId,
             file: null,
             accordionKeys: new Array(data.messages.length)
               .fill()
@@ -96,7 +98,7 @@ class Application extends Component {
     formData.append("message", message);
 
     SubmitMessageWithAttachment(
-      this.props.match.params.documentsthreadId,
+      this.state.documentsthreadId,
       // this.state.userId,
       this.state.thread.student_id._id,
       // this.state.thread.file_type,
@@ -213,6 +215,55 @@ class Application extends Component {
           isLoaded: false,
           error,
         });
+      }
+    );
+  };
+
+  onDownloadFileInMessage = (e, message_id, file_id) => {
+    e.preventDefault();
+    getMessageFileDownload(
+      this.state.documentsthreadId,
+      message_id,
+      file_id
+    ).then(
+      (resp) => {
+        const actualFileName =
+          resp.headers["content-disposition"].split('"')[1];
+        const { data: blob } = resp;
+        if (blob.size === 0) return;
+
+        var filetype = actualFileName.split("."); //split file name
+        filetype = filetype.pop(); //get the file type
+        console.log("actualFileName " + actualFileName);
+
+        if (filetype === "pdf") {
+          console.log(blob);
+          const url = window.URL.createObjectURL(
+            new Blob([blob], { type: "application/pdf" })
+          );
+
+          //Open the URL on new Window
+          console.log(url);
+          var newWindow = window.open(url, "_blank"); //TODO: having a reasonable file name, pdf viewer
+          newWindow.document.title = actualFileName;
+        } else {
+          //if not pdf, download instead.
+
+          const url = window.URL.createObjectURL(new Blob([blob]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", actualFileName);
+          // Append to html link element page
+          document.body.appendChild(link);
+          // Start download
+          link.click();
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+        }
+      },
+      (error) => {
+        alert("The file is not available.");
       }
     );
   };
@@ -346,6 +397,7 @@ class Application extends Component {
             <Row>
               <Col>
                 <MessageList
+                  onDownloadFileInMessage={this.onDownloadFileInMessage}
                   accordionKeys={this.state.accordionKeys}
                   singleExpandtHandler={this.singleExpandtHandler}
                   thread={this.state.thread}

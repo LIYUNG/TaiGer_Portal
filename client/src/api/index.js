@@ -277,6 +277,13 @@ export const SubmitMessageWithAttachment = (
       Accept: "application/json",
     }
   );
+export const getMessageFileDownload = (documentsthreadId, messageId, fileId) =>
+  request.get(
+    `/api/document-threads/${documentsthreadId}/${messageId}/${fileId}`,
+    {
+      responseType: "blob",
+    }
+  );
 
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);

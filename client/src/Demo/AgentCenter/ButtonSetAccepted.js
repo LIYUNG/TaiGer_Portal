@@ -23,11 +23,7 @@ import {
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
 import {
-  uploadforstudent,
-  updateProfileDocumentStatus,
   deleteFile,
-  getStudents,
-  downloadProfile,
 } from "../../api";
 
 class ButtonSetAccepted extends React.Component {

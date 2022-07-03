@@ -15,6 +15,7 @@ const {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  getMessageFile,
   SetStatusMessagesThread,
   deleteMessagesThread,
   postMessages,
@@ -45,13 +46,18 @@ router
     SetStatusMessagesThread
   )
   .delete(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Agent, Role.Editor),
     deleteMessagesThread
   );
 
 router
   .route("/:messagesThreadId")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessages);
+
+router
+  .route("/:messagesThreadId/:messageId/:fileId")
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessageFile);
+
 
 router.route("/:studentId/:messagesThreadId").post(
   permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),

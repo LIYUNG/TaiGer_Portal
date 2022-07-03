@@ -164,6 +164,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   var doc_thread_existed = await Documentthread.find({
     student_id: studentId,
     file_type: document_catgory,
+    application_id: applicationId,
   });
 
   if (doc_thread_existed.length > 0) {
@@ -187,10 +188,10 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   }
 
   const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
+    ({ _id  }) => _id == applicationId
   );
   const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == applicationId
+    ({ _id  }) => _id == applicationId
   );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
@@ -203,7 +204,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const new_doc_thread = new Documentthread({
     student_id: studentId,
     file_type: document_catgory,
-    application_id: application.programId._id,
+    application_id: applicationId,
     updatedAt: new Date(),
   });
 

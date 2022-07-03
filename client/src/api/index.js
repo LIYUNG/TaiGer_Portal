@@ -129,7 +129,7 @@ export const deleteProgramSpecificFileUpload = (
   );
 
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
-  request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);
+  request.delete(`/api/document-threads/${studentId}/${documentsthreadId}`);
 
 export const SetAsFinalProgramSpecificFile = (
   studentId,
@@ -142,9 +142,7 @@ export const SetAsFinalProgramSpecificFile = (
   );
 
 export const SetAsFinalGenralFile = (documentsthreadId, studentId) =>
-  request.put(
-    `/api/document-threads/${documentsthreadId}/${studentId}`
-  );
+  request.put(`/api/document-threads/${studentId}/${documentsthreadId}`);
 
 export const uploadEditGeneralFileforstudent = (
   studentId,
@@ -265,18 +263,20 @@ const getArticle = (type) => request.get(`/api/docs/${type}`);
 export const getApplicationArticle = () => getArticle("application");
 export const SubmitMessageWithAttachment = (
   documentsthreadId,
-  userId,
+  // userId,
   studentId,
-  file_type,
-  message,
+  // file_type,
+  // message,
   newFile
 ) =>
-  request.post(`/api/document-threads/${documentsthreadId}`, {
-    userId,
-    studentId,
-    file_type,
-    message,
-  });
+  request.post(
+    `/api/document-threads/${studentId}/${documentsthreadId}`,
+    newFile,
+    {
+      "Content-Type": "multipart/form-data",
+      Accept: "application/json",
+    }
+  );
 
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);

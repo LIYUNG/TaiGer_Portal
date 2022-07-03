@@ -1004,7 +1004,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
       document_split = document_split.split("/");
       var fileKey = document_split[2];
       var directory = path.join(document_split[0], document_split[1]);
-      console.log("Trying to download file", fileKey);
+      console.log("Trying to delete file", fileKey);
       directory = path.join(AWS_S3_BUCKET_NAME, directory);
       console.log(directory);
       directory = directory.replace(/\\/g, "/");

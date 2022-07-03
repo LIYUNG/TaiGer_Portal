@@ -39,7 +39,7 @@ router
   );
 
 router
-  .route("/:messagesThreadId/:studentId")
+  .route("/:studentId/:messagesThreadId")
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     SetStatusMessagesThread
@@ -53,15 +53,13 @@ router
   .route("/:messagesThreadId")
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessages);
 
-router
-  .route("/:messagesThreadId")
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    MessagesThreadUpload,
-    // test_file_json,
-    // upload,
-    postMessages
-  );
+router.route("/:studentId/:messagesThreadId").post(
+  permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+  MessagesThreadUpload,
+  // test_file_json,
+  // upload,
+  postMessages
+);
 
 // router
 //   .route("/:messagesThreadId")

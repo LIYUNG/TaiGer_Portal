@@ -50,7 +50,10 @@ class Application extends Component {
             success,
             thread: data,
             isLoaded: true,
-            accordionKeys: new Array(data.messages.length).fill().map((x, i) => i), // to expand all
+            file: null,
+            accordionKeys: new Array(data.messages.length)
+              .fill()
+              .map((x, i) => i), // to expand all
             //   accordionKeys: new Array(-1, data.length), // to collapse all
           });
         } else {
@@ -67,45 +70,37 @@ class Application extends Component {
   }
 
   onFileChange = (e) => {
-    e.preventDefault();
-    console.log(e.target.files[0]);
+    // e.preventDefault();
+    // console.log(e.target.files[0]);
     this.setState({ file: e.target.files[0] });
   };
-
 
   handleEditorChange = (newstate) => {
     this.setState((state) => ({ ...state, editorState: newstate }));
   };
 
-  ConfirmSubmitMessageHandler = (editorState) => {
+  ConfirmSubmitMessageHandler = (e, editorState) => {
+    // e.preventDefault();
+
     var message = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-    // this.setState((state) => ({
-    //   ...state,
-    //   isLoaded: false, //false to reload everything
-    // }));
     const formData = new FormData();
     formData.append("file", this.state.file);
-    console.log(this.state.file);
-    const userData = {
-      userId: this.state.userId,
-      studentId: this.state.thread.student_id._id,
-      file_type: this.state.thread.file_type,
-      message: message,
-      file: JSON.stringify(this.state.file),
-    };
-    var json = JSON.stringify(userData);
-    const blob = new Blob([json], {
-      type: "application/json",
-    });
-    // formData.append("messageData", blob);
-    console.log(JSON.stringify(formData));
+    // console.log(this.state.file);
+    // const userData = {
+    //   message: message,
+    // };
+    // var json = JSON.stringify(userData);
+    // const blob = new Blob([json], {
+    //   type: "application/json",
+    // });
+    formData.append("message", message);
 
     SubmitMessageWithAttachment(
       this.props.match.params.documentsthreadId,
-      this.state.userId,
+      // this.state.userId,
       this.state.thread.student_id._id,
-      this.state.thread.file_type,
-      message,
+      // this.state.thread.file_type,
+      // message,
       formData
     ).then(
       (resp) => {
@@ -114,6 +109,7 @@ class Application extends Component {
         if (success) {
           this.setState({
             success,
+            file: null,
             editorState: null,
             thread: data,
             isLoaded: true,
@@ -165,7 +161,6 @@ class Application extends Component {
     //   }
     // );
   };
-
 
   handleEditFormSubmit = (update_article) => {
     this.updateArticle(update_article);
@@ -263,7 +258,9 @@ class Application extends Component {
     this.setState((state) => ({
       ...state,
       expand: false,
-      accordionKeys: new Array(this.state.thread.messages.length).fill().map((x, i) => -1), // to collapse all]
+      accordionKeys: new Array(this.state.thread.messages.length)
+        .fill()
+        .map((x, i) => -1), // to collapse all]
     }));
   };
 
@@ -271,7 +268,9 @@ class Application extends Component {
     this.setState((state) => ({
       ...state,
       expand: true,
-      accordionKeys: new Array(this.state.thread.messages.length).fill().map((x, i) => i), // to expand all]
+      accordionKeys: new Array(this.state.thread.messages.length)
+        .fill()
+        .map((x, i) => i), // to expand all]
     }));
   };
 
@@ -414,14 +413,19 @@ class Application extends Component {
                         // id={this.props.id}
                       /> */}
                       <Form>
-                        <Form.File.Label
-                        // onClick={(e) => (e.target.value = null)}
-                        >
-                          <Form.File.Input
-                            onChange={(e) => this.onFileChange(e)}
-                          />
-                          {/* <IoMdCloudUpload size={32} /> */}
-                        </Form.File.Label>
+                        <Row>
+                          <Form.File.Label
+                            // key={this.state.file || ""}
+                            onClick={(e) =>
+                              (e.target.value = this.state.file || "")
+                            }
+                          >
+                            <Form.File.Input
+                              onChange={(e) => this.onFileChange(e)}
+                            />
+                            {/* <IoMdCloudUpload size={32} /> */}
+                          </Form.File.Label>
+                        </Row>
                       </Form>
                     </Row>
                     <Row>
@@ -431,8 +435,9 @@ class Application extends Component {
                           !this.state.editorState.getCurrentContent().hasText()
                         }
                         className="float-right"
-                        onClick={() =>
+                        onClick={(e) =>
                           this.ConfirmSubmitMessageHandler(
+                            e,
                             this.state.editorState
                           )
                         }

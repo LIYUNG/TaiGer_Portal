@@ -150,26 +150,30 @@ const postMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId },
   } = req;
-  const { userId, message, studentId } = req.body;
+  const { message } = req.body;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
-  console.log(req);
-  // console.log(JSON.parse(req.userData));
-  // console.log(JSON.parse(req.file));
-  console.log(req.file);
+  // console.log(JSON.parse(message));
   if (!document_thread)
     throw new ErrorResponse(400, "Invalid message thread id");
+
+  var newfile = [];
+  // console.log(req.file);
+  if (req.file) {
+    newfile = [
+      {
+        name: req.file.key,
+        path: path.join(req.file.metadata.path, req.file.key),
+      },
+    ];
+  }
+
   //TODO: to save file when file attached
   var new_message = {
     user_id: user._id,
     message: message,
     createdAt: new Date(),
-    // file: [
-    //   {
-    //     name: req.file.key,
-    //     path: path.join(req.file.metadata.path, req.file.key),
-    //   },
-    // ],
+    file: newfile,
   };
   document_thread.messages.push(new_message);
   await document_thread.save();
@@ -216,6 +220,47 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, "Invalid message thread id");
   if (!student) throw new ErrorResponse(400, "Invalid student id id");
   // TODO: before delete the thread, please delete all of the files in the thread!!
+
+  var to_be_delete_thread = await Documentthread.findById(messagesThreadId);
+
+  if (to_be_delete_thread) {
+    if (!to_be_delete_thread)
+      throw new ErrorResponse(400, "Invalid message thread id");
+
+    // to_be_delete_thread.messages.forEach((message) => {
+    //   message.file.forEach((file) => {
+    //     var fileversion = 0;
+    //     fileversion = parseInt(file.name.replace(/[^\d]/g, ""));
+
+    //     if (fileversion > version_number_max) {
+    //       version_number_max = fileversion; // get the max version number
+    //     }
+    //   });
+    // });
+    var document_split = document.path.replace(/\\/g, "/");
+    document_split = document_split.split("/");
+    var fileKey = document_split[2];
+    var directory = path.join(document_split[0], document_split[1]);
+    console.log("Trying to delete message thread ", fileKey);
+    directory = path.join(AWS_S3_BUCKET_NAME, directory);
+    console.log(directory);
+    directory = directory.replace(/\\/g, "/");
+
+    var options = {
+      Key: fileKey,
+      Bucket: directory,
+    };
+
+    s3.deleteObject(options, (error, data) => {
+      if (error) {
+        console.log(err);
+      } else {
+        // console.log("Successfully deleted file from bucket");
+      }
+    });
+  }
+
+  // TODO:
   await Documentthread.findByIdAndDelete(messagesThreadId);
   await Student.findByIdAndUpdate(studentId, {
     $pull: {

@@ -8,37 +8,6 @@ class ManualFiles extends React.Component {
     category: "",
   };
 
-  handleProgramSpecificFormSubmit = (
-    e,
-    studentId,
-    applicationId,
-    fileCategory
-  ) => {
-    e.preventDefault();
-    // console.log(e.target.files);
-    if (!this.state.category) {
-      alert("Please select file type");
-    } else {
-      this.props.SubmitProgramSpecificFile(
-        e,
-        studentId,
-        applicationId,
-        fileCategory
-      );
-      this.setState({ category: "" });
-    }
-  };
-  handleGeneralDocSubmit = (e, studentId, fileCategory) => {
-    e.preventDefault();
-    // console.log(e.target.files);
-    if (!this.state.category) {
-      alert("Please select file type");
-    } else {
-      this.props.SubmitGeneralFile(e, studentId, fileCategory);
-      this.setState({ category: "" });
-    }
-  };
-
   handleCreateGeneralMessageThread = (e, studentId, fileCategory) => {
     e.preventDefault();
     // console.log(e.target.files);
@@ -87,10 +56,7 @@ class ManualFiles extends React.Component {
             <ManualFilesList
               filetype={this.props.filetype}
               student={this.props.student}
-              onDownloadGeneralFile={this.props.onDownloadGeneralFile}
-              onCommentsGeneralFile={this.props.onCommentsGeneralFile}
               onDeleteFileThread={this.props.onDeleteFileThread}
-              onStudentFeedbackGeneral={this.props.onStudentFeedbackGeneral}
               handleAsFinalFile={this.props.handleAsFinalFile}
               role={this.props.role}
               application={this.props.application}
@@ -101,8 +67,6 @@ class ManualFiles extends React.Component {
           role={this.props.role}
           student={this.props.student}
           handleSelect={this.handleSelect}
-          handleProgramSpecificFormSubmit={this.handleProgramSpecificFormSubmit}
-          handleGeneralDocSubmit={this.handleGeneralDocSubmit}
           handleCreateGeneralMessageThread={
             this.handleCreateGeneralMessageThread
           }

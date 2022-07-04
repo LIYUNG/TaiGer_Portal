@@ -162,10 +162,7 @@ class ButtonSetRejected extends React.Component {
       (res) => {
         const { data, success } = res.data;
         if (success) {
-          // setTimeout will be remove in production
-          setTimeout(
-            function () {
-              //Start the timer
+         
               this.setState((state) => ({
                 ...state,
                 student: data,
@@ -173,9 +170,7 @@ class ButtonSetRejected extends React.Component {
                 CommentModel: false,
                 isLoaded: true,
               }));
-            }.bind(this),
-            1500
-          );
+          
         } else {
           alert(res.data.message);
           this.setState((state) => ({

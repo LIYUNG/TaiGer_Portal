@@ -88,7 +88,7 @@ window.programstatuslist = [
     prop: "offer",
   },
 ];
-window.documentlist2 = {
+window.profile_list = {
   Bachelor_Certificate: "B.Sc Certificate",
   Bachelor_Transcript: "B.Sc. Transcript",
   High_School_Diploma: "H. Sch. Diploma.",
@@ -144,49 +144,6 @@ window.templatelist = [
   //   name: "Essay",
   //   prop: "Essay_",
   // },
-];
-
-window.documentlist = [
-  {
-    name: "B.Sc Cert",
-    prop: "bachelorCertificate_",
-  },
-  {
-    name: "B.Sc. Trans",
-    prop: "bachelorTranscript_",
-  },
-  {
-    name: "H. Sch. Dipl.",
-    prop: "highSchoolDiploma_",
-  },
-  {
-    name: "H. Sch. Trans",
-    prop: "highSchoolTranscript_",
-  },
-  {
-    name: "GSAT/SAT",
-    prop: "universityEntranceExamination_",
-  },
-  {
-    name: "TOEFL/IELTS",
-    prop: "EnglischCertificate_",
-  },
-  {
-    name: "TestDaF/B2/C1",
-    prop: "GermanCertificate_",
-  },
-  {
-    name: "ECTS Conv.",
-    prop: "ECTS_conversion_",
-  },
-  {
-    name: "Course Descr/",
-    prop: "CourseDescription_",
-  },
-  {
-    name: "Passport",
-    prop: "Passport_",
-  },
 ];
 
 window.ProgramlistHeader = [

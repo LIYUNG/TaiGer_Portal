@@ -177,27 +177,6 @@ export const updateStudentFeedbackGeneralFileByStudent = (
     { student_feedback }
   );
 
-export const updateEditGeneralFileCommentsforstudent = (
-  studentId,
-  docName,
-  whoupdate,
-  comments
-) =>
-  request.post(
-    `/api/account/files/general/comments/${studentId}/${whoupdate}/${docName}`,
-    { comments }
-  );
-export const downloadGeneralHandWrittenFile = (
-  studentId,
-  docName,
-  student_inputs
-) =>
-  request.get(
-    `/api/account/files/general/${studentId}/${student_inputs}/${docName}`,
-    {
-      responseType: "blob",
-    }
-  );
 export const uploadHandwrittenFileforstudent = (
   studentId,
   applicationId,
@@ -207,30 +186,6 @@ export const uploadHandwrittenFileforstudent = (
   request.post(
     `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`,
     data
-  );
-
-export const updateHandwrittenFileCommentsforstudent = (
-  studentId,
-  applicationId,
-  docName,
-  whoupdate,
-  comments
-) =>
-  request.post(
-    `/api/account/files/programspecific/comments/${studentId}/${applicationId}/${docName}/${whoupdate}`,
-    { comments }
-  );
-
-export const updateStudentFeedbackProgramSpecificFileByStudent = (
-  studentId,
-  applicationId,
-  docName,
-  whoupdate,
-  student_feedback
-) =>
-  request.post(
-    `/api/account/files/programspecific/studentfeedback/${studentId}/${applicationId}/${docName}/${whoupdate}`,
-    { student_feedback }
   );
 
 export const downloadHandWrittenFile = (

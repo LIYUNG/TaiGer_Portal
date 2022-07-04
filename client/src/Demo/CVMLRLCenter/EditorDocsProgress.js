@@ -22,12 +22,7 @@ import {
   SetAsFinalGenralFile,
   uploadHandwrittenFileforstudent,
   uploadEditGeneralFileforstudent,
-  updateHandwrittenFileCommentsforstudent,
   updateStudentFeedbackGeneralFileByStudent,
-  updateStudentFeedbackProgramSpecificFileByStudent,
-  updateEditGeneralFileCommentsforstudent,
-  downloadHandWrittenFile,
-  downloadGeneralHandWrittenFile,
   initGeneralMessageThread,
   initApplicationMessageThread,
   SubmitMessageWithAttachment,
@@ -118,6 +113,7 @@ class EditorDocsProgress extends React.Component {
   closeCommentsWindow = () => {
     this.setState((state) => ({ ...state, CommentsModel: false }));
   };
+
   ConfirmStudentFeedbackGeneralFileHandler = (student_feedback) => {
     this.setState((state) => ({
       ...state,
@@ -133,58 +129,6 @@ class EditorDocsProgress extends React.Component {
         console.log(resp.data.data);
         const { data, success } = resp.data;
         if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                StudentFeedbackModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            success: success,
-            StudentFeedbackModel: false,
-          }));
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-  ConfirmStudentFeedbackProgramSpecificFileHandler = (student_feedback) => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false, //false to reload everything
-    }));
-    updateStudentFeedbackProgramSpecificFileByStudent(
-      this.state.studentId,
-      this.state.applicationId,
-      this.state.docName,
-      this.state.whoupdate,
-      student_feedback
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
           this.setState((state) => ({
             ...state,
             studentId: "",
@@ -216,59 +160,12 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  ConfirmCommentsProgramSpecificFileHandler = (comments) => {
+  ConfirmDeleteDiscussionThreadHandler = () => {
     this.setState((state) => ({
       ...state,
       isLoaded: false, //false to reload everything
     }));
-    updateHandwrittenFileCommentsforstudent(
-      this.state.studentId,
-      this.state.applicationId,
-      this.state.docName,
-      this.state.whoupdate,
-      comments
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            student: data,
-            success: success,
-            CommentsModel: false,
-          }));
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            success: success,
-            CommentsModel: false,
-          }));
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-
-  ConfirmDeleteGeneralFileThreadHandler = () => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false, //false to reload everything
-    }));
-    if (this.state.applicationId == null) {
+    if (this.state.program_id == null) {
       deleteGenralFileThread(
         this.state.doc_thread_id,
         this.state.student_id
@@ -280,7 +177,7 @@ class EditorDocsProgress extends React.Component {
             this.setState((state) => ({
               ...state,
               studentId: "",
-              applicationId: "",
+              program_id: "",
               docName: "",
               whoupdate: "",
               isLoaded: true,
@@ -293,7 +190,7 @@ class EditorDocsProgress extends React.Component {
             this.setState((state) => ({
               ...state,
               studentId: "",
-              applicationId: "",
+              program_id: "",
               docName: "",
               whoupdate: "",
               isLoaded: true,
@@ -309,7 +206,7 @@ class EditorDocsProgress extends React.Component {
     } else {
       deleteProgramSpecificFileThread(
         this.state.doc_thread_id,
-        this.state.applicationId,
+        this.state.program_id,
         this.state.student_id
       ).then(
         (resp) => {
@@ -319,7 +216,7 @@ class EditorDocsProgress extends React.Component {
             this.setState((state) => ({
               ...state,
               studentId: "",
-              applicationId: "",
+              program_id: "",
               docName: "",
               whoupdate: "",
               isLoaded: true,
@@ -332,7 +229,7 @@ class EditorDocsProgress extends React.Component {
             this.setState((state) => ({
               ...state,
               studentId: "",
-              applicationId: "",
+              program_id: "",
               docName: "",
               whoupdate: "",
               isLoaded: true,
@@ -348,59 +245,7 @@ class EditorDocsProgress extends React.Component {
     }
   };
 
-  ConfirmSetAsFinalSpecificFileHandler = () => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false, //false to reload everything
-    }));
-    SetAsFinalProgramSpecificFile(
-      this.state.studentId,
-      this.state.applicationId,
-      this.state.docName,
-      this.state.whoupdate
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                SetAsFinalFileModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            success: success,
-            SetAsFinalFileModel: false,
-          }));
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-
-  ConfirmSetAsFinalGeneralFileHandler = () => {
+  ConfirmSetAsFinalFileHandler = () => {
     this.setState((state) => ({
       ...state,
       isLoaded: false, //false to reload everything
@@ -410,23 +255,17 @@ class EditorDocsProgress extends React.Component {
         console.log(resp.data.data);
         const { data, success } = resp.data;
         if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                SetAsFinalFileModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
+          this.setState((state) => ({
+            ...state,
+            studentId: "",
+            applicationId: "",
+            docName: "",
+            whoupdate: "",
+            isLoaded: true,
+            student: data,
+            success: success,
+            SetAsFinalFileModel: false,
+          }));
         } else {
           alert(resp.data.message);
           this.setState((state) => ({
@@ -446,76 +285,7 @@ class EditorDocsProgress extends React.Component {
       }
     );
   };
-  ConfirmCommentsGeneralFileHandler = (comments) => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false, //false to reload everything
-    }));
-    updateEditGeneralFileCommentsforstudent(
-      this.state.studentId,
-      this.state.docName,
-      this.state.whoupdate,
-      comments
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                studentId: "",
-                applicationId: "",
-                docName: "",
-                whoupdate: "",
-                isLoaded: true,
-                student: data,
-                success: success,
-                CommentsModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
-            isLoaded: true,
-            success: success,
-            CommentsModel: false,
-          }));
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
 
-  onCommentsGeneralFile = (
-    studentId,
-    docName,
-    whoupdate,
-    feedback,
-    updatedAt
-  ) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      docName,
-      whoupdate,
-      filetype: "General",
-      comments: feedback,
-      updatedAt,
-      CommentsModel: true,
-    }));
-  };
   onCommentsProgramSpecific = (
     studentId,
     applicationId,
@@ -537,45 +307,6 @@ class EditorDocsProgress extends React.Component {
     }));
   };
 
-  onStudentFeedbackGeneral = (
-    studentId,
-    docName,
-    whoupdate,
-    student_feedback,
-    student_feedback_updatedAt
-  ) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      docName,
-      whoupdate,
-      filetype: "General",
-      student_feedback,
-      student_feedback_updatedAt,
-      StudentFeedbackModel: true,
-    }));
-  };
-
-  onStudentFeedbackProgramSpecific = (
-    studentId,
-    applicationId,
-    docName,
-    whoupdate,
-    student_feedback,
-    student_feedback_updatedAt
-  ) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      applicationId,
-      docName,
-      whoupdate,
-      filetype: "ProgramSpecific",
-      student_feedback,
-      student_feedback_updatedAt,
-      StudentFeedbackModel: true,
-    }));
-  };
   handleAsFinalProgramSpecific = (
     studentId,
     applicationId,
@@ -627,121 +358,10 @@ class EditorDocsProgress extends React.Component {
     this.setState((state) => ({
       ...state,
       doc_thread_id,
-      applicationId: application ? application._id : null,
+      program_id: application ? application.programId._id : null,
       student_id: studentId,
       deleteFileWarningModel: true,
     }));
-  };
-
-  onDeleteProgramSpecificThread = (doc_thread_id) => {
-    this.setState((state) => ({
-      ...state,
-      doc_thread_id,
-      deleteFileWarningModel: true,
-    }));
-  };
-
-  onSubmitProgramSpecificFile = (
-    e,
-    NewFile,
-    studentId,
-    applicationId,
-    fileCategory
-  ) => {
-    if (NewFile === "") {
-      e.preventDefault();
-      alert("Please select file");
-    } else {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("file", NewFile);
-      this.setState((state) => ({
-        ...state,
-        isLoaded: false, //false to reload everything
-      }));
-      uploadHandwrittenFileforstudent(
-        studentId,
-        applicationId,
-        fileCategory,
-        formData
-      )
-        .then((res) => {
-          console.log(res.data);
-          const { data, success } = res.data;
-          if (success) {
-            setTimeout(
-              function () {
-                //Start the timer
-                this.setState({
-                  isLoaded: true, //false to reload everything
-                  student: data,
-                  success: success,
-                  file: "",
-                });
-              }.bind(this),
-              1500
-            );
-          } else {
-            alert(res.data.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  onSubmitGeneralFile = (e, NewFile, studentId, fileCategory) => {
-    if (NewFile === "") {
-      e.preventDefault();
-      alert("Please select file");
-    } else {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("file", NewFile);
-      this.setState((state) => ({
-        ...state,
-        isLoaded: false, //false to reload everything
-      }));
-      uploadEditGeneralFileforstudent(studentId, fileCategory, formData)
-        .then((res) => {
-          console.log(res.data);
-          const { data, success } = res.data;
-          if (success) {
-            setTimeout(
-              function () {
-                //Start the timer
-                this.setState({
-                  isLoaded: true, //false to reload everything
-                  student: data,
-                  success: success,
-                  file: "",
-                });
-              }.bind(this),
-              1500
-            );
-          } else {
-            alert(res.data.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  SubmitProgramSpecificFile = (e, studentId, applicationId, fileCategory) => {
-    this.onSubmitProgramSpecificFile(
-      e,
-      e.target.files[0],
-      studentId,
-      applicationId,
-      fileCategory
-    );
-  };
-
-  SubmitGeneralFile = (e, studentId, fileCategory) => {
-    this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
   };
 
   initProgramSpecificFileThread = (
@@ -760,18 +380,12 @@ class EditorDocsProgress extends React.Component {
           console.log(res.data);
           const { data, success } = res.data;
           if (success) {
-            setTimeout(
-              function () {
-                //Start the timer
-                this.setState({
-                  isLoaded: true, //false to reload everything
-                  student: data,
-                  success: success,
-                  file: "",
-                });
-              }.bind(this),
-              1500
-            );
+            this.setState({
+              isLoaded: true, //false to reload everything
+              student: data,
+              success: success,
+              file: "",
+            });
           } else {
             alert(res.data.message);
           }
@@ -793,18 +407,12 @@ class EditorDocsProgress extends React.Component {
           console.log(res.data);
           const { data, success } = res.data;
           if (success) {
-            setTimeout(
-              function () {
-                //Start the timer
-                this.setState({
-                  isLoaded: true, //false to reload everything
-                  student: data,
-                  success: success,
-                  file: "",
-                });
-              }.bind(this),
-              1500
-            );
+            this.setState({
+              isLoaded: true, //false to reload everything
+              student: data,
+              success: success,
+              file: "",
+            });
           } else {
             alert(res.data.message);
           }
@@ -815,106 +423,6 @@ class EditorDocsProgress extends React.Component {
     }
   };
 
-  onDownloadProgramSpecificFile = (
-    e,
-    studentId,
-    applicationId,
-    docName,
-    student_inputs
-  ) => {
-    e.preventDefault();
-    downloadHandWrittenFile(studentId, applicationId, docName, student_inputs)
-      .then((resp) => {
-        console.log(resp);
-        const { status } = resp;
-        if (status === 200) {
-          const actualFileName =
-            resp.headers["content-disposition"].split('"')[1];
-          const { data: blob } = resp;
-          if (blob.size === 0) return;
-
-          var filetype = actualFileName.split("."); //split file name
-          filetype = filetype.pop(); //get the file type
-
-          if (filetype === "pdf") {
-            console.log(blob);
-            const url = window.URL.createObjectURL(
-              new Blob([blob], { type: "application/pdf" })
-            );
-
-            //Open the URL on new Window
-            console.log(url);
-            window.open(url); //TODO: having a reasonable file name, pdf viewer
-          } else {
-            //if not pdf, download instead.
-
-            const url = window.URL.createObjectURL(new Blob([blob]));
-
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", actualFileName);
-            // Append to html link element page
-            document.body.appendChild(link);
-            // Start download
-            link.click();
-            // Clean up and remove the link
-            link.parentNode.removeChild(link);
-          }
-        } else {
-          alert("resp.data.message");
-        }
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  };
-  onDownloadGeneralFile = (e, studentId, docName, student_inputs) => {
-    e.preventDefault();
-    downloadGeneralHandWrittenFile(studentId, docName, student_inputs)
-      .then((resp) => {
-        console.log(resp);
-        const { status } = resp;
-        if (status === 200) {
-          const actualFileName =
-            resp.headers["content-disposition"].split('"')[1];
-          const { data: blob } = resp;
-          if (blob.size === 0) return;
-
-          var filetype = actualFileName.split("."); //split file name
-          filetype = filetype.pop(); //get the file type
-
-          if (filetype === "pdf") {
-            console.log(blob);
-            const url = window.URL.createObjectURL(
-              new Blob([blob], { type: "application/pdf" })
-            );
-
-            //Open the URL on new Window
-            console.log(url);
-            window.open(url); //TODO: having a reasonable file name, pdf viewer
-          } else {
-            //if not pdf, download instead.
-
-            const url = window.URL.createObjectURL(new Blob([blob]));
-
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", actualFileName);
-            // Append to html link element page
-            document.body.appendChild(link);
-            // Start download
-            link.click();
-            // Clean up and remove the link
-            link.parentNode.removeChild(link);
-          }
-        } else {
-          alert("resp.data.message");
-        }
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
-  };
   render() {
     const { error, isLoaded } = this.state;
     if (error) {
@@ -969,13 +477,6 @@ class EditorDocsProgress extends React.Component {
                 </Row>
                 <ManualFiles
                   onDeleteFileThread={this.onDeleteFileThread}
-                  onDeleteProgramSpecificThread={
-                    this.onDeleteProgramSpecificThread
-                  }
-                  onDownloadGeneralFile={this.onDownloadGeneralFile}
-                  onCommentsGeneralFile={this.onCommentsGeneralFile}
-                  onStudentFeedbackGeneral={this.onStudentFeedbackGeneral}
-                  SubmitGeneralFile={this.SubmitGeneralFile}
                   handleAsFinalFile={this.handleAsFinalFile}
                   role={this.props.role}
                   student={this.state.student}
@@ -1047,20 +548,8 @@ class EditorDocsProgress extends React.Component {
 
                         <ManualFiles
                           onDeleteFileThread={this.onDeleteFileThread}
-                          onDeleteProgramSpecificThread={
-                            this.onDeleteProgramSpecificThread
-                          }
                           onCommentsProgramSpecific={
                             this.onCommentsProgramSpecific
-                          }
-                          onStudentFeedbackProgramSpecific={
-                            this.onStudentFeedbackProgramSpecific
-                          }
-                          SubmitProgramSpecificFile={
-                            this.SubmitProgramSpecificFile
-                          }
-                          onDownloadProgramSpecificFile={
-                            this.onDownloadProgramSpecificFile
                           }
                           handleAsFinalProgramSpecific={
                             this.handleAsFinalProgramSpecific
@@ -1108,7 +597,7 @@ class EditorDocsProgress extends React.Component {
           <Modal.Footer>
             <Button
               disabled={!isLoaded}
-              onClick={this.ConfirmDeleteGeneralFileThreadHandler}
+              onClick={this.ConfirmDeleteDiscussionThreadHandler}
             >
               Yes
             </Button>
@@ -1138,21 +627,12 @@ class EditorDocsProgress extends React.Component {
             Do you want to set {this.state.docName} as final for student?
           </Modal.Body>
           <Modal.Footer>
-            {this.state.filetype === "General" ? (
-              <Button
-                disabled={!isLoaded}
-                onClick={this.ConfirmSetAsFinalGeneralFileHandler}
-              >
-                Yes
-              </Button>
-            ) : (
-              <Button
-                disabled={!isLoaded}
-                onClick={this.ConfirmSetAsFinalSpecificFileHandler}
-              >
-                Yes
-              </Button>
-            )}
+            <Button
+              disabled={!isLoaded}
+              onClick={this.ConfirmSetAsFinalFileHandler}
+            >
+              Yes
+            </Button>
 
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
             {!isLoaded && (

@@ -118,19 +118,12 @@ class AgentCenter extends React.Component {
         students[student_arrayidx] = res.data.data;
         const { data, success } = res.data;
         if (success) {
-          // setTimeout will be remove in production
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                students: students,
-                success,
-                isLoaded: true,
-              }));
-            }.bind(this),
-            1500
-          );
+          this.setState((state) => ({
+            ...state,
+            students: students,
+            success,
+            isLoaded: true,
+          }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
@@ -161,21 +154,15 @@ class AgentCenter extends React.Component {
         students[student_arrayidx].profile[idx] = data;
         // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
         if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                student_id: "",
-                category: "",
-                isLoaded: true,
-                students: students,
-                success: success,
-                deleteFileWarningModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
+          this.setState((state) => ({
+            ...state,
+            student_id: "",
+            category: "",
+            isLoaded: true,
+            students: students,
+            success: success,
+            deleteFileWarningModel: false,
+          }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
@@ -264,21 +251,14 @@ class AgentCenter extends React.Component {
         console.log(students);
 
         if (success) {
-          // setTimeout will be remove in production
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                students: students, // res.data = {success: true, data:{...}}
-                success,
-                category: "",
-                isLoaded: true,
-                file: "",
-              }));
-            }.bind(this),
-            1500
-          );
+          this.setState((state) => ({
+            ...state,
+            students: students, // res.data = {success: true, data:{...}}
+            success,
+            category: "",
+            isLoaded: true,
+            file: "",
+          }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({

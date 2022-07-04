@@ -7,28 +7,132 @@ import AgentReviewing from "../MainViewTab/AgentReview/AgentReviewing";
 import EditorReviewing from "../MainViewTab/EditorReview/EditorReviewing";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
+import { addHours, addDays, addWeeks, startOfWeek } from "date-fns";
+import TimeLine from "react-gantt-timeline";
+import Generator from "./Generator";
+
+import format from "date-fns/format";
+import getDay from "date-fns/getDay";
+import parse from "date-fns/parse";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import "react-datepicker/dist/react-datepicker.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+const config = {
+  header: {
+    top: {
+      style: {
+        background: "linear-gradient( grey, black)",
+        textShadow: "0.5px 0.5px black",
+        fontSize: 12,
+      },
+    },
+    middle: {
+      style: {
+        background: "linear-gradient( orange, grey)",
+        fontSize: 9,
+      },
+    },
+    bottom: {
+      style: {
+        background: "linear-gradient( grey, black)",
+        fontSize: 9,
+        color: "orange",
+      },
+      selectedStyle: {
+        background: "linear-gradient( #d011dd ,#d011dd)",
+        fontWeight: "bold",
+        color: "white",
+      },
+    },
+  },
+  taskList: {
+    title: {
+      label: "Task Todo",
+      style: {
+        background: "linear-gradient( grey, black)",
+      },
+    },
+    task: {
+      style: {
+        backgroundColor: "grey",
+        color: "white",
+      },
+    },
+    verticalSeparator: {
+      style: {
+        backgroundColor: "#fbf9f9",
+      },
+      grip: {
+        style: {
+          backgroundColor: "red",
+        },
+      },
+    },
+  },
+  dataViewPort: {
+    rows: {
+      style: {
+        backgroundColor: "white",
+        borderBottom: "solid 0.5px silver",
+      },
+    },
+    task: {
+      showLabel: true,
+      style: {
+        borderRadius: 1,
+        boxShadow: "2px 2px 8px #888888",
+      },
+    },
+  },
+};
+
 class StudentMainView extends React.Component {
+  constructor(props) {
+    super(props);
+    let result = Generator.generateData();
+    this.data = result.data;
+    this.state = {
+      itemheight: 20,
+      data: [],
+      links: result.links,
+    };
+  }
+
+  // handleAddEvent = () => {
+  //   setState((state) => ({ ...state, allEvents }));
+  // };
+  onHorizonChange = (start, end) => {
+    //Return data the is in the range
+    let result = this.data.filter((item) => {
+      return (
+        (item.start < start && item.end > end) ||
+        (item.start > start && item.start < end) ||
+        (item.end > start && item.end < end)
+      );
+    });
+    console.log("Calculating ");
+    this.setState({ data: result });
+  };
+
   render() {
     const stdlist = this.props.students.map((student, i) => (
       <StudentMyself
         key={i}
         role={this.props.role}
         student={student}
+        profile_list={window.profile_list}
       />
     ));
 
     const application_progress = this.props.students.map((student, i) => (
-      <ApplicationProgress
-        key={i}
-        role={this.props.role}
-        student={student}
-      />
+      <ApplicationProgress key={i} role={this.props.role} student={student} />
     ));
 
     const your_editors = this.props.students.map((student, i) =>
       student.editors ? (
         student.editors.map((editor, i) => (
           <tr key={i}>
+            <td>Editor</td>
             <td>
               {editor.firstname} - {editor.lastname}
             </td>
@@ -44,6 +148,7 @@ class StudentMainView extends React.Component {
       student.agents ? (
         student.agents.map((agent, i) => (
           <tr key={i}>
+            <td>Agent</td>
             <td>
               {agent.firstname} - {agent.lastname}
             </td>
@@ -56,58 +161,29 @@ class StudentMainView extends React.Component {
     );
 
     const std_todo = this.props.students.map((student, i) => (
-      <StudentTodoList
-        key={i}
-        student={student}
-      />
+      <StudentTodoList key={i} student={student} />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing
-        key={i}
-        role={this.props.role}
-        student={student}
-      />
+      <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
-      <EditorReviewing
-        key={i}
-        role={this.props.role}
-        student={student}
-      />
+      <EditorReviewing key={i} role={this.props.role} student={student} />
     ));
 
     return (
       <>
         <Row>
-          <Col md={6}>
-            <Card title="Agent">
-              <Table responsive striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>First-, Last Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>{your_agents}</tbody>
-              </Table>
-            </Card>
-          </Col>
-          <Col md={6}>
-            <Card title="Editor">
-              <Table responsive striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>First-, Last Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>{your_editors}</tbody>
-              </Table>
-            </Card>
-          </Col>
+          {/* <Card title={"Schedule"}> */}
+            <TimeLine
+              data={this.state.data}
+              links={this.state.links}
+              config={config}
+              onHorizonChange={this.onHorizonChange}
+            />
+          {/* </Card> */}
         </Row>
         <Row>
-          <Col md={12}>
+          <Col md={6}>
             <Card title="My To Do:">
               <Table responsive bordered hover>
                 <thead>
@@ -121,9 +197,42 @@ class StudentMainView extends React.Component {
               </Table>
             </Card>
           </Col>
+          <Col md={6}>
+            <Card title="Your TaiGer Team">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>Role</th>
+                    <th>First-, Last Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {your_agents}
+                  {your_editors}
+                </tbody>
+              </Table>
+            </Card>
+          </Col>
         </Row>
         <Row>
-          <Col md={6}>
+          <Col md={4}>
+            <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
+              <Tab eventKey="x" title="My Uploaded Documents">
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Documents</th>
+                    </tr>
+                  </thead>
+                  <tbody>{stdlist}</tbody>
+                </Table>
+                {/* {this.props.SYMBOL_EXPLANATION} */}
+              </Tab>
+            </Tabs>
+          </Col>
+          <Col md={4}>
             <Card title="Agent Reviewing:">
               <Table responsive bordered hover>
                 <thead>
@@ -136,7 +245,7 @@ class StudentMainView extends React.Component {
               </Table>
             </Card>
           </Col>
-          <Col md={6}>
+          <Col md={4}>
             <Card title="Editor Reviewing:">
               <Table responsive bordered hover>
                 <thead>
@@ -183,28 +292,6 @@ class StudentMainView extends React.Component {
                 {application_progress}
               </Table>
             </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-              <Tab eventKey="x" title="My Uploaded Documents">
-                <Table responsive>
-                  <thead>
-                    <tr>
-                      {/* <>
-                        <th>First-, Last Name</th>
-                      </> */}
-                      {window.documentlist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  {stdlist}
-                </Table>
-                {this.props.SYMBOL_EXPLANATION}
-              </Tab>
-            </Tabs>
           </Col>
         </Row>
       </>

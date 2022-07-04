@@ -7,20 +7,18 @@ import {
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import StudentDashboard from "./StudentDashboard";
 
 class StudentMyself extends React.Component {
   state = {
     student: this.props.student,
   };
 
-
   render() {
     let studentDocOverview;
-    let keys = Object.keys(window.documentlist2);
+    let documentlist2_keys = Object.keys(window.profile_list);
     let object_init = {};
-    for (let i = 0; i < keys.length; i++) {
-      object_init[keys[i]] = "missing";
+    for (let i = 0; i < documentlist2_keys.length; i++) {
+      object_init[documentlist2_keys[i]] = "missing";
     }
 
     if (this.state.student.profile) {
@@ -39,52 +37,87 @@ class StudentMyself extends React.Component {
       }
     } else {
     }
-    studentDocOverview = keys.map((k, i) => {
-      if (object_init[k] === "uploaded") {
+    console.log(object_init);
+    // studentDocOverview = documentlist2_keys.map((key_doc_name, i) => {
+    //   return (
+    //     <tr docey={i}>
+    //       <td>
+    //         <AiOutlineFieldTime
+    //           size={24}
+    //           color="orange"
+    //           title="Uploaded successfully"
+    //         />{" "}
+    //       </td>
+    //       <td>{key_doc_name}</td>
+    //     </tr>
+    //   );
+    // });
+    studentDocOverview = documentlist2_keys.map((key_doc_name, i) => {
+      if (object_init[key_doc_name] === "uploaded") {
         return (
-          <td key={i}>
-            <AiOutlineFieldTime
-              size={24}
-              color="orange"
-              title="Uploaded successfully"
-            />{" "}
-          </td>
+          <tr key={i}>
+            <td>
+              <AiOutlineFieldTime
+                size={24}
+                color="orange"
+                title="Uploaded successfully"
+              />{" "}
+            </td>
+            <td>{key_doc_name}</td>;
+          </tr>
         );
-      } else if (object_init[k] === "accepted") {
+      } else if (object_init[key_doc_name] === "accepted") {
         return (
-          <td key={i}>
-            <IoCheckmarkCircle
-              size={24}
-              color="limegreen"
-              title="Valid Document"
-            />{" "}
-          </td>
+          <tr key={i}>
+            <td>
+              <IoCheckmarkCircle
+                size={24}
+                color="limegreen"
+                title="Valid Document"
+              />{" "}
+            </td>
+            <td>{key_doc_name}</td>;
+          </tr>
         );
-      } else if (object_init[k] === "rejected") {
+      } else if (object_init[key_doc_name] === "rejected") {
         return (
-          <td key={i}>
-            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
-          </td>
+          <tr key={i}>
+            <td>
+              <AiFillCloseCircle
+                size={24}
+                color="red"
+                title="Invalid Document"
+              />
+            </td>
+            <td>{key_doc_name}</td>;
+          </tr>
         );
-      } else if (object_init[k] === "notneeded") {
+      } else if (object_init[key_doc_name] === "notneeded") {
         return (
-          <td key={i}>
-            <BsDash size={24} color="lightgray" title="Not needed" />
-          </td>
+          <tr key={i}>
+            <td>
+              <BsDash size={24} color="lightgray" title="Not needed" />
+            </td>
+            <td>{key_doc_name}</td>;
+          </tr>
         );
       } else {
         return (
-          <td key={i}>
-            <AiFillQuestionCircle
-              size={24}
-              color="lightgray"
-              title="No Document uploaded"
-            />{" "}
-          </td>
+          <tr key={i}>
+            <td>
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="No Document uploaded"
+              />{" "}
+            </td>
+            <td>{key_doc_name}</td>;
+          </tr>
         );
       }
     });
-    return <StudentDashboard studentDocOverview={studentDocOverview} />;
+    // return <StudentDashboard studentDocOverview={studentDocOverview} />;
+    return <>{studentDocOverview}</>;
   }
 }
 

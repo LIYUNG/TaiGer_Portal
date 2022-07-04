@@ -36,15 +36,6 @@ class EditableFile_Thread extends Component {
     );
   };
 
-  handleCommentsGeneralFile = () => {
-    this.props.onCommentsGeneralFile(
-      this.props.student._id,
-      this.props.thread.name,
-      this.props.thread.feedback,
-      this.props.thread.updatedAt
-    );
-  };
-
   handleCommentsProgramSpecific = () => {
     this.props.onCommentsProgramSpecific(
       this.props.student._id,
@@ -52,15 +43,6 @@ class EditableFile_Thread extends Component {
       this.props.thread.name,
       this.props.thread.feedback,
       this.props.thread.updatedAt
-    );
-  };
-
-  handleStudentFeebackGeneral = () => {
-    this.props.onStudentFeedbackGeneral(
-      this.props.student._id,
-      this.props.thread.name,
-      this.props.thread.student_feedback,
-      this.props.thread.student_feedback_updatedAt
     );
   };
 

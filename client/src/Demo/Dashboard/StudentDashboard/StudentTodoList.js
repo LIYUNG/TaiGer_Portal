@@ -7,7 +7,7 @@ import React from "react";
 
 class StudentTodoList extends React.Component {
   render() {
-    let keys = Object.keys(window.documentlist2);
+    let keys = Object.keys(window.profile_list);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";

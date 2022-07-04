@@ -124,44 +124,6 @@ class Application extends Component {
         console.log(error);
       }
     );
-    // updateEditGeneralFileCommentsforstudent(
-    //   this.props.match.params.documentsthreadId,
-    //   this.state.userId,
-    //   message
-    // ).then(
-    //   (resp) => {
-    //     console.log(resp.data.data);
-    //     const { data, success } = resp.data;
-    //     if (success) {
-    //       setTimeout(
-    //         function () {
-    //           //Start the timer
-    //           this.setState((state) => ({
-    //             ...state,
-    //             studentId: "",
-    //             isLoaded: true,
-    //             student: data,
-    //             success: success,
-    //             CommentsModel: false,
-    //         }));
-    //       }.bind(this),
-    //       1500
-    //     );
-    //   } else {
-    //     alert(resp.data.message);
-    //     this.setState((state) => ({
-    //       ...state,
-    //       studentId: "",
-    //       isLoaded: true,
-    //       success: success,
-    //       CommentsModel: false,
-    //     }));
-    //   }
-    // },
-    // (error) => {
-    //   console.log(error);
-    //   }
-    // );
   };
 
   handleEditFormSubmit = (update_article) => {
@@ -367,9 +329,12 @@ class Application extends Component {
                   {this.state.thread.student_id.firstname}{" "}
                   {this.state.thread.student_id.lastname}
                   {" - "}
-                  {this.state.thread.application_id
-                    ? this.state.thread.application_id.program_name
-                    : this.state.thread.file_type}{" "}
+                  {this.state.thread.program_id
+                    ? this.state.thread.program_id.school +
+                      " " +
+                      this.state.thread.program_id.program_name
+                    : ""}{" "}
+                  {this.state.thread.file_type}
                   {" Discussion thread"}
                   {"   "}
                   {this.state.expand ? (

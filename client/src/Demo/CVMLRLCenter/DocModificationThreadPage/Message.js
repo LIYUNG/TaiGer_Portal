@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 // import Card from "../../../App/components/MainCard";
 import { AiFillEdit } from "react-icons/ai";
-import { Card, Spinner, Collapse, Button } from "react-bootstrap";
+import {
+  Card,
+  Spinner,
+  Collapse,
+  Button,
+  Dropdown,
+  DropdownButton,
+} from "react-bootstrap";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { RiMoreFill } from "react-icons/ri";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
@@ -92,8 +99,20 @@ class Message extends Component {
             {", "}
             {new Date(this.props.message.createdAt).toLocaleDateString()}
           </Card.Title>
-          <FiMoreHorizontal />
           <RiMoreFill />
+          {/* <Dropdown >
+            <FiMoreHorizontal />
+            <Dropdown.Toggle
+              split
+              variant="secondary"
+              id="dropdown-split-basic-2"
+            />
+            <Dropdown.Menu>
+              <Dropdown.Item hred="#/action-1">Action</Dropdown.Item>
+              <Dropdown.Item hred="#/action-2">Another action</Dropdown.Item>
+              <Dropdown.Item hred="#/action-3">Something else</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown> */}
         </Card.Header>
         <Collapse
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}
@@ -109,7 +128,6 @@ class Message extends Component {
               onEditorStateChange={this.handleEditorChange}
             />
             {files_info}
-            
           </Card.Body>
         </Collapse>
       </Card>

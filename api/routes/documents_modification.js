@@ -43,7 +43,7 @@ router
   );
 
 router
-  .route("/init/application/:studentId/:applicationId/:document_catgory")
+  .route("/init/application/:studentId/:program_id/:document_catgory")
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initApplicationMessagesThread
@@ -69,7 +69,7 @@ router
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessageFile);
 
 router
-  .route("/:messagesThreadId/:applicationId/:studentId")
+  .route("/:messagesThreadId/:program_id/:studentId")
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     deleteProgramSpecificMessagesThread

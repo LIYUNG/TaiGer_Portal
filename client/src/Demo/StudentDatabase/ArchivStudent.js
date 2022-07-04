@@ -71,19 +71,13 @@ class ArchivStudent extends React.Component {
       (res) => {
         const { data, success } = res.data;
         if (success) {
-          // setTimeout will be remove in production
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                student: data,
-                success,
-                isLoaded: true,
-              }));
-            }.bind(this),
-            1500
-          );
+          //Start the timer
+          this.setState((state) => ({
+            ...state,
+            student: data,
+            success,
+            isLoaded: true,
+          }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
@@ -116,21 +110,15 @@ class ArchivStudent extends React.Component {
       (res) => {
         const { data, success } = res.data;
         if (success) {
-          // setTimeout will be remove in production
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                student: data, // res.data = {success: true, data:{...}}
-                success,
-                category: "",
-                isLoaded: true,
-                file: "",
-              }));
-            }.bind(this),
-            1500
-          );
+          //Start the timer
+          this.setState((state) => ({
+            ...state,
+            student: data, // res.data = {success: true, data:{...}}
+            success,
+            category: "",
+            isLoaded: true,
+            file: "",
+          }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
@@ -199,21 +187,15 @@ class ArchivStudent extends React.Component {
         student.profile[idx] = data;
         // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
         if (success) {
-          setTimeout(
-            function () {
-              //Start the timer
-              this.setState((state) => ({
-                ...state,
-                student_id: "",
-                category: "",
-                isLoaded: true,
-                student: student,
-                success: success,
-                deleteFileWarningModel: false,
-              }));
-            }.bind(this),
-            1500
-          );
+          this.setState((state) => ({
+            ...state,
+            student_id: "",
+            category: "",
+            isLoaded: true,
+            student: student,
+            success: success,
+            deleteFileWarningModel: false,
+          }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
@@ -296,8 +278,8 @@ class ArchivStudent extends React.Component {
     }
     const deleteStyle = "danger";
     const graoutStyle = "light";
-    let value2 = Object.values(window.documentlist2);
-    let keys2 = Object.keys(window.documentlist2);
+    let value2 = Object.values(window.profile_list);
+    let keys2 = Object.keys(window.profile_list);
     let object_init = {};
     let object_message = {};
     let object_date_init = {};

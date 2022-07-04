@@ -126,7 +126,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   const new_doc_thread = new Documentthread({
     student_id: studentId,
     file_type: document_catgory,
-    application_id: null,
+    program_id: null,
     updatedAt: new Date(), //TODO
   });
   await new_doc_thread.save();
@@ -150,7 +150,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { studentId, applicationId, document_catgory },
+    params: { studentId, program_id, document_catgory },
   } = req;
 
   const student = await Student.findById(studentId)
@@ -164,7 +164,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   var doc_thread_existed = await Documentthread.find({
     student_id: studentId,
     file_type: document_catgory,
-    application_id: applicationId,
+    program_id: program_id,
   });
 
   if (doc_thread_existed.length > 0) {
@@ -188,10 +188,10 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   }
 
   const application = student.applications.find(
-    ({ _id  }) => _id == applicationId
+    ({ programId }) => programId._id == program_id
   );
   const idx = student.applications.findIndex(
-    ({ _id  }) => _id == applicationId
+    ({ programId }) => programId._id == program_id
   );
   if (!application) throw new ErrorResponse(400, "Invalid application id");
 
@@ -204,7 +204,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const new_doc_thread = new Documentthread({
     student_id: studentId,
     file_type: document_catgory,
-    application_id: applicationId,
+    program_id: program_id,
     updatedAt: new Date(),
   });
 
@@ -232,9 +232,11 @@ const getMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId },
   } = req;
-  const document_thread = await Documentthread.findById(
-    messagesThreadId
-  ).populate("student_id application_id messages.user_id");
+  const document_thread = await Documentthread.findById(messagesThreadId)
+    .populate("student_id messages.user_id")
+    .populate("program_id")
+    .lean()
+    .exec();
 
   if (!document_thread)
     throw new ErrorResponse(400, "Invalid message thread id");
@@ -276,7 +278,7 @@ const postMessages = asyncHandler(async (req, res) => {
   await document_thread.save();
   const document_thread2 = await Documentthread.findById(
     messagesThreadId
-  ).populate("student_id application_id messages.user_id");
+  ).populate("student_id program_id messages.user_id");
   res.status(200).send({ success: true, data: document_thread2 });
 });
 
@@ -401,7 +403,7 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
 
     listedObjects.Contents.forEach(({ Key }) => {
       deleteParams.Delete.Objects.push({ Key });
-      console.log(Key);
+      console.log("Deleting " + Key);
     });
 
     await s3.deleteObjects(deleteParams).promise();
@@ -427,7 +429,7 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
 const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { messagesThreadId, applicationId, studentId },
+    params: { messagesThreadId, program_id, studentId },
   } = req;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
@@ -461,7 +463,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
 
     listedObjects.Contents.forEach(({ Key }) => {
       deleteParams.Delete.Objects.push({ Key });
-      console.log(Key);
+      console.log("Deleting " + Key);
     });
 
     await s3.deleteObjects(deleteParams).promise();
@@ -469,11 +471,11 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
     if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
   }
   await Student.findOneAndUpdate(
-    { _id: studentId, "applications._id": applicationId },
+    { _id: studentId, "applications.programId": program_id },
     {
       $pull: {
         "applications.$.doc_modification_thread": {
-          doc_thread_id: messagesThreadId,
+          doc_thread_id: { _id: messagesThreadId },
         },
       },
     }

@@ -29,8 +29,8 @@ class EditFilesSubpage extends React.Component {
   render() {
     const deleteStyle = "danger";
     const graoutStyle = "light";
-    let value2 = Object.values(window.documentlist2);
-    let keys2 = Object.keys(window.documentlist2);
+    let value2 = Object.values(window.profile_list);
+    let keys2 = Object.keys(window.profile_list);
     let object_init = {};
     let object_message = {};
     let object_date_init = {};

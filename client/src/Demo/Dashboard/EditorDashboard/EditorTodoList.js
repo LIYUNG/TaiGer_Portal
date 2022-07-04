@@ -7,7 +7,7 @@ import React from "react";
 
 class EditorTodoList extends React.Component {
   render() {
-    let keys = Object.keys(window.documentlist2);
+    let keys = Object.keys(window.profile_list);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = "missing";
@@ -46,7 +46,7 @@ class EditorTodoList extends React.Component {
       if (object_init[key] === "uploaded") {
         return (
           <>
-            <h6>{window.documentlist2[key]}</h6>
+            <h6>{window.profile_list[key]}</h6>
           </>
         );
       }

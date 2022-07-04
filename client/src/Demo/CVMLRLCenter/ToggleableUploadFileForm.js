@@ -71,7 +71,7 @@ class ToggleableUploadFileForm extends Component {
                 this.props.handleCreateProgramSpecificMessageThread(
                   e,
                   this.props.student._id,
-                  this.props.application._id,
+                  this.props.application.programId._id,
                   this.props.category
                 )
               }

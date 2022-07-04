@@ -62,51 +62,6 @@ class EditProgramsFilesSubpage extends React.Component {
     }
   };
 
-  onDownloadFile(e, studentId, applicationId, docName) {
-    e.preventDefault();
-    console.log("Here")
-    downloadHandWrittenFile(studentId, applicationId, docName).then(
-      (resp) => {
-        console.log(resp);
-        const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-
-        var filetype = actualFileName.split("."); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === "pdf") {
-          console.log(blob);
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
-          );
-
-          //Open the URL on new Window
-          console.log(url);
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert("The file is not available.");
-      }
-    );
-  }
-
   render() {
     // Edit Program
     let programstatus;
@@ -131,7 +86,6 @@ class EditProgramsFilesSubpage extends React.Component {
               }
               onFileChange={this.onFileChange}
               onSubmitFile={this.onSubmitFile}
-              onDownloadFile={this.onDownloadFile}
               role={this.props.role}
               student={this.state.student}
               application={application}

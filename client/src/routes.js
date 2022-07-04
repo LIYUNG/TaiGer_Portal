@@ -49,6 +49,8 @@ const CVMLRL_Modification_Thread = React.lazy(() =>
   )
 );
 const Task = React.lazy(() => import("./Demo/Task/Task"));
+const MyTask = React.lazy(() => import("./Demo/Task/MyTask"));
+
 const ArchivStudentDatabase = React.lazy(() =>
   import("./Demo/StudentDatabase/ArchivStudent")
 );
@@ -130,16 +132,22 @@ const routes = [
     component: SingleProgram,
   },
   {
-    path: "/task",
+    path: "/tasks/:student_id",
     exact: true,
     name: "Task Overview",
     component: Task,
   },
   {
-    path: "/task/:studentId",
+    path: "/tasks/students/overview",
     exact: true,
     name: "Task Overview",
     component: Task,
+  },
+  {
+    path: "/tasks",
+    exact: true,
+    name: "My Task",
+    component: MyTask,
   },
   {
     path: "/document-modification/:documentsthreadId",

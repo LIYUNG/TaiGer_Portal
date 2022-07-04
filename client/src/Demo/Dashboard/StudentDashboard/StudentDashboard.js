@@ -86,7 +86,7 @@ const config = {
   },
 };
 
-class StudentMainView extends React.Component {
+class StudentDashboard extends React.Component {
   constructor(props) {
     super(props);
     let result = Generator.generateData();
@@ -299,4 +299,4 @@ class StudentMainView extends React.Component {
   }
 }
 
-export default StudentMainView;
+export default StudentDashboard;

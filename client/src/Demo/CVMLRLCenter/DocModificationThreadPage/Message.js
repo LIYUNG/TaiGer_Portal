@@ -6,17 +6,12 @@ import {
   Spinner,
   Collapse,
   Button,
-  Dropdown,
-  DropdownButton,
 } from "react-bootstrap";
-import { FiMoreHorizontal } from "react-icons/fi";
 import { RiMoreFill } from "react-icons/ri";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
-import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
-import { convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import "./DraftEditor.css";
+import "./../../../components/DraftEditor.css";
 
 class Message extends Component {
   state = {
@@ -42,9 +37,6 @@ class Message extends Component {
       isLoaded: this.props.isLoaded,
     }));
   }
-  handleTrashClick = () => {
-    this.props.onTrashClick(this.props.id);
-  };
 
   render() {
     const style = {
@@ -118,8 +110,6 @@ class Message extends Component {
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}
         >
           <Card.Body>
-            {/* {this.props.message.message} */}
-            {/* {parse(convertToHTML(this.state.editorState.getCurrentContent()))} */}
             <Editor
               spellCheck={true}
               readOnly={true}

@@ -5,12 +5,6 @@ const { Role, Agent, Student, Editor } = require("../models/User");
 const { Task } = require("../models/Task");
 var async = require("async");
 const fs = require("fs");
-const {
-  informAgentNewStudentEmail,
-  informStudentTheirAgentEmail,
-  informEditorNewStudentEmail,
-  informStudentTheirEditorEmail,
-} = require("../services/email");
 
 const getTasks = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -31,6 +25,45 @@ const getTasks = asyncHandler(async (req, res) => {
   } else {
     // Guest
     res.status(200).send({ success: true, data: [user] });
+  }
+});
+
+const getMyTask = asyncHandler(async (req, res) => {
+  const { user } = req;
+  if (user.role === "Student") {
+    const tasks = await Task.find({ student_id: user._id })
+      .populate("student_id", "firstname lastname")
+      .lean()
+      .exec();
+    res.status(200).send({ success: true, data: tasks });
+  } else {
+    // Guest
+    throw new ErrorResponse(400, "Tasks are not initialized for you");
+  }
+});
+
+const getMyStudentsTasks = asyncHandler(async (req, res) => {
+  const { user } = req;
+  console.log(req);
+  if (user.role !== "Student") {
+    const tasks = await Task.findById(user._id);
+    res.status(200).send({ success: true, data: [tasks] });
+  } else {
+    // Guest
+    throw new ErrorResponse(400, "Tasks are not initialized for you");
+  }
+});
+
+const getMyStudentTasks = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { studentId } = req.params;
+  console.log(req);
+  if (user.role !== "Student") {
+    const tasks = await Task.findById(studentId);
+    res.status(200).send({ success: true, data: [tasks] });
+  } else {
+    // Guest
+    throw new ErrorResponse(400, "Tasks are not initialized for you");
   }
 });
 
@@ -60,6 +93,9 @@ const updateTasks = asyncHandler(async (req, res) => {
 
 module.exports = {
   getTasks,
+  getMyTask,
+  getMyStudentsTasks,
+  getMyStudentTasks,
   initTasks,
   updateTasks,
 };

@@ -90,7 +90,7 @@ export default {
           id: "student_task",
           title: "Task Overview",
           type: "item",
-          url: "/task",
+          url: "/tasks",
           classes: "nav-item",
           icon: "feather icon-eye",
         },

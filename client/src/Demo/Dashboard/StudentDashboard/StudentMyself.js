@@ -37,21 +37,7 @@ class StudentMyself extends React.Component {
       }
     } else {
     }
-    console.log(object_init);
-    // studentDocOverview = documentlist2_keys.map((key_doc_name, i) => {
-    //   return (
-    //     <tr docey={i}>
-    //       <td>
-    //         <AiOutlineFieldTime
-    //           size={24}
-    //           color="orange"
-    //           title="Uploaded successfully"
-    //         />{" "}
-    //       </td>
-    //       <td>{key_doc_name}</td>
-    //     </tr>
-    //   );
-    // });
+
     studentDocOverview = documentlist2_keys.map((key_doc_name, i) => {
       if (object_init[key_doc_name] === "uploaded") {
         return (

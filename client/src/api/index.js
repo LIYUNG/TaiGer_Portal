@@ -131,14 +131,14 @@ export const deleteProgramSpecificFileUpload = (
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${studentId}/${documentsthreadId}`);
 
-  export const deleteProgramSpecificFileThread = (
-    documentsthreadId,
-    programId,
-    studentId
-  ) =>
-    request.delete(
-      `/api/document-threads/${documentsthreadId}/${programId}/${studentId}`
-    );
+export const deleteProgramSpecificFileThread = (
+  documentsthreadId,
+  programId,
+  studentId
+) =>
+  request.delete(
+    `/api/document-threads/${documentsthreadId}/${programId}/${studentId}`
+  );
 
 export const getCVMLRLOverview = () =>
   request.get(`/api/document-threads/overview`);
@@ -272,6 +272,15 @@ export const getVisaArticle = () => getArticle("visa");
 export const getUniassistArticle = () => getArticle("uniassist");
 
 export const getCertificationArticle = () => getArticle("certification");
+
+//Task:
+export const getMyStudentsTasks = () =>
+  request.get("/api/tasks/my-students-tasks");
+export const getMyTask = () =>
+  request.get("/api/tasks/mytask");
+export const getStudentTask = (student_id) =>
+  request.get(`/api/tasks/${student_id}`);
+
 
 //Survey:
 export const updateAcademicBackground = (university) =>

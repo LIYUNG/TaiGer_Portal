@@ -19,7 +19,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   cvmlrl_documents: {
@@ -32,7 +31,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   program_selection: {
@@ -45,7 +43,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   program_decision: {
@@ -58,7 +55,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   program_submission: {
@@ -71,7 +67,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   cvmlrl_template: {
@@ -84,7 +79,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   uni_assist_process: {
@@ -97,7 +91,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   copies_certification: {
@@ -110,7 +103,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
   visa_progress: {
@@ -123,7 +115,6 @@ const TaskSchema = new Schema({
       type: String,
     },
     task_deadline: Date,
-    // TODO: updateBy
     updatedAt: Date,
   },
 
@@ -142,7 +133,6 @@ const TaskSchema = new Schema({
         type: String,
       },
       task_deadline: Date,
-      // TODO: updateBy
       updatedAt: Date,
     },
   ],

@@ -2,13 +2,10 @@ import React, { Component } from "react";
 import { Row, Col, Spinner, Button, Card, Form } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import MessageList from "./MessageList";
-import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
+import { convertToRaw } from "draft-js";
 import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
-import { convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import "./DraftEditor.css";
-import { FileUploader } from "react-drag-drop-files";
 import {
   updateDoc,
   deleteDoc,
@@ -422,13 +419,6 @@ class Application extends Component {
                       }}
                     />
                     <Row>
-                      {/* <FileUploader
-                        handleChange={this.onFileChange}
-                        name="file"
-                        // types={["JPG", "PNG", "GIF"]}
-                        // handleChange={(e) => this.onFileChange(e)}
-                        // id={this.props.id}
-                      /> */}
                       <Form>
                         <Row>
                           <Form.File.Label

@@ -15,7 +15,7 @@ import { BsDash } from "react-icons/bs";
 import AdminMainView from "./AdminDashboard/AdminMainView";
 import AgentMainView from "./AgentDashboard/AgentMainView";
 import EditorMainView from "./EditorDashboard/EditorMainView";
-import StudentMainView from "./StudentDashboard/StudentMainView";
+import StudentDashboard from "./StudentDashboard/StudentDashboard";
 import GuestMainView from "./GuestDashboard/GuestMainView";
 import {
   getStudents,
@@ -531,7 +531,7 @@ class Dashboard extends React.Component {
       } else if (this.props.user.role === "Student") {
         return (
           <Aux>
-            <StudentMainView
+            <StudentDashboard
               role={this.props.user.role}
               students={this.state.students}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}

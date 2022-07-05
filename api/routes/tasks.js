@@ -27,7 +27,10 @@ router.route('/mytask').get(permit(Role.Student), getMyTask);
 
 router
   .route('/my-students-tasks')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor), getMyStudentsTasks);
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getMyStudentsTasks
+  );
 
 router
   .route('/:studentId')

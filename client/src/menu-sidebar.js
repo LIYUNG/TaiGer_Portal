@@ -1,256 +1,264 @@
 export default {
   items: [
     {
-      id: "navigation_sidebar",
-      title: "Navigation",
-      type: "group",
-      icon: "icon-navigation",
+      id: 'navigation_sidebar',
+      title: 'Navigation',
+      type: 'group',
+      icon: 'icon-navigation',
       children: [
         {
-          id: "dashboard",
-          title: "Dashboard",
-          type: "item",
-          url: "/dashboard/default",
-          icon: "feather icon-home",
+          id: 'dashboard',
+          title: 'Dashboard',
+          type: 'item',
+          url: '/dashboard/default',
+          icon: 'feather icon-home'
         },
         {
-          id: "basic",
-          title: "Component",
-          type: "collapse",
-          icon: "feather icon-box",
+          id: 'basic',
+          title: 'Component',
+          type: 'collapse',
+          icon: 'feather icon-box',
           children: [
             {
-              id: "button",
-              title: "Button",
-              type: "item",
-              url: "/basic/button",
+              id: 'button',
+              title: 'Button',
+              type: 'item',
+              url: '/basic/button'
             },
             {
-              id: "badges",
-              title: "Badges",
-              type: "item",
-              url: "/basic/badges",
+              id: 'badges',
+              title: 'Badges',
+              type: 'item',
+              url: '/basic/badges'
             },
             {
-              id: "forms",
-              title: "Forms",
-              type: "item",
-              url: "/forms/form-basic",
+              id: 'forms',
+              title: 'Forms',
+              type: 'item',
+              url: '/forms/form-basic'
             },
             {
-              id: "breadcrumb-pagination",
-              title: "Breadcrumb & Pagination",
-              type: "item",
-              url: "/basic/breadcrumb-paging",
+              id: 'breadcrumb-pagination',
+              title: 'Breadcrumb & Pagination',
+              type: 'item',
+              url: '/basic/breadcrumb-paging'
             },
             {
-              id: "collapse",
-              title: "Collapse",
-              type: "item",
-              url: "/basic/collapse",
+              id: 'collapse',
+              title: 'Collapse',
+              type: 'item',
+              url: '/basic/collapse'
             },
             {
-              id: "tabs-pills",
-              title: "Tabs & Pills",
-              type: "item",
-              url: "/basic/tabs-pills",
+              id: 'tabs-pills',
+              title: 'Tabs & Pills',
+              type: 'item',
+              url: '/basic/tabs-pills'
             },
             {
-              id: "typography",
-              title: "Typography",
-              type: "item",
-              url: "/basic/typography",
-            },
-          ],
+              id: 'typography',
+              title: 'Typography',
+              type: 'item',
+              url: '/basic/typography'
+            }
+          ]
         },
         {
-          id: "academicsurvey",
-          title: "Academic Survey",
-          type: "item",
-          url: "/survey",
-          icon: "feather icon-file-text",
+          id: 'academicsurvey',
+          title: 'Academic Survey',
+          type: 'item',
+          url: '/survey',
+          icon: 'feather icon-file-text'
         },
         {
-          id: "agent_center",
-          title: "Agent Center",
-          type: "item",
-          url: "/agent-center",
-          classes: "nav-item",
-          icon: "feather icon-eye",
+          id: 'agent_center',
+          title: 'Base Documents',
+          type: 'item',
+          url: '/agent-center',
+          classes: 'nav-item',
+          icon: 'feather icon-eye'
         },
         {
-          id: "editor_center",
-          title: "CV/ML/RL Center",
-          type: "item",
-          url: "/cv-ml-rl-center",
-          classes: "nav-item",
-          icon: "feather icon-edit-1",
+          id: 'editor_center',
+          title: 'CV/ML/RL Center',
+          type: 'item',
+          url: '/cv-ml-rl-center',
+          classes: 'nav-item',
+          icon: 'feather icon-edit-1'
         },
         {
-          id: "student_task",
-          title: "Task Overview",
-          type: "item",
-          url: "/tasks",
-          classes: "nav-item",
-          icon: "feather icon-eye",
+          id: 'students_tasks_overview',
+          title: 'Tasks Overview',
+          type: 'item',
+          url: '/tasks/students/overview',
+          classes: 'nav-item',
+          icon: 'feather icon-eye'
         },
         {
-          id: "archiv-student",
-          title: "Archiv Students",
-          type: "item",
-          icon: "feather icon-users",
-          url: "/archiv/students",
+          id: 'student_task',
+          title: 'My Tasks Overview',
+          type: 'item',
+          url: '/tasks',
+          classes: 'nav-item',
+          icon: 'feather icon-eye'
         },
         {
-          id: "user-table",
-          title: "User List",
-          type: "item",
-          icon: "feather icon-users",
-          url: "/users",
+          id: 'archiv-student',
+          title: 'Archiv Students',
+          type: 'item',
+          icon: 'feather icon-users',
+          url: '/archiv/students'
         },
         {
-          id: "program-table",
-          title: "Program List",
-          type: "item",
-          icon: "feather icon-list",
-          url: "/programs",
+          id: 'user-table',
+          title: 'User List',
+          type: 'item',
+          icon: 'feather icon-users',
+          url: '/users'
         },
         {
-          id: "interview-training",
-          title: "Interview Training",
-          type: "item",
-          icon: "feather icon-briefcase",
-          url: "/interview-training",
+          id: 'program-table',
+          title: 'Program List',
+          type: 'item',
+          icon: 'feather icon-list',
+          url: '/programs'
         },
         {
-          id: "statistics",
-          title: "Statistics",
-          type: "item",
-          icon: "feather icon-bar-chart-2",
-          url: "/statistics",
+          id: 'interview-training',
+          title: 'Interview Training',
+          type: 'item',
+          icon: 'feather icon-briefcase',
+          url: '/interview-training'
         },
         {
-          id: "charts",
-          title: "Charts",
-          type: "item",
-          icon: "feather icon-pie-chart",
-          url: "/charts/nvd3",
+          id: 'statistics',
+          title: 'Statistics',
+          type: 'item',
+          icon: 'feather icon-bar-chart-2',
+          url: '/statistics'
         },
         {
-          id: "maps",
-          title: "Map",
-          type: "item",
-          icon: "feather icon-map",
-          url: "/maps/google-map",
+          id: 'charts',
+          title: 'Charts',
+          type: 'item',
+          icon: 'feather icon-pie-chart',
+          url: '/charts/nvd3'
         },
         {
-          id: "download",
-          title: "Download Center",
-          type: "item",
-          url: "/download",
-          classes: "nav-item",
-          icon: "feather icon-download",
+          id: 'maps',
+          title: 'Map',
+          type: 'item',
+          icon: 'feather icon-map',
+          url: '/maps/google-map'
         },
         {
-          id: "taigerai",
-          title: "TaiGer AI",
-          type: "item",
-          url: "/taigerai",
-          classes: "nav-item",
-          icon: "feather icon-box",
+          id: 'download',
+          title: 'Download Center',
+          type: 'item',
+          url: '/download',
+          classes: 'nav-item',
+          icon: 'feather icon-download'
         },
         {
-          id: "docs",
-          title: "Documentation",
-          type: "collapse",
-          classes: "nav-item",
-          icon: "feather icon-help-circle",
+          id: 'taigerai',
+          title: 'TaiGer AI',
+          type: 'item',
+          url: '/taigerai',
+          classes: 'nav-item',
+          icon: 'feather icon-box'
+        },
+        {
+          id: 'docs',
+          title: 'Documentation',
+          type: 'collapse',
+          classes: 'nav-item',
+          icon: 'feather icon-help-circle',
           children: [
             {
-              id: "doc-application",
-              title: "Application",
-              type: "item",
-              url: "/docs/application",
+              id: 'doc-application',
+              title: 'Application',
+              type: 'item',
+              url: '/docs/application',
               target: false,
-              breadcrumbs: false,
+              breadcrumbs: false
             },
             {
-              id: "doc-certification",
-              title: "Certification",
-              type: "item",
-              url: "/docs/certification",
+              id: 'doc-certification',
+              title: 'Certification',
+              type: 'item',
+              url: '/docs/certification',
               target: false,
-              breadcrumbs: false,
+              breadcrumbs: false
             },
             {
-              id: "doc-uniassist",
-              title: "Uni-Assist",
-              type: "item",
-              url: "/docs/uniassist",
+              id: 'doc-uniassist',
+              title: 'Uni-Assist',
+              type: 'item',
+              url: '/docs/uniassist',
               target: false,
-              breadcrumbs: false,
+              breadcrumbs: false
             },
             {
-              id: "doc-visa",
-              title: "Visa",
-              type: "item",
-              url: "/docs/visa",
+              id: 'doc-visa',
+              title: 'Visa',
+              type: 'item',
+              url: '/docs/visa',
               target: false,
-              breadcrumbs: false,
-            },
-          ],
+              breadcrumbs: false
+            }
+          ]
         },
         {
-          id: "prev_students_database",
-          title: "Student Database",
-          type: "item",
-          url: "/student-database",
-          classes: "nav-item",
-          icon: "feather icon-cloud",
+          id: 'prev_students_database',
+          title: 'Student Database',
+          type: 'item',
+          url: '/student-database',
+          classes: 'nav-item',
+          icon: 'feather icon-cloud'
         },
         {
-          id: "personaldata",
-          title: "Personal Data",
-          type: "item",
-          url: "/profile",
-          classes: "nav-item",
-          icon: "feather icon-user",
+          id: 'personaldata',
+          title: 'Personal Data',
+          type: 'item',
+          url: '/profile',
+          classes: 'nav-item',
+          icon: 'feather icon-user'
         },
         {
-          id: "settings",
-          title: "Settings",
-          type: "item",
-          url: "/settings",
-          classes: "nav-item",
-          icon: "feather icon-settings",
+          id: 'settings',
+          title: 'Settings',
+          type: 'item',
+          url: '/settings',
+          classes: 'nav-item',
+          icon: 'feather icon-settings'
         },
         {
-          id: "menu-level",
-          title: "Menu Levels",
-          type: "collapse",
-          icon: "feather icon-menu",
+          id: 'menu-level',
+          title: 'Menu Levels',
+          type: 'collapse',
+          icon: 'feather icon-menu',
           children: [
             {
-              id: "menu-level-1.1",
-              title: "Menu Level 1.1",
-              type: "item",
-              url: "#!",
+              id: 'menu-level-1.1',
+              title: 'Menu Level 1.1',
+              type: 'item',
+              url: '#!'
             },
             {
-              id: "menu-level-1.2",
-              title: "Menu Level 2.2",
-              type: "collapse",
+              id: 'menu-level-1.2',
+              title: 'Menu Level 2.2',
+              type: 'collapse',
               children: [
                 {
-                  id: "menu-level-2.1",
-                  title: "Menu Level 2.1",
-                  type: "item",
-                  url: "#",
-                },
-              ],
-            },
-          ],
-        },
+                  id: 'menu-level-2.1',
+                  title: 'Menu Level 2.1',
+                  type: 'item',
+                  url: '#'
+                }
+              ]
+            }
+          ]
+        }
         // {
         //   id: "disabled-menu",
         //   title: "Disabled Menu",
@@ -273,8 +281,8 @@ export default {
         //     type: "label-primary",
         //   },
         // },
-      ],
-    },
+      ]
+    }
     // {
     //     id: 'ui-forms',
     //     title: 'Forms & Tables',
@@ -293,5 +301,5 @@ export default {
 
     //     ]
     // }
-  ],
+  ]
 };

@@ -374,7 +374,7 @@ class AgentCenter extends React.Component {
               <Card.Title as="h5">
                 <Row>
                   <Col>
-                    <h3>Agent Center</h3>
+                    <h3>Base Documents</h3>
                   </Col>
                   <Col md={{ span: 2, offset: 0 }}>
                     {this.state.expand ? (

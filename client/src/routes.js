@@ -48,7 +48,8 @@ const CVMLRL_Modification_Thread = React.lazy(() =>
     "./Demo/CVMLRLCenter/DocModificationThreadPage/DocModificationThreadPage"
   )
 );
-const Task = React.lazy(() => import("./Demo/Task/Task"));
+const TasksOverview = React.lazy(() => import('./Demo/Task/TasksOverview'));
+const Task = React.lazy(() => import('./Demo/Task/Task'));
 const MyTask = React.lazy(() => import("./Demo/Task/MyTask"));
 
 const ArchivStudentDatabase = React.lazy(() =>
@@ -72,197 +73,197 @@ const TaiGerAI = React.lazy(() =>
 
 const routes = [
   {
-    path: "/dashboard/default",
+    path: '/dashboard/default',
     exact: true,
-    name: "Dashboard",
-    component: DashboardDefault,
+    name: 'Dashboard',
+    component: DashboardDefault
   },
   {
-    path: "/archiv/students",
+    path: '/archiv/students',
     exact: true,
-    name: "Archiv Students",
-    component: ArchivStudent,
+    name: 'Archiv Students',
+    component: ArchivStudent
   },
   {
-    path: "/basic/button",
+    path: '/basic/button',
     exact: true,
-    name: "Basic Button",
-    component: UIBasicButton,
+    name: 'Basic Button',
+    component: UIBasicButton
   },
   {
-    path: "/basic/badges",
+    path: '/basic/badges',
     exact: true,
-    name: "Basic Badges",
-    component: UIBasicBadges,
+    name: 'Basic Badges',
+    component: UIBasicBadges
   },
   {
-    path: "/basic/breadcrumb-paging",
+    path: '/basic/breadcrumb-paging',
     exact: true,
-    name: "Basic Breadcrumb Pagination",
-    component: UIBasicBreadcrumbPagination,
+    name: 'Basic Breadcrumb Pagination',
+    component: UIBasicBreadcrumbPagination
   },
   {
-    path: "/basic/collapse",
+    path: '/basic/collapse',
     exact: true,
-    name: "Basic Collapse",
-    component: UIBasicCollapse,
+    name: 'Basic Collapse',
+    component: UIBasicCollapse
   },
   {
-    path: "/basic/tabs-pills",
+    path: '/basic/tabs-pills',
     exact: true,
-    name: "Basic Tabs & Pills",
-    component: UIBasicTabsPills,
+    name: 'Basic Tabs & Pills',
+    component: UIBasicTabsPills
   },
   {
-    path: "/basic/typography",
+    path: '/basic/typography',
     exact: true,
-    name: "Basic Typography",
-    component: UIBasicBasicTypography,
+    name: 'Basic Typography',
+    component: UIBasicBasicTypography
   },
   {
-    path: "/forms/form-basic",
+    path: '/forms/form-basic',
     exact: true,
-    name: "Forms Elements",
-    component: FormsElements,
+    name: 'Forms Elements',
+    component: FormsElements
   },
   {
-    path: "/programs/:programId",
+    path: '/programs/:programId',
     exact: true,
-    name: "SingleProgram",
-    component: SingleProgram,
+    name: 'SingleProgram',
+    component: SingleProgram
   },
   {
-    path: "/tasks/:student_id",
+    path: '/tasks/:student_id',
     exact: true,
-    name: "Task Overview",
-    component: Task,
+    name: 'Task Overview',
+    component: Task
   },
   {
-    path: "/tasks/students/overview",
+    path: '/tasks/students/overview',
     exact: true,
-    name: "Task Overview",
-    component: Task,
+    name: 'Task Overview',
+    component: TasksOverview
   },
   {
-    path: "/tasks",
+    path: '/tasks',
     exact: true,
-    name: "My Task",
-    component: MyTask,
+    name: 'My Task',
+    component: MyTask
   },
   {
-    path: "/document-modification/:documentsthreadId",
+    path: '/document-modification/:documentsthreadId',
     exact: true,
-    name: "CVMLRL Modification Thread",
-    component: CVMLRL_Modification_Thread,
+    name: 'CVMLRL Modification Thread',
+    component: CVMLRL_Modification_Thread
   },
   {
-    path: "/programs",
+    path: '/programs',
     exact: true,
-    name: "Program Table",
-    component: ProgramTable,
+    name: 'Program Table',
+    component: ProgramTable
   },
   {
-    path: "/users",
+    path: '/users',
     exact: true,
-    name: "Users Table",
-    component: UsersTable,
+    name: 'Users Table',
+    component: UsersTable
   },
   {
-    path: "/student-database",
+    path: '/student-database',
     exact: true,
-    name: "StudentDatabase",
-    component: StudentDatabase,
+    name: 'StudentDatabase',
+    component: StudentDatabase
   },
   {
-    path: "/student-database/:studentId/:tab",
+    path: '/student-database/:studentId/:tab',
     exact: true,
-    name: "ArchivStudentDatabase",
-    component: ArchivStudentDatabase,
+    name: 'ArchivStudentDatabase',
+    component: ArchivStudentDatabase
   },
   {
-    path: "/statistics",
+    path: '/statistics',
     exact: true,
-    name: "Statistics",
-    component: Statistics,
+    name: 'Statistics',
+    component: Statistics
   },
   {
-    path: "/charts/nvd3",
+    path: '/charts/nvd3',
     exact: true,
-    name: "Nvd3 Chart",
-    component: Nvd3Chart,
+    name: 'Nvd3 Chart',
+    component: Nvd3Chart
   },
   {
-    path: "/maps/google-map",
+    path: '/maps/google-map',
     exact: true,
-    name: "Google Map",
-    component: GoogleMap,
+    name: 'Google Map',
+    component: GoogleMap
   },
   {
-    path: "/docs/application",
+    path: '/docs/application',
     exact: true,
-    name: "Documentation",
-    component: DocsApplication,
+    name: 'Documentation',
+    component: DocsApplication
   },
   {
-    path: "/docs/certification",
+    path: '/docs/certification',
     exact: true,
-    name: "Documentation",
-    component: DocsCertification,
+    name: 'Documentation',
+    component: DocsCertification
   },
   {
-    path: "/docs/uniassist",
+    path: '/docs/uniassist',
     exact: true,
-    name: "Documentation",
-    component: DocsUniassist,
+    name: 'Documentation',
+    component: DocsUniassist
   },
   {
-    path: "/docs/visa",
+    path: '/docs/visa',
     exact: true,
-    name: "Documentation",
-    component: DocsVisa,
+    name: 'Documentation',
+    component: DocsVisa
   },
   {
-    path: "/download",
+    path: '/download',
     exact: true,
-    name: "Download",
-    component: Download,
+    name: 'Download',
+    component: Download
   },
   {
-    path: "/taigerai",
+    path: '/taigerai',
     exact: true,
-    name: "TaiGer AI",
-    component: TaiGerAI,
+    name: 'TaiGer AI',
+    component: TaiGerAI
   },
   {
-    path: "/agent-center",
+    path: '/agent-center',
     exact: true,
-    name: "Agent Center",
-    component: AgentCenter,
+    name: 'Base Documents',
+    component: AgentCenter
   },
   {
-    path: "/cv-ml-rl-center",
+    path: '/cv-ml-rl-center',
     exact: true,
-    name: "CV/ML/RL Center",
-    component: CVMLRLCenter,
+    name: 'CV/ML/RL Center',
+    component: CVMLRLCenter
   },
   {
-    path: "/settings",
+    path: '/settings',
     exact: true,
-    name: "Settings",
-    component: Settings,
+    name: 'Settings',
+    component: Settings
   },
   {
-    path: "/survey",
+    path: '/survey',
     exact: true,
-    name: "",
-    component: Survey,
+    name: '',
+    component: Survey
   },
   {
-    path: "/profile",
+    path: '/profile',
     exact: true,
-    name: "Profile",
-    component: Profile,
-  },
+    name: 'Profile',
+    component: Profile
+  }
   // {
   //   path: "/",
   //   component: DashboardDefault,

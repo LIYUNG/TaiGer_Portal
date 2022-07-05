@@ -1,7 +1,7 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Student } = require('../models/User');
+const { User, Student } = require('../models/User');
 const { Task } = require('../models/Task');
 const async = require('async');
 
@@ -34,7 +34,7 @@ const getMyTask = asyncHandler(async (req, res) => {
       .populate('student_id', 'firstname lastname')
       .lean()
       .exec();
-    res.status(200).send({ success: true, data: tasks });// tasks should be in array[1]
+    res.status(200).send({ success: true, data: tasks }); // tasks should be in array[1]
   } else {
     // Guest
     throw new ErrorResponse(400, 'Tasks are not initialized for you');
@@ -43,9 +43,28 @@ const getMyTask = asyncHandler(async (req, res) => {
 
 const getMyStudentsTasks = asyncHandler(async (req, res) => {
   const { user } = req;
-  if (user.role !== 'Student') {
-    const tasks = await Task.findById(user._id);
-    res.status(200).send({ success: true, data: [tasks] });
+  if (user.role === 'Admin') {
+    const tasks = await Task.find()
+      .populate('student_id', 'firstname lastname')
+      .lean()
+      .exec();
+    res.status(200).send({ success: true, data: tasks });
+  } else if (user.role === 'Agent' || user.role === 'Editor') {
+    const staff = await User.findById(user._id);
+    const student_list = staff.students;
+    const tasks = await Task.find({
+      student_id: { $in: student_list }
+      // $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).populate('student_id', 'firstname lastname');
+    console.log(tasks);
+    res.status(200).send({ success: true, data: tasks });
+  } else if (user.role === 'Student') {
+    const tasks = await Task.find({ student_id: user._id })
+      .populate('student_id', 'firstname lastname')
+      .lean()
+      .exec();
+    console.log(tasks);
+    res.status(200).send({ success: true, data: tasks });
   } else {
     // Guest
     throw new ErrorResponse(400, 'Tasks are not initialized for you');

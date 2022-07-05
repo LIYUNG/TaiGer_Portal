@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner, Card } from "react-bootstrap";
 import Aux from "../../hoc/_Aux";
 // import TasksList from "./TasksList";
 import TaskItem from "./TaskItem";
 import Board from "react-trello";
 
-import { getMyTask } from "../../api";
+import { getMyStudentsTasks } from "../../api";
 // import "./MyTask.css";
 
 const handleDragStart = (cardId, laneId) => {
@@ -84,15 +84,14 @@ class MyTask extends Component {
 
   componentDidMount() {
     // getStudent(this.props.match.params.studentId).then(
-    getMyTask().then(
+    getMyStudentsTasks().then(
       (resp) => {
         const { success, data } = resp.data;
-        const task = data[0]
         if (success) {
           this.setState({
             success,
-            tasks: task,
-            isLoaded: true,
+            tasks: data,
+            isLoaded: true
           });
         } else {
           alert(resp.data.message);
@@ -132,14 +131,7 @@ class MyTask extends Component {
       );
     }
 
-    // const tasks_list = this.state.tasks.map((task) => (
-    //   <TaskItem
-    //     key={task._id}
-    //     id={task._id}
-    //     task={task}
-    //     role={this.props.user.role}
-    //   />
-    // ));
+
 
     // let eventBus = undefined;
 
@@ -185,6 +177,27 @@ class MyTask extends Component {
     //To update the lanes
     // eventBus.publish({ type: "UPDATE_LANES", lanes: newLaneData });
 
+     const tasks_list = this.state.tasks.map((task, i) => (
+       <>
+         <Card.Body key={i}>
+           {task.student_id.firstname} {task.student_id.lastname}
+         </Card.Body>
+         <Board
+           // editable
+           // editLaneTitle
+           data={task}
+           style={{ backgroundColor: 'transparent' }}
+           cardDraggable={true}
+           onDataChange={onDataChange}
+           onCardAdd={this.handleCardAdd}
+           eventBusHandle={this.setEventBus}
+           handleDragStart={handleDragStart}
+           handleDragEnd={handleDragEnd}
+           onCardClick={onCardClick}
+         />
+       </>
+     ));
+
     return (
       <>
         {/* <button onClick={this.completeCard} style={{ margin: 5 }}>
@@ -193,7 +206,7 @@ class MyTask extends Component {
         <button onClick={this.addCard} style={{ margin: 5 }}>
           Add Blocked
         </button> */}
-        <Board
+        {/* <Board
           // editable
           // editLaneTitle
           data={this.state.tasks}
@@ -205,7 +218,8 @@ class MyTask extends Component {
           handleDragStart={handleDragStart}
           handleDragEnd={handleDragEnd}
           onCardClick={onCardClick}
-        />
+        /> */}
+        {tasks_list}
       </>
     );
     // return (

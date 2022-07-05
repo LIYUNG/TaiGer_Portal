@@ -1,69 +1,73 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
-import { withRouter } from "react-router-dom";
-import windowSize from "react-window-size";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import windowSize from 'react-window-size';
 
-import Aux from "../../../../../../hoc/_Aux";
-import NavIcon from "./../NavIcon";
-import NavBadge from "./../NavBadge";
-import * as actionTypes from "../../../../../../store/actions";
+import Aux from '../../../../../../hoc/_Aux';
+import NavIcon from './../NavIcon';
+import NavBadge from './../NavBadge';
+import * as actionTypes from '../../../../../../store/actions';
 
 class NavItem extends Component {
   menuItemFilterByRole = (itemTitle) => {
-    if (this.props.role === "Admin") {
-      if (itemTitle === "Academic Survey") {
+    if (this.props.role === 'Admin') {
+      if (itemTitle === 'Academic Survey' || itemTitle === 'Tasks Overview') {
         return false;
       }
       return true;
     }
-    if (this.props.role === "Agent") {
+    if (this.props.role === 'Agent') {
       if (
-        itemTitle === "Academic Survey" ||
-        itemTitle === "Charts" ||
-        itemTitle === "Map" ||
-        itemTitle === "User List"
+        itemTitle === 'Academic Survey' ||
+        itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Charts' ||
+        itemTitle === 'Map' ||
+        itemTitle === 'User List'
       ) {
         return false;
       }
       return true;
     }
-    if (this.props.role === "Editor") {
+    if (this.props.role === 'Editor') {
       if (
-        itemTitle === "Academic Survey" ||
-        itemTitle === "Program List" ||
-        itemTitle === "Charts" ||
-        itemTitle === "Map" ||
-        itemTitle === "User List"
+        itemTitle === 'Academic Survey' ||
+        itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Program List' ||
+        itemTitle === 'Charts' ||
+        itemTitle === 'Map' ||
+        itemTitle === 'User List'
       ) {
         return false;
       }
       return true;
     }
-    if (this.props.role === "Student") {
+    if (this.props.role === 'Student') {
       if (
-        itemTitle === "Charts" ||
-        itemTitle === "Statistics" ||
-        itemTitle === "Map" ||
-        itemTitle === "Archiv Students" ||
-        itemTitle === "Student Database" ||
-        itemTitle === "User List"
+        itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Charts' ||
+        itemTitle === 'Statistics' ||
+        itemTitle === 'Map' ||
+        itemTitle === 'Archiv Students' ||
+        itemTitle === 'Student Database' ||
+        itemTitle === 'User List'
       ) {
         return false;
       }
       return true;
     }
-    if (this.props.role === "Guest") {
+    if (this.props.role === 'Guest') {
       if (
-        itemTitle === "Agent Center" ||
-        itemTitle === "Dashboard" ||
-        itemTitle === "CV/ML/RL Center" ||
-        itemTitle === "Statistics" ||
-        itemTitle === "Charts" ||
-        itemTitle === "Map" ||
-        itemTitle === "Archiv Students" ||
-        itemTitle === "Student Database" ||
-        itemTitle === "User List"
+        itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Base Documents' ||
+        itemTitle === 'Dashboard' ||
+        itemTitle === 'CV/ML/RL Center' ||
+        itemTitle === 'Statistics' ||
+        itemTitle === 'Charts' ||
+        itemTitle === 'Map' ||
+        itemTitle === 'Archiv Students' ||
+        itemTitle === 'Student Database' ||
+        itemTitle === 'User List'
       ) {
         return false;
       }
@@ -72,7 +76,7 @@ class NavItem extends Component {
   };
   render() {
     let itemTitle = this.props.item.title;
-    let itemTarget = "";
+    let itemTarget = '';
     let subContent;
     if (this.menuItemFilterByRole(itemTitle)) {
       if (this.props.item.icon) {
@@ -82,7 +86,7 @@ class NavItem extends Component {
       }
 
       if (this.props.item.target) {
-        itemTarget = "_blank";
+        itemTarget = '_blank';
       }
 
       if (this.props.item.external) {
@@ -112,8 +116,8 @@ class NavItem extends Component {
         );
       }
     }
-    let mainContent = "";
-    if (this.props.layout === "horizontal") {
+    let mainContent = '';
+    if (this.props.layout === 'horizontal') {
       mainContent = <li onClick={this.props.onItemLeave}>{subContent}</li>;
     } else {
       if (this.props.windowWidth < 992) {
@@ -137,14 +141,14 @@ class NavItem extends Component {
 const mapStateToProps = (state) => {
   return {
     layout: state.layout,
-    collapseMenu: state.collapseMenu,
+    collapseMenu: state.collapseMenu
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onItemClick: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
-    onItemLeave: () => dispatch({ type: actionTypes.NAV_CONTENT_LEAVE }),
+    onItemLeave: () => dispatch({ type: actionTypes.NAV_CONTENT_LEAVE })
   };
 };
 

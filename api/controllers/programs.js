@@ -1,7 +1,6 @@
-const { ErrorResponse } = require("../common/errors");
-const { asyncHandler } = require("../middlewares/error-handler");
-const { Program } = require("../models/Program");
-const { Role } = require("../models/User");
+const { ErrorResponse } = require('../common/errors');
+const { asyncHandler } = require('../middlewares/error-handler');
+const { Program } = require('../models/Program');
 
 const getPrograms = asyncHandler(async (req, res) => {
   const programs = await Program.find();
@@ -10,7 +9,7 @@ const getPrograms = asyncHandler(async (req, res) => {
 
 const getProgram = asyncHandler(async (req, res) => {
   const program = await Program.findById(req.params.programId);
-  if (!program) throw new ErrorResponse(400, "Invalid program id");
+  if (!program) throw new ErrorResponse(400, 'Invalid program id');
 
   res.send({ success: true, data: program });
 });
@@ -20,7 +19,7 @@ const createProgram = asyncHandler(async (req, res) => {
   const new_program = req.body;
 
   new_program.updatedAt = new Date();
-  new_program.whoupdated = user.firstname + " " + user.lastname;
+  new_program.whoupdated = user.firstname + ' ' + user.lastname;
   const program = await Program.create(new_program);
   return res.status(201).send({ success: true, data: program });
 });
@@ -31,13 +30,13 @@ const updateProgram = asyncHandler(async (req, res) => {
 
   console.log(fields);
   fields.updatedAt = new Date();
-  fields.whoupdated = user.firstname + " " + user.lastname;
+  fields.whoupdated = user.firstname + ' ' + user.lastname;
   const program = await Program.findByIdAndUpdate(
     req.params.programId,
     fields,
     {
       upsert: true,
-      new: true,
+      new: true
     }
   );
 
@@ -54,5 +53,5 @@ module.exports = {
   getProgram,
   createProgram,
   updateProgram,
-  deleteProgram,
+  deleteProgram
 };

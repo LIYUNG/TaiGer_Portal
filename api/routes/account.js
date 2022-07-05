@@ -1,12 +1,12 @@
-const { Router } = require("express");
+const { Router } = require('express');
 
-const { Role } = require("../models/User");
-const { protect, permit } = require("../middlewares/auth");
+const { Role } = require('../models/User');
+const { protect, permit } = require('../middlewares/auth');
 const {
   fileUpload,
   TranscriptExcelUpload,
-  EditGeneralDocsUpload,
-} = require("../middlewares/file-upload");
+  EditGeneralDocsUpload
+} = require('../middlewares/file-upload');
 
 const {
   getMyfiles,
@@ -31,8 +31,8 @@ const {
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,
-  updatePersonalData,
-} = require("../controllers/files");
+  updatePersonalData
+} = require('../controllers/files');
 
 const router = Router();
 
@@ -40,22 +40,22 @@ router.use(protect);
 
 // TODO: get document status
 router
-  .route("/files")
+  .route('/files')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);
 
 router
-  .route("/program/close/:studentId/:applicationId")
+  .route('/program/close/:studentId/:applicationId')
   .put(permit(Role.Admin, Role.Agent), SetAsCloseProgram);
 router
-  .route("/program/decided/:studentId/:applicationId")
+  .route('/program/decided/:studentId/:applicationId')
   .put(permit(Role.Admin, Role.Agent), SetAsDecidedProgram);
 router
-  .route("/program/admission/:studentId/:applicationId")
+  .route('/program/admission/:studentId/:applicationId')
   .put(permit(Role.Admin, Role.Agent), SetAsGetAdmissionProgram);
 
 router
   .route(
-    "/files/programspecific/comments/:studentId/:applicationId/:docName/:whoupdate"
+    '/files/programspecific/comments/:studentId/:applicationId/:docName/:whoupdate'
   )
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
@@ -64,7 +64,7 @@ router
 
 router
   .route(
-    "/files/programspecific/studentfeedback/:studentId/:applicationId/:docName/:whoupdate"
+    '/files/programspecific/studentfeedback/:studentId/:applicationId/:docName/:whoupdate'
   )
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
@@ -73,7 +73,7 @@ router
 
 router
   .route(
-    "/files/programspecific/upload/:studentId/:applicationId/:fileCategory"
+    '/files/programspecific/upload/:studentId/:applicationId/:fileCategory'
   )
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
@@ -82,7 +82,7 @@ router
   );
 
 router
-  .route("/files/programspecific/:studentId/:applicationId/:whoupdate/:docName")
+  .route('/files/programspecific/:studentId/:applicationId/:whoupdate/:docName')
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadProgramSpecificFile
@@ -90,26 +90,26 @@ router
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor),
     SetAsFinalProgramSpecificFile
-  ) //set as final
+  ) // set as final
   .delete(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     deleteProgramSpecificFile
   );
 
 router
-  .route("/files/general/comments/:studentId/:whoupdate/:docName")
+  .route('/files/general/comments/:studentId/:whoupdate/:docName')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     updateCommentsGeneralFile
   );
 router
-  .route("/files/general/studentfeedback/:studentId/:whoupdate/:docName")
+  .route('/files/general/studentfeedback/:studentId/:whoupdate/:docName')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     StudentGiveFeedbackGeneralFile
   );
 router
-  .route("/files/general/upload/:studentId/:fileCategory")
+  .route('/files/general/upload/:studentId/:fileCategory')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     EditGeneralDocsUpload,
@@ -117,7 +117,7 @@ router
   );
 
 router
-  .route("/files/general/:studentId/:whoupdate/:docName")
+  .route('/files/general/:studentId/:whoupdate/:docName')
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadGeneralFile
@@ -133,43 +133,43 @@ router
 
 // TaiGer Transcript Analyser:
 router
-  .route("/transcript/:studentId/:category")
+  .route('/transcript/:studentId/:category')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     TranscriptExcelUpload,
     processTranscript
   );
 router
-  .route("/transcript/:studentId/:filename")
+  .route('/transcript/:studentId/:filename')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);
 
-//Academic Survey for Students
+// Academic Survey for Students
 router
-  .route("/survey")
+  .route('/survey')
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     getMyAcademicBackground
   );
 router
-  .route("/survey/university")
+  .route('/survey/university')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateAcademicBackground
   );
 router
-  .route("/survey/language")
+  .route('/survey/language')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateLanguageSkill
   );
 router
-  .route("/profile")
+  .route('/profile')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updatePersonalData
   );
 router
-  .route("/download/template/:category")
+  .route('/download/template/:category')
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadTemplateFile

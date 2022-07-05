@@ -1,20 +1,20 @@
-const { model, Schema } = require("mongoose");
+const { model, Schema } = require('mongoose');
 
 const TokenSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: "User",
+    ref: 'User'
   },
   value: {
     type: String,
-    required: true,
+    required: true
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: "20m",
-  },
+    expires: '20m'
+  }
 });
 
-module.exports = model("Token", TokenSchema);
+module.exports = model('Token', TokenSchema);

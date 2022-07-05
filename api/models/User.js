@@ -1,172 +1,172 @@
 const {
   model,
   Schema,
-  Types: { ObjectId },
-} = require("mongoose");
-const bcrypt = require("bcryptjs");
-const isEmail = require("validator/lib/isEmail");
+  Types: { ObjectId }
+} = require('mongoose');
+const bcrypt = require('bcryptjs');
+const isEmail = require('validator/lib/isEmail');
 
-const { DocumentStatus, CheckListStatus } = require("../constants");
+const { DocumentStatus, CheckListStatus } = require('../constants');
 
 const Role = {
-  Admin: "Admin",
-  Guest: "Guest",
-  Agent: "Agent",
-  Editor: "Editor",
-  Student: "Student",
+  Admin: 'Admin',
+  Guest: 'Guest',
+  Agent: 'Agent',
+  Editor: 'Editor',
+  Student: 'Student'
 };
 
-const options = { discriminatorKey: "role", timestamps: true };
+const options = { discriminatorKey: 'role', timestamps: true };
 
 const UserSchema = new Schema(
   {
     firstname: {
       type: String,
-      trim: true,
+      trim: true
     },
     lastname: {
       type: String,
-      trim: true,
+      trim: true
     },
     email: {
       type: String,
       unique: true,
       lowercase: true,
-      validate: [isEmail, "Invalid email address"],
+      validate: [isEmail, 'Invalid email address']
     },
     password: {
       type: String,
       select: false,
       trim: true,
-      minlength: [8, "Password must contain at least 8 characters"],
+      minlength: [8, 'Password must contain at least 8 characters']
     },
     birthday: {
       type: String,
-      default: "",
+      default: ''
     },
     taigerai: {
       input: {
         name: {
           type: String,
-          default: "",
+          default: ''
         },
         status: {
           type: String,
           enum: Object.values(DocumentStatus),
-          default: DocumentStatus.Missing,
+          default: DocumentStatus.Missing
         },
         file_category: {
           type: String,
-          default: "Others",
+          default: 'Others'
         },
         path: {
           type: String,
-          default: "",
+          default: ''
         },
         // TODO: updateBy
-        updatedAt: Date,
+        updatedAt: Date
       },
       output: {
         name: {
           type: String,
-          default: "",
+          default: ''
         },
         status: {
           type: String,
           enum: Object.values(DocumentStatus),
-          default: DocumentStatus.Missing,
+          default: DocumentStatus.Missing
         },
         file_category: {
           type: String,
-          default: "Others",
+          default: 'Others'
         },
         path: {
           type: String,
-          default: "",
+          default: ''
         },
         // TODO: updateBy
-        updatedAt: Date,
+        updatedAt: Date
       },
       feedback: {
         message: {
           type: String,
-          default: "",
+          default: ''
         },
         // TODO: updateBy
-        updatedAt: Date,
-      },
+        updatedAt: Date
+      }
     },
     academic_background: {
       university: {
         attended_university: {
           type: String,
-          default: "",
+          default: ''
         },
         attended_university_program: {
           type: String,
-          default: "",
+          default: ''
         },
         isGraduated: {
           type: String,
-          default: "No",
+          default: 'No'
         },
         expected_grad_date: {
           type: String,
-          default: "",
+          default: ''
         },
         expected_application_date: {
           type: String,
-          default: "",
+          default: ''
         },
         Highest_GPA_Uni: {
           type: Number,
-          default: 0,
+          default: 0
         },
         Passing_GPA_Uni: {
           type: Number,
-          default: 0,
+          default: 0
         },
         My_GPA_Uni: {
           type: Number,
-          default: 0,
+          default: 0
         },
-        updatedAt: Date,
+        updatedAt: Date
       },
       language: {
         english_certificate: {
           type: String,
-          default: "",
+          default: ''
         },
         english_score: {
           type: String,
-          default: "",
+          default: ''
         },
         english_test_date: {
           type: String,
-          default: "",
+          default: ''
         },
         german_certificate: {
           type: String,
-          default: "",
+          default: ''
         },
         german_score: {
           type: String,
-          default: "",
+          default: ''
         },
         german_test_date: {
           type: String,
-          default: "",
+          default: ''
         },
-        updatedAt: Date,
-      },
-    },
+        updatedAt: Date
+      }
+    }
   },
   options
 );
 
-UserSchema.pre("save", async function (next) {
+UserSchema.pre('save', async function (next) {
   const user = this;
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -189,310 +189,310 @@ UserSchema.methods.toJSON = function () {
   return user;
 };
 
-const User = model("User", UserSchema);
+const User = model('User', UserSchema);
 
-const Guest = User.discriminator("Guest", new Schema({}, options), Role.Guest);
+const Guest = User.discriminator('Guest', new Schema({}, options), Role.Guest);
 
 const applicationSchema = new Schema({
-  programId: { type: ObjectId, ref: "Program" },
+  programId: { type: ObjectId, ref: 'Program' },
   doc_modification_thread: [
     {
       isFinalVersion: {
         type: Boolean,
-        default: false,
+        default: false
       },
       isReceivedEditorFeedback: {
         type: Boolean,
-        default: false,
+        default: false
       },
       isReceivedStudentFeedback: {
         type: Boolean,
-        default: false,
+        default: false
       },
       StudentRead: {
         type: Boolean,
-        default: false,
+        default: false
       },
       EditorRead: {
         type: Boolean,
-        default: false,
+        default: false
       },
-      doc_thread_id: { type: ObjectId, ref: "Documentthread" },
-      createdAt: Date,
-    },
+      doc_thread_id: { type: ObjectId, ref: 'Documentthread' },
+      createdAt: Date
+    }
   ],
   documents: [
     //editor output
     {
       name: {
         type: String,
-        required: true,
+        required: true
       },
       status: {
         type: String,
         enum: Object.values(DocumentStatus),
-        default: DocumentStatus.Missing,
+        default: DocumentStatus.Missing
       },
       isFinalVersion: {
         type: Boolean,
-        default: false,
+        default: false
       },
       isReceivedFeedback: {
         type: Boolean,
-        default: false,
+        default: false
       },
       required: {
         type: Boolean,
-        required: true,
+        required: true
       },
       feedback: {
         type: String,
-        default: "",
+        default: ''
       },
       student_feedback: {
         type: String,
-        default: "",
+        default: ''
       },
       path: {
         type: String,
-        default: "",
+        default: ''
       },
       // TODO: updateBy
       updatedAt: Date,
-      student_feedback_updatedAt: Date,
-    },
+      student_feedback_updatedAt: Date
+    }
   ],
   student_inputs: [
     {
       name: {
         type: String,
-        required: true,
+        required: true
       },
       status: {
         type: String,
         enum: Object.values(DocumentStatus),
-        default: DocumentStatus.Missing,
+        default: DocumentStatus.Missing
       },
       isFinalVersion: {
         type: Boolean,
-        default: false,
+        default: false
       },
       isReceivedFeedback: {
         type: Boolean,
-        default: false,
+        default: false
       },
       required: {
         type: Boolean,
-        required: true,
+        required: true
       },
       file_category: {
         type: String,
-        default: "Others",
+        default: 'Others'
       },
       feedback: {
         type: String,
-        default: "",
+        default: ''
       },
       path: {
         type: String,
-        default: "",
+        default: ''
       },
       // TODO: updateBy
-      updatedAt: Date,
-    },
+      updatedAt: Date
+    }
   ],
   decided: { type: Boolean, default: false },
   closed: { type: Boolean, default: false },
-  admission: { type: Boolean, default: false },
+  admission: { type: Boolean, default: false }
 });
 
 const Student = User.discriminator(
-  "Student",
+  'Student',
   new Schema(
     {
-      agents: [{ type: ObjectId, ref: "Agent" }],
-      editors: [{ type: ObjectId, ref: "Editor" }],
+      agents: [{ type: ObjectId, ref: 'Agent' }],
+      editors: [{ type: ObjectId, ref: 'Editor' }],
       applications: [applicationSchema],
       profile: [
         {
           name: {
             type: String,
-            required: true,
+            required: true
           },
           status: {
             type: String,
             enum: Object.values(DocumentStatus),
-            default: DocumentStatus.Missing,
+            default: DocumentStatus.Missing
           },
           required: {
             type: Boolean,
-            required: true,
+            required: true
           },
           path: {
             type: String,
-            default: "",
+            default: ''
           },
           feedback: {
             type: String,
-            default: "",
+            default: ''
           },
           // TODO: updateBy
-          updatedAt: Date,
-        },
+          updatedAt: Date
+        }
       ],
       checklist: {
         course_analysis: {
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
-            default: CheckListStatus.NotStarted,
+            default: CheckListStatus.NotStarted
           },
-          updatedAt: Date,
+          updatedAt: Date
         },
         uni_assist_instruction: {
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
-            default: CheckListStatus.NotStarted,
+            default: CheckListStatus.NotStarted
           },
-          updatedAt: Date,
+          updatedAt: Date
         },
         certification_instruction: {
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
-            default: CheckListStatus.NotStarted,
+            default: CheckListStatus.NotStarted
           },
-          updatedAt: Date,
+          updatedAt: Date
         },
         blocked_account_instruction: {
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
-            default: CheckListStatus.NotStarted,
+            default: CheckListStatus.NotStarted
           },
-          updatedAt: Date,
+          updatedAt: Date
         },
         health_insurance_instruction: {
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
-            default: CheckListStatus.NotStarted,
+            default: CheckListStatus.NotStarted
           },
-          updatedAt: Date,
+          updatedAt: Date
         },
         visa_instruction: {
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
-            default: CheckListStatus.NotStarted,
+            default: CheckListStatus.NotStarted
           },
-          updatedAt: Date,
-        },
+          updatedAt: Date
+        }
       },
       generaldocs_threads: [
         {
           isFinalVersion: {
             type: Boolean,
-            default: false,
+            default: false
           },
           isReceivedEditorFeedback: {
             type: Boolean,
-            default: false,
+            default: false
           },
           isReceivedStudentFeedback: {
             type: Boolean,
-            default: false,
+            default: false
           },
           StudentRead: {
             type: Boolean,
-            default: false,
+            default: false
           },
           EditorRead: {
             type: Boolean,
-            default: false,
+            default: false
           },
-          doc_thread_id: { type: ObjectId, ref: "Documentthread" },
-          createdAt: Date,
-        },
+          doc_thread_id: { type: ObjectId, ref: 'Documentthread' },
+          createdAt: Date
+        }
       ],
       generaldocs: {
         editoroutputs: [
           {
             name: {
               type: String,
-              required: true,
+              required: true
             },
             status: {
               type: String,
               enum: Object.values(DocumentStatus),
-              default: DocumentStatus.Missing,
+              default: DocumentStatus.Missing
             },
             isFinalVersion: {
               type: Boolean,
-              default: false,
+              default: false
             },
             isReceivedFeedback: {
               type: Boolean,
-              default: false,
+              default: false
             },
             required: {
               type: Boolean,
-              required: true,
+              required: true
             },
             feedback: {
               type: String,
-              default: "",
+              default: ''
             },
             student_feedback: {
               type: String,
-              default: "",
+              default: ''
             },
             path: {
               type: String,
-              default: "",
+              default: ''
             },
             // TODO: updateBy
             updatedAt: Date,
-            student_feedback_updatedAt: Date,
-          },
+            student_feedback_updatedAt: Date
+          }
         ],
         studentinputs: [
           {
             name: {
               type: String,
-              required: true,
+              required: true
             },
             status: {
               type: String,
               enum: Object.values(DocumentStatus),
-              default: DocumentStatus.Missing,
+              default: DocumentStatus.Missing
             },
             isFinalVersion: {
               type: Boolean,
-              default: false,
+              default: false
             },
             isReceivedFeedback: {
               type: Boolean,
-              default: false,
+              default: false
             },
             required: {
               type: Boolean,
-              required: true,
+              required: true
             },
             feedback: {
               type: String,
-              default: "",
+              default: ''
             },
             path: {
               type: String,
-              default: "",
+              default: ''
             },
             // TODO: updateBy
-            updatedAt: Date,
-          },
-        ],
-      },
+            updatedAt: Date
+          }
+        ]
+      }
     },
     options
   ),
@@ -500,10 +500,10 @@ const Student = User.discriminator(
 );
 
 const Agent = User.discriminator(
-  "Agent",
+  'Agent',
   new Schema(
     {
-      students: [{ type: ObjectId, ref: "Student" }],
+      students: [{ type: ObjectId, ref: 'Student' }]
     },
     options
   ),
@@ -511,16 +511,16 @@ const Agent = User.discriminator(
 );
 
 const Editor = User.discriminator(
-  "Editor",
+  'Editor',
   new Schema(
     {
-      students: [{ type: ObjectId, ref: "Student" }],
+      students: [{ type: ObjectId, ref: 'Student' }]
     },
     options
   ),
   Role.Editor
 );
 
-const Admin = User.discriminator("Admin", new Schema({}, options), Role.Admin);
+const Admin = User.discriminator('Admin', new Schema({}, options), Role.Admin);
 
 module.exports = { Role, User, Guest, Student, Agent, Editor, Admin };

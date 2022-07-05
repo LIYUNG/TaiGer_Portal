@@ -1,139 +1,139 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const Degree = {
-  bachelor_sc: "B.Sc",
-  bachelor_eng: "B.Eng",
-  bachelor_a: "B.A",
-  master_sc: "M.Sc",
-  master_a: "M.A",
-  mba: "MBA",
-  doctoral: "PhD",
+  bachelor_sc: 'B.Sc',
+  bachelor_eng: 'B.Eng',
+  bachelor_a: 'B.A',
+  master_sc: 'M.Sc',
+  master_a: 'M.A',
+  mba: 'MBA',
+  doctoral: 'PhD'
 };
 const Languages = {
-  english: "English",
-  german: "German",
-  denglish: "GermanAndEnglish",
+  english: 'English',
+  german: 'German',
+  denglish: 'GermanAndEnglish'
 };
 const programSchema = new mongoose.Schema(
   {
     // TODO: school might want it's own schema
     school: {
-      type: String,
+      type: String
       // required: true,
     },
     program_name: {
-      type: String,
+      type: String
       // required: true,
     },
     degree: {
-      type: String,
+      type: String
       // enum: Object.values(Degree),
     },
     semester: String, // TODO: enum?
     language: {
       type: String,
-      enum: Object.values(Languages),
+      enum: Object.values(Languages)
     },
     application_start: String,
     application_deadline: {
-      type: String,
+      type: String
       // required: true,
     },
     uni_assist: {
-      type: String,
+      type: String
       // required: true,
     },
     toefl: {
-      type: String,
+      type: String
       // required: true,
     },
     ielts: {
-      type: String,
+      type: String
       // required: true,
     },
     testdaf: {
-      type: String,
+      type: String
       // required: true,
     },
     gre: {
-      type: String,
+      type: String
       // required: true,
     },
     gmat: {
-      type: String,
+      type: String
       // required: true,
     },
     ml_required: {
-      type: String,
+      type: String
       // required: true,
     },
     ml_requirements: {
-      type: String,
+      type: String
       // required: true,
     },
     rl_required: {
-      type: String,
+      type: String
       // required: true,
     },
     rl_requirements: {
-      type: String,
+      type: String
       // required: true,
     },
     essay_required: {
-      type: String,
+      type: String
       // required: true,
     },
     essay_requirements: {
-      type: String,
+      type: String
       // required: true,
     },
     special_notes: {
-      type: String,
+      type: String
       // required: true,
     },
     comments: {
-      type: String,
+      type: String
       // required: true,
     },
     application_portal_a: {
-      type: String,
+      type: String
       // required: true,
     },
     application_portal_b: {
-      type: String,
+      type: String
       // required: true,
     },
     uni_assist_link: {
-      type: String,
+      type: String
       // required: true,
     },
     website: {
-      type: String,
+      type: String
       // required: true,
     },
     fpso: {
-      type: String,
+      type: String
       // required: true,
     },
     updatedAt: Date,
     whoupdated: {
-      type: String,
+      type: String
       // required: true,
     },
     study_group_flag: {
-      type: String,
+      type: String
       // required: true,
     },
     requiredDocuments: [String],
     optionalDocuments: [String],
-    url: String,
+    url: String
   },
   { timestamps: true }
 );
 
-const Program = mongoose.model("Program", programSchema);
+const Program = mongoose.model('Program', programSchema);
 
 module.exports = {
   Degree,
-  Program,
+  Program
 };

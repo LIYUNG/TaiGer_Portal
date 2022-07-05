@@ -1,0 +1,10 @@
+/node_modules
+/public/build
+/python
+/tmp
+/upload
+/__test__
+/bin
+/cert
+/coverage
+/docs

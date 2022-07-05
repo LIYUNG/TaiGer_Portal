@@ -1,17 +1,17 @@
-const _ = require("lodash");
+const _ = require('lodash');
 
-const { asyncHandler } = require("../middlewares/error-handler");
-const Documentation = require("../models/Documentation");
+const { asyncHandler } = require('../middlewares/error-handler');
+const Documentation = require('../models/Documentation');
 
 const getDocumentations = asyncHandler(async (req, res) => {
   const documents = await Documentation.find({
-    Category_: req.params.category,
+    Category_: req.params.category
   });
   return res.send({ success: true, data: documents, role: req.user.role_ });
 });
 
 const createDocumentation = asyncHandler(async (req, res) => {
-  const fields = _.omit(req.body, "_id");
+  const fields = _.omit(req.body, '_id');
   const newDoc = await Documentation.create(fields);
   return res.send({ success: true, data: newDoc });
 });
@@ -31,5 +31,5 @@ module.exports = {
   getDocumentations,
   createDocumentation,
   updateDocumentation,
-  deleteDocumentation,
+  deleteDocumentation
 };

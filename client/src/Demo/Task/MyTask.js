@@ -6,64 +6,29 @@ import TaskItem from "./TaskItem";
 import Board from "react-trello";
 
 import { getMyTask } from "../../api";
+// import "./MyTask.css";
 
-const data = {
-  lanes: [
-    {
-      id: "lane1",
-      title: "Planned Tasks",
-      label: "2/2",
-      cards: [
-        {
-          id: "Card1",
-          title: "Locked",
-          description: "Can AI make memes",
-          label: "30 mins",
-          draggable: false,
-        },
-        {
-          id: "Card2",
-          title: "Pay Rent",
-          description: "Transfer via NEFT",
-          label: "5 mins",
-          metadata: { sha: "be312a1" },
-        },
-      ],
-    },
-    {
-      id: "lane2",
-      title: "In Progress",
-      label: "0/0",
-      cards: [
-        {
-          id: "Card2",
-          title: "Pay Rent",
-          description: "Transfer via NEFT",
-          label: "5 mins",
-          metadata: { sha: "be312a1" },
-        },
-        {
-          id: "Card4",
-          title: "Pay Rent",
-          description: "Transfer via NEFT",
-          label: "5 mins",
-          metadata: { sha: "be312a1" },
-        },
-      ],
-    },
-    {
-      id: "lane3",
-      title: "Double Check",
-      label: "0/0",
-      cards: [],
-    },
-    {
-      id: "lane4",
-      title: "Closed",
-      label: "0/0",
-      cards: [],
-    },
-  ],
+const data = require("./data.json");
+
+const handleDragStart = (cardId, laneId) => {
+  console.log("drag started");
+  console.log(`cardId: ${cardId}`);
+  console.log(`laneId: ${laneId}`);
+};
+
+const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
+  console.log("drag ended");
+  console.log(`cardId: ${cardId}`);
+  console.log(`sourceLaneId: ${sourceLaneId}`);
+  console.log(`targetLaneId: ${targetLaneId}`);
+};
+const onDataChange = (newData) => {
+  console.log(newData);
+};
+
+const onCardClick = (cardId, metadata) => {
+  console.log(cardId);
+  console.log(metadata);
 };
 
 class MyTask extends Component {
@@ -230,13 +195,17 @@ class MyTask extends Component {
           Add Blocked
         </button>
         <Board
-          editable
-          editLaneTitle
+          // editable
+          // editLaneTitle
           data={data}
           style={{ backgroundColor: "transparent" }}
           cardDraggable={true}
+          onDataChange={onDataChange}
           onCardAdd={this.handleCardAdd}
           eventBusHandle={this.setEventBus}
+          handleDragStart={handleDragStart}
+          handleDragEnd={handleDragEnd}
+          onCardClick={onCardClick}
         />
       </>
     );

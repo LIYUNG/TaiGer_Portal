@@ -8,8 +8,6 @@ import Board from "react-trello";
 import { getMyTask } from "../../api";
 // import "./MyTask.css";
 
-const data = require("./data.json");
-
 const handleDragStart = (cardId, laneId) => {
   console.log("drag started");
   console.log(`cardId: ${cardId}`);
@@ -35,7 +33,7 @@ class MyTask extends Component {
   state = {
     error: null,
     isLoaded: false,
-    tasks: [],
+    tasks: null,
     success: null,
   };
 
@@ -89,10 +87,11 @@ class MyTask extends Component {
     getMyTask().then(
       (resp) => {
         const { success, data } = resp.data;
+        const task = data[0]
         if (success) {
           this.setState({
             success,
-            tasks: data,
+            tasks: task,
             isLoaded: true,
           });
         } else {
@@ -133,14 +132,14 @@ class MyTask extends Component {
       );
     }
 
-    const tasks_list = this.state.tasks.map((task) => (
-      <TaskItem
-        key={task._id}
-        id={task._id}
-        task={task}
-        role={this.props.user.role}
-      />
-    ));
+    // const tasks_list = this.state.tasks.map((task) => (
+    //   <TaskItem
+    //     key={task._id}
+    //     id={task._id}
+    //     task={task}
+    //     role={this.props.user.role}
+    //   />
+    // ));
 
     // let eventBus = undefined;
 
@@ -188,17 +187,17 @@ class MyTask extends Component {
 
     return (
       <>
-        <button onClick={this.completeCard} style={{ margin: 5 }}>
+        {/* <button onClick={this.completeCard} style={{ margin: 5 }}>
           Complete Buy Milk
         </button>
         <button onClick={this.addCard} style={{ margin: 5 }}>
           Add Blocked
-        </button>
+        </button> */}
         <Board
           // editable
           // editLaneTitle
-          data={data}
-          style={{ backgroundColor: "transparent" }}
+          data={this.state.tasks}
+          style={{ backgroundColor: 'transparent' }}
           cardDraggable={true}
           onDataChange={onDataChange}
           onCardAdd={this.handleCardAdd}

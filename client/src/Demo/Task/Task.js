@@ -1,27 +1,97 @@
-import React, { Component } from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
+import React, { Component } from 'react';
+import { Row, Col, Spinner } from 'react-bootstrap';
+import Aux from '../../hoc/_Aux';
 // import TasksList from "./TasksList";
-import TaskItem from "./TaskItem";
+import TaskItem from './TaskItem';
+import Board from 'react-trello';
 
-import { getMyStudentsTasks } from "../../api";
+import { getStudentTask } from '../../api';
+
+const handleDragStart = (cardId, laneId) => {
+  console.log('drag started');
+  console.log(`cardId: ${cardId}`);
+  console.log(`laneId: ${laneId}`);
+};
+
+const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
+  console.log('drag ended');
+  console.log(`cardId: ${cardId}`);
+  console.log(`sourceLaneId: ${sourceLaneId}`);
+  console.log(`targetLaneId: ${targetLaneId}`);
+};
+const onDataChange = (newData) => {
+  console.log(newData);
+};
+
+const onCardClick = (cardId, metadata) => {
+  console.log(cardId);
+  console.log(metadata);
+};
 
 class Task extends Component {
   state = {
     error: null,
     isLoaded: false,
-    tasks: [],
+    tasks: null,
+    success: null
   };
+
+  completeCard = () => {
+    this.state.eventBus.publish({
+      type: 'ADD_CARD',
+      laneId: 'COMPLETED',
+      card: {
+        id: 'Milk',
+        title: 'Buy Milk',
+        label: '15 mins',
+        description: 'Use Headspace app'
+      }
+    });
+    this.state.eventBus.publish({
+      type: 'REMOVE_CARD',
+      laneId: 'PLANNED',
+      cardId: 'Milk'
+    });
+  };
+
+  addCard = () => {
+    this.state.eventBus.publish({
+      type: 'ADD_CARD',
+      laneId: 'BLOCKED',
+      card: {
+        id: 'Ec2Error',
+        title: 'EC2 Instance Down',
+        label: '30 mins',
+        description: 'Main EC2 instance down'
+      }
+    });
+  };
+
+  setEventBus = (eventBus) => {
+    this.setState({ eventBus });
+  };
+
+  handleCardAdd = (card, laneId) => {
+    console.log(`New card added to lane ${laneId}`);
+    console.dir(card);
+  };
+
+  shouldReceiveNewData = (nextData) => {
+    console.log('New card has been added');
+    console.log(nextData);
+  };
+
   componentDidMount() {
     // getStudent(this.props.match.params.studentId).then(
-    getMyStudentsTasks().then(
+    getStudentTask(this.props.match.params.student_id).then(
       (resp) => {
         const { success, data } = resp.data;
+        const task = data[0];
         if (success) {
           this.setState({
             success,
-            tasks: data,
-            isLoaded: true,
+            tasks: task,
+            isLoaded: true
           });
         } else {
           alert(resp.data.message);
@@ -30,7 +100,7 @@ class Task extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -39,10 +109,10 @@ class Task extends Component {
   render() {
     const { error, isLoaded } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -61,16 +131,29 @@ class Task extends Component {
       );
     }
 
-    const tasks_list = this.state.tasks.map((task) => (
-      <TaskItem
-        key={task._id}
-        id={task._id}
-        task={task}
-        role={this.props.user.role}
-      />
-    ));
-
-    return <Aux>{tasks_list}</Aux>;
+    return (
+      <Aux>
+        {/* <button onClick={this.completeCard} style={{ margin: 5 }}>
+          Complete Buy Milk
+        </button>
+        <button onClick={this.addCard} style={{ margin: 5 }}>
+          Add Blocked
+        </button> */}
+        <Board
+          // editable
+          // editLaneTitle
+          data={this.state.tasks}
+          style={{ backgroundColor: 'transparent' }}
+          cardDraggable={true}
+          onDataChange={onDataChange}
+          onCardAdd={this.handleCardAdd}
+          eventBusHandle={this.setEventBus}
+          handleDragStart={handleDragStart}
+          handleDragEnd={handleDragEnd}
+          onCardClick={onCardClick}
+        />
+      </Aux>
+    );
   }
 }
 

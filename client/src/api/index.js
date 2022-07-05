@@ -1,25 +1,25 @@
-import request from "./request";
+import request from './request';
 
 // TODO: organize to different files
 
 // TODO: replace auth APIs
-export const login = (credentials) => request.post("/auth/login", credentials);
+export const login = (credentials) => request.post('/auth/login', credentials);
 
-export const logout = () => request.get("/auth/logout");
+export const logout = () => request.get('/auth/logout');
 
 export const register = (credentials) =>
-  request.post("/auth/signup", credentials);
+  request.post('/auth/signup', credentials);
 
 export const forgotPassword = ({ email }) =>
-  request.post("/auth/forgot-password", { email });
+  request.post('/auth/forgot-password', { email });
 
 export const resendActivation = ({ email }) =>
-  request.post("/auth/resend-activation", { email });
+  request.post('/auth/resend-activation', { email });
 
-export const verify = () => request.get("/auth/verify");
+export const verify = () => request.get('/auth/verify');
 
 // User APIs
-export const getUsers = () => request.get("/api/users");
+export const getUsers = () => request.get('/api/users');
 
 export const deleteUser = (id) => request.delete(`/api/users/${id}`);
 
@@ -27,9 +27,9 @@ export const updateUser = (user) => request.put(`/api/users/${user._id}`, user);
 
 export const changeUserRole = (id, role) => updateUser({ _id: id, role });
 
-export const getAgents = () => request.get("/api/agents");
+export const getAgents = () => request.get('/api/agents');
 
-export const getEditors = () => request.get("/api/editors");
+export const getEditors = () => request.get('/api/editors');
 
 export const getStudents = () => request.get(`/api/students`);
 
@@ -52,7 +52,7 @@ export const updateEditors = (editorsId, id) =>
 
 export const assignProgramToStudent = (studentId, program_ids) =>
   request.post(`/api/students/${studentId}/applications`, {
-    program_id_set: program_ids,
+    program_id_set: program_ids
   });
 
 export const removeProgramFromStudent = (programId, studentId) =>
@@ -60,7 +60,7 @@ export const removeProgramFromStudent = (programId, studentId) =>
 
 export const downloadProfile = (category, studentId) =>
   request.get(`/api/students/${studentId}/files/${category}`, {
-    responseType: "blob",
+    responseType: 'blob'
   });
 
 export const uploadforstudent = (category, studentId, data) =>
@@ -74,7 +74,7 @@ export const updateProfileDocumentStatus = (
 ) =>
   request.post(`/api/students/${studentId}/${category}/status`, {
     status: status,
-    feedback: message,
+    feedback: message
   });
 
 export const deleteFile = (category, studentId) =>
@@ -84,7 +84,7 @@ export const deleteFile = (category, studentId) =>
 export const getMyfiles = () => request.get(`/api/account/files`);
 
 export const templateDownload = (category) =>
-  request.get(`/api/account/files/${category}`, { responseType: "blob" });
+  request.get(`/api/account/files/${category}`, { responseType: 'blob' });
 
 export const upload = (studentId, docName, data) =>
   request.post(`/api/account/files/${studentId}/${docName}`, data);
@@ -97,11 +97,11 @@ export const transcriptanalyser = (studentId, category, data) =>
 
 export const generatedFileDownload = (studentId, filename) =>
   request.get(`/api/account/transcript/${studentId}/${filename}`, {
-    responseType: "blob",
+    responseType: 'blob'
   });
 export const getTemplateDownload = (category) =>
   request.get(`/api/account/download/template/${category}`, {
-    responseType: "blob",
+    responseType: 'blob'
   });
 export const SetAsDecidedProgram = (studentId, applicationId) =>
   request.put(`/api/account/program/decided/${studentId}/${applicationId}`);
@@ -197,19 +197,19 @@ export const downloadHandWrittenFile = (
   request.get(
     `/api/account/files/programspecific/${studentId}/${applicationId}/${student_inputs}/${docName}`,
     {
-      responseType: "blob",
+      responseType: 'blob'
     }
   );
 
 // Program APIs
-export const getPrograms = () => request.get("/api/programs");
+export const getPrograms = () => request.get('/api/programs');
 export const getProgram = (programId) =>
   request.get(`/api/programs/${programId}`);
 
 export const deleteProgram = (id) => request.delete(`/api/programs/${id}`);
 
 export const createProgram = (program) =>
-  request.post("/api/programs", program);
+  request.post('/api/programs', program);
 
 export const updateProgram = (program) =>
   request.put(`/api/programs/${program._id}`, program);
@@ -220,14 +220,14 @@ export const addDoc = (id) => request.post(`/api/docs/${id}`);
 export const updateDoc = (id, doc_temp) =>
   request.post(`/api/docs/${id}`, doc_temp);
 
-export const createArticle = (article) => request.post("/api/docs", article);
+export const createArticle = (article) => request.post('/api/docs', article);
 
 export const updateArticle = (id, article) =>
   request.post(`/api/docs/${id}`, article);
 
 const getArticle = (type) => request.get(`/api/docs/${type}`);
 
-export const getApplicationArticle = () => getArticle("application");
+export const getApplicationArticle = () => getArticle('application');
 export const SubmitMessageWithAttachment = (
   documentsthreadId,
   // userId,
@@ -240,15 +240,15 @@ export const SubmitMessageWithAttachment = (
     `/api/document-threads/${studentId}/${documentsthreadId}`,
     newFile,
     {
-      "Content-Type": "multipart/form-data",
-      Accept: "application/json",
+      'Content-Type': 'multipart/form-data',
+      Accept: 'application/json'
     }
   );
 export const getMessageFileDownload = (documentsthreadId, messageId, fileId) =>
   request.get(
     `/api/document-threads/${documentsthreadId}/${messageId}/${fileId}`,
     {
-      responseType: "blob",
+      responseType: 'blob'
     }
   );
 
@@ -267,20 +267,20 @@ export const initApplicationMessageThread = (
     `/api/document-threads/init/application/${studentId}/${applicationId}/${document_catgory}`
   );
 
-export const getVisaArticle = () => getArticle("visa");
+export const getVisaArticle = () => getArticle('visa');
 
-export const getUniassistArticle = () => getArticle("uniassist");
+export const getUniassistArticle = () => getArticle('uniassist');
 
-export const getCertificationArticle = () => getArticle("certification");
+export const getCertificationArticle = () => getArticle('certification');
 
 //Task:
 export const getMyStudentsTasks = () =>
-  request.get("/api/tasks/my-students-tasks");
-export const getMyTask = () =>
-  request.get("/api/tasks/mytask");
+  request.get('/api/tasks/my-students-tasks');
+export const getMyStudentTasks = (studentId) =>
+  request.get(`/api/tasks/${studentId}`);
+export const getMyTask = () => request.get('/api/tasks/mytask');
 export const getStudentTask = (student_id) =>
   request.get(`/api/tasks/${student_id}`);
-
 
 //Survey:
 export const updateAcademicBackground = (university) =>
@@ -288,7 +288,7 @@ export const updateAcademicBackground = (university) =>
 export const updateLanguageSkill = (language) =>
   request.post(`/api/account/survey/language`, { language });
 
-export const getMyAcademicBackground = () => request.get("/api/account/survey");
+export const getMyAcademicBackground = () => request.get('/api/account/survey');
 
 //Personal Data:
 export const updatePersonalData = (personaldata) =>

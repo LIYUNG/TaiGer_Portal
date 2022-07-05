@@ -8,6 +8,23 @@ const { TaskStatus } = require('../constants');
 
 const TaskSchema = new Schema({
   student_id: { type: ObjectId, ref: 'User' },
+  lanes: [
+    {
+      id: { type: ObjectId },
+      title: { type: String },
+      label: { type: String },
+      style: { type: String },
+      cards: [
+        {
+          id: { type: ObjectId },
+          title: { type: String },
+          label: { type: String },
+          cardStyle: { type: Object },
+          description: { type: String }
+        }
+      ]
+    }
+  ],
   profile_documents: {
     status: {
       type: String,

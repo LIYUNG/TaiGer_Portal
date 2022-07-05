@@ -1,9 +1,9 @@
-const { Router } = require("express");
+const { Router } = require('express');
 
-const { ErrorResponse } = require("../common/errors");
-const { protect, permit } = require("../middlewares/auth");
-const { fileUpload, ProfilefileUpload } = require("../middlewares/file-upload");
-const { Role, Student } = require("../models/User");
+const { ErrorResponse } = require('../common/errors');
+const { protect, permit } = require('../middlewares/auth');
+const { fileUpload, ProfilefileUpload } = require('../middlewares/file-upload');
+const { Role, Student } = require('../models/User');
 
 const {
   getStudent,
@@ -15,70 +15,66 @@ const {
   assignAgentToStudent,
   assignEditorToStudent,
   createApplication,
-  deleteApplication,
-} = require("../controllers/students");
+  deleteApplication
+} = require('../controllers/students');
 const {
   saveProfileFilePath,
   downloadProfileFile,
   updateProfileDocumentStatus,
-  deleteProfileFile,
-} = require("../controllers/files");
-
+  deleteProfileFile
+} = require('../controllers/files');
 
 const router = Router();
 
 router.use(protect);
 
 router
-  .route("/")
+  .route('/')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudents);
 
 router
-  .route("/all")
+  .route('/all')
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getAllStudents
   );
 
 router
-  .route("/archiv")
+  .route('/archiv')
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getArchivStudents
   );
 
-
 router
-  .route("/archiv/:studentId")
+  .route('/archiv/:studentId')
   .get(permit(Role.Admin, Role.Agent, Role.Editor), getArchivStudent)
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     updateStudentsArchivStatus
   );
 router
-  .route("/:studentId")
+  .route('/:studentId')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudent);
 
 router
-  .route("/:studentId/agents")
+  .route('/:studentId/agents')
   .post(permit(Role.Admin), assignAgentToStudent);
 
-
-
 router
-  .route("/:studentId/editors")
+  .route('/:studentId/editors')
   .post(permit(Role.Admin), assignEditorToStudent);
 
 router
-  .route("/:studentId/applications")
+  .route('/:studentId/applications')
   .post(permit(Role.Admin, Role.Agent, Role.Student), createApplication);
 
 router
-  .route("/:studentId/applications/:applicationId")
+  .route('/:studentId/applications/:applicationId')
   .delete(permit(Role.Admin, Role.Agent), deleteApplication);
 
 router
-  .route("/:studentId/files/:category")
+  .route('/:studentId/files/:category')
   .get(
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     downloadProfileFile
@@ -91,6 +87,6 @@ router
   .delete(permit(Role.Admin, Role.Agent, Role.Student), deleteProfileFile);
 
 router
-  .route("/:studentId/:category/status")
+  .route('/:studentId/:category/status')
   .post(permit(Role.Admin, Role.Agent), updateProfileDocumentStatus);
 module.exports = router;

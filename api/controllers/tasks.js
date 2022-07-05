@@ -34,7 +34,7 @@ const getMyTask = asyncHandler(async (req, res) => {
       .populate('student_id', 'firstname lastname')
       .lean()
       .exec();
-    res.status(200).send({ success: true, data: tasks });
+    res.status(200).send({ success: true, data: tasks });// tasks should be in array[1]
   } else {
     // Guest
     throw new ErrorResponse(400, 'Tasks are not initialized for you');
@@ -52,12 +52,16 @@ const getMyStudentsTasks = asyncHandler(async (req, res) => {
   }
 });
 
-const getMyStudentTasks = asyncHandler(async (req, res) => {
+const getStudentTasks = asyncHandler(async (req, res) => {
   const { user } = req;
   const { studentId } = req.params;
   if (user.role !== 'Student') {
-    const tasks = await Task.findById(studentId);
-    res.status(200).send({ success: true, data: [tasks] });
+    const tasks = await Task.find({ student_id: studentId })
+      .populate('student_id', 'firstname lastname')
+      .lean()
+      .exec();
+    console.log(tasks);
+    res.status(200).send({ success: true, data: tasks });
   } else {
     // Guest
     throw new ErrorResponse(400, 'Tasks are not initialized for you');
@@ -91,7 +95,7 @@ module.exports = {
   getTasks,
   getMyTask,
   getMyStudentsTasks,
-  getMyStudentTasks,
+  getStudentTasks,
   initTasks,
   updateTasks
 };

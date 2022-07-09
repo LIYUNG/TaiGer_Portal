@@ -4,6 +4,8 @@
 .auth-wrapper {
     position: relative;
     display: flex;
+    background-color: black;
+    color:white;
     align-items: center;
     justify-content: center;
     overflow: hidden;
@@ -31,6 +33,8 @@
         background: transparent;
     }
     .card {
+        background-color: rgb(238, 172, 172);
+        color: white;
         margin-bottom: 0;
     }
 
@@ -41,6 +45,8 @@
     .auth-content {
         position: relative;
         width: 390px;
+        color:white;
+        background-color: black;
         padding: 15px;
         z-index: 5;
         &.multyform,
@@ -55,6 +61,7 @@
     @media only screen and (max-width: 575px) {
         .card {
             .card-body {
+                color:white;
                 padding: 30px 15px;
             }
         }

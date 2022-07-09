@@ -8,7 +8,7 @@ import EditorReviewing from "../MainViewTab/EditorReview/EditorReviewing";
 import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
 import { addHours, addDays, addWeeks, startOfWeek } from "date-fns";
-import TimeLine from "react-gantt-timeline";
+// import TimeLine from "react-gantt-timeline";
 import Generator from "./Generator";
 
 import format from "date-fns/format";
@@ -174,12 +174,12 @@ class StudentDashboard extends React.Component {
       <>
         <Row>
           {/* <Card title={"Schedule"}> */}
-            <TimeLine
+            {/* <TimeLine
               data={this.state.data}
               links={this.state.links}
               config={config}
               onHorizonChange={this.onHorizonChange}
-            />
+            /> */}
           {/* </Card> */}
         </Row>
         <Row>

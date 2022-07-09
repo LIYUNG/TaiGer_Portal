@@ -88,9 +88,9 @@ export default function Signin1({ setUserdata }) {
           </div> */}
           <form className="card">
             <div className="card-body text-center">
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <i className="feather icon-unlock auth-icon" />
-              </div>
+              </div> */}
               <h3 className="mb-4"> TaiGer - Portal</h3>
               <p> Study in Germany</p>
               <div className="input-group mb-3">

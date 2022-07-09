@@ -8,6 +8,7 @@
         "label": "20/70",
         "style": {
           "width": 280,
+          "height": "auto",
           "backgroundColor": "grey",
           "border-style": "solid"
         },

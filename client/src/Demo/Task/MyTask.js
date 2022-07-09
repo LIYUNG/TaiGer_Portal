@@ -1,21 +1,21 @@
-import React, { Component } from "react";
-import { Row, Col, Spinner, Card } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
+import React, { Component } from 'react';
+import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import Aux from '../../hoc/_Aux';
 // import TasksList from "./TasksList";
-import TaskItem from "./TaskItem";
-import Board from "react-trello";
-
-import { getMyStudentsTasks } from "../../api";
-// import "./MyTask.css";
+import TaskItem from './TaskItem';
+import Board from 'react-trello';
+import data_test from './demo_task_data.json'
+import { getMyStudentsTasks } from '../../api';
+import "./MyTask.css";
 
 const handleDragStart = (cardId, laneId) => {
-  console.log("drag started");
+  console.log('drag started');
   console.log(`cardId: ${cardId}`);
   console.log(`laneId: ${laneId}`);
 };
 
 const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
-  console.log("drag ended");
+  console.log('drag ended');
   console.log(`cardId: ${cardId}`);
   console.log(`sourceLaneId: ${sourceLaneId}`);
   console.log(`targetLaneId: ${targetLaneId}`);
@@ -34,37 +34,37 @@ class MyTask extends Component {
     error: null,
     isLoaded: false,
     tasks: null,
-    success: null,
+    success: null
   };
 
   completeCard = () => {
     this.state.eventBus.publish({
-      type: "ADD_CARD",
-      laneId: "COMPLETED",
+      type: 'ADD_CARD',
+      laneId: 'COMPLETED',
       card: {
-        id: "Milk",
-        title: "Buy Milk",
-        label: "15 mins",
-        description: "Use Headspace app",
-      },
+        id: 'Milk',
+        title: 'Buy Milk',
+        label: '15 mins',
+        description: 'Use Headspace app'
+      }
     });
     this.state.eventBus.publish({
-      type: "REMOVE_CARD",
-      laneId: "PLANNED",
-      cardId: "Milk",
+      type: 'REMOVE_CARD',
+      laneId: 'PLANNED',
+      cardId: 'Milk'
     });
   };
 
   addCard = () => {
     this.state.eventBus.publish({
-      type: "ADD_CARD",
-      laneId: "BLOCKED",
+      type: 'ADD_CARD',
+      laneId: 'BLOCKED',
       card: {
-        id: "Ec2Error",
-        title: "EC2 Instance Down",
-        label: "30 mins",
-        description: "Main EC2 instance down",
-      },
+        id: 'Ec2Error',
+        title: 'EC2 Instance Down',
+        label: '30 mins',
+        description: 'Main EC2 instance down'
+      }
     });
   };
 
@@ -78,7 +78,7 @@ class MyTask extends Component {
   };
 
   shouldReceiveNewData = (nextData) => {
-    console.log("New card has been added");
+    console.log('New card has been added');
     console.log(nextData);
   };
 
@@ -100,7 +100,7 @@ class MyTask extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -109,10 +109,10 @@ class MyTask extends Component {
   render() {
     const { error, isLoaded } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -130,8 +130,6 @@ class MyTask extends Component {
         </div>
       );
     }
-
-
 
     // let eventBus = undefined;
 
@@ -177,26 +175,26 @@ class MyTask extends Component {
     //To update the lanes
     // eventBus.publish({ type: "UPDATE_LANES", lanes: newLaneData });
 
-     const tasks_list = this.state.tasks.map((task, i) => (
-       <>
-         <Card.Body key={i}>
+    const tasks_list = this.state.tasks.map((task, i) => (
+      <>
+        {/* <Card.Body key={i}>
            {task.student_id.firstname} {task.student_id.lastname}
-         </Card.Body>
-         <Board
-           // editable
-           // editLaneTitle
-           data={task}
-           style={{ backgroundColor: 'transparent' }}
-           cardDraggable={true}
-           onDataChange={onDataChange}
-           onCardAdd={this.handleCardAdd}
-           eventBusHandle={this.setEventBus}
-           handleDragStart={handleDragStart}
-           handleDragEnd={handleDragEnd}
-           onCardClick={onCardClick}
-         />
-       </>
-     ));
+         </Card.Body> */}
+        <Board
+          // editable
+          // editLaneTitle
+          data={task}
+          style={{ backgroundColor: 'transparent', height: "auto" }}
+          cardDraggable={true}
+          onDataChange={onDataChange}
+          onCardAdd={this.handleCardAdd}
+          eventBusHandle={this.setEventBus}
+          handleDragStart={handleDragStart}
+          handleDragEnd={handleDragEnd}
+          onCardClick={onCardClick}
+        />
+      </>
+    ));
 
     return (
       <>

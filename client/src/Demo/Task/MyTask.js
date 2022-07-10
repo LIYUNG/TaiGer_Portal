@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Spinner,
+  Card,
+  Table,
+  Modal,
+  Button
+} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
 import Aux from '../../hoc/_Aux';
 // import TasksList from "./TasksList";
 import TaskItem from './TaskItem';
 import Board from 'react-trello';
-import data_test from './demo_task_data.json'
+import data_test from './demo_task_data.json';
 import { getMyStudentsTasks } from '../../api';
-import "./MyTask.css";
+import './MyTask.css';
 
 const handleDragStart = (cardId, laneId) => {
   console.log('drag started');
@@ -24,18 +34,39 @@ const onDataChange = (newData) => {
   console.log(newData);
 };
 
-const onCardClick = (cardId, metadata) => {
-  console.log(cardId);
-  console.log(metadata);
-};
-
 class MyTask extends Component {
   state = {
     error: null,
     isLoaded: false,
     tasks: null,
-    success: null
+    success: null,
+    card_title: '',
+    card_modal_flag: false
   };
+
+  componentDidMount() {
+    // getStudent(this.props.match.params.studentId).then(
+    getMyStudentsTasks().then(
+      (resp) => {
+        const { success, data } = resp.data;
+        if (success) {
+          this.setState({
+            success,
+            tasks: data,
+            isLoaded: true
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error
+        });
+      }
+    );
+  }
 
   completeCard = () => {
     this.state.eventBus.publish({
@@ -77,34 +108,26 @@ class MyTask extends Component {
     console.dir(card);
   };
 
+  handeCardClick = (cardId, metadata, laneId) => {
+    console.log('On card click');
+  };
+
+  closeCardWindow = () => {
+    this.setState({ card_modal_flag: false });
+  };
   shouldReceiveNewData = (nextData) => {
     console.log('New card has been added');
     console.log(nextData);
   };
 
-  componentDidMount() {
-    // getStudent(this.props.match.params.studentId).then(
-    getMyStudentsTasks().then(
-      (resp) => {
-        const { success, data } = resp.data;
-        if (success) {
-          this.setState({
-            success,
-            tasks: data,
-            isLoaded: true
-          });
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error
-        });
-      }
-    );
-  }
+  onCardClick = (cardId, metadata, laneId) => {
+    console.log(cardId);
+    console.log(metadata);
+    console.log(laneId);
+    const Lane = this.state.tasks.lanes.find(({ id }) => id === laneId);
+    const card = Lane.find(({ id }) => id === cardId);
+    this.setState({ card_title: card.title, card_modal_flag: true });
+  };
 
   render() {
     const { error, isLoaded } = this.state;
@@ -175,26 +198,60 @@ class MyTask extends Component {
     //To update the lanes
     // eventBus.publish({ type: "UPDATE_LANES", lanes: newLaneData });
 
-    const tasks_list = this.state.tasks.map((task, i) => (
+    const my_task = this.state.tasks.map((task, i) => (
       <>
-        {/* <Card.Body key={i}>
-           {task.student_id.firstname} {task.student_id.lastname}
-         </Card.Body> */}
         <Board
           // editable
           // editLaneTitle
           data={task}
-          style={{ backgroundColor: 'transparent', height: "auto" }}
+          style={{ backgroundColor: 'transparent', height: 'auto' }}
           cardDraggable={true}
           onDataChange={onDataChange}
           onCardAdd={this.handleCardAdd}
           eventBusHandle={this.setEventBus}
           handleDragStart={handleDragStart}
           handleDragEnd={handleDragEnd}
-          onCardClick={onCardClick}
+          onCardClick={this.onCardClick}
         />
       </>
     ));
+
+    const students_tasks = (
+      <Table>
+        <thead>
+          <tr>
+            <th></th>
+            {this.state.tasks[0].lanes.map((lane, i) => (
+              <>
+                <th>{lane.title}</th>
+              </>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.tasks.map((student, i) => (
+            <>
+              <tr>
+                <td>
+                  <Link to={'/tasks/' + student.student_id._id}>
+                    {student.student_id.firstname} {student.student_id.lastname}
+                  </Link>
+                </td>
+                {student.lanes.map((lane, k) => (
+                  <td>
+                    {lane.cards.map((card, l) => (
+                      <>
+                        <tr>{card.title}</tr>
+                      </>
+                    ))}
+                  </td>
+                ))}
+              </tr>
+            </>
+          ))}
+        </tbody>
+      </Table>
+    );
 
     return (
       <>
@@ -204,29 +261,26 @@ class MyTask extends Component {
         <button onClick={this.addCard} style={{ margin: 5 }}>
           Add Blocked
         </button> */}
-        {/* <Board
-          // editable
-          // editLaneTitle
-          data={this.state.tasks}
-          style={{ backgroundColor: 'transparent' }}
-          cardDraggable={true}
-          onDataChange={onDataChange}
-          onCardAdd={this.handleCardAdd}
-          eventBusHandle={this.setEventBus}
-          handleDragStart={handleDragStart}
-          handleDragEnd={handleDragEnd}
-          onCardClick={onCardClick}
-        /> */}
-        {tasks_list}
+        {this.props.user.role === 'Student' ? my_task : students_tasks}
+
+        <Modal
+          show={this.state.card_modal_flag}
+          onHide={this.closeCardWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              {this.state.card_title}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Task </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeCardWindow}>No</Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
-    // return (
-    //   <Aux>
-    //     <Row>
-    //       <Col>{tasks_list}</Col>
-    //     </Row>
-    //   </Aux>
-    // );
   }
 }
 

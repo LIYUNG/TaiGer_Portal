@@ -20,6 +20,12 @@ class ApplicationProgress extends React.Component {
 
     return diffInDays;
   }
+
+  startEditingProgram = () => {
+    this.setState({
+      showProgramPage: true
+    });
+  };
   render() {
     var applying_university;
     var applying_program;

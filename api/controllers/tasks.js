@@ -81,7 +81,7 @@ const getStudentTasks = asyncHandler(async (req, res) => {
       .populate('student_id', 'firstname lastname')
       .lean()
       .exec();
-    console.log(tasks);
+    // console.log(tasks);
     res.status(200).send({ success: true, data: tasks });
   } else {
     // Guest
@@ -94,12 +94,13 @@ const initTasks = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
   const existed_tasks = await Task.find({ student_id: studentId });
-  console.log(existed_tasks.length);
+  // console.log(existed_tasks.length);
 
   const lanes = data_test;
-  console.log(lanes.lanes);
-  if (existed_tasks.length > 0)
+  // console.log(lanes.lanes);
+  if (existed_tasks.length > 0) {
     throw new ErrorResponse(400, 'Tasks are already initialized.');
+  }
   const new_tasks = await Task.create({
     student_id: studentId,
     lanes: lanes.lanes

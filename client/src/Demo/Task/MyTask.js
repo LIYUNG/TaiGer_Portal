@@ -33,6 +33,7 @@ class MyTask extends Component {
     tasks: null,
     success: null,
     card_title: '',
+    card_description:'',
     card_modal_flag: false,
     empty: false
   };
@@ -133,8 +134,13 @@ class MyTask extends Component {
     console.log(metadata);
     console.log(laneId);
     const Lane = this.state.tasks.lanes.find(({ id }) => id === laneId);
-    const card = Lane.find(({ id }) => id === cardId);
-    this.setState({ card_title: card.title, card_modal_flag: true });
+    console.log(Lane);
+    const card = Lane.cards.find(({ id }) => id === cardId);
+    this.setState({
+      card_title: card.title,
+      card_description: card.description,
+      card_modal_flag: true
+    });
   };
 
   initTask = () => {
@@ -324,9 +330,9 @@ class MyTask extends Component {
               {this.state.card_title}
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>Task </Modal.Body>
+          <Modal.Body>{this.state.card_description} </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeCardWindow}>No</Button>
+            <Button onClick={this.closeCardWindow}>Close</Button>
           </Modal.Footer>
         </Modal>
       </>

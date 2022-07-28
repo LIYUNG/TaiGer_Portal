@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Button } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Modal } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import TasksList from "./TasksList";
 import TaskItem from './TaskItem';
@@ -23,17 +23,15 @@ const onDataChange = (newData) => {
   console.log(newData);
 };
 
-const onCardClick = (cardId, metadata) => {
-  console.log(cardId);
-  console.log(metadata);
-};
-
 class Task extends Component {
   state = {
     error: null,
     isLoaded: false,
     tasks: null,
     success: null,
+    card_title: '',
+    card_description: '',
+    card_modal_flag: false,
     empty: false
   };
 
@@ -78,7 +76,7 @@ class Task extends Component {
         }
       );
   }
-  
+
   completeCard = () => {
     this.state.eventBus.publish({
       type: 'ADD_CARD',
@@ -94,6 +92,23 @@ class Task extends Component {
       type: 'REMOVE_CARD',
       laneId: 'PLANNED',
       cardId: 'Milk'
+    });
+  };
+  closeCardWindow = () => {
+    this.setState({ card_modal_flag: false });
+  };
+
+  onCardClick = (cardId, metadata, laneId) => {
+    console.log(cardId);
+    console.log(metadata);
+    console.log(laneId);
+    const Lane = this.state.tasks.lanes.find(({ id }) => id === laneId);
+    console.log(Lane);
+    const card = Lane.cards.find(({ id }) => id === cardId);
+    this.setState({
+      card_title: card.title,
+      card_description: card.description,
+      card_modal_flag: true
     });
   };
 
@@ -215,9 +230,25 @@ class Task extends Component {
             eventBusHandle={this.setEventBus}
             handleDragStart={handleDragStart}
             handleDragEnd={handleDragEnd}
-            onCardClick={onCardClick}
+            onCardClick={this.onCardClick}
           />
         )}
+        <Modal
+          show={this.state.card_modal_flag}
+          onHide={this.closeCardWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              {this.state.card_title}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{this.state.card_description} </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeCardWindow}>Close</Button>
+          </Modal.Footer>
+        </Modal>
       </Aux>
     );
   }

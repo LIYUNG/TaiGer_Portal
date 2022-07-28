@@ -471,7 +471,7 @@ class ArchivStudent extends React.Component {
               />
             </Row>
           </Tab>
-          <Tab eventKey="checklist" title="Status">
+          <Tab eventKey="status" title="Status">
             <Row>
               <Table responsive>
                 <Task student_id={this.state.student._id} />

@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 // import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 class ApplicationProgress extends React.Component {
   getNumberOfDays(start, end) {
@@ -43,7 +43,7 @@ class ApplicationProgress extends React.Component {
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
-          <Link to={"/programs/" + application.programId._id}>
+          <Link to={'/programs/' + application.programId._id}>
             <h6 className="mb-1" key={i}>
               {application.programId.school}
             </h6>
@@ -52,7 +52,7 @@ class ApplicationProgress extends React.Component {
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
-          <Link to={"/programs/" + application.programId._id}>
+          <Link to={'/programs/' + application.programId._id}>
             <h6 className="mb-1" key={i}>
               {application.programId.program_name}
             </h6>
@@ -65,8 +65,8 @@ class ApplicationProgress extends React.Component {
             {this.props.student.academic_background.university
               .expected_application_date
               ? this.props.student.academic_background.university
-                  .expected_application_date + "-"
-              : ""}
+                  .expected_application_date + '-'
+              : ''}
             {application.programId.application_deadline}
           </h6>
         )
@@ -76,14 +76,14 @@ class ApplicationProgress extends React.Component {
         (application, i) => (
           <h6 className="mb-1" key={i}>
             {application.closed
-              ? "-"
+              ? '-'
               : this.props.student.academic_background.university
                   .expected_application_date &&
                 this.getNumberOfDays(
                   today,
                   this.props.student.academic_background.university
                     .expected_application_date +
-                    "-" +
+                    '-' +
                     application.programId.application_deadline
                 )}
           </h6>
@@ -132,11 +132,61 @@ class ApplicationProgress extends React.Component {
       <>
         <tbody>
           <tr>
-            {this.props.role !== "Student" ? (
+            <td>
+              <DropdownButton
+                size="sm"
+                title="Option"
+                variant="primary"
+                id={`dropdown-variants-${this.props.student._id}`}
+                key={this.props.student._id}
+              >
+                {this.props.role !== 'Editor' && !this.props.isArchivPage ? (
+                  <Dropdown.Item
+                    eventKey="3"
+                    onSelect={() => this.startEditingProgram()}
+                  >
+                    Edit Program
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+                {this.props.isDashboard ? (
+                  <Dropdown.Item
+                    eventKey="5"
+                    onSelect={() =>
+                      this.updateStudentArchivStatus(
+                        this.props.student._id,
+                        true
+                      )
+                    }
+                  >
+                    Move to Archiv
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+                {this.props.isArchivPage ? (
+                  <Dropdown.Item
+                    eventKey="6"
+                    onSelect={() =>
+                      this.updateStudentArchivStatus(
+                        this.props.student._id,
+                        false
+                      )
+                    }
+                  >
+                    Move to Active
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+              </DropdownButton>
+            </td>
+            {this.props.role !== 'Student' ? (
               <td>
-                <Link to={"/student-database/" + this.props.student._id}>
+                <Link to={'/student-database/' + this.props.student._id}>
                   <h6>
-                    {this.props.student.firstname},{" "}
+                    {this.props.student.firstname},{' '}
                     {this.props.student.lastname}
                   </h6>
                 </Link>

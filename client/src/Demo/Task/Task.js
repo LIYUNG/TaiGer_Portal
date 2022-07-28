@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner } from 'react-bootstrap';
+import { Row, Col, Spinner, Button } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import TasksList from "./TasksList";
 import TaskItem from './TaskItem';
@@ -33,7 +33,8 @@ class Task extends Component {
     error: null,
     isLoaded: false,
     tasks: null,
-    success: null
+    success: null,
+    empty: false
   };
 
   completeCard = () => {
@@ -86,27 +87,40 @@ class Task extends Component {
     const student_id = this.props.match
       ? this.props.match.params.student_id
       : this.props.student_id;
-    getStudentTask(student_id).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const task = data[0];
-        if (success) {
+    if (student_id)
+      getStudentTask(student_id).then(
+        (resp) => {
+          const { success, data } = resp.data;
+          const task = data[0];
+          if (data.length !== 0) {
+            if (success) {
+              this.setState({
+                success,
+                tasks: task,
+                isLoaded: true
+              });
+            } else {
+              alert(resp.data.message);
+            }
+          } else {
+            if (success) {
+              this.setState({
+                success,
+                empty: true,
+                isLoaded: true
+              });
+            } else {
+              alert(resp.data.message);
+            }
+          }
+        },
+        (error) => {
           this.setState({
-            success,
-            tasks: task,
-            isLoaded: true
+            isLoaded: false,
+            error
           });
-        } else {
-          alert(resp.data.message);
         }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error
-        });
-      }
-    );
+      );
   }
 
   render() {
@@ -142,19 +156,25 @@ class Task extends Component {
         <button onClick={this.addCard} style={{ margin: 5 }}>
           Add Blocked
         </button> */}
-        <Board
-          // editable
-          // editLaneTitle
-          data={this.state.tasks}
-          style={{ backgroundColor: 'transparent' }}
-          cardDraggable={true}
-          onDataChange={onDataChange}
-          onCardAdd={this.handleCardAdd}
-          eventBusHandle={this.setEventBus}
-          handleDragStart={handleDragStart}
-          handleDragEnd={handleDragEnd}
-          onCardClick={onCardClick}
-        />
+        {this.state.empty ? (
+          <>
+            <Button style={style}>Create Tasks</Button>
+          </>
+        ) : (
+          <Board
+            // editable
+            // editLaneTitle
+            data={this.state.tasks}
+            style={{ backgroundColor: 'transparent' }}
+            cardDraggable={true}
+            onDataChange={onDataChange}
+            onCardAdd={this.handleCardAdd}
+            eventBusHandle={this.setEventBus}
+            handleDragStart={handleDragStart}
+            handleDragEnd={handleDragEnd}
+            onCardClick={onCardClick}
+          />
+        )}
       </Aux>
     );
   }

@@ -21,6 +21,7 @@ class NavItem extends Component {
       if (
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
+        itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
         itemTitle === 'User List'
@@ -33,6 +34,7 @@ class NavItem extends Component {
       if (
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
+        itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||

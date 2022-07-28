@@ -42,7 +42,7 @@ class TabStudDocsDashboard extends React.Component {
           </thead>
           {stdlist}
         </Table>
-        {this.props.SYMBOL_EXPLANATION}
+        {/* {this.props.SYMBOL_EXPLANATION} */}
       </>
     );
   }

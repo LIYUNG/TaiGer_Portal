@@ -5,6 +5,8 @@ const { User, Student } = require('../models/User');
 const { Task } = require('../models/Task');
 const async = require('async');
 
+const data_test = require('./init_task.json');
+
 const getTasks = asyncHandler(async (req, res) => {
   const { user } = req;
 
@@ -93,9 +95,15 @@ const initTasks = asyncHandler(async (req, res) => {
   } = req;
   const existed_tasks = await Task.find({ student_id: studentId });
   console.log(existed_tasks.length);
+
+  const lanes = data_test;
+  console.log(lanes.lanes);
   if (existed_tasks.length > 0)
     throw new ErrorResponse(400, 'Tasks are already initialized.');
-  const new_tasks = await Task.create({ student_id: studentId });
+  const new_tasks = await Task.create({
+    student_id: studentId,
+    lanes: lanes.lanes
+  });
   res.status(200).send({ success: true, data: [new_tasks] });
 });
 

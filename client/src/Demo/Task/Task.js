@@ -5,7 +5,7 @@ import Aux from '../../hoc/_Aux';
 import TaskItem from './TaskItem';
 import Board from 'react-trello';
 
-import { getStudentTask } from '../../api';
+import { getStudentTask, initTasks } from '../../api';
 
 const handleDragStart = (cardId, laneId) => {
   console.log('drag started');
@@ -37,6 +37,48 @@ class Task extends Component {
     empty: false
   };
 
+  componentDidMount() {
+    // getStudent(this.props.match.params.studentId).then(
+    const student_id = this.props.match
+      ? this.props.match.params.student_id
+      : this.props.student_id;
+    if (student_id)
+      getStudentTask(student_id).then(
+        (resp) => {
+          const { success, data } = resp.data;
+          const task = data[0];
+          if (data.length !== 0) {
+            if (success) {
+              this.setState({
+                success,
+                tasks: task,
+                empty: false,
+                isLoaded: true
+              });
+            } else {
+              alert(resp.data.message);
+            }
+          } else {
+            if (success) {
+              this.setState({
+                success,
+                empty: true,
+                isLoaded: true
+              });
+            } else {
+              alert(resp.data.message);
+            }
+          }
+        },
+        (error) => {
+          this.setState({
+            isLoaded: false,
+            error
+          });
+        }
+      );
+  }
+  
   completeCard = () => {
     this.state.eventBus.publish({
       type: 'ADD_CARD',
@@ -82,46 +124,45 @@ class Task extends Component {
     console.log(nextData);
   };
 
-  componentDidMount() {
-    // getStudent(this.props.match.params.studentId).then(
+  initTask = () => {
     const student_id = this.props.match
       ? this.props.match.params.student_id
       : this.props.student_id;
-    if (student_id)
-      getStudentTask(student_id).then(
-        (resp) => {
-          const { success, data } = resp.data;
-          const task = data[0];
-          if (data.length !== 0) {
-            if (success) {
-              this.setState({
-                success,
-                tasks: task,
-                isLoaded: true
-              });
-            } else {
-              alert(resp.data.message);
-            }
+    initTasks(student_id).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const task = data[0];
+        if (data.length !== 0) {
+          if (success) {
+            this.setState({
+              success,
+              tasks: task,
+              empty: false,
+              isLoaded: true
+            });
           } else {
-            if (success) {
-              this.setState({
-                success,
-                empty: true,
-                isLoaded: true
-              });
-            } else {
-              alert(resp.data.message);
-            }
+            alert(resp.data.message);
           }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: false,
-            error
-          });
+        } else {
+          if (success) {
+            this.setState({
+              success,
+              empty: true,
+              isLoaded: true
+            });
+          } else {
+            alert(resp.data.message);
+          }
         }
-      );
-  }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error
+        });
+      }
+    );
+  };
 
   render() {
     const { error, isLoaded } = this.state;
@@ -158,7 +199,9 @@ class Task extends Component {
         </button> */}
         {this.state.empty ? (
           <>
-            <Button style={style}>Create Tasks</Button>
+            <Button style={style} onClick={this.initTask}>
+              Create Tasks
+            </Button>
           </>
         ) : (
           <Board

@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Row,
-  Col,
-  Spinner,
-  Card,
-  Table,
-  Modal,
-  Button
-} from 'react-bootstrap';
+import { Row, Col, Spinner, Card, Table, Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
@@ -15,7 +7,7 @@ import Aux from '../../hoc/_Aux';
 import TaskItem from './TaskItem';
 import Board from 'react-trello';
 import data_test from './demo_task_data.json';
-import { getMyStudentsTasks } from '../../api';
+import { getMyStudentsTasks, initTasks } from '../../api';
 import './MyTask.css';
 
 const handleDragStart = (cardId, laneId) => {
@@ -41,7 +33,8 @@ class MyTask extends Component {
     tasks: null,
     success: null,
     card_title: '',
-    card_modal_flag: false
+    card_modal_flag: false,
+    empty: false
   };
 
   componentDidMount() {
@@ -49,14 +42,29 @@ class MyTask extends Component {
     getMyStudentsTasks().then(
       (resp) => {
         const { success, data } = resp.data;
-        if (success) {
-          this.setState({
-            success,
-            tasks: data,
-            isLoaded: true
-          });
+        const task = data[0];
+
+        if (data.length !== 0) {
+          if (success) {
+            this.setState({
+              success,
+              tasks: task,
+              empty: false,
+              isLoaded: true
+            });
+          } else {
+            alert(resp.data.message);
+          }
         } else {
-          alert(resp.data.message);
+          if (success) {
+            this.setState({
+              success,
+              empty: true,
+              isLoaded: true
+            });
+          } else {
+            alert(resp.data.message);
+          }
         }
       },
       (error) => {
@@ -129,6 +137,44 @@ class MyTask extends Component {
     this.setState({ card_title: card.title, card_modal_flag: true });
   };
 
+  initTask = () => {
+    const student_id = this.props.user._id;
+    initTasks(student_id).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const task = data[0];
+        if (data.length !== 0) {
+          if (success) {
+            this.setState({
+              success,
+              tasks: task,
+              empty: false,
+              isLoaded: true
+            });
+          } else {
+            alert(resp.data.message);
+          }
+        } else {
+          if (success) {
+            this.setState({
+              success,
+              empty: true,
+              isLoaded: true
+            });
+          } else {
+            alert(resp.data.message);
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error
+        });
+      }
+    );
+  };
+
   render() {
     const { error, isLoaded } = this.state;
     const style = {
@@ -198,60 +244,57 @@ class MyTask extends Component {
     //To update the lanes
     // eventBus.publish({ type: "UPDATE_LANES", lanes: newLaneData });
 
-    const my_task = this.state.tasks.map((task, i) => (
-      <>
-        <Board
-          // editable
-          // editLaneTitle
-          data={task}
-          style={{ backgroundColor: 'transparent', height: 'auto' }}
-          cardDraggable={true}
-          onDataChange={onDataChange}
-          onCardAdd={this.handleCardAdd}
-          eventBusHandle={this.setEventBus}
-          handleDragStart={handleDragStart}
-          handleDragEnd={handleDragEnd}
-          onCardClick={this.onCardClick}
-        />
-      </>
-    ));
-
-    const students_tasks = (
-      <Table>
-        <thead>
-          <tr>
-            <th></th>
-            {this.state.tasks[0].lanes.map((lane, i) => (
-              <>
-                <th>{lane.title}</th>
-              </>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.tasks.map((student, i) => (
-            <>
-              <tr>
-                <td>
-                  <Link to={'/tasks/' + student.student_id._id}>
-                    {student.student_id.firstname} {student.student_id.lastname}
-                  </Link>
-                </td>
-                {student.lanes.map((lane, k) => (
-                  <td>
-                    {lane.cards.map((card, l) => (
-                      <>
-                        <tr>{card.title}</tr>
-                      </>
-                    ))}
-                  </td>
-                ))}
-              </tr>
-            </>
-          ))}
-        </tbody>
-      </Table>
+    const my_task = (
+      <Board
+        // editable
+        // editLaneTitle
+        data={this.state.tasks}
+        style={{ backgroundColor: 'transparent', height: 'auto' }}
+        cardDraggable={true}
+        onDataChange={onDataChange}
+        onCardAdd={this.handleCardAdd}
+        eventBusHandle={this.setEventBus}
+        handleDragStart={handleDragStart}
+        handleDragEnd={handleDragEnd}
+        onCardClick={this.onCardClick}
+      />
     );
+    // const students_tasks = (
+    //   <Table>
+    //     <thead>
+    //       <tr>
+    //         <th></th>
+    //         {this.state.tasks[0].lanes.map((lane, i) => (
+    //           <>
+    //             <th>{lane.title}</th>
+    //           </>
+    //         ))}
+    //       </tr>
+    //     </thead>
+    //     <tbody>
+    //       {this.state.tasks.map((student, i) => (
+    //         <>
+    //           <tr>
+    //             <td>
+    //               <Link to={'/tasks/' + student.student_id._id}>
+    //                 {student.student_id.firstname} {student.student_id.lastname}
+    //               </Link>
+    //             </td>
+    //             {student.lanes.map((lane, k) => (
+    //               <td>
+    //                 {lane.cards.map((card, l) => (
+    //                   <>
+    //                     <tr>{card.title}</tr>
+    //                   </>
+    //                 ))}
+    //               </td>
+    //             ))}
+    //           </tr>
+    //         </>
+    //       ))}
+    //     </tbody>
+    //   </Table>
+    // );
 
     return (
       <>
@@ -261,8 +304,15 @@ class MyTask extends Component {
         <button onClick={this.addCard} style={{ margin: 5 }}>
           Add Blocked
         </button> */}
-        {this.props.user.role === 'Student' ? my_task : students_tasks}
-
+        {this.state.empty ? (
+          <>
+            <Button style={style} onClick={this.initTask}>
+              Create Tasks
+            </Button>
+          </>
+        ) : (
+          my_task
+        )}
         <Modal
           show={this.state.card_modal_flag}
           onHide={this.closeCardWindow}

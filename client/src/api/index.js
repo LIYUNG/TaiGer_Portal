@@ -274,6 +274,8 @@ export const getUniassistArticle = () => getArticle('uniassist');
 export const getCertificationArticle = () => getArticle('certification');
 
 //Task:
+export const initTasks = (studentId) =>
+  request.post(`/api/tasks/${studentId}`);
 export const getMyStudentsTasks = () =>
   request.get('/api/tasks/my-students-tasks');
 export const getMyStudentTasks = (studentId) =>

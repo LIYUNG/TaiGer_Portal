@@ -10,13 +10,13 @@ const TaskSchema = new Schema({
   student_id: { type: ObjectId, ref: 'User' },
   lanes: [
     {
-      id: { type: ObjectId },
+      id: { type: String },
       title: { type: String },
       label: { type: String },
-      style: { type: String },
+      style: { type: Object },
       cards: [
         {
-          id: { type: ObjectId },
+          id: { type: String },
           title: { type: String },
           label: { type: String },
           cardStyle: { type: Object },
@@ -25,114 +25,114 @@ const TaskSchema = new Schema({
       ]
     }
   ],
-  profile_documents: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  cvmlrl_documents: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  program_selection: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  program_decision: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  program_submission: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  cvmlrl_template: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  uni_assist_process: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  copies_certification: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
-  visa_progress: {
-    status: {
-      type: String,
-      enum: Object.values(TaskStatus),
-      default: TaskStatus.Locked
-    },
-    comments: {
-      type: String
-    },
-    task_deadline: Date,
-    updatedAt: Date
-  },
+  // profile_documents: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // cvmlrl_documents: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // program_selection: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // program_decision: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // program_submission: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // cvmlrl_template: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // uni_assist_process: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // copies_certification: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
+  // visa_progress: {
+  //   status: {
+  //     type: String,
+  //     enum: Object.values(TaskStatus),
+  //     default: TaskStatus.Locked
+  //   },
+  //   comments: {
+  //     type: String
+  //   },
+  //   task_deadline: Date,
+  //   updatedAt: Date
+  // },
 
   others: [
     {

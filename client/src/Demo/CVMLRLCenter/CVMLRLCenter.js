@@ -1,10 +1,10 @@
-import React from "react";
-import { Row, Col, Spinner, Button, Card } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
-import DEMO from "../../store/constant";
-import { getCVMLRLOverview } from "../../api";
-import EditorDocsProgress from "./EditorDocsProgress";
-import ManualFiles from "./ManualFiles";
+import React from 'react';
+import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
+import Aux from '../../hoc/_Aux';
+import DEMO from '../../store/constant';
+import { getCVMLRLOverview } from '../../api';
+import EditorDocsProgress from './EditorDocsProgress';
+import ManualFiles from './ManualFiles';
 
 class EditorCenter extends React.Component {
   state = {
@@ -14,12 +14,12 @@ class EditorCenter extends React.Component {
     success: false,
     // accordionKeys: new Array(-1, this.props.user.students.length),  // To collapse all
     students: [],
-    file: "",
+    file: '',
     expand: true,
     accordionKeys:
-      this.props.user.role === "Editor" || this.props.user.role === "Agent"
+      this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-        : [0], // to expand all]
+        : [0] // to expand all]
   };
 
   componentDidMount() {
@@ -33,7 +33,7 @@ class EditorCenter extends React.Component {
             isLoaded: true,
             students: data,
             success: success,
-            accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
+            accordionKeys: new Array(data.length).fill().map((x, i) => i) // to expand all
             //   accordionKeys: new Array(-1, data.length), // to collapse all
           });
         } else {
@@ -42,10 +42,10 @@ class EditorCenter extends React.Component {
       },
       (error) => {
         console.log(error);
-        console.log(": " + error);
+        console.log(': ' + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -56,7 +56,7 @@ class EditorCenter extends React.Component {
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
     this.setState((state) => ({
       ...state,
-      accordionKeys: accordionKeys,
+      accordionKeys: accordionKeys
     }));
   };
   AllCollapsetHandler = () => {
@@ -64,9 +64,9 @@ class EditorCenter extends React.Component {
       ...state,
       expand: false,
       accordionKeys:
-        this.props.user.role === "Editor" || this.props.user.role === "Agent"
+        this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
           ? new Array(this.props.user.students.length).fill().map((x, i) => -1)
-          : [-1], // to expand all]
+          : [-1] // to expand all]
     }));
   };
   AllExpandtHandler = () => {
@@ -74,19 +74,19 @@ class EditorCenter extends React.Component {
       ...state,
       expand: true,
       accordionKeys:
-        this.props.user.role === "Editor" || this.props.user.role === "Agent"
+        this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
           ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-          : [0], // to expand all]
+          : [0] // to expand all]
     }));
   };
 
   render() {
     const { error, isLoaded, accordionKeys } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -106,14 +106,33 @@ class EditorCenter extends React.Component {
     }
 
     const student_editor = this.state.students.map((student, i) => (
-      <EditorDocsProgress
-        key={i}
-        idx={i}
-        student={student}
-        accordionKeys={this.state.accordionKeys}
-        singleExpandtHandler={this.singleExpandtHandler}
-        role={this.props.user.role}
-      />
+      <>
+        <Card className="mt-2" key={i}>
+          <Card.Header
+            onClick={() => this.singleExpandtHandler(i)}
+          >
+            <Card.Title
+              as="h5"
+              aria-controls={'accordion' + i}
+              aria-expanded={
+                this.state.accordionKeys[i] === i
+              }
+            >
+              {student.firstname}
+              {' ,'}
+              {student.lastname}
+            </Card.Title>
+          </Card.Header>
+          <EditorDocsProgress
+            key={i}
+            idx={i}
+            student={student}
+            accordionKeys={this.state.accordionKeys}
+            singleExpandtHandler={this.singleExpandtHandler}
+            role={this.props.user.role}
+          />
+        </Card>
+      </>
     ));
 
     return (
@@ -123,7 +142,7 @@ class EditorCenter extends React.Component {
             <Card.Header>
               <Card.Title as="h5">
                 <Row>
-                  <Col >
+                  <Col>
                     <h4>CV/ML/RL Center</h4>
                   </Col>
                   <Col md={{ span: 2, offset: 0 }}>

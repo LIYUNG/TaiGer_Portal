@@ -83,7 +83,10 @@ class Task extends Component {
 
   componentDidMount() {
     // getStudent(this.props.match.params.studentId).then(
-    getStudentTask(this.props.match.params.student_id).then(
+    const student_id = this.props.match
+      ? this.props.match.params.student_id
+      : this.props.student_id;
+    getStudentTask(student_id).then(
       (resp) => {
         const { success, data } = resp.data;
         const task = data[0];

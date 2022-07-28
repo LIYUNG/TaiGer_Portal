@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Dropdown,
   Tabs,
@@ -7,39 +7,40 @@ import {
   Table,
   Row,
   Col,
-  Spinner,
-} from "react-bootstrap";
+  Spinner
+} from 'react-bootstrap';
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
+  AiOutlineFieldTime
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { BsDash } from 'react-icons/bs';
 import {
   getStudent,
   updateProfileDocumentStatus,
   downloadProfile,
   uploadforstudent,
-  deleteFile,
-} from "../../api";
-import ButtonSetUploaded from "../AgentCenter/ButtonSetUploaded";
-import ButtonSetAccepted from "../AgentCenter/ButtonSetAccepted";
-import ButtonSetRejected from "../AgentCenter/ButtonSetRejected";
-import ButtonSetNotNeeded from "../AgentCenter/ButtonSetNotNeeded";
-import ButtonSetMissing from "../AgentCenter/ButtonSetMissing";
-import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
-import EditorDocsProgress from "../CVMLRLCenter/EditorDocsProgress";
-import SurveyComponent from "../Survey/SurveyComponent";
-import ApplicationProgress from "../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress";
-import StudentsAgentEditor from "../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
+  deleteFile
+} from '../../api';
+import ButtonSetUploaded from '../AgentCenter/ButtonSetUploaded';
+import ButtonSetAccepted from '../AgentCenter/ButtonSetAccepted';
+import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
+import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
+import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
+import UploadAndGenerate from '../TaiGerAI/UploadAndGenerate';
+import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
+import SurveyComponent from '../Survey/SurveyComponent';
+import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
+import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
+import Task from '../Task/Task';
 
 class ArchivStudent extends React.Component {
   state = {
     isLoaded: false,
     student: null,
     success: false,
-    error: null,
+    error: null
   };
   componentDidMount() {
     getStudent(this.props.match.params.studentId).then(
@@ -50,17 +51,17 @@ class ArchivStudent extends React.Component {
           this.setState({
             isLoaded: true,
             student: data,
-            success: success,
+            success: success
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        console.log(": " + error);
+        console.log(': ' + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -76,13 +77,13 @@ class ArchivStudent extends React.Component {
             ...state,
             student: data,
             success,
-            isLoaded: true,
+            isLoaded: true
           }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded: true
           }));
         }
       },
@@ -100,7 +101,7 @@ class ArchivStudent extends React.Component {
   onSubmitGeneralFile = (e, NewFile, category, student_id) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file", NewFile);
+    formData.append('file', NewFile);
 
     // this.setState((state) => ({
     //   ...state,
@@ -115,22 +116,22 @@ class ArchivStudent extends React.Component {
             ...state,
             student: data, // res.data = {success: true, data:{...}}
             success,
-            category: "",
+            category: '',
             isLoaded: true,
-            file: "",
+            file: ''
           }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded: true
           }));
         }
       },
       (error) => {
         this.setState({
           isLoaded: true,
-          error,
+          error
         });
       }
     );
@@ -141,16 +142,16 @@ class ArchivStudent extends React.Component {
       (resp) => {
         console.log(resp.data);
         const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
+          resp.headers['content-disposition'].split('"')[1];
         const { data: blob } = resp;
         if (blob.size === 0) return;
 
-        var filetype = actualFileName.split("."); //split file name
+        var filetype = actualFileName.split('.'); //split file name
         filetype = filetype.pop(); //get the file type
 
-        if (filetype === "pdf") {
+        if (filetype === 'pdf') {
           const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
+            new Blob([blob], { type: 'application/pdf' })
           );
 
           //Open the URL on new Window
@@ -160,9 +161,9 @@ class ArchivStudent extends React.Component {
 
           const url = window.URL.createObjectURL(new Blob([blob]));
 
-          const link = document.createElement("a");
+          const link = document.createElement('a');
           link.href = url;
-          link.setAttribute("download", actualFileName);
+          link.setAttribute('download', actualFileName);
           // Append to html link element page
           document.body.appendChild(link);
           // Start download
@@ -172,7 +173,7 @@ class ArchivStudent extends React.Component {
         }
       },
       (error) => {
-        alert("The file is not available.");
+        alert('The file is not available.');
       }
     );
   }
@@ -189,18 +190,18 @@ class ArchivStudent extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            student_id: "",
-            category: "",
+            student_id: '',
+            category: '',
             isLoaded: true,
             student: student,
             success: success,
-            deleteFileWarningModel: false,
+            deleteFileWarningModel: false
           }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded: true
           }));
         }
       },
@@ -262,10 +263,10 @@ class ArchivStudent extends React.Component {
       );
     }
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (!isLoaded && !this.state.student) {
       return (
@@ -276,8 +277,8 @@ class ArchivStudent extends React.Component {
         </div>
       );
     }
-    const deleteStyle = "danger";
-    const graoutStyle = "light";
+    const deleteStyle = 'danger';
+    const graoutStyle = 'light';
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_list);
     let object_init = {};
@@ -285,29 +286,29 @@ class ArchivStudent extends React.Component {
     let object_date_init = {};
     let object_time_init = {};
     for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = "missing";
-      object_message[keys2[i]] = "";
-      object_date_init[keys2[i]] = "";
-      object_time_init[keys2[i]] = "";
+      object_init[keys2[i]] = 'missing';
+      object_message[keys2[i]] = '';
+      object_date_init[keys2[i]] = '';
+      object_time_init[keys2[i]] = '';
     }
 
     if (this.state.student.profile) {
       for (let i = 0; i < this.state.student.profile.length; i++) {
-        if (this.state.student.profile[i].status === "uploaded") {
-          object_init[this.state.student.profile[i].name] = "uploaded";
-        } else if (this.state.student.profile[i].status === "accepted") {
-          object_init[this.state.student.profile[i].name] = "accepted";
-        } else if (this.state.student.profile[i].status === "rejected") {
-          object_init[this.state.student.profile[i].name] = "rejected";
-        } else if (this.state.student.profile[i].status === "notneeded") {
-          object_init[this.state.student.profile[i].name] = "notneeded";
-        } else if (this.state.student.profile[i].status === "missing") {
-          object_init[this.state.student.profile[i].name] = "missing";
+        if (this.state.student.profile[i].status === 'uploaded') {
+          object_init[this.state.student.profile[i].name] = 'uploaded';
+        } else if (this.state.student.profile[i].status === 'accepted') {
+          object_init[this.state.student.profile[i].name] = 'accepted';
+        } else if (this.state.student.profile[i].status === 'rejected') {
+          object_init[this.state.student.profile[i].name] = 'rejected';
+        } else if (this.state.student.profile[i].status === 'notneeded') {
+          object_init[this.state.student.profile[i].name] = 'notneeded';
+        } else if (this.state.student.profile[i].status === 'missing') {
+          object_init[this.state.student.profile[i].name] = 'missing';
         }
         object_message[this.state.student.profile[i].name] = this.state.student
           .profile[i].feedback
           ? this.state.student.profile[i].feedback
-          : "";
+          : '';
         object_date_init[this.state.student.profile[i].name] = new Date(
           this.state.student.profile[i].updatedAt
         ).toLocaleDateString();
@@ -319,7 +320,7 @@ class ArchivStudent extends React.Component {
     }
     var documentlist22;
     documentlist22 = keys2.map((k, i) => {
-      if (object_init[k] === "uploaded") {
+      if (object_init[k] === 'uploaded') {
         return (
           <ButtonSetUploaded
             key={i + 1}
@@ -336,7 +337,7 @@ class ArchivStudent extends React.Component {
             SubmitGeneralFile={this.props.SubmitGeneralFile}
           />
         );
-      } else if (object_init[k] === "accepted") {
+      } else if (object_init[k] === 'accepted') {
         return (
           <ButtonSetAccepted
             key={i + 1}
@@ -354,7 +355,7 @@ class ArchivStudent extends React.Component {
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
         );
-      } else if (object_init[k] === "rejected") {
+      } else if (object_init[k] === 'rejected') {
         return (
           <ButtonSetRejected
             key={i + 1}
@@ -373,7 +374,7 @@ class ArchivStudent extends React.Component {
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
         );
-      } else if (object_init[k] === "notneeded") {
+      } else if (object_init[k] === 'notneeded') {
         return (
           <ButtonSetNotNeeded
             key={i + 1}
@@ -426,7 +427,7 @@ class ArchivStudent extends React.Component {
           <Card.Header>
             <Card.Title as="h5">
               {this.state.student.firstname}
-              {" ,"}
+              {' ,'}
               {this.state.student.lastname}
             </Card.Title>
           </Card.Header>
@@ -470,21 +471,10 @@ class ArchivStudent extends React.Component {
               />
             </Row>
           </Tab>
-          <Tab eventKey="checklist" title="Check List">
+          <Tab eventKey="checklist" title="Status">
             <Row>
               <Table responsive>
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>File Name:</th>
-                    <th></th>
-                    <th></th>
-                    <th>Feedback</th>
-                    <th></th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>{documentlist22}</tbody>
+                <Task student_id={this.state.student._id} />
               </Table>
             </Row>
           </Tab>

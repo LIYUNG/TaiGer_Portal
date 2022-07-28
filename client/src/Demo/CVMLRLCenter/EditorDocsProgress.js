@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import DEMO from "../../store/constant";
-import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
+import React, { useState } from 'react';
+import DEMO from '../../store/constant';
+import { AiFillCloseCircle, AiFillQuestionCircle } from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
@@ -12,8 +12,8 @@ import {
   Collapse,
   Form,
   Modal,
-  Spinner,
-} from "react-bootstrap";
+  Spinner
+} from 'react-bootstrap';
 import {
   deleteProgramSpecificFileUpload,
   deleteGenralFileThread,
@@ -25,17 +25,17 @@ import {
   updateStudentFeedbackGeneralFileByStudent,
   initGeneralMessageThread,
   initApplicationMessageThread,
-  SubmitMessageWithAttachment,
-} from "../../api";
-import ManualFiles from "./ManualFiles";
+  SubmitMessageWithAttachment
+} from '../../api';
+import ManualFiles from './ManualFiles';
 import {
   AiOutlineDownload,
   AiOutlineDelete,
   AiOutlineCheck,
   AiOutlineMore,
   AiOutlineUndo,
-  AiFillMessage,
-} from "react-icons/ai";
+  AiFillMessage
+} from 'react-icons/ai';
 class EditorDocsProgress extends React.Component {
   state = {
     student: this.props.student,
@@ -44,61 +44,61 @@ class EditorDocsProgress extends React.Component {
     CommentsModel: false,
     StudentFeedbackModel: false,
     ML_Requirements_Modal: false,
-    studentId: "",
-    student_id: "",
-    doc_thread_id: "",
-    applicationId: "",
-    docName: "",
-    whoupdate: "",
-    comments: "",
-    updatedAt: "",
-    student_feedback: "",
-    student_feedback_updatedAt: "",
+    studentId: '',
+    student_id: '',
+    doc_thread_id: '',
+    applicationId: '',
+    docName: '',
+    whoupdate: '',
+    comments: '',
+    updatedAt: '',
+    student_feedback: '',
+    student_feedback_updatedAt: '',
     isLoaded: false,
-    ml_requirements: "",
-    file: "",
+    ml_requirements: '',
+    file: ''
   };
   componentDidMount() {
     this.setState((state) => ({
-      isLoaded: true,
+      isLoaded: true
     }));
   }
   openStudentFeebackProgramSpecificFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
-      StudentFeedbackModel: true,
+      StudentFeedbackModel: true
     }));
   };
   closeStudentFeebackProgramSpecificFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
-      StudentFeedbackModel: false,
+      StudentFeedbackModel: false
     }));
   };
   openSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
-      SetAsFinalFileModel: true,
+      SetAsFinalFileModel: true
     }));
   };
   closeSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
-      SetAsFinalFileModel: false,
+      SetAsFinalFileModel: false
     }));
   };
   openML_Requirements_ModalWindow = (ml_requirements) => {
     this.setState((state) => ({
       ...state,
       ML_Requirements_Modal: true,
-      ml_requirements,
+      ml_requirements
     }));
   };
   closeML_Requirements_ModalWindow = () => {
     this.setState((state) => ({
       ...state,
       ML_Requirements_Modal: false,
-      ml_requirements: "",
+      ml_requirements: ''
     }));
   };
   openWarningWindow = () => {
@@ -117,7 +117,7 @@ class EditorDocsProgress extends React.Component {
   ConfirmStudentFeedbackGeneralFileHandler = (student_feedback) => {
     this.setState((state) => ({
       ...state,
-      isLoaded: false, //false to reload everything
+      isLoaded: false //false to reload everything
     }));
     updateStudentFeedbackGeneralFileByStudent(
       this.state.studentId,
@@ -131,26 +131,26 @@ class EditorDocsProgress extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
+            studentId: '',
+            applicationId: '',
+            docName: '',
+            whoupdate: '',
             isLoaded: true,
             student: data,
             success: success,
-            StudentFeedbackModel: false,
+            StudentFeedbackModel: false
           }));
         } else {
           alert(resp.data.message);
           this.setState((state) => ({
             ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
+            studentId: '',
+            applicationId: '',
+            docName: '',
+            whoupdate: '',
             isLoaded: true,
             success: success,
-            StudentFeedbackModel: false,
+            StudentFeedbackModel: false
           }));
         }
       },
@@ -163,7 +163,7 @@ class EditorDocsProgress extends React.Component {
   ConfirmDeleteDiscussionThreadHandler = () => {
     this.setState((state) => ({
       ...state,
-      isLoaded: false, //false to reload everything
+      isLoaded: false //false to reload everything
     }));
     if (this.state.program_id == null) {
       deleteGenralFileThread(
@@ -176,26 +176,26 @@ class EditorDocsProgress extends React.Component {
           if (success) {
             this.setState((state) => ({
               ...state,
-              studentId: "",
-              program_id: "",
-              docName: "",
-              whoupdate: "",
+              studentId: '',
+              program_id: '',
+              docName: '',
+              whoupdate: '',
               isLoaded: true,
               student: data,
               success: success,
-              deleteFileWarningModel: false,
+              deleteFileWarningModel: false
             }));
           } else {
             alert(resp.data.message);
             this.setState((state) => ({
               ...state,
-              studentId: "",
-              program_id: "",
-              docName: "",
-              whoupdate: "",
+              studentId: '',
+              program_id: '',
+              docName: '',
+              whoupdate: '',
               isLoaded: true,
               success: success,
-              deleteFileWarningModel: false,
+              deleteFileWarningModel: false
             }));
           }
         },
@@ -215,26 +215,26 @@ class EditorDocsProgress extends React.Component {
           if (success) {
             this.setState((state) => ({
               ...state,
-              studentId: "",
-              program_id: "",
-              docName: "",
-              whoupdate: "",
+              studentId: '',
+              program_id: '',
+              docName: '',
+              whoupdate: '',
               isLoaded: true,
               student: data,
               success: success,
-              deleteFileWarningModel: false,
+              deleteFileWarningModel: false
             }));
           } else {
             alert(resp.data.message);
             this.setState((state) => ({
               ...state,
-              studentId: "",
-              program_id: "",
-              docName: "",
-              whoupdate: "",
+              studentId: '',
+              program_id: '',
+              docName: '',
+              whoupdate: '',
               isLoaded: true,
               success: success,
-              deleteFileWarningModel: false,
+              deleteFileWarningModel: false
             }));
           }
         },
@@ -248,7 +248,7 @@ class EditorDocsProgress extends React.Component {
   ConfirmSetAsFinalFileHandler = () => {
     this.setState((state) => ({
       ...state,
-      isLoaded: false, //false to reload everything
+      isLoaded: false //false to reload everything
     }));
     SetAsFinalGenralFile(this.state.doc_thread_id, this.state.student_id).then(
       (resp) => {
@@ -257,26 +257,26 @@ class EditorDocsProgress extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
+            studentId: '',
+            applicationId: '',
+            docName: '',
+            whoupdate: '',
             isLoaded: true,
             student: data,
             success: success,
-            SetAsFinalFileModel: false,
+            SetAsFinalFileModel: false
           }));
         } else {
           alert(resp.data.message);
           this.setState((state) => ({
             ...state,
-            studentId: "",
-            applicationId: "",
-            docName: "",
-            whoupdate: "",
+            studentId: '',
+            applicationId: '',
+            docName: '',
+            whoupdate: '',
             isLoaded: true,
             success: success,
-            SetAsFinalFileModel: false,
+            SetAsFinalFileModel: false
           }));
         }
       },
@@ -300,10 +300,10 @@ class EditorDocsProgress extends React.Component {
       applicationId,
       docName,
       whoupdate,
-      filetype: "ProgramSpecific",
+      filetype: 'ProgramSpecific',
       comments: feedback,
       updatedAt,
-      CommentsModel: true,
+      CommentsModel: true
     }));
   };
 
@@ -314,42 +314,42 @@ class EditorDocsProgress extends React.Component {
     whoupdate,
     action
   ) => {
-    if (action === "setfinal") {
+    if (action === 'setfinal') {
       this.setState((state) => ({
         ...state,
         studentId,
         applicationId,
         docName,
         whoupdate,
-        filetype: "ProgramSpecific",
-        SetAsFinalFileModel: true, //change
+        filetype: 'ProgramSpecific',
+        SetAsFinalFileModel: true //change
       }));
-    } else if (action === "undofinal") {
+    } else if (action === 'undofinal') {
       this.setState((state) => ({
         ...state,
         studentId,
         applicationId,
         docName,
         whoupdate,
-        filetype: "ProgramSpecific",
+        filetype: 'ProgramSpecific'
       }));
     }
   };
 
   handleAsFinalFile = (doc_thread_id, action) => {
-    if (action === "setfinal") {
+    if (action === 'setfinal') {
       this.setState((state) => ({
         ...state,
         doc_thread_id,
-        filetype: "General",
-        SetAsFinalFileModel: true,
+        filetype: 'General',
+        SetAsFinalFileModel: true
       }));
-    } else if (action === "undofinal") {
+    } else if (action === 'undofinal') {
       this.setState((state) => ({
         ...state,
         doc_thread_id,
-        filetype: "General",
-        SetAsFinalFileModel: false,
+        filetype: 'General',
+        SetAsFinalFileModel: false
       }));
     }
   };
@@ -360,7 +360,7 @@ class EditorDocsProgress extends React.Component {
       doc_thread_id,
       program_id: application ? application.programId._id : null,
       student_id: studentId,
-      deleteFileWarningModel: true,
+      deleteFileWarningModel: true
     }));
   };
 
@@ -370,9 +370,9 @@ class EditorDocsProgress extends React.Component {
     applicationId,
     document_catgory
   ) => {
-    if ("1" === "") {
+    if ('1' === '') {
       e.preventDefault();
-      alert("Please select file group");
+      alert('Please select file group');
     } else {
       e.preventDefault();
       initApplicationMessageThread(studentId, applicationId, document_catgory)
@@ -384,7 +384,7 @@ class EditorDocsProgress extends React.Component {
               isLoaded: true, //false to reload everything
               student: data,
               success: success,
-              file: "",
+              file: ''
             });
           } else {
             alert(res.data.message);
@@ -397,9 +397,9 @@ class EditorDocsProgress extends React.Component {
   };
 
   initGeneralFileThread = (e, studentId, document_catgory) => {
-    if ("1" === "") {
+    if ('1' === '') {
       e.preventDefault();
-      alert("Please select file group");
+      alert('Please select file group');
     } else {
       e.preventDefault();
       initGeneralMessageThread(studentId, document_catgory)
@@ -411,7 +411,7 @@ class EditorDocsProgress extends React.Component {
               isLoaded: true, //false to reload everything
               student: data,
               success: success,
-              file: "",
+              file: ''
             });
           } else {
             alert(res.data.message);
@@ -433,10 +433,10 @@ class EditorDocsProgress extends React.Component {
       );
     }
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (!isLoaded && !this.state.student) {
       return (
@@ -449,137 +449,120 @@ class EditorDocsProgress extends React.Component {
     }
     return (
       <>
-        <Card className="mt-2" key={this.props.idx}>
-          <Card.Header
-            onClick={() => this.props.singleExpandtHandler(this.props.idx)}
-          >
-            <Card.Title
-              as="h5"
-              aria-controls={"accordion" + this.props.idx}
-              aria-expanded={
-                this.props.accordionKeys[this.props.idx] === this.props.idx
-              }
-            >
-              {this.state.student.firstname}
-              {" ,"}
-              {this.state.student.lastname}
-            </Card.Title>
-          </Card.Header>
-          <Collapse
-            in={this.props.accordionKeys[this.props.idx] === this.props.idx}
-          >
-            <div id="accordion1">
-              <Card.Body>
-                <Row>
-                  <Col md={8}>
-                    <h5>General Documents (CV, Recommendation Letters)</h5>
-                  </Col>
-                </Row>
-                <ManualFiles
-                  onDeleteFileThread={this.onDeleteFileThread}
-                  handleAsFinalFile={this.handleAsFinalFile}
-                  role={this.props.role}
-                  student={this.state.student}
-                  filetype={"General"}
-                  initGeneralFileThread={this.initGeneralFileThread}
-                  initProgramSpecificFileThread={
-                    this.initProgramSpecificFileThread
-                  }
-                  application={null}
-                />
-                {this.state.student.applications.map((application, i) => (
-                  <>
-                    {application.decided !== undefined &&
-                    application.decided === true ? (
-                      <>
-                        <Row>
-                          <Col>
-                            <h5>
-                              {application.programId.school}
-                              {" - "}
-                              {application.programId.program_name}
-                            </h5>
-                          </Col>
-                          <Col>
-                            {application.programId.ml_requirements !==
-                              undefined &&
-                            application.programId.ml_requirements !== "" ? (
-                              <>
-                                ML Req.: {"           "}{" "}
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="light"
-                                  onClick={() =>
-                                    this.openML_Requirements_ModalWindow(
-                                      application.programId.ml_requirements
-                                    )
-                                  }
-                                >
-                                  <AiOutlineMore size={20} />
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}{" "}
-                            {application.programId.essay_requirements !==
-                              undefined &&
-                            application.programId.essay_requirements !== "" ? (
-                              <>
-                                Essay Req.: {"           "}{" "}
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="light"
-                                  onClick={() =>
-                                    this.openML_Requirements_ModalWindow(
-                                      application.programId.ml_requirements
-                                    )
-                                  }
-                                >
-                                  <AiOutlineMore size={20} />
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </Col>
-                        </Row>
+        <Collapse
+          in={this.props.accordionKeys[this.props.idx] === this.props.idx}
+        >
+          <div id="accordion1">
+            <Card.Body>
+              <Row>
+                <Col md={8}>
+                  <h5>General Documents (CV, Recommendation Letters)</h5>
+                </Col>
+              </Row>
+              <ManualFiles
+                onDeleteFileThread={this.onDeleteFileThread}
+                handleAsFinalFile={this.handleAsFinalFile}
+                role={this.props.role}
+                student={this.state.student}
+                filetype={'General'}
+                initGeneralFileThread={this.initGeneralFileThread}
+                initProgramSpecificFileThread={
+                  this.initProgramSpecificFileThread
+                }
+                application={null}
+              />
+              {this.state.student.applications.map((application, i) => (
+                <>
+                  {application.decided !== undefined &&
+                  application.decided === true ? (
+                    <>
+                      <Row>
+                        <Col>
+                          <h5>
+                            {application.programId.school}
+                            {' - '}
+                            {application.programId.program_name}
+                          </h5>
+                        </Col>
+                        <Col>
+                          {application.programId.ml_requirements !==
+                            undefined &&
+                          application.programId.ml_requirements !== '' ? (
+                            <>
+                              ML Req.: {'           '}{' '}
+                              <Button
+                                size="sm"
+                                title="Comments"
+                                variant="light"
+                                onClick={() =>
+                                  this.openML_Requirements_ModalWindow(
+                                    application.programId.ml_requirements
+                                  )
+                                }
+                              >
+                                <AiOutlineMore size={20} />
+                              </Button>
+                            </>
+                          ) : (
+                            <></>
+                          )}{' '}
+                          {application.programId.essay_requirements !==
+                            undefined &&
+                          application.programId.essay_requirements !== '' ? (
+                            <>
+                              Essay Req.: {'           '}{' '}
+                              <Button
+                                size="sm"
+                                title="Comments"
+                                variant="light"
+                                onClick={() =>
+                                  this.openML_Requirements_ModalWindow(
+                                    application.programId.ml_requirements
+                                  )
+                                }
+                              >
+                                <AiOutlineMore size={20} />
+                              </Button>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </Col>
+                      </Row>
 
-                        <ManualFiles
-                          onDeleteFileThread={this.onDeleteFileThread}
-                          onCommentsProgramSpecific={
-                            this.onCommentsProgramSpecific
-                          }
-                          handleAsFinalProgramSpecific={
-                            this.handleAsFinalProgramSpecific
-                          }
-                          role={this.props.role}
-                          student={this.state.student}
-                          application={application}
-                          filetype={"ProgramSpecific"}
-                          initGeneralFileThread={this.initGeneralFileThread}
-                          initProgramSpecificFileThread={
-                            this.initProgramSpecificFileThread
-                          }
-                        />
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                ))}
-              </Card.Body>
-            </div>
-          </Collapse>{" "}
-          {!isLoaded && (
-            <div style={style}>
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            </div>
-          )}
-        </Card>
+                      <ManualFiles
+                        onDeleteFileThread={this.onDeleteFileThread}
+                        onCommentsProgramSpecific={
+                          this.onCommentsProgramSpecific
+                        }
+                        handleAsFinalProgramSpecific={
+                          this.handleAsFinalProgramSpecific
+                        }
+                        role={this.props.role}
+                        student={this.state.student}
+                        application={application}
+                        filetype={'ProgramSpecific'}
+                        initGeneralFileThread={this.initGeneralFileThread}
+                        initProgramSpecificFileThread={
+                          this.initProgramSpecificFileThread
+                        }
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ))}
+            </Card.Body>
+          </div>
+        </Collapse>{' '}
+        {!isLoaded && (
+          <div style={style}>
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden"></span>
+            </Spinner>
+          </div>
+        )}
         <Modal
           show={this.state.deleteFileWarningModel}
           onHide={this.closeWarningWindow}

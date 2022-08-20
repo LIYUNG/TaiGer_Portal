@@ -30,7 +30,10 @@ router.use(protect);
 
 router
   .route('/')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudents);
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    getStudents
+  );
 
 router
   .route('/all')

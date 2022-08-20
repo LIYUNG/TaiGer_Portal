@@ -12,22 +12,31 @@ const ResetPasswordRequest = React.lazy(() =>
 const ResetPassword = React.lazy(() =>
   import("./Demo/Authentication/ResetPassword/ResetPassword")
 );
+const AccountActivation = React.lazy(() =>
+  import('./Demo/Authentication/Activation/Activation')
+);
 
 const route = [
-  { path: "/auth/sign-up", exact: true, name: "Signup 1", component: SignUp1 },
+  { path: '/auth/sign-up', exact: true, name: 'Signup 1', component: SignUp1 },
   {
-    path: "/account/reset-password",
-    exact: false,
-    name: "ResetPassword",
-    component: ResetPassword,
-  },
-  {
-    path: "/account/forgot-password",
+    path: '/account/activation',
     exact: true,
-    name: "ResetPassword 1",
-    component: ResetPasswordRequest,
+    name: 'Signup 1',
+    component: AccountActivation
   },
-  { path: "/", component: Signin1 },
+  {
+    path: '/account/reset-password',
+    exact: false,
+    name: 'ResetPassword',
+    component: ResetPassword
+  },
+  {
+    path: '/account/forgot-password',
+    exact: true,
+    name: 'ResetPassword 1',
+    component: ResetPasswordRequest
+  },
+  { path: '/', component: Signin1 }
 ];
 
 export default route;

@@ -44,6 +44,10 @@ const UserSchema = new Schema(
       type: String,
       default: ''
     },
+    isAccountActivated: {
+      type: Boolean,
+      default: false
+    },
     taigerai: {
       input: {
         name: {

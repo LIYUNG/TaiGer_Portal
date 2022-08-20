@@ -9,14 +9,14 @@ import { resetPassword } from "../../../api/auth";
 
 export default function ResetPassword(props) {
   const query = new URLSearchParams(props.location.search);
-  console.log(query.get("email"));
-  const [email, setEmail] = useState(query.get("email"));
-  const [token, setToken] = useState(query.get("token"));
+  console.log(query.get('email'));
+  const [email, setEmail] = useState(query.get('email'));
+  const [token, setToken] = useState(query.get('token'));
   const [passwordchanged, setPasswordchanged] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [password, setPassword] = useState('');
+  const [passwordRepeat, setPasswordRepeat] = useState('');
   const passwordValidation = () => {
-    if (password === "") return false;
+    if (password === '') return false;
     if (password.length < 8) return false;
     var decimal =
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
@@ -38,21 +38,21 @@ export default function ResetPassword(props) {
           const resp = await resetPassword({
             email,
             password,
-            token,
+            token
           });
           const { success } = resp.data;
           if (success) {
-            console.log("Password change success");
+            console.log('Password change success');
             setPasswordchanged(true);
           }
         } else {
-          alert("Password did not match!");
+          alert('Password did not match!');
         }
       } catch (err) {
         console.log(err);
       }
     } else {
-      alert("Password is not valid");
+      alert('Password is not valid');
     }
   };
   if (passwordchanged) {
@@ -128,7 +128,7 @@ export default function ResetPassword(props) {
                   Reset
                 </button>
                 <p className="mb-0 text-muted">
-                  Allready have an account?{" "}
+                  Allready have an account?{' '}
                   <NavLink to="/auth/login">Login</NavLink>
                 </p>
               </div>

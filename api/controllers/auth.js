@@ -1,8 +1,8 @@
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
-const { JWT_SECRET, JWT_EXPIRE } = require("../config");
-const { ErrorResponse } = require("../common/errors");
+const { JWT_SECRET, JWT_EXPIRE } = require('../config');
+const { ErrorResponse } = require('../common/errors');
 
 const {
   fieldsValidation,
@@ -10,26 +10,26 @@ const {
   checkUserLastname,
   checkEmail,
   checkPassword,
-  checkToken,
-} = require("../common/validation");
-const { asyncHandler } = require("../middlewares/error-handler");
-const { User, Guest, Role } = require("../models/User");
-const Token = require("../models/Token");
+  checkToken
+} = require('../common/validation');
+const { asyncHandler } = require('../middlewares/error-handler');
+const { User, Guest, Role } = require('../models/User');
+const Token = require('../models/Token');
 const {
   sendConfirmationEmail,
   sendForgotPasswordEmail,
-  sendPasswordResetEmail,
-} = require("../services/email");
+  sendPasswordResetEmail
+} = require('../services/email');
 
 const generateAuthToken = (user) => {
   const payload = { id: user._id };
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRE });
 };
 
-const generateRandomToken = () => crypto.randomBytes(32).toString("hex");
+const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
 
 const hashToken = (token) =>
-  crypto.createHash("sha256").update(token).digest("hex");
+  crypto.createHash('sha256').update(token).digest('hex');
 
 const signup = asyncHandler(async (req, res) => {
   await fieldsValidation(
@@ -45,7 +45,7 @@ const signup = asyncHandler(async (req, res) => {
   if (existUser) {
     throw new ErrorResponse(
       400,
-      "An account with this email address already exists"
+      'An account with this email address already exists'
     );
   }
   // TODO: check if email address exists in the world!
@@ -55,27 +55,31 @@ const signup = asyncHandler(async (req, res) => {
   const activationToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(activationToken) });
 
-  // await sendConfirmationEmail({ firstname, lastname, address: email }, activationToken);
+  await sendConfirmationEmail(
+    { firstname, lastname, address: email },
+    activationToken
+  );
 
-  const authToken = generateAuthToken(user);
+  // const authToken = generateAuthToken(user);
   res
-    .cookie("x-auth", authToken, { httpOnly: true, sameSite: 'none', secure: true })
+    // .cookie("x-auth", authToken, { httpOnly: true, sameSite: 'none', secure: true })
     .status(201)
-    .json({ success: true, data: user });
+    // .json({ success: true, data: user });
+    .json({ success: true });
 });
 
 const login = (req, res) => {
   const user = req.user;
   const token = generateAuthToken(user);
   res
-    .cookie("x-auth", token, { httpOnly: true, sameSite: 'none', secure: true })
+    .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)
     .json({ success: true, data: user });
 };
 
 const logout = (req, res) => {
   res
-    .clearCookie("x-auth", { httpOnly: true, sameSite: "none", secure: true })
+    .clearCookie('x-auth', { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)
     .json({ success: true });
 };
@@ -84,7 +88,7 @@ const verify = (req, res) => {
   const user = req.user;
   const token = generateAuthToken(user);
   res
-    .cookie("x-auth", token, { httpOnly: true, sameSite: 'none', secure: true })
+    .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)
     .json({ success: true, data: user });
 };
@@ -95,22 +99,39 @@ const activateAccount = asyncHandler(async (req, res) => {
   const { email, token: activationToken } = req.body;
 
   const token = await Token.findOne({ value: hashToken(activationToken) });
-  if (!token) throw new ErrorResponse(400, "Invalid or expired token");
+  if (!token) throw new ErrorResponse(400, 'Invalid or expired token');
 
   const user = await User.findOne({ _id: token.userId, email });
-  if (!user) throw new ErrorResponse(400, "Invalid email or token");
+  if (!user) throw new ErrorResponse(400, 'Invalid email or token');
 
-  if (user.role !== Role.Guest)
-    throw new ErrorResponse(400, "User account already activated");
+  // if (user.role !== Role.Guest)
+  //   throw new ErrorResponse(400, "User account already activated");
 
+  // await User.findOneAndUpdate(
+  //   { _id: token.userId },
+  //   { $set: { role: Role.Student } },
+  //   { new: true }
+  // );
+
+  
   await User.findOneAndUpdate(
     { _id: token.userId },
-    { $set: { role: Role.Student } },
+    { $set: { isAccountActivated: true } },
     { new: true }
   );
+
+
   await token.deleteOne();
 
-  res.status(200).json({ success: true });
+  const authToken = generateAuthToken(user);
+  res
+    .cookie('x-auth', authToken, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true
+    })
+    .status(200)
+    .json({ success: true });
 });
 
 const resendActivation = asyncHandler(async (req, res) => {
@@ -119,15 +140,15 @@ const resendActivation = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) throw new ErrorResponse(400, "Email not found");
+  if (!user) throw new ErrorResponse(400, 'Email not found');
 
   if (user.role !== Role.Guest)
-    throw new ErrorResponse(400, "User account already activated");
+    throw new ErrorResponse(400, 'User account already activated');
 
   const activationToken = generateRandomToken();
   await Token.create({
     userId: user._id,
-    value: hashToken(activationToken),
+    value: hashToken(activationToken)
   });
 
   await sendConfirmationEmail(
@@ -144,7 +165,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) throw new ErrorResponse(400, "Email not found");
+  if (!user) throw new ErrorResponse(400, 'Email not found');
 
   const resetToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(resetToken) });
@@ -163,10 +184,10 @@ const resetPassword = asyncHandler(async (req, res) => {
   const { email, password, token: resetToken } = req.body;
 
   const token = await Token.findOne({ value: hashToken(resetToken) });
-  if (!token) throw new ErrorResponse(400, "Invalid or expired token");
+  if (!token) throw new ErrorResponse(400, 'Invalid or expired token');
 
   const user = await User.findOne({ _id: token.userId, email });
-  if (!user) throw new ErrorResponse(404, "Invalid email or token");
+  if (!user) throw new ErrorResponse(404, 'Invalid email or token');
 
   user.password = password;
   await user.save();
@@ -174,7 +195,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   await sendPasswordResetEmail({
     firstname: user.firstname,
     lastname: user.lastname,
-    address: email,
+    address: email
   });
   await token.deleteOne();
 
@@ -189,5 +210,5 @@ module.exports = {
   activateAccount,
   resendActivation,
   forgotPassword,
-  resetPassword,
+  resetPassword
 };

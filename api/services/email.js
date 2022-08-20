@@ -40,7 +40,7 @@ const sendEmail = (to, subject, message) => {
 };
 
 const sendConfirmationEmail = async (recipient, token) => {
-  const subject = "Email verification";
+  const subject = "TaiGer Portal Email verification";
   const activationLink = queryString.stringifyUrl({
     url: ACCOUNT_ACTIVATION_URL,
     query: { email: recipient.address, token },

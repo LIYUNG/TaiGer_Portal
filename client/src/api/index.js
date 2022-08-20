@@ -13,6 +13,9 @@ export const register = (credentials) =>
 export const forgotPassword = ({ email }) =>
   request.post('/auth/forgot-password', { email });
 
+export const activation = (email, token) =>
+  request.post('/auth/activation', { email, token });
+
 export const resendActivation = ({ email }) =>
   request.post('/auth/resend-activation', { email });
 
@@ -274,8 +277,7 @@ export const getUniassistArticle = () => getArticle('uniassist');
 export const getCertificationArticle = () => getArticle('certification');
 
 //Task:
-export const initTasks = (studentId) =>
-  request.post(`/api/tasks/${studentId}`);
+export const initTasks = (studentId) => request.post(`/api/tasks/${studentId}`);
 export const getMyStudentsTasks = () =>
   request.get('/api/tasks/my-students-tasks');
 export const getMyStudentTasks = (studentId) =>

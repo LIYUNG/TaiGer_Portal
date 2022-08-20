@@ -62,12 +62,16 @@ class NavItem extends Component {
       if (
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Base Documents' ||
-        itemTitle === 'Dashboard' ||
+        // itemTitle === 'Dashboard' ||
+        itemTitle === 'My Tasks Overview' ||
         itemTitle === 'CV/ML/RL Center' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||
+        itemTitle === 'Interview Training' ||
         itemTitle === 'Map' ||
         itemTitle === 'Archiv Students' ||
+        itemTitle === 'TaiGer AI' ||
+        itemTitle === 'Documentation' ||
         itemTitle === 'Student Database' ||
         itemTitle === 'User List'
       ) {

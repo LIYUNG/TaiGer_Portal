@@ -1,21 +1,25 @@
-const passport = require("passport");
-const { ErrorResponse } = require("../common/errors");
+const passport = require('passport');
+const { ErrorResponse } = require('../common/errors');
 
 const localAuth = (req, res, next) => {
-  passport.authenticate("local", { session: false }, (err, user) => {
+  passport.authenticate('local', { session: false }, (err, user) => {
     if (err) return next(err);
 
-    if (!user) return next(new ErrorResponse(401, "Invalid credentials"));
+    if (user === 'inactivated') {
+      return next(new ErrorResponse(403, 'Inactivated account'));
+    }
+
+    if (!user) return next(new ErrorResponse(401, 'Invalid credentials'));
     req.user = user;
     next();
   })(req, res, next);
 };
 
 const protect = (req, res, next) => {
-  passport.authenticate("jwt", { session: false }, (err, user) => {
+  passport.authenticate('jwt', { session: false }, (err, user) => {
     if (err) return next(err);
 
-    if (!user) return next(new ErrorResponse(401, "Unauthorized"));
+    if (!user) return next(new ErrorResponse(401, 'Unauthorized'));
 
     req.user = user;
     next();
@@ -26,7 +30,7 @@ const permit =
   (...roles) =>
   (req, res, next) => {
     if (!roles.includes(req.user.role))
-      return next(new ErrorResponse(403, "Permission denied"));
+      return next(new ErrorResponse(403, 'Permission denied'));
 
     next();
   };
@@ -35,7 +39,7 @@ const prohibit =
   (...roles) =>
   (req, res, next) => {
     if (roles.includes(req.user.role))
-      return next(new ErrorResponse(403, "Permission denied2"));
+      return next(new ErrorResponse(403, 'Permission denied2'));
 
     next();
   };

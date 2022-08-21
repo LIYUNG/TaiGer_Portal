@@ -18,7 +18,7 @@ export default function Activation(props) {
       if (success) {
         setActivationSuccess(true);
       } else {
-        alert(res.data.message);
+        setActivationSuccess(false);
       }
     });
   }, []);

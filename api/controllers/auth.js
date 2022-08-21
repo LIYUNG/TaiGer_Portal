@@ -113,13 +113,11 @@ const activateAccount = asyncHandler(async (req, res) => {
   //   { new: true }
   // );
 
-  
   await User.findOneAndUpdate(
     { _id: token.userId },
     { $set: { isAccountActivated: true } },
     { new: true }
   );
-
 
   await token.deleteOne();
 
@@ -142,8 +140,16 @@ const resendActivation = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw new ErrorResponse(400, 'Email not found');
 
-  if (user.role !== Role.Guest)
-    throw new ErrorResponse(400, 'User account already activated');
+  // const activationToken = generateRandomToken();
+  // await Token.create({ userId: user._id, value: hashToken(activationToken) });
+
+  // await sendConfirmationEmail(
+  //   { firstname, lastname, address: email },
+  //   activationToken
+  // );
+
+  // if (user.role !== Role.Guest)
+  //   throw new ErrorResponse(400, 'User account already activated');
 
   const activationToken = generateRandomToken();
   await Token.create({

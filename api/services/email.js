@@ -10,16 +10,16 @@ const {
   BASE_URL,
   ORIGIN
 } = require('../config');
-
-const ACCOUNT_ACTIVATION_URL = path.join(ORIGIN, 'account/activation');
-const RESEND_ACTIVATION_URL = path.join(ORIGIN, 'account/resend-activation');
+const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
+// const ACCOUNT_ACTIVATION_URL = path.join(ORIGIN, 'account/activation');
+const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN).href;
+// const RESEND_ACTIVATION_URL = path.join(ORIGIN, 'account/resend-activation');
 const PASSWORD_RESET_URL = path.join(ORIGIN, 'account/reset-password');
 const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
-
+const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
 const transporter = createTransport({
   // host: SMTP_HOST,
   // port: 465,
-  // secure: true, // new
   service: 'gmail',
   auth: {
     user: SMTP_USERNAME,
@@ -30,6 +30,7 @@ const transporter = createTransport({
 const verifySMTPConfig = () => {
   return transporter.verify();
 };
+
 const senderName = `No-Reply TaiGer Consultancy ${SMTP_USERNAME}`;
 const sendEmail = (to, subject, message) => {
   const mail = {
@@ -47,6 +48,11 @@ const sendConfirmationEmail = async (recipient, token) => {
     url: ACCOUNT_ACTIVATION_URL,
     query: { email: recipient.address, token }
   });
+  // const activationLink = queryString.stringifyUrl({
+  //   url: ACCOUNT_ACTIVATION_URL,
+  //   query: { email: recipient.address, token }
+  // });
+  //  const fullUrl2 = urlJoin(fullUrl, 'account/activation');
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname},
 
@@ -56,7 +62,10 @@ Please use the following link to activate your account:
 ${activationLink}
 
 This link will expire in 20 minutes.
-You can request another here: ${RESEND_ACTIVATION_URL}`;
+You can request another here: ${RESEND_ACTIVATION_URL}
+
+${TAIGER_SIGNATURE}
+`;
 
   return sendEmail(recipient, subject, message);
 };
@@ -75,7 +84,10 @@ Please use the link below to reset your password:
 ${passwordResetLink}
 
 This link will expire in 20 minutes.
-You can request another here: ${FORGOT_PASSWORD_URL}`;
+You can request another here: ${FORGOT_PASSWORD_URL}
+
+${TAIGER_SIGNATURE}
+`;
 
   return sendEmail(recipient, subject, message);
 };
@@ -85,7 +97,10 @@ const sendPasswordResetEmail = async (recipient) => {
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname},
 
-Your password has been successfully updated, you can now login with your new password.`;
+Your password has been successfully updated, you can now login with your new password.
+
+${TAIGER_SIGNATURE}
+`;
 
   return sendEmail(recipient, subject, message);
 };
@@ -101,6 +116,7 @@ for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
 
 Please review it and confirm with your editor and finalize the document review.
 
+${TAIGER_SIGNATURE}
 `;
 
   return sendEmail(recipient, subject, message);
@@ -117,6 +133,7 @@ for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
 
 Please double check. If something goes wrong, please talk to editor as soon as possible.
 
+${TAIGER_SIGNATURE}
 `;
 
   return sendEmail(recipient, subject, message);
@@ -132,6 +149,8 @@ you have uploaded ${msg.uploaded_documentname}
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Your editor will review it and give you feedback as soon as possible.
+
+${TAIGER_SIGNATURE}
 `;
 
   return sendEmail(recipient, subject, message);
@@ -150,6 +169,8 @@ you have uploaded ${msg.uploaded_documentname}
 on ${msg.uploaded_updatedAt}.
 
 Your editor will review it and give you feedback as soon as possible.
+
+${TAIGER_SIGNATURE}
 `;
 
   return sendEmail(recipient, subject, message);

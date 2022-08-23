@@ -12,10 +12,14 @@ const {
 } = require('../config');
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 // const ACCOUNT_ACTIVATION_URL = path.join(ORIGIN, 'account/activation');
-const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN).href;
+const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
+  .href;
 // const RESEND_ACTIVATION_URL = path.join(ORIGIN, 'account/resend-activation');
-const PASSWORD_RESET_URL = path.join(ORIGIN, 'account/reset-password');
-const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
+const PASSWORD_RESET_URL = new URL('/account/reset-password', ORIGIN).href;
+// const PASSWORD_RESET_URL = path.join(ORIGIN, 'account/reset-password');
+const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
+// const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
+
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
 const transporter = createTransport({
   // host: SMTP_HOST,
@@ -48,11 +52,6 @@ const sendConfirmationEmail = async (recipient, token) => {
     url: ACCOUNT_ACTIVATION_URL,
     query: { email: recipient.address, token }
   });
-  // const activationLink = queryString.stringifyUrl({
-  //   url: ACCOUNT_ACTIVATION_URL,
-  //   query: { email: recipient.address, token }
-  // });
-  //  const fullUrl2 = urlJoin(fullUrl, 'account/activation');
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname},
 
@@ -65,6 +64,7 @@ This link will expire in 20 minutes.
 You can request another here: ${RESEND_ACTIVATION_URL}
 
 ${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -87,6 +87,7 @@ This link will expire in 20 minutes.
 You can request another here: ${FORGOT_PASSWORD_URL}
 
 ${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -100,6 +101,7 @@ Hi ${recipient.firstname} ${recipient.lastname},
 Your password has been successfully updated, you can now login with your new password.
 
 ${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -117,6 +119,7 @@ for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
 Please review it and confirm with your editor and finalize the document review.
 
 ${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -134,6 +137,7 @@ for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
 Please double check. If something goes wrong, please talk to editor as soon as possible.
 
 ${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -151,6 +155,7 @@ for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 Your editor will review it and give you feedback as soon as possible.
 
 ${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -171,6 +176,7 @@ on ${msg.uploaded_updatedAt}.
 Your editor will review it and give you feedback as soon as possible.
 
 ${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -189,6 +195,9 @@ your editor ${msg.editor_firstname} - ${msg.editor_lastname} has uploaded ${msg.
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Please review it and confirm with your editor and finalize the document review.
+
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -209,6 +218,9 @@ for student ${msg.student_firstname} - ${msg.student_lastname}
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Please double check it and see if something goes wrong.
+
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -224,6 +236,9 @@ has uploaded ${msg.uploaded_documentname}
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Your editor will review it and give you feedback as soon as possible.
+
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -237,6 +252,9 @@ Hi ${recipient.firstname} ${recipient.lastname},
 you have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.
 
 Your agent will review it as soon as possible.
+
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -250,6 +268,9 @@ Hi ${recipient.firstname} ${recipient.lastname},
 your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
 
 If you have any question, feel free to contact your agent.
+
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -262,7 +283,11 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname}
 
-on ${msg.uploaded_updatedAt}.`; // should be for student/agent/editor
+on ${msg.uploaded_updatedAt}.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for student/agent/editor
 
   return sendEmail(recipient, subject, message);
 };
@@ -280,6 +305,9 @@ your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Please the input from student and give student your feedback as soon as possible.
+
+${TAIGER_SIGNATURE}
+
 `; // should be for student/agent/editor
 
   return sendEmail(recipient, subject, message);
@@ -298,6 +326,9 @@ your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Please double check it. If there is anything wrong, please contact student as soon as possible.
+
+${TAIGER_SIGNATURE}
+
 `; // should be for student/agent/editor
 
   return sendEmail(recipient, subject, message);
@@ -313,6 +344,9 @@ your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg
 for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
 
 Please give your student feedback as soon as possible.
+
+${TAIGER_SIGNATURE}
+
 `; // should be for student/agent/editor
 
   return sendEmail(recipient, subject, message);
@@ -326,6 +360,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
 
 for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
+
+${TAIGER_SIGNATURE}
 
 `; // should be for student/agent/editor
 
@@ -345,6 +381,9 @@ due to the following reason, please upload ${msg.category} again:
 ${msg.message}
 
 If you have any question, please contact your agent. 
+
+${TAIGER_SIGNATURE}
+
 `; // should be for student
   } else {
     subject = `File Status changes: ${msg.category} is valid`;
@@ -353,7 +392,11 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your uploaded file ${msg.category} is successfully checked by your agent
 
-and it can be used for the application! `; // should be for student
+and it can be used for the application! 
+
+${TAIGER_SIGNATURE}
+
+`; // should be for student
   }
 
   return sendEmail(recipient, subject, message);
@@ -366,7 +409,11 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${msg.std_firstname} ${msg.std_lastname} will be your student!
 
-Please say hello to your student!`;
+Please say hello to your student!
+
+${TAIGER_SIGNATURE}
+
+`;
 
   return sendEmail(recipient, subject, message);
 };
@@ -386,6 +433,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${agent} will be your agent!
 
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -398,7 +447,11 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${msg.std_firstname} ${msg.std_lastname} will be your student!
 
-Please say hello to your student!`;
+Please say hello to your student!
+
+${TAIGER_SIGNATURE}
+
+`;
 
   return sendEmail(recipient, subject, message);
 };
@@ -418,6 +471,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${editor} will be your editor!
 
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -428,7 +483,11 @@ const sendSomeReminderEmail = async (recipient) => {
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-Some reminder email template.`; // should be for admin/editor/agent/student
+Some reminder email template.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
 };
@@ -450,6 +509,9 @@ for you.
 This document is ready for the application. 
 
 If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -471,6 +533,8 @@ for ${msg.student_firstname} ${msg.student_lastname}.
 
 Double check this document and finalize the application if applicable. 
 
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -489,6 +553,8 @@ on ${msg.uploaded_updatedAt}
 
 Double check this document and finalize the application if applicable. 
 
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -506,6 +572,8 @@ Your editor ${msg.editor_firstname} ${msg.editor_lastname} has updated a feedbac
 on ${msg.uploaded_updatedAt} 
 
 Please reply to your editor as soon as possible!
+
+${TAIGER_SIGNATURE}
 
 `;
 
@@ -528,6 +596,8 @@ on ${msg.uploaded_updatedAt}
 
 Double check this document and finalize the application if applicable. 
 
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -549,6 +619,8 @@ on ${msg.uploaded_updatedAt}
 
 Please reply to your editor as soon as possible.
 
+${TAIGER_SIGNATURE}
+
 `;
 
   return sendEmail(recipient, subject, message);
@@ -566,6 +638,8 @@ Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feed
 on ${msg.uploaded_updatedAt} 
 
 Double check this document and finalize the application if applicable. 
+
+${TAIGER_SIGNATURE}
 
 `;
 
@@ -587,6 +661,8 @@ Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feed
 on ${msg.uploaded_updatedAt} 
 
 Double check this document and finalize the application if applicable. 
+
+${TAIGER_SIGNATURE}
 
 `;
 

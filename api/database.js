@@ -6,11 +6,11 @@ const connectToDatabase = async (uri, timeoutMS = 5000) => {
   })
 
   const { connection } = await mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    serverSelectionTimeoutMS: timeoutMS,
+    // useNewUrlParser: true, // mongoose 6 not support this anymore (always default true)
+    // useUnifiedTopology: true, // mongoose 6 not support this anymore (always default true)
+    // useCreateIndex: true, // mongoose 6 not support this anymore (always default true)
+    // useFindAndModify: false, // mongoose 6 not support this anymore (always default false)
+    serverSelectionTimeoutMS: timeoutMS
   });
 
   return connection

@@ -45,7 +45,7 @@ const s3 = new aws.S3({
 
 const getMyfiles = asyncHandler(async (req, res) => {
   const { user } = req;
-  console.log('getMyfiles API');
+  // console.log('getMyfiles API');
   const student = await User.findById(user._id);
   // if (!student) throw new ErrorResponse(400, "Invalid student id");
 

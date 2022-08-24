@@ -3,6 +3,8 @@ const path = require('path');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
+const logger = require('../services/logger');
+
 const { UPLOAD_PATH } = require('../config');
 var async = require('async');
 const fs = require('fs');
@@ -102,6 +104,7 @@ const getArchivStudent = asyncHandler(async (req, res) => {
   } = req;
 
   if (user.role === 'Guest' || user.role === 'Student') {
+    logger.error('Unauthorized access: getArchivStudent');
     throw new ErrorResponse(400, 'Unauthorized access.');
   }
   const students = await Student.find({
@@ -400,7 +403,7 @@ const createApplication = asyncHandler(async (req, res) => {
       await student.save();
     }
   } catch (err) {
-    console.log(err);
+    logger.error('createApplication: ', err);
     throw new ErrorResponse(400, err);
   }
 
@@ -418,7 +421,10 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   let student = await Student.findById(studentId).populate(
     'applications.programId'
   );
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('deleteApplication: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   // console.log(student.applications);
   // console.log(applicationId);
@@ -431,31 +437,40 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     ({ programId }) => programId._id == applicationId
   );
   // console.log(application);
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
+  if (!application) {
+    logger.error('deleteApplication: Invalid application id');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
 
   // TODO: iteratively to remove files
   if (application.documents)
     for (let i = 0; i < application.documents.length; i++) {
-      var document = application.documents[i];
-      if (!document) throw new ErrorResponse(400, 'docName not existed');
-      if (document.path)
-        if (document.path !== '') {
-          const filePath = path.join(UPLOAD_PATH, document.path);
-          // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-          if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-        }
+      let document = application.documents[i];
+      if (!document) {
+        logger.error('deleteApplication: docName not existed');
+        throw new ErrorResponse(400, 'docName not existed');
+      }
+      if (document.path && document.path !== '') {
+        // TODO: delete files in S3
+        const filePath = path.join(UPLOAD_PATH, document.path);
+        // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      }
     }
-  //Delete student inputs
+  // Delete student inputs
   if (application.student_inputs)
     for (let i = 0; i < application.student_inputs.length; i++) {
-      var student_input = application.student_inputs[i];
-      if (!student_input) throw new ErrorResponse(400, 'docName not existed');
-      if (student_input.path)
-        if (student_input.path !== '') {
-          const filePath = path.join(UPLOAD_PATH, student_input.path);
-          // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-          if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-        }
+      let student_input = application.student_inputs[i];
+      if (!student_input) {
+        logger.error('deleteApplication: docName not existed');
+        throw new ErrorResponse(400, 'docName not existed');
+      }
+      if (student_input.path && student_input.path !== '') {
+        // TODO: delete files in S3
+        const filePath = path.join(UPLOAD_PATH, student_input.path);
+        // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      }
     }
 
   await Student.findByIdAndUpdate(studentId, {
@@ -463,10 +478,13 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   });
   const folderPath = path.join(UPLOAD_PATH, studentId, applicationId);
   try {
-    //TODO: better implementation is to find all document in that folder and remove recursively and finally rmdirSync
-    // See:　https://stackoverflow.com/questions/49025244/error-eperm-operation-not-permitted-while-remove-directory-not-emty/49025300
+    // TODO: better implementation is to find all document in that folder
+    // and remove recursively and finally rmdirSync
+    // See:
+    // https://stackoverflow.com/questions/49025244/error-eperm-operation-not-permitted-while-remove-directory-not-emty/49025300
     if (fs.existsSync(folderPath)) fs.rmdirSync(folderPath); //failed when folder not empty:EPERM: operation not permitted, unlink 'tmp\files_development\60a116ba6f221e768c0803c7\60a138f6c355006b00684620'
   } catch (err) {
+    logger.error('Your Application folder not empty!', err);
     throw new ErrorResponse(500, 'Your Application folder not empty!');
   }
   //////// update DB

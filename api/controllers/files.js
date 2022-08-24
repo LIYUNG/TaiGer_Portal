@@ -37,6 +37,7 @@ const {
   AWS_S3_ACCESS_KEY,
   AWS_S3_BUCKET_NAME
 } = require('../config');
+const logger = require('../services/logger');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -68,7 +69,10 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
     .populate('applications.programId')
     .lean()
     .exec();
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('saveProgramSpecificFilePath: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
   // console.log(student);
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
@@ -76,7 +80,10 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
   const idx = student.applications.findIndex(
     ({ programId }) => programId._id == applicationId
   );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
+  if (!application) {
+    logger.error('saveProgramSpecificFilePath: Invalid application id!');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
 
   let student_input_doc;
   let editor_output_doc;
@@ -84,8 +91,10 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
     student_input_doc = application.student_inputs.find(
       ({ name }) => name === req.file.key
     );
-    if (student_input_doc)
+    if (student_input_doc) {
+      logger.error('saveProgramSpecificFilePath: Document already existed!');
       throw new ErrorResponse(400, 'Document already existed!');
+    }
     student_input_doc = application.student_inputs.create({
       name: req.file.key
     });
@@ -156,8 +165,10 @@ const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
     editor_output_doc = application.documents.find(
       ({ name }) => name === req.file.key
     );
-    if (editor_output_doc)
+    if (editor_output_doc) {
+      logger.error('saveProgramSpecificFilePath: Document already existed!');
       throw new ErrorResponse(400, 'Document already existed!');
+    }
     editor_output_doc = application.documents.create({
       name: req.file.key
     });
@@ -228,7 +239,10 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
   const student = await Student.findById(studentId)
     .populate('applications.programId')
     .populate('students agents editors', 'firstname lastname email');
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('saveGeneralFilePath: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
   let editor_output_doc;
   let student_input_doc;
   if (user.role == Role.Student) {
@@ -236,6 +250,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
       ({ name }) => name === req.file.key
     );
     if (student_input_doc) {
+      logger.error('saveGeneralFilePath: Document already existed!');
       throw new ErrorResponse(400, 'Document already existed!');
     }
     student_input_doc = student.generaldocs.studentinputs.create({
@@ -300,6 +315,7 @@ const saveGeneralFilePath = asyncHandler(async (req, res) => {
       ({ name }) => name === req.file.key
     );
     if (editor_output_doc) {
+      logger.error('saveGeneralFilePath: Document already existed!');
       throw new ErrorResponse(400, 'Document already existed!');
     }
     editor_output_doc = student.generaldocs.editoroutputs.create({
@@ -360,12 +376,14 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     params: { studentId, category }
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  console.log(req.file);
   const student =
     user.role === Role.Student
       ? user
       : await Student.findById(studentId).populate('applications.programId');
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('saveProfileFilePath: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
   // console.log(student);
   let document = student.profile.find(({ name }) => name === category);
   if (!document) {
@@ -491,11 +509,20 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   // download the file via aws s3 here
   const student =
     user.role == Role.Student ? user : await Student.findById(studentId);
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('downloadProfileFile: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   const document = student.profile.find(({ name }) => name === category);
-  if (!document) throw new ErrorResponse(400, 'Invalid document name');
-  if (!document.path) throw new ErrorResponse(400, 'File not uploaded yet');
+  if (!document) {
+    logger.error('downloadProfileFile: Invalid document name!');
+    throw new ErrorResponse(400, 'Invalid document name');
+  }
+  if (!document.path) {
+    logger.error('downloadProfileFile: File not uploaded yet!');
+    throw new ErrorResponse(400, 'File not uploaded yet');
+  }
 
   // var fileKey = path.join(UPLOAD_PATH, document.path);
   let document_split = document.path.replace(/\\/g, '/');
@@ -515,13 +542,13 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
     .then(() => {
       // This will not throw error anymore
       res.attachment(fileKey);
-      var fileStream = s3.getObject(options).createReadStream();
+      let fileStream = s3.getObject(options).createReadStream();
       fileStream.pipe(res);
     })
     .catch((error) => {
       if (error.statusCode === 404) {
         // Catching NoSuchKey
-        console.log(error);
+        logger.error('downloadProfileFile: ', error);
       }
       return res
         .status(error.statusCode)
@@ -533,9 +560,8 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   const {
     params: { category }
   } = req;
-  console.log('downloadTemplateFile');
   const filePath = path.join(UPLOAD_PATH, 'TaiGer_Template', category);
-  console.log(filePath);
+  // TODO: S3 bucket
   // FIXME: clear the filePath for consistency?
   if (!fs.existsSync(filePath))
     throw new ErrorResponse(400, 'File does not exist');
@@ -555,12 +581,18 @@ const downloadProgramSpecificFile = asyncHandler(async (req, res, next) => {
   const student = await Student.findById(studentId).populate(
     'applications.programId'
   );
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('downloadProgramSpecificFile: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
+  if (!application) {
+    logger.error('downloadProgramSpecificFile: Invalid application id!');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
   // TODO: flag for differenciate students input or edited file
   let document;
   if (whoupdate === 'Student') {
@@ -568,8 +600,14 @@ const downloadProgramSpecificFile = asyncHandler(async (req, res, next) => {
   } else {
     document = application.documents.find(({ name }) => name === docName);
   }
-  if (!document) throw new ErrorResponse(400, 'Invalid document name');
-  if (!document.path) throw new ErrorResponse(400, 'File not uploaded yet');
+  if (!document) {
+    logger.error('downloadProgramSpecificFile: Invalid document name!');
+    throw new ErrorResponse(400, 'Invalid document name');
+  }
+  if (!document.path) {
+    logger.error('downloadProgramSpecificFile: File not uploaded yet!');
+    throw new ErrorResponse(400, 'File not uploaded yet');
+  }
   // const filePath = path.join(UPLOAD_PATH, document.path);
   // // const filePath = document.path;
   // // FIXME: clear the filePath for consistency?
@@ -628,7 +666,10 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
     const student = await Student.findById(studentId).populate(
       'applications.programId'
     );
-    if (!student) throw new ErrorResponse(400, 'Invalid student id');
+    if (!student) {
+      logger.error('downloadGeneralFile: Invalid student id!');
+      throw new ErrorResponse(400, 'Invalid student id');
+    }
     // TODO: flag for differenciate students input or edited file
     let document;
     if (whoupdate === 'Student') {
@@ -640,8 +681,14 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
         ({ name }) => name === docName
       );
     }
-    if (!document) throw new ErrorResponse(400, 'Invalid document name');
-    if (!document.path) throw new ErrorResponse(400, 'File not uploaded yet');
+    if (!document) {
+      logger.error('downloadGeneralFile: Invalid document name!');
+      throw new ErrorResponse(400, 'Invalid document name');
+    }
+    if (!document.path) {
+      logger.error('downloadGeneralFile: File not uploaded yet!');
+      throw new ErrorResponse(400, 'File not uploaded yet');
+    }
     // console.log(document);
     // const filePath = path.join(UPLOAD_PATH, document.path);
     // // const filePath = document.path;
@@ -687,7 +734,7 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
     // var fileStream = s3.getObject(options).createReadStream();
     // fileStream.pipe(res);
   } catch (err) {
-    console.log(err);
+    logger.error('downloadGeneralFile: ', err);
     return new ErrorResponse(400, 'Strange error!');
   }
 });
@@ -704,6 +751,9 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     _id: studentId
   });
   if (!student) {
+    logger.error(
+      'updateProfileDocumentStatus: Invalid student Id or application Id'
+    );
     throw new ErrorResponse(400, 'Invalid student Id or application Id');
   }
   var document = student.profile.find(({ name }) => name === category);
@@ -720,7 +770,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       return res.status(201).send({ success: true, data: student });
     }
   } catch (err) {
-    console.log(err);
+    logger.error('updateProfileDocumentStatus: ', err);
   }
   // TODO: left reject image
   if (status == DocumentStatus.Rejected) {
@@ -762,7 +812,10 @@ const SetAsDecidedProgram = asyncHandler(async (req, res, next) => {
     .populate('students agents editors', 'firstname lastname email')
     .exec();
 
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('SetAsDecidedProgram: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
   // console.log(student);
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId

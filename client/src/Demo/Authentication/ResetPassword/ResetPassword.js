@@ -19,7 +19,7 @@ export default function ResetPassword(props) {
     if (password === '') return false;
     if (password.length < 8) return false;
     var decimal =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,20}$/;
     if (decimal.test(password) === false) return false;
     // const regex =
     //   /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -105,7 +105,7 @@ export default function ResetPassword(props) {
                   <br />- 1 Lowercase
                   <br />- 1 number
                   <br />- 1 special character
-                  <br />- length of 8 characterv
+                  <br />- length of 8 - 20 characters
                 </p>
                 <div className="input-group mb-4">
                   <input

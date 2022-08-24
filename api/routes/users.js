@@ -10,6 +10,6 @@ router.use(protect, permit(Role.Admin));
 
 router.route('/').get(getUsers);
 
-router.route('/:id').put(updateUser).delete(deleteUser);
+router.route('/:id').post(updateUser).delete(deleteUser);
 
 module.exports = router;

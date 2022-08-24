@@ -36,7 +36,6 @@ class EditableUser extends React.Component {
           user={this.state.user}
           header={this.props.header}
           onFormSubmit={this.handleSubmit}
-          RemoveProgramHandler3={this.props.RemoveProgramHandler3}
           handleFormClose={this.handleFormClose}
           openForm={this.openForm}
           setModalShow={this.props.setModalShow}
@@ -48,9 +47,7 @@ class EditableUser extends React.Component {
         <User
           user={this.state.user}
           header={this.props.header}
-          onFormSubmit={this.props.onFormSubmit}
           setModalShowDelete={this.props.setModalShowDelete}
-          RemoveProgramHandler3={this.props.RemoveProgramHandler3}
           onEditClick={this.handleEditClick}
           setModalShow={this.props.setModalShow}
           success={this.props.success}

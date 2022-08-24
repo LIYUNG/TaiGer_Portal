@@ -1,21 +1,21 @@
-import React from "react";
-import { Table } from "react-bootstrap";
-import EditableUser from "./EditableUser";
-import UsersListSubpage from "./UsersListSubpage";
-import UserDeleteWarning from "./UserDeleteWarning";
-import { deleteUser, updateUser, changeUserRole } from "../../api";
+import React from 'react';
+import { Table } from 'react-bootstrap';
+import EditableUser from './EditableUser';
+import UsersListSubpage from './UsersListSubpage';
+import UserDeleteWarning from './UserDeleteWarning';
+import { deleteUser, updateUser, changeUserRole } from '../../api';
 
 class Userslist extends React.Component {
   state = {
     modalShow: false,
-    firstname: "",
-    lastname: "",
-    selected_user_role: "",
-    selected_user_id: "",
+    firstname: '',
+    lastname: '',
+    selected_user_role: '',
+    selected_user_id: '',
     data: this.props.user,
     modalShowNewProgram: false,
     deleteUserWarning: false,
-    success: this.props.success,
+    success: this.props.success
   };
   setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
     this.setState({
@@ -23,19 +23,19 @@ class Userslist extends React.Component {
       firstname: user_firstname,
       lastname: user_lastname,
       selected_user_role: user_role,
-      selected_user_id: user_id,
+      selected_user_id: user_id
     });
   };
 
   setModalHide = () => {
     this.setState({
-      modalShow: false,
+      modalShow: false
     });
   };
 
   setModalHideDDelete = () => {
     this.setState({
-      deleteUserWarning: false,
+      deleteUserWarning: false
     });
   };
 
@@ -44,15 +44,15 @@ class Userslist extends React.Component {
       deleteUserWarning: true,
       firstname: user_firstname,
       lastname: user_lastname,
-      selected_user_id: user_id,
+      selected_user_id: user_id
     });
   };
 
   handleChange2 = (e) => {
     const { value } = e.target;
-    console.log("name  " + value);
+    console.log('name  ' + value);
     this.setState((state) => ({
-      selected_user_role: value,
+      selected_user_role: value
     }));
   };
 
@@ -71,14 +71,14 @@ class Userslist extends React.Component {
             isLoaded: true,
             success,
             deleteUserWarning: false,
-            data: array,
+            data: array
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        console.log("error at deleteUser: " + deleteUser);
+        console.log('error at deleteUser: ' + deleteUser);
       }
     );
   };
@@ -93,14 +93,14 @@ class Userslist extends React.Component {
           this.setState({
             isLoaded: true,
             success,
-            data,
+            data
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        console.log("error at editUser: " + error);
+        console.log('error at editUser: ' + error);
       }
     );
   };
@@ -111,12 +111,15 @@ class Userslist extends React.Component {
 
   assignUserAs = (user_data) => {
     var updated_user = this.state.data.map((user) => {
-              if (user._id === user_data._id) {
-                return Object.assign(user, user_data);
-              } else {
-                return user;
-              }
-            })
+      if (user._id === user_data._id) {
+        return Object.assign(user, user_data);
+      } else {
+        return user;
+      }
+    });
+    console.log(user_data._id);
+    console.log(user_data.role);
+
     changeUserRole(user_data._id, user_data.role).then(
       (resp) => {
         console.log(resp.data);
@@ -126,14 +129,14 @@ class Userslist extends React.Component {
             modalShow: false,
             isLoaded: true,
             success,
-            data: updated_user,
+            data: updated_user
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        console.log(" error at assignUserAs" + error);
+        console.log(' error at assignUserAs' + error);
       }
     );
   };
@@ -146,8 +149,8 @@ class Userslist extends React.Component {
   };
 
   RemoveUserHandler3 = (user_id) => {
-    console.log("click delete user");
-    console.log("id = " + user_id);
+    console.log('click delete user');
+    console.log('id = ' + user_id);
     this.deleteUser(user_id);
   };
 

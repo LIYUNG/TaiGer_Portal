@@ -1,30 +1,32 @@
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
-const methodOverride = require("method-override");
-const { ORIGIN } = require("./config");
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const methodOverride = require('method-override');
+const { ORIGIN } = require('./config');
 
-require("./middlewares/passport");
+require('./middlewares/passport');
 
-const router = require("./routes");
-const { errorHandler } = require("./middlewares/error-handler");
-const { isDev } = require("./config");
+const router = require('./routes');
+const { errorHandler } = require('./middlewares/error-handler');
+const { isDev } = require('./config');
+const httpLogger = require('./services/httpLogger');
 
 const app = express();
 
 app.use(
   cors({
-    exposedHeaders: ["Content-Disposition"],
+    exposedHeaders: ['Content-Disposition'],
     origin: ORIGIN,
-    credentials: true,
+    credentials: true
   })
 );
 if (isDev()) {
-  app.use(morgan("dev"));
+  // app.use(morgan('dev'));
+  app.use(httpLogger);
 }
 
-app.use(methodOverride("_method")); //in order to make delete request
+app.use(methodOverride('_method')); //in order to make delete request
 app.use(cookieParser());
 app.use(express.json());
 

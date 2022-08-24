@@ -2,6 +2,8 @@ const _ = require('lodash');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const { User, Agent, Editor, Student } = require('../models/User');
+const logger = require('../services/logger');
+const httpLogger = require('../services/httpLogger');
 
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find();
@@ -20,6 +22,7 @@ const updateUser = asyncHandler(async (req, res) => {
     // upsert: true,
     new: true
   });
+  logger.warn('User role is changed');
   return res.status(200).send({ success: true, data: new_user });
   //TODO: Email inform Guest, the updated status
 });

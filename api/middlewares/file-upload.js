@@ -596,28 +596,6 @@ const editor_generaldoc_s3 = multer({
   },
 });
 
-const test_file_json = (req, res, next) => {
-  const {
-    user,
-    // params: { messagesThreadId },
-  } = req;
-  var { messagesThreadId } = req.params;
-  var { studentId } = req.body;
-  // console.log(req);
-  console.log(req);
-  console.log(req.body);
-  console.log(messagesThreadId);
-  // const document_thread = await Documentthread.findById(
-  //   messagesThreadId
-  // ).populate("student_id application_id messages.user_id");
-
-  // if (!document_thread)
-  //   throw new ErrorResponse(400, "Invalid message thread id");
-
-  // console.log(messagesThreadId);
-
-  next();
-};
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -639,6 +617,5 @@ module.exports = {
   TranscriptExcelUpload: upload_transcript_s3.single("file"),
   EditGeneralDocsUpload: editor_generaldoc_s3.single("file"),
   MessagesThreadUpload: upload_messagesthread_file_s3.single("file"),
-  test_file_json,
   upload: upload.single("file"),
 };

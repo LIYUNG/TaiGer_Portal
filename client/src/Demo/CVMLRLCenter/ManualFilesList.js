@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import EditableFile from "./EditableFile";
 import EditableFile_Thread from "./EditableFile_Thread";
 import { Row, Col } from "react-bootstrap";
 

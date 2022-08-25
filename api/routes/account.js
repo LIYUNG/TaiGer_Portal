@@ -4,26 +4,17 @@ const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const {
   fileUpload,
-  TranscriptExcelUpload,
-  EditGeneralDocsUpload
+  TranscriptExcelUpload
 } = require('../middlewares/file-upload');
 
 const {
   getMyfiles,
-  saveProgramSpecificFilePath,
-  updateCommentsGeneralFile,
-  StudentGiveFeedbackGeneralFile,
-  updateCommentsProgramSpecificFile,
-  StudentGiveFeedbackProgramSpecificFile,
-  saveGeneralFilePath,
   downloadTemplateFile,
-  downloadProgramSpecificFile,
   downloadGeneralFile,
   SetAsDecidedProgram,
   SetAsCloseProgram,
   SetAsGetAdmissionProgram,
   SetAsFinalProgramSpecificFile,
-  deleteProgramSpecificFile,
   SetAsFinalGeneralFile,
   deleteGeneralFile,
   processTranscript,
@@ -54,66 +45,10 @@ router
   .put(permit(Role.Admin, Role.Agent), SetAsGetAdmissionProgram);
 
 router
-  .route(
-    '/files/programspecific/comments/:studentId/:applicationId/:docName/:whoupdate'
-  )
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    updateCommentsProgramSpecificFile
-  );
-
-router
-  .route(
-    '/files/programspecific/studentfeedback/:studentId/:applicationId/:docName/:whoupdate'
-  )
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    StudentGiveFeedbackProgramSpecificFile
-  );
-
-router
-  .route(
-    '/files/programspecific/upload/:studentId/:applicationId/:fileCategory'
-  )
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    fileUpload,
-    saveProgramSpecificFilePath
-  );
-
-router
   .route('/files/programspecific/:studentId/:applicationId/:whoupdate/:docName')
-  .get(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    downloadProgramSpecificFile
-  )
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor),
     SetAsFinalProgramSpecificFile
-  ) // set as final
-  .delete(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    deleteProgramSpecificFile
-  );
-
-router
-  .route('/files/general/comments/:studentId/:whoupdate/:docName')
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    updateCommentsGeneralFile
-  );
-router
-  .route('/files/general/studentfeedback/:studentId/:whoupdate/:docName')
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    StudentGiveFeedbackGeneralFile
-  );
-router
-  .route('/files/general/upload/:studentId/:fileCategory')
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    EditGeneralDocsUpload,
-    saveGeneralFilePath
   );
 
 router

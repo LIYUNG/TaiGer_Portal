@@ -15,14 +15,9 @@ import {
   Spinner
 } from 'react-bootstrap';
 import {
-  deleteProgramSpecificFileUpload,
   deleteGenralFileThread,
   deleteProgramSpecificFileThread,
-  SetAsFinalProgramSpecificFile,
   SetAsFinalGenralFile,
-  uploadHandwrittenFileforstudent,
-  uploadEditGeneralFileforstudent,
-  updateStudentFeedbackGeneralFileByStudent,
   initGeneralMessageThread,
   initApplicationMessageThread,
   SubmitMessageWithAttachment
@@ -112,52 +107,6 @@ class EditorDocsProgress extends React.Component {
   };
   closeCommentsWindow = () => {
     this.setState((state) => ({ ...state, CommentsModel: false }));
-  };
-
-  ConfirmStudentFeedbackGeneralFileHandler = (student_feedback) => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false //false to reload everything
-    }));
-    updateStudentFeedbackGeneralFileByStudent(
-      this.state.studentId,
-      this.state.docName,
-      this.state.whoupdate,
-      student_feedback
-    ).then(
-      (resp) => {
-        console.log(resp.data.data);
-        const { data, success } = resp.data;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            studentId: '',
-            applicationId: '',
-            docName: '',
-            whoupdate: '',
-            isLoaded: true,
-            student: data,
-            success: success,
-            StudentFeedbackModel: false
-          }));
-        } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: '',
-            applicationId: '',
-            docName: '',
-            whoupdate: '',
-            isLoaded: true,
-            success: success,
-            StudentFeedbackModel: false
-          }));
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
   };
 
   ConfirmDeleteDiscussionThreadHandler = () => {
@@ -471,88 +420,89 @@ class EditorDocsProgress extends React.Component {
                 }
                 application={null}
               />
-              {this.state.student.applications.map((application, i) => (
-                <>
-                  {application.decided !== undefined &&
-                  application.decided === true ? (
-                    <>
-                      <Row>
-                        <Col>
-                          <h5>
-                            {application.programId.school}
-                            {' - '}
-                            {application.programId.program_name}
-                          </h5>
-                        </Col>
-                        <Col>
-                          {application.programId.ml_requirements !==
-                            undefined &&
-                          application.programId.ml_requirements !== '' ? (
-                            <>
-                              ML Req.: {'           '}{' '}
-                              <Button
-                                size="sm"
-                                title="Comments"
-                                variant="light"
-                                onClick={() =>
-                                  this.openML_Requirements_ModalWindow(
-                                    application.programId.ml_requirements
-                                  )
-                                }
-                              >
-                                <AiOutlineMore size={20} />
-                              </Button>
-                            </>
-                          ) : (
-                            <></>
-                          )}{' '}
-                          {application.programId.essay_requirements !==
-                            undefined &&
-                          application.programId.essay_requirements !== '' ? (
-                            <>
-                              Essay Req.: {'           '}{' '}
-                              <Button
-                                size="sm"
-                                title="Comments"
-                                variant="light"
-                                onClick={() =>
-                                  this.openML_Requirements_ModalWindow(
-                                    application.programId.ml_requirements
-                                  )
-                                }
-                              >
-                                <AiOutlineMore size={20} />
-                              </Button>
-                            </>
-                          ) : (
-                            <></>
-                          )}
-                        </Col>
-                      </Row>
+              {this.state.student.applications &&
+                this.state.student.applications.map((application, i) => (
+                  <>
+                    {application.decided !== undefined &&
+                    application.decided === true ? (
+                      <>
+                        <Row>
+                          <Col>
+                            <h5>
+                              {application.programId.school}
+                              {' - '}
+                              {application.programId.program_name}
+                            </h5>
+                          </Col>
+                          <Col>
+                            {application.programId.ml_requirements !==
+                              undefined &&
+                            application.programId.ml_requirements !== '' ? (
+                              <>
+                                ML Req.: {'           '}{' '}
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="light"
+                                  onClick={() =>
+                                    this.openML_Requirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  <AiOutlineMore size={20} />
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}{' '}
+                            {application.programId.essay_requirements !==
+                              undefined &&
+                            application.programId.essay_requirements !== '' ? (
+                              <>
+                                Essay Req.: {'           '}{' '}
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="light"
+                                  onClick={() =>
+                                    this.openML_Requirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  <AiOutlineMore size={20} />
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                          </Col>
+                        </Row>
 
-                      <ManualFiles
-                        onDeleteFileThread={this.onDeleteFileThread}
-                        onCommentsProgramSpecific={
-                          this.onCommentsProgramSpecific
-                        }
-                        handleAsFinalProgramSpecific={
-                          this.handleAsFinalProgramSpecific
-                        }
-                        role={this.props.role}
-                        student={this.state.student}
-                        application={application}
-                        filetype={'ProgramSpecific'}
-                        initGeneralFileThread={this.initGeneralFileThread}
-                        initProgramSpecificFileThread={
-                          this.initProgramSpecificFileThread
-                        }
-                      />
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </>
-              ))}
+                        <ManualFiles
+                          onDeleteFileThread={this.onDeleteFileThread}
+                          onCommentsProgramSpecific={
+                            this.onCommentsProgramSpecific
+                          }
+                          handleAsFinalProgramSpecific={
+                            this.handleAsFinalProgramSpecific
+                          }
+                          role={this.props.role}
+                          student={this.state.student}
+                          application={application}
+                          filetype={'ProgramSpecific'}
+                          initGeneralFileThread={this.initGeneralFileThread}
+                          initProgramSpecificFileThread={
+                            this.initProgramSpecificFileThread
+                          }
+                        />
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </>
+                ))}
             </Card.Body>
           </div>
         </Collapse>{' '}

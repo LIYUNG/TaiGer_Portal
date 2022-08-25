@@ -107,41 +107,6 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-const sendEditorOutputGeneralFilesEmailToStudent = async (recipient, msg) => {
-  const subject = 'New output from your Editor!';
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your editor has uploaded ${msg.uploaded_documentname} 
-
-for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
-
-Please review it and confirm with your editor and finalize the document review.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendEditorOutputGeneralFilesEmailToAgent = async (recipient, msg) => {
-  const subject = `New output from your Editor for ${msg.student_firstname} ${msg.student_lastname} !`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your editor ${msg.editor_firstname} ${msg.editor_lastname}  has uploaded ${msg.uploaded_documentname} for ${msg.student_firstname} ${msg.student_lastname} 
-
-for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
-
-Please double check. If something goes wrong, please talk to editor as soon as possible.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
 
 const sendUploadedProgramSpecificFilesEmail = async (recipient, msg) => {
   const subject = 'Thank you for your input!';
@@ -151,27 +116,6 @@ Hi ${recipient.firstname} ${recipient.lastname},
 you have uploaded ${msg.uploaded_documentname} 
 
 for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
-
-Your editor will review it and give you feedback as soon as possible.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendUploadedGeneralFilesRemindForStudentEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = 'Thank you for your input!';
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-you have uploaded ${msg.uploaded_documentname} 
-
-on ${msg.uploaded_updatedAt}.
 
 Your editor will review it and give you feedback as soon as possible.
 
@@ -334,39 +278,6 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-const sendUploadedGeneralFilesRemindForEditorEmail = async (recipient, msg) => {
-  const subject = `New ${msg.fileCategory} input from  ${msg.student_firstname} ${msg.student_lastname}`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
-
-for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
-
-Please give your student feedback as soon as possible.
-
-${TAIGER_SIGNATURE}
-
-`; // should be for student/agent/editor
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendUploadedGeneralFilesRemindForAgentEmail = async (recipient, msg) => {
-  const subject = `New ${msg.fileCategory} input from  ${msg.student_firstname} ${msg.student_lastname}`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
-
-for ${msg.fileCategory} on ${msg.uploaded_updatedAt}.
-
-${TAIGER_SIGNATURE}
-
-`; // should be for student/agent/editor
-
-  return sendEmail(recipient, subject, message);
-};
 
 const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
   var subject;
@@ -540,111 +451,6 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-const sendCommentsGeneralFileForEditorEmail = async (recipient, msg) => {
-  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
-
- ${msg.feedback_for_documentname}:
-
-on ${msg.uploaded_updatedAt} 
-
-Double check this document and finalize the application if applicable. 
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendCommentsGeneralFileForStudentEmail = async (recipient, msg) => {
-  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.editor_firstname} ${msg.editor_lastname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-Your editor ${msg.editor_firstname} ${msg.editor_lastname} has updated a feedback for
-
- ${msg.feedback_for_documentname}:
-
-on ${msg.uploaded_updatedAt} 
-
-Please reply to your editor as soon as possible!
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendCommentsProgramSpecificFileForEditorEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
-
- ${msg.feedback_for_documentname}:
-
-on ${msg.uploaded_updatedAt} 
-
-Double check this document and finalize the application if applicable. 
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendCommentsProgramSpecificFileForStudentEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.editor_firstname} ${msg.editor_lastname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-Your editor ${msg.editor_firstname} ${msg.editor_lastname} has updated a feedback for
-
- ${msg.feedback_for_documentname}:
-
-on ${msg.uploaded_updatedAt} 
-
-Please reply to your editor as soon as possible.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendStudentFeedbackGeneralFileForEditorEmail = async (recipient, msg) => {
-  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
-
- ${msg.feedback_for_documentname}:
-
-on ${msg.uploaded_updatedAt} 
-
-Double check this document and finalize the application if applicable. 
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
 
 const sendStudentFeedbackProgramSpecificFileForEditorEmail = async (
   recipient,
@@ -675,10 +481,7 @@ module.exports = {
   sendConfirmationEmail,
   sendForgotPasswordEmail,
   sendPasswordResetEmail,
-  sendEditorOutputGeneralFilesEmailToStudent,
-  sendEditorOutputGeneralFilesEmailToAgent,
   sendUploadedProgramSpecificFilesEmail,
-  sendUploadedGeneralFilesRemindForStudentEmail,
   sendEditorOutputProgramSpecificFilesEmailToStudent,
   sendEditorOutputProgramSpecificFilesEmailToAgent,
   sendUploadedGeneralFilesEmail,
@@ -687,8 +490,6 @@ module.exports = {
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedProgramSpecificFilesRemindForEditorEmail,
   sendUploadedProgramSpecificFilesRemindForAgentEmail,
-  sendUploadedGeneralFilesRemindForEditorEmail,
-  sendUploadedGeneralFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
   sendSomeReminderEmail,
   informAgentNewStudentEmail,
@@ -697,10 +498,5 @@ module.exports = {
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
-  sendCommentsGeneralFileForEditorEmail,
-  sendCommentsGeneralFileForStudentEmail,
-  sendCommentsProgramSpecificFileForEditorEmail,
-  sendCommentsProgramSpecificFileForStudentEmail,
-  sendStudentFeedbackGeneralFileForEditorEmail,
   sendStudentFeedbackProgramSpecificFileForEditorEmail
 };

@@ -1,22 +1,21 @@
-import React from "react";
-import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
+import React from 'react';
+import { AiFillCloseCircle, AiFillQuestionCircle } from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
-import { uploadforstudent } from "../../../../api";
+import { uploadforstudent } from '../../../../api';
 // import DocsProgress from "./DocsProgress";
-import { Link } from "react-router-dom";
-import EditProgramsFilesSubpage from "./EditProgramsFilesSubpage";
+import { Link } from 'react-router-dom';
 
 class EditorDocsProgress extends React.Component {
   state = {
     showProgramFilesPage: false,
     student: this.props.student,
-    file: "",
+    file: ''
   };
 
   setProgramFilesModalhide = () => {
     this.setState({
-      showProgramFilesPage: false,
+      showProgramFilesPage: false
     });
   };
   render() {
@@ -99,8 +98,8 @@ class EditorDocsProgress extends React.Component {
                 {this.props.student.academic_background.university
                   .expected_application_date
                   ? this.props.student.academic_background.university
-                      .expected_application_date + "-"
-                  : ""}
+                      .expected_application_date + '-'
+                  : ''}
                 {application.programId.application_deadline}
               </h6>
             ) : (
@@ -117,21 +116,21 @@ class EditorDocsProgress extends React.Component {
               <>
                 {application.student_inputs &&
                 application.student_inputs.findIndex((doc) =>
-                  doc.name.includes("ML_Template")
+                  doc.name.includes('ML_Template')
                 ) !== -1 ? (
                   <h6 className="mb-1">
                     {new Date(
                       application.student_inputs[
                         application.student_inputs.findIndex((doc) =>
-                          doc.name.includes("ML_Template")
+                          doc.name.includes('ML_Template')
                         )
                       ].updatedAt
                     ).toLocaleDateString()}
-                    {", "}
+                    {', '}
                     {new Date(
                       application.student_inputs[
                         application.student_inputs.findIndex((doc) =>
-                          doc.name.includes("ML_Template")
+                          doc.name.includes('ML_Template')
                         )
                       ].updatedAt
                     ).toLocaleTimeString()}
@@ -154,7 +153,7 @@ class EditorDocsProgress extends React.Component {
               <>
                 {application.student_inputs &&
                 application.student_inputs.findIndex((doc) =>
-                  doc.name.includes("ML_Template")
+                  doc.name.includes('ML_Template')
                 ) !== -1 ? (
                   <h6 className="mb-1">Yes</h6>
                 ) : (
@@ -177,7 +176,7 @@ class EditorDocsProgress extends React.Component {
               <>
                 {application.documents &&
                 application.documents.findIndex((doc) =>
-                  doc.name.includes("_ML")
+                  doc.name.includes('_ML')
                 ) !== -1 ? (
                   <h6 className="mb-1">uploaded</h6>
                 ) : (
@@ -212,7 +211,7 @@ class EditorDocsProgress extends React.Component {
       } else {
         application_CV_template_filled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("CV_Template")
+            doc.name.includes('CV_Template')
           ) !== -1 ? (
             <h6 className="mb-1">Yes</h6>
           ) : (
@@ -221,7 +220,7 @@ class EditorDocsProgress extends React.Component {
         // For Editor
         application_CV_status =
           this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("CV")
+            doc.name.includes('CV')
           ) !== -1 ? (
             <h6 className="mb-1">Uploaded</h6>
           ) : (
@@ -229,21 +228,21 @@ class EditorDocsProgress extends React.Component {
           );
         application_CV_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("CV_Template")
+            doc.name.includes('CV_Template')
           ) !== -1 ? (
             <h6 className="mb-1">
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("CV_Template")
+                    (doc) => doc.name.includes('CV_Template')
                   )
                 ].updatedAt
               ).toLocaleDateString()}
-              {", "}
+              {', '}
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("CV_Template")
+                    (doc) => doc.name.includes('CV_Template')
                   )
                 ].updatedAt
               ).toLocaleTimeString()}
@@ -253,7 +252,7 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_A_template_filled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_A_Template")
+            doc.name.includes('RL_A_Template')
           ) !== -1 ? (
             <h6 className="mb-1">Yes</h6>
           ) : (
@@ -261,7 +260,7 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_B_template_filled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_B_Template")
+            doc.name.includes('RL_B_Template')
           ) !== -1 ? (
             <h6 className="mb-1">Yes</h6>
           ) : (
@@ -269,7 +268,7 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_C_template_filled =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_C_Template")
+            doc.name.includes('RL_C_Template')
           ) !== -1 ? (
             <h6 className="mb-1">Yes</h6>
           ) : (
@@ -278,7 +277,7 @@ class EditorDocsProgress extends React.Component {
         //For Editor:
         application_RL_A_status =
           this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL_A")
+            doc.name.includes('RL_A')
           ) !== -1 ? (
             <h6 className="mb-1">Uploaded</h6>
           ) : (
@@ -286,7 +285,7 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_B_status =
           this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL_B")
+            doc.name.includes('RL_B')
           ) !== -1 ? (
             <h6 className="mb-1">Uploaded</h6>
           ) : (
@@ -294,7 +293,7 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_C_status =
           this.props.student.generaldocs.editoroutputs.findIndex((doc) =>
-            doc.name.includes("RL_C")
+            doc.name.includes('RL_C')
           ) !== -1 ? (
             <h6 className="mb-1">Uploaded</h6>
           ) : (
@@ -302,21 +301,21 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_A_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_A_Template")
+            doc.name.includes('RL_A_Template')
           ) !== -1 ? (
             <h6 className="mb-1">
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_A_Template")
+                    (doc) => doc.name.includes('RL_A_Template')
                   )
                 ].updatedAt
               ).toLocaleDateString()}
-              {", "}
+              {', '}
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_A_Template")
+                    (doc) => doc.name.includes('RL_A_Template')
                   )
                 ].updatedAt
               ).toLocaleTimeString()}
@@ -326,21 +325,21 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_B_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_B_Template")
+            doc.name.includes('RL_B_Template')
           ) !== -1 ? (
             <h6 className="mb-1">
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_B_Template")
+                    (doc) => doc.name.includes('RL_B_Template')
                   )
                 ].updatedAt
               ).toLocaleDateString()}
-              {", "}
+              {', '}
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_B_Template")
+                    (doc) => doc.name.includes('RL_B_Template')
                   )
                 ].updatedAt
               ).toLocaleTimeString()}
@@ -350,21 +349,21 @@ class EditorDocsProgress extends React.Component {
           );
         application_RL_C_Lastupdate =
           this.props.student.generaldocs.studentinputs.findIndex((doc) =>
-            doc.name.includes("RL_C_Template")
+            doc.name.includes('RL_C_Template')
           ) !== -1 ? (
             <h6 className="mb-1">
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_C_Template")
+                    (doc) => doc.name.includes('RL_C_Template')
                   )
                 ].updatedAt
               ).toLocaleDateString()}
-              {", "}
+              {', '}
               {new Date(
                 this.props.student.generaldocs.studentinputs[
                   this.props.student.generaldocs.studentinputs.findIndex(
-                    (doc) => doc.name.includes("RL_C_Template")
+                    (doc) => doc.name.includes('RL_C_Template')
                   )
                 ].updatedAt
               ).toLocaleTimeString()}
@@ -379,17 +378,17 @@ class EditorDocsProgress extends React.Component {
       <>
         <tbody>
           <tr>
-            {this.props.role !== "Student" ? (
+            {this.props.role !== 'Student' ? (
               <td>
                 <Link
                   to={
-                    "/student-database/" +
+                    '/student-database/' +
                     this.props.student._id +
-                    "/application-files"
+                    '/application-files'
                   }
                 >
                   <p>
-                    {this.props.student.firstname},{" "}
+                    {this.props.student.firstname},{' '}
                     {this.props.student.lastname}
                   </p>
                 </Link>
@@ -448,15 +447,6 @@ class EditorDocsProgress extends React.Component {
             </td>
           </tr>
         </tbody>
-        <>
-          <EditProgramsFilesSubpage
-            role={this.props.role}
-            student={this.state.student}
-            show={this.state.showProgramFilesPage}
-            onHide={this.setProgramFilesModalhide}
-            setmodalhide={this.setProgramFilesModalhide}
-          />
-        </>
       </>
     );
   }

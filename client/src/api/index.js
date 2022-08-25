@@ -113,24 +113,6 @@ export const SetAsCloseProgram = (studentId, applicationId) =>
 export const SetAsGetAdmissionProgram = (studentId, applicationId) =>
   request.put(`/api/account/program/admission/${studentId}/${applicationId}`);
 
-export const createManualFileUploadPlace = (
-  studentId,
-  applicationId,
-  docName
-) =>
-  request.put(
-    `/api/account/files/placeholder/${studentId}/${applicationId}/${docName}`
-  );
-export const deleteProgramSpecificFileUpload = (
-  studentId,
-  applicationId,
-  docName,
-  whoupdate
-) =>
-  request.delete(
-    `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${docName}`
-  );
-
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${studentId}/${documentsthreadId}`);
 
@@ -158,51 +140,6 @@ export const SetAsFinalProgramSpecificFile = (
 
 export const SetAsFinalGenralFile = (documentsthreadId, studentId) =>
   request.put(`/api/document-threads/${studentId}/${documentsthreadId}`);
-
-export const uploadEditGeneralFileforstudent = (
-  studentId,
-  fileCategory,
-  data
-) =>
-  request.post(
-    `/api/account/files/general/upload/${studentId}/${fileCategory}`,
-    data
-  );
-
-export const updateStudentFeedbackGeneralFileByStudent = (
-  studentId,
-  docName,
-  whoupdate,
-  student_feedback
-) =>
-  request.post(
-    `/api/account/files/general/studentfeedback/${studentId}/${whoupdate}/${docName}`,
-    { student_feedback }
-  );
-
-export const uploadHandwrittenFileforstudent = (
-  studentId,
-  applicationId,
-  fileCategory,
-  data
-) =>
-  request.post(
-    `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`,
-    data
-  );
-
-export const downloadHandWrittenFile = (
-  studentId,
-  applicationId,
-  docName,
-  student_inputs
-) =>
-  request.get(
-    `/api/account/files/programspecific/${studentId}/${applicationId}/${student_inputs}/${docName}`,
-    {
-      responseType: 'blob'
-    }
-  );
 
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');

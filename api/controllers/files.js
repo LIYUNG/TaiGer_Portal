@@ -8,10 +8,7 @@ const { UPLOAD_PATH } = require('../config');
 const { ErrorResponse } = require('../common/errors');
 const { DocumentStatus } = require('../constants');
 const {
-  sendEditorOutputGeneralFilesEmailToStudent,
-  sendEditorOutputGeneralFilesEmailToAgent,
   sendUploadedProgramSpecificFilesEmail,
-  sendUploadedGeneralFilesRemindForStudentEmail,
   sendEditorOutputProgramSpecificFilesEmailToStudent,
   sendEditorOutputProgramSpecificFilesEmailToAgent,
   sendUploadedProfileFilesEmail,
@@ -19,16 +16,9 @@ const {
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedProgramSpecificFilesRemindForEditorEmail,
   sendUploadedProgramSpecificFilesRemindForAgentEmail,
-  sendUploadedGeneralFilesRemindForEditorEmail,
-  sendUploadedGeneralFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
-  sendCommentsProgramSpecificFileForEditorEmail,
-  sendCommentsProgramSpecificFileForStudentEmail,
-  sendCommentsGeneralFileForEditorEmail,
-  sendCommentsGeneralFileForStudentEmail,
-  sendStudentFeedbackGeneralFileForEditorEmail,
   sendStudentFeedbackProgramSpecificFileForEditorEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
@@ -54,321 +44,7 @@ const getMyfiles = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: student });
 });
 
-const saveProgramSpecificFilePath = asyncHandler(async (req, res) => {
-  const {
-    user,
-    params: { studentId, applicationId, fileCategory }
-  } = req;
 
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
-    .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
-    .exec();
-  const student2 = await Student.findById({ _id: studentId })
-    .populate('applications.programId')
-    .lean()
-    .exec();
-  if (!student) {
-    logger.error('saveProgramSpecificFilePath: Invalid student id!');
-    throw new ErrorResponse(400, 'Invalid student id');
-  }
-  // console.log(student);
-  const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
-  );
-  const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == applicationId
-  );
-  if (!application) {
-    logger.error('saveProgramSpecificFilePath: Invalid application id!');
-    throw new ErrorResponse(400, 'Invalid application id');
-  }
-
-  let student_input_doc;
-  let editor_output_doc;
-  if (user.role == Role.Student) {
-    student_input_doc = application.student_inputs.find(
-      ({ name }) => name === req.file.key
-    );
-    if (student_input_doc) {
-      logger.error('saveProgramSpecificFilePath: Document already existed!');
-      throw new ErrorResponse(400, 'Document already existed!');
-    }
-    student_input_doc = application.student_inputs.create({
-      name: req.file.key
-    });
-    student_input_doc.status = DocumentStatus.Uploaded;
-    // console.log(req.file);
-    student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
-    student_input_doc.required = true;
-    student_input_doc.updatedAt = new Date();
-    student.applications[idx].student_inputs.push(student_input_doc);
-
-    // TODO: set flag editors document(filetype) isReceivedFeedback
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-
-    await sendUploadedProgramSpecificFilesEmail(
-      // Upload success confirmation.
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        uploaded_documentname: student_input_doc.name,
-        uploaded_updatedAt: student_input_doc.updatedAt,
-        university_name: student2.applications[idx].programId.school,
-        program_name: student2.applications[idx].programId.program_name
-      }
-    );
-    for (let i = 0; i < student.editors.length; i++) {
-      // console.log(i);
-      await sendUploadedProgramSpecificFilesRemindForEditorEmail(
-        {
-          firstname: student.editors[i].firstname,
-          lastname: student.editors[i].lastname,
-          address: student.editors[i].email
-        },
-        {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          fileCategory: fileCategory,
-          uploaded_documentname: student_input_doc.name,
-          uploaded_updatedAt: student_input_doc.updatedAt,
-          university_name: student2.applications[idx].programId.school,
-          program_name: student2.applications[idx].programId.program_name
-        }
-      );
-    }
-    for (let i = 0; i < student.agents.length; i++) {
-      // console.log(i);
-      await sendUploadedProgramSpecificFilesRemindForAgentEmail(
-        {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
-        },
-        {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          fileCategory: fileCategory,
-          uploaded_documentname: student_input_doc.name,
-          uploaded_updatedAt: student_input_doc.updatedAt,
-          university_name: student2.applications[idx].programId.school,
-          program_name: student2.applications[idx].programId.program_name
-        }
-      );
-    }
-  } else {
-    editor_output_doc = application.documents.find(
-      ({ name }) => name === req.file.key
-    );
-    if (editor_output_doc) {
-      logger.error('saveProgramSpecificFilePath: Document already existed!');
-      throw new ErrorResponse(400, 'Document already existed!');
-    }
-    editor_output_doc = application.documents.create({
-      name: req.file.key
-    });
-    editor_output_doc.status = DocumentStatus.Uploaded;
-    // console.log(req.file);
-    editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
-    editor_output_doc.required = true;
-    editor_output_doc.updatedAt = new Date();
-    student.applications[idx].documents.push(editor_output_doc);
-    // TODO: set flag student document(filetype, feedback) isReceivedFeedback
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-
-    await sendEditorOutputProgramSpecificFilesEmailToStudent(
-      // Upload success confirmation.
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        fileCategory: fileCategory,
-        editor_firstname: user.firstname,
-        editor_lastname: user.lastname,
-        uploaded_documentname: editor_output_doc.name,
-        uploaded_updatedAt: editor_output_doc.updatedAt,
-        university_name: student2.applications[idx].programId.school,
-        program_name: student2.applications[idx].programId.program_name
-      }
-    );
-
-    // TODO: Inform editor themselves as well?
-
-    //uploaded file notification for Agent
-    for (let i = 0; i < student.agents.length; i++) {
-      // console.log(i);
-      await sendEditorOutputProgramSpecificFilesEmailToAgent(
-        // Upload success confirmation.
-        {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
-        },
-        {
-          fileCategory: fileCategory,
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          editor_firstname: user.firstname,
-          editor_lastname: user.lastname,
-          uploaded_documentname: editor_output_doc.name,
-          uploaded_updatedAt: editor_output_doc.updatedAt,
-          university_name: student2.applications[idx].programId.school,
-          program_name: student2.applications[idx].programId.program_name
-        }
-      );
-    }
-  }
-});
-
-const saveGeneralFilePath = asyncHandler(async (req, res) => {
-  const {
-    user,
-    params: { studentId, fileCategory },
-    file: { filename }
-  } = req;
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
-    .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email');
-  if (!student) {
-    logger.error('saveGeneralFilePath: Invalid student id!');
-    throw new ErrorResponse(400, 'Invalid student id');
-  }
-  let editor_output_doc;
-  let student_input_doc;
-  if (user.role == Role.Student) {
-    student_input_doc = student.generaldocs.studentinputs.find(
-      ({ name }) => name === req.file.key
-    );
-    if (student_input_doc) {
-      logger.error('saveGeneralFilePath: Document already existed!');
-      throw new ErrorResponse(400, 'Document already existed!');
-    }
-    student_input_doc = student.generaldocs.studentinputs.create({
-      name: req.file.key
-    });
-    student_input_doc.status = DocumentStatus.Uploaded;
-    student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
-    student_input_doc.required = true;
-    student_input_doc.updatedAt = new Date();
-    student.generaldocs.studentinputs.push(student_input_doc);
-    // TODO: set flag editors document(filetype) isReceivedFeedback
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-    await sendUploadedGeneralFilesRemindForStudentEmail(
-      // Upload success confirmation.
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        uploaded_documentname: student_input_doc.name,
-        uploaded_updatedAt: student_input_doc.updatedAt
-      }
-    );
-    for (let i = 0; i < student.editors.length; i++) {
-      // console.log(i);
-      await sendUploadedGeneralFilesRemindForEditorEmail(
-        {
-          firstname: student.editors[i].firstname,
-          lastname: student.editors[i].lastname,
-          address: student.editors[i].email
-        },
-        {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          uploaded_documentname: student_input_doc.name,
-          uploaded_updatedAt: student_input_doc.updatedAt,
-          fileCategory: fileCategory
-        }
-      );
-    }
-    for (let i = 0; i < student.agents.length; i++) {
-      // console.log(i);
-      await sendUploadedGeneralFilesRemindForAgentEmail(
-        {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
-        },
-        {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          uploaded_documentname: student_input_doc.name,
-          uploaded_updatedAt: student_input_doc.updatedAt,
-          fileCategory: fileCategory
-        }
-      );
-    }
-  } else {
-    editor_output_doc = student.generaldocs.editoroutputs.find(
-      ({ name }) => name === req.file.key
-    );
-    if (editor_output_doc) {
-      logger.error('saveGeneralFilePath: Document already existed!');
-      throw new ErrorResponse(400, 'Document already existed!');
-    }
-    editor_output_doc = student.generaldocs.editoroutputs.create({
-      name: req.file.key
-    }); // TODO: and rename file name
-    editor_output_doc.status = DocumentStatus.Uploaded;
-    editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
-    editor_output_doc.required = true;
-    editor_output_doc.updatedAt = new Date();
-    student.generaldocs.editoroutputs.push(editor_output_doc); //TODO: and rename file name
-    // TODO: set flag student document(filetype) isReceivedFeedback
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-    await sendEditorOutputGeneralFilesEmailToStudent(
-      // Upload success confirmation.
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        uploaded_documentname: editor_output_doc.name,
-        uploaded_updatedAt: editor_output_doc.updatedAt,
-        fileCategory: fileCategory
-      }
-    );
-    // TODO: uploaded file confirmation for Editor?
-    // uploaded file notification for Agent?
-    for (let i = 0; i < student.agents.length; i++) {
-      // console.log(i);
-      await sendEditorOutputGeneralFilesEmailToAgent(
-        // Upload success confirmation.
-        {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
-        },
-        {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          editor_firstname: user.firstname,
-          editor_lastname: user.lastname,
-          uploaded_documentname: editor_output_doc.name,
-          uploaded_updatedAt: editor_output_doc.updatedAt,
-          fileCategory: fileCategory
-        }
-      );
-    }
-  }
-
-  // Reminder for Editor:
-  // console.log(student.editors);
-});
 
 const saveProfileFilePath = asyncHandler(async (req, res) => {
   const {
@@ -571,92 +247,6 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   });
 });
 
-const downloadProgramSpecificFile = asyncHandler(async (req, res, next) => {
-  const {
-    user,
-    params: { studentId, applicationId, docName, whoupdate }
-  } = req;
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId).populate(
-    'applications.programId'
-  );
-  if (!student) {
-    logger.error('downloadProgramSpecificFile: Invalid student id!');
-    throw new ErrorResponse(400, 'Invalid student id');
-  }
-
-  const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
-  );
-  if (!application) {
-    logger.error('downloadProgramSpecificFile: Invalid application id!');
-    throw new ErrorResponse(400, 'Invalid application id');
-  }
-  // TODO: flag for differenciate students input or edited file
-  let document;
-  if (whoupdate === 'Student') {
-    document = application.student_inputs.find(({ name }) => name === docName);
-  } else {
-    document = application.documents.find(({ name }) => name === docName);
-  }
-  if (!document) {
-    logger.error('downloadProgramSpecificFile: Invalid document name!');
-    throw new ErrorResponse(400, 'Invalid document name');
-  }
-  if (!document.path) {
-    logger.error('downloadProgramSpecificFile: File not uploaded yet!');
-    throw new ErrorResponse(400, 'File not uploaded yet');
-  }
-  // const filePath = path.join(UPLOAD_PATH, document.path);
-  // // const filePath = document.path;
-  // // FIXME: clear the filePath for consistency?
-  // if (!fs.existsSync(filePath))
-  //   throw new ErrorResponse(400, "File does not exist");
-
-  // res.status(200).download(filePath, (err) => {
-  //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
-  // });
-  let document_split = document.path.replace(/\\/g, '/');
-  document_split = document_split.split('/');
-  const fileKey = document_split[2];
-  let directory = path.join(document_split[0], document_split[1]);
-  console.log('Trying to download file', fileKey);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  console.log(directory);
-  directory = directory.replace(/\\/g, '/');
-
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
-
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(fileKey);
-      let fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-      }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
-    });
-
-  // try {
-  //   res.attachment(fileKey);
-  //   var fileStream = s3.getObject(options).createReadStream();
-  //   fileStream.pipe(res);
-  // } catch (err) {
-  //   throw new ErrorResponse(500, "Error occurs while downloading");
-  // }
-});
-
 const downloadGeneralFile = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId, docName, whoupdate }
@@ -820,7 +410,10 @@ const SetAsDecidedProgram = asyncHandler(async (req, res, next) => {
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
+  if (!application) {
+    logger.error('SetAsDecidedProgram: Invalid application id');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
 
   application.decided = true;
   // TODO: set flag student document(filetype, feedback) isReceivedFeedback
@@ -840,12 +433,18 @@ const SetAsCloseProgram = asyncHandler(async (req, res, next) => {
     .populate('students agents editors', 'firstname lastname email')
     .exec();
 
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('SetAsCloseProgram: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
   // console.log(student);
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
+  if (!application) {
+    logger.error('SetAsCloseProgram: Invalid application id');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
   application.closed = true;
   // TODO: set flag student document(filetype, feedback) isReceivedFeedback
   await student.save();
@@ -864,12 +463,18 @@ const SetAsGetAdmissionProgram = asyncHandler(async (req, res, next) => {
     .populate('students agents editors', 'firstname lastname email')
     .exec();
 
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('SetAsGetAdmissionProgram: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
   // console.log(student);
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
+  if (!application) {
+    logger.error('SetAsGetAdmissionProgram: Invalid application id');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
   // console.log("Admission");
 
   application.admission = true;
@@ -887,6 +492,9 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
 
   if (user.role === 'Student') {
     // if (studentId !== user._id.toString()) {
+    logger.error(
+      'SetAsFinalProgramSpecificFile: Invalid operation for student'
+    );
     throw new ErrorResponse(401, 'Invalid operation for student');
     // }
   }
@@ -897,27 +505,33 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
     .populate('students agents editors', 'firstname lastname email')
     .exec();
 
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
-  // console.log(student);
+  if (!student) {
+    logger.error('SetAsFinalProgramSpecificFile: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
+
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
-  const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == applicationId
-  );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
-  var editor_output_doc;
-  var student_input_doc;
-  var SetFinal_Flag = 0;
-  var doc_name = '';
-  var doc_updateAt = '';
+
+  if (!application) {
+    logger.error('SetAsFinalProgramSpecificFile: Invalid application id');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
+  let editor_output_doc;
+  let student_input_doc;
+  let SetFinal_Flag = 0;
+  let doc_name = '';
+  let doc_updateAt = '';
   if (whoupdate == Role.Student) {
     // throw new ErrorResponse(400, "Can only mark by editor!");
     student_input_doc = application.student_inputs.find(
       ({ name }) => name === docName
     );
-    if (!student_input_doc)
+    if (!student_input_doc) {
+      logger.error('SetAsFinalProgramSpecificFile: Document not existed!');
       throw new ErrorResponse(400, 'Document not existed!');
+    }
     if (
       student_input_doc.isFinalVersion === undefined ||
       student_input_doc.isFinalVersion === false
@@ -939,6 +553,7 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
       ({ name }) => name === docName
     );
     if (!editor_output_doc) {
+      logger.error('SetAsFinalProgramSpecificFile: Document not existed!');
       throw new ErrorResponse(400, 'Document not existed!');
     }
     if (
@@ -978,6 +593,7 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
   }
 });
 
+// FIXME: Deprecated, but look at syntax for threads deletion.
 const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -986,55 +602,60 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
 
   if (user.role === 'Student') {
     if (studentId !== user._id.toString()) {
+      logger.error('deleteProgramSpecificFile: Invalid operation for student');
       throw new ErrorResponse(401, 'Invalid operation for student');
     }
   }
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  var student = await Student.findById(studentId).populate(
+  let student = await Student.findById(studentId).populate(
     'applications.programId'
   );
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('deleteProgramSpecificFile: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
-  console.log(student.applications);
-  // console.log(applicationId);
   const idx = student.applications.findIndex(
     ({ programId }) => programId._id == applicationId
   );
-  console.log(idx);
 
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
+  if (!application) {
+    logger.error('deleteProgramSpecificFile: Invalid application id');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
 
-  var document;
-  var student_input;
+  let document;
+  let student_input;
   if (whoupdate === 'Editor') {
     document = application.documents.find(({ name }) => name === docName);
-    console.log(document);
-    if (!document) throw new ErrorResponse(400, 'docName not existed');
+    if (!document) {
+      logger.error('deleteProgramSpecificFile: docName not existed');
+      throw new ErrorResponse(400, 'docName not existed');
+    }
     if (document.path !== '') {
       // const filePath = path.join(UPLOAD_PATH, document.path);
       // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
       // console.log(filePath);
       // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      var document_split = document.path.replace(/\\/g, '/');
+      let document_split = document.path.replace(/\\/g, '/');
       document_split = document_split.split('/');
-      var fileKey = document_split[2];
-      var directory = path.join(document_split[0], document_split[1]);
-      console.log('Trying to delete file', fileKey);
+      const fileKey = document_split[2];
+      let directory = path.join(document_split[0], document_split[1]);
+      logger.info('Trying to delete file', fileKey);
       directory = path.join(AWS_S3_BUCKET_NAME, directory);
-      console.log(directory);
       directory = directory.replace(/\\/g, '/');
 
-      var options = {
+      const options = {
         Key: fileKey,
         Bucket: directory
       };
 
       s3.deleteObject(options, (error, data) => {
         if (error) {
-          console.log(err);
+          logger.error('deleteProgramSpecificFile: docName not existed', error);
         } else {
           // console.log("Successfully deleted file from bucket");
         }
@@ -1052,20 +673,20 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     student_input = application.student_inputs.find(
       ({ name }) => name === docName
     );
-    console.log(student_input);
-    if (!student_input) throw new ErrorResponse(400, 'docName not existed');
+    if (!student_input) {
+      throw new ErrorResponse(400, 'docName not existed');
+    }
     if (student_input.path !== '') {
       // const filePath = path.join(UPLOAD_PATH, student_input.path);
       // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
       // console.log(filePath);
       // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      var document_split = student_input.path.replace(/\\/g, '/');
+      let document_split = student_input.path.replace(/\\/g, '/');
       document_split = document_split.split('/');
-      var fileKey = document_split[2];
-      var directory = path.join(document_split[0], document_split[1]);
-      console.log('Trying to delete file', fileKey);
+      let fileKey = document_split[2];
+      let directory = path.join(document_split[0], document_split[1]);
+      logger.info('Trying to delete file', fileKey);
       directory = path.join(AWS_S3_BUCKET_NAME, directory);
-      console.log(directory);
       directory = directory.replace(/\\/g, '/');
 
       const options = {
@@ -1075,7 +696,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
 
       s3.deleteObject(options, (error, data) => {
         if (error) {
-          console.log(err);
+          logger.error('deleteProgramSpecificFile: docName not existed', error);
         } else {
           // console.log("Successfully deleted file from bucket");
         }
@@ -1104,6 +725,7 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
 
   if (user.role === 'Student') {
     // if (studentId !== user._id.toString()) {
+    logger.error('Invalid operation for student');
     throw new ErrorResponse(401, 'Invalid operation for student');
     // }
   }
@@ -1114,8 +736,10 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
     .populate('students agents editors', 'firstname lastname email')
     .exec();
 
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
-  // console.log(student);
+  if (!student) {
+    logger.error('Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
   let editor_output_doc;
   let student_input_doc;
   let SetFinal_Flag = 0;
@@ -1127,6 +751,7 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
       ({ name }) => name === docName
     );
     if (!student_input_doc) {
+      logger.error('Document not existed!');
       throw new ErrorResponse(400, 'Document not existed!');
     }
     if (
@@ -1149,8 +774,10 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
     editor_output_doc = student.generaldocs.editoroutputs.find(
       ({ name }) => name === docName
     );
-    if (!editor_output_doc)
+    if (!editor_output_doc) {
+      logger.error('Document not existed!');
       throw new ErrorResponse(400, 'Document not existed!');
+    }
     if (
       editor_output_doc.isFinalVersion === undefined ||
       editor_output_doc.isFinalVersion === false
@@ -1212,6 +839,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
 
   if (user.role === 'Student') {
     if (studentId !== user._id.toString()) {
+      logger.error('deleteGeneralFile: Invalid operation for student');
       throw new ErrorResponse(401, 'Invalid operation for student');
     }
   }
@@ -1220,7 +848,10 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
   let student = await Student.findById(studentId).populate(
     'applications.programId'
   );
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('deleteGeneralFile: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   let document;
   let student_input;
@@ -1229,20 +860,22 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
       document = student.generaldocs.editoroutputs.find(
         ({ name }) => name === docName
       );
-      console.log(document);
-      if (!document) throw new ErrorResponse(400, 'docName not existed');
+
+      if (!document) {
+        logger.error('deleteGeneralFile: Document not existed');
+        throw new ErrorResponse(400, 'Document not existed');
+      }
       if (document.path !== '') {
         // const filePath = path.join(UPLOAD_PATH, document.path);
         // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
         // console.log(filePath);
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-        var document_split = document.path.replace(/\\/g, '/');
+        let document_split = document.path.replace(/\\/g, '/');
         document_split = document_split.split('/');
-        var fileKey = document_split[2];
-        var directory = path.join(document_split[0], document_split[1]);
-        console.log('Trying to delete file', fileKey);
+        const fileKey = document_split[2];
+        let directory = path.join(document_split[0], document_split[1]);
+        logger.info('Trying to delete file', fileKey);
         directory = path.join(AWS_S3_BUCKET_NAME, directory);
-        console.log(directory);
         directory = directory.replace(/\\/g, '/');
 
         const options = {
@@ -1252,7 +885,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
 
         s3.deleteObject(options, (error, data) => {
           if (error) {
-            console.log(err);
+            logger.error('deleteGeneralFile: ', error);
           } else {
             // console.log("Successfully deleted file from bucket");
           }
@@ -1270,8 +903,11 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
       student_input = student.generaldocs.studentinputs.find(
         ({ name }) => name === docName
       );
-      console.log(student_input);
-      if (!student_input) throw new ErrorResponse(400, 'docName not existed');
+
+      if (!student_input) {
+        logger.error('deleteGeneralFile: docName not existed');
+        throw new ErrorResponse(400, 'docName not existed');
+      }
       if (student_input.path !== '') {
         // const filePath = path.join(UPLOAD_PATH, student_input.path);
         // // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
@@ -1279,9 +915,9 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         let document_split = student_input.path.replace(/\\/g, '/');
         document_split = document_split.split('/');
-        let fileKey = document_split[2];
+        const fileKey = document_split[2];
         let directory = path.join(document_split[0], document_split[1]);
-        console.log('Trying to delete file', fileKey);
+        logger.info('Trying to delete file', fileKey);
         directory = path.join(AWS_S3_BUCKET_NAME, directory);
         directory = directory.replace(/\\/g, '/');
 
@@ -1291,11 +927,12 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         };
 
         s3.deleteObject(options, (error, data) => {
-          // if (error) {
-          //   console.log(err);
-          // } else {
-          //   console.log("Successfully deleted file from bucket");
-          // }
+          if (error) {
+            logger.error(error);
+            //   console.log(err);
+          } else {
+            //   console.log("Successfully deleted file from bucket");
+          }
         });
       }
       await Student.findOneAndUpdate(
@@ -1330,8 +967,9 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
     _id: studentId
   });
 
-  if (!student)
+  if (!student) {
     throw new ErrorResponse(400, 'Invalid student Id or application Id');
+  }
 
   const document = student.profile.find(({ name }) => name === category);
   // console.log(document);
@@ -1342,15 +980,15 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
   // console.log(filePath);
   // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-  var document_split = document.path.replace(/\\/g, '/');
+  let document_split = document.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  var fileKey = document_split[1];
-  var directory = document_split[0];
-  console.log('Trying to delete file', fileKey);
+  const fileKey = document_split[1];
+  let directory = document_split[0];
+  logger.info('Trying to delete file', fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');
 
-  var options = {
+  const options = {
     Key: fileKey,
     Bucket: directory
   };
@@ -1461,13 +1099,18 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   } else {
     student = await Student.findById(studentId);
   }
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
+  if (!student) {
+    logger.error('downloadXLSX: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   const input_transcript_excel = student.taigerai.input;
   if (!input_transcript_excel) {
+    logger.error('downloadXLSX: Invalid input_transcript_excel name');
     throw new ErrorResponse(400, 'Invalid input_transcript_excel name');
   }
   if (!input_transcript_excel.path) {
+    logger.error('downloadXLSX: File not uploaded yet');
     throw new ErrorResponse(400, 'File not uploaded yet');
   }
 
@@ -1477,12 +1120,12 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     '/'
   );
   input_transcript_excel_split = input_transcript_excel_split.split('/');
-  let fileKey = input_transcript_excel_split[1];
+  const fileKey = input_transcript_excel_split[1];
   let directory = input_transcript_excel_split[0];
-  console.log('Trying to download transcript excel file', fileKey);
+  logger.info('Trying to download transcript excel file', fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');
-  let options = {
+  const options = {
     Key: fileKey,
     Bucket: directory
   };
@@ -1498,7 +1141,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     .catch((error) => {
       if (error.statusCode === 404) {
         // Catching NoSuchKey
-        console.log(error);
+        logger.error('downloadXLSX: ', error);
       }
       return res
         .status(error.statusCode)
@@ -1582,274 +1225,6 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
   });
 });
 
-const updateCommentsGeneralFile = asyncHandler(async (req, res, next) => {
-  const {
-    user,
-    params: { studentId, docName, whoupdate },
-    body: { comments }
-  } = req;
-  console.log(comments);
-  if (user.role !== whoupdate) {
-    throw new ErrorResponse(400, 'You can only modify your own comments!');
-  }
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
-    .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
-    .exec();
-
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
-  let editor_output_doc;
-  let student_input_doc;
-  if (user.role == Role.Student) {
-    student_input_doc = student.generaldocs.studentinputs.find(
-      ({ name }) => name === docName
-    );
-    if (!student_input_doc) {
-      throw new ErrorResponse(400, 'Document not existed!');
-    }
-
-    student_input_doc.feedback = comments;
-    student_input_doc.updatedAt = new Date();
-    // TODO: set flag editors document(filetype) isReceivedFeedback
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-    //TODO: feedback added email
-    // Send Editor Email
-    for (let i = 0; i < student.editors.length; i++) {
-      await sendCommentsGeneralFileForEditorEmail(
-        {
-          firstname: student.editors[i].firstname,
-          lastname: student.editors[i].lastname,
-          address: student.editors[i].email
-        },
-        {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          feedback_for_documentname: student_input_doc.name,
-          uploaded_updatedAt: student_input_doc.updatedAt
-        }
-      );
-    }
-  } else {
-    editor_output_doc = student.generaldocs.editoroutputs.find(
-      ({ name }) => name === docName
-    );
-    if (!editor_output_doc) {
-      throw new ErrorResponse(400, 'Document not existed!');
-    }
-    editor_output_doc.feedback = comments;
-    editor_output_doc.updatedAt = new Date();
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-    // Send Student Email
-    await sendCommentsGeneralFileForStudentEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        editor_firstname: user.firstname,
-        editor_lastname: user.lastname,
-        feedback_for_documentname: editor_output_doc.name,
-        uploaded_updatedAt: editor_output_doc.updatedAt
-      }
-    );
-  }
-});
-
-const updateCommentsProgramSpecificFile = asyncHandler(
-  async (req, res, next) => {
-    const {
-      user,
-      params: { studentId, applicationId, docName, whoupdate },
-      body: { comments }
-    } = req;
-
-    // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-    const student = await Student.findById(studentId)
-      .populate('applications.programId')
-      .populate('students agents editors', 'firstname lastname email')
-      .exec();
-
-    if (!student) throw new ErrorResponse(400, 'Invalid student id');
-    // console.log(student);
-    const application = student.applications.find(
-      ({ programId }) => programId._id == applicationId
-    );
-    const idx = student.applications.findIndex(
-      ({ programId }) => programId._id == applicationId
-    );
-    if (!application) throw new ErrorResponse(400, 'Invalid application id');
-
-    if (user.role == Role.Student) {
-      let student_input_doc = application.student_inputs.find(
-        ({ name }) => name === docName
-      );
-      if (!student_input_doc) {
-        throw new ErrorResponse(400, 'Document not existed!');
-      }
-      student_input_doc.feedback = comments;
-      student_input_doc.updatedAt = new Date();
-      await student.save();
-      res.status(201).send({ success: true, data: student });
-      // Send Editor Email
-      for (let i = 0; i < student.editors.length; i++) {
-        await sendCommentsProgramSpecificFileForEditorEmail(
-          {
-            firstname: student.editors[i].firstname,
-            lastname: student.editors[i].lastname,
-            address: student.editors[i].email
-          },
-          {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            feedback_for_documentname: student_input_doc.name,
-            uploaded_updatedAt: student_input_doc.updatedAt
-          }
-        );
-      }
-      // TODO: notify Agent?
-    } else {
-      let editor_output_doc = application.documents.find(
-        ({ name }) => name === docName
-      );
-      if (!editor_output_doc) {
-        throw new ErrorResponse(400, 'Document not existed!');
-      }
-      editor_output_doc.feedback = comments;
-      editor_output_doc.updatedAt = new Date();
-      // TODO: set flag student document(filetype, feedback) isReceivedFeedback
-      await student.save();
-      res.status(201).send({ success: true, data: student });
-      // TODO: feedback added email
-      await sendCommentsProgramSpecificFileForStudentEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          editor_firstname: user.firstname,
-          editor_lastname: user.lastname,
-          feedback_for_documentname: editor_output_doc.name,
-          uploaded_updatedAt: editor_output_doc.updatedAt
-        }
-      );
-      // TODO: notify Agent?
-    }
-  }
-);
-
-const StudentGiveFeedbackGeneralFile = asyncHandler(async (req, res, next) => {
-  const {
-    user,
-    params: { studentId, docName, whoupdate },
-    body: { student_feedback }
-  } = req;
-
-  const student = await Student.findById(studentId)
-    .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
-    .exec();
-
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
-  let editor_output_doc;
-  if (user.role == Role.Student) {
-    editor_output_doc = student.generaldocs.editoroutputs.find(
-      ({ name }) => name === docName
-    );
-    if (!editor_output_doc) {
-      throw new ErrorResponse(400, 'Document not existed!');
-    }
-    editor_output_doc.student_feedback = student_feedback;
-    // TODO: mark every isReceivedFeedback flag in same type(i.e. ML) to true!
-    editor_output_doc.isReceivedFeedback = true;
-    editor_output_doc.student_feedback_updatedAt = new Date();
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-    // Send Editor Email
-    for (let i = 0; i < student.editors.length; i++) {
-      await sendStudentFeedbackGeneralFileForEditorEmail(
-        {
-          firstname: student.editors[i].firstname,
-          lastname: student.editors[i].lastname,
-          address: student.editors[i].email
-        },
-        {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          feedback_for_documentname: editor_output_doc.name,
-          uploaded_updatedAt: editor_output_doc.student_feedback_updatedAt
-        }
-      );
-    }
-  } else {
-    throw new ErrorResponse(400, 'Only Student can leave feedback');
-  }
-});
-
-const StudentGiveFeedbackProgramSpecificFile = asyncHandler(
-  async (req, res, next) => {
-    const {
-      user,
-      params: { studentId, applicationId, docName, whoupdate },
-      body: { student_feedback }
-    } = req;
-
-    // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-    const student = await Student.findById(studentId)
-      .populate('applications.programId')
-      .populate('students agents editors', 'firstname lastname email')
-      .exec();
-
-    if (!student) throw new ErrorResponse(400, 'Invalid student id');
-    // console.log(student);
-    const application = student.applications.find(
-      ({ programId }) => programId._id == applicationId
-    );
-    const idx = student.applications.findIndex(
-      ({ programId }) => programId._id == applicationId
-    );
-    if (!application) throw new ErrorResponse(400, 'Invalid application id');
-    let editor_output_doc;
-    if (user.role == Role.Student) {
-      editor_output_doc = application.documents.find(
-        ({ name }) => name === docName
-      );
-      if (!editor_output_doc)
-        throw new ErrorResponse(400, 'Document not existed!');
-      editor_output_doc.student_feedback = student_feedback;
-      // TODO: mark every isReceivedFeedback flag (i.e. same doc type like ML or essay) to true!
-      editor_output_doc.isReceivedFeedback = true;
-      editor_output_doc.student_feedback_updatedAt = new Date();
-
-      await student.save();
-      res.status(201).send({ success: true, data: student });
-      // Send Editor Email
-      for (let i = 0; i < student.editors.length; i++) {
-        await sendStudentFeedbackProgramSpecificFileForEditorEmail(
-          {
-            firstname: student.editors[i].firstname,
-            lastname: student.editors[i].lastname,
-            address: student.editors[i].email
-          },
-          {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            feedback_for_documentname: editor_output_doc.name,
-            uploaded_updatedAt: editor_output_doc.student_feedback_updatedAt
-          }
-        );
-      }
-      // TODO: Send Agent Email
-    } else {
-      throw new ErrorResponse(400, 'Only Student can leave feedback');
-    }
-  }
-);
-
 const PostMessageInThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -1920,12 +1295,9 @@ const PostMessageInThread = asyncHandler(async (req, res) => {
 
 module.exports = {
   getMyfiles,
-  saveProgramSpecificFilePath,
-  saveGeneralFilePath,
   saveProfileFilePath,
   downloadProfileFile,
   downloadTemplateFile,
-  downloadProgramSpecificFile,
   downloadGeneralFile,
   updateProfileDocumentStatus,
   SetAsDecidedProgram,
@@ -1942,9 +1314,5 @@ module.exports = {
   updateAcademicBackground,
   updateLanguageSkill,
   updatePersonalData,
-  updateCommentsGeneralFile,
-  updateCommentsProgramSpecificFile,
-  StudentGiveFeedbackGeneralFile,
-  StudentGiveFeedbackProgramSpecificFile,
   PostMessageInThread
 };

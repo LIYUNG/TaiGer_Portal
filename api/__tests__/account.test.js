@@ -771,14 +771,6 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       `attachment; filename="${temp_name}"`
     );
 
-    // Test update comments of general file (Editor part)
-    const resp7 = await request(app)
-      .post(
-        `/api/account/files/general/comments/${studentId}/${whoupdate}/${temp_name}`
-      )
-      .send({ comments: "My comments" });
-    expect(resp7.status).toBe(201);
-
     var updated2Student = await Student.findById(studentId)
       .populate("applications.programId")
       .lean()
@@ -903,14 +895,6 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       updatedStudent.generaldocs.studentinputs[studentinput_idx].path
     );
     expect(file_name_inDB).toBe(temp_name);
-
-    // Test update comments of general file (Student part)
-    const resp7 = await request(app)
-      .post(
-        `/api/account/files/general/comments/${studentId}/${whoupdate}/${temp_name}`
-      )
-      .send({ comments: "My comments2" });
-    expect(resp7.status).toBe(201);
 
     var updated2Student = await Student.findById(studentId)
       .populate("applications.programId")

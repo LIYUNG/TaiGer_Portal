@@ -5,6 +5,22 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Student } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
+const {
+  sendUploadedProgramSpecificFilesEmail,
+  sendEditorOutputProgramSpecificFilesEmailToStudent,
+  sendEditorOutputProgramSpecificFilesEmailToAgent,
+  sendUploadedProfileFilesEmail,
+  sendAgentUploadedProfileFilesForStudentEmail,
+  sendUploadedProfileFilesRemindForAgentEmail,
+  sendUploadedProgramSpecificFilesRemindForEditorEmail,
+  sendUploadedProgramSpecificFilesRemindForAgentEmail,
+  sendChangedProfileFileStatusEmail,
+  sendSetAsFinalProgramSpecificFileForStudentEmail,
+  sendSetAsFinalProgramSpecificFileForAgentEmail,
+  sendStudentFeedbackProgramSpecificFileForEditorEmail
+  // sendSomeReminderEmail,
+} = require('../services/email');
+const logger = require('../services/logger');
 
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -200,8 +216,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   });
 
   await new_doc_thread.save();
-  let temp;
-  temp = student.applications[idx].doc_modification_thread.create({
+  const temp = student.applications[idx].doc_modification_thread.create({
     doc_thread_id: new_doc_thread._id,
     createdAt: new Date()
   });
@@ -244,11 +259,11 @@ const postMessages = asyncHandler(async (req, res) => {
 
   const document_thread = await Documentthread.findById(messagesThreadId);
   // console.log(JSON.parse(message));
-  if (!document_thread)
+  if (!document_thread) {
     throw new ErrorResponse(400, 'Invalid message thread id');
+  }
 
   var newfile = [];
-  // console.log(req.file);
   if (req.file) {
     newfile = [
       {
@@ -301,7 +316,7 @@ const getMessageFile = asyncHandler(async (req, res) => {
   let path_split = file.path.replace(/\\/g, '/');
   path_split = path_split.split('/');
   const fileKey = path_split[2];
-  console.log('Trying to download message file', fileKey);
+  logger.info('Trying to download message file', fileKey);
   let directory = path.join(AWS_S3_BUCKET_NAME, path_split[0], path_split[1]);
   directory = directory.replace(/\\/g, '/');
   const options = {
@@ -320,7 +335,7 @@ const getMessageFile = asyncHandler(async (req, res) => {
     .catch((error) => {
       if (error.statusCode === 404) {
         // Catching NoSuchKey
-        console.log(error);
+        logger.error(error);
       }
       return res
         .status(error.statusCode)
@@ -340,13 +355,8 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
   if (!student) throw new ErrorResponse(400, 'Invalid student id id');
-  // TODO: before delete the thread, please delete all of the files in the thread!!
-  await Documentthread.findByIdAndDelete(messagesThreadId);
-  // await Student.findByIdAndUpdate(studentId, {
-  //   $pull: {
-  //     generaldocs_threads: { doc_thread_id: { _id: messagesThreadId } },
-  //   },
-  // });
+  // TODO: implement update logic
+  // await Documentthread.findByIdAndUpdate(messagesThreadId);
 
   const student2 = await Student.findById(studentId)
     .populate('applications.programId generaldocs_threads.doc_thread_id')
@@ -378,7 +388,7 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
 
   // Delete folder
   let directory = path.join(studentId, messagesThreadId);
-  console.log('Trying to delete message thread and folder');
+  logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
 
   const listParams = {
@@ -434,7 +444,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   // TODO: before delete the thread, please delete all of the files in the thread!!
   // Delete folder
   let directory = path.join(studentId, messagesThreadId);
-  console.log('Trying to delete message thread and folder');
+  logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
 
   const listParams = {
@@ -451,7 +461,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
 
     listedObjects.Contents.forEach(({ Key }) => {
       deleteParams.Delete.Objects.push({ Key });
-      console.log('Deleting ' + Key);
+      logger.info('Deleting ' + Key);
     });
 
     await s3.deleteObjects(deleteParams).promise();
@@ -499,7 +509,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     const message = thread.messages.find((message) => message._id == messageId);
     message.file.forEach(({ path }) => {
       deleteParams.Delete.Objects.push({ Key: path });
-      console.log(path);
+      logger.info(path);
     });
 
     await s3.deleteObject(deleteParams).promise();

@@ -678,7 +678,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     }
     if (student_input.path !== '') {
       // const filePath = path.join(UPLOAD_PATH, student_input.path);
-      // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
+      // const filePath = student_input.path; // tmp\files_development\studentId\\<bachelorTranscript_>
       // console.log(filePath);
       // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
       let document_split = student_input.path.replace(/\\/g, '/');

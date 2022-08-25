@@ -3,10 +3,10 @@ const { Router } = require('express');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const {
-  fileUpload,
+  // fileUpload,
   MessagesThreadUpload,
-  upload,
-  TranscriptExcelUpload,
+  // upload,
+  // TranscriptExcelUpload,
 } = require('../middlewares/file-upload');
 
 const {

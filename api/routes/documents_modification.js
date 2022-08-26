@@ -4,7 +4,7 @@ const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const {
   // fileUpload,
-  MessagesThreadUpload,
+  MessagesThreadUpload
   // upload,
   // TranscriptExcelUpload,
 } = require('../middlewares/file-upload');
@@ -33,25 +33,28 @@ router
   );
 
 router
-  .route('/init/general/:studentId/:document_catgory')
+  .route('/init/general/:studentId/:document_category')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initGeneralMessagesThread
   );
 
 router
-  .route('/init/application/:studentId/:program_id/:document_catgory')
+  .route('/init/application/:studentId/:program_id/:document_category')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initApplicationMessagesThread
   );
 
 router
-  .route('/:studentId/:messagesThreadId')
+  .route('/:messagesThreadId/:studentId')
   .put(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     SetStatusMessagesThread
-  )
+  );
+
+router
+  .route('/:messagesThreadId')
   .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteMessagesThread);
 
 router

@@ -96,7 +96,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
 
 const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   const {
-    params: { studentId, document_catgory }
+    params: { studentId, document_category }
   } = req;
   const student = await Student.findById(studentId).populate(
     'generaldocs_threads.doc_thread_id'
@@ -106,7 +106,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   // TODO: what if same file_type and same student_id? (ex. ML for 2 programs)
   const doc_thread_existed = await Documentthread.find({
     student_id: studentId,
-    file_type: document_catgory
+    file_type: document_category
   });
 
   if (doc_thread_existed.length > 0) {
@@ -130,7 +130,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   }
   const new_doc_thread = new Documentthread({
     student_id: studentId,
-    file_type: document_catgory,
+    file_type: document_category,
     program_id: null,
     updatedAt: new Date() // TODO
   });
@@ -154,25 +154,25 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { studentId, program_id, document_catgory }
+    params: { studentId, program_id, document_category }
   } = req;
 
   const student = await Student.findById(studentId)
     .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
+    .populate('agents editors', 'firstname lastname email')
     .exec();
 
   if (!student) {
     throw new ErrorResponse(400, 'Invalid student id');
   }
   // TODO: what if same file_type and same student_id? (ex. ML for 2 programs)
-  const doc_thread_existed = await Documentthread.find({
+  const doc_thread_existed = await Documentthread.findOne({
     student_id: studentId,
-    file_type: document_catgory,
+    file_type: document_category,
     program_id
   });
 
-  if (doc_thread_existed.length > 0) {
+  if (doc_thread_existed) {
     // TODO: should push the existing one to student
     throw new ErrorResponse(400, 'Document Thread already existed!');
     // const application = student.generaldocs_threads.find(
@@ -210,8 +210,8 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
 
   const new_doc_thread = new Documentthread({
     student_id: studentId,
-    file_type: document_catgory,
-    program_id: program_id,
+    file_type: document_category,
+    program_id,
     updatedAt: new Date()
   });
 
@@ -345,7 +345,8 @@ const getMessageFile = asyncHandler(async (req, res) => {
 
 const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   const {
-    params: { messagesThreadId, studentId }
+    params: { messagesThreadId, studentId },
+    body: { program_id }
   } = req;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
@@ -355,8 +356,33 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
   if (!student) throw new ErrorResponse(400, 'Invalid student id id');
-  // TODO: implement update logic
-  // await Documentthread.findByIdAndUpdate(messagesThreadId);
+  logger.info('program_id ', program_id);
+  if (program_id) {
+    // TODO: implement update logic
+    const student_application = student.applications.find(
+      (application) => application.programId == program_id
+    );
+    if (!student_application) {
+      throw new ErrorResponse(400, 'application not found');
+    }
+
+    const application_thread = student_application.doc_modification_thread.find(
+      (thread) => thread.doc_thread_id == messagesThreadId
+    );
+    if (!application_thread) {
+      throw new ErrorResponse(400, 'thread not found');
+    }
+    application_thread.isFinalVersion = !application_thread.isFinalVersion;
+    await student.save();
+  } else {
+    // TODO: implement update logic
+    const generaldocs_thread = student.generaldocs_threads.find(
+      (thread) => thread.doc_thread_id == messagesThreadId
+    );
+    if (!generaldocs_thread) throw new ErrorResponse(400, 'thread not found');
+    generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
+    await student.save();
+  }
 
   const student2 = await Student.findById(studentId)
     .populate('applications.programId generaldocs_threads.doc_thread_id')
@@ -372,18 +398,16 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
     params: { messagesThreadId, studentId }
   } = req;
 
-  const document_thread = await Documentthread.findById(messagesThreadId);
+  const to_be_delete_thread = await Documentthread.findById(messagesThreadId);
   const student = await Student.findById(studentId);
 
-  if (!document_thread) {
+  if (!to_be_delete_thread) {
+    logger.error('deleteMessagesThread: Invalid message thread id');
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
-  if (!student) throw new ErrorResponse(400, 'Invalid student id id');
-  // TODO: before delete the thread, please delete all of the files in the thread!!
-
-  const to_be_delete_thread = await Documentthread.findById(messagesThreadId);
-  if (!to_be_delete_thread) {
-    throw new ErrorResponse(400, 'Invalid message thread id');
+  if (!student) {
+    logger.error('deleteMessagesThread: Invalid student id id');
+    throw new ErrorResponse(400, 'Invalid student id id');
   }
 
   // Delete folder
@@ -405,12 +429,12 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
 
     listedObjects.Contents.forEach(({ Key }) => {
       deleteParams.Delete.Objects.push({ Key });
-      console.log('Deleting ' + Key);
+      logger.info('Deleting ', Key);
     });
 
     await s3.deleteObjects(deleteParams).promise();
 
-    if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
   }
   await Documentthread.findByIdAndDelete(messagesThreadId);
   await Student.findByIdAndUpdate(studentId, {
@@ -461,12 +485,12 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
 
     listedObjects.Contents.forEach(({ Key }) => {
       deleteParams.Delete.Objects.push({ Key });
-      logger.info('Deleting ' + Key);
+      logger.info('Deleting ', Key);
     });
 
     await s3.deleteObjects(deleteParams).promise();
 
-    if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
   }
   await Student.findOneAndUpdate(
     { _id: studentId, 'applications.programId': program_id },

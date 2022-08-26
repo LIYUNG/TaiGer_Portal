@@ -36,8 +36,6 @@ class EditorDocsProgress extends React.Component {
     student: this.props.student,
     deleteFileWarningModel: false,
     SetAsFinalFileModel: false,
-    CommentsModel: false,
-    StudentFeedbackModel: false,
     ML_Requirements_Modal: false,
     studentId: '',
     student_id: '',
@@ -58,18 +56,6 @@ class EditorDocsProgress extends React.Component {
       isLoaded: true
     }));
   }
-  openStudentFeebackProgramSpecificFileModelWindow = () => {
-    this.setState((state) => ({
-      ...state,
-      StudentFeedbackModel: true
-    }));
-  };
-  closeStudentFeebackProgramSpecificFileModelWindow = () => {
-    this.setState((state) => ({
-      ...state,
-      StudentFeedbackModel: false
-    }));
-  };
   openSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
@@ -101,12 +87,6 @@ class EditorDocsProgress extends React.Component {
   };
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
-  openCommentsWindow = () => {
-    this.setState((state) => ({ ...state, CommentsModel: false }));
-  };
-  closeCommentsWindow = () => {
-    this.setState((state) => ({ ...state, CommentsModel: false }));
   };
 
   ConfirmDeleteDiscussionThreadHandler = () => {
@@ -199,7 +179,7 @@ class EditorDocsProgress extends React.Component {
       ...state,
       isLoaded: false //false to reload everything
     }));
-    SetAsFinalGenralFile(this.state.doc_thread_id, this.state.student_id).then(
+    SetAsFinalGenralFile(this.state.doc_thread_id, this.state.student_id, this.state.program_id).then(
       (resp) => {
         console.log(resp.data.data);
         const { data, success } = resp.data;
@@ -235,61 +215,13 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  onCommentsProgramSpecific = (
-    studentId,
-    applicationId,
-    docName,
-    whoupdate,
-    feedback,
-    updatedAt
-  ) => {
-    this.setState((state) => ({
-      ...state,
-      studentId,
-      applicationId,
-      docName,
-      whoupdate,
-      filetype: 'ProgramSpecific',
-      comments: feedback,
-      updatedAt,
-      CommentsModel: true
-    }));
-  };
-
-  handleAsFinalProgramSpecific = (
-    studentId,
-    applicationId,
-    docName,
-    whoupdate,
-    action
-  ) => {
-    if (action === 'setfinal') {
-      this.setState((state) => ({
-        ...state,
-        studentId,
-        applicationId,
-        docName,
-        whoupdate,
-        filetype: 'ProgramSpecific',
-        SetAsFinalFileModel: true //change
-      }));
-    } else if (action === 'undofinal') {
-      this.setState((state) => ({
-        ...state,
-        studentId,
-        applicationId,
-        docName,
-        whoupdate,
-        filetype: 'ProgramSpecific'
-      }));
-    }
-  };
-
-  handleAsFinalFile = (doc_thread_id, action) => {
+  handleAsFinalFile = (doc_thread_id, student_id, program_id, action) => {
     if (action === 'setfinal') {
       this.setState((state) => ({
         ...state,
         doc_thread_id,
+        student_id,
+        program_id,
         filetype: 'General',
         SetAsFinalFileModel: true
       }));
@@ -297,8 +229,10 @@ class EditorDocsProgress extends React.Component {
       this.setState((state) => ({
         ...state,
         doc_thread_id,
+        student_id,
+        program_id,
         filetype: 'General',
-        SetAsFinalFileModel: false
+        SetAsFinalFileModel: true
       }));
     }
   };
@@ -479,15 +413,9 @@ class EditorDocsProgress extends React.Component {
                             )}
                           </Col>
                         </Row>
-
                         <ManualFiles
                           onDeleteFileThread={this.onDeleteFileThread}
-                          onCommentsProgramSpecific={
-                            this.onCommentsProgramSpecific
-                          }
-                          handleAsFinalProgramSpecific={
-                            this.handleAsFinalProgramSpecific
-                          }
+                          handleAsFinalFile={this.handleAsFinalFile}
                           role={this.props.role}
                           student={this.state.student}
                           application={application}

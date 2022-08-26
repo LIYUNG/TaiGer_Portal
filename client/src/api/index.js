@@ -138,8 +138,10 @@ export const SetAsFinalProgramSpecificFile = (
     `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${docName}`
   );
 
-export const SetAsFinalGenralFile = (documentsthreadId, studentId) =>
-  request.put(`/api/document-threads/${studentId}/${documentsthreadId}`);
+export const SetAsFinalGenralFile = (documentsthreadId, studentId, program_id) =>
+  request.put(`/api/document-threads/${documentsthreadId}/${studentId}`, {
+    program_id
+  });
 
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');

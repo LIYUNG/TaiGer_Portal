@@ -35,7 +35,6 @@ class ApplicationProgress extends React.Component {
     var application_closed;
     var application_admission;
     var today = new Date();
-    console.log(today);
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0

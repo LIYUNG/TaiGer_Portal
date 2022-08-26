@@ -33,22 +33,16 @@ class ManualFilesList extends Component {
                 thread={thread}
                 application={this.props.application}
                 student={this.props.student}
-                onCommentsProgramSpecific={this.props.onCommentsProgramSpecific}
-                onStudentFeedbackProgramSpecific={
-                  this.props.onStudentFeedbackProgramSpecific
-                }
                 onTrashClick={this.props.onTrashClick}
                 onDeleteProgramSpecificThread={
                   this.props.onDeleteProgramSpecificThread
                 }
-                handleAsFinalProgramSpecific={
-                  this.props.handleAsFinalProgramSpecific
-                }
+                handleAsFinalFile={this.props.handleAsFinalFile}
                 onDeleteFileThread={this.props.onDeleteFileThread}
                 role={this.props.role}
               />
             ))
-          : "";
+          : '';
     }
 
     return (

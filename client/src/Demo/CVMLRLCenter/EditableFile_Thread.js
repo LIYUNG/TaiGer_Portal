@@ -16,6 +16,8 @@ class EditableFile_Thread extends Component {
   handleAsFinalFileThread = (action) => {
     this.props.handleAsFinalFile(
       this.props.thread.doc_thread_id._id,
+      this.props.student._id,
+      this.props.application.programId._id,
       action
     );
   };
@@ -36,29 +38,10 @@ class EditableFile_Thread extends Component {
     );
   };
 
-  handleCommentsProgramSpecific = () => {
-    this.props.onCommentsProgramSpecific(
-      this.props.student._id,
-      this.props.application.programId._id,
-      this.props.thread.name,
-      this.props.thread.feedback,
-      this.props.thread.updatedAt
-    );
-  };
-
-  handleStudentFeebackProgramSpecific = () => {
-    this.props.onStudentFeedbackProgramSpecific(
-      this.props.student._id,
-      this.props.application.programId._id,
-      this.props.thread.name,
-      this.props.thread.student_feedback,
-      this.props.thread.student_feedback_updatedAt
-    );
-  };
-
   MouseOver = () => {
     console.log("Mouse Over");
   };
+  
   render() {
     let fileStatus;
     let documenName;

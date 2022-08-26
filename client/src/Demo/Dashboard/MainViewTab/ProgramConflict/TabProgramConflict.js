@@ -43,7 +43,7 @@ class TabProgramConflict extends React.Component {
           }
         }
     }
-    console.log(conflict_map);
+    // console.log(conflict_map);
     var conflict_program_ids = Object.keys(conflict_map);
     for (let i = 0; i < conflict_program_ids.length; i++) {
       if (conflict_map[conflict_program_ids[i]].length === 1) {

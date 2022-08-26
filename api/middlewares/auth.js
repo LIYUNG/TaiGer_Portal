@@ -44,4 +44,9 @@ const prohibit =
     next();
   };
 
-module.exports = { localAuth, protect, permit, prohibit };
+module.exports = {
+  localAuth,
+  protect,
+  permit,
+  prohibit
+};

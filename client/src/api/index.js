@@ -236,3 +236,6 @@ export const getMyAcademicBackground = () => request.get('/api/account/survey');
 //Personal Data:
 export const updatePersonalData = (personaldata) =>
   request.post(`/api/account/profile`, { personaldata });
+
+export const updateCredentials = (credentials, email, password) =>
+  request.post(`/api/account/credentials`, { credentials, email, password });

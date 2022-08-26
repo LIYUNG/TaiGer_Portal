@@ -207,6 +207,56 @@ class Profile extends React.Component {
             )}
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <Card>
+              <Card.Header>
+                <Card.Title as="h5">Login</Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <Row>
+                  <Col md={6}>
+                    {/* <Form> */}
+                    <Form.Group controlId="form.firstname">
+                      <Form.Label>Current Password</Form.Label>
+                      <Form.Control
+                        type="text"
+                        readOnly={true}
+                        placeholder="Text"
+                        autoComplete="nope"
+                        value={this.props.user.firstname}
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="form.birthday">
+                      <Form.Label>New Password</Form.Label>
+                      <Form.Control type="date" placeholder="Date of Birth" />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="form.lastname">
+                      <Form.Label>Enter New Password Again</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Text"
+                        readOnly={true}
+                        value={this.props.user.lastname}
+                      />
+                    </Form.Group>
+                    <br />
+                    <Button variant="primary">Submit</Button>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Col>
+        </Row>
         <Modal
           show={this.state.updateconfirmed}
           onHide={this.setmodalhide}

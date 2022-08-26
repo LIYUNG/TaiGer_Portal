@@ -18,13 +18,9 @@ passport.use(
         const isPasswordValid = await user.verifyPassword(password);
         if (!isPasswordValid) return done(null, false);
 
-        //TODO: check if user isAccountActivated is true
         if (user.isAccountActivated !== true) {
           return done(null, 'inactivated');
         }
-        // if (user.isAccountActivated !== true) {
-        //   throw new ErrorResponse(401, 'account not activated');
-        // }
 
         return done(null, user);
       } catch (err) {
@@ -33,6 +29,7 @@ passport.use(
     }
   )
 );
+
 
 passport.use(
   new JwtStrategy(

@@ -44,8 +44,6 @@ const getMyfiles = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: student });
 });
 
-
-
 const saveProfileFilePath = asyncHandler(async (req, res) => {
   const {
     user,
@@ -1225,6 +1223,28 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
   });
 });
 
+const updateCredentials = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    body: { credentials }
+  } = req;
+  const user_me = await User.findOne({ _id: user._id });
+  if (!user_me) {
+    throw new ErrorResponse(400, 'Invalid user');
+  }
+
+  user_me.password = credentials.new_password;
+  await user_me.save();
+  // const updatedStudent = await User.findById(_id);
+  res.status(200).send({
+    success: true
+    // data: {
+    //   firstname: updatedStudent.firstname,
+    //   lastname: updatedStudent.lastname
+    // }
+  });
+});
+
 const PostMessageInThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -1314,5 +1334,6 @@ module.exports = {
   updateAcademicBackground,
   updateLanguageSkill,
   updatePersonalData,
+  updateCredentials,
   PostMessageInThread
 };

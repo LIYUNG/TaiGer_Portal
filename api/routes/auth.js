@@ -1,6 +1,6 @@
-const { Router } = require("express");
+const { Router } = require('express');
 
-const { localAuth, protect } = require("../middlewares/auth");
+const { localAuth, protect } = require('../middlewares/auth');
 const {
   signup,
   login,
@@ -9,25 +9,25 @@ const {
   activateAccount,
   resendActivation,
   forgotPassword,
-  resetPassword,
-} = require("../controllers/auth");
+  resetPassword
+} = require('../controllers/auth');
 
 const router = Router();
 
-router.post("/signup", signup);
+router.post('/signup', signup);
 
-router.post("/login", localAuth, login);
+router.post('/login', localAuth, login);
 
-router.get("/logout", logout);
+router.get('/logout', logout);
 
-router.get("/verify", protect, verify); // check current user
+router.get('/verify', protect, verify); // check current user
 
-router.post("/activation", activateAccount);
+router.post('/activation', activateAccount);
 
-router.post("/resend-activation", resendActivation);
+router.post('/resend-activation', resendActivation);
 
-router.post("/forgot-password", forgotPassword);
+router.post('/forgot-password', forgotPassword);
 
-router.post("/reset-password", resetPassword);
+router.post('/reset-password', resetPassword);
 
-module.exports = router
+module.exports = router;

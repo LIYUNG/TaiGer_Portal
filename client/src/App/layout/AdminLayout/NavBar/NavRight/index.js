@@ -31,7 +31,7 @@ class NavRight extends Component {
                 {this.props.userdata.firstname} {this.props.userdata.lastname}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Dropdown alignRight={!this.props.rtlLayout}>
                 <Dropdown.Toggle variant={"link"} id="dropdown-basic">
                   <i className="icon feather icon-bell" />
@@ -116,7 +116,7 @@ class NavRight extends Component {
                   </div>
                 </Dropdown.Menu>
               </Dropdown>
-            </li>
+            </li> 
             <li className={this.props.rtlLayout ? "m-r-15" : "m-l-15"}>
               <a
                 // href={DEMO.BLANK_LINK}
@@ -127,7 +127,7 @@ class NavRight extends Component {
               >
                 <i className="icon feather icon-mail" /> Messages
               </a>
-            </li>
+            </li> */}
             <li>
               {/* <a href={DEMO.LOG_OUT} className="dud-logout" title="Logout">
                         <i className="feather icon-log-out" /> Logout</a> */}

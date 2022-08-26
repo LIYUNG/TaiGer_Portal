@@ -216,14 +216,14 @@ export default {
           classes: 'nav-item',
           icon: 'feather icon-cloud'
         },
-        {
-          id: 'personaldata',
-          title: 'Personal Data',
-          type: 'item',
-          url: '/profile',
-          classes: 'nav-item',
-          icon: 'feather icon-user'
-        },
+        // {
+        //   id: 'personaldata',
+        //   title: 'Personal Data',
+        //   type: 'item',
+        //   url: '/profile',
+        //   classes: 'nav-item',
+        //   icon: 'feather icon-user'
+        // },
         {
           id: 'settings',
           title: 'Settings',

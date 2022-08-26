@@ -22,8 +22,11 @@ const {
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,
-  updatePersonalData
+  updatePersonalData,
+  updateCredentials
 } = require('../controllers/files');
+
+const { localAuth } = require('../middlewares/auth');
 
 const router = Router();
 
@@ -58,7 +61,7 @@ router
     downloadGeneralFile
   )
   .put(
-    permit(Role.Admin, Role.Agent, Role.Editor), //set as final
+    permit(Role.Admin, Role.Agent, Role.Editor), // set as final
     SetAsFinalGeneralFile
   )
   .delete(
@@ -102,6 +105,13 @@ router
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updatePersonalData
+  );
+router
+  .route('/credentials')
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    localAuth,
+    updateCredentials
   );
 router
   .route('/download/template/:category')

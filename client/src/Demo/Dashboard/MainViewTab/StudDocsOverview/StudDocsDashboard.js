@@ -11,7 +11,6 @@ import { BsDash } from "react-icons/bs";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import EditAgentsSubpage from "./EditAgentsSubpage";
 import EditEditorsSubpage from "./EditEditorsSubpage";
-import EditProgramsSubpage from "./EditProgramsSubpage";
 class StudDocsDashboard extends React.Component {
   state = {
     showAgentPage: false,
@@ -140,16 +139,6 @@ class StudDocsDashboard extends React.Component {
             </td>
           </tr>
         </tbody>
-        <EditProgramsSubpage
-          student={this.props.student}
-          show={this.state.showProgramPage}
-          onHide={this.setProgramModalhide}
-          setmodalhide={this.setProgramModalhide}
-          onDeleteProgram={this.props.onDeleteProgram}
-          onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
-          onSetAsCloseProgram={this.props.onSetAsCloseProgram}
-          onSetAsGetAdmissionProgram={this.props.onSetAsGetAdmissionProgram}
-        />
       </>
     );
   }

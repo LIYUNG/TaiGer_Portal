@@ -389,96 +389,41 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   );
 });
 
-const SetAsDecidedProgram = asyncHandler(async (req, res, next) => {
+const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   const {
-    params: { studentId, applicationId }
+    params: { studentId },
+    body: { applications }
   } = req;
-
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
-    .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
-    .exec();
+  const student = await Student.findById(studentId).exec();
 
   if (!student) {
-    logger.error('SetAsDecidedProgram: Invalid student id');
+    logger.error('UpdateStudentApplications: Invalid student id');
     throw new ErrorResponse(400, 'Invalid student id');
   }
-  // console.log(student);
-  const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
-  );
-  if (!application) {
-    logger.error('SetAsDecidedProgram: Invalid application id');
-    throw new ErrorResponse(400, 'Invalid application id');
+
+  for (let i = 0; i < applications.length; i += 1) {
+    const application = student.applications.find(
+      (app) => app._id == applications[i]._id
+    );
+    application.decided = applications[i].decided;
+    application.closed = applications[i].closed;
+    application.admission = applications[i].admission;
   }
-
-  application.decided = true;
-  // TODO: set flag student document(filetype, feedback) isReceivedFeedback
   await student.save();
-  res.status(201).send({ success: true, data: student });
-  // TODO: feedback added email
-});
-
-const SetAsCloseProgram = asyncHandler(async (req, res, next) => {
-  const {
-    params: { studentId, applicationId }
-  } = req;
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
+  // await Student.findByIdAndUpdate(
+  //   studentId,
+  //   {
+  //     $set: { applications }
+  //     // applications // TODO: how to update sub schema partially
+  //   },
+  //   { upsert: true }
+  // );
+  const student_updated = await Student.findById(studentId)
     .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
-    .exec();
-
-  if (!student) {
-    logger.error('SetAsCloseProgram: Invalid student id');
-    throw new ErrorResponse(400, 'Invalid student id');
-  }
-  // console.log(student);
-  const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
-  );
-  if (!application) {
-    logger.error('SetAsCloseProgram: Invalid application id');
-    throw new ErrorResponse(400, 'Invalid application id');
-  }
-  application.closed = true;
-  // TODO: set flag student document(filetype, feedback) isReceivedFeedback
-  await student.save();
-  res.status(201).send({ success: true, data: student });
-  // TODO: feedback added email
-});
-
-const SetAsGetAdmissionProgram = asyncHandler(async (req, res, next) => {
-  const {
-    params: { studentId, applicationId }
-  } = req;
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
-    .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
-    .exec();
-
-  if (!student) {
-    logger.error('SetAsGetAdmissionProgram: Invalid student id');
-    throw new ErrorResponse(400, 'Invalid student id');
-  }
-  // console.log(student);
-  const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
-  );
-  if (!application) {
-    logger.error('SetAsGetAdmissionProgram: Invalid application id');
-    throw new ErrorResponse(400, 'Invalid application id');
-  }
-  // console.log("Admission");
-
-  application.admission = true;
-  // TODO: set flag student document(filetype, feedback) isReceivedFeedback
-  await student.save();
-  res.status(201).send({ success: true, data: student });
+    .populate('agents editors', 'firstname lastname email')
+    .lean();
+  res.status(201).send({ success: true, data: student_updated });
   // TODO: feedback added email
 });
 
@@ -1316,10 +1261,8 @@ module.exports = {
   downloadTemplateFile,
   downloadGeneralFile,
   updateProfileDocumentStatus,
-  SetAsDecidedProgram,
-  SetAsCloseProgram,
-  SetAsGetAdmissionProgram,
   SetAsFinalProgramSpecificFile,
+  UpdateStudentApplications,
   deleteProgramSpecificFile,
   SetAsFinalGeneralFile,
   deleteGeneralFile,

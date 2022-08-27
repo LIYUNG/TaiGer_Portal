@@ -106,12 +106,9 @@ export const getTemplateDownload = (category) =>
   request.get(`/api/account/download/template/${category}`, {
     responseType: 'blob'
   });
-export const SetAsDecidedProgram = (studentId, applicationId) =>
-  request.put(`/api/account/program/decided/${studentId}/${applicationId}`);
-export const SetAsCloseProgram = (studentId, applicationId) =>
-  request.put(`/api/account/program/close/${studentId}/${applicationId}`);
-export const SetAsGetAdmissionProgram = (studentId, applicationId) =>
-  request.put(`/api/account/program/admission/${studentId}/${applicationId}`);
+
+export const UpdateStudentApplications = (studentId, applications) =>
+  request.put(`/api/account/applications/${studentId}`, { applications });
 
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${studentId}/${documentsthreadId}`);

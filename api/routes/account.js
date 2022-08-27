@@ -11,9 +11,7 @@ const {
   getMyfiles,
   downloadTemplateFile,
   downloadGeneralFile,
-  SetAsDecidedProgram,
-  SetAsCloseProgram,
-  SetAsGetAdmissionProgram,
+  UpdateStudentApplications,
   SetAsFinalProgramSpecificFile,
   SetAsFinalGeneralFile,
   deleteGeneralFile,
@@ -38,14 +36,8 @@ router
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);
 
 router
-  .route('/program/close/:studentId/:applicationId')
-  .put(permit(Role.Admin, Role.Agent), SetAsCloseProgram);
-router
-  .route('/program/decided/:studentId/:applicationId')
-  .put(permit(Role.Admin, Role.Agent), SetAsDecidedProgram);
-router
-  .route('/program/admission/:studentId/:applicationId')
-  .put(permit(Role.Admin, Role.Agent), SetAsGetAdmissionProgram);
+  .route('/applications/:studentId')
+  .put(permit(Role.Admin, Role.Agent, Role.Student), UpdateStudentApplications);
 
 router
   .route('/files/programspecific/:studentId/:applicationId/:whoupdate/:docName')

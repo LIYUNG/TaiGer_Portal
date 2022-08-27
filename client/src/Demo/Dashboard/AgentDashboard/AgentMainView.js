@@ -112,11 +112,6 @@ class AgentMainView extends React.Component {
                   students={this.props.students}
                   startEditingProgram={this.props.startEditingProgram}
                   onDeleteProgram={this.props.onDeleteProgram}
-                  onSetAsCloseProgram={this.props.onSetAsCloseProgram}
-                  onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
-                  onSetAsGetAdmissionProgram={
-                    this.props.onSetAsGetAdmissionProgram
-                  }
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
                     this.props.updateStudentArchivStatus

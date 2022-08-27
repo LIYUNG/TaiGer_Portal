@@ -1,6 +1,6 @@
-import React from "react";
-import { Row, Col, Tabs, Tab, Spinner } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
+import React from 'react';
+import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
+import Aux from '../../hoc/_Aux';
 // import DEMO from "../../store/constant";
 // import avatar1 from "../../assets/images/user/avatar-1.jpg";
 // import avatar2 from "../../assets/images/user/avatar-2.jpg";
@@ -8,15 +8,15 @@ import Aux from "../../hoc/_Aux";
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-import AdminMainView from "./AdminDashboard/AdminMainView";
-import AgentMainView from "./AgentDashboard/AgentMainView";
-import EditorMainView from "./EditorDashboard/EditorMainView";
-import StudentDashboard from "./StudentDashboard/StudentDashboard";
-import GuestMainView from "./GuestDashboard/GuestMainView";
+  AiOutlineFieldTime
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { BsDash } from 'react-icons/bs';
+import AdminMainView from './AdminDashboard/AdminMainView';
+import AgentMainView from './AgentDashboard/AgentMainView';
+import EditorMainView from './EditorDashboard/EditorMainView';
+import StudentDashboard from './StudentDashboard/StudentDashboard';
+import GuestMainView from './GuestDashboard/GuestMainView';
 import {
   getStudents,
   updateArchivStudents,
@@ -24,11 +24,8 @@ import {
   getAgents,
   updateAgents,
   getEditors,
-  updateEditors,
-  SetAsDecidedProgram,
-  SetAsCloseProgram,
-  SetAsGetAdmissionProgram,
-} from "../../api";
+  updateEditors
+} from '../../api';
 
 class Dashboard extends React.Component {
   state = {
@@ -42,7 +39,7 @@ class Dashboard extends React.Component {
     updateEditorList: {},
     success: false,
     isDashboard: true,
-    file: "",
+    file: ''
   };
 
   componentDidMount() {
@@ -53,17 +50,17 @@ class Dashboard extends React.Component {
           this.setState({
             isLoaded: true,
             students: data,
-            success: success,
+            success: success
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        console.log(": " + error);
+        console.log(': ' + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -73,13 +70,13 @@ class Dashboard extends React.Component {
     if (this.state.isLoaded === false) {
       getStudents().then(
         (resp) => {
-          console.log("Default.js componentDidUpdate rendered");
+          console.log('Default.js componentDidUpdate rendered');
           const { data, success } = resp.data;
           if (success) {
             this.setState({
               isLoaded: true,
               students: data,
-              success: success,
+              success: success
             });
           } else {
             alert(resp.data.message);
@@ -88,7 +85,7 @@ class Dashboard extends React.Component {
         (error) => {
           this.setState({
             isLoaded: true,
-            error: true,
+            error: true
           });
         }
       );
@@ -114,7 +111,7 @@ class Dashboard extends React.Component {
           this.setState({
             isLoaded: true,
             students: stds,
-            success: success,
+            success: success
           });
         } else {
           alert(res.data.message);
@@ -123,94 +120,7 @@ class Dashboard extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
-
-  onSetAsDecidedProgram = (e, student_id, program_id) => {
-    //program id
-    e.preventDefault();
-    var stds = this.state.students;
-    var std_idx = stds.findIndex((stud) => stud._id === student_id);
-
-    SetAsDecidedProgram(student_id, program_id).then(
-      (res) => {
-        const { data, success } = res.data;
-        stds[std_idx] = data;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            students: stds,
-            success: success,
-          });
-        } else {
-          alert(res.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
-
-  onSetAsCloseProgram = (e, student_id, program_id) => {
-    //program id
-    e.preventDefault();
-    var stds = this.state.students;
-    var std_idx = stds.findIndex((stud) => stud._id === student_id);
-
-    SetAsCloseProgram(student_id, program_id).then(
-      (res) => {
-        const { data, success } = res.data;
-        stds[std_idx] = data;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            students: stds,
-            success: success,
-          });
-        } else {
-          alert(res.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
-
-  onSetAsGetAdmissionProgram = (e, student_id, program_id) => {
-    //program id
-    e.preventDefault();
-    var stds = this.state.students;
-    var std_idx = stds.findIndex((stud) => stud._id === student_id);
-
-    SetAsGetAdmissionProgram(student_id, program_id).then(
-      (res) => {
-        const { data, success } = res.data;
-        stds[std_idx] = data;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            students: stds,
-            success: success,
-          });
-        } else {
-          alert(res.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
+          error
         });
       }
     );
@@ -230,7 +140,7 @@ class Dashboard extends React.Component {
               ? student_agents.findIndex(
                   (student_agent) => student_agent._id === _id
                 ) > -1
-              : false,
+              : false
           }),
           {}
         );
@@ -238,7 +148,7 @@ class Dashboard extends React.Component {
         this.setState((state) => ({
           ...state,
           agent_list: agents,
-          updateAgentList,
+          updateAgentList
         }));
       },
       (error) => {}
@@ -257,7 +167,7 @@ class Dashboard extends React.Component {
               ? student_editors.findIndex(
                   (student_editor) => student_editor._id === _id
                 ) > -1
-              : false,
+              : false
           }),
           {}
         );
@@ -265,7 +175,7 @@ class Dashboard extends React.Component {
         this.setState((state) => ({
           ...state,
           editor_list: editors,
-          updateEditorList,
+          updateEditorList
         }));
       },
       (error) => {}
@@ -278,8 +188,8 @@ class Dashboard extends React.Component {
     this.setState((prevState) => ({
       updateAgentList: {
         ...prevState.updateAgentList,
-        [value]: checked,
-      },
+        [value]: checked
+      }
     }));
   };
 
@@ -289,8 +199,8 @@ class Dashboard extends React.Component {
     this.setState((prevState) => ({
       updateEditorList: {
         ...prevState.updateEditorList,
-        [value]: checked,
-      },
+        [value]: checked
+      }
     }));
   };
 
@@ -319,14 +229,14 @@ class Dashboard extends React.Component {
             isLoaded: true, //false to reload everything
             students: students_temp,
             success: success,
-            updateAgentList: [],
+            updateAgentList: []
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        alert("UpdateAgentlist is failed.");
+        alert('UpdateAgentlist is failed.');
       }
     );
   };
@@ -346,14 +256,14 @@ class Dashboard extends React.Component {
             isLoaded: true, //false to reload everything
             students: students_temp,
             success: success,
-            updateAgentList: [],
+            updateAgentList: []
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        alert("UpdateEditorlist is failed.");
+        alert('UpdateEditorlist is failed.');
       }
     );
   };
@@ -361,20 +271,20 @@ class Dashboard extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
-        console.log("Archiv index.js rendered");
+        console.log('Archiv index.js rendered');
         const { data, success } = resp.data;
         this.setState((state) => ({
           ...state,
           isLoaded: true,
           students: data,
-          success: success,
+          success: success
         }));
       },
       (error) => {
-        console.log(": " + error);
+        console.log(': ' + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -432,10 +342,10 @@ class Dashboard extends React.Component {
       );
     }
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (!isLoaded && !this.state.data) {
       return (
@@ -446,7 +356,7 @@ class Dashboard extends React.Component {
         </div>
       );
     } else {
-      if (this.props.user.role === "Admin") {
+      if (this.props.user.role === 'Admin') {
         return (
           <Aux>
             <AdminMainView
@@ -466,9 +376,6 @@ class Dashboard extends React.Component {
               submitUpdateEditorlist={this.submitUpdateEditorlist}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
-              onSetAsCloseProgram={this.onSetAsCloseProgram}
-              onSetAsDecidedProgram={this.onSetAsDecidedProgram}
-              onSetAsGetAdmissionProgram={this.onSetAsGetAdmissionProgram}
               isDashboard={this.state.isDashboard}
             />
             {!isLoaded && (
@@ -480,7 +387,7 @@ class Dashboard extends React.Component {
             )}
           </Aux>
         );
-      } else if (this.props.user.role === "Agent") {
+      } else if (this.props.user.role === 'Agent') {
         return (
           <Aux>
             <AgentMainView
@@ -490,9 +397,6 @@ class Dashboard extends React.Component {
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
-              onSetAsCloseProgram={this.onSetAsCloseProgram}
-              onSetAsDecidedProgram={this.onSetAsDecidedProgram}
-              onSetAsGetAdmissionProgram={this.onSetAsGetAdmissionProgram}
             />
             {!isLoaded && (
               <div style={style}>
@@ -503,7 +407,7 @@ class Dashboard extends React.Component {
             )}
           </Aux>
         );
-      } else if (this.props.user.role === "Editor") {
+      } else if (this.props.user.role === 'Editor') {
         return (
           <Aux>
             <EditorMainView
@@ -527,7 +431,7 @@ class Dashboard extends React.Component {
             )}
           </Aux>
         );
-      } else if (this.props.user.role === "Student") {
+      } else if (this.props.user.role === 'Student') {
         return (
           <Aux>
             <StudentDashboard

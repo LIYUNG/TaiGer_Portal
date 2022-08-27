@@ -1,10 +1,73 @@
 import React from 'react';
-import { Row, Col, Spinner, Card, Table } from 'react-bootstrap';
+import { Row, Col, Spinner, Card, Table, Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
+import {
+  AiFillCloseCircle,
+  AiFillQuestionCircle,
+  AiOutlineFieldTime
+} from 'react-icons/ai';
+import { UpdateStudentApplications } from '../../api';
 
 class StudentApplicationsTableTemplate extends React.Component {
- 
+  state = {
+    student: this.props.student,
+    applications: this.props.student.applications,
+    isLoaded: false,
+    success: false,
+    error: null
+  };
+  handleChange = (e, application_idx) => {
+    console.log(e.target.value);
+    console.log(e.target.id);
+    e.preventDefault();
+    let applications_temp = [...this.state.applications];
+    applications_temp[application_idx][e.target.id] =
+      e.target.value === 'O' ? true : false;
+    console.log(applications_temp);
+    this.setState((state) => ({
+      ...state,
+      applications: applications_temp
+    }));
+  };
+
+  handleSubmit = (e, student_id, applications) => {
+    e.preventDefault();
+    let applications_temp = [...this.state.applications];
+    // console.log(this.state.applications.length);
+    for (let i = 0; i < applications_temp.length; i += 1) {
+      console.log(i);
+      delete applications_temp[i].programId;
+      delete applications_temp[i].doc_modification_thread;
+    }
+    // console.log(applications_temp);
+    UpdateStudentApplications(student_id, applications_temp).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            student: data,
+            success: success
+          });
+        } else {
+          alert(resp.data.message);
+          this.setState({
+            isLoaded: true,
+            error: true
+          });
+        }
+      },
+      (error) => {
+        console.log(': ' + error);
+        this.setState({
+          isLoaded: true
+          // error: true
+        });
+      }
+    );
+  };
+
   getNumberOfDays(start, end) {
     const date1 = new Date(start);
     const date2 = new Date(end);
@@ -21,6 +84,31 @@ class StudentApplicationsTableTemplate extends React.Component {
     return diffInDays;
   }
   render() {
+    const { error, isLoaded } = this.state;
+    if (error) {
+      return (
+        <div>
+          Error: your session is timeout! Please refresh the page and Login
+        </div>
+      );
+    }
+    const style = {
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    };
+
+    if (!isLoaded && !this.state.student) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
+    var applying_university_info;
     var applying_university;
     var applying_program;
     var application_deadline;
@@ -33,97 +121,130 @@ class StudentApplicationsTableTemplate extends React.Component {
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
     ) {
-      applying_university = <h6 className="mb-1"> No University</h6>;
-      applying_program = <h6 className="mb-1"> No Program</h6>;
-      application_deadline = <h6 className="mb-1"> No Date</h6>;
-      application_date_left = <h6 className="mb-1"></h6>;
-      application_decided = <h6 className="mb-1"></h6>;
-      application_closed = <h6 className="mb-1"></h6>;
+      applying_university_info = (
+        <>
+          <tr>
+            <td>
+              <h6 className="mb-1"> No University</h6>
+            </td>
+            <td>
+              <h6 className="mb-1"> No Program</h6>
+            </td>
+            <td>
+              <h6 className="mb-1"> No Date</h6>
+            </td>
+            <td>
+              <h6 className="mb-1"> </h6>
+            </td>
+            <td>
+              <h6 className="mb-1"> </h6>
+            </td>
+            <td>
+              <h6 className="mb-1"> </h6>
+            </td>
+            <td>
+              <h6 className="mb-1"> </h6>
+            </td>
+          </tr>
+        </>
+      );
     } else {
-      applying_university = this.props.student.applications.map(
-        (application, i) => (
-          <Link to={'/programs/' + application.programId._id}>
-            <h6 className="mb-1" key={i}>
-              {application.programId.school}
-            </h6>
-          </Link>
+      // applying_university = this.props.student.applications.map(
+      applying_university_info = this.state.student.applications.map(
+        (application, application_idx) => (
+          <>
+            <tr>
+              <td>
+                <Link to={'/programs/' + application.programId._id}>
+                  <h6 className="mb-1" key={application_idx}>
+                    {application.programId.school}
+                  </h6>
+                </Link>
+              </td>
+              <td>
+                <Link to={'/programs/' + application.programId._id}>
+                  <h6 className="mb-1" key={application_idx}>
+                    {application.programId.program_name}
+                  </h6>
+                </Link>
+              </td>
+              <td>
+                <h6 className="mb-1" key={application_idx}>
+                  {this.props.student.academic_background.university
+                    .expected_application_date
+                    ? this.props.student.academic_background.university
+                        .expected_application_date + '-'
+                    : ''}
+                  {application.programId.application_deadline}
+                </h6>
+              </td>
+              <td>
+                <Form.Group controlId="decided">
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => this.handleChange(e, application_idx)}
+                    defaultValue={
+                      application.decided !== undefined && application.decided
+                        ? 'O'
+                        : 'X'
+                    }
+                  >
+                    <option value={'X'}>No</option>
+                    <option value={'O'}>Yes</option>
+                  </Form.Control>
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group controlId="closed">
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => this.handleChange(e, application_idx)}
+                    defaultValue={
+                      application.closed !== undefined && application.closed
+                        ? 'O'
+                        : 'X'
+                    }
+                  >
+                    <option value={'X'}>No</option>
+                    <option value={'O'}>Yes</option>
+                  </Form.Control>
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group controlId="admission">
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => this.handleChange(e, application_idx)}
+                    defaultValue={
+                      application.admission !== undefined &&
+                      application.admission
+                        ? 'O'
+                        : 'X'
+                    }
+                  >
+                    <option value={'X'}>No</option>
+                    <option value={'O'}>Yes</option>
+                  </Form.Control>
+                </Form.Group>
+              </td>
+              <td>
+                <h6 className="mb-1" key={application_idx}>
+                  {application.closed
+                    ? '-'
+                    : this.props.student.academic_background.university
+                        .expected_application_date &&
+                      this.getNumberOfDays(
+                        today,
+                        this.props.student.academic_background.university
+                          .expected_application_date +
+                          '-' +
+                          application.programId.application_deadline
+                      )}
+                </h6>
+              </td>
+            </tr>
+          </>
         )
-      );
-      applying_program = this.props.student.applications.map(
-        (application, i) => (
-          <Link to={'/programs/' + application.programId._id}>
-            <h6 className="mb-1" key={i}>
-              {application.programId.program_name}
-            </h6>
-          </Link>
-        )
-      );
-      application_deadline = this.props.student.applications.map(
-        (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {this.props.student.academic_background.university
-              .expected_application_date
-              ? this.props.student.academic_background.university
-                  .expected_application_date + '-'
-              : ''}
-            {application.programId.application_deadline}
-          </h6>
-        )
-      );
-
-      application_date_left = this.props.student.applications.map(
-        (application, i) => (
-          <h6 className="mb-1" key={i}>
-            {application.closed
-              ? '-'
-              : this.props.student.academic_background.university
-                  .expected_application_date &&
-                this.getNumberOfDays(
-                  today,
-                  this.props.student.academic_background.university
-                    .expected_application_date +
-                    '-' +
-                    application.programId.application_deadline
-                )}
-          </h6>
-        )
-      );
-      application_decided = this.props.student.applications.map(
-        (application, i) =>
-          application.decided !== undefined && application.decided === true ? (
-            <h6 className="mb-1" key={i}>
-              O
-            </h6>
-          ) : (
-            <h6 className="mb-1" key={i}>
-              X
-            </h6>
-          )
-      );
-      application_closed = this.props.student.applications.map(
-        (application, i) =>
-          application.closed !== undefined && application.closed === true ? (
-            <h6 className="mb-1" key={i}>
-              O
-            </h6>
-          ) : (
-            <h6 className="mb-1" key={i}>
-              X
-            </h6>
-          )
-      );
-      application_admission = this.props.student.applications.map(
-        (application, i) =>
-          application.admission !== undefined &&
-          application.admission === true ? (
-            <h6 className="mb-1" key={i}>
-              O
-            </h6>
-          ) : (
-            <h6 className="mb-1" key={i}>
-              X
-            </h6>
-          )
       );
     }
     return (
@@ -152,17 +273,19 @@ class StudentApplicationsTableTemplate extends React.Component {
                       <th>Days left</th>
                     </tr>
                   </thead>
-                  {/* {application_progress} */}
-                  <tr>
-                    <td>{applying_university}</td>
-                    <td>{applying_program}</td>
-                    <td>{application_deadline}</td>
-                    <td>{application_decided}</td>
-                    <td>{application_closed}</td>
-                    <td>{application_admission}</td>
-                    <td>{application_date_left}</td>
-                  </tr>{' '}
+                  <tbody>{applying_university_info}</tbody>
                 </Table>
+                <Button
+                  onClick={(e) =>
+                    this.handleSubmit(
+                      e,
+                      this.state.student._id,
+                      this.state.applications
+                    )
+                  }
+                >
+                  Update
+                </Button>
               </Card.Body>
             </Card>
           </Col>

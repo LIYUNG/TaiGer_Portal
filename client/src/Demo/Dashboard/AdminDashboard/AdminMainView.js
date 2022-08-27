@@ -98,11 +98,6 @@ class AdminMainView extends React.Component {
                     this.props.updateStudentArchivStatus
                   }
                   isDashboard={this.props.isDashboard}
-                  onSetAsCloseProgram={this.props.onSetAsCloseProgram}
-                  onSetAsDecidedProgram={this.props.onSetAsDecidedProgram}
-                  onSetAsGetAdmissionProgram={
-                    this.props.onSetAsGetAdmissionProgram
-                  }
                 />
               </Tab>
               <Tab eventKey="dz" title="Agents and Editors">

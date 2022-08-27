@@ -73,7 +73,7 @@ router
   .post(permit(Role.Admin, Role.Agent, Role.Student), createApplication);
 
 router
-  .route('/:studentId/applications/:applicationId')
+  .route('/:studentId/applications/:program_id')
   .delete(permit(Role.Admin, Role.Agent), deleteApplication);
 
 router

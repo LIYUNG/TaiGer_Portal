@@ -15,7 +15,6 @@ import TabStudDocsDashboard from "../Dashboard/MainViewTab/StudDocsOverview/TabS
 import {
   getArchivStudents,
   updateArchivStudents,
-  removeProgramFromStudent,
   getAgents,
   updateAgents,
   getEditors,
@@ -80,34 +79,6 @@ class Dashboard extends React.Component {
       );
     }
   }
-
-  onDeleteProgram = (e, student_id, program_id) => {
-    //program id
-    e.preventDefault();
-    var stds = this.state.students;
-    var std_idx = stds.findIndex((stud) => stud._id === student_id);
-    var applications = [...stds[std_idx].applications];
-    let idx = applications.findIndex(
-      (application) => application._id === program_id
-    );
-    if (idx !== -1) {
-      applications.splice(idx, 1);
-      stds[std_idx].applications = applications;
-    }
-    removeProgramFromStudent(program_id, student_id).then(
-      (res) => {
-        this.setState({
-          students: stds,
-        });
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      }
-    );
-  };
 
   editAgent = (student) => {
     getAgents().then(
@@ -311,7 +282,6 @@ class Dashboard extends React.Component {
                         editEditor={this.state.editEditor}
                         agent_list={this.state.agent_list}
                         editor_list={this.state.editor_list}
-                        onDeleteProgram={this.onDeleteProgram}
                         updateAgentList={this.state.updateAgentList}
                         handleChangeAgentlist={this.handleChangeAgentlist}
                         submitUpdateAgentlist={this.submitUpdateAgentlist}

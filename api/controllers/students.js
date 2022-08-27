@@ -3,6 +3,7 @@ const path = require('path');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
+const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const aws = require('aws-sdk');
 
@@ -455,8 +456,9 @@ const createApplication = asyncHandler(async (req, res) => {
 const deleteApplication = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, applicationId, docName }
+    params: { studentId, program_id, docName }
   } = req;
+  console.log('deleteApplication');
   // TODO: remove uploaded files before remove program
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -469,7 +471,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   }
 
   const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
+    ({ programId }) => programId._id == program_id
   );
   if (!application) {
     logger.error('deleteApplication: Invalid application id');
@@ -478,18 +480,21 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 
   // TODO: iteratively to remove files
   let messagesThreadId;
+  let directory;
   if (application) {
     for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
-      messagesThreadId = path.join(
+      messagesThreadId =
+        application.doc_modification_thread[i].doc_thread_id.toString();
+      directory = path.join(
         studentId,
-        application.doc_modification_thread[i].doc_thread_id
+        application.doc_modification_thread[i].doc_thread_id.toString()
       );
-      logger.info('Trying to delete message thread and folder');
-      messagesThreadId = messagesThreadId.replace(/\\/g, '/');
+      logger.info('Trying to delete message threads and S3 thread folders');
+      directory = directory.replace(/\\/g, '/');
 
       const listParams = {
         Bucket: AWS_S3_BUCKET_NAME,
-        Prefix: messagesThreadId
+        Prefix: directory
       };
       const listedObjects = await s3.listObjectsV2(listParams).promise();
 
@@ -508,6 +513,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 
         // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
       }
+      await Documentthread.findByIdAndDelete(messagesThreadId);
       await Student.findOneAndUpdate(
         { _id: studentId, 'applications.programId': program_id },
         {
@@ -518,14 +524,19 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
           }
         }
       );
-      await Documentthread.findByIdAndDelete(messagesThreadId);
     }
   }
-  await Student.findByIdAndUpdate(studentId, {
-    $pull: { applications: { programId: { _id: applicationId } } }
-  });
+  const student_updated = await Student.findByIdAndUpdate(
+    studentId,
+    {
+      $pull: { applications: { programId: { _id: program_id } } }
+    },
+    { new: true }
+  )
+    .populate('applications.programId')
+    .lean();;
 
-  const folderPath = path.join(UPLOAD_PATH, studentId, applicationId);
+  // const folderPath = path.join(UPLOAD_PATH, studentId, applicationId);
 
   try {
     // TODO: better implementation is to find all document in that folder
@@ -534,7 +545,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(500, 'Your Application folder not empty!');
   }
 
-  res.status(200).send({ success: true });
+  res.status(200).send({ success: true, data: student_updated });
 });
 
 module.exports = {

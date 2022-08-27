@@ -111,7 +111,6 @@ class AgentMainView extends React.Component {
                   role={this.props.role}
                   students={this.props.students}
                   startEditingProgram={this.props.startEditingProgram}
-                  onDeleteProgram={this.props.onDeleteProgram}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
                     this.props.updateStudentArchivStatus
@@ -161,7 +160,6 @@ class AgentMainView extends React.Component {
                 <TabProgramConflict
                   students={this.props.students}
                   startEditingProgram={this.props.startEditingProgram}
-                  onDeleteProgram={this.props.onDeleteProgram}
                 />
               </Tab>
             </Tabs>

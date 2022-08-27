@@ -92,7 +92,6 @@ class AdminMainView extends React.Component {
                 <TabStudDocsDashboard
                   role={this.props.role}
                   students={this.props.students}
-                  onDeleteProgram={this.props.onDeleteProgram}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
                     this.props.updateStudentArchivStatus

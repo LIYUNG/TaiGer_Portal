@@ -14,7 +14,6 @@ class TabStudDocsDashboard extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        onDeleteProgram={this.props.onDeleteProgram}
         updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         isDashboard={this.props.isDashboard}
         isArchivPage={this.props.isArchivPage}

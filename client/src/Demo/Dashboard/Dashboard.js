@@ -20,7 +20,6 @@ import GuestMainView from './GuestDashboard/GuestMainView';
 import {
   getStudents,
   updateArchivStudents,
-  removeProgramFromStudent,
   getAgents,
   updateAgents,
   getEditors,
@@ -91,40 +90,6 @@ class Dashboard extends React.Component {
       );
     }
   }
-
-  onDeleteProgram = (e, student_id, program_id) => {
-    e.preventDefault();
-    var stds = this.state.students;
-    var std_idx = stds.findIndex((stud) => stud._id === student_id);
-    var applications = [...stds[std_idx].applications];
-    let idx = applications.findIndex(
-      (application) => application.programId._id === program_id
-    );
-    if (idx !== -1) {
-      applications.splice(idx, 1);
-      stds[std_idx].applications = applications;
-    }
-    removeProgramFromStudent(program_id, student_id).then(
-      (res) => {
-        const { success } = res.data;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            students: stds,
-            success: success
-          });
-        } else {
-          alert(res.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      }
-    );
-  };
 
   editAgent = (student) => {
     getAgents().then(
@@ -367,7 +332,6 @@ class Dashboard extends React.Component {
               editor_list={this.state.editor_list}
               UpdateAgentlist={this.UpdateAgentlist}
               students={this.state.students}
-              onDeleteProgram={this.onDeleteProgram}
               updateAgentList={this.state.updateAgentList}
               handleChangeAgentlist={this.handleChangeAgentlist}
               submitUpdateAgentlist={this.submitUpdateAgentlist}
@@ -393,7 +357,6 @@ class Dashboard extends React.Component {
             <AgentMainView
               role={this.props.user.role}
               students={this.state.students}
-              onDeleteProgram={this.onDeleteProgram}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}

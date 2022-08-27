@@ -1,22 +1,36 @@
 import React from 'react';
-import { Row, Col, Spinner, Card, Table, Form, Button } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Spinner,
+  Card,
+  Table,
+  Form,
+  Button,
+  Modal
+} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
-  AiOutlineFieldTime
+  AiOutlineFieldTime,
+  AiFillDelete
 } from 'react-icons/ai';
-import { UpdateStudentApplications } from '../../api';
+import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
     student: this.props.student,
     applications: this.props.student.applications,
     isLoaded: false,
+    student_id: null,
+    program_id: null,
     success: false,
-    error: null
+    error: null,
+    modalDeleteApplication: false
   };
+
   handleChange = (e, application_idx) => {
     console.log(e.target.value);
     console.log(e.target.id);
@@ -31,6 +45,53 @@ class StudentApplicationsTableTemplate extends React.Component {
     }));
   };
 
+  handleDelete = (e, program_id, student_id) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      student_id,
+      program_id,
+      modalDeleteApplication: true
+    }));
+  };
+  onHideModalDeleteApplication = () => {
+    this.setState({
+      modalDeleteApplication: false
+    });
+  };
+
+  handleDeleteConfirm = (e) => {
+    console.log(e.target.value);
+    console.log(e.target.id);
+    e.preventDefault();
+    removeProgramFromStudent(this.state.program_id, this.state.student_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            student: data,
+            success: success,
+            modalDeleteApplication: false
+          });
+        } else {
+          alert(resp.data.message);
+          this.setState({
+            isLoaded: true,
+            error: true
+          });
+        }
+      },
+      (error) => {
+        console.log(': ' + error);
+        this.setState({
+          isLoaded: true
+          // error: true
+        });
+      }
+    );
+  };
+
   handleSubmit = (e, student_id, applications) => {
     e.preventDefault();
     let applications_temp = [...this.state.applications];
@@ -40,7 +101,6 @@ class StudentApplicationsTableTemplate extends React.Component {
       delete applications_temp[i].programId;
       delete applications_temp[i].doc_modification_thread;
     }
-    // console.log(applications_temp);
     UpdateStudentApplications(student_id, applications_temp).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -124,6 +184,7 @@ class StudentApplicationsTableTemplate extends React.Component {
       applying_university_info = (
         <>
           <tr>
+            <td></td>
             <td>
               <h6 className="mb-1"> No University</h6>
             </td>
@@ -154,6 +215,19 @@ class StudentApplicationsTableTemplate extends React.Component {
         (application, application_idx) => (
           <>
             <tr>
+              <td>
+                <Button
+                  onClick={(e) =>
+                    this.handleDelete(
+                      e,
+                      application.programId._id,
+                      this.state.student._id
+                    )
+                  }
+                >
+                  <AiFillDelete size={16} />
+                </Button>
+              </td>
               <td>
                 <Link to={'/programs/' + application.programId._id}>
                   <h6 className="mb-1" key={application_idx}>
@@ -263,6 +337,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                   <thead>
                     <tr>
                       <>
+                        <th></th>
                         <th>University</th>
                         <th>Programs</th>
                         <th>Deadline</th>
@@ -288,6 +363,29 @@ class StudentApplicationsTableTemplate extends React.Component {
                 </Button>
               </Card.Body>
             </Card>
+            <Modal
+              show={this.state.modalDeleteApplication}
+              onHide={this.onHideModalDeleteApplication}
+              size="m"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header>
+                <Modal.Title id="contained-modal-title-vcenter">
+                  Warning: Delete an application
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                This will delete all message and editted files in discussion.
+                Are you sure?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={this.handleDeleteConfirm}>Yes</Button>
+                <Button onClick={this.onHideModalDeleteApplication}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </Col>
         </Row>
       </Aux>

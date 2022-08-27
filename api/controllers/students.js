@@ -32,7 +32,15 @@ const getStudent = asyncHandler(async (req, res) => {
     user,
     params: { studentId }
   } = req;
-
+  if (user.Role === 'Student' || user.Role === 'Guest') {
+    const student = await Student.findById(user._id)
+      .populate('applications.programId agents editors')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      )
+      .lean();
+    return res.status(200).send({ success: true, data: student });
+  }
   const student = await Student.findById(studentId)
     .populate('applications.programId agents editors')
     .populate(

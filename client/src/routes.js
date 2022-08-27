@@ -34,9 +34,9 @@ const ProgramTable = React.lazy(() => import('./Demo/Program/ProgramTable'));
 const MyApplications = React.lazy(() =>
   import('./Demo/StudentApplications/index')
 );
-// const StudentApplications = React.lazy(() =>
-//   import('./Demo/StudentApplications/index')
-// );
+const StudentApplications = React.lazy(() =>
+  import('./Demo/StudentApplications/StudentApplicationsIndividual')
+);
 const SingleProgram = React.lazy(() => import("./Demo/Program/SingleProgram"));
 const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
 const Profile = React.lazy(() => import("./Demo/Profile/index"));
@@ -174,12 +174,12 @@ const routes = [
     name: 'My Applications',
     component: MyApplications
   },
-  // {
-  //   path: '/student-applications/:student_id',
-  //   exact: true,
-  //   name: 'Student Applications',
-  //   component: StudentApplications
-  // },
+  {
+    path: '/student-applications/:student_id',
+    exact: true,
+    name: 'Student Applications',
+    component: StudentApplications
+  },
   {
     path: '/users',
     exact: true,

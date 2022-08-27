@@ -1,5 +1,6 @@
 import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import { Row, Col, Spinner, Card, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import StudentApplicationsTableTemplate from './StudentApplicationsTableTemplate';
 // import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
@@ -13,11 +14,10 @@ class StudentApplication extends React.Component {
     error: null
   };
   componentDidMount() {
-    getStudent(this.props.user._id).then(
+    getStudent(this.props.match.params.student_id).then(
       (resp) => {
         console.log(resp);
         const { data, success } = resp.data;
-        console.log(data);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -26,21 +26,18 @@ class StudentApplication extends React.Component {
           });
         } else {
           alert(resp.data.message);
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
         }
       },
       (error) => {
         console.log(': ' + error);
         this.setState({
-          isLoaded: true
-          // error: true
+          isLoaded: true,
+          error: true
         });
       }
     );
   }
+
   render() {
     const { error, isLoaded } = this.state;
     if (error) {
@@ -56,7 +53,7 @@ class StudentApplication extends React.Component {
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-
+    
     if (!isLoaded && !this.state.student) {
       return (
         <div style={style}>
@@ -66,11 +63,8 @@ class StudentApplication extends React.Component {
         </div>
       );
     }
-    if (this.props.user.role === 'Student') {
-      return <StudentApplicationsTableTemplate student={this.state.student} />;
-    } else {
-      return <>This Page is only for paid student.</>;
-    }
+
+    return <StudentApplicationsTableTemplate student={this.state.student} />;
   }
 }
 

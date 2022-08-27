@@ -166,7 +166,14 @@ class ApplicationProgress extends React.Component {
                     eventKey="3"
                     onSelect={() => this.startEditingProgram()}
                   >
-                    Edit Program
+                    <Link
+                      to={
+                        '/student-applications/' +
+                        this.props.student._id
+                      }
+                    >
+                      Edit Program
+                    </Link>
                   </Dropdown.Item>
                 ) : (
                   <></>

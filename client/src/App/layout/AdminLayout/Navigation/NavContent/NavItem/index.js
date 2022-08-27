@@ -12,7 +12,11 @@ import * as actionTypes from '../../../../../../store/actions';
 class NavItem extends Component {
   menuItemFilterByRole = (itemTitle) => {
     if (this.props.role === 'Admin') {
-      if (itemTitle === 'Academic Survey' || itemTitle === 'Tasks Overview') {
+      if (
+        itemTitle === 'Academic Survey' ||
+        itemTitle === 'My Applications' ||
+        itemTitle === 'Tasks Overview'
+      ) {
         return false;
       }
       return true;
@@ -21,6 +25,7 @@ class NavItem extends Component {
       if (
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
+        itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
@@ -35,6 +40,7 @@ class NavItem extends Component {
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'My Tasks Overview' ||
+        itemTitle === 'My Applications' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
@@ -49,6 +55,7 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Statistics' ||
+        itemTitle === 'Program List' ||
         itemTitle === 'Map' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Student Database' ||
@@ -67,6 +74,7 @@ class NavItem extends Component {
         itemTitle === 'CV/ML/RL Center' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||
+        itemTitle === 'Program List' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Map' ||
         itemTitle === 'Archiv Students' ||

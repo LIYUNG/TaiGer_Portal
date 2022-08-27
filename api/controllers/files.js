@@ -613,10 +613,6 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, 'Invalid student id');
   }
 
-  const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == applicationId
-  );
-
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
@@ -624,6 +620,10 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     logger.error('deleteProgramSpecificFile: Invalid application id');
     throw new ErrorResponse(400, 'Invalid application id');
   }
+
+  const idx = student.applications.findIndex(
+    ({ programId }) => programId._id == applicationId
+  );
 
   let document;
   let student_input;
@@ -634,10 +634,6 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
       throw new ErrorResponse(400, 'docName not existed');
     }
     if (document.path !== '') {
-      // const filePath = path.join(UPLOAD_PATH, document.path);
-      // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-      // console.log(filePath);
-      // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
       let document_split = document.path.replace(/\\/g, '/');
       document_split = document_split.split('/');
       const fileKey = document_split[2];

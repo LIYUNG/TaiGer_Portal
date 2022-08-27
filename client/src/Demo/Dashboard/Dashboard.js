@@ -20,7 +20,6 @@ import GuestMainView from "./GuestDashboard/GuestMainView";
 import {
   getStudents,
   updateArchivStudents,
-  downloadProfile,
   removeProgramFromStudent,
   getAgents,
   updateAgents,

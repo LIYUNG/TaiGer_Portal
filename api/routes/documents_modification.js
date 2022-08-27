@@ -53,6 +53,13 @@ router
     SetStatusMessagesThread
   );
 
+router.route('/:messagesThreadId/:studentId').post(
+  permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+  MessagesThreadUpload,
+  // upload,
+  postMessages
+);
+
 router
   .route('/:messagesThreadId')
   .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteMessagesThread);
@@ -74,12 +81,5 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     deleteProgramSpecificMessagesThread
   );
-
-router.route('/:studentId/:messagesThreadId').post(
-  permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-  MessagesThreadUpload,
-  // upload,
-  postMessages
-);
 
 module.exports = router;

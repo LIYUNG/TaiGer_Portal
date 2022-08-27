@@ -1,22 +1,19 @@
-import React from "react";
-import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
-import Card from "../../../App/components/MainCard";
-import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
-import AdminTodoList from "./AdminTodoList";
-import AgentReviewing from "../MainViewTab/AgentReview/AgentReviewing";
-import EditorReviewing from "../MainViewTab/EditorReview/EditorReviewing";
-import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
-import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
-import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
-import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
+import React from 'react';
+import { Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
+import Card from '../../../App/components/MainCard';
+import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
+import AdminTodoList from './AdminTodoList';
+import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
+import EditorReviewing from '../MainViewTab/EditorReview/EditorReviewing';
+import TabEditorDocsProgress from '../MainViewTab/EditorDocsProgress/TabEditorDocsProgress';
+import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
+import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
+import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 
 class AdminMainView extends React.Component {
   render() {
     const agent_todo = this.props.students.map((student, i) => (
-      <AdminTodoList
-        key={i}
-        student={student}
-      />
+      <AdminTodoList key={i} student={student} />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
@@ -37,24 +34,13 @@ class AdminMainView extends React.Component {
       />
     ));
     const application_progress = this.props.students.map((student, i) => (
-      <ApplicationProgress
-        key={i}
-        student={student}
-      />
+      <ApplicationProgress key={i} role={this.props.role} student={student} />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing
-        key={i}
-        role={this.props.role}
-        student={student}
-      />
+      <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
     const editor_reviewing = this.props.students.map((student, i) => (
-      <EditorReviewing
-        key={i}
-        role={this.props.role}
-        student={student}
-      />
+      <EditorReviewing key={i} role={this.props.role} student={student} />
     ));
     return (
       <>
@@ -143,6 +129,7 @@ class AdminMainView extends React.Component {
                   <thead>
                     <tr>
                       <>
+                        <th></th>
                         <th>First-, Last Name</th>
                         <th>University</th>
                         <th>Programs</th>

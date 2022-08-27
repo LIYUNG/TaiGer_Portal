@@ -124,6 +124,13 @@ export default {
           url: '/programs'
         },
         {
+          id: 'my-applications',
+          title: 'My Applications',
+          type: 'item',
+          icon: 'feather icon-list',
+          url: '/student-applications'
+        },
+        {
           id: 'interview-training',
           title: 'Interview Training',
           type: 'item',

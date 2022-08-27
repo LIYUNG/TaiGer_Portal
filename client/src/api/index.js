@@ -179,7 +179,7 @@ export const SubmitMessageWithAttachment = (
   newFile
 ) =>
   request.post(
-    `/api/document-threads/${studentId}/${documentsthreadId}`,
+    `/api/document-threads/${documentsthreadId}/${studentId}`,
     newFile,
     {
       'Content-Type': 'multipart/form-data',

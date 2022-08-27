@@ -4,6 +4,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const logger = require('../services/logger');
+const aws = require('aws-sdk');
 
 const { UPLOAD_PATH } = require('../config');
 var async = require('async');
@@ -14,6 +15,17 @@ const {
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail
 } = require('../services/email');
+
+const {
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_BUCKET_NAME
+} = require('../config');
+
+const s3 = new aws.S3({
+  accessKeyId: AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: AWS_S3_ACCESS_KEY
+});
 
 const getStudent = asyncHandler(async (req, res) => {
   const {
@@ -120,10 +132,10 @@ const getArchivStudents = asyncHandler(async (req, res) => {
     user
     // params: { userId },
   } = req;
-  console.log('getArchivStudents');
+
   if (user.role === 'Admin') {
     const students = await Student.find({ archiv: true }).exec();
-    console.log(students);
+
     res.status(200).send({ success: true, data: students });
   } else if (user.role === 'Agent') {
     const students = await Student.find({
@@ -173,7 +185,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
         })
           .populate('applications.programId agents editors')
           .lean();
-        // console.log(students);
+
         res.status(200).send({ success: true, data: students });
       } else if (user.role === 'Agent') {
         const students = await Student.find({
@@ -230,7 +242,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     body: agentsId // agentsId is json (or agentsId array with boolean)
   } = req;
   const keys = Object.keys(agentsId);
-  // console.log(keys);
+
   let updated_agent_id = [];
   let updated_agent = [];
   for (let i = 0; i < keys.length; i++) {
@@ -252,7 +264,6 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     }
   }
 
-  console.log(updated_agent_id);
   // if (!agentIds) throw new ErrorResponse(400, "Invalid AgentId");
 
   // TODO: transaction?
@@ -266,7 +277,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     .populate('applications.programId agents editors')
     .exec();
   res.status(200).send({ success: true, data: student });
-  console.log(updated_agent);
+
   for (let i = 0; i < updated_agent.length; i++) {
     await informAgentNewStudentEmail(
       {
@@ -299,7 +310,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     body: editorsId
   } = req;
   const keys = Object.keys(editorsId);
-  // console.log(keys);
+
   var updated_editor_id = [];
   var updated_editor = [];
   for (let i = 0; i < keys.length; i++) {
@@ -322,7 +333,6 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     }
   }
 
-  console.log(updated_editor_id);
   // TODO: check studentId and editorsId are valid
   // const editorsIds = await Editor.findById(({ editorsId }) => editorsId);
   // if (!editorsIds) throw new ErrorResponse(400, "Invalid editorsId");
@@ -339,9 +349,9 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const student = await Student.findById(studentId)
     .populate('applications.programId agents editors')
     .exec();
-  // console.log(student);
+
   res.status(200).send({ success: true, data: student });
-  console.log(updated_editor);
+
   for (let i = 0; i < updated_editor.length; i++) {
     await informEditorNewStudentEmail(
       {
@@ -417,7 +427,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   // TODO: remove uploaded files before remove program
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  let student = await Student.findById(studentId).populate(
+  const student = await Student.findById(studentId).populate(
     'applications.programId'
   );
   if (!student) {
@@ -425,68 +435,71 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, 'Invalid student id');
   }
 
-  // console.log(student.applications);
-  // console.log(applicationId);
-  const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == applicationId
-  );
-  // console.log(idx);
-
   const application = student.applications.find(
     ({ programId }) => programId._id == applicationId
   );
-  // console.log(application);
   if (!application) {
     logger.error('deleteApplication: Invalid application id');
     throw new ErrorResponse(400, 'Invalid application id');
   }
 
   // TODO: iteratively to remove files
-  if (application.documents)
-    for (let i = 0; i < application.documents.length; i++) {
-      let document = application.documents[i];
-      if (!document) {
-        logger.error('deleteApplication: docName not existed');
-        throw new ErrorResponse(400, 'docName not existed');
-      }
-      if (document.path && document.path !== '') {
-        // TODO: delete files in S3
-        const filePath = path.join(UPLOAD_PATH, document.path);
-        // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      }
-    }
-  // Delete student inputs
-  if (application.student_inputs)
-    for (let i = 0; i < application.student_inputs.length; i++) {
-      let student_input = application.student_inputs[i];
-      if (!student_input) {
-        logger.error('deleteApplication: docName not existed');
-        throw new ErrorResponse(400, 'docName not existed');
-      }
-      if (student_input.path && student_input.path !== '') {
-        // TODO: delete files in S3
-        const filePath = path.join(UPLOAD_PATH, student_input.path);
-        // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      }
-    }
+  let messagesThreadId;
+  if (application) {
+    for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
+      messagesThreadId = path.join(
+        studentId,
+        application.doc_modification_thread[i].doc_thread_id
+      );
+      logger.info('Trying to delete message thread and folder');
+      messagesThreadId = messagesThreadId.replace(/\\/g, '/');
 
+      const listParams = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Prefix: messagesThreadId
+      };
+      const listedObjects = await s3.listObjectsV2(listParams).promise();
+
+      if (listedObjects.Contents.length > 0) {
+        const deleteParams = {
+          Bucket: AWS_S3_BUCKET_NAME,
+          Delete: { Objects: [] }
+        };
+
+        listedObjects.Contents.forEach(({ Key }) => {
+          deleteParams.Delete.Objects.push({ Key });
+          logger.info('Deleting ', Key);
+        });
+
+        await s3.deleteObjects(deleteParams).promise();
+
+        // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+      }
+      await Student.findOneAndUpdate(
+        { _id: studentId, 'applications.programId': program_id },
+        {
+          $pull: {
+            'applications.$.doc_modification_thread': {
+              doc_thread_id: { _id: messagesThreadId }
+            }
+          }
+        }
+      );
+      await Documentthread.findByIdAndDelete(messagesThreadId);
+    }
+  }
   await Student.findByIdAndUpdate(studentId, {
     $pull: { applications: { programId: { _id: applicationId } } }
   });
+
   const folderPath = path.join(UPLOAD_PATH, studentId, applicationId);
+
   try {
     // TODO: better implementation is to find all document in that folder
-    // and remove recursively and finally rmdirSync
-    // See:
-    // https://stackoverflow.com/questions/49025244/error-eperm-operation-not-permitted-while-remove-directory-not-emty/49025300
-    if (fs.existsSync(folderPath)) fs.rmdirSync(folderPath); //failed when folder not empty:EPERM: operation not permitted, unlink 'tmp\files_development\60a116ba6f221e768c0803c7\60a138f6c355006b00684620'
   } catch (err) {
     logger.error('Your Application folder not empty!', err);
     throw new ErrorResponse(500, 'Your Application folder not empty!');
   }
-  //////// update DB
 
   res.status(200).send({ success: true });
 });

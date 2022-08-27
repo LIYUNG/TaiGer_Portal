@@ -27,7 +27,6 @@ import {
   updateProfileDocumentStatus,
   deleteFile,
   getStudents,
-  downloadProfile,
 } from "../../api";
 
 class ButtonSetRejected extends React.Component {

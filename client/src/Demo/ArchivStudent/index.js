@@ -15,7 +15,6 @@ import TabStudDocsDashboard from "../Dashboard/MainViewTab/StudDocsOverview/TabS
 import {
   getArchivStudents,
   updateArchivStudents,
-  downloadProfile,
   removeProgramFromStudent,
   getAgents,
   updateAgents,

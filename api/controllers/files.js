@@ -411,14 +411,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     application.admission = applications[i].admission;
   }
   await student.save();
-  // await Student.findByIdAndUpdate(
-  //   studentId,
-  //   {
-  //     $set: { applications }
-  //     // applications // TODO: how to update sub schema partially
-  //   },
-  //   { upsert: true }
-  // );
+
   const student_updated = await Student.findById(studentId)
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email')
@@ -915,10 +908,6 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   if (!document) throw new ErrorResponse(400, 'Invalid document name');
   if (!document.path) throw new ErrorResponse(400, 'File not exist');
 
-  // const filePath = path.join(UPLOAD_PATH, document.path);
-  // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-  // console.log(filePath);
-  // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   let document_split = document.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
   const fileKey = document_split[1];
@@ -949,10 +938,6 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   } catch (err) {
     if (err) throw new ErrorResponse(500, 'Error occurs while deleting');
   }
-
-  // await Student.findByIdAndUpdate(studentId, {
-  //   $pull: { profile: document._id },
-  // });
 });
 
 const processTranscript = asyncHandler(async (req, res, next) => {

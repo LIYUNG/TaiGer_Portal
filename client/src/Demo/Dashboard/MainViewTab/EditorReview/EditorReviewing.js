@@ -7,7 +7,6 @@ import {
 import { IoCheckmarkCircle } from "react-icons/io5";
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
-// import { uploadforstudent } from "../../../api";
 import { Link } from "react-router-dom";
 
 class EditorReviewing extends React.Component {

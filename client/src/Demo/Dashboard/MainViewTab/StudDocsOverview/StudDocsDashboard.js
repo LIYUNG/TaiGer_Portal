@@ -1,16 +1,7 @@
 import React from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import EditAgentsSubpage from "./EditAgentsSubpage";
-import EditEditorsSubpage from "./EditEditorsSubpage";
+
 class StudDocsDashboard extends React.Component {
   state = {
     showAgentPage: false,

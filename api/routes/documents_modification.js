@@ -62,11 +62,11 @@ router.route('/:messagesThreadId/:studentId').post(
 
 router
   .route('/:messagesThreadId')
-  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteMessagesThread);
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessages);
 
 router
-  .route('/:messagesThreadId')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessages);
+  .route('/:messagesThreadId/:studentId')
+  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteMessagesThread);
 
 router
   .route('/:messagesThreadId/:messageId/:fileId')

@@ -1,30 +1,16 @@
 import React from "react";
 import {
-  Row,
   Col,
   Form,
-  Table,
   Button,
-  Card,
-  Collapse,
   Modal,
   Spinner,
 } from "react-bootstrap";
-import UcFirst from "../../App/components/UcFirst";
-import { IoMdCloudUpload } from "react-icons/io";
 import {
   AiOutlineDownload,
-  AiOutlineFieldTime,
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineComment,
   AiOutlineDelete,
 } from "react-icons/ai";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-import {
-  deleteFile,
-} from "../../api";
 
 class ButtonSetAccepted extends React.Component {
   state = {
@@ -41,36 +27,16 @@ class ButtonSetAccepted extends React.Component {
     acceptProfileFileModel: false,
   };
 
-  openWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
-  };
-
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
-
-  openCommentWindow = (comments) => {
-    console.log();
-    this.setState((state) => ({ ...state, CommentModel: true, comments }));
   };
 
   closeCommentWindow = () => {
     this.setState((state) => ({ ...state, CommentModel: false }));
   };
 
-  openRejectWarningWindow = () => {
-    this.setState((state) => ({ ...state, rejectProfileFileModel: true }));
-  };
-
   closeRejectWarningWindow = () => {
     this.setState((state) => ({ ...state, rejectProfileFileModel: false }));
-  };
-
-  openAcceptWarningWindow = () => {
-    this.setState((state) => ({ ...state, acceptProfileFileModel: true }));
-  };
-  closeAcceptWarningWindow = () => {
-    this.setState((state) => ({ ...state, acceptProfileFileModel: false }));
   };
 
   onDeleteFileWarningPopUp = (e, category, student_id, docName) => {

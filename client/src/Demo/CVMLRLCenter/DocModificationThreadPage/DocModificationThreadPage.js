@@ -3,7 +3,6 @@ import { Row, Col, Spinner, Button, Card, Form } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import MessageList from "./MessageList";
 import { convertToRaw } from "draft-js";
-import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {

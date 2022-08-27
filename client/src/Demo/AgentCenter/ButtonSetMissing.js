@@ -23,10 +23,8 @@ import {
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
 import {
-  uploadforstudent,
   updateProfileDocumentStatus,
   deleteFile,
-  getStudents,
 } from "../../api";
 
 class ButtonSetMissing extends React.Component {
@@ -42,10 +40,6 @@ class ButtonSetMissing extends React.Component {
     CommentModel: false,
     setMissingWindow: false,
     acceptProfileFileModel: false,
-  };
-
-  opensetMissingWindow = () => {
-    this.setState((state) => ({ ...state, setMissingWindow: true }));
   };
 
   closeSetMissingWindow = () => {

@@ -11,7 +11,6 @@ import {
 import { Link } from 'react-router-dom';
 
 class ApplicationProgress extends React.Component {
-  state = { showProgramPage: false };
   getNumberOfDays(start, end) {
     const date1 = new Date(start);
     const date2 = new Date(end);
@@ -27,20 +26,6 @@ class ApplicationProgress extends React.Component {
 
     return diffInDays;
   }
-
-  startEditingProgram = () => {
-    console.log('startEditingProgram');
-    this.setState({
-      showProgramPage: true
-    });
-  };
-
-  onHideEditingProgram = () => {
-    console.log('onHideEditingProgram');
-    this.setState({
-      showProgramPage: false
-    });
-  };
 
   render() {
     var applying_university;
@@ -164,7 +149,6 @@ class ApplicationProgress extends React.Component {
                 {this.props.role !== 'Editor' && !this.props.isArchivPage ? (
                   <Dropdown.Item
                     eventKey="3"
-                    onSelect={() => this.startEditingProgram()}
                   >
                     <Link
                       to={
@@ -237,50 +221,6 @@ class ApplicationProgress extends React.Component {
             <td>{application_date_left}</td>
           </tr>
         </tbody>
-        <Modal
-          show={this.state.showProgramPage}
-          onHide={this.onHideEditingProgram}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          size="xl"
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              {this.props.student.firstname} {this.props.student.lastname}
-              {': Programs'}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>Deadline</th>
-                  </>
-                  {window.programstatuslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                  <th>Days left</th>
-                </tr>
-              </thead>
-              {/* {application_progress} */}
-              <tr>
-                <td>{applying_university}</td>
-                <td>{applying_program}</td>
-                <td>{application_deadline}</td>
-                <td>{application_decided}</td>
-                <td>{application_closed}</td>
-                <td>{application_admission}</td>
-                <td>{application_date_left}</td>
-              </tr>{' '}
-            </Table>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.onHideEditingProgram}>Close</Button>
-          </Modal.Footer>
-        </Modal>
       </>
     );
   }

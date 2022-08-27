@@ -4,7 +4,6 @@ import Aux from '../../hoc/_Aux';
 import DEMO from '../../store/constant';
 import { getCVMLRLOverview } from '../../api';
 import EditorDocsProgress from './EditorDocsProgress';
-import ManualFiles from './ManualFiles';
 
 class EditorCenter extends React.Component {
   state = {

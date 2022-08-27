@@ -116,7 +116,7 @@ const upload_profile_s3 = multer({
 
 // Message thread file upload (general)
 const storage_messagesthread_file_s3 = multerS3({
-  s3: s3,
+  s3,
   bucket: function (req, file, cb) {
     var { messagesThreadId, studentId } = req.params;
     // TODO: check studentId and messagesThreadId exist
@@ -230,7 +230,7 @@ const upload_messagesthread_file_s3 = multer({
  */
 
 const storage_program_specific_s3 = multerS3({
-  s3: s3,
+  s3,
   bucket: function (req, file, cb) {
     var { studentId, applicationId } = req.params;
     if (!studentId) studentId = String(req.user._id);

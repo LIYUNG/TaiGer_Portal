@@ -1,18 +1,18 @@
-const fs = require("fs");
-const path = require("path");
-const { spawn } = require("child_process");
-const EventEmitter = require("events");
-const request = require("supertest");
+const fs = require('fs');
+const path = require('path');
+const { spawn } = require('child_process');
+const EventEmitter = require('events');
+const request = require('supertest');
 
-const { UPLOAD_PATH } = require("../config");
-const { app } = require("../app");
-const { connectToDatabase, disconnectFromDatabase } = require("../database");
-const { Role, User, Agent, Editor, Student } = require("../models/User");
-const { Program } = require("../models/Program");
-const { DocumentStatus } = require("../constants");
-const { generateUser } = require("./fixtures/users");
-const { generateProgram } = require("./fixtures/programs");
-const { protect } = require("../middlewares/auth");
+const { UPLOAD_PATH } = require('../config');
+const { app } = require('../app');
+const { connectToDatabase, disconnectFromDatabase } = require('../database');
+const { Role, User, Agent, Editor, Student } = require('../models/User');
+const { Program } = require('../models/Program');
+const { DocumentStatus } = require('../constants');
+const { generateUser } = require('./fixtures/users');
+const { generateProgram } = require('./fixtures/programs');
+const { protect } = require('../middlewares/auth');
 
 // jest.mock("../middlewares/auth", () => {
 //   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
@@ -24,17 +24,17 @@ const { protect } = require("../middlewares/auth");
 //   });
 // });
 
-jest.mock("../middlewares/auth", () => {
+jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual("../middlewares/auth"), {
+  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
     protect: jest.fn().mockImplementation(passthrough),
-    permit: jest.fn().mockImplementation((...roles) => passthrough),
+    permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
 });
 
-jest.mock("child_process", () => ({
-  spawn: jest.fn(),
+jest.mock('child_process', () => ({
+  spawn: jest.fn()
 }));
 
 const admin = generateUser(Role.Admin);
@@ -53,15 +53,15 @@ const users = [
   editor,
   ...students,
   student,
-  student2,
+  student2
 ];
 
-const requiredDocuments = ["transcript", "resume"];
-const optionalDocuments = ["certificate", "visa"];
+const requiredDocuments = ['transcript', 'resume'];
+const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
 beforeAll(async () => {
-  jest.spyOn(console, "log").mockImplementation(jest.fn());
+  jest.spyOn(console, 'log').mockImplementation(jest.fn());
   await connectToDatabase(global.__MONGO_URI__);
 });
 
@@ -85,77 +85,83 @@ afterEach(() => {
 });
 
 // user: Agent
-describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
+describe('POST /api/document-threads/init/application/:studentId/:programId/:document_category', () => {
   const { _id: studentId } = student;
+  const { _id: programId } = program;
+  const { _id: agentId } = agent;
   var docName = requiredDocuments[0];
-  const filename = "my-file.pdf"; // will be overwrite to docName
-  const filename_invalid_ext = "my-file.exe"; // will be overwrite to docName
-  const fileCategory = "ML";
+  const filename = 'my-file.pdf'; // will be overwrite to docName
+  const filename_invalid_ext = 'my-file.exe'; // will be overwrite to docName
+  const fileCategory = 'ML';
   var r = /\d+/; //number pattern
-  var whoupdate = "Editor";
+  var whoupdate = 'Editor';
   let version_number_max = 0;
   let db_file_name;
   var temp_name;
   var applicationIds;
   var applicationId;
   var file_name_inDB;
+  let document_category = 'ML';
+  var student_1;
+  var messagesThreadId;
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(agent._id);
+      req.user = await User.findById(agentId);
       next();
     });
 
     const resp = await request(app)
       .post(`/api/students/${studentId}/applications`)
-      .send({ program_id_set: [program._id] });
+      .send({ program_id_set: [programId] });
+
+    const resp22 = await request(app).post(
+      `/api/document-threads/init/application/${studentId}/${programId}/${document_category}`
+    );
 
     applicationIds = resp.body.data;
     applicationId = applicationIds[0];
+    student_1 = resp.body.data;
+    messagesThreadId =
+      student_1.applications[0].doc_modification_thread[0].doc_thread_id;
   });
 
   it.each([
-    ["my-file.exe", 400, false],
-    ["my-file.pdf", 201, true],
+    ['my-file.exe', 400, false],
+    ['my-file.pdf', 201, true]
   ])(
-    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    'should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p',
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
-        .post(
-          `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
-        )
-        .attach("file", buffer_1MB_exe, File_Name);
+        .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
+        .attach('file', buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
       expect(resp2.body.success).toBe(success);
     }
   );
 
-  it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
+  it('should return 400 when program specific file size (ML, Essay) over 5 MB', async () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
-      .post(
-        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
-      )
-      .attach("file", buffer_10MB, filename);
+      .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
+      .attach('file', buffer_10MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should save the uploaded program specific file and store the path in db", async () => {
+  it('should save the uploaded program specific file and store the path in db', async () => {
     const resp = await request(app)
-      .post(
-        `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
-      )
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+      .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
+      .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
     var updatedStudent = await Student.findById(studentId)
-      .populate("applications.programId")
+      .populate('applications.programId')
       .lean()
       .exec();
     var application = updatedStudent.applications.find(
@@ -178,18 +184,18 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     while (same_file_name) {
       temp_name =
         student.lastname +
-        "_" +
+        '_' +
         student.firstname +
-        "_" +
+        '_' +
         application.programId.school +
-        "_" +
+        '_' +
         application.programId.program_name +
-        "_" +
+        '_' +
         fileCategory +
-        "_v" +
+        '_v' +
         version_number +
         `${path.extname(filename)}`;
-      temp_name = temp_name.replace(/ /g, "_");
+      temp_name = temp_name.replace(/ /g, '_');
 
       // let student_input_doc = application.student_inputs.find(
       //   ({ name }) => name === temp_name
@@ -219,7 +225,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
       .buffer();
 
     expect(resp2.status).toBe(200);
-    expect(resp2.headers["content-disposition"]).toEqual(
+    expect(resp2.headers['content-disposition']).toEqual(
       `attachment; filename="${temp_name}"`
     );
 
@@ -231,7 +237,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(resp6.body.success).toBe(true);
 
     // test download: should return 400 with invalid applicationId
-    const invalidApplicationId = "invalidapplicationID";
+    const invalidApplicationId = 'invalidapplicationID';
     const resp3 = await request(app)
       .get(
         `/api/account/files/programspecific/${studentId}/${invalidApplicationId}/${whoupdate}/${temp_name}`
@@ -290,12 +296,12 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
 });
 
 // user: Editor
-describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
+describe('POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory', () => {
   const { _id: studentId } = student;
   var docName = requiredDocuments[0];
-  const filename = "my-file.pdf"; // will be overwrite to docName
-  const fileCategory = "ML";
-  var whoupdate = "Editor";
+  const filename = 'my-file.pdf'; // will be overwrite to docName
+  const fileCategory = 'ML';
+  var whoupdate = 'Editor';
   let version_number_max = 0;
   let temp_name;
   let db_file_name;
@@ -318,41 +324,41 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   });
 
   it.each([
-    ["my-file.exe", 400, false],
-    ["my-file.pdf", 201, true],
+    ['my-file.exe', 400, false],
+    ['my-file.pdf', 201, true]
   ])(
-    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    'should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p',
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
         .post(
           `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
         )
-        .attach("file", buffer_1MB_exe, File_Name);
+        .attach('file', buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
       expect(resp2.body.success).toBe(success);
     }
   );
 
-  it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
+  it('should return 400 when program specific file size (ML, Essay) over 5 MB', async () => {
     const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(
         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
       )
-      .attach("file", buffer_6MB, filename);
+      .attach('file', buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should save the uploaded program specific file and store the path in db", async () => {
+  it('should save the uploaded program specific file and store the path in db', async () => {
     const resp = await request(app)
       .post(
         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
       )
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+      .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
     expect(status).toBe(201);
@@ -374,7 +380,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     // expect(resp4.body.success).toBe(true);
 
     var updatedStudent = await Student.findById(studentId)
-      .populate("applications.programId")
+      .populate('applications.programId')
       .lean()
       .exec();
     var application = updatedStudent.applications.find(
@@ -397,18 +403,18 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     while (same_file_name) {
       temp_name =
         student.lastname +
-        "_" +
+        '_' +
         student.firstname +
-        "_" +
+        '_' +
         application.programId.school +
-        "_" +
+        '_' +
         application.programId.program_name +
-        "_" +
+        '_' +
         fileCategory +
-        "_v" +
+        '_v' +
         version_number +
         `${path.extname(filename)}`;
-      temp_name = temp_name.replace(/ /g, "_");
+      temp_name = temp_name.replace(/ /g, '_');
 
       // let student_input_doc = application.student_inputs.find(
       //   ({ name }) => name === temp_name
@@ -440,7 +446,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
       .buffer();
 
     expect(resp2.status).toBe(200);
-    expect(resp2.headers["content-disposition"]).toEqual(
+    expect(resp2.headers['content-disposition']).toEqual(
       `attachment; filename="${temp_name}"`
     );
 
@@ -452,7 +458,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     expect(resp6.body.success).toBe(true);
 
     // test download: should return 400 with invalid applicationId
-    const invalidApplicationId = "invalidapplicationID";
+    const invalidApplicationId = 'invalidapplicationID';
     const resp3 = await request(app)
       .get(
         `/api/account/files/programspecific/${studentId}/${invalidApplicationId}/${whoupdate}/${temp_name}`
@@ -472,15 +478,15 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
 });
 
 // user: Student
-describe("POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory", () => {
+describe('POST /api/account/files/programspecific/upload/:studentId/:applicationId/:fileCategory', () => {
   const { _id: studentId } = student;
   const { _id: student2Id } = student2;
   var docName = requiredDocuments[0];
-  const filename = "my-file.pdf"; // will be overwrite to docName
-  const fileCategory = "ML";
+  const filename = 'my-file.pdf'; // will be overwrite to docName
+  const fileCategory = 'ML';
   let version_number_max = 0;
   var r = /\d+/; //number pattern
-  var whoupdate = "Student";
+  var whoupdate = 'Student';
   let temp_name;
   let db_file_name;
   var applicationIds;
@@ -501,41 +507,41 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
   });
 
   it.each([
-    ["my-file.exe", 400, false],
-    ["my-file.pdf", 201, true],
+    ['my-file.exe', 400, false],
+    ['my-file.pdf', 201, true]
   ])(
-    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    'should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p',
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
         .post(
           `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
         )
-        .attach("file", buffer_1MB_exe, File_Name);
+        .attach('file', buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
       expect(resp2.body.success).toBe(success);
     }
   );
 
-  it("should return 400 when program specific file size (ML, Essay) over 5 MB", async () => {
+  it('should return 400 when program specific file size (ML, Essay) over 5 MB', async () => {
     const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(
         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
       )
-      .attach("file", buffer_6MB, filename);
+      .attach('file', buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should save the uploaded program specific file and store the path in db", async () => {
+  it('should save the uploaded program specific file and store the path in db', async () => {
     const resp = await request(app)
       .post(
         `/api/account/files/programspecific/upload/${studentId}/${applicationId}/${fileCategory}`
       )
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+      .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
     expect(status).toBe(201);
@@ -551,7 +557,7 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     // expect(resp_dup.body.success).toBe(true);
 
     var updatedStudent = await Student.findById(studentId)
-      .populate("applications.programId")
+      .populate('applications.programId')
       .lean()
       .exec();
     var application = updatedStudent.applications.find(
@@ -574,18 +580,18 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
     while (same_file_name) {
       temp_name =
         student.lastname +
-        "_" +
+        '_' +
         student.firstname +
-        "_" +
+        '_' +
         application.programId.school +
-        "_" +
+        '_' +
         application.programId.program_name +
-        "_" +
+        '_' +
         fileCategory +
-        "_v" +
+        '_v' +
         version_number +
         `${path.extname(filename)}`;
-      temp_name = temp_name.replace(/ /g, "_");
+      temp_name = temp_name.replace(/ /g, '_');
 
       // let student_input_doc = application.student_inputs.find(
       //   ({ name }) => name === temp_name
@@ -622,12 +628,12 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
       )
       .buffer();
     expect(resp2.status).toBe(200);
-    expect(resp2.headers["content-disposition"]).toEqual(
+    expect(resp2.headers['content-disposition']).toEqual(
       `attachment; filename="${temp_name}"`
     );
 
     // test download: should return 400 with invalid applicationId
-    const invalidApplicationId = "invalidapplicationID";
+    const invalidApplicationId = 'invalidapplicationID';
     const resp3 = await request(app)
       .get(
         `/api/account/files/programspecific/${studentId}/${invalidApplicationId}/${whoupdate}/${temp_name}`
@@ -661,13 +667,13 @@ describe("POST /api/account/files/programspecific/upload/:studentId/:application
 });
 
 // uploading edutir general files like CV, RL_1, RL_2, by Editor (Admin, Agent)
-describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () => {
+describe('POST /api/account/files/general/upload/:studentId/:fileCategory', () => {
   const { _id: studentId } = student;
   var docName = requiredDocuments[0];
-  const filename = "my-file.pdf"; // will be overwrite to docName
-  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
-  const fileCategory = "CV";
-  var whoupdate = "Editor";
+  const filename = 'my-file.pdf'; // will be overwrite to docName
+  const filename_invalid_ext = 'invalid_extension.exe'; // will be overwrite to docName
+  const fileCategory = 'CV';
+  var whoupdate = 'Editor';
   var temp_name;
   var file_name_inDB;
   beforeEach(async () => {
@@ -678,41 +684,41 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
   });
 
   it.each([
-    ["my-file.exe", 400, false],
-    ["my-file.pdf", 201, true],
+    ['my-file.exe', 400, false],
+    ['my-file.pdf', 201, true]
   ])(
-    "should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p",
+    'should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p',
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
         .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-        .attach("file", buffer_1MB_exe, File_Name);
+        .attach('file', buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
       expect(resp2.body.success).toBe(success);
     }
   );
-  it("should return 400 when editor general file (CV, RL) size over 5 MB", async () => {
+  it('should return 400 when editor general file (CV, RL) size over 5 MB', async () => {
     const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", buffer_6MB, filename);
+      .attach('file', buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should save the uploaded general CV,RL files and store the path in db", async () => {
+  it('should save the uploaded general CV,RL files and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+      .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
     var updatedStudent = await Student.findById(studentId)
-      .populate("applications.programId")
+      .populate('applications.programId')
       .lean()
       .exec();
     var editoroutput_idx = updatedStudent.generaldocs.editoroutputs.findIndex(
@@ -724,16 +730,16 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     while (same_file_name) {
       temp_name =
         student.lastname +
-        "_" +
+        '_' +
         student.firstname +
-        "_" +
+        '_' +
         fileCategory +
-        "_v" +
+        '_v' +
         version_number +
         `${path.extname(
           updatedStudent.generaldocs.editoroutputs[editoroutput_idx].path
         )}`;
-      temp_name = temp_name.replace(/ /g, "_");
+      temp_name = temp_name.replace(/ /g, '_');
 
       // let student_input_doc = application.student_inputs.find(
       //   ({ name }) => name === temp_name
@@ -767,12 +773,12 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       .buffer();
 
     expect(resp3.status).toBe(200);
-    expect(resp3.headers["content-disposition"]).toEqual(
+    expect(resp3.headers['content-disposition']).toEqual(
       `attachment; filename="${temp_name}"`
     );
 
     var updated2Student = await Student.findById(studentId)
-      .populate("applications.programId")
+      .populate('applications.programId')
       .lean()
       .exec();
     var editoroutput2_idx = updatedStudent.generaldocs.editoroutputs.findIndex(
@@ -780,7 +786,7 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     );
     expect(
       updated2Student.generaldocs.editoroutputs[editoroutput2_idx].feedback
-    ).toBe("My comments");
+    ).toBe('My comments');
 
     // Mark as final documents
     const resp6 = await request(app).put(
@@ -800,14 +806,14 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
 });
 
 // uploading edutir general files like CV, RL_1, RL_2, by Editor (Student)
-describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () => {
+describe('POST /api/account/files/general/upload/:studentId/:fileCategory', () => {
   const { _id: studentId } = student;
   const { _id: student2Id } = student2;
   var docName = requiredDocuments[0];
-  const filename = "my-file.pdf"; // will be overwrite to docName
-  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
-  const fileCategory = "CV";
-  var whoupdate = "Student";
+  const filename = 'my-file.pdf'; // will be overwrite to docName
+  const filename_invalid_ext = 'invalid_extension.exe'; // will be overwrite to docName
+  const fileCategory = 'CV';
+  var whoupdate = 'Student';
   var temp_name;
   var file_name_inDB;
   beforeEach(async () => {
@@ -817,37 +823,37 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     });
   });
 
-  it("should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+  it('should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx', async () => {
     const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
     const resp2 = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", buffer_1MB_exe, filename_invalid_ext);
+      .attach('file', buffer_1MB_exe, filename_invalid_ext);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should return 400 when editor general file (CV, RL) size over 5 MB", async () => {
+  it('should return 400 when editor general file (CV, RL) size over 5 MB', async () => {
     const buffer_6MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", buffer_6MB, filename);
+      .attach('file', buffer_6MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should save the uploaded general CV,RL files and store the path in db", async () => {
+  it('should save the uploaded general CV,RL files and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/account/files/general/upload/${studentId}/${fileCategory}`)
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+      .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
     var updatedStudent = await Student.findById(studentId)
-      .populate("applications.programId")
+      .populate('applications.programId')
       .lean()
       .exec();
     var studentinput_idx = updatedStudent.generaldocs.studentinputs.findIndex(
@@ -860,16 +866,16 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       // console.log(application.programId);
       temp_name =
         student.lastname +
-        "_" +
+        '_' +
         student.firstname +
-        "_" +
+        '_' +
         fileCategory +
-        "_v" +
+        '_v' +
         version_number +
         `${path.extname(
           updatedStudent.generaldocs.studentinputs[studentinput_idx].path
         )}`;
-      temp_name = temp_name.replace(/ /g, "_");
+      temp_name = temp_name.replace(/ /g, '_');
 
       // let student_input_doc = application.student_inputs.find(
       //   ({ name }) => name === temp_name
@@ -897,7 +903,7 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     expect(file_name_inDB).toBe(temp_name);
 
     var updated2Student = await Student.findById(studentId)
-      .populate("applications.programId")
+      .populate('applications.programId')
       .lean()
       .exec();
     var studentinput2_idx = updatedStudent.generaldocs.studentinputs.findIndex(
@@ -905,7 +911,7 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
     );
     expect(
       updated2Student.generaldocs.studentinputs[studentinput2_idx].feedback
-    ).toBe("My comments2");
+    ).toBe('My comments2');
 
     // Test Download:
 
@@ -914,7 +920,7 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
       .buffer();
 
     expect(resp3.status).toBe(200);
-    expect(resp3.headers["content-disposition"]).toEqual(
+    expect(resp3.headers['content-disposition']).toEqual(
       `attachment; filename="${temp_name}"`
     );
 
@@ -989,35 +995,35 @@ describe("POST /api/account/files/general/upload/:studentId/:fileCategory", () =
 //   it.todo("should download the analyzed report");
 // });
 
-describe("POST /api/account/profile", () => {
-  it("should update personal data", async () => {
+describe('POST /api/account/profile', () => {
+  it('should update personal data', async () => {
     const resp = await request(app)
       .post(`/api/account/profile`)
       .send({
-        personaldata: { firstname: "New_FirstName", lastname: "New_LastName" },
+        personaldata: { firstname: 'New_FirstName', lastname: 'New_LastName' }
       });
     const { status, body } = resp;
     expect(status).toBe(200);
     expect(body.success).toBe(true);
     expect(body.data).toMatchObject({
-      firstname: "New_FirstName",
-      lastname: "New_LastName",
+      firstname: 'New_FirstName',
+      lastname: 'New_LastName'
     });
   });
 });
 
-describe("POST /api/account/survey/language", () => {
+describe('POST /api/account/survey/language', () => {
   const language_obj = {
     language: {
-      english_certificate: "TOEFL",
-      english_score: "95",
-      english_test_date: "",
-      german_certificate: "",
-      german_score: "",
-      german_test_date: "",
-    },
+      english_certificate: 'TOEFL',
+      english_score: '95',
+      english_test_date: '',
+      german_certificate: '',
+      german_score: '',
+      german_test_date: ''
+    }
   };
-  it("should update language status", async () => {
+  it('should update language status', async () => {
     const resp = await request(app)
       .post(`/api/account/survey/language`)
       .send(language_obj);
@@ -1042,15 +1048,15 @@ describe("POST /api/account/survey/language", () => {
   });
 });
 
-describe("POST /api/account/survey/university", () => {
+describe('POST /api/account/survey/university', () => {
   const university_obj = {
     university: {
-      attended_university: "National Chiao Tung University",
-      attended_university_program: "Electronics Engineering",
-      isGraduated: "No",
-    },
+      attended_university: 'National Chiao Tung University',
+      attended_university_program: 'Electronics Engineering',
+      isGraduated: 'No'
+    }
   };
-  it("should update university (academic background) ", async () => {
+  it('should update university (academic background) ', async () => {
     const resp = await request(app)
       .post(`/api/account/survey/university`)
       .send(university_obj);

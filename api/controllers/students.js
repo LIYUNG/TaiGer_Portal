@@ -250,41 +250,43 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: agentsId // agentsId is json (or agentsId array with boolean)
   } = req;
-  const keys = Object.keys(agentsId);
-
+  const agentsId_arr = Object.keys(agentsId);
   let updated_agent_id = [];
   let updated_agent = [];
-  for (let i = 0; i < keys.length; i++) {
-    if (agentsId[keys[i]]) {
-      updated_agent_id.push(keys[i]);
-      await Agent.findByIdAndUpdate(keys[i], {
-        $addToSet: { students: studentId }
-      });
-      const agent = await Agent.findById(keys[i]);
+  for (let i = 0; i < agentsId_arr.length; i += 1) {
+    if (agentsId[agentsId_arr[i]]) {
+      updated_agent_id.push(agentsId_arr[i]);
+      const agent = await Agent.findByIdAndUpdate(
+        agentsId_arr[i],
+        {
+          $addToSet: { students: studentId }
+        },
+        { new: true }
+      );
       updated_agent.push({
         firstname: agent.firstname,
         lastname: agent.lastname,
         email: agent.email
       });
     } else {
-      await Agent.findByIdAndUpdate(keys[i], {
+      await Agent.findByIdAndUpdate(agentsId_arr[i], {
         $pull: { students: studentId }
       });
     }
   }
 
-  // if (!agentIds) throw new ErrorResponse(400, "Invalid AgentId");
-
-  // TODO: transaction?
-  // await Student.findByIdAndUpdate(studentId, {
-  //   $push: { agents: agentsId },
-  // });
-  await Student.findByIdAndUpdate(studentId, {
-    agents: updated_agent_id
-  });
-  const student = await Student.findById(studentId)
+  const student = await Student.findByIdAndUpdate(
+    studentId,
+    {
+      agents: updated_agent_id
+    },
+    { new: true }
+  )
     .populate('applications.programId agents editors')
     .exec();
+  // const student = await Student.findById(studentId)
+  //   .populate('applications.programId agents editors')
+  //   .exec();
   res.status(200).send({ success: true, data: student });
 
   for (let i = 0; i < updated_agent.length; i++) {
@@ -326,10 +328,13 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     // const agent = await Agent.findById(({ editorsId }) => editorsId);
     if (editorsId[keys[i]]) {
       updated_editor_id.push(keys[i]);
-      await Editor.findByIdAndUpdate(keys[i], {
-        $addToSet: { students: studentId }
-      });
-      const editor = await Editor.findById(keys[i]);
+      const editor = await Editor.findByIdAndUpdate(
+        keys[i],
+        {
+          $addToSet: { students: studentId }
+        },
+        { new: true }
+      );
       updated_editor.push({
         firstname: editor.firstname,
         lastname: editor.lastname,
@@ -346,22 +351,15 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   // const editorsIds = await Editor.findById(({ editorsId }) => editorsId);
   // if (!editorsIds) throw new ErrorResponse(400, "Invalid editorsId");
 
-  // // TODO: transaction?
-  // await Student.findByIdAndUpdate(studentId, {
-  //   $push: { editors: editorsId },
-  // });
-
-  await Student.findByIdAndUpdate(studentId, {
+  const student = await Student.findByIdAndUpdate(studentId, {
     editors: updated_editor_id
-  });
-
-  const student = await Student.findById(studentId)
+  })
     .populate('applications.programId agents editors')
     .exec();
 
   res.status(200).send({ success: true, data: student });
 
-  for (let i = 0; i < updated_editor.length; i++) {
+  for (let i = 0; i < updated_editor.length; i += 1) {
     await informEditorNewStudentEmail(
       {
         firstname: updated_editor[i].firstname,
@@ -384,7 +382,6 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       editors: updated_editor
     }
   );
-  // for()
   //TODO: email inform Student for(assigned editor) and inform editor for (your new student)
 });
 
@@ -420,7 +417,6 @@ const createApplication = asyncHandler(async (req, res) => {
         programId: new_programIds[i]
       });
       student.applications.push(application);
-      //   await student.save();
     }
     await student.save();
     //   });
@@ -458,8 +454,6 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     user,
     params: { studentId, program_id, docName }
   } = req;
-  console.log('deleteApplication');
-  // TODO: remove uploaded files before remove program
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId).populate(
@@ -477,75 +471,69 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     logger.error('deleteApplication: Invalid application id');
     throw new ErrorResponse(400, 'Invalid application id');
   }
+  try {
+    // remove uploaded files before remove program in database
+    let messagesThreadId;
+    let directory;
+    if (application) {
+      for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
+        messagesThreadId =
+          application.doc_modification_thread[i].doc_thread_id.toString();
+        directory = path.join(
+          studentId,
+          application.doc_modification_thread[i].doc_thread_id.toString()
+        );
+        logger.info('Trying to delete message threads and S3 thread folders');
+        directory = directory.replace(/\\/g, '/');
 
-  // TODO: iteratively to remove files
-  let messagesThreadId;
-  let directory;
-  if (application) {
-    for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
-      messagesThreadId =
-        application.doc_modification_thread[i].doc_thread_id.toString();
-      directory = path.join(
-        studentId,
-        application.doc_modification_thread[i].doc_thread_id.toString()
-      );
-      logger.info('Trying to delete message threads and S3 thread folders');
-      directory = directory.replace(/\\/g, '/');
-
-      const listParams = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Prefix: directory
-      };
-      const listedObjects = await s3.listObjectsV2(listParams).promise();
-
-      if (listedObjects.Contents.length > 0) {
-        const deleteParams = {
+        const listParams = {
           Bucket: AWS_S3_BUCKET_NAME,
-          Delete: { Objects: [] }
+          Prefix: directory
         };
+        const listedObjects = await s3.listObjectsV2(listParams).promise();
 
-        listedObjects.Contents.forEach(({ Key }) => {
-          deleteParams.Delete.Objects.push({ Key });
-          logger.info('Deleting ', Key);
-        });
+        if (listedObjects.Contents.length > 0) {
+          const deleteParams = {
+            Bucket: AWS_S3_BUCKET_NAME,
+            Delete: { Objects: [] }
+          };
 
-        await s3.deleteObjects(deleteParams).promise();
+          listedObjects.Contents.forEach(({ Key }) => {
+            deleteParams.Delete.Objects.push({ Key });
+            logger.info('Deleting ', Key);
+          });
 
-        // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-      }
-      await Documentthread.findByIdAndDelete(messagesThreadId);
-      await Student.findOneAndUpdate(
-        { _id: studentId, 'applications.programId': program_id },
-        {
-          $pull: {
-            'applications.$.doc_modification_thread': {
-              doc_thread_id: { _id: messagesThreadId }
+          await s3.deleteObjects(deleteParams).promise();
+
+          // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+        }
+        await Documentthread.findByIdAndDelete(messagesThreadId);
+        await Student.findOneAndUpdate(
+          { _id: studentId, 'applications.programId': program_id },
+          {
+            $pull: {
+              'applications.$.doc_modification_thread': {
+                doc_thread_id: { _id: messagesThreadId }
+              }
             }
           }
-        }
-      );
+        );
+      }
     }
-  }
-  const student_updated = await Student.findByIdAndUpdate(
-    studentId,
-    {
-      $pull: { applications: { programId: { _id: program_id } } }
-    },
-    { new: true }
-  )
-    .populate('applications.programId')
-    .lean();;
-
-  // const folderPath = path.join(UPLOAD_PATH, studentId, applicationId);
-
-  try {
-    // TODO: better implementation is to find all document in that folder
+    const student_updated = await Student.findByIdAndUpdate(
+      studentId,
+      {
+        $pull: { applications: { programId: { _id: program_id } } }
+      },
+      { new: true }
+    )
+      .populate('applications.programId')
+      .lean();
+    res.status(200).send({ success: true, data: student_updated });
   } catch (err) {
     logger.error('Your Application folder not empty!', err);
     throw new ErrorResponse(500, 'Your Application folder not empty!');
   }
-
-  res.status(200).send({ success: true, data: student_updated });
 });
 
 module.exports = {

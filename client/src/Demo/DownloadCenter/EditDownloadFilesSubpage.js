@@ -62,59 +62,6 @@ class EditDownloadFilesSubpage extends React.Component {
               </Form>
             </Col>
           </td>
-          {/* <th>
-            <AiOutlineFieldTime
-              size={24}
-              color="orange"
-              title="Uploaded successfully"
-            />
-          </th>
-          <td>
-            <p className="m-0"> {value2[i]}</p>
-          </td>
-          <td>
-            <Col>
-              <Form
-                onSubmit={(e) => this.props.submitFile(e, k)}
-              >
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Button size="sm" type="submit">
-                    Upload
-                  </Button>
-                </Form.Group>
-              </Form>
-            </Col>
-          </td>
-          <td>
-            <Col>
-              <Form
-                onSubmit={(e) =>
-                  this.props.onDownloadFilefromstudent(e, k, this.props.userId)
-                }
-              >
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Button size="sm" type="submit">
-                    Download
-                  </Button>
-                </Form.Group>
-              </Form>
-            </Col>
-          </td>
-          <td>
-            <Col>
-              <Form
-                onSubmit={(e) =>
-                  this.props.onDeleteFilefromstudent(e, k, this.props.userId)
-                }
-              >
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Button variant="danger" size="sm" type="submit">
-                    Delete
-                  </Button>
-                </Form.Group>
-              </Form>
-            </Col>
-          </td> */}
         </tr>
       );
     });

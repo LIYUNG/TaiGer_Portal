@@ -1,47 +1,32 @@
-import React from "react";
-import {
-  Row,
-  Col,
-  Form,
-  Table,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
-import UcFirst from "../../App/components/UcFirst";
-import { IoMdCloudUpload } from "react-icons/io";
+import React from 'react';
+import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import UcFirst from '../../App/components/UcFirst';
+import { IoMdCloudUpload } from 'react-icons/io';
 import {
   AiOutlineDownload,
   AiOutlineFieldTime,
   AiFillCloseCircle,
   AiFillQuestionCircle,
   AiOutlineComment,
-  AiOutlineDelete,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-import {
-  uploadforstudent,
-  updateProfileDocumentStatus,
-  deleteFile,
-  getStudents,
-} from "../../api";
+  AiOutlineDelete
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { BsDash } from 'react-icons/bs';
+import { updateProfileDocumentStatus, deleteFile } from '../../api';
 
 class ButtonSetRejected extends React.Component {
   state = {
     student: this.props.student,
-    student_id: "",
-    category: "",
-    docName: "",
+    student_id: '',
+    category: '',
+    docName: '',
     comments: this.props.message,
-    file: "",
+    file: '',
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: this.props.deleteFileWarningModel,
     CommentModel: this.props.CommentModel,
     rejectProfileFileModel: this.props.rejectProfileFileModel,
-    acceptProfileFileModel: this.props.acceptProfileFileModel,
+    acceptProfileFileModel: this.props.acceptProfileFileModel
   };
 
   openWarningWindow = () => {
@@ -58,7 +43,7 @@ class ButtonSetRejected extends React.Component {
       ...state,
       CommentModel: true,
       student_id,
-      category,
+      category
     }));
   };
 
@@ -66,17 +51,10 @@ class ButtonSetRejected extends React.Component {
     this.setState((state) => ({ ...state, CommentModel: false }));
   };
 
-  openRejectWarningWindow = () => {
-    this.setState((state) => ({ ...state, rejectProfileFileModel: true }));
-  };
-
   closeRejectWarningWindow = () => {
     this.setState((state) => ({ ...state, rejectProfileFileModel: false }));
   };
 
-  openAcceptWarningWindow = () => {
-    this.setState((state) => ({ ...state, acceptProfileFileModel: true }));
-  };
   closeAcceptWarningWindow = () => {
     this.setState((state) => ({ ...state, acceptProfileFileModel: false }));
   };
@@ -88,7 +66,7 @@ class ButtonSetRejected extends React.Component {
       student_id,
       category,
       docName,
-      deleteFileWarningModel: true,
+      deleteFileWarningModel: true
     }));
   };
 
@@ -96,19 +74,19 @@ class ButtonSetRejected extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      comments: rejectmessage,
+      comments: rejectmessage
     }));
   };
 
   onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
-    if (status === "accepted") {
+    if (status === 'accepted') {
       this.setState((state) => ({
         ...state,
         student_id,
         category,
         status,
-        acceptProfileFileModel: true,
+        acceptProfileFileModel: true
       }));
     } else {
       this.setState((state) => ({
@@ -116,7 +94,7 @@ class ButtonSetRejected extends React.Component {
         student_id,
         category,
         status,
-        rejectProfileFileModel: true,
+        rejectProfileFileModel: true
       }));
     }
   };
@@ -125,7 +103,7 @@ class ButtonSetRejected extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     this.props.onDeleteFilefromstudent(
       this.state.category,
@@ -136,7 +114,7 @@ class ButtonSetRejected extends React.Component {
   onUpdateProfileFilefromstudent = (e) => {
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     e.preventDefault();
     this.props.onUpdateProfileFilefromstudent(
@@ -149,32 +127,30 @@ class ButtonSetRejected extends React.Component {
   onUpdateRejectMessageStudent = (e) => {
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     e.preventDefault();
     updateProfileDocumentStatus(
       this.state.category,
       this.state.student_id,
-      "rejected",
+      'rejected',
       this.state.comments
     ).then(
       (res) => {
         const { data, success } = res.data;
         if (success) {
-         
-              this.setState((state) => ({
-                ...state,
-                student: data,
-                success,
-                CommentModel: false,
-                isLoaded: true,
-              }));
-          
+          this.setState((state) => ({
+            ...state,
+            student: data,
+            success,
+            CommentModel: false,
+            isLoaded: true
+          }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded: true
           }));
         }
       },
@@ -184,8 +160,8 @@ class ButtonSetRejected extends React.Component {
     );
   };
   render() {
-    const deleteStyle = "danger";
-    const graoutStyle = "light";
+    const deleteStyle = 'danger';
+    const graoutStyle = 'light';
     var ButttonRow_Rejected;
     ButttonRow_Rejected = (
       <tr key={this.props.key + 1}>
@@ -194,9 +170,9 @@ class ButtonSetRejected extends React.Component {
         </td>
         <td>
           {this.props.docName}
-          {" - "}
+          {' - '}
           {this.props.date}
-          {" - "}
+          {' - '}
           {this.props.time}
         </td>
         <td>
@@ -218,7 +194,7 @@ class ButtonSetRejected extends React.Component {
             </Form>
           </Col>
         </td>
-        {this.props.role === "Editor" ? (
+        {this.props.role === 'Editor' ? (
           <>
             <td></td>
             <td>
@@ -228,10 +204,7 @@ class ButtonSetRejected extends React.Component {
                 disabled={!this.state.isLoaded}
                 title="Show Comments"
                 onClick={(e) =>
-                  this.openCommentWindow(
-                    this.props.student_id,
-                    this.props.k,
-                  )
+                  this.openCommentWindow(this.props.student_id, this.props.k)
                 }
               >
                 <AiOutlineComment size={20} />
@@ -241,7 +214,7 @@ class ButtonSetRejected extends React.Component {
           </>
         ) : (
           <>
-            {this.props.role === "Student" ? (
+            {this.props.role === 'Student' ? (
               <>
                 <td></td>
                 <td>
@@ -253,7 +226,7 @@ class ButtonSetRejected extends React.Component {
                     onClick={(e) =>
                       this.openCommentWindow(
                         this.props.student_id,
-                        this.props.k,
+                        this.props.k
                       )
                     }
                   >
@@ -264,30 +237,7 @@ class ButtonSetRejected extends React.Component {
               </>
             ) : (
               <>
-                <td>
-                  {/* <Col>
-                    <Form
-                      onSubmit={(e) =>
-                        this.onUpdateProfileDocStatus(
-                          e,
-                          this.props.k,
-                          this.props.student_id,
-                          "rejected"
-                        )
-                      }
-                    >
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button
-                          size="sm"
-                          type="submit"
-                          disabled={!this.state.isLoaded}
-                        >
-                          Reject
-                        </Button>
-                      </Form.Group>
-                    </Form>
-                  </Col> */}
-                </td>
+                <td></td>
                 <td>
                   <Button
                     size="sm"
@@ -297,7 +247,7 @@ class ButtonSetRejected extends React.Component {
                     onClick={(e) =>
                       this.openCommentWindow(
                         this.props.student_id,
-                        this.props.k,
+                        this.props.k
                       )
                     }
                   >
@@ -312,7 +262,7 @@ class ButtonSetRejected extends React.Component {
                           e,
                           this.props.k,
                           this.props.student_id,
-                          "accepted"
+                          'accepted'
                         )
                       }
                     >
@@ -362,10 +312,10 @@ class ButtonSetRejected extends React.Component {
     );
 
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     return (
       <>
@@ -401,48 +351,6 @@ class ButtonSetRejected extends React.Component {
             <Button onClick={this.closeWarningWindow}>No</Button>
           </Modal.Footer>
         </Modal>
-        {/* <Modal
-          show={this.state.rejectProfileFileModel}
-          onHide={this.closeRejectWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group controlId="rejectmessage">
-              <Form.Label>
-                Please give a reason why the uploaded {this.state.category} is
-                invalied?
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="ex. Poor scanned quality."
-                defaultValue={""}
-                onChange={(e) => this.handleRejectMessage(e, e.target.value)}
-              />
-            </Form.Group>
-            {!this.state.isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!this.state.isLoaded}
-              onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
-            >
-              Yes
-            </Button>
-            <Button onClick={this.closeRejectWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal> */}
         <Modal
           show={this.state.acceptProfileFileModel}
           onHide={this.closeAcceptWarningWindow}
@@ -487,7 +395,7 @@ class ButtonSetRejected extends React.Component {
             </Modal.Title>
           </Modal.Header>
 
-          {this.props.role === "Student" ? (
+          {this.props.role === 'Student' ? (
             <>
               <Modal.Body>{this.state.comments}</Modal.Body>
               <Modal.Footer>
@@ -499,7 +407,7 @@ class ButtonSetRejected extends React.Component {
               <Modal.Body>
                 <Form.Group controlId="rejectmessage">
                   <Form.Label>
-                    Please give a reason why the uploaded {this.state.category}{" "}
+                    Please give a reason why the uploaded {this.state.category}{' '}
                     is invalied?
                   </Form.Label>
                   <Form.Control

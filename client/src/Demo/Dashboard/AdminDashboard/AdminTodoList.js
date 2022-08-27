@@ -4,7 +4,6 @@ import React from "react";
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-// import { uploadforstudent } from "../../../api";
 
 
 class AdminTodoList extends React.Component {

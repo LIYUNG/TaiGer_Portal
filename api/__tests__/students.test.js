@@ -1,23 +1,23 @@
-const fs = require("fs");
-const path = require("path");
-const request = require("supertest");
+const fs = require('fs');
+const path = require('path');
+const request = require('supertest');
 
-const { UPLOAD_PATH } = require("../config");
-const { app } = require("../app");
-const { connectToDatabase, disconnectFromDatabase } = require("../database");
-const { Role, User, Agent, Editor, Student } = require("../models/User");
-const { Program } = require("../models/Program");
-const { DocumentStatus } = require("../constants");
-const { generateUser } = require("./fixtures/users");
-const { generateProgram } = require("./fixtures/programs");
-const { protect } = require("../middlewares/auth");
+const { UPLOAD_PATH } = require('../config');
+const { app } = require('../app');
+const { connectToDatabase, disconnectFromDatabase } = require('../database');
+const { Role, User, Agent, Editor, Student } = require('../models/User');
+const { Program } = require('../models/Program');
+const { DocumentStatus } = require('../constants');
+const { generateUser } = require('./fixtures/users');
+const { generateProgram } = require('./fixtures/programs');
+const { protect } = require('../middlewares/auth');
 
-jest.mock("../middlewares/auth", () => {
+jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual("../middlewares/auth"), {
+  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
     protect: jest.fn().mockImplementation(passthrough),
-    permit: jest.fn().mockImplementation((...roles) => passthrough),
+    permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
 });
 
@@ -37,18 +37,18 @@ const users = [
   editor,
   ...students,
   student,
-  student2,
+  student2
 ];
 
-const requiredDocuments = ["transcript", "resume"];
-const optionalDocuments = ["certificate", "visa"];
+const requiredDocuments = ['transcript', 'resume'];
+const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
 const programs = [...Array(3)].map(() =>
   generateProgram(requiredDocuments, optionalDocuments)
 );
 beforeAll(async () => {
-  jest.spyOn(console, "log").mockImplementation(jest.fn());
+  jest.spyOn(console, 'log').mockImplementation(jest.fn());
   await connectToDatabase(global.__MONGO_URI__);
 });
 
@@ -66,7 +66,7 @@ afterEach(() => {
   fs.rmSync(UPLOAD_PATH, { recursive: true, force: true });
 });
 
-describe("POST /api/students/:id/agents", () => {
+describe('POST /api/students/:id/agents', () => {
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
       req.user = await User.findById(admin._id);
@@ -74,7 +74,7 @@ describe("POST /api/students/:id/agents", () => {
     });
   });
 
-  it("should assign agent(s) to student", async () => {
+  it('should assign agent(s) to student', async () => {
     const { _id: studentId } = student;
 
     const agents_obj = {};
@@ -103,8 +103,8 @@ describe("POST /api/students/:id/agents", () => {
   });
 });
 
-describe("POST /api/students/:id/editors", () => {
-  it("should assign editors to student", async () => {
+describe('POST /api/students/:id/editors', () => {
+  it('should assign editors to student', async () => {
     const { _id: studentId } = student;
     const { _id: editorId } = editors[0];
 
@@ -134,16 +134,15 @@ describe("POST /api/students/:id/editors", () => {
   });
 });
 
-
 // Agent should create applications (programs) to student
-describe("POST /api/students/:studentId/applications", () => {
+describe('POST /api/students/:studentId/applications', () => {
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
       req.user = await User.findById(agent._id);
       next();
     });
   });
-  it("should create an application for student", async () => {
+  it('should create an application for student', async () => {
     const { _id: studentId } = student;
     var programs_arr = [];
     programs.forEach((pro) => {
@@ -155,7 +154,7 @@ describe("POST /api/students/:studentId/applications", () => {
 
     const {
       status,
-      body: { success, data },
+      body: { success, data }
     } = resp;
 
     expect(status).toBe(201);
@@ -261,13 +260,13 @@ describe("POST /api/students/:studentId/applications", () => {
 
 // Student uploads profile files
 // user: Student
-describe("POST /api/students/:studentId/files/:category", () => {
+describe('POST /api/students/:studentId/files/:category', () => {
   const { _id: studentId } = student;
   const { _id: student2Id } = student2;
-  const filename_invalid_ext = "invalid_extension.exe"; // will be overwrite to docName
+  const filename_invalid_ext = 'invalid_extension.exe'; // will be overwrite to docName
   const docName = requiredDocuments[0];
-  const filename = "my-file.pdf"; // will be overwrite to docName
-  const category = "Bachelor_Transcript";
+  const filename = 'my-file.pdf'; // will be overwrite to docName
+  const category = 'Bachelor_Transcript';
 
   var temp_name;
 
@@ -278,30 +277,30 @@ describe("POST /api/students/:studentId/files/:category", () => {
     });
   });
 
-    it("should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx", async () => {
+  it('should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx', async () => {
     const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
-      .attach("file", buffer_2MB_exe, filename_invalid_ext);
+      .attach('file', buffer_2MB_exe, filename_invalid_ext);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
-  
-  it("should return 400 when profile size over 5 MB", async () => {
+
+  it('should return 400 when profile size over 5 MB', async () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
-      .attach("file", buffer_10MB, filename);
+      .attach('file', buffer_10MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should save the uploaded profile file and store the path in db", async () => {
+  it('should save the uploaded profile file and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+      .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
     expect(status).toBe(201);
@@ -313,9 +312,9 @@ describe("POST /api/students/:studentId/files/:category", () => {
     );
     temp_name =
       student.lastname +
-      "_" +
+      '_' +
       student.firstname +
-      "_" +
+      '_' +
       category +
       path.extname(updatedStudent.profile[profile_file_idx].path);
     // expect(
@@ -338,7 +337,7 @@ describe("POST /api/students/:studentId/files/:category", () => {
       .buffer();
 
     expect(resp2.status).toBe(200);
-    expect(resp2.headers["content-disposition"]).toEqual(
+    expect(resp2.headers['content-disposition']).toEqual(
       `attachment; filename="${temp_name}"`
     );
 
@@ -368,11 +367,11 @@ describe("POST /api/students/:studentId/files/:category", () => {
 });
 
 // user: Agent
-describe("POST /api/students/:studentId/files/:category", () => {
+describe('POST /api/students/:studentId/files/:category', () => {
   const { _id: studentId } = student;
   const { _id: student2Id } = student2;
-  const filename = "my-file.pdf"; // will be overwrite to docName
-  const category = "Bachelor_Transcript";
+  const filename = 'my-file.pdf'; // will be overwrite to docName
+  const category = 'Bachelor_Transcript';
 
   var temp_name;
 
@@ -383,37 +382,36 @@ describe("POST /api/students/:studentId/files/:category", () => {
     });
   });
 
-  
   it.each([
-    ["my-file.exe", 400, false],
-    ["my-file.pdf", 201, true],
+    ['my-file.exe', 400, false],
+    ['my-file.pdf', 201, true]
   ])(
-    "should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx",
+    'should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx',
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
         .post(`/api/students/${studentId}/files/${category}`)
-        .attach("file", buffer_1MB_exe, File_Name);
+        .attach('file', buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
       expect(resp2.body.success).toBe(success);
     }
   );
 
-  it("should return 400 when profile size over 5 MB", async () => {
+  it('should return 400 when profile size over 5 MB', async () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
-      .attach("file", buffer_10MB, filename);
+      .attach('file', buffer_10MB, filename);
 
     expect(resp2.status).toBe(400);
     expect(resp2.body.success).toBe(false);
   });
 
-  it("should save the uploaded profile file and store the path in db", async () => {
+  it('should save the uploaded profile file and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
-      .attach("file", Buffer.from("Lorem ipsum"), filename);
+      .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
     expect(status).toBe(201);
@@ -425,9 +423,9 @@ describe("POST /api/students/:studentId/files/:category", () => {
     );
     temp_name =
       student.lastname +
-      "_" +
+      '_' +
       student.firstname +
-      "_" +
+      '_' +
       category +
       path.extname(updatedStudent.profile[profile_file_idx].path);
     // expect(
@@ -450,7 +448,7 @@ describe("POST /api/students/:studentId/files/:category", () => {
       .buffer();
 
     expect(resp2.status).toBe(200);
-    expect(resp2.headers["content-disposition"]).toEqual(
+    expect(resp2.headers['content-disposition']).toEqual(
       `attachment; filename="${temp_name}"`
     );
 
@@ -464,10 +462,10 @@ describe("POST /api/students/:studentId/files/:category", () => {
     // expect(resp3.body.success).toBe(false);
 
     // test update profile status
-    const feedback_str = "too blurred";
+    const feedback_str = 'too blurred';
     const resp5 = await request(app)
       .post(`/api/students/${studentId}/${category}/status`)
-      .send({ status: "rejected", feedback: feedback_str });
+      .send({ status: 'rejected', feedback: feedback_str });
     expect(resp5.status).toBe(201);
     var updatedStudent2 = resp5.body.data;
     const updated_doc_idx = updatedStudent2.profile.findIndex(({ name }) =>

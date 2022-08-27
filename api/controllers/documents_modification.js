@@ -98,6 +98,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { studentId, document_category }
   } = req;
+
   const student = await Student.findById(studentId).populate(
     'generaldocs_threads.doc_thread_id'
   );
@@ -110,37 +111,47 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   });
 
   if (doc_thread_existed.length > 0) {
-    // TODO: should push the existing one to student
+    // should add the existing one thread to student application
+    const thread_in_student_application_existed =
+      student.generaldocs_threads.find(
+        ({ doc_thread_id }) =>
+          doc_thread_id.toString() == doc_thread_existed._id.toString()
+      );
+    // if thread existed but not in student application thread, then add it.
+    if (!thread_in_student_application_existed) {
+      // console.log('Pass 1.1');
+      const app = application.doc_modification_thread.create({
+        doc_thread_id: doc_thread_existed._id,
+        createdAt: new Date()
+      });
+      student.generaldocs_threads.push(app);
+      await student.save();
+      const student_updated = await Student.findById(studentId)
+        .populate('applications.programId generaldocs_threads.doc_thread_id')
+        .populate(
+          'applications.doc_modification_thread.doc_thread_id',
+          'file_type updatedAt'
+        );
+      return res.status(200).send({ success: true, data: student_updated });
+    }
     throw new ErrorResponse(400, 'Document Thread already existed!');
-    // const application = student.generaldocs_threads.find(
-    //   ({ doc_thread_id }) => doc_thread_id._id == studentId
-    // );
-
-    // var temp;
-    // temp = student.generaldocs_threads.create({
-    //   doc_thread_id: doc_thread_existed._id,
-    // });
-    // temp.student_id = studentId;
-    // student.generaldocs_threads.push(temp);
-    // await student.save();
-    // const student2 = await Student.findById(studentId)
-    //   .populate("generaldocs_threads.doc_thread_id")
-    //   .populate("applications.programId");
-    // return res.status(200).send({ success: true, data: student2 });
   }
   const new_doc_thread = new Documentthread({
     student_id: studentId,
     file_type: document_category,
     program_id: null,
-    updatedAt: new Date() // TODO
+    updatedAt: new Date()
   });
-  await new_doc_thread.save();
   const temp = student.generaldocs_threads.create({
-    doc_thread_id: new_doc_thread._id
+    doc_thread_id: new_doc_thread._id,
+    createdAt: new Date()
   });
+
   temp.student_id = studentId;
   student.generaldocs_threads.push(temp);
   await student.save();
+  await new_doc_thread.save();
+
   const student2 = await Student.findById(studentId)
     .populate('applications.programId generaldocs_threads.doc_thread_id')
     .populate(
@@ -153,7 +164,6 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const {
-    user,
     params: { studentId, program_id, document_category }
   } = req;
 
@@ -181,20 +191,21 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   });
 
   if (doc_thread_existed) {
-    // TODO: should push the existing one to student
-    console.log('Pass 1');
-    console.log(application);
-    const student_input_doc = application.doc_modification_thread.find(
-      ({ doc_thread_id }) =>
-        doc_thread_id.toString() == doc_thread_existed._id.toString()
-    );
+    // should add the existing one thread to student application
+    const thread_in_student_application_existed =
+      application.doc_modification_thread.find(
+        ({ doc_thread_id }) =>
+          doc_thread_id.toString() == doc_thread_existed._id.toString()
+      );
     // if thread existed but not in student application thread, then add it.
-    if (!student_input_doc) {
+    if (!thread_in_student_application_existed) {
       // console.log('Pass 1.1');
-      application.doc_modification_thread.create({
+      const app = application.doc_modification_thread.create({
         doc_thread_id: doc_thread_existed._id,
         createdAt: new Date()
       });
+      application.doc_modification_thread.push(app);
+      await student.save();
       const student_updated = await Student.findById(studentId)
         .populate('applications.programId generaldocs_threads.doc_thread_id')
         .populate(
@@ -207,7 +218,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Document Thread already existed!');
   }
 
-  // TODO: if thread not existed but some deprecated one in doc_modification_thread?
+  // minor TODO: if thread not existed but some deprecated one in doc_modification_thread?
 
   const new_doc_thread = new Documentthread({
     student_id: studentId,
@@ -223,7 +234,6 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     doc_thread_id: new_doc_thread._id,
     createdAt: new Date()
   });
-  console.log('Pass 3');
 
   temp.student_id = studentId;
   student.applications[idx].doc_modification_thread.push(temp);

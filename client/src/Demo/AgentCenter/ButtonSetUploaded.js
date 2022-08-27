@@ -42,34 +42,18 @@ class ButtonSetUploaded extends React.Component {
     acceptProfileFileModel: false,
   };
 
-  openWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
-  };
-
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
-
-  openCommentWindow = (comments) => {
-    console.log();
-    this.setState((state) => ({ ...state, CommentModel: true, comments }));
   };
 
   closeCommentWindow = () => {
     this.setState((state) => ({ ...state, CommentModel: false }));
   };
 
-  openRejectWarningWindow = () => {
-    this.setState((state) => ({ ...state, rejectProfileFileModel: true }));
-  };
-
   closeRejectWarningWindow = () => {
     this.setState((state) => ({ ...state, rejectProfileFileModel: false }));
   };
 
-  openAcceptWarningWindow = () => {
-    this.setState((state) => ({ ...state, acceptProfileFileModel: true }));
-  };
   closeAcceptWarningWindow = () => {
     this.setState((state) => ({ ...state, acceptProfileFileModel: false }));
   };

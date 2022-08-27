@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// import Card from "../../../App/components/MainCard";
-import { AiFillEdit } from "react-icons/ai";
 import {
   Card,
   Spinner,
@@ -8,7 +6,7 @@ import {
   Button,
 } from "react-bootstrap";
 import { RiMoreFill } from "react-icons/ri";
-import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
+import { convertFromRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./../../../components/DraftEditor.css";

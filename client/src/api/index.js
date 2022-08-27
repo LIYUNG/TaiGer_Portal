@@ -111,7 +111,7 @@ export const UpdateStudentApplications = (studentId, applications) =>
   request.put(`/api/account/applications/${studentId}`, { applications });
 
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
-  request.delete(`/api/document-threads/${studentId}/${documentsthreadId}`);
+  request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);
 
 export const deleteProgramSpecificFileThread = (
   documentsthreadId,

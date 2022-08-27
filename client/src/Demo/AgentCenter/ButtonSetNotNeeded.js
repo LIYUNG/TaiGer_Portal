@@ -1,33 +1,13 @@
 import React from "react";
 import {
-  Row,
   Col,
   Form,
-  Table,
   Button,
-  Card,
-  Collapse,
   Modal,
   Spinner,
 } from "react-bootstrap";
-import UcFirst from "../../App/components/UcFirst";
 import { IoMdCloudUpload } from "react-icons/io";
-import {
-  AiOutlineDownload,
-  AiOutlineFieldTime,
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineComment,
-  AiOutlineDelete,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
 import { BsDash } from "react-icons/bs";
-import {
-  uploadforstudent,
-  updateProfileDocumentStatus,
-  deleteFile,
-  getStudents,
-} from "../../api";
 
 class ButtonSetNotNeeded extends React.Component {
   state = {
@@ -41,36 +21,8 @@ class ButtonSetNotNeeded extends React.Component {
     SetNeededWindow: false,
   };
 
-  openCommentWindow = (comments) => {
-    console.log();
-    this.setState((state) => ({
-      ...state,
-      SetNeededWindow: true,
-      comments,
-    }));
-  };
-
   closeSetNeededWindow = () => {
     this.setState((state) => ({ ...state, SetNeededWindow: false }));
-  };
-
-  onDeleteFileWarningPopUp = (e, category, student_id, docName) => {
-    e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      student_id,
-      category,
-      docName,
-      deleteFileWarningModel: true,
-    }));
-  };
-
-  handleRejectMessage = (e, rejectmessage) => {
-    e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      feedback: rejectmessage,
-    }));
   };
 
   onUpdateProfileDocStatus = (e, category, student_id, status) => {
@@ -82,18 +34,6 @@ class ButtonSetNotNeeded extends React.Component {
       status,
       SetNeededWindow: true,
     }));
-  };
-
-  onDeleteFilefromstudent = (e) => {
-    e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false,
-    }));
-    this.props.onDeleteFilefromstudent(
-      this.state.category,
-      this.state.student_id
-    );
   };
 
   onUpdateProfileFilefromstudent = (e) => {

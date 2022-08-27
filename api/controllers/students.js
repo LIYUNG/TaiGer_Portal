@@ -120,11 +120,10 @@ const getArchivStudents = asyncHandler(async (req, res) => {
     user
     // params: { userId },
   } = req;
-
+  console.log('getArchivStudents');
   if (user.role === 'Admin') {
-    const students = await Student.find({ archiv: true })
-      .populate('applications.programId')
-      .lean();
+    const students = await Student.find({ archiv: true }).exec();
+    console.log(students);
     res.status(200).send({ success: true, data: students });
   } else if (user.role === 'Agent') {
     const students = await Student.find({

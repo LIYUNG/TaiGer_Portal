@@ -40,6 +40,7 @@ const UserSchema = new Schema(
       trim: true,
       minlength: [8, 'Password must contain at least 8 characters']
     },
+    archiv: { type: Boolean, default: false },
     birthday: {
       type: String,
       default: ''

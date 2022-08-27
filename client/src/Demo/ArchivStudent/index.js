@@ -82,49 +82,6 @@ class Dashboard extends React.Component {
     }
   }
 
-  onDownloadFilefromstudent(e, category, id) {
-    e.preventDefault();
-    downloadProfile(category, id).then(
-      (resp) => {
-        const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-
-        var filetype = actualFileName.split("."); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === "pdf") {
-          console.log(blob);
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
-          );
-
-          //Open the URL on new Window
-          console.log(url);
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert("The file is not available.");
-      }
-    );
-  }
-
   onDeleteProgram = (e, student_id, program_id) => {
     //program id
     e.preventDefault();
@@ -150,14 +107,6 @@ class Dashboard extends React.Component {
           error,
         });
       }
-    );
-  };
-
-  onDeleteFilefromstudent = (e, category, id) => {
-    e.preventDefault();
-    deleteFile(category, id).then(
-      (resp) => {},
-      (error) => {}
     );
   };
 
@@ -364,10 +313,6 @@ class Dashboard extends React.Component {
                         agent_list={this.state.agent_list}
                         editor_list={this.state.editor_list}
                         onDeleteProgram={this.onDeleteProgram}
-                        onDownloadFilefromstudent={
-                          this.onDownloadFilefromstudent
-                        }
-                        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
                         updateAgentList={this.state.updateAgentList}
                         handleChangeAgentlist={this.handleChangeAgentlist}
                         submitUpdateAgentlist={this.submitUpdateAgentlist}

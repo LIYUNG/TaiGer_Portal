@@ -20,7 +20,8 @@ class Settings extends React.Component {
       new_password: '',
       new_password_again: ''
     },
-    updateconfirmed: false
+    updateconfirmed: false,
+    updatecredentialconfirmed: false
   };
 
   componentDidMount() {
@@ -107,7 +108,7 @@ class Settings extends React.Component {
             isLoaded: true,
             // personaldata: data,
             success: success,
-            updateconfirmed: true
+            updatecredentialconfirmed: true
           }));
         } else {
           alert(resp.data.message);
@@ -128,7 +129,11 @@ class Settings extends React.Component {
       updateconfirmed: false
     });
   };
-
+  onHideCredential = () => {
+    this.setState({
+      updateconfirmed: false
+    });
+  };
   setmodalhide = () => {
     window.location.reload(true);
     // this.setState({
@@ -230,6 +235,10 @@ class Settings extends React.Component {
                     <br />
                     <Button
                       variant="primary"
+                      disabled={
+                        this.state.personaldata.firstname === '' ||
+                        this.state.personaldata.lastname === ''
+                      }
                       onClick={(e) =>
                         this.handleSubmit_PersonalData(
                           e,
@@ -335,7 +344,7 @@ class Settings extends React.Component {
         </Row>
         <Modal
           show={this.state.updateconfirmed}
-          onHide={this.setmodalhide}
+          onHide={this.onHide}
           size="sm"
           aria-labelledby="contained-modal-title-vcenter"
           centered
@@ -352,8 +361,8 @@ class Settings extends React.Component {
         </Modal>
 
         <Modal
-          show={this.state.updateconfirmed}
-          onHide={this.setmodalhideUpdateCredentials}
+          show={this.state.updatecredentialconfirmed}
+          onHide={this.onHideCredential}
           size="sm"
           aria-labelledby="contained-modal-title-vcenter"
           centered

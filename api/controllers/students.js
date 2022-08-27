@@ -394,31 +394,56 @@ const createApplication = asyncHandler(async (req, res) => {
     body: { program_id_set }
   } = req;
   const student = await Student.findById(studentId);
+  const program = await Program.find({ _id: { $in: program_id_set } });
+  if (program.length !== program_id_set.length) {
+    logger.error('createApplication: some program ids invalid');
+    throw new ErrorResponse(400, 'some program ids invalid');
+  }
   try {
-    for (var i = 0; i < program_id_set.length; i++) {
-      const programIds = student.applications.map(({ programId }) => programId);
-      if (programIds.includes(program_id_set[i])) continue;
-      const program = await Program.findById(program_id_set[i]);
-      // const { requiredDocuments, optionalDocuments } = program;
-      const now = new Date();
-      const application = student.applications.create({
-        programId: program_id_set[i]
-      });
-      // application.documents = [
-      //   ...requiredDocuments.map((name) => ({
-      //     name,
-      //     required: true,
-      //     updatedAt: now,
-      //   })),
-      //   ...optionalDocuments.map((name) => ({
-      //     name,
-      //     required: false,
-      //     updatedAt: now,
-      //   })),
-      // ];
-      student.applications.push(application);
-      await student.save();
+    const programIds = student.applications.map(({ programId }) =>
+      programId._id.toString()
+    );
+
+    // Create programId array only new for student.
+    const new_programIds = [];
+    for (let i = 0; i < program_id_set.length; i += 1) {
+      // if new for student, push it in array.
+      if (!programIds.includes(program_id_set[i])) {
+        new_programIds.push(program_id_set[i]);
+      }
     }
+
+    // Insert only new programIds for student.
+    for (let i = 0; i < new_programIds.length; i += 1) {
+      const application = student.applications.create({
+        programId: new_programIds[i]
+      });
+      student.applications.push(application);
+      //   await student.save();
+    }
+    await student.save();
+    //   });
+    //     programId: program_id_set[i]
+    //   });
+    //   // const { requiredDocuments, optionalDocuments } = program;
+    //   const now = new Date();
+    //   const application = student.applications.create({
+    //     programId: program_id_set[i]
+    //   });
+    //   // application.documents = [
+    //   //   ...requiredDocuments.map((name) => ({
+    //   //     name,
+    //   //     required: true,
+    //   //     updatedAt: now,
+    //   //   })),
+    //   //   ...optionalDocuments.map((name) => ({
+    //   //     name,
+    //   //     required: false,
+    //   //     updatedAt: now,
+    //   //   })),
+    //   // ];
+    //   student.applications.push(application);
+    //   await student.save();
   } catch (err) {
     logger.error('createApplication: ', err);
     throw new ErrorResponse(400, err);

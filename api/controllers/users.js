@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Agent, Editor, Student } = require('../models/User');
+const { User, Agent, Editor, Student, Role } = require('../models/User');
 const logger = require('../services/logger');
 
 const getUsers = asyncHandler(async (req, res) => {
@@ -15,14 +15,15 @@ const updateUser = asyncHandler(async (req, res) => {
   } = req;
   const fields = _.pick(req.body, ['name', 'email', 'role']);
   // TODO: check if email in use already and if role is valid
+  logger.warn('User role is changed to Admin', fields.role);
+
   const new_user = await User.findByIdAndUpdate(id, fields, {
     runValidators: true,
     overwriteDiscriminatorKey: true,
     // upsert: true,
     new: true
   });
-  logger.warn('User role is changed');
-  logger.error('logger Error');
+
   return res.status(200).send({ success: true, data: new_user });
   //TODO: Email inform Guest, the updated status
 });
@@ -30,6 +31,7 @@ const updateUser = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
   // TODO: also remove the relationships and data users have
   await User.findByIdAndDelete(req.params.id);
+  logger.warn('User is deleted');
   res.status(200).send({ success: true });
 });
 

@@ -26,7 +26,7 @@ if (isDev()) {
   app.use(httpLogger);
 }
 
-app.use(methodOverride('_method')); //in order to make delete request
+app.use(methodOverride('_method')); // in order to make delete request
 app.use(cookieParser());
 app.use(express.json());
 

@@ -60,6 +60,7 @@ beforeEach(async () => {
 
   await Program.deleteMany();
   await Program.create(program);
+  await Program.insertMany(programs);
 });
 
 afterEach(() => {

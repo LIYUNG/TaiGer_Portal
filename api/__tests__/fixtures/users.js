@@ -1,5 +1,5 @@
-const { ObjectId } = require("mongoose").Types;
-const faker = require("faker");
+const { ObjectId } = require('mongoose').Types;
+const faker = require('faker');
 
 const generateUser = (role) => ({
   _id: new ObjectId().toHexString(),
@@ -7,28 +7,33 @@ const generateUser = (role) => ({
   lastname: faker.name.findName(),
   email: faker.unique(faker.internet.email).toLowerCase(),
   password: faker.internet.password(10, false, /[0-9A-Z]/),
-  role,
+  isAccountActivated: true,
+  archiv: false,
+  birthday: '',
+  role
 });
 
 const generateAgent = (studentIds) => ({
   ...generateUser(),
-  students: studentIds,
-})
+  students: studentIds
+});
 
 const generateEditor = (studentIds) => ({
   ...generateUser(),
-  students: studentIds,
-})
+  students: studentIds
+});
 
 const generateStudent = (agentIds, editorIds) => ({
   ...generateUser(),
   agents: agentIds,
   editors: editorIds,
-})
+  personaldata: {},
+  academic_background: { language: {}, university: {} }
+});
 
 module.exports = {
   generateUser,
   generateAgent,
   generateEditor,
-  generateStudent,
+  generateStudent
 };

@@ -1084,22 +1084,27 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
 
 const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   const {
-    user: student,
+    user,
     body: { university }
   } = req;
-  const { firstname, lastname, _id } = student;
-  university['updatedAt'] = new Date();
-  await User.findByIdAndUpdate(
-    _id,
-    {
-      'academic_background.university': university
-      // $addToSet: {
-      //   academic_background: { university: university },
-      // },
-    },
-    { upsert: true, new: true }
-  );
-  res.status(200).send({ success: true, data: university });
+  // const { _id } = student;
+  try {
+    university['updatedAt'] = new Date();
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        'academic_background.university': university
+        // $addToSet: {
+        //   academic_background: { university: university },
+        // },
+      },
+      { upsert: true, new: true }
+    );
+    res.status(200).send({ success: true, data: university });
+  } catch (err) {
+    logger.error(err);
+    throw new ErrorResponse(400, JSON.stringify(err));
+  }
 });
 
 const updateLanguageSkill = asyncHandler(async (req, res, next) => {
@@ -1109,17 +1114,17 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   } = req;
   const { _id } = student;
   language['updatedAt'] = new Date();
-  await User.findByIdAndUpdate(
-    _id,
+  const updatedStudent = await User.findByIdAndUpdate(
+    _id.toString(),
     {
       'academic_background.language': language
       // $set: {
-      //   "academic_background.language": language,
-      // },
+      //   'academic_background.language': language
+      // }
     },
     { upsert: true, new: true }
   );
-  const updatedStudent = await User.findById(_id);
+  // const updatedStudent = await User.findById(_id);
   res
     .status(200)
     .send({ success: true, data: updatedStudent.academic_background.language });
@@ -1131,22 +1136,26 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
     body: { personaldata }
   } = req;
   const { _id } = user;
-  await User.findByIdAndUpdate(
-    _id,
-    {
-      firstname: personaldata.firstname,
-      lastname: personaldata.lastname
-    },
-    { upsert: true, new: true }
-  );
-  const updatedStudent = await User.findById(_id);
-  res.status(200).send({
-    success: true,
-    data: {
-      firstname: updatedStudent.firstname,
-      lastname: updatedStudent.lastname
-    }
-  });
+  try {
+    const updatedStudent = await User.findByIdAndUpdate(
+      _id,
+      {
+        firstname: personaldata.firstname,
+        lastname: personaldata.lastname
+      },
+      { upsert: true, new: true }
+    );
+    // const updatedStudent = await User.findById(_id);
+    res.status(200).send({
+      success: true,
+      data: {
+        firstname: updatedStudent.firstname,
+        lastname: updatedStudent.lastname
+      }
+    });
+  } catch (err) {
+    logger.error(err);
+  }
 });
 
 const updateCredentials = asyncHandler(async (req, res, next) => {

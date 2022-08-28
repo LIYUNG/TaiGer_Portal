@@ -351,9 +351,13 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   // const editorsIds = await Editor.findById(({ editorsId }) => editorsId);
   // if (!editorsIds) throw new ErrorResponse(400, "Invalid editorsId");
 
-  const student = await Student.findByIdAndUpdate(studentId, {
-    editors: updated_editor_id
-  })
+  const student = await Student.findByIdAndUpdate(
+    studentId,
+    {
+      editors: updated_editor_id
+    },
+    { new: true }
+  )
     .populate('applications.programId agents editors')
     .exec();
 

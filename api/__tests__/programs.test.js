@@ -1,21 +1,21 @@
-const request = require("supertest");
+const request = require('supertest');
 
-const { app } = require("../app");
-const { connectToDatabase, disconnectFromDatabase } = require("../database");
-const { Program } = require("../models/Program");
-const { generateProgram } = require("./fixtures/programs");
+const { app } = require('../app');
+const { connectToDatabase, disconnectFromDatabase } = require('../database');
+const { Program } = require('../models/Program');
+const { generateProgram } = require('./fixtures/programs');
 
-jest.mock("../middlewares/auth", () => {
+jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual("../middlewares/auth"), {
+  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
     protect: passthrough,
-    permit: (...roles) => passthrough,
+    permit: (...roles) => passthrough
   });
 });
 
 beforeAll(async () => {
-  jest.spyOn(console, "log").mockImplementation(jest.fn());
+  jest.spyOn(console, 'log').mockImplementation(jest.fn());
   await connectToDatabase(global.__MONGO_URI__);
 });
 
@@ -28,9 +28,9 @@ beforeEach(async () => {
   await Program.insertMany(programs);
 });
 
-describe("GET /api/programs", () => {
-  it("should return all programs", async () => {
-    const resp = await request(app).get("/api/programs");
+describe('GET /api/programs', () => {
+  it('should return all programs', async () => {
+    const resp = await request(app).get('/api/programs');
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);

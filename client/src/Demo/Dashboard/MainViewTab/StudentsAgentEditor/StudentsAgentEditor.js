@@ -1,17 +1,17 @@
-import React from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import React from 'react';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import EditAgentsSubpage from "../StudDocsOverview/EditAgentsSubpage";
-import EditEditorsSubpage from "../StudDocsOverview/EditEditorsSubpage";
+import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
+import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 class StudentsAgentEditor extends React.Component {
   state = {
     showAgentPage: false,
-    showEditorPage: false,
+    showEditorPage: false
   };
 
   setAgentModalhide = () => {
     this.setState({
-      showAgentPage: false,
+      showAgentPage: false
     });
   };
 
@@ -19,13 +19,13 @@ class StudentsAgentEditor extends React.Component {
     this.props.editAgent(student);
     this.setState({
       subpage: 1,
-      showAgentPage: true,
+      showAgentPage: true
     });
   };
 
   setEditorModalhide = () => {
     this.setState({
-      showEditorPage: false,
+      showEditorPage: false
     });
   };
 
@@ -33,7 +33,7 @@ class StudentsAgentEditor extends React.Component {
     this.props.editEditor(student);
     this.setState({
       subpage: 2,
-      showEditorPage: true,
+      showEditorPage: true
     });
   };
 
@@ -62,7 +62,7 @@ class StudentsAgentEditor extends React.Component {
         <>
           <h6 className="mb-1" key={i}>
             {agent.firstname}
-            {", "}
+            {', '}
             {agent.lastname}
           </h6>
           {agent.email}
@@ -79,7 +79,7 @@ class StudentsAgentEditor extends React.Component {
         <>
           <h6 className="mb-1" key={i}>
             {editor.firstname}
-            {", "}
+            {', '}
             {editor.lastname}
           </h6>
           {editor.email}
@@ -90,7 +90,7 @@ class StudentsAgentEditor extends React.Component {
       <>
         <tbody>
           <tr>
-            {this.props.role === "Admin" && !this.props.isArchivPage && (
+            {this.props.role === 'Admin' && !this.props.isArchivPage && (
               <td>
                 <DropdownButton
                   size="sm"
@@ -115,7 +115,7 @@ class StudentsAgentEditor extends React.Component {
               </td>
             )}
 
-            {this.props.role !== "Student" ? (
+            {this.props.role !== 'Student' ? (
               <td>
                 <h6>
                   {this.props.student.firstname}, {this.props.student.lastname}
@@ -130,7 +130,7 @@ class StudentsAgentEditor extends React.Component {
             <td></td>
           </tr>
         </tbody>
-        {this.props.role === "Admin" && (
+        {this.props.role === 'Admin' && (
           <>
             <EditAgentsSubpage
               student={this.props.student}

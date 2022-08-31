@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import Card from "../../App/components/MainCard";
-import { AiFillEdit } from "react-icons/ai";
+import React, { Component } from 'react';
+import Card from '../../App/components/MainCard';
+import { AiFillEdit } from 'react-icons/ai';
 
-import { BsTrash } from "react-icons/bs";
+import { BsTrash } from 'react-icons/bs';
 class Article extends Component {
   handleTrashClick = () => {
     this.props.onTrashClick(this.props.id);
   };
   renderText() {
-    let parts = this.props.content.split("\n"); // re is a matching regular expression
+    let parts = this.props.content.split('\n'); // re is a matching regular expression
     for (let i = 0; i < parts.length; i += 1) {
-      if (parts[i].includes("http")) {
+      if (parts[i].includes('http')) {
         parts[i] = (
           <span key={i}>
             <span>
-              <a key={"link" + i} href={parts[i]}>
+              <a key={'link' + i} href={parts[i]}>
                 {parts[i]}
               </a>
             </span>
@@ -39,7 +39,7 @@ class Article extends Component {
         <div>{text2}</div>
         <div>
           <p>Last Update: {this.props.lastupdate}</p>
-          {this.props.role === "Admin" || this.props.role === "Agent" ? (
+          {this.props.role === 'Admin' || this.props.role === 'Agent' ? (
             <>
               <span className="right">
                 <AiFillEdit onClick={this.props.onEditClick} />

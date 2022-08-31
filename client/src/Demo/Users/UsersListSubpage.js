@@ -1,12 +1,12 @@
-import React from "react";
-import { Button, Form, Modal } from "react-bootstrap";
+import React from 'react';
+import { Button, Form, Modal } from 'react-bootstrap';
 
 class UsersListSubpage extends React.Component {
   state = {
-    data: [],
+    data: []
   };
   render() {
-    let user_roles = ["Guest", "Student", "Editor", "Agent", "Admin"];
+    let user_roles = ['Guest', 'Student', 'Editor', 'Agent', 'Admin'];
     return (
       <Modal
         show={this.props.show}

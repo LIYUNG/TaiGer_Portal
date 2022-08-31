@@ -1,30 +1,30 @@
-import React, { Component } from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
-import Aux from "../../../hoc/_Aux";
-import ArticleList from "../ArticleList";
-import ToggleableArticleForm from "../ToggleableArticleForm";
+import React, { Component } from 'react';
+import { Row, Col, Spinner } from 'react-bootstrap';
+import Aux from '../../../hoc/_Aux';
+import ArticleList from '../ArticleList';
+import ToggleableArticleForm from '../ToggleableArticleForm';
 
 import {
   updateDoc,
   deleteDoc,
   createArticle,
-  getApplicationArticle,
-} from "../../../api";
+  getApplicationArticle
+} from '../../../api';
 // import { Stepper, Step } from "react-form-stepper";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepButton from "@mui/material/StepButton";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepButton from '@mui/material/StepButton';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 const steps = [
-  "Step 1: Get an account",
-  "Step 2: Fill personal information",
-  "Step 3: Choose programs",
-  "Step 4: Pay",
-  "Step 5: Send copy to Germany",
+  'Step 1: Get an account',
+  'Step 2: Fill personal information',
+  'Step 3: Choose programs',
+  'Step 4: Pay',
+  'Step 5: Send copy to Germany'
 ];
 class Application extends Component {
   state = {
@@ -34,7 +34,7 @@ class Application extends Component {
     editFormOpen: false,
     defaultStep: 1,
     activeStep: 0,
-    completed: {},
+    completed: {}
   };
   componentDidMount() {
     getApplicationArticle().then(
@@ -44,7 +44,7 @@ class Application extends Component {
           this.setState({
             success,
             articles: data,
-            isLoaded: true,
+            isLoaded: true
           });
         } else {
           alert(resp.data.message);
@@ -53,7 +53,7 @@ class Application extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -69,7 +69,7 @@ class Application extends Component {
       Titel_: article.Titel_,
       Content_: article.Content_,
       Category_: article.Category_,
-      LastUpdate_: article.LastUpdate_,
+      LastUpdate_: article.LastUpdate_
     });
     // delete article_temp._id;
     // console.log("article_temp : " + JSON.stringify(article_temp));
@@ -78,7 +78,7 @@ class Application extends Component {
         const { success, data } = resp.data;
         if (success) {
           this.setState({
-            articles: this.state.articles.concat(data),
+            articles: this.state.articles.concat(data)
           });
         } else {
           alert(resp.data.message);
@@ -87,7 +87,7 @@ class Application extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -107,12 +107,12 @@ class Application extends Component {
             Titel_: attrs.Titel_,
             Content_: attrs.Content_,
             Category_: attrs.Category_,
-            LastUpdate_: attrs.LastUpdate_,
+            LastUpdate_: attrs.LastUpdate_
           });
         } else {
           return article;
         }
-      }),
+      })
     });
     let article_temp = {};
     Object.assign(article_temp, {
@@ -120,7 +120,7 @@ class Application extends Component {
       Titel_: attrs.Titel_,
       Content_: attrs.Content_,
       Category_: attrs.Category_,
-      LastUpdate_: attrs.LastUpdate_,
+      LastUpdate_: attrs.LastUpdate_
     });
     updateDoc(attrs._id, article_temp).then(
       (resp) => {
@@ -133,7 +133,7 @@ class Application extends Component {
               } else {
                 return article;
               }
-            }),
+            })
           });
         } else {
           alert(resp.data.message);
@@ -142,7 +142,7 @@ class Application extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -156,7 +156,7 @@ class Application extends Component {
     this.setState({
       articles: this.state.articles.filter(
         (article) => article._id !== articleId
-      ),
+      )
     });
 
     deleteDoc(articleId).then(
@@ -164,7 +164,7 @@ class Application extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -172,7 +172,7 @@ class Application extends Component {
   handleClick = (e) => {
     this.setState((state) => ({
       ...state,
-      defaultStep: this.state.defaultStep + 1,
+      defaultStep: this.state.defaultStep + 1
     }));
   };
 
@@ -206,7 +206,7 @@ class Application extends Component {
     // setActiveStep((prevActiveStep) => prevActiveStep - 1);
     this.setState((state) => ({
       ...state,
-      activeStep: this.state.activeStep - 1,
+      activeStep: this.state.activeStep - 1
     }));
   };
 
@@ -221,7 +221,7 @@ class Application extends Component {
     // setCompleted(newCompleted);
     this.setState((state) => ({
       ...state,
-      completed: newCompleted,
+      completed: newCompleted
     }));
     this.handleNext();
   };
@@ -234,10 +234,10 @@ class Application extends Component {
     const { error, isLoaded } = this.state;
     const { completed, activeStep } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -257,7 +257,7 @@ class Application extends Component {
     }
     return (
       <Aux>
-        {" "}
+        {' '}
         <Row>
           <Stepper nonLinear activeStep={this.state.activeStep}>
             {steps.map((label, index) => (
@@ -281,8 +281,8 @@ class Application extends Component {
                 <Typography sx={{ mt: 2, mb: 1 }}>
                   All steps completed - you&apos;re finished
                 </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                  <Box sx={{ flex: "1 1 auto" }} />
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Box sx={{ flex: '1 1 auto' }} />
                   <Button onClick={this.handleReset}>Reset</Button>
                 </Box>
               </React.Fragment>
@@ -299,8 +299,8 @@ class Application extends Component {
                         onTrashClick={this.handleTrashClick}
                         role={this.props.user.role}
                       />
-                      {this.props.user.role === "Admin" ||
-                      this.props.user.role === "Agent" ? (
+                      {this.props.user.role === 'Admin' ||
+                      this.props.user.role === 'Agent' ? (
                         <ToggleableArticleForm
                           category="application"
                           onFormSubmit={this.handleCreateFormSubmit}
@@ -318,7 +318,7 @@ class Application extends Component {
                     </Col>
                   </Row>
                 </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                   <Button
                     color="inherit"
                     disabled={activeStep === 0}
@@ -327,7 +327,7 @@ class Application extends Component {
                   >
                     Back
                   </Button>
-                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Box sx={{ flex: '1 1 auto' }} />
                   <Button onClick={this.handleNext} sx={{ mr: 1 }}>
                     Next
                   </Button>
@@ -335,15 +335,15 @@ class Application extends Component {
                     (completed[activeStep] ? (
                       <Typography
                         variant="caption"
-                        sx={{ display: "inline-block" }}
+                        sx={{ display: 'inline-block' }}
                       >
                         Step {this.state.activeStep + 1} already completed
                       </Typography>
                     ) : (
                       <Button onClick={this.handleComplete}>
                         {this.completedSteps() === this.totalSteps() - 1
-                          ? "Finish"
-                          : "Complete Step"}
+                          ? 'Finish'
+                          : 'Complete Step'}
                       </Button>
                     ))}
                 </Box>

@@ -1,15 +1,15 @@
-import React from "react";
-import { Row, Col, Tabs, Tab, Spinner } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
+import React from 'react';
+import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
+import Aux from '../../hoc/_Aux';
 // import DEMO from "../../store/constant";
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-import TabStudDocsDashboard from "../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard";
+  AiOutlineFieldTime
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { BsDash } from 'react-icons/bs';
+import TabStudDocsDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard';
 // import Card from "../../App/components/MainCard";
 
 import {
@@ -19,8 +19,8 @@ import {
   updateAgents,
   getEditors,
   updateEditors,
-  deleteFile,
-} from "../../api";
+  deleteFile
+} from '../../api';
 
 class Dashboard extends React.Component {
   state = {
@@ -33,7 +33,7 @@ class Dashboard extends React.Component {
     updateAgentList: {},
     updateEditorList: {},
     success: false,
-    isArchivPage: true,
+    isArchivPage: true
   };
 
   componentDidMount() {
@@ -50,10 +50,10 @@ class Dashboard extends React.Component {
       },
       (error) => {
         console.log(error);
-        console.log(": " + error);
+        console.log(': ' + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -73,7 +73,7 @@ class Dashboard extends React.Component {
         (error) => {
           this.setState({
             isLoaded: true,
-            error: true,
+            error: true
           });
         }
       );
@@ -85,12 +85,12 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data: agents } = resp.data; //get all agent
         const { agents: student_agents } = student;
-        console.log("editAgent");
+        console.log('editAgent');
         console.log(resp.data);
         const updateAgentList = agents.reduce(
           (prev, { _id }) => ({
             ...prev,
-            [_id]: student_agents ? student_agents.indexOf(_id) > -1 : false,
+            [_id]: student_agents ? student_agents.indexOf(_id) > -1 : false
           }),
           {}
         );
@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
         const updateEditorList = editors.reduce(
           (prev, { _id }) => ({
             ...prev,
-            [_id]: student_editors ? student_editors.indexOf(_id) > -1 : false,
+            [_id]: student_editors ? student_editors.indexOf(_id) > -1 : false
           }),
           {}
         );
@@ -122,33 +122,33 @@ class Dashboard extends React.Component {
 
   handleChangeAgentlist = (e) => {
     const { value, checked } = e.target;
-    console.log(value + " " + checked);
+    console.log(value + ' ' + checked);
     this.setState((prevState) => ({
       updateAgentList: {
         ...prevState.updateAgentList,
-        [value]: checked,
-      },
+        [value]: checked
+      }
     }));
   };
 
   handleChangeEditorlist = (e) => {
     const { value, checked } = e.target;
-    console.log(value + " " + checked);
+    console.log(value + ' ' + checked);
     this.setState((prevState) => ({
       updateEditorList: {
         ...prevState.updateEditorList,
-        [value]: checked,
-      },
+        [value]: checked
+      }
     }));
   };
 
   submitUpdateAgentlist = (updateAgentList, student_id) => {
-    console.log(updateAgentList + " " + student_id);
+    console.log(updateAgentList + ' ' + student_id);
     this.UpdateAgentlist(updateAgentList, student_id);
   };
 
   submitUpdateEditorlist = (updateEditorList, student_id) => {
-    console.log(updateEditorList + " " + student_id);
+    console.log(updateEditorList + ' ' + student_id);
     this.UpdateEditorlist(updateEditorList, student_id);
   };
 
@@ -157,11 +157,11 @@ class Dashboard extends React.Component {
       (resp) => {
         this.setState({
           updateAgentList: [],
-          isLoaded: false,
+          isLoaded: false
         });
       },
       (error) => {
-        alert("UpdateAgentlist is failed.");
+        alert('UpdateAgentlist is failed.');
       }
     );
   };
@@ -171,11 +171,11 @@ class Dashboard extends React.Component {
       (resp) => {
         this.setState({
           updateEditorList: [],
-          isLoaded: false,
+          isLoaded: false
         });
       },
       (error) => {
-        alert("UpdateEditorlist is failed.");
+        alert('UpdateEditorlist is failed.');
       }
     );
   };
@@ -184,16 +184,16 @@ class Dashboard extends React.Component {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         console.log(resp.data);
-        console.log("Archiv index.js rendered");
+        console.log('Archiv index.js rendered');
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, students: data, success: success });
       },
       (error) => {
         console.log(error);
-        console.log(": " + error);
+        console.log(': ' + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -251,10 +251,10 @@ class Dashboard extends React.Component {
       );
     }
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (!isLoaded && !this.state.data) {
       return (
@@ -272,9 +272,9 @@ class Dashboard extends React.Component {
               <Col>
                 <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
                   <Tab eventKey="w" title="Archiv Student Overview">
-                    {this.props.user.role === "Admin" ||
-                    this.props.user.role === "Agent" ||
-                    this.props.user.role === "Editor" ? (
+                    {this.props.user.role === 'Admin' ||
+                    this.props.user.role === 'Agent' ||
+                    this.props.user.role === 'Editor' ? (
                       <TabStudDocsDashboard
                         role={this.props.user.role}
                         students={this.state.students}

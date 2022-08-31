@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import Aux from "../../../../../../hoc/_Aux";
-import DEMO from "../../../../../../store/constant";
-import * as actionTypes from "../../../../../../store/actions";
-import NavIcon from "./../NavIcon";
-import NavBadge from "./../NavBadge";
-import NavItem from "../NavItem";
-import LoopNavCollapse from "./index";
+import Aux from '../../../../../../hoc/_Aux';
+import DEMO from '../../../../../../store/constant';
+import * as actionTypes from '../../../../../../store/actions';
+import NavIcon from './../NavIcon';
+import NavBadge from './../NavBadge';
+import NavItem from '../NavItem';
+import LoopNavCollapse from './index';
 
 class NavCollapse extends Component {
   componentDidMount() {
     const currentIndex = document.location.pathname
       .toString()
-      .split("/")
+      .split('/')
       .findIndex((id) => id === this.props.collapse.id);
     if (currentIndex > -1) {
       this.props.onCollapseToggle(this.props.collapse.id, this.props.type);
@@ -22,44 +22,44 @@ class NavCollapse extends Component {
   }
   menuGroupFilterByRole = (collapse) => {
     if (collapse.children) {
-      if (this.props.role === "Admin") {
+      if (this.props.role === 'Admin') {
         return true;
       }
-      if (this.props.role === "Agent") {
+      if (this.props.role === 'Agent') {
         if (
-          collapse.title === "Component" ||
-          collapse.title === "Menu Levels" ||
-          collapse.title === "Component"
+          collapse.title === 'Component' ||
+          collapse.title === 'Menu Levels' ||
+          collapse.title === 'Component'
         ) {
           return false;
         }
         return true;
       }
-      if (this.props.role === "Editor") {
+      if (this.props.role === 'Editor') {
         if (
-          collapse.title === "Component" ||
-          collapse.title === "Menu Levels" ||
-          collapse.title === "Component"
+          collapse.title === 'Component' ||
+          collapse.title === 'Menu Levels' ||
+          collapse.title === 'Component'
         ) {
           return false;
         }
         return true;
       }
-      if (this.props.role === "Student") {
+      if (this.props.role === 'Student') {
         if (
-          collapse.title === "Component" ||
-          collapse.title === "Menu Levels" ||
-          collapse.title === "Component"
+          collapse.title === 'Component' ||
+          collapse.title === 'Menu Levels' ||
+          collapse.title === 'Component'
         ) {
           return false;
         }
         return true;
       }
-      if (this.props.role === "Guest") {
+      if (this.props.role === 'Guest') {
         if (
-          collapse.title === "Component" ||
-          collapse.title === "Menu Levels" ||
-          collapse.title === "Component"
+          collapse.title === 'Component' ||
+          collapse.title === 'Menu Levels' ||
+          collapse.title === 'Component'
         ) {
           return false;
         }
@@ -73,18 +73,18 @@ class NavCollapse extends Component {
   render() {
     const { isOpen, isTrigger } = this.props;
 
-    let navItems = "";
+    let navItems = '';
     if (this.menuGroupFilterByRole(this.props.collapse)) {
       if (this.props.collapse.children) {
         const collapses = this.props.collapse.children;
         navItems = Object.keys(collapses).map((item) => {
           item = collapses[item];
           switch (item.type) {
-            case "collapse":
+            case 'collapse':
               return (
                 <LoopNavCollapse key={item.id} collapse={item} type="sub" />
               );
-            case "item":
+            case 'item':
               return (
                 <NavItem
                   role={this.props.role}
@@ -105,14 +105,14 @@ class NavCollapse extends Component {
         );
       }
 
-      let navLinkClass = ["nav-link"];
+      let navLinkClass = ['nav-link'];
 
-      let navItemClass = ["nav-item", "pcoded-hasmenu"];
+      let navItemClass = ['nav-item', 'pcoded-hasmenu'];
       const openIndex = isOpen.findIndex((id) => id === this.props.collapse.id);
       if (openIndex > -1) {
-        navItemClass = [...navItemClass, "active"];
-        if (this.props.layout !== "horizontal") {
-          navLinkClass = [...navLinkClass, "active"];
+        navItemClass = [...navItemClass, 'active'];
+        if (this.props.layout !== 'horizontal') {
+          navLinkClass = [...navLinkClass, 'active'];
         }
       }
 
@@ -120,17 +120,17 @@ class NavCollapse extends Component {
         (id) => id === this.props.collapse.id
       );
       if (triggerIndex > -1) {
-        navItemClass = [...navItemClass, "pcoded-trigger"];
+        navItemClass = [...navItemClass, 'pcoded-trigger'];
       }
 
       const currentIndex = document.location.pathname
         .toString()
-        .split("/")
+        .split('/')
         .findIndex((id) => id === this.props.collapse.id);
       if (currentIndex > -1) {
-        navItemClass = [...navItemClass, "active"];
-        if (this.props.layout !== "horizontal") {
-          navLinkClass = [...navLinkClass, "active"];
+        navItemClass = [...navItemClass, 'active'];
+        if (this.props.layout !== 'horizontal') {
+          navLinkClass = [...navLinkClass, 'active'];
         }
       }
 
@@ -138,7 +138,7 @@ class NavCollapse extends Component {
         <Aux>
           <a
             href={DEMO.BLANK_LINK}
-            className={navLinkClass.join(" ")}
+            className={navLinkClass.join(' ')}
             onClick={() =>
               this.props.onCollapseToggle(
                 this.props.collapse.id,
@@ -153,11 +153,11 @@ class NavCollapse extends Component {
           <ul className="pcoded-submenu">{navItems}</ul>
         </Aux>
       );
-      let mainContent = "";
-      if (this.props.layout === "horizontal") {
+      let mainContent = '';
+      if (this.props.layout === 'horizontal') {
         mainContent = (
           <li
-            className={navItemClass.join(" ")}
+            className={navItemClass.join(' ')}
             onMouseLeave={() =>
               this.props.onNavCollapseLeave(
                 this.props.collapse.id,
@@ -175,7 +175,7 @@ class NavCollapse extends Component {
           </li>
         );
       } else {
-        mainContent = <li className={navItemClass.join(" ")}>{subContent}</li>;
+        mainContent = <li className={navItemClass.join(' ')}>{subContent}</li>;
       }
 
       return <Aux>{mainContent}</Aux>;
@@ -189,7 +189,7 @@ const mapStateToProps = (state) => {
   return {
     layout: state.layout,
     isOpen: state.isOpen,
-    isTrigger: state.isTrigger,
+    isTrigger: state.isTrigger
   };
 };
 
@@ -198,13 +198,13 @@ const mapDispatchToProps = (dispatch) => {
     onCollapseToggle: (id, type) =>
       dispatch({
         type: actionTypes.COLLAPSE_TOGGLE,
-        menu: { id: id, type: type },
+        menu: { id: id, type: type }
       }),
     onNavCollapseLeave: (id, type) =>
       dispatch({
         type: actionTypes.NAV_COLLAPSE_LEAVE,
-        menu: { id: id, type: type },
-      }),
+        menu: { id: id, type: type }
+      })
   };
 };
 

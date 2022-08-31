@@ -1,14 +1,14 @@
-import React from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
-import Card from "../../App/components/MainCard";
-import Aux from "../../hoc/_Aux";
+import React from 'react';
+import { Row, Col, Spinner } from 'react-bootstrap';
+import Card from '../../App/components/MainCard';
+import Aux from '../../hoc/_Aux';
 import {
   deleteFile,
   uploadtemplate,
   templateDownload,
-  getTemplateDownload,
-} from "../../api";
-import EditDownloadFilesSubpage from "./EditDownloadFilesSubpage";
+  getTemplateDownload
+} from '../../api';
+import EditDownloadFilesSubpage from './EditDownloadFilesSubpage';
 
 class DownloadPage extends React.Component {
   constructor(props) {
@@ -17,34 +17,32 @@ class DownloadPage extends React.Component {
     this.onSubmitFile = this.onSubmitFile.bind(this);
     this.state = {
       error: null,
-      file: "",
+      file: '',
       isLoaded: false,
       student: [],
-      success: false,
+      success: false
     };
   }
   componentDidMount() {
-    console.log("Template Page");
+    console.log('Template Page');
     this.setState({
-      file: "",
+      file: '',
       isLoaded: true,
-      success: true,
+      success: true
     });
-
   }
 
-  componentDidUpdate(prevProps, prevState) {
-  }
+  componentDidUpdate(prevProps, prevState) {}
 
   onFileChange(e) {
     this.setState({
-      file: e.target.files[0],
+      file: e.target.files[0]
     });
   }
 
   onSubmitFile = (e, studentId, docName) => {
     const formData = new FormData();
-    formData.append("file", this.state.file);
+    formData.append('file', this.state.file);
     uploadtemplate(docName, formData).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -54,7 +52,7 @@ class DownloadPage extends React.Component {
             isLoaded: true, //false to reload everything
             students: data,
             success: success,
-            updateAgentList: [],
+            updateAgentList: []
           });
         } else {
           alert(resp.data.message);
@@ -63,16 +61,16 @@ class DownloadPage extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error,
+          error
         });
       }
     );
   };
 
   submitFile = (e, docName) => {
-    if (this.state.file === "") {
+    if (this.state.file === '') {
       e.preventDefault();
-      alert("Please select file");
+      alert('Please select file');
     } else {
       e.preventDefault();
       this.onSubmitFile(e, docName);
@@ -100,32 +98,32 @@ class DownloadPage extends React.Component {
     getTemplateDownload(category).then(
       (resp) => {
         const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
+          resp.headers['content-disposition'].split('"')[1];
         const { data: blob } = resp;
         if (blob.size === 0) return;
 
-        var filetype = actualFileName.split("."); //split file name
+        var filetype = actualFileName.split('.'); //split file name
         filetype = filetype.pop(); //get the file type
-        console.log("actualFileName " + actualFileName);
+        console.log('actualFileName ' + actualFileName);
 
-        if (filetype === "pdf") {
+        if (filetype === 'pdf') {
           console.log(blob);
           const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
+            new Blob([blob], { type: 'application/pdf' })
           );
 
           //Open the URL on new Window
           console.log(url);
-          var newWindow = window.open(url, "_blank"); //TODO: having a reasonable file name, pdf viewer
+          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
           newWindow.document.title = actualFileName;
         } else {
           //if not pdf, download instead.
 
           const url = window.URL.createObjectURL(new Blob([blob]));
 
-          const link = document.createElement("a");
+          const link = document.createElement('a');
           link.href = url;
-          link.setAttribute("download", actualFileName);
+          link.setAttribute('download', actualFileName);
           // Append to html link element page
           document.body.appendChild(link);
           // Start download
@@ -135,7 +133,7 @@ class DownloadPage extends React.Component {
         }
       },
       (error) => {
-        alert("The file is not available.");
+        alert('The file is not available.');
       }
     );
   }
@@ -147,15 +145,15 @@ class DownloadPage extends React.Component {
     var actualFileName;
     templateDownload(category).then(
       (resp) => {
-        actualFileName = resp.headers["content-disposition"].split('"')[1];
+        actualFileName = resp.headers['content-disposition'].split('"')[1];
         const { data: blob } = resp;
         if (blob.size === 0) return;
-        var filetype = actualFileName.split("."); //split file name
+        var filetype = actualFileName.split('.'); //split file name
         filetype = filetype.pop(); //get the file type
-        if (filetype === "pdf") {
+        if (filetype === 'pdf') {
           console.log(blob);
           const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
+            new Blob([blob], { type: 'application/pdf' })
           );
 
           //Open the URL on new Window
@@ -166,9 +164,9 @@ class DownloadPage extends React.Component {
 
           const url = window.URL.createObjectURL(new Blob([blob]));
 
-          const link = document.createElement("a");
+          const link = document.createElement('a');
           link.href = url;
-          link.setAttribute("download", actualFileName);
+          link.setAttribute('download', actualFileName);
           // Append to html link element page
           document.body.appendChild(link);
           // Start download
@@ -178,17 +176,17 @@ class DownloadPage extends React.Component {
         }
       },
       (error) => {
-        alert("The file is not available.");
+        alert('The file is not available.');
       }
     );
   }
   render() {
     const { error, isLoaded } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -207,10 +205,10 @@ class DownloadPage extends React.Component {
       );
     } else {
       if (
-        this.props.user.role === "Student" ||
-        this.props.user.role === "Admin" ||
-        this.props.user.role === "Editor" ||
-        this.props.user.role === "Agent"
+        this.props.user.role === 'Student' ||
+        this.props.user.role === 'Admin' ||
+        this.props.user.role === 'Editor' ||
+        this.props.user.role === 'Agent'
       ) {
         return (
           <Aux>

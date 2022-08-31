@@ -72,8 +72,7 @@ class Certification extends Component {
       Category_: article.Category_,
       LastUpdate_: article.LastUpdate_
     });
-    // delete article_temp._id;
-    // console.log("article_temp : " + JSON.stringify(article_temp));
+
     createArticle(article_temp).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -123,7 +122,6 @@ class Certification extends Component {
       Category_: attrs.Category_,
       LastUpdate_: attrs.LastUpdate_
     });
-    console.log(article_temp);
 
     updateDoc(attrs._id, article_temp).then(
       (resp) => {

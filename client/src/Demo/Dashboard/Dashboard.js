@@ -56,7 +56,6 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true
@@ -69,7 +68,6 @@ class Dashboard extends React.Component {
     if (this.state.isLoaded === false) {
       getStudents().then(
         (resp) => {
-          console.log('Default.js componentDidUpdate rendered');
           const { data, success } = resp.data;
           if (success) {
             this.setState({
@@ -96,8 +94,6 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data: agents } = resp.data; //get all agent
         const { agents: student_agents } = student;
-        // console.log("editAgent");
-        // console.log(resp.data);
         const updateAgentList = agents.reduce(
           (prev, { _id }) => ({
             ...prev,
@@ -149,7 +145,6 @@ class Dashboard extends React.Component {
 
   handleChangeAgentlist = (e) => {
     const { value, checked } = e.target;
-    // console.log(value + " " + checked);
     this.setState((prevState) => ({
       updateAgentList: {
         ...prevState.updateAgentList,
@@ -160,7 +155,6 @@ class Dashboard extends React.Component {
 
   handleChangeEditorlist = (e) => {
     const { value, checked } = e.target;
-    // console.log(value + " " + checked);
     this.setState((prevState) => ({
       updateEditorList: {
         ...prevState.updateEditorList,
@@ -236,7 +230,6 @@ class Dashboard extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
-        console.log('Archiv index.js rendered');
         const { data, success } = resp.data;
         this.setState((state) => ({
           ...state,
@@ -246,7 +239,6 @@ class Dashboard extends React.Component {
         }));
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true

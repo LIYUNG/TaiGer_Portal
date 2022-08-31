@@ -1,14 +1,14 @@
-import React from "react";
-import { Form, Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import React from 'react';
+import { Form, Modal } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
-import { getStudents } from "../../api";
+import { getStudents } from '../../api';
 
 class ProgramListSubpage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      data: []
     };
   }
 
@@ -19,7 +19,10 @@ class ProgramListSubpage extends React.Component {
         this.setState({ data: students, success });
       },
       (error) => {
-        console.log("Problem while getting studentlist");
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   }

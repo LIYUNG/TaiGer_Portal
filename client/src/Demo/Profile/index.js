@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Col, Card, Form, Button, Spinner, Modal } from "react-bootstrap";
-
 import Aux from "../../hoc/_Aux";
 import { updatePersonalData, getStudents } from "../../api";
+
 class Profile extends React.Component {
   state = {
     error: null,
@@ -24,41 +24,11 @@ class Profile extends React.Component {
       isLoaded: true,
       success: true,
     }));
-    // getStudents().then(
-    //   (resp) => {
-    //     const { data, success } = resp.data;
-    //     if (success) {
-    //       console.log(data);
-    //       this.setState((state) => ({
-    //         ...state,
-    //         isLoaded: true,
-    //         personaldata: {
-    //           firstname: this.props.user.firstname,
-    //           lastname: this.props.user.lastname,
-    //         },
-    //         success: success,
-    //       }));
-    //     } else {
-    //       alert(resp.data.message);
-    //     }
-    //   },
-    //   (error) => {
-    //     console.log(": " + error);
-    //     this.setState({
-    //       isLoaded: true,
-    //       error: true,
-    //     });
-    //   }
-    // );
   }
 
   handleChange_PersonalData = (e) => {
-    console.log(e.target.value);
-    console.log(e.target.id);
-    // e.preventDefault();
     var personaldata_temp = { ...this.state.personaldata };
     personaldata_temp[e.target.id] = e.target.value;
-    console.log(personaldata_temp);
     this.setState((state) => ({
       ...state,
       personaldata: personaldata_temp,
@@ -66,13 +36,10 @@ class Profile extends React.Component {
   };
 
   handleSubmit_PersonalData = (e, personaldata) => {
-    console.log(personaldata);
-    // e.preventDefault();
     updatePersonalData(personaldata).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
-          console.log(data);
           this.setState((state) => ({
             ...state,
             isLoaded: true,
@@ -85,7 +52,6 @@ class Profile extends React.Component {
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
           error: true,

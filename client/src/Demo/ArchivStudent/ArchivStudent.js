@@ -11,7 +11,6 @@ class SingleProgram extends React.Component {
   componentDidMount() {
     getArchivStudent().then(
       (resp) => {
-        console.log(resp);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
@@ -24,10 +23,9 @@ class SingleProgram extends React.Component {
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error
         });
       }
     );
@@ -57,7 +55,6 @@ class SingleProgram extends React.Component {
         </div>
       );
     }
-    console.log(this.state.students);
     return <></>;
   }
 }

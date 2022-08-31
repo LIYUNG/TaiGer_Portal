@@ -38,7 +38,6 @@ class ButtonSetRejected extends React.Component {
   };
 
   openCommentWindow = (student_id, category) => {
-    console.log();
     this.setState((state) => ({
       ...state,
       CommentModel: true,
@@ -155,7 +154,10 @@ class ButtonSetRejected extends React.Component {
         }
       },
       (error) => {
-        console.log(error);
+       this.setState({
+         isLoaded: true,
+         error
+       });
       }
     );
   };

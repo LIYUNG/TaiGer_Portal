@@ -33,7 +33,6 @@ export default function Reactivation(props) {
       });
       const { success } = resp.data;
       if (success) {
-        console.log('resend email success');
         setEmailsent(true);
       } else {
         alert(resp.data.message);

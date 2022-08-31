@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Button,
   Table,
@@ -7,42 +7,41 @@ import {
   ButtonToolbar,
   DropdownButton,
   Dropdown,
-  Spinner,
-} from "react-bootstrap";
-import Card from "../../App/components/MainCard";
+  Spinner
+} from 'react-bootstrap';
+import Card from '../../App/components/MainCard';
 
-import ProgramListSubpage from "./ProgramListSubpage";
-import ProgramDeleteWarning from "./ProgramDeleteWarning";
-import ProgramAddedMyWatchList from "./ProgramAddedMyWatchList";
-import Program from "./Program";
-import NewProgramEdit from "./NewProgramEdit";
+import ProgramListSubpage from './ProgramListSubpage';
+import ProgramDeleteWarning from './ProgramDeleteWarning';
+import ProgramAddedMyWatchList from './ProgramAddedMyWatchList';
+import Program from './Program';
+import NewProgramEdit from './NewProgramEdit';
 import {
   getPrograms,
   createProgram,
   deleteProgram,
-  assignProgramToStudent,
-} from "../../api";
+  assignProgramToStudent
+} from '../../api';
 class Programlist extends React.Component {
   state = {
     error: null,
-    role: "",
+    role: '',
     isLoaded: false,
     data: null,
     programs: null,
     success: false,
     modalShow: false,
-    uni_name: "",
-    program_name: "",
-    program_id: "",
+    uni_name: '',
+    program_name: '',
+    program_id: '',
     modalShowNAddMyWatchList: false,
     deleteProgramWarning: false,
-    StudentId: "",
+    StudentId: '',
     newProgramPage: false,
-    programs_id_set: [],
+    programs_id_set: []
   };
 
   componentDidMount() {
-    console.log("ProgramTable.js rendered");
     getPrograms().then(
       (resp) => {
         const { data, success } = resp.data;
@@ -50,7 +49,7 @@ class Programlist extends React.Component {
           this.setState({
             isLoaded: true,
             programs: data,
-            success,
+            success
           });
         } else {
           alert(resp.data.message);
@@ -69,7 +68,7 @@ class Programlist extends React.Component {
             this.setState({
               isLoaded: true,
               programs: data,
-              success,
+              success
             });
           } else {
             alert(resp.data.message);
@@ -83,7 +82,7 @@ class Programlist extends React.Component {
   handleChange2 = (e) => {
     const { value } = e.target;
     this.setState((state) => ({
-      StudentId: value,
+      StudentId: value
     }));
   };
 
@@ -95,7 +94,7 @@ class Programlist extends React.Component {
         if (success) {
           this.setState({
             isLoaded: true,
-            success,
+            success
           });
         } else {
           alert(resp.data.message);
@@ -110,7 +109,7 @@ class Programlist extends React.Component {
     const student_id = this.state.StudentId;
     this.assignProgram({ student_id, program_ids: this.state.programs_id_set });
     this.setState({
-      modalShow: false,
+      modalShow: false
     });
   };
 
@@ -118,19 +117,19 @@ class Programlist extends React.Component {
     const student_id = UserId;
     this.assignProgram({ student_id, program_ids: this.state.programs_id_set });
     this.setState({
-      modalShowNAddMyWatchList: true,
+      modalShowNAddMyWatchList: true
     });
   };
 
   setModalShow = () => {
     this.setState({
-      modalShow: true,
+      modalShow: true
     });
   };
 
   setModalHide = () => {
     this.setState({
-      modalShow: false,
+      modalShow: false
     });
   };
 
@@ -139,30 +138,30 @@ class Programlist extends React.Component {
       deleteProgramWarning: true,
       uni_name: uni_name,
       program_name: program_name,
-      program_id: programID,
+      program_id: programID
     });
   };
 
   setModalHideDDelete = () => {
     this.setState({
-      deleteProgramWarning: false,
+      deleteProgramWarning: false
     });
   };
 
   NewProgram = () => {
     this.setState({
-      newProgramPage: true,
+      newProgramPage: true
     });
   };
 
   setModalShow_AddToMyWatchList = () => {
     this.setState({
-      modalShowNAddMyWatchList: true,
+      modalShowNAddMyWatchList: true
     });
   };
   setModalHide_AddToMyWatchList = () => {
     this.setState({
-      modalShowNAddMyWatchList: false,
+      modalShowNAddMyWatchList: false
     });
   };
 
@@ -175,17 +174,16 @@ class Programlist extends React.Component {
             isLoaded: true,
             programs: this.state.programs.concat(data),
             success: success,
-            newProgramPage: !this.state.newProgramPage,
+            newProgramPage: !this.state.newProgramPage
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -195,29 +193,30 @@ class Programlist extends React.Component {
     deleteProgram(program_id).then(
       (resp) => {},
       (error) => {
-        console.log("deleteProgram error:" + error);
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   };
 
   RemoveProgramHandler3 = (program_id) => {
-    console.log("click delete");
-    console.log("id = " + program_id);
     this.setState({
       programs: this.state.programs.filter(
         (program) => program._id !== program_id
-      ),
+      )
     });
     this.deleteProgram(program_id);
     this.setState({
-      isLoaded: false,
+      isLoaded: false
     });
   };
 
   handleClick = () => {
     this.setState((state) => ({
       ...state,
-      newProgramPage: !this.state.newProgramPage,
+      newProgramPage: !this.state.newProgramPage
     }));
   };
   selectPrograms = (e) => {
@@ -225,8 +224,6 @@ class Programlist extends React.Component {
     var program_id_local = e.target.id;
     var programs_id_set_local = [...this.state.programs_id_set];
     if (e.target.checked) {
-      console.log(e.target.checked);
-      console.log(e.target.id);
       programs_id_set_local.push(program_id_local);
     } else {
       var index = programs_id_set_local.indexOf(program_id_local);
@@ -234,19 +231,18 @@ class Programlist extends React.Component {
         programs_id_set_local.splice(index, 1);
       }
     }
-    console.log(programs_id_set_local);
     this.setState((state) => ({
       ...state,
-      programs_id_set: programs_id_set_local,
+      programs_id_set: programs_id_set_local
     }));
   };
   render() {
     const { error, isLoaded } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -302,7 +298,7 @@ class Programlist extends React.Component {
             <Col md={11}>
               {this.state.programs_id_set.length !== 0 && (
                 <>
-                  {this.props.role === "Student" ? (
+                  {this.props.role === 'Student' ? (
                     <DropdownButton size="sm" title="Option" variant="primary">
                       <Dropdown.Item
                         eventKey="2"
@@ -337,7 +333,7 @@ class Programlist extends React.Component {
             </Col>
             <Col md={1}>
               <ButtonToolbar>
-                {this.props.role === "Student" ? (
+                {this.props.role === 'Student' ? (
                   <></>
                 ) : (
                   <Button
@@ -352,7 +348,7 @@ class Programlist extends React.Component {
               </ButtonToolbar>
             </Col>
           </Row>
-          <Card title={"Program List"}>
+          <Card title={'Program List'}>
             <Table responsive border hover>
               <thead>{headers}</thead>
               <tbody>{programs}</tbody>

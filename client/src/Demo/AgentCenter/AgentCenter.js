@@ -1,22 +1,22 @@
-import React from "react";
-import { Row, Col, Spinner, Button, Card, Modal, Form } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
-import DEMO from "../../store/constant";
-import EditFilesSubpage from "./EditFilesSubpage";
+import React from 'react';
+import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
+import Aux from '../../hoc/_Aux';
+import DEMO from '../../store/constant';
+import EditFilesSubpage from './EditFilesSubpage';
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
-  AiOutlineFieldTime,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
+  AiOutlineFieldTime
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { BsDash } from 'react-icons/bs';
 import {
   uploadforstudent,
   updateProfileDocumentStatus,
   deleteFile,
   getStudents,
-  downloadProfile,
-} from "../../api";
+  downloadProfile
+} from '../../api';
 class AgentCenter extends React.Component {
   state = {
     error: null,
@@ -24,25 +24,23 @@ class AgentCenter extends React.Component {
     data: null,
     success: false,
     students: null,
-    file: "",
-    student_id: "",
-    status: "", //reject, accept... etc
-    category: "",
-    feedback: "",
+    file: '',
+    student_id: '',
+    status: '', //reject, accept... etc
+    category: '',
+    feedback: '',
     expand: false,
     CommentModel: false,
     // accordionKeys: new Array(-1, this.props.user.students.length), // To collapse all
     accordionKeys:
-      this.props.user.role === "Editor" || this.props.user.role === "Agent"
+      this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-        : [0], // to expand all]
+        : [0] // to expand all]
   };
 
   componentDidMount() {
-    console.log(this.props.user);
     getStudents().then(
       (resp) => {
-        console.log(resp.data);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
@@ -50,18 +48,16 @@ class AgentCenter extends React.Component {
             students: data,
             success: success,
             // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
-            accordionKeys: new Array(-1, data.length), // to collapse all
+            accordionKeys: new Array(-1, data.length) // to collapse all
           });
         } else {
           alert(resp.data.message);
         }
       },
       (error) => {
-        console.log(error);
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -72,7 +68,7 @@ class AgentCenter extends React.Component {
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
     this.setState((state) => ({
       ...state,
-      accordionKeys: accordionKeys,
+      accordionKeys: accordionKeys
     }));
   };
 
@@ -81,9 +77,9 @@ class AgentCenter extends React.Component {
       ...state,
       expand: false,
       accordionKeys:
-        this.props.user.role === "Editor" || this.props.user.role === "Agent"
+        this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
           ? new Array(this.props.user.students.length).fill().map((x, i) => -1)
-          : [-1], // to expand all]
+          : [-1] // to expand all]
     }));
   };
 
@@ -92,9 +88,9 @@ class AgentCenter extends React.Component {
       ...state,
       expand: true,
       accordionKeys:
-        this.props.user.role === "Editor" || this.props.user.role === "Agent"
+        this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
           ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-          : [0], // to expand all]
+          : [0] // to expand all]
     }));
   };
 
@@ -105,14 +101,7 @@ class AgentCenter extends React.Component {
     var student = this.state.students.find(
       (student) => student._id === student_id
     );
-    var idx = student.profile.findIndex((doc) => doc.name === category);
     var students = [...this.state.students];
-    // e.preventDefault();
-    // this.setState((state) => ({
-    //   ...state,
-    //   isLoaded: false,
-    // }));
-    console.log(students);
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (res) => {
         students[student_arrayidx] = res.data.data;
@@ -122,18 +111,21 @@ class AgentCenter extends React.Component {
             ...state,
             students: students,
             success,
-            isLoaded: true,
+            isLoaded: true
           }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded: true
           }));
         }
       },
       (error) => {
-        console.log(error);
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   };
@@ -156,23 +148,26 @@ class AgentCenter extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            student_id: "",
-            category: "",
+            student_id: '',
+            category: '',
             isLoaded: true,
             students: students,
             success: success,
-            deleteFileWarningModel: false,
+            deleteFileWarningModel: false
           }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded: true
           }));
         }
       },
       (error) => {
-        console.log(error);
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
       }
     );
   };
@@ -181,20 +176,19 @@ class AgentCenter extends React.Component {
     e.preventDefault();
     downloadProfile(category, id).then(
       (resp) => {
-        console.log(resp);
         const { status } = resp;
         if (status === 200) {
           const actualFileName =
-            resp.headers["content-disposition"].split('"')[1];
+            resp.headers['content-disposition'].split('"')[1];
           const { data: blob } = resp;
           if (blob.size === 0) return;
 
-          var filetype = actualFileName.split("."); //split file name
+          var filetype = actualFileName.split('.'); //split file name
           filetype = filetype.pop(); //get the file type
 
-          if (filetype === "pdf") {
+          if (filetype === 'pdf') {
             const url = window.URL.createObjectURL(
-              new Blob([blob], { type: "application/pdf" })
+              new Blob([blob], { type: 'application/pdf' })
             );
 
             //Open the URL on new Window
@@ -204,9 +198,9 @@ class AgentCenter extends React.Component {
 
             const url = window.URL.createObjectURL(new Blob([blob]));
 
-            const link = document.createElement("a");
+            const link = document.createElement('a');
             link.href = url;
-            link.setAttribute("download", actualFileName);
+            link.setAttribute('download', actualFileName);
             // Append to html link element page
             document.body.appendChild(link);
             // Start download
@@ -215,62 +209,54 @@ class AgentCenter extends React.Component {
             link.parentNode.removeChild(link);
           }
         } else {
-          alert("resp.data.message");
+          alert('resp.data.message');
         }
       },
       (error) => {
-        alert("The file is not available.");
+        alert('The file is not available.');
       }
     );
   }
 
   SubmitGeneralFile = (e, studentId, fileCategory) => {
-    console.log(e.target.files[0]);
     this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
   };
 
   onSubmitGeneralFile = (e, NewFile, category, student_id) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file", NewFile);
-    console.log(NewFile);
-    console.log(formData);
-
+    formData.append('file', NewFile);
     let student_arrayidx = this.state.students.findIndex(
       (student) => student._id === student_id
     );
-    // this.setState((state) => ({
-    //   ...state,
-    //   isLoaded: false,
-    // }));
+
     uploadforstudent(category, student_id, formData).then(
       (res) => {
         let students = [...this.state.students];
         const { data, success } = res.data;
         students[student_arrayidx] = data;
-        console.log(students);
 
         if (success) {
           this.setState((state) => ({
             ...state,
             students: students, // res.data = {success: true, data:{...}}
             success,
-            category: "",
+            category: '',
             isLoaded: true,
-            file: "",
+            file: ''
           }));
         } else {
           alert(res.data.message);
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded: true
           }));
         }
       },
       (error) => {
         this.setState({
           isLoaded: true,
-          error,
+          error
         });
       }
     );
@@ -321,10 +307,10 @@ class AgentCenter extends React.Component {
       </>
     );
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -400,7 +386,7 @@ class AgentCenter extends React.Component {
         </Row>
         <Row>
           <Col sm={12}>
-            {student_profile}{" "}
+            {student_profile}{' '}
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">

@@ -3,7 +3,7 @@ const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Student } = require('../models/User');
+const { Role, Agent, Student, Editor } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const {
   sendUploadedProgramSpecificFilesEmail,
@@ -38,7 +38,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     user
     // params: { userId },
   } = req;
-  if (user.role === 'Admin') {
+  if (user.role === Role.Admin) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
@@ -49,7 +49,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .lean();
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Agent') {
+  } else if (user.role === Role.Agent) {
     const students = await Student.find({
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -66,7 +66,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     // console.log(students[0].applications[0].programId.school);
 
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Editor') {
+  } else if (user.role === Role.Editor) {
     const students = await Student.find({
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -78,7 +78,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       );
 
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Student') {
+  } else if (user.role === Role.Student) {
     const student = await Student.findById(user._id)
       .populate('applications.programId generaldocs_threads.doc_thread_id')
       .populate(
@@ -274,7 +274,6 @@ const postMessages = asyncHandler(async (req, res) => {
   const { message } = req.body;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
-  // console.log(JSON.parse(message));
   if (!document_thread) {
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
@@ -315,7 +314,7 @@ const getMessageFile = asyncHandler(async (req, res) => {
   if (!document_thread) throw new ErrorResponse(400, 'thread not found');
 
   if (
-    user.role === 'Student' &&
+    user.role === Role.Student &&
     document_thread.student_id.toString() !== user._id.toString()
   ) {
     throw new ErrorResponse(400, 'Not authorized');
@@ -557,7 +556,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     //   if (error) {
     //     console.log(err);
     //   } else {
-    //     // console.log("Successfully deleted file from bucket");
+    //    console.log("Successfully deleted file from bucket");
     //   }
     // });
     // TODO: To be test

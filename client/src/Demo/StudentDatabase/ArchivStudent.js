@@ -45,7 +45,6 @@ class ArchivStudent extends React.Component {
   componentDidMount() {
     getStudent(this.props.match.params.studentId).then(
       (resp) => {
-        console.log(resp);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
@@ -58,7 +57,6 @@ class ArchivStudent extends React.Component {
         }
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true
@@ -88,7 +86,10 @@ class ArchivStudent extends React.Component {
         }
       },
       (error) => {
-        console.log(error);
+       this.setState({
+         isLoaded: true,
+         error
+       });
       }
     );
   };
@@ -140,7 +141,6 @@ class ArchivStudent extends React.Component {
     e.preventDefault();
     downloadProfile(category, id).then(
       (resp) => {
-        console.log(resp.data);
         const actualFileName =
           resp.headers['content-disposition'].split('"')[1];
         const { data: blob } = resp;
@@ -206,7 +206,10 @@ class ArchivStudent extends React.Component {
         }
       },
       (error) => {
-        console.log(error);
+      this.setState({
+        isLoaded: true,
+        error
+      });
       }
     );
   };

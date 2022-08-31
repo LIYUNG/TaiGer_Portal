@@ -3,7 +3,7 @@ const path = require('path');
 const multer = require('multer');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
-const { Student, User } = require('../models/User');
+const { Role, Student, User } = require('../models/User');
 const { asyncHandler } = require('../middlewares/error-handler');
 
 const { ErrorResponse } = require('../common/errors');
@@ -37,7 +37,7 @@ const some_str = () => {
 };
 // Profile file upload
 const storage_s3 = multerS3({
-  s3: s3,
+  s3,
   bucket: function (req, file, cb) {
     var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
@@ -45,7 +45,6 @@ const storage_s3 = multerS3({
     // TODO: check studentId and applicationId exist
     var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
     directory = directory.replace(/\\/, '/');
-    console.log(directory);
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
@@ -136,7 +135,6 @@ const storage_messagesthread_file_s3 = multerS3({
     // cb(null, file.originalname + "-" + Date.now().toString());
     // cb(null, file.originalname);
     var { messagesThreadId, studentId } = req.params;
-    // console.log(messagesThreadId);
     Documentthread.findById(messagesThreadId)
       .populate('student_id')
       // .lean()
@@ -238,7 +236,6 @@ const storage_program_specific_s3 = multerS3({
     // TODO: check studentId and applicationId exist
     var directory = path.join(AWS_S3_BUCKET_NAME, studentId, applicationId);
     directory = directory.replace(/\\/g, '/'); // g>> replace all!
-    console.log(directory);
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
@@ -265,7 +262,7 @@ const storage_program_specific_s3 = multerS3({
           var application = student.applications.find(
             ({ programId }) => programId._id == applicationId
           );
-          if (user.role === 'Student') {
+          if (user.role === Role.Student) {
             application.student_inputs.forEach((student_input) => {
               if (student_input.name.includes(fileCategory)) {
                 if (
@@ -292,7 +289,6 @@ const storage_program_specific_s3 = multerS3({
           var version_number = version_number_max;
           var same_file_name = true;
           while (same_file_name) {
-            // console.log(application.programId);
             var temp_name =
               student.lastname +
               '_' +
@@ -333,7 +329,6 @@ const storage_program_specific_s3 = multerS3({
         }
       })
       .then(function (resp) {
-        // console.log(resp.fileName);
         cb(null, resp.fileName);
       });
   }
@@ -384,7 +379,6 @@ const upload_program_specific_s3 = multer({
 //               "_" +
 //               "TaiGerTranscriptAI" +
 //               path.extname(file.originalname);
-//             // console.log(temp_name);
 //             const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
 //             // if (fs.existsSync(filePath))
 //             //   return cb(
@@ -399,7 +393,7 @@ const upload_program_specific_s3 = multer({
 //           cb(null, resp.fileName);
 //         });
 //     } catch (err) {
-//       console.log(err);
+//
 //     }
 
 //     // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
@@ -418,7 +412,6 @@ const transcript_excel_storage3 = multerS3({
     // TODO: check studentId and applicationId exist
     var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
     directory = directory.replace(/\\/g, '/');
-    console.log(directory);
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
@@ -443,7 +436,6 @@ const transcript_excel_storage3 = multerS3({
             '_' +
             'TaiGerTranscriptAI' +
             path.extname(file.originalname);
-          // console.log(temp_name);
           const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
           // if (fs.existsSync(filePath))
           //   return cb(
@@ -489,7 +481,6 @@ const storage_general_s3 = multerS3({
     // TODO: check studentId and applicationId exist
     var directory = path.join(AWS_S3_BUCKET_NAME, studentId, some_str());
     directory = directory.replace(/\\/g, '/');
-    console.log(directory);
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
@@ -510,7 +501,7 @@ const storage_general_s3 = multerS3({
         if (student) {
           var r = /\d+/; //number pattern
           var version_number_max = 1;
-          if (user.role === 'Student') {
+          if (user.role === Role.Student) {
             student.generaldocs.studentinputs.forEach((studentinput) => {
               if (studentinput.name.includes(fileCategory)) {
                 if (
@@ -598,13 +589,9 @@ const editor_generaldoc_s3 = multer({
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log(req.body);
-    console.log(file);
     cb(null, 'upload/');
   },
   filename: function (req, file, cb) {
-    console.log(req.body);
-    console.log(file);
     cb(null, file.originalname);
   }
 });

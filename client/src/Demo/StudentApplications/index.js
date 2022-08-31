@@ -15,9 +15,7 @@ class StudentApplication extends React.Component {
   componentDidMount() {
     getStudent(this.props.user._id).then(
       (resp) => {
-        console.log(resp);
         const { data, success } = resp.data;
-        console.log(data);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -25,7 +23,7 @@ class StudentApplication extends React.Component {
             success: success
           });
         } else {
-          alert(resp.data.message);
+          // alert(resp.data.message);
           this.setState({
             isLoaded: true,
             error: true
@@ -33,7 +31,6 @@ class StudentApplication extends React.Component {
         }
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true
           // error: true
@@ -46,7 +43,8 @@ class StudentApplication extends React.Component {
     if (error) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          This is for Premium only. We encourage you to fill the Academic
+          Background before contact our consultant!
         </div>
       );
     }

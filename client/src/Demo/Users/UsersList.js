@@ -50,7 +50,6 @@ class Userslist extends React.Component {
 
   handleChange2 = (e) => {
     const { value } = e.target;
-    console.log('name  ' + value);
     this.setState((state) => ({
       selected_user_role: value
     }));
@@ -78,7 +77,10 @@ class Userslist extends React.Component {
         }
       },
       (error) => {
-        console.log('error at deleteUser: ' + deleteUser);
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   };
@@ -100,7 +102,10 @@ class Userslist extends React.Component {
         }
       },
       (error) => {
-        console.log('error at editUser: ' + error);
+       this.setState({
+         isLoaded: true,
+         error
+       });
       }
     );
   };
@@ -117,12 +122,9 @@ class Userslist extends React.Component {
         return user;
       }
     });
-    console.log(user_data._id);
-    console.log(user_data.role);
 
     changeUserRole(user_data._id, user_data.role).then(
       (resp) => {
-        console.log(resp.data);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
@@ -136,7 +138,10 @@ class Userslist extends React.Component {
         }
       },
       (error) => {
-        console.log(' error at assignUserAs' + error);
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   };
@@ -149,8 +154,6 @@ class Userslist extends React.Component {
   };
 
   RemoveUserHandler3 = (user_id) => {
-    console.log('click delete user');
-    console.log('id = ' + user_id);
     this.deleteUser(user_id);
   };
 

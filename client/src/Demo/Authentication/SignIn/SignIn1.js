@@ -12,7 +12,6 @@ export default function Signin1({ setUserdata }) {
   const [buttondisable, setButtondisable] = useState(false);
   const [reactivateAccount, setReactivateAccount] = useState(false);
   useEffect(() => {
-    // console.log("useEffect");
   }, []);
   const emailValidation = () => {
     const regex =
@@ -32,10 +31,8 @@ export default function Signin1({ setUserdata }) {
           alert('Password is not correct.');
           setButtondisable(false);
         } else if (resp.status === 403) {
-          // alert('Account is not activated');
           setReactivateAccount(true);
         } else {
-          console.log('successfullllll');
           setUserdata((state) => ({
             ...state,
             success: resp.data.success,
@@ -61,7 +58,6 @@ export default function Signin1({ setUserdata }) {
       } else {
         try {
           const resp = await login({ email: emailaddress, password });
-          // console.log(resp);
           setuserdata2(resp);
         } catch (err) {
           // TODO: handle error

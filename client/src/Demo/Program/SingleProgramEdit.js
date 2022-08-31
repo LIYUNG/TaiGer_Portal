@@ -6,19 +6,15 @@ class SingleProgramEdit extends React.Component {
     program: this.props.program,
   };
   handleChange = (e) => {
-    console.log(e.target.value);
-    console.log(e.target.id);
     e.preventDefault();
     var program_temp = { ...this.state.program };
     program_temp[e.target.id] = e.target.value;
-    console.log(program_temp);
     this.setState((state) => ({
       ...state,
       program: program_temp,
     }));
   };
   handleSubmit_Program = (e, program) => {
-    // console.log(program);
     e.preventDefault();
     this.props.handleSubmit_Program(program);
   };

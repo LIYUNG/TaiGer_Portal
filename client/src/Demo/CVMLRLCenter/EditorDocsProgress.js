@@ -139,7 +139,6 @@ class EditorDocsProgress extends React.Component {
         this.state.student_id
       ).then(
         (resp) => {
-          console.log(resp.data.data);
           const { data, success } = resp.data;
           if (success) {
             this.setState((state) => ({
@@ -181,7 +180,6 @@ class EditorDocsProgress extends React.Component {
     }));
     SetAsFinalGenralFile(this.state.doc_thread_id, this.state.student_id, this.state.program_id).then(
       (resp) => {
-        console.log(resp.data.data);
         const { data, success } = resp.data;
         if (success) {
           this.setState((state) => ({
@@ -260,7 +258,6 @@ class EditorDocsProgress extends React.Component {
       e.preventDefault();
       initApplicationMessageThread(studentId, applicationId, document_catgory)
         .then((res) => {
-          console.log(res.data);
           const { data, success } = res.data;
           if (success) {
             this.setState({
@@ -287,7 +284,6 @@ class EditorDocsProgress extends React.Component {
       e.preventDefault();
       initGeneralMessageThread(studentId, document_catgory)
         .then((res) => {
-          console.log(res.data);
           const { data, success } = res.data;
           if (success) {
             this.setState({

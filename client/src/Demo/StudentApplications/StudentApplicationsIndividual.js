@@ -16,7 +16,6 @@ class StudentApplication extends React.Component {
   componentDidMount() {
     getStudent(this.props.match.params.student_id).then(
       (resp) => {
-        console.log(resp);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
@@ -29,7 +28,6 @@ class StudentApplication extends React.Component {
         }
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true

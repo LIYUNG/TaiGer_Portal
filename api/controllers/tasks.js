@@ -1,7 +1,7 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Student } = require('../models/User');
+const { Role, User, Student } = require('../models/User');
 const { Task } = require('../models/Task');
 const async = require('async');
 
@@ -10,17 +10,17 @@ const data_test = require('./init_task.json');
 const getTasks = asyncHandler(async (req, res) => {
   const { user } = req;
 
-  if (user.role === 'Admin') {
+  if (user.role === Role.Admin) {
     const tasks = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
     res.status(200).send({ success: true, data: tasks });
-  } else if (user.role === 'Agent' || user.role === 'Editor') {
+  } else if (user.role === Role.Agent || user.role === Role.Editor) {
     const tasks = await Task.find({
       student_id: { $in: user.students }
     });
     res.status(200).send({ success: true, data: tasks });
-  } else if (user.role === 'Student') {
+  } else if (user.role === Role.Student) {
     const tasks = await Task.findById(user._id);
     res.status(200).send({ success: true, data: [tasks] });
   } else {
@@ -31,7 +31,7 @@ const getTasks = asyncHandler(async (req, res) => {
 
 const getMyTask = asyncHandler(async (req, res) => {
   const { user } = req;
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     const tasks = await Task.find({ student_id: user._id })
       .populate('student_id', 'firstname lastname')
       .lean()
@@ -51,21 +51,19 @@ const getMyStudentsTasks = asyncHandler(async (req, res) => {
       .lean()
       .exec();
     res.status(200).send({ success: true, data: tasks });
-  } else if (user.role === 'Agent' || user.role === 'Editor') {
+  } else if (user.role === Role.Agent || user.role === Role.Editor) {
     const staff = await User.findById(user._id);
     const student_list = staff.students;
     const tasks = await Task.find({
       student_id: { $in: student_list }
       // $or: [{ archiv: { $exists: false } }, { archiv: false }]
     }).populate('student_id', 'firstname lastname');
-    console.log(tasks);
     res.status(200).send({ success: true, data: tasks });
-  } else if (user.role === 'Student') {
+  } else if (user.role === Role.Student) {
     const tasks = await Task.find({ student_id: user._id })
       .populate('student_id', 'firstname lastname')
       .lean()
       .exec();
-    console.log(tasks);
     res.status(200).send({ success: true, data: tasks });
   } else {
     // Guest
@@ -76,12 +74,11 @@ const getMyStudentsTasks = asyncHandler(async (req, res) => {
 const getStudentTasks = asyncHandler(async (req, res) => {
   const { user } = req;
   const { studentId } = req.params;
-  if (user.role !== 'Student') {
+  if (user.role !== Role.Student) {
     const tasks = await Task.find({ student_id: studentId })
       .populate('student_id', 'firstname lastname')
       .lean()
       .exec();
-    // console.log(tasks);
     res.status(200).send({ success: true, data: tasks });
   } else {
     // Guest
@@ -94,10 +91,8 @@ const initTasks = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
   const existed_tasks = await Task.find({ student_id: studentId });
-  // console.log(existed_tasks.length);
-
   const lanes = data_test;
-  // console.log(lanes.lanes);
+  
   if (existed_tasks.length > 0) {
     throw new ErrorResponse(400, 'Tasks are already initialized.');
   }

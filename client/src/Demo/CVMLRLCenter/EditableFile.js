@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import HandWrittenFile from "./HandWrittenFile";
 import { Form, Col, Row, Button } from "react-bootstrap";
 import {
   AiOutlineDownload,

@@ -24,7 +24,6 @@ export default function ResetPasswordRequest() {
     if (emailValidation()) {
       try {
         const resp = await forgotPassword({ email: emailaddress });
-        console.log(resp);
         if (resp.data.success) {
           setEmailSent(true);
         } else {

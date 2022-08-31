@@ -32,13 +32,10 @@ class StudentApplicationsTableTemplate extends React.Component {
   };
 
   handleChange = (e, application_idx) => {
-    console.log(e.target.value);
-    console.log(e.target.id);
     e.preventDefault();
     let applications_temp = [...this.state.applications];
     applications_temp[application_idx][e.target.id] =
       e.target.value === 'O' ? true : false;
-    console.log(applications_temp);
     this.setState((state) => ({
       ...state,
       applications: applications_temp
@@ -61,8 +58,6 @@ class StudentApplicationsTableTemplate extends React.Component {
   };
 
   handleDeleteConfirm = (e) => {
-    console.log(e.target.value);
-    console.log(e.target.id);
     e.preventDefault();
     removeProgramFromStudent(this.state.program_id, this.state.student_id).then(
       (resp) => {
@@ -83,7 +78,6 @@ class StudentApplicationsTableTemplate extends React.Component {
         }
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true
           // error: true
@@ -95,9 +89,7 @@ class StudentApplicationsTableTemplate extends React.Component {
   handleSubmit = (e, student_id, applications) => {
     e.preventDefault();
     let applications_temp = [...this.state.applications];
-    // console.log(this.state.applications.length);
     for (let i = 0; i < applications_temp.length; i += 1) {
-      console.log(i);
       delete applications_temp[i].programId;
       delete applications_temp[i].doc_modification_thread;
     }
@@ -119,7 +111,6 @@ class StudentApplicationsTableTemplate extends React.Component {
         }
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true
           // error: true

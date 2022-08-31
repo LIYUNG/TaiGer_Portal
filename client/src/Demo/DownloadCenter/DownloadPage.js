@@ -24,7 +24,6 @@ class DownloadPage extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('Template Page');
     this.setState({
       file: '',
       isLoaded: true,
@@ -104,16 +103,13 @@ class DownloadPage extends React.Component {
 
         var filetype = actualFileName.split('.'); //split file name
         filetype = filetype.pop(); //get the file type
-        console.log('actualFileName ' + actualFileName);
 
         if (filetype === 'pdf') {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: 'application/pdf' })
           );
 
-          //Open the URL on new Window
-          console.log(url);
+          // Open the URL on new Window
           var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
           newWindow.document.title = actualFileName;
         } else {
@@ -151,13 +147,11 @@ class DownloadPage extends React.Component {
         var filetype = actualFileName.split('.'); //split file name
         filetype = filetype.pop(); //get the file type
         if (filetype === 'pdf') {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: 'application/pdf' })
           );
 
-          //Open the URL on new Window
-          console.log(url);
+          // Open the URL on new Window
           window.open(url); //TODO: having a reasonable file name, pdf viewer
         } else {
           //if not pdf, download instead.

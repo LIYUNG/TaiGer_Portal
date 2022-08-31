@@ -20,7 +20,6 @@ class SurveyComponent extends React.Component {
   componentDidUpdate(prevProps) {
     // 常見用法（別忘了比較 prop）：
     if (prevProps.academic_background !== this.props.academic_background) {
-      console.log("run update");
       this.setState((state) => ({
         ...state,
         academic_background: this.props.academic_background,
@@ -29,12 +28,9 @@ class SurveyComponent extends React.Component {
   }
 
   handleChange_Academic = (e) => {
-    console.log(e.target.value);
-    console.log(e.target.id);
     e.preventDefault();
     var university_temp = { ...this.state.academic_background.university };
     university_temp[e.target.id] = e.target.value;
-    console.log(university_temp);
     this.setState((state) => ({
       ...state,
       academic_background: {
@@ -45,12 +41,9 @@ class SurveyComponent extends React.Component {
   };
 
   handleChange_Language = (e) => {
-    console.log(e.target.value);
-    console.log(e.target.id);
     e.preventDefault();
     var language_temp = { ...this.state.academic_background.language };
     language_temp[e.target.id] = e.target.value;
-    console.log(language_temp);
     this.setState((state) => ({
       ...state,
       academic_background: {
@@ -61,13 +54,11 @@ class SurveyComponent extends React.Component {
   };
 
   handleSubmit_AcademicBackground = (e, university) => {
-    console.log(university);
     e.preventDefault();
     updateAcademicBackground(university).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
-          console.log(data);
           this.setState((state) => ({
             ...state,
             isLoaded: true,
@@ -83,7 +74,6 @@ class SurveyComponent extends React.Component {
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
           error: true,
@@ -93,7 +83,6 @@ class SurveyComponent extends React.Component {
   };
 
   handleSubmit_Language = (e, language) => {
-    console.log(language);
     e.preventDefault();
     updateLanguageSkill(language).then(
       (resp) => {
@@ -114,7 +103,6 @@ class SurveyComponent extends React.Component {
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
           error: true,

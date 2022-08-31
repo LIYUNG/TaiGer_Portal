@@ -9,7 +9,6 @@ import { resetPassword } from "../../../api/auth";
 
 export default function ResetPassword(props) {
   const query = new URLSearchParams(props.location.search);
-  console.log(query.get('email'));
   const [email, setEmail] = useState(query.get('email'));
   const [token, setToken] = useState(query.get('token'));
   const [passwordchanged, setPasswordchanged] = useState(false);
@@ -42,7 +41,6 @@ export default function ResetPassword(props) {
           });
           const { success } = resp.data;
           if (success) {
-            console.log('Password change success');
             setPasswordchanged(true);
           }
         } else {

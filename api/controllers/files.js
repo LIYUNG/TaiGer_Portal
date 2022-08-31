@@ -36,9 +36,11 @@ const s3 = new aws.S3({
 
 const getMyfiles = asyncHandler(async (req, res) => {
   const { user } = req;
-  // console.log('getMyfiles API');
   const student = await User.findById(user._id);
-  // if (!student) throw new ErrorResponse(400, "Invalid student id");
+  if (!student) {
+    logger.error('getMyfiles: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   // await student.save();
   return res.status(201).send({ success: true, data: student });
@@ -58,16 +60,13 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     logger.error('saveProfileFilePath: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
-  // console.log(student);
   let document = student.profile.find(({ name }) => name === category);
   if (!document) {
     document = student.profile.create({ name: category });
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    // console.log(req.file);
     document.path = path.join(req.file.metadata.path, req.file.key);
-    // console.log(document.path);
     student.profile.push(document);
     await student.save();
     res.status(201).send({ success: true, data: student });
@@ -85,7 +84,6 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       );
 
       for (let i = 0; i < student.agents.length; i++) {
-        // console.log(i);
         await sendUploadedProfileFilesRemindForAgentEmail(
           {
             firstname: student.agents[i].firstname,
@@ -120,9 +118,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   document.status = DocumentStatus.Uploaded;
   document.required = true;
   document.updatedAt = new Date();
-  // console.log(req.file);
   document.path = path.join(req.file.metadata.path, req.file.key);
-  // console.log(document.path);
   await student.save();
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -141,7 +137,6 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     );
     // Reminder for Agent:
     for (let i = 0; i < student.agents.length; i++) {
-      // console.log(i);
       await sendUploadedProfileFilesRemindForAgentEmail(
         {
           firstname: student.agents[i].firstname,
@@ -203,7 +198,7 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   document_split = document_split.split('/');
   const fileKey = document_split[1];
   let directory = document_split[0];
-  console.log('Trying to download profile file', fileKey);
+  logger.info('Trying to download profile file', fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');
   const options = {
@@ -216,7 +211,7 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
     .then(() => {
       // This will not throw error anymore
       res.attachment(fileKey);
-      let fileStream = s3.getObject(options).createReadStream();
+      const fileStream = s3.getObject(options).createReadStream();
       fileStream.pipe(res);
     })
     .catch((error) => {
@@ -260,7 +255,7 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
     }
     // TODO: flag for differenciate students input or edited file
     let document;
-    if (whoupdate === 'Student') {
+    if (whoupdate === Role.Student) {
       document = student.generaldocs.studentinputs.find(
         ({ name }) => name === docName
       );
@@ -277,13 +272,11 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
       logger.error('downloadGeneralFile: File not uploaded yet!');
       throw new ErrorResponse(400, 'File not uploaded yet');
     }
-    // console.log(document);
     // const filePath = path.join(UPLOAD_PATH, document.path);
     // // const filePath = document.path;
     // // FIXME: clear the filePath for consistency?
     // if (!fs.existsSync(filePath))
     //   throw new ErrorResponse(400, "File does not exist");
-    // console.log(filePath);
     // res.status(200).download(filePath, (err) => {
     //   if (err) throw new ErrorResponse(500, "Error occurs while downloading");
     // });
@@ -292,7 +285,7 @@ const downloadGeneralFile = asyncHandler(async (req, res, next) => {
     let str_len = document_split.length;
     let fileKey = document_split[str_len - 1];
     let directory = path.join(document_split[0], document_split[1]);
-    console.log('Trying to download file', fileKey);
+    logger.info('Trying to download file', fileKey);
     directory = path.join(AWS_S3_BUCKET_NAME, directory);
     directory = directory.replace(/\\/g, '/');
 
@@ -426,7 +419,7 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
     params: { studentId, applicationId, docName, whoupdate }
   } = req;
 
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     // if (studentId !== user._id.toString()) {
     logger.error(
       'SetAsFinalProgramSpecificFile: Invalid operation for student'
@@ -536,7 +529,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     params: { studentId, applicationId, docName, whoupdate }
   } = req;
 
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     if (studentId !== user._id.toString()) {
       logger.error('deleteProgramSpecificFile: Invalid operation for student');
       throw new ErrorResponse(401, 'Invalid operation for student');
@@ -565,7 +558,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
 
   let document;
   let student_input;
-  if (whoupdate === 'Editor') {
+  if (whoupdate === Role.Editor) {
     document = application.documents.find(({ name }) => name === docName);
     if (!document) {
       logger.error('deleteProgramSpecificFile: docName not existed');
@@ -589,7 +582,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
         if (error) {
           logger.error('deleteProgramSpecificFile: docName not existed', error);
         } else {
-          // console.log("Successfully deleted file from bucket");
+          logger.info('Successfully deleted file from bucket');
         }
       });
     }
@@ -611,7 +604,6 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
     if (student_input.path !== '') {
       // const filePath = path.join(UPLOAD_PATH, student_input.path);
       // const filePath = student_input.path; // tmp\files_development\studentId\\<bachelorTranscript_>
-      // console.log(filePath);
       // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
       let document_split = student_input.path.replace(/\\/g, '/');
       document_split = document_split.split('/');
@@ -630,7 +622,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
         if (error) {
           logger.error('deleteProgramSpecificFile: docName not existed', error);
         } else {
-          // console.log("Successfully deleted file from bucket");
+          logger.info('Successfully deleted file from bucket', error);
         }
       });
     }
@@ -655,7 +647,7 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
     params: { studentId, docName, whoupdate }
   } = req;
 
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     // if (studentId !== user._id.toString()) {
     logger.error('Invalid operation for student');
     throw new ErrorResponse(401, 'Invalid operation for student');
@@ -769,7 +761,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
     params: { studentId, docName, whoupdate }
   } = req;
 
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     if (studentId !== user._id.toString()) {
       logger.error('deleteGeneralFile: Invalid operation for student');
       throw new ErrorResponse(401, 'Invalid operation for student');
@@ -788,7 +780,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
   let document;
   let student_input;
   try {
-    if (whoupdate === 'Editor') {
+    if (whoupdate === Role.Editor) {
       document = student.generaldocs.editoroutputs.find(
         ({ name }) => name === docName
       );
@@ -800,7 +792,6 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
       if (document.path !== '') {
         // const filePath = path.join(UPLOAD_PATH, document.path);
         // const filePath = document.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-        // console.log(filePath);
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         let document_split = document.path.replace(/\\/g, '/');
         document_split = document_split.split('/');
@@ -819,7 +810,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
           if (error) {
             logger.error('deleteGeneralFile: ', error);
           } else {
-            // console.log("Successfully deleted file from bucket");
+            logger.info('Successfully deleted file from bucket');
           }
         });
       }
@@ -843,7 +834,6 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
       if (student_input.path !== '') {
         // const filePath = path.join(UPLOAD_PATH, student_input.path);
         // // const filePath = student_input.path; //tmp\files_development\studentId\\<bachelorTranscript_>
-        // console.log(filePath);
         // if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         let document_split = student_input.path.replace(/\\/g, '/');
         document_split = document_split.split('/');
@@ -861,9 +851,8 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
         s3.deleteObject(options, (error, data) => {
           if (error) {
             logger.error(error);
-            //   console.log(err);
           } else {
-            //   console.log("Successfully deleted file from bucket");
+            logger.info('Successfully deleted file from bucket');
           }
         });
       }
@@ -877,7 +866,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
       );
     }
   } catch (err) {
-    console.log(err);
+    logger.error('deleteGeneralFile', err);
   }
   student = await Student.findById(studentId).populate(
     'applications.programId'
@@ -889,7 +878,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
   const { user } = req;
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     if (studentId !== user._id.toString()) {
       throw new ErrorResponse(401, 'Invalid operation for student');
     }
@@ -904,7 +893,6 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   }
 
   const document = student.profile.find(({ name }) => name === category);
-  // console.log(document);
   if (!document) throw new ErrorResponse(400, 'Invalid document name');
   if (!document.path) throw new ErrorResponse(400, 'File not exist');
 
@@ -923,10 +911,8 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   try {
     s3.deleteObject(options, (error, data) => {
       if (error) {
-        console.log(err);
+        logger.error(error);
       } else {
-        // console.log("Successfully deleted file from bucket");
-        // console.log(data);
         document.status = DocumentStatus.Missing;
         document.path = '';
         document.updatedAt = new Date();
@@ -945,8 +931,8 @@ const processTranscript = asyncHandler(async (req, res, next) => {
     params: { category, studentId }
   } = req;
   const filename = req.file.key; // key is updated file name
-  let filePath = path.join(req.file.metadata.path, req.file.key);
-  console.log(
+  const filePath = path.join(req.file.metadata.path, req.file.key);
+  logger.info(
     path.join(
       __dirname,
       '..',
@@ -955,7 +941,6 @@ const processTranscript = asyncHandler(async (req, res, next) => {
       'main.py'
     )
   );
-  console.log(filePath);
   // FIXME: better pass output filepath as argument to python script instead of hard code value
   const output = `analyzed_${filename}`;
   const output_filePath = path.join(req.file.metadata.path, 'output', output);
@@ -1018,7 +1003,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   } = req;
 
   let student;
-  if (user.role === 'Student' || user.role === 'Guest') {
+  if (user.role === Role.Student || user.role === 'Guest') {
     student = await Student.findById(user._id);
   } else {
     student = await Student.findById(studentId);
@@ -1180,74 +1165,6 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
   });
 });
 
-const PostMessageInThread = asyncHandler(async (req, res) => {
-  const {
-    user,
-    params: { studentId, applicationId, fileCategory }
-  } = req;
-
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
-    .populate('applications.programId')
-    .populate('students agents editors', 'firstname lastname email')
-    .exec();
-
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
-  // console.log(student);
-  const application = student.applications.find(
-    ({ programId }) => programId._id == applicationId
-  );
-  const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == applicationId
-  );
-  if (!application) throw new ErrorResponse(400, 'Invalid application id');
-
-  let student_input_doc;
-  let editor_output_doc;
-  if (user.role === Role.Student) {
-    student_input_doc = application.student_inputs.find(
-      ({ name }) => name === req.file.key
-    );
-    if (student_input_doc) {
-      throw new ErrorResponse(400, 'Document already existed!');
-    }
-    student_input_doc = application.student_inputs.create({
-      name: req.file.key
-    });
-    student_input_doc.status = DocumentStatus.Uploaded;
-    student_input_doc.path = path.join(req.file.metadata.path, req.file.key);
-    student_input_doc.required = true;
-    student_input_doc.updatedAt = new Date();
-    student.applications[idx].student_inputs.push(student_input_doc);
-
-    // TODO: set flag editors document(filetype) isReceivedFeedback
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-    // TODO: Inform editor themselves as well?
-  } else {
-    editor_output_doc = application.documents.find(
-      ({ name }) => name === req.file.key
-    );
-    if (editor_output_doc) {
-      throw new ErrorResponse(400, 'Document already existed!');
-    }
-    editor_output_doc = application.documents.create({
-      name: req.file.key
-    });
-    editor_output_doc.status = DocumentStatus.Uploaded;
-    // console.log(req.file);
-    editor_output_doc.path = path.join(req.file.metadata.path, req.file.key);
-    editor_output_doc.required = true;
-    editor_output_doc.updatedAt = new Date();
-    student.applications[idx].documents.push(editor_output_doc);
-    // TODO: set flag student document(filetype, feedback) isReceivedFeedback
-    await student.save();
-    res.status(201).send({ success: true, data: student });
-
-    // TODO: Inform editor themselves as well?
-  }
-});
-
 module.exports = {
   getMyfiles,
   saveProfileFilePath,
@@ -1267,6 +1184,5 @@ module.exports = {
   updateAcademicBackground,
   updateLanguageSkill,
   updatePersonalData,
-  updateCredentials,
-  PostMessageInThread
+  updateCredentials
 };

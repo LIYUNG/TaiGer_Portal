@@ -17,7 +17,6 @@ class TaskComments extends Component {
         JSON.parse(this.props.content)
       );
       initialEditorState = EditorState.createWithContent(rawContentFromStore);
-      // console.log(initialEditorState);
     } else {
       initialEditorState = EditorState.createEmpty();
     }

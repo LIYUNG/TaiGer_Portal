@@ -32,7 +32,6 @@ export default function SignUp1({ userData }) {
       // userData(resp);
       const { success } = resp.data;
       if (success) {
-        console.log('sign up success');
         setSignupsuccess(true);
       } else {
         alert(resp.data.message);

@@ -41,7 +41,6 @@ class Application extends Component {
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
         const { success, data } = resp.data;
-        console.log(data);
         if (success) {
           this.setState({
             success,
@@ -68,8 +67,6 @@ class Application extends Component {
   }
 
   onFileChange = (e) => {
-    // e.preventDefault();
-    // console.log(e.target.files[0]);
     this.setState({ file: e.target.files[0] });
   };
 
@@ -83,14 +80,6 @@ class Application extends Component {
     var message = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
     const formData = new FormData();
     formData.append("file", this.state.file);
-    // console.log(this.state.file);
-    // const userData = {
-    //   message: message,
-    // };
-    // var json = JSON.stringify(userData);
-    // const blob = new Blob([json], {
-    //   type: "application/json",
-    // });
     formData.append("message", message);
 
     SubmitMessageWithAttachment(
@@ -103,7 +92,6 @@ class Application extends Component {
     ).then(
       (resp) => {
         const { success, data } = resp.data;
-        console.log(data);
         if (success) {
           this.setState({
             success,
@@ -192,16 +180,13 @@ class Application extends Component {
 
         var filetype = actualFileName.split("."); //split file name
         filetype = filetype.pop(); //get the file type
-        console.log("actualFileName " + actualFileName);
 
         if (filetype === "pdf") {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: "application/pdf" })
           );
 
-          //Open the URL on new Window
-          console.log(url);
+          // Open the URL on new Window
           var newWindow = window.open(url, "_blank"); //TODO: having a reasonable file name, pdf viewer
           newWindow.document.title = actualFileName;
         } else {

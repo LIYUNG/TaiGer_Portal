@@ -28,7 +28,6 @@ const updateProgram = asyncHandler(async (req, res) => {
   const { user } = req;
   const fields = req.body;
 
-  console.log(fields);
   fields.updatedAt = new Date();
   fields.whoupdated = user.firstname + ' ' + user.lastname;
   const program = await Program.findByIdAndUpdate(

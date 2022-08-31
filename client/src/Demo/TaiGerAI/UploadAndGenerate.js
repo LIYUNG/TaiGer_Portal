@@ -31,7 +31,6 @@ class UploadAndGenerate extends Component {
   }
   handleSelect = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     this.setState({ category: e.target.value });
   };
   handleContentChange = (e) => {
@@ -56,7 +55,6 @@ class UploadAndGenerate extends Component {
       ).then(
         (res) => {
           const { data, success } = res.data;
-          console.log(res);
           if (success) {
             this.setState((state) => ({
               ...state,

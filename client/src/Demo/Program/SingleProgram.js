@@ -16,7 +16,6 @@ class SingleProgram extends React.Component {
   componentDidMount() {
     getProgram(this.props.match.params.programId).then(
       (resp) => {
-        console.log(resp);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
@@ -29,7 +28,6 @@ class SingleProgram extends React.Component {
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
           error: true,
@@ -54,7 +52,6 @@ class SingleProgram extends React.Component {
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
           error: true,
@@ -82,7 +79,6 @@ class SingleProgram extends React.Component {
       left: "50%",
       transform: "translate(-50%, -50%)",
     };
-    console.log(program);
     if (!isLoaded && !program) {
       return (
         <div style={style}>
@@ -92,7 +88,6 @@ class SingleProgram extends React.Component {
         </div>
       );
     }
-    console.log(program);
     if (this.state.isEdit) {
       return (
         <>

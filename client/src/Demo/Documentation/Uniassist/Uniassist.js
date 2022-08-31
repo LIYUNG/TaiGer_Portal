@@ -65,8 +65,6 @@ class Uniassist extends Component {
   };
 
   createArticle = (article) => {
-    console.log('click create new article');
-    console.log(article);
     let article_temp = {};
     Object.assign(article_temp, {
       Titel_: article.Titel_,
@@ -74,8 +72,7 @@ class Uniassist extends Component {
       Category_: article.Category_,
       LastUpdate_: article.LastUpdate_
     });
-    // delete article_temp._id;
-    // console.log("article_temp : " + JSON.stringify(article_temp));
+
     createArticle(article_temp).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -116,9 +113,8 @@ class Uniassist extends Component {
         }
       })
     });
-    //update article
-    console.log('click update article');
-    console.log(attrs);
+
+    // update article
     let article_temp = {};
     Object.assign(article_temp, {
       //remove _id
@@ -127,7 +123,6 @@ class Uniassist extends Component {
       Category_: attrs.Category_,
       LastUpdate_: attrs.LastUpdate_
     });
-    console.log(article_temp);
 
     updateDoc(attrs._id, article_temp).then(
       (resp) => {
@@ -166,8 +161,6 @@ class Uniassist extends Component {
       )
     });
 
-    console.log('click submit article');
-    console.log(articleId);
     deleteDoc(articleId).then(
       (result) => {},
       (error) => {

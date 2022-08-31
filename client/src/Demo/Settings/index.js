@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
-
 import Aux from '../../hoc/_Aux';
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 class Settings extends React.Component {
@@ -33,12 +32,8 @@ class Settings extends React.Component {
   }
 
   handleChange_PersonalData = (e) => {
-    // console.log(e.target.value);
-    // console.log(e.target.id);
-    // e.preventDefault();
     var personaldata_temp = { ...this.state.personaldata };
     personaldata_temp[e.target.id] = e.target.value;
-    // console.log(personaldata_temp);
     this.setState((state) => ({
       ...state,
       personaldata: personaldata_temp
@@ -46,13 +41,10 @@ class Settings extends React.Component {
   };
 
   handleSubmit_PersonalData = (e, personaldata) => {
-    // console.log(personaldata);
-    // e.preventDefault();
     updatePersonalData(personaldata).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
-          // console.log(data);
           this.setState((state) => ({
             ...state,
             isLoaded: true,
@@ -65,7 +57,6 @@ class Settings extends React.Component {
         }
       },
       (error) => {
-        console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true
@@ -75,12 +66,8 @@ class Settings extends React.Component {
   };
 
   handleChange_Credentials = (e) => {
-    // console.log(e.target.value);
-    // console.log(e.target.id);
-    // e.preventDefault();
     var credentials_temp = { ...this.state.credentials };
     credentials_temp[e.target.id] = e.target.value;
-    // console.log(credentials_temp);
     this.setState((state) => ({
       ...state,
       credentials: credentials_temp
@@ -88,8 +75,6 @@ class Settings extends React.Component {
   };
 
   handleSubmit_Credentials = (e, credentials, email) => {
-    console.log(credentials);
-    // e.preventDefault();
     if (credentials.new_password !== credentials.new_password_again) {
       alert('New password not matched');
       return;
@@ -102,7 +87,6 @@ class Settings extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
-          console.log(data);
           this.setState((state) => ({
             ...state,
             isLoaded: true,
@@ -144,7 +128,6 @@ class Settings extends React.Component {
   setmodalhideUpdateCredentials = () => {
     logout().then(
       (resp) => {
-        // console.log(resp.data);
         // this.setState((state) => ({
         //   ...state,
         //   data: null

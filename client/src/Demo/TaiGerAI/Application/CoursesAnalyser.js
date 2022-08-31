@@ -27,7 +27,6 @@ class CoursesAnalyser extends Component {
         }
       },
       (error) => {
-        console.log(": " + error);
         this.setState({
           isLoaded: true,
           error: true,

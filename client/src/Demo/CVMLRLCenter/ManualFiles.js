@@ -10,7 +10,6 @@ class ManualFiles extends React.Component {
 
   handleCreateGeneralMessageThread = (e, studentId, fileCategory) => {
     e.preventDefault();
-    // console.log(e.target.files);
     if (!this.state.category) {
       alert("Please select file type");
     } else {
@@ -26,7 +25,6 @@ class ManualFiles extends React.Component {
     fileCategory
   ) => {
     e.preventDefault();
-    // console.log(e.target.files);
     if (!this.state.category) {
       alert("Please select file type");
     } else {
@@ -42,7 +40,6 @@ class ManualFiles extends React.Component {
 
   handleSelect = (e) => {
     e.preventDefault();
-    // console.log(e.target.value);
     this.setState({ category: e.target.value });
   };
   render() {

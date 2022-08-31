@@ -33,7 +33,7 @@ const getStudent = asyncHandler(async (req, res) => {
     user,
     params: { studentId }
   } = req;
-  if (user.Role === 'Student' || user.Role === 'Guest') {
+  if (user.Role === Role.Student || user.Role === Role.Guest) {
     const student = await Student.findById(user._id)
       .populate('applications.programId agents editors')
       .populate(
@@ -67,7 +67,7 @@ const getStudents = asyncHandler(async (req, res) => {
     user
     // params: { userId },
   } = req;
-  if (user.role === 'Admin') {
+  if (user.role === Role.Admin) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
@@ -77,7 +77,7 @@ const getStudents = asyncHandler(async (req, res) => {
       )
       .lean();
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Agent') {
+  } else if (user.role === Role.Agent ) {
     const students = await Student.find({
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -93,7 +93,7 @@ const getStudents = asyncHandler(async (req, res) => {
     // console.log(students[0].applications[0].programId.school);
 
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Editor') {
+  } else if (user.role === Role.Editor) {
     const students = await Student.find({
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -104,7 +104,7 @@ const getStudents = asyncHandler(async (req, res) => {
       );
 
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Student') {
+  } else if (user.role === Role.Student) {
     const student = await Student.findById(user._id)
       .populate('applications.programId')
       .populate('agents', '-students')
@@ -124,7 +124,7 @@ const getArchivStudent = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
 
-  if (user.role === 'Guest' || user.role === 'Student') {
+  if (user.role === Role.Guest || user.role === Role.Student) {
     logger.error('Unauthorized access: getArchivStudent');
     throw new ErrorResponse(400, 'Unauthorized access.');
   }
@@ -142,11 +142,11 @@ const getArchivStudents = asyncHandler(async (req, res) => {
     // params: { userId },
   } = req;
 
-  if (user.role === 'Admin') {
+  if (user.role === Role.Admin) {
     const students = await Student.find({ archiv: true }).exec();
 
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Agent') {
+  } else if (user.role === Role.Agent ) {
     const students = await Student.find({
       _id: { $in: user.students },
       archiv: true
@@ -156,7 +156,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
       .exec();
 
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === 'Editor') {
+  } else if (user.role === Role.Editor) {
     const students = await Student.find({
       _id: { $in: user.students },
       archiv: true
@@ -175,9 +175,9 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
     body: { isArchived }
   } = req;
   if (
-    user.role === 'Admin' ||
-    user.role === 'Agent' ||
-    user.role === 'Editor'
+    user.role === Role.Admin ||
+    user.role === Role.Agent ||
+    user.role === Role.Editor
   ) {
     let student = await Student.findByIdAndUpdate(
       studentId,
@@ -188,7 +188,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
     );
     if (isArchived) {
       // return dashboard students
-      if (user.role === 'Admin') {
+      if (user.role === Role.Admin) {
         const students = await Student.find({
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
         })
@@ -196,7 +196,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
           .lean();
 
         res.status(200).send({ success: true, data: students });
-      } else if (user.role === 'Agent') {
+      } else if (user.role === Role.Agent ) {
         const students = await Student.find({
           _id: { $in: user.students },
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -205,7 +205,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
           .lean()
           .exec();
         res.status(200).send({ success: true, data: students });
-      } else if (user.role === 'Editor') {
+      } else if (user.role === Role.Editor) {
         const students = await Student.find({
           _id: { $in: user.students },
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -213,12 +213,12 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
         res.status(200).send({ success: true, data: students });
       }
     } else {
-      if (user.role === 'Admin') {
+      if (user.role === Role.Admin) {
         const students = await Student.find({ archiv: true })
           .populate('applications.programId agents editors')
           .lean();
         res.status(200).send({ success: true, data: students });
-      } else if (user.role === 'Agent') {
+      } else if (user.role === Role.Agent ) {
         const students = await Student.find({
           _id: { $in: user.students },
           archiv: true
@@ -228,7 +228,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
           .exec();
 
         res.status(200).send({ success: true, data: students });
-      } else if (user.role === 'Editor') {
+      } else if (user.role === Role.Editor) {
         const students = await Student.find({
           _id: { $in: user.students },
           archiv: true

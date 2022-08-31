@@ -14,7 +14,6 @@ class TaskItem extends Component {
 
   render() {
     let sub_tasks_key = Object.keys(this.props.task);
-    console.log(sub_tasks_key);
     const x = sub_tasks_key.map((key, i) => (
       <Card className="mt-2" key={i}>
         <Card.Body> {JSON.stringify(this.props.task[key])}</Card.Body>

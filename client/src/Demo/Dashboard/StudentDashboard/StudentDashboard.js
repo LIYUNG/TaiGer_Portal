@@ -110,7 +110,6 @@ class StudentDashboard extends React.Component {
         (item.end > start && item.end < end)
       );
     });
-    console.log("Calculating ");
     this.setState({ data: result });
   };
 

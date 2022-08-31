@@ -24,7 +24,6 @@ class Message extends Component {
         JSON.parse(this.props.message.message)
       );
       initialEditorState = EditorState.createWithContent(rawContentFromStore);
-      // console.log(initialEditorState);
     } else {
       initialEditorState = EditorState.createEmpty();
     }

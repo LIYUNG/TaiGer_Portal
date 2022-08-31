@@ -40,10 +40,8 @@ class Dashboard extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.user);
     getAllStudents().then(
       (resp) => {
-        console.log(resp.data);
         const { data, success } = resp.data;
         if (success) {
           this.setState({ isLoaded: true, students: data, success: success });
@@ -52,8 +50,6 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        console.log(error);
-        console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true
@@ -96,13 +92,11 @@ class Dashboard extends React.Component {
         filetype = filetype.pop(); //get the file type
 
         if (filetype === 'pdf') {
-          console.log(blob);
           const url = window.URL.createObjectURL(
             new Blob([blob], { type: 'application/pdf' })
           );
 
           //Open the URL on new Window
-          console.log(url);
           window.open(url); //TODO: having a reasonable file name, pdf viewer
         } else {
           //if not pdf, download instead.
@@ -139,8 +133,6 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data: agents } = resp.data; //get all agent
         const { agents: student_agents } = student;
-        console.log('editAgent');
-        console.log(resp.data);
         const updateAgentList = agents.reduce(
           (prev, { _id }) => ({
             ...prev,
@@ -176,7 +168,6 @@ class Dashboard extends React.Component {
 
   handleChangeAgentlist = (e) => {
     const { value, checked } = e.target;
-    console.log(value + ' ' + checked);
     this.setState((prevState) => ({
       updateAgentList: {
         ...prevState.updateAgentList,
@@ -187,7 +178,6 @@ class Dashboard extends React.Component {
 
   handleChangeEditorlist = (e) => {
     const { value, checked } = e.target;
-    console.log(value + ' ' + checked);
     this.setState((prevState) => ({
       updateEditorList: {
         ...prevState.updateEditorList,
@@ -197,12 +187,10 @@ class Dashboard extends React.Component {
   };
 
   submitUpdateAgentlist = (updateAgentList, student_id) => {
-    console.log(updateAgentList + ' ' + student_id);
     this.UpdateAgentlist(updateAgentList, student_id);
   };
 
   submitUpdateEditorlist = (updateEditorList, student_id) => {
-    console.log(updateEditorList + ' ' + student_id);
     this.UpdateEditorlist(updateEditorList, student_id);
   };
 
@@ -237,14 +225,10 @@ class Dashboard extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
-        console.log(resp.data);
-        console.log('Archiv index.js rendered');
         const { data, success } = resp.data;
         this.setState({ isLoaded: true, students: data, success: success });
       },
       (error) => {
-        console.log(error);
-        console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true

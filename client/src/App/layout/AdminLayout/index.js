@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { Suspense } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import Fullscreen from "react-full-screen";
-import windowSize from "react-window-size";
-import { Spinner } from "react-bootstrap";
+import React, { useState, useEffect } from 'react';
+import { Suspense } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Fullscreen from 'react-full-screen';
+import windowSize from 'react-window-size';
+import { Spinner } from 'react-bootstrap';
 
-import Navigation from "./Navigation";
-import NavBar from "./NavBar";
-import Breadcrumb from "./Breadcrumb";
-import Loader from "../Loader";
-import routes from "../../../routes";
-import Aux from "../../../hoc/_Aux";
-import * as actionTypes from "../../../store/actions";
+import Navigation from './Navigation';
+import NavBar from './NavBar';
+import Breadcrumb from './Breadcrumb';
+import Loader from '../Loader';
+import routes from '../../../routes';
+import Aux from '../../../hoc/_Aux';
+import * as actionTypes from '../../../store/actions';
 
-import routes2 from "../../../route";
-import ScrollToTop from "../ScrollToTop";
-import { verify } from "../../../api";
+import routes2 from '../../../route';
+import ScrollToTop from '../ScrollToTop';
+import { verify } from '../../../api';
 
 // import "./app.scss";
-import { logout } from "../../../api";
+import { logout } from '../../../api';
 
 function AdminLayout(props) {
   let [userdata, setUserdata] = useState({
@@ -27,29 +27,26 @@ function AdminLayout(props) {
     data: null,
     isloaded: false,
     error: null,
-    everlogin: false,
+    everlogin: false
   });
 
   useEffect(() => {
-    // console.log("useEffect");
     verify().then((resp) => {
-      // console.log(resp.data);
       const { data, success } = resp.data;
       setUserdata((state) => ({
         ...state,
         success: success,
         data: data,
-        isloaded: true,
+        isloaded: true
       }));
     });
   }, []);
-
 
   useEffect(() => {
     if (
       props.windowWidth >= 992 &&
       props.windowWidth <= 1024 &&
-      props.layout !== "horizontal"
+      props.layout !== 'horizontal'
     ) {
       props.onComponentWillMount();
     }
@@ -57,13 +54,11 @@ function AdminLayout(props) {
 
   const handleOnClickLogout = (e) => {
     e.preventDefault();
-    // console.log("click logout");
     logout().then(
       (resp) => {
-        // console.log(resp.data);
         setUserdata((state) => ({
           ...state,
-          data: null,
+          data: null
         }));
         // const { success } = resp.data;
         // this.setState({ success: success });
@@ -90,10 +85,10 @@ function AdminLayout(props) {
   };
 
   /* full screen exit call */
-  document.addEventListener("fullscreenchange", fullScreenExitHandler);
-  document.addEventListener("webkitfullscreenchange", fullScreenExitHandler);
-  document.addEventListener("mozfullscreenchange", fullScreenExitHandler);
-  document.addEventListener("MSFullscreenChange", fullScreenExitHandler);
+  document.addEventListener('fullscreenchange', fullScreenExitHandler);
+  document.addEventListener('webkitfullscreenchange', fullScreenExitHandler);
+  document.addEventListener('mozfullscreenchange', fullScreenExitHandler);
+  document.addEventListener('MSFullscreenChange', fullScreenExitHandler);
 
   const menu = routes.map((route, index) => {
     return route.component ? (
@@ -102,12 +97,7 @@ function AdminLayout(props) {
         path={route.path}
         exact={route.exact}
         name={route.name}
-        render={(props) => (
-          <route.component
-            {...props}
-            user={userdata.data}
-          />
-        )}
+        render={(props) => <route.component {...props} user={userdata.data} />}
       />
     ) : null;
   });
@@ -120,21 +110,17 @@ function AdminLayout(props) {
         exact={route.exact}
         name={route.name}
         render={(props) => (
-          <route.component
-            {...props}
-            setUserdata={setUserdata}
-          />
+          <route.component {...props} setUserdata={setUserdata} />
         )}
       />
     ) : null;
   });
   const style = {
-    position: "fixed",
-    top: "40%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
+    position: 'fixed',
+    top: '40%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
   };
-  // console.log(userdata.data);
   if (!userdata.data && !userdata.everlogin) {
     return (
       <Aux>
@@ -195,14 +181,14 @@ const mapStateToProps = (state) => {
     isFullScreen: state.isFullScreen,
     collapseMenu: state.collapseMenu,
     configBlock: state.configBlock,
-    layout: state.layout,
+    layout: state.layout
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
-    onComponentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
+    onComponentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU })
   };
 };
 

@@ -52,11 +52,11 @@ const getStudent = asyncHandler(async (req, res) => {
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
-  const {
-    user
-    // params: { userId },
-  } = req;
-  const students = await Student.find();
+  // const {
+  //   user
+  //   // params: { userId },
+  // } = req;
+  const students = await Student.find().lean();
   // .populate("applications.programId agents editors");
   // .lean();
   res.status(200).send({ success: true, data: students });

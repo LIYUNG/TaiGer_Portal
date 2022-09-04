@@ -20,7 +20,8 @@ class EditorCenter extends React.Component {
     file: '',
     expand: true,
     accordionKeys:
-      this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
+      this.props.user.students &&
+      (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
         : [0] // to expand all]
   };

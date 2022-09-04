@@ -362,7 +362,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const resp5 = await request(app).delete(
       `/api/students/${student2Id}/files/${category}`
     );
-    expect(resp5.status).toBe(401);
+    expect(resp5.status).toBe(403);
     expect(resp5.body.success).toBe(false);
   });
 });

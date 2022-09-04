@@ -33,7 +33,8 @@ class AgentCenter extends React.Component {
     CommentModel: false,
     // accordionKeys: new Array(-1, this.props.user.students.length), // To collapse all
     accordionKeys:
-      this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
+      this.props.user.students &&
+      (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
         : [0] // to expand all]
   };

@@ -1,8 +1,7 @@
-import React from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import React from 'react';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 class User extends React.Component {
-
   render() {
     if (this.props.success) {
       return (
@@ -15,13 +14,6 @@ class User extends React.Component {
               id={`dropdown-variants-${this.props.user._id}`}
               key={this.props.user._id}
             >
-              {/* TODO: email should not be editable */}
-              <Dropdown.Item
-                eventKey="1"
-                onSelect={() => this.props.onEditClick(this.props.i)}
-              >
-                Edit
-              </Dropdown.Item>
               <Dropdown.Item
                 eventKey="2"
                 onSelect={() =>

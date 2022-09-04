@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
-import EditableUser from './EditableUser';
+import User from './User';
 import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
 import { deleteUser, updateUser, changeUserRole } from '../../api';
@@ -110,10 +110,6 @@ class Userslist extends React.Component {
     );
   };
 
-  onFormSubmit = (edited_user) => {
-    this.editUser(edited_user);
-  };
-
   assignUserAs = (user_data) => {
     var updated_user = this.state.data.map((user) => {
       if (user._id === user_data._id) {
@@ -168,11 +164,10 @@ class Userslist extends React.Component {
         </tr>
       );
       const users = this.state.data.map((user) => (
-        <EditableUser
+        <User
           key={user._id}
           user={user}
           header={this.props.header}
-          onFormSubmit={this.onFormSubmit}
           setModalShowDelete={this.setModalShowDelete}
           setModalShow={this.setModalShow}
           success={this.state.success}

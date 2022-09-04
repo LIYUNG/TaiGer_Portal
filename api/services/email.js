@@ -109,68 +109,6 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-const sendUploadedProgramSpecificFilesEmail = async (recipient, msg) => {
-  const subject = 'Thank you for your input!';
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-you have uploaded ${msg.uploaded_documentname} 
-
-for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
-
-Your editor will review it and give you feedback as soon as possible.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendEditorOutputProgramSpecificFilesEmailToStudent = async (
-  recipient,
-  msg
-) => {
-  const subject = `New revised ${msg.fileCategory} for ${msg.university_name} - ${msg.program_name} from Editor!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your editor ${msg.editor_firstname} - ${msg.editor_lastname} has uploaded ${msg.uploaded_documentname} 
-
-for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
-
-Please review it and confirm with your editor and finalize the document review.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendEditorOutputProgramSpecificFilesEmailToAgent = async (
-  recipient,
-  msg
-) => {
-  const subject = `New revised ${msg.fileCategory} for ${msg.university_name} - ${msg.program_name} from Editor for ${msg.student_firstname} - ${msg.student_lastname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your editor ${msg.editor_firstname} - ${msg.editor_lastname} has uploaded ${msg.uploaded_documentname} 
-
-for student ${msg.student_firstname} - ${msg.student_lastname}
-
-for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
-
-Please double check it and see if something goes wrong.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
 const sendUploadedGeneralFilesEmail = async (recipient, msg) => {
   const subject = 'Thank you for your input!';
   const message = `\
@@ -229,48 +167,6 @@ Hi ${recipient.firstname} ${recipient.lastname},
 your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname}
 
 on ${msg.uploaded_updatedAt}.
-
-${TAIGER_SIGNATURE}
-
-`; // should be for student/agent/editor
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendUploadedProgramSpecificFilesRemindForEditorEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = `New ${msg.fileCategory} input from ${msg.student_firstname} ${msg.student_lastname}`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
-
-for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
-
-Please the input from student and give student your feedback as soon as possible.
-
-${TAIGER_SIGNATURE}
-
-`; // should be for student/agent/editor
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendUploadedProgramSpecificFilesRemindForAgentEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = `New ${msg.fileCategory} input from ${msg.student_firstname} ${msg.student_lastname}`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname} 
-
-for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
-
-Please double check it. If there is anything wrong, please contact student as soon as possible.
 
 ${TAIGER_SIGNATURE}
 
@@ -504,6 +400,45 @@ ${TAIGER_SIGNATURE}
 
   sendEmail(recipient, subject, message);
 };
+const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
+  if (msg.isFinalVersion) {
+    const subject = `${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is finished!`;
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} 
+
+for student ${recipient.firstname} ${recipient.lastname}
+
+on ${msg.uploaded_updatedAt}.
+
+This document is ready for the application. 
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+    sendEmail(recipient, subject, message);
+  } else {
+    const subject = `${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is not finished!`;
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+editor ${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
+
+as not finished.
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+    sendEmail(recipient, subject, message);
+  }
+};
 
 const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
   if (msg.isFinalVersion) {
@@ -597,13 +532,14 @@ const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
   recipient,
   msg
 ) => {
-  const subject = `${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is finished!`;
-  const message = `\
+  if (msg.isFinalVersion) {
+    const subject = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is finished!`;
+    const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-${msg.editor_firstname} ${msg.editor_lastname} have finalized
+${msg.editor_firstname} ${msg.editor_lastname} has finalized
 
-${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} 
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} 
 
 for ${msg.student_firstname} ${msg.student_lastname}.
 
@@ -613,7 +549,28 @@ ${TAIGER_SIGNATURE}
 
 `;
 
-  return sendEmail(recipient, subject, message);
+    sendEmail(recipient, subject, message);
+  } else {
+    const subject = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is not finished!`;
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.editor_firstname} ${msg.editor_lastname} set
+
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} as not finished
+
+on ${msg.uploaded_updatedAt} 
+
+for ${msg.student_firstname} ${msg.student_lastname}.
+
+Double check this document and finalize the application if applicable. 
+
+${TAIGER_SIGNATURE}
+
+`;
+
+    sendEmail(recipient, subject, message);
+  }
 };
 
 module.exports = {
@@ -622,19 +579,15 @@ module.exports = {
   sendConfirmationEmail,
   sendForgotPasswordEmail,
   sendPasswordResetEmail,
-  sendUploadedProgramSpecificFilesEmail,
-  sendEditorOutputProgramSpecificFilesEmailToStudent,
-  sendEditorOutputProgramSpecificFilesEmailToAgent,
   sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
-  sendUploadedProgramSpecificFilesRemindForEditorEmail,
-  sendUploadedProgramSpecificFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
   sendSomeReminderEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
+  sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
   sendNewApplicationMessageInThreadToEditorEmail,
   sendNewApplicationMessageInThreadToStudentEmail,

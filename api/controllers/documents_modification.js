@@ -6,13 +6,11 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const {
-  sendUploadedProgramSpecificFilesEmail,
-  sendUploadedProgramSpecificFilesRemindForEditorEmail,
-  sendUploadedProgramSpecificFilesRemindForAgentEmail,
   sendNewApplicationMessageInThreadToEditorEmail,
   sendNewApplicationMessageInThreadToStudentEmail,
   sendNewGeneraldocMessageInThreadToEditorEmail,
   sendNewGeneraldocMessageInThreadToStudentEmail,
+  sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail
@@ -306,43 +304,42 @@ const postMessages = asyncHandler(async (req, res) => {
 
   if (user.role === Role.Student) {
     // Inform Editor
-    const student =
-      user.role === Role.Student ? user : await Student.findById(user._id);
-      for (let i = 0; i < student.editors.length; i++) {
-        if (document_thread.program_id) {
-          // TODO: multiple editors(?)
+    const student = user;
+    for (let i = 0; i < student.editors.length; i++) {
+      if (document_thread.program_id) {
+        // TODO: multiple editors(?)
 
-          sendNewApplicationMessageInThreadToEditorEmail(
-            {
-              firstname: student.editors[i].firstname,
-              lastname: student.editors[i].lastname,
-              address: student.editors[i].email
-            },
-            {
-              student_firstname: user.firstname,
-              student_lastname: user.lastname,
-              uploaded_documentname: document_thread.file_type,
-              school: document_thread.program_id.school,
-              program_name: document_thread.program_id.program_name,
-              uploaded_updatedAt: new Date()
-            }
-          );
-        } else {
-          sendNewGeneraldocMessageInThreadToEditorEmail(
-            {
-              firstname: student.editors[i].firstname,
-              lastname: student.editors[i].lastname,
-              address: student.editors[i].email
-            },
-            {
-              student_firstname: user.firstname,
-              student_lastname: user.lastname,
-              uploaded_documentname: document_thread.file_type,
-              uploaded_updatedAt: new Date()
-            }
-          );
-        }
+        sendNewApplicationMessageInThreadToEditorEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            student_firstname: user.firstname,
+            student_lastname: user.lastname,
+            uploaded_documentname: document_thread.file_type,
+            school: document_thread.program_id.school,
+            program_name: document_thread.program_id.program_name,
+            uploaded_updatedAt: new Date()
+          }
+        );
+      } else {
+        sendNewGeneraldocMessageInThreadToEditorEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            student_firstname: user.firstname,
+            student_lastname: user.lastname,
+            uploaded_documentname: document_thread.file_type,
+            uploaded_updatedAt: new Date()
+          }
+        );
       }
+    }
   } else {
     // Inform student
     if (document_thread.program_id) {
@@ -434,7 +431,8 @@ const getMessageFile = asyncHandler(async (req, res) => {
     });
 });
 
-// (O) notification email works
+// (O) notification student email works
+// (O) notification agent email works
 const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -484,7 +482,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         'file_type updatedAt'
       );
     res.status(200).send({ success: true, data: student2 });
-    sendSetAsFinalProgramSpecificFileForStudentEmail(
+    await sendSetAsFinalProgramSpecificFileForStudentEmail(
       {
         firstname: student2.firstname,
         lastname: student2.lastname,
@@ -500,6 +498,32 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         isFinalVersion: application_thread.isFinalVersion
       }
     );
+    const student3 = await Student.findById(studentId).populate(
+      'agents',
+      'firstname lastname email'
+    );
+
+    // console.log(student3);
+    for (let i = 0; i < student.agents.length; i++) {
+      await sendSetAsFinalProgramSpecificFileForAgentEmail(
+        {
+          firstname: student3.agents[i].firstname,
+          lastname: student3.agents[i].lastname,
+          address: student3.agents[i].email
+        },
+        {
+          student_firstname: student3.firstname,
+          student_lastname: student3.lastname,
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          school: student_application.programId.school,
+          program_name: student_application.programId.program_name,
+          uploaded_documentname: application_thread.doc_thread_id.file_type,
+          uploaded_updatedAt: new Date(),
+          isFinalVersion: application_thread.isFinalVersion
+        }
+      );
+    }
   } else {
     // TODO: implement update logic
     const generaldocs_thread = student.generaldocs_threads.find(
@@ -518,7 +542,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         'file_type updatedAt'
       );
     res.status(200).send({ success: true, data: student2 });
-    sendSetAsFinalGeneralFileForStudentEmail(
+    await sendSetAsFinalGeneralFileForStudentEmail(
       {
         firstname: student.firstname,
         lastname: student.lastname,
@@ -532,6 +556,30 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         isFinalVersion: generaldocs_thread.isFinalVersion
       }
     );
+
+    const student3 = await Student.findById(studentId).populate(
+      'agents',
+      'firstname lastname email'
+    );
+
+    for (let i = 0; i < student.agents.length; i++) {
+      await sendSetAsFinalGeneralFileForAgentEmail(
+        {
+          firstname: student3.agents[i].firstname,
+          lastname: student3.agents[i].lastname,
+          address: student3.agents[i].email
+        },
+        {
+          student_firstname: student3.firstname,
+          student_lastname: student3.lastname,
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          uploaded_documentname: generaldocs_thread.doc_thread_id.file_type,
+          uploaded_updatedAt: new Date(),
+          isFinalVersion: generaldocs_thread.isFinalVersion
+        }
+      );
+    }
   }
 });
 

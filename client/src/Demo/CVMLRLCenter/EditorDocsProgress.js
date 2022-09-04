@@ -17,7 +17,7 @@ import {
 import {
   deleteGenralFileThread,
   deleteProgramSpecificFileThread,
-  SetAsFinalGenralFile,
+  SetFileAsFinal,
   initGeneralMessageThread,
   initApplicationMessageThread,
   SubmitMessageWithAttachment
@@ -178,7 +178,7 @@ class EditorDocsProgress extends React.Component {
       ...state,
       isLoaded: false //false to reload everything
     }));
-    SetAsFinalGenralFile(this.state.doc_thread_id, this.state.student_id, this.state.program_id).then(
+    SetFileAsFinal(this.state.doc_thread_id, this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {

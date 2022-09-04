@@ -125,17 +125,8 @@ export const deleteProgramSpecificFileThread = (
 export const getCVMLRLOverview = () =>
   request.get(`/api/document-threads/overview`);
 
-export const SetAsFinalProgramSpecificFile = (
-  studentId,
-  applicationId,
-  docName,
-  whoupdate
-) =>
-  request.put(
-    `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${docName}`
-  );
 
-export const SetAsFinalGenralFile = (documentsthreadId, studentId, program_id) =>
+export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
   request.put(`/api/document-threads/${documentsthreadId}/${studentId}`, {
     program_id
   });

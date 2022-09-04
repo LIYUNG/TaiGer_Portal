@@ -10,11 +10,7 @@ const {
 const {
   getMyfiles,
   downloadTemplateFile,
-  downloadGeneralFile,
   UpdateStudentApplications,
-  SetAsFinalProgramSpecificFile,
-  SetAsFinalGeneralFile,
-  deleteGeneralFile,
   processTranscript,
   downloadXLSX,
   getMyAcademicBackground,
@@ -38,28 +34,6 @@ router
 router
   .route('/applications/:studentId')
   .put(permit(Role.Admin, Role.Agent, Role.Student), UpdateStudentApplications);
-
-router
-  .route('/files/programspecific/:studentId/:applicationId/:whoupdate/:docName')
-  .put(
-    permit(Role.Admin, Role.Agent, Role.Editor),
-    SetAsFinalProgramSpecificFile
-  );
-
-router
-  .route('/files/general/:studentId/:whoupdate/:docName')
-  .get(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    downloadGeneralFile
-  )
-  .put(
-    permit(Role.Admin, Role.Agent, Role.Editor), // set as final
-    SetAsFinalGeneralFile
-  )
-  .delete(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    deleteGeneralFile
-  );
 
 // TaiGer Transcript Analyser:
 router

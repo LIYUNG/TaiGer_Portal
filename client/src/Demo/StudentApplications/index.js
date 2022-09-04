@@ -4,13 +4,18 @@ import StudentApplicationsTableTemplate from './StudentApplicationsTableTemplate
 // import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
 import { getStudent } from '../../api';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
+import PremiumOnlyError from '../Utils/PremiumOnlyError';
 
 class StudentApplication extends React.Component {
   state = {
     isLoaded: false,
     student: null,
     success: false,
-    error: null
+    error: null,
+    timeouterror: null,
+    unauthorizederror: null
   };
   componentDidMount() {
     getStudent(this.props.user._id).then(
@@ -23,11 +28,15 @@ class StudentApplication extends React.Component {
             success: success
           });
         } else {
-          // alert(resp.data.message);
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            if (this.props.user.role !== 'Guest') {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            } else {
+              this.setState({ isLoaded: true });
+            }
+          }
         }
       },
       (error) => {
@@ -39,14 +48,10 @@ class StudentApplication extends React.Component {
     );
   }
   render() {
-    const { error, isLoaded } = this.state;
-    if (error) {
-      return (
-        <div>
-          This is for Premium only. We encourage you to fill the Academic
-          Background before contact our consultant!
-        </div>
-      );
+    const { unauthorizederror, timeouterror, isLoaded, accordionKeys } =
+      this.state;
+    if (timeouterror) {
+      return <TimeOutErrors />;
     }
     const style = {
       position: 'fixed',
@@ -54,7 +59,13 @@ class StudentApplication extends React.Component {
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
     if (!isLoaded && !this.state.student) {
       return (
         <div style={style}>
@@ -67,7 +78,7 @@ class StudentApplication extends React.Component {
     if (this.props.user.role === 'Student') {
       return <StudentApplicationsTableTemplate student={this.state.student} />;
     } else {
-      return <>This Page is only for paid student.</>;
+      return <PremiumOnlyError />;
     }
   }
 }

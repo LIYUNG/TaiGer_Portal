@@ -16,6 +16,9 @@ import ProgramDeleteWarning from './ProgramDeleteWarning';
 import ProgramAddedMyWatchList from './ProgramAddedMyWatchList';
 import Program from './Program';
 import NewProgramEdit from './NewProgramEdit';
+import UnauthorizedError from '../Utils/UnauthorizedError';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+
 import {
   getPrograms,
   createProgram,
@@ -38,7 +41,8 @@ class Programlist extends React.Component {
     deleteProgramWarning: false,
     StudentId: '',
     newProgramPage: false,
-    programs_id_set: []
+    programs_id_set: [],
+    unauthorizederror: null
   };
 
   componentDidMount() {
@@ -52,7 +56,11 @@ class Programlist extends React.Component {
             success
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, error: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => this.setState({ isLoaded: true, error })
@@ -71,7 +79,11 @@ class Programlist extends React.Component {
               success
             });
           } else {
-            alert(resp.data.message);
+            if (resp.status == 401) {
+              this.setState({ isLoaded: true, error: true });
+            } else if (resp.status == 403) {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            }
           }
         },
         (error) => this.setState({ isLoaded: true, error })
@@ -237,17 +249,24 @@ class Programlist extends React.Component {
     }));
   };
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, error, isLoaded } = this.state;
     const style = {
       position: 'fixed',
       top: '40%',
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    if (error) {
+     if (error) {
+       return (
+         <div>
+           <TimeOutErrors />
+         </div>
+       );
+     }
+    if (unauthorizederror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <UnauthorizedError />
         </div>
       );
     }

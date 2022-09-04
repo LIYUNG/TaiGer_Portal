@@ -16,7 +16,10 @@ import AdminMainView from './AdminDashboard/AdminMainView';
 import AgentMainView from './AgentDashboard/AgentMainView';
 import EditorMainView from './EditorDashboard/EditorMainView';
 import StudentDashboard from './StudentDashboard/StudentDashboard';
-import GuestMainView from './GuestDashboard/GuestMainView';
+import GuestDashboard from './GuestDashboard/GuestDashboard';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
+
 import {
   getStudents,
   updateArchivStudents,
@@ -29,6 +32,8 @@ import {
 class Dashboard extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     modalShow: false,
     agent_list: [],
     editor_list: [],
@@ -52,7 +57,11 @@ class Dashboard extends React.Component {
             success: success
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -76,7 +85,11 @@ class Dashboard extends React.Component {
               success: success
             });
           } else {
-            alert(resp.data.message);
+            if (resp.status == 401) {
+              this.setState({ isLoaded: true, error: true });
+            } else if (resp.status == 403) {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            }
           }
         },
         (error) => {
@@ -248,7 +261,7 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
     let FILE_OK_SYMBOL = (
       <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
     );
@@ -291,13 +304,21 @@ class Dashboard extends React.Component {
         <p>{FILE_DONT_CARE_SYMBOL}: This document is not needed.</p>
       </>
     );
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
         </div>
       );
     }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
     const style = {
       position: 'fixed',
       top: '40%',
@@ -316,6 +337,13 @@ class Dashboard extends React.Component {
       if (this.props.user.role === 'Admin') {
         return (
           <Aux>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
             <AdminMainView
               role={this.props.user.role}
               editAgent={this.editAgent}
@@ -334,6 +362,11 @@ class Dashboard extends React.Component {
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
             />
+          </Aux>
+        );
+      } else if (this.props.user.role === 'Agent') {
+        return (
+          <Aux>
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">
@@ -341,11 +374,6 @@ class Dashboard extends React.Component {
                 </Spinner>
               </div>
             )}
-          </Aux>
-        );
-      } else if (this.props.user.role === 'Agent') {
-        return (
-          <Aux>
             <AgentMainView
               role={this.props.user.role}
               students={this.state.students}
@@ -353,6 +381,11 @@ class Dashboard extends React.Component {
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
             />
+          </Aux>
+        );
+      } else if (this.props.user.role === 'Editor') {
+        return (
+          <Aux>
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">
@@ -360,11 +393,6 @@ class Dashboard extends React.Component {
                 </Spinner>
               </div>
             )}
-          </Aux>
-        );
-      } else if (this.props.user.role === 'Editor') {
-        return (
-          <Aux>
             <EditorMainView
               role={this.props.user.role}
               editAgent={this.editAgent}
@@ -377,42 +405,28 @@ class Dashboard extends React.Component {
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
             />
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Aux>
         );
       } else if (this.props.user.role === 'Student') {
         return (
           <Aux>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
             <StudentDashboard
               role={this.props.user.role}
               students={this.state.students}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Aux>
         );
       } else {
         return (
           <Aux>
-            <GuestMainView
-              role={this.props.user.role}
-              success={this.state.success}
-              students={this.state.students}
-              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-            />
-
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">
@@ -420,6 +434,12 @@ class Dashboard extends React.Component {
                 </Spinner>
               </div>
             )}
+            <GuestDashboard
+              role={this.props.user.role}
+              success={this.state.success}
+              students={this.state.students}
+              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+            />
           </Aux>
         );
       }

@@ -9,10 +9,10 @@ import Reactivation from '../Activation/Reactivation';
 export default function Signin1({ setUserdata }) {
   const [emailaddress, setEmailaddress] = useState();
   const [password, setPassword] = useState();
+  const [loginsuccess, setLoginsuccess] = useState(true);
   const [buttondisable, setButtondisable] = useState(false);
   const [reactivateAccount, setReactivateAccount] = useState(false);
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
   const emailValidation = () => {
     const regex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -26,10 +26,10 @@ export default function Signin1({ setUserdata }) {
       if (resp) {
         // TODO: what if status is other!!?
         if (resp.status === 400) {
-          alert('This Email is already registered.');
+          setLoginsuccess(false);
         } else if (resp.status === 401) {
-          alert('Password is not correct.');
-          setButtondisable(false);
+          setLoginsuccess(false);
+          // setButtondisable(false);
         } else if (resp.status === 403) {
           setReactivateAccount(true);
         } else {
@@ -42,7 +42,8 @@ export default function Signin1({ setUserdata }) {
         }
       } else {
         alert('Email or password not correct.');
-        setButtondisable(false);
+        setLoginsuccess(false);
+        // setButtondisable(false);
       }
     } catch (e) {
       console.log(e);
@@ -62,7 +63,7 @@ export default function Signin1({ setUserdata }) {
         } catch (err) {
           // TODO: handle error
           alert('Server no response! Please try later.');
-          setButtondisable(false);
+          // setButtondisable(false);
           console.log(err);
         }
       }
@@ -97,10 +98,10 @@ export default function Signin1({ setUserdata }) {
             <form className="card">
               <div className="card-body text-center">
                 {/* <div className="mb-4">
-                <i className="feather icon-unlock auth-icon" />
-              </div> */}
+                  <i className="feather icon-unlock auth-icon" />
+                </div> */}
                 <h3 className="mb-4"> TaiGer - Portal</h3>
-                <p> Study in Germany</p>
+                <p className="mb-4"> Study in Germany</p>
                 <div className="input-group mb-3">
                   <input
                     type="email"
@@ -118,8 +119,9 @@ export default function Signin1({ setUserdata }) {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
+                {!loginsuccess && <p>Email or pass word is not correct.</p>}
                 <button
-                  disabled={!emailaddress || !password || buttondisable}
+                  disabled={!emailaddress || !password}
                   onClick={(e) => onButtonClick(e, true)}
                   type="submit"
                   className="btn btn-primary shadow-2 mb-4"

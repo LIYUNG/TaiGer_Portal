@@ -424,7 +424,7 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
     logger.error(
       'SetAsFinalProgramSpecificFile: Invalid operation for student'
     );
-    throw new ErrorResponse(401, 'Invalid operation for student');
+    throw new ErrorResponse(403, 'Invalid operation for student');
     // }
   }
 
@@ -453,7 +453,6 @@ const SetAsFinalProgramSpecificFile = asyncHandler(async (req, res, next) => {
   let doc_name = '';
   let doc_updateAt = '';
   if (whoupdate == Role.Student) {
-    // throw new ErrorResponse(400, "Can only mark by editor!");
     student_input_doc = application.student_inputs.find(
       ({ name }) => name === docName
     );
@@ -532,7 +531,7 @@ const deleteProgramSpecificFile = asyncHandler(async (req, res, next) => {
   if (user.role === Role.Student) {
     if (studentId !== user._id.toString()) {
       logger.error('deleteProgramSpecificFile: Invalid operation for student');
-      throw new ErrorResponse(401, 'Invalid operation for student');
+      throw new ErrorResponse(403, 'Invalid operation for student');
     }
   }
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -650,7 +649,7 @@ const SetAsFinalGeneralFile = asyncHandler(async (req, res, next) => {
   if (user.role === Role.Student) {
     // if (studentId !== user._id.toString()) {
     logger.error('Invalid operation for student');
-    throw new ErrorResponse(401, 'Invalid operation for student');
+    throw new ErrorResponse(403, 'Invalid operation for student');
     // }
   }
 
@@ -764,7 +763,7 @@ const deleteGeneralFile = asyncHandler(async (req, res, next) => {
   if (user.role === Role.Student) {
     if (studentId !== user._id.toString()) {
       logger.error('deleteGeneralFile: Invalid operation for student');
-      throw new ErrorResponse(401, 'Invalid operation for student');
+      throw new ErrorResponse(403, 'Invalid operation for student');
     }
   }
 
@@ -880,7 +879,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Student) {
     if (studentId !== user._id.toString()) {
-      throw new ErrorResponse(401, 'Invalid operation for student');
+      throw new ErrorResponse(403, 'Invalid operation for student');
     }
   }
 

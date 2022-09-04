@@ -5,7 +5,8 @@ const { User, Agent, Editor, Student, Role } = require('../models/User');
 const logger = require('../services/logger');
 
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find();
+  const users = await User.find({}).lean();
+  console.log('getUsers');
   res.status(200).send({ success: true, data: users });
 });
 
@@ -22,10 +23,10 @@ const updateUser = asyncHandler(async (req, res) => {
     overwriteDiscriminatorKey: true,
     // upsert: true,
     new: true
-  });
+  }).lean();
 
   return res.status(200).send({ success: true, data: new_user });
-  //TODO: Email inform Guest, the updated status
+  // TODO: Email inform Guest, the updated status
 });
 
 const deleteUser = asyncHandler(async (req, res) => {

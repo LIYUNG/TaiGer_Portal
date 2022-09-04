@@ -4,10 +4,14 @@ import Aux from '../../hoc/_Aux';
 import DEMO from '../../store/constant';
 import { getCVMLRLOverview } from '../../api';
 import EditorDocsProgress from './EditorDocsProgress';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
 class EditorCenter extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     isLoaded: false,
     data: null,
     success: false,
@@ -36,7 +40,11 @@ class EditorCenter extends React.Component {
             //   accordionKeys: new Array(-1, data.length), // to collapse all
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -80,17 +88,25 @@ class EditorCenter extends React.Component {
   };
 
   render() {
-    const { error, isLoaded, accordionKeys } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded, accordionKeys } =
+      this.state;
     const style = {
       position: 'fixed',
       top: '40%',
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }
@@ -107,15 +123,11 @@ class EditorCenter extends React.Component {
     const student_editor = this.state.students.map((student, i) => (
       <>
         <Card className="mt-2" key={i}>
-          <Card.Header
-            onClick={() => this.singleExpandtHandler(i)}
-          >
+          <Card.Header onClick={() => this.singleExpandtHandler(i)}>
             <Card.Title
               as="h5"
               aria-controls={'accordion' + i}
-              aria-expanded={
-                this.state.accordionKeys[i] === i
-              }
+              aria-expanded={this.state.accordionKeys[i] === i}
             >
               {student.firstname}
               {' ,'}

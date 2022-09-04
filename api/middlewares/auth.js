@@ -9,7 +9,7 @@ const localAuth = (req, res, next) => {
       return next(new ErrorResponse(403, 'Inactivated account'));
     }
 
-    if (!user) return next(new ErrorResponse(401, 'Invalid credentials'));
+    if (!user) return next(new ErrorResponse(401, 'unauthenticated'));
     req.user = user;
     next();
   })(req, res, next);
@@ -19,7 +19,7 @@ const protect = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
     if (err) return next(err);
 
-    if (!user) return next(new ErrorResponse(401, 'Unauthorized'));
+    if (!user) return next(new ErrorResponse(401, 'unauthenticated'));
 
     req.user = user;
     next();
@@ -29,8 +29,9 @@ const protect = (req, res, next) => {
 const permit =
   (...roles) =>
   (req, res, next) => {
-    if (!roles.includes(req.user.role))
+    if (!roles.includes(req.user.role)) {
       return next(new ErrorResponse(403, 'Permission denied'));
+    }
 
     next();
   };

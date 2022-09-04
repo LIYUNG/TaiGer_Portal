@@ -1,31 +1,36 @@
-import React from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
-import Card from "../../App/components/MainCard";
-import Aux from "../../hoc/_Aux";
-import UsersList from "./UsersList";
+import React from 'react';
+import { Row, Col, Spinner } from 'react-bootstrap';
+import Card from '../../App/components/MainCard';
+import Aux from '../../hoc/_Aux';
+import UsersList from './UsersList';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
-import { getUsers } from "../../api";
+import { getUsers } from '../../api';
 
 class UsersTable extends React.Component {
   state = {
     error: null,
-    role: "",
+    timeouterror: null,
+    role: '',
     isLoaded: false,
     user: null,
-    success: false,
+    unauthorizederror: null,
+    success: false
   };
 
   componentDidMount() {
     getUsers().then(
       (resp) => {
-        if (resp.status === 401 || resp.status === 403) {
-          return this.setState({ error: resp.status });
-        }
         const { data, success } = resp.data;
         if (success) {
           this.setState({ isLoaded: true, user: data, success });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => this.setState({ isLoaded: true, error })
@@ -40,7 +45,11 @@ class UsersTable extends React.Component {
           if (success) {
             this.setState({ isLoaded: true, user: data, success });
           } else {
-            alert(resp.data.message);
+            if (resp.status == 401) {
+              this.setState({ isLoaded: true, timeouterror: true });
+            } else if (resp.status == 403) {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            }
           }
         },
         (error) => this.setState({ isLoaded: true, error })
@@ -51,44 +60,51 @@ class UsersTable extends React.Component {
   validate = () => {
     let isError = false;
     const errors = {
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: "",
+      firstName: '',
+      lastName: '',
+      username: '',
+      email: '',
+      password: ''
     };
 
     const { username, email } = this.state.values;
 
     if (username.length < 5) {
       isError = true;
-      errors.username = "Username needs to be atleast 5 characters long";
+      errors.username = 'Username needs to be atleast 5 characters long';
     }
 
-    if (email.indexOf("@") === -1) {
+    if (email.indexOf('@') === -1) {
       isError = true;
-      errors.email = "Requires valid email";
+      errors.email = 'Requires valid email';
     }
 
     this.setState({
-      errors,
+      errors
     });
 
     return isError;
   };
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }
@@ -106,7 +122,7 @@ class UsersTable extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card title={"Users List"}>
+            <Card title={'Users List'}>
               <UsersList
                 success={this.state.success}
                 user={this.state.user}

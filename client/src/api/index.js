@@ -169,10 +169,7 @@ const getArticle = (type) => request.get(`/api/docs/${type}`);
 export const getApplicationArticle = () => getArticle('application');
 export const SubmitMessageWithAttachment = (
   documentsthreadId,
-  // userId,
   studentId,
-  // file_type,
-  // message,
   newFile
 ) =>
   request.post(

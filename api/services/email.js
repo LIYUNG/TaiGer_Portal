@@ -20,6 +20,8 @@ const PASSWORD_RESET_URL = new URL('/account/reset-password', ORIGIN).href;
 const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
 // const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
 
+const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
+
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
 const transporter = createTransport({
   // host: SMTP_HOST,
@@ -106,7 +108,6 @@ ${TAIGER_SIGNATURE}
 
   return sendEmail(recipient, subject, message);
 };
-
 
 const sendUploadedProgramSpecificFilesEmail = async (recipient, msg) => {
   const subject = 'Thank you for your input!';
@@ -278,7 +279,6 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-
 const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
   var subject;
   var message;
@@ -402,18 +402,118 @@ ${TAIGER_SIGNATURE}
 
   return sendEmail(recipient, subject, message);
 };
-
-const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
+const sendNewApplicationMessageInThreadToEditorEmail = async (
   recipient,
   msg
 ) => {
-  const subject = `Your docunebt ${msg.uploaded_documentname} is finished!`;
+  const subject = `${msg.student_firstname} ${msg.student_lastname} has new update for ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized
+your student ${msg.student_firstname} ${msg.student_lastname} have a new update for 
 
-${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} 
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}
+
+on ${msg.uploaded_updatedAt} 
+
+for you.
+
+Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
+const sendNewApplicationMessageInThreadToStudentEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `You have new update for ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname} have a new update for 
+
+${msg.school} ${msg.program_name} ${msg.uploaded_documentname}
+
+on ${msg.uploaded_updatedAt} 
+
+for you.
+
+Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+const sendNewGeneraldocMessageInThreadToEditorEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `${msg.student_firstname} ${msg.student_lastname} has new update for ${msg.uploaded_documentname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your student ${msg.student_firstname} ${msg.student_lastname} have a new update for 
+
+${msg.uploaded_documentname} 
+
+on ${msg.uploaded_updatedAt} 
+
+for you.
+
+Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
+const sendNewGeneraldocMessageInThreadToStudentEmail = async (
+  recipient,
+  msg
+) => {
+  const subject = `You have new update for ${msg.uploaded_documentname}!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname} have a new update for 
+
+${msg.uploaded_documentname} 
+
+on ${msg.uploaded_updatedAt} 
+
+for you.
+
+Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
+const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
+  if (msg.isFinalVersion) {
+    const subject = `Your document ${msg.uploaded_documentname} is finished!`;
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} 
+
+on ${msg.uploaded_updatedAt} 
 
 for you.
 
@@ -425,7 +525,72 @@ ${TAIGER_SIGNATURE}
 
 `;
 
-  return sendEmail(recipient, subject, message);
+    sendEmail(recipient, subject, message);
+  } else {
+    const subject = `Your document ${msg.uploaded_documentname} is not finished!`;
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
+
+as not finished.
+
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+    sendEmail(recipient, subject, message);
+  }
+};
+
+const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
+  recipient,
+  msg
+) => {
+  if (msg.isFinalVersion) {
+    const subject = `Your document ${msg.uploaded_documentname} is finished!`;
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized
+
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
+
+on ${msg.uploaded_updatedAt} 
+
+for you.
+
+This document is ready for the application. 
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+    sendEmail(recipient, subject, message);
+  } else {
+    const subject = `Your document ${msg.uploaded_documentname} is not finished!`;
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your editor ${msg.editor_firstname} ${msg.editor_lastname} set
+
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
+
+as not finished.
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+    sendEmail(recipient, subject, message);
+  }
 };
 
 const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
@@ -441,30 +606,6 @@ ${msg.editor_firstname} ${msg.editor_lastname} have finalized
 ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} 
 
 for ${msg.student_firstname} ${msg.student_lastname}.
-
-Double check this document and finalize the application if applicable. 
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-
-const sendStudentFeedbackProgramSpecificFileForEditorEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = `There is a new feedback for ${msg.feedback_for_documentname} by ${msg.student_firstname} ${msg.student_lastname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-Your student ${msg.student_firstname} ${msg.student_lastname} has updated a feedback for
-
- ${msg.feedback_for_documentname}:
-
-on ${msg.uploaded_updatedAt} 
 
 Double check this document and finalize the application if applicable. 
 
@@ -494,9 +635,13 @@ module.exports = {
   sendSomeReminderEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
+  sendSetAsFinalGeneralFileForStudentEmail,
+  sendNewApplicationMessageInThreadToEditorEmail,
+  sendNewApplicationMessageInThreadToStudentEmail,
+  sendNewGeneraldocMessageInThreadToEditorEmail,
+  sendNewGeneraldocMessageInThreadToStudentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   informEditorNewStudentEmail,
-  informStudentTheirEditorEmail,
-  sendStudentFeedbackProgramSpecificFileForEditorEmail
+  informStudentTheirEditorEmail
 };

@@ -16,7 +16,7 @@ class EditableFile_Thread extends Component {
     this.props.handleAsFinalFile(
       this.props.thread.doc_thread_id._id,
       this.props.student._id,
-      this.props.application.programId._id,
+      this.props.program_id,
       action
     );
   };
@@ -32,7 +32,7 @@ class EditableFile_Thread extends Component {
   handleDeleteProgramSpecificFileThread = () => {
     this.props.onDeleteProgramSpecificThread(
       this.props.thread.doc_thread_id._id,
-      this.props.application.programId._id,
+      this.props.program_id,
       this.props.student._id
     );
   };

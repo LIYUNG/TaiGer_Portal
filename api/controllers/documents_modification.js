@@ -7,17 +7,15 @@ const { Role, Agent, Student, Editor } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const {
   sendUploadedProgramSpecificFilesEmail,
-  sendEditorOutputProgramSpecificFilesEmailToStudent,
-  sendEditorOutputProgramSpecificFilesEmailToAgent,
-  sendUploadedProfileFilesEmail,
-  sendAgentUploadedProfileFilesForStudentEmail,
-  sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedProgramSpecificFilesRemindForEditorEmail,
   sendUploadedProgramSpecificFilesRemindForAgentEmail,
-  sendChangedProfileFileStatusEmail,
+  sendNewApplicationMessageInThreadToEditorEmail,
+  sendNewApplicationMessageInThreadToStudentEmail,
+  sendNewGeneraldocMessageInThreadToEditorEmail,
+  sendNewGeneraldocMessageInThreadToStudentEmail,
+  sendSetAsFinalGeneralFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
-  sendSetAsFinalProgramSpecificFileForAgentEmail,
-  sendStudentFeedbackProgramSpecificFileForEditorEmail
+  sendSetAsFinalProgramSpecificFileForAgentEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
@@ -266,6 +264,7 @@ const getMessages = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: document_thread });
 });
 
+// (O) notification email works
 const postMessages = asyncHandler(async (req, res) => {
   const {
     user,
@@ -273,12 +272,16 @@ const postMessages = asyncHandler(async (req, res) => {
   } = req;
   const { message } = req.body;
 
-  const document_thread = await Documentthread.findById(messagesThreadId);
+  const document_thread = await await Documentthread.findById(messagesThreadId)
+    .populate('student_id program_id')
+    .exec();
+
   if (!document_thread) {
+    logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
 
-  var newfile = [];
+  let newfile = [];
   if (req.file) {
     newfile = [
       {
@@ -288,7 +291,6 @@ const postMessages = asyncHandler(async (req, res) => {
     ];
   }
 
-  // TODO: to save file when file attached
   const new_message = {
     user_id: user._id,
     message,
@@ -297,10 +299,84 @@ const postMessages = asyncHandler(async (req, res) => {
   };
   document_thread.messages.push(new_message);
   await document_thread.save();
-  const document_thread2 = await Documentthread.findById(
-    messagesThreadId
-  ).populate('student_id program_id messages.user_id');
+  const document_thread2 = await Documentthread.findById(messagesThreadId)
+    .populate('student_id program_id messages.user_id')
+    .exec();
   res.status(200).send({ success: true, data: document_thread2 });
+
+  if (user.role === Role.Student) {
+    // Inform Editor
+    const student =
+      user.role === Role.Student ? user : await Student.findById(user._id);
+      for (let i = 0; i < student.editors.length; i++) {
+        if (document_thread.program_id) {
+          // TODO: multiple editors(?)
+
+          sendNewApplicationMessageInThreadToEditorEmail(
+            {
+              firstname: student.editors[i].firstname,
+              lastname: student.editors[i].lastname,
+              address: student.editors[i].email
+            },
+            {
+              student_firstname: user.firstname,
+              student_lastname: user.lastname,
+              uploaded_documentname: document_thread.file_type,
+              school: document_thread.program_id.school,
+              program_name: document_thread.program_id.program_name,
+              uploaded_updatedAt: new Date()
+            }
+          );
+        } else {
+          sendNewGeneraldocMessageInThreadToEditorEmail(
+            {
+              firstname: student.editors[i].firstname,
+              lastname: student.editors[i].lastname,
+              address: student.editors[i].email
+            },
+            {
+              student_firstname: user.firstname,
+              student_lastname: user.lastname,
+              uploaded_documentname: document_thread.file_type,
+              uploaded_updatedAt: new Date()
+            }
+          );
+        }
+      }
+  } else {
+    // Inform student
+    if (document_thread.program_id) {
+      sendNewApplicationMessageInThreadToStudentEmail(
+        {
+          firstname: document_thread.student_id.firstname,
+          lastname: document_thread.student_id.lastname,
+          address: document_thread.student_id.email
+        },
+        {
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          uploaded_documentname: document_thread.file_type,
+          school: document_thread.program_id.school,
+          program_name: document_thread.program_id.program_name,
+          uploaded_updatedAt: new Date()
+        }
+      );
+    } else {
+      sendNewGeneraldocMessageInThreadToStudentEmail(
+        {
+          firstname: document_thread.student_id.firstname,
+          lastname: document_thread.student_id.lastname,
+          address: document_thread.student_id.email
+        },
+        {
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          uploaded_documentname: document_thread.file_type,
+          uploaded_updatedAt: new Date()
+        }
+      );
+    }
+  }
 });
 
 // Download file in a message in a thread
@@ -358,56 +434,108 @@ const getMessageFile = asyncHandler(async (req, res) => {
     });
 });
 
+// (O) notification email works
 const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { messagesThreadId, studentId },
     body: { program_id }
   } = req;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
-  const student = await Student.findById(studentId);
-
-  if (!document_thread) {
-    throw new ErrorResponse(400, 'Invalid message thread id');
-  }
-  if (!student) throw new ErrorResponse(400, 'Invalid student id id');
-  logger.info('program_id ', program_id);
-  if (program_id) {
-    // TODO: implement update logic
-    const student_application = student.applications.find(
-      (application) => application.programId == program_id
-    );
-    if (!student_application) {
-      throw new ErrorResponse(400, 'application not found');
-    }
-
-    const application_thread = student_application.doc_modification_thread.find(
-      (thread) => thread.doc_thread_id == messagesThreadId
-    );
-    if (!application_thread) {
-      throw new ErrorResponse(400, 'thread not found');
-    }
-    application_thread.isFinalVersion = !application_thread.isFinalVersion;
-    await student.save();
-  } else {
-    // TODO: implement update logic
-    const generaldocs_thread = student.generaldocs_threads.find(
-      (thread) => thread.doc_thread_id == messagesThreadId
-    );
-    if (!generaldocs_thread) throw new ErrorResponse(400, 'thread not found');
-    generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
-    await student.save();
-  }
-
-  const student2 = await Student.findById(studentId)
+  const student = await Student.findById(studentId)
     .populate('applications.programId generaldocs_threads.doc_thread_id')
     .populate(
       'applications.doc_modification_thread.doc_thread_id',
       'file_type updatedAt'
     );
-  res.status(200).send({ success: true, data: student2 });
+  if (!document_thread) {
+    logger.error('SetStatusMessagesThread: Invalid message thread id');
+    throw new ErrorResponse(400, 'Invalid message thread id');
+  }
+  if (!student) {
+    logger.error('SetStatusMessagesThread: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id id');
+  }
+  logger.info('program_id ', program_id);
+  if (program_id) {
+    // TODO: implement update logic
+    const student_application = student.applications.find(
+      (application) => application.programId._id == program_id
+    );
+    if (!student_application) {
+      logger.error('SetStatusMessagesThread: application not foun');
+      throw new ErrorResponse(400, 'application not found');
+    }
+
+    const application_thread = student_application.doc_modification_thread.find(
+      (thread) => thread.doc_thread_id._id == messagesThreadId
+    );
+    if (!application_thread) {
+      logger.error('SetStatusMessagesThread: application thread not found');
+      throw new ErrorResponse(400, 'thread not found');
+    }
+    application_thread.isFinalVersion = !application_thread.isFinalVersion;
+    await student.save();
+    const student2 = await Student.findById(studentId)
+      .populate('applications.programId generaldocs_threads.doc_thread_id')
+      .populate(
+        'applications.doc_modification_thread.doc_thread_id',
+        'file_type updatedAt'
+      );
+    res.status(200).send({ success: true, data: student2 });
+    sendSetAsFinalProgramSpecificFileForStudentEmail(
+      {
+        firstname: student2.firstname,
+        lastname: student2.lastname,
+        address: student.email
+      },
+      {
+        editor_firstname: user.firstname,
+        editor_lastname: user.lastname,
+        school: student_application.programId.school,
+        program_name: student_application.programId.program_name,
+        uploaded_documentname: application_thread.doc_thread_id.file_type,
+        uploaded_updatedAt: new Date(),
+        isFinalVersion: application_thread.isFinalVersion
+      }
+    );
+  } else {
+    // TODO: implement update logic
+    const generaldocs_thread = student.generaldocs_threads.find(
+      (thread) => thread.doc_thread_id._id == messagesThreadId
+    );
+    if (!generaldocs_thread) {
+      logger.error('SetStatusMessagesThread: generaldoc thread not found');
+      throw new ErrorResponse(400, 'thread not found');
+    }
+    generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
+    await student.save();
+    const student2 = await Student.findById(studentId)
+      .populate('applications.programId generaldocs_threads.doc_thread_id')
+      .populate(
+        'applications.doc_modification_thread.doc_thread_id',
+        'file_type updatedAt'
+      );
+    res.status(200).send({ success: true, data: student2 });
+    sendSetAsFinalGeneralFileForStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        editor_firstname: user.firstname,
+        editor_lastname: user.lastname,
+        uploaded_documentname: generaldocs_thread.doc_thread_id.file_type,
+        uploaded_updatedAt: new Date(),
+        isFinalVersion: generaldocs_thread.isFinalVersion
+      }
+    );
+  }
 });
 
+// () TODO email : notification
 const deleteMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId }
@@ -467,6 +595,7 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: student2 });
 });
 
+// () TODO email : notification
 const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, program_id, studentId }
@@ -528,6 +657,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: student2 });
 });
 
+// () TODO email : notification
 const deleteAMessageInThread = asyncHandler(async (req, res) => {
   const {
     user,

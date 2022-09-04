@@ -39,7 +39,6 @@ const StudentApplications = React.lazy(() =>
 );
 const SingleProgram = React.lazy(() => import("./Demo/Program/SingleProgram"));
 const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
-const Profile = React.lazy(() => import("./Demo/Profile/index"));
 const Survey = React.lazy(() => import("./Demo/Survey/index"));
 const Settings = React.lazy(() => import("./Demo/Settings/index"));
 const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
@@ -276,12 +275,6 @@ const routes = [
     name: '',
     component: Survey
   },
-  {
-    path: '/profile',
-    exact: true,
-    name: 'Profile',
-    component: Profile
-  }
   // {
   //   path: "/",
   //   component: DashboardDefault,

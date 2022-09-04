@@ -1,28 +1,33 @@
-import React, { Component } from "react";
-import { Row, Col, Spinner, Button, Card, Form } from "react-bootstrap";
-import Aux from "../../../hoc/_Aux";
-import MessageList from "./MessageList";
-import { convertToRaw } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import React, { Component } from 'react';
+import { Row, Col, Spinner, Button, Card, Form } from 'react-bootstrap';
+import Aux from '../../../hoc/_Aux';
+import MessageList from './MessageList';
+import { convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import TimeOutErrors from '../../Utils/TimeOutErrors';
+import UnauthorizedError from '../../Utils/UnauthorizedError';
+
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
   updateDoc,
   deleteDoc,
   SubmitMessageWithAttachment,
   getMessageFileDownload,
-  getMessagThread,
-} from "../../../api";
+  getMessagThread
+} from '../../../api';
 
 const steps = [
-  "Step 1: Get an account",
-  "Step 2: Fill personal information",
-  "Step 3: Choose programs",
-  "Step 4: Pay",
-  "Step 5: Send copy to Germany",
+  'Step 1: Get an account',
+  'Step 2: Fill personal information',
+  'Step 3: Choose programs',
+  'Step 4: Pay',
+  'Step 5: Send copy to Germany'
 ];
 class Application extends Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     file: null,
     isLoaded: false,
     articles: [],
@@ -33,7 +38,7 @@ class Application extends Component {
     editorState: null,
     completed: {},
     expand: true,
-    accordionKeys: [0], // to expand all]
+    accordionKeys: [0] // to expand all]
   };
   componentDidMount() {
     console.log(this.props.match.params.documentsthreadId);
@@ -50,17 +55,21 @@ class Application extends Component {
             file: null,
             accordionKeys: new Array(data.messages.length)
               .fill()
-              .map((x, i) => i), // to expand all
+              .map((x, i) => i) // to expand all
             //   accordionKeys: new Array(-1, data.length), // to collapse all
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -79,15 +88,12 @@ class Application extends Component {
 
     var message = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
     const formData = new FormData();
-    formData.append("file", this.state.file);
-    formData.append("message", message);
+    formData.append('file', this.state.file);
+    formData.append('message', message);
 
     SubmitMessageWithAttachment(
       this.state.documentsthreadId,
-      // this.state.userId,
       this.state.thread.student_id._id,
-      // this.state.thread.file_type,
-      // message,
       formData
     ).then(
       (resp) => {
@@ -98,14 +104,18 @@ class Application extends Component {
             file: null,
             editorState: null,
             thread: data,
-            isLoaded: true,
+            isLoaded: true
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
-        console.log(error);
+        this.setState({ error });
       }
     );
   };
@@ -124,12 +134,12 @@ class Application extends Component {
             Titel_: attrs.Titel_,
             Content_: attrs.Content_,
             Category_: attrs.Category_,
-            LastUpdate_: attrs.LastUpdate_,
+            LastUpdate_: attrs.LastUpdate_
           });
         } else {
           return article;
         }
-      }),
+      })
     });
     let article_temp = {};
     Object.assign(article_temp, {
@@ -137,7 +147,7 @@ class Application extends Component {
       Titel_: attrs.Titel_,
       Content_: attrs.Content_,
       Category_: attrs.Category_,
-      LastUpdate_: attrs.LastUpdate_,
+      LastUpdate_: attrs.LastUpdate_
     });
     updateDoc(attrs._id, article_temp).then(
       (resp) => {
@@ -150,7 +160,7 @@ class Application extends Component {
               } else {
                 return article;
               }
-            }),
+            })
           });
         } else {
           alert(resp.data.message);
@@ -159,7 +169,7 @@ class Application extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -174,29 +184,29 @@ class Application extends Component {
     ).then(
       (resp) => {
         const actualFileName =
-          resp.headers["content-disposition"].split('"')[1];
+          resp.headers['content-disposition'].split('"')[1];
         const { data: blob } = resp;
         if (blob.size === 0) return;
 
-        var filetype = actualFileName.split("."); //split file name
+        var filetype = actualFileName.split('.'); //split file name
         filetype = filetype.pop(); //get the file type
 
-        if (filetype === "pdf") {
+        if (filetype === 'pdf') {
           const url = window.URL.createObjectURL(
-            new Blob([blob], { type: "application/pdf" })
+            new Blob([blob], { type: 'application/pdf' })
           );
 
           // Open the URL on new Window
-          var newWindow = window.open(url, "_blank"); //TODO: having a reasonable file name, pdf viewer
+          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
           newWindow.document.title = actualFileName;
         } else {
           //if not pdf, download instead.
 
           const url = window.URL.createObjectURL(new Blob([blob]));
 
-          const link = document.createElement("a");
+          const link = document.createElement('a');
           link.href = url;
-          link.setAttribute("download", actualFileName);
+          link.setAttribute('download', actualFileName);
           // Append to html link element page
           document.body.appendChild(link);
           // Start download
@@ -206,7 +216,7 @@ class Application extends Component {
         }
       },
       (error) => {
-        alert("The file is not available.");
+        alert('The file is not available.');
       }
     );
   };
@@ -219,7 +229,7 @@ class Application extends Component {
     this.setState({
       articles: this.state.articles.filter(
         (article) => article._id !== articleId
-      ),
+      )
     });
 
     deleteDoc(articleId).then(
@@ -227,7 +237,7 @@ class Application extends Component {
       (error) => {
         this.setState({
           isLoaded: false,
-          error,
+          error
         });
       }
     );
@@ -235,7 +245,7 @@ class Application extends Component {
   handleClick = (e) => {
     this.setState((state) => ({
       ...state,
-      defaultStep: this.state.defaultStep + 1,
+      defaultStep: this.state.defaultStep + 1
     }));
   };
 
@@ -244,7 +254,7 @@ class Application extends Component {
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
     this.setState((state) => ({
       ...state,
-      accordionKeys: accordionKeys,
+      accordionKeys: accordionKeys
     }));
   };
 
@@ -254,7 +264,7 @@ class Application extends Component {
       expand: false,
       accordionKeys: new Array(this.state.thread.messages.length)
         .fill()
-        .map((x, i) => -1), // to collapse all]
+        .map((x, i) => -1) // to collapse all]
     }));
   };
 
@@ -264,23 +274,30 @@ class Application extends Component {
       expand: true,
       accordionKeys: new Array(this.state.thread.messages.length)
         .fill()
-        .map((x, i) => i), // to expand all]
+        .map((x, i) => i) // to expand all]
     }));
   };
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
     const { completed, activeStep } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }
@@ -307,17 +324,17 @@ class Application extends Component {
             <Card.Header>
               <Card.Title as="h5">
                 <h4>
-                  {this.state.thread.student_id.firstname}{" "}
+                  {this.state.thread.student_id.firstname}{' '}
                   {this.state.thread.student_id.lastname}
-                  {" - "}
+                  {' - '}
                   {this.state.thread.program_id
                     ? this.state.thread.program_id.school +
-                      " " +
+                      ' ' +
                       this.state.thread.program_id.program_name
-                    : ""}{" "}
+                    : ''}{' '}
                   {this.state.thread.file_type}
-                  {" Discussion thread"}
-                  {"   "}
+                  {' Discussion thread'}
+                  {'   '}
                   {this.state.expand ? (
                     <Button
                       className="btn-sm float-right"
@@ -366,7 +383,7 @@ class Application extends Component {
                     <Editor
                       spellCheck={true}
                       // onFocus={onClick={this.handle}}
-                      placeholder={"Write comments"}
+                      placeholder={'Write comments'}
                       editorState={this.state.editorState}
                       onEditorStateChange={this.handleEditorChange}
                       wrapperClassName="wrapper-class"
@@ -385,8 +402,8 @@ class Application extends Component {
                         //   // "file",
                         // ],
                         link: {
-                          defaultTargetOption: "_blank",
-                          popupClassName: "mail-editor-link",
+                          defaultTargetOption: '_blank',
+                          popupClassName: 'mail-editor-link'
                         },
                         image: {
                           urlEnabled: true,
@@ -394,12 +411,12 @@ class Application extends Component {
                           uploadCallback: this.uploadImageCallBack,
                           alignmentEnabled: true,
                           defaultSize: {
-                            height: "auto",
-                            width: "auto",
+                            height: 'auto',
+                            width: 'auto'
                           },
                           inputAccept:
-                            "application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel",
-                        },
+                            'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
+                        }
                       }}
                     />
                     <Row>
@@ -408,7 +425,7 @@ class Application extends Component {
                           <Form.File.Label
                             // key={this.state.file || ""}
                             onClick={(e) =>
-                              (e.target.value = this.state.file || "")
+                              (e.target.value = this.state.file || '')
                             }
                           >
                             <Form.File.Input

@@ -168,6 +168,8 @@ const getArchivStudents = asyncHandler(async (req, res) => {
   }
 });
 
+// () TODO email : agent better notification! (only added or removed should be informed.)
+// () TODO email : student better notification
 const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
   const {
     user,
@@ -245,6 +247,8 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
   }
 });
 
+// () TODO email : agent better notification! (only added or removed should be informed.)
+// () TODO email : student better notification
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId },
@@ -315,6 +319,8 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   //TODO: email inform Student for(assigned agent) and inform Agent for (your new student)
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId },
@@ -389,6 +395,8 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   //TODO: email inform Student for(assigned editor) and inform editor for (your new student)
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const createApplication = asyncHandler(async (req, res) => {
   const {
     user,
@@ -453,6 +461,8 @@ const createApplication = asyncHandler(async (req, res) => {
   res.status(201).send({ success: true, data: program_id_set });
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const deleteApplication = asyncHandler(async (req, res, next) => {
   const {
     user,

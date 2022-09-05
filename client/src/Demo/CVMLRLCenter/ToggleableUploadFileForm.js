@@ -1,13 +1,18 @@
-import React, { Component } from "react";
-import { IoMdCloudUpload } from "react-icons/io";
-import { Button, Form, Row, Col } from "react-bootstrap";
+import React, { Component } from 'react';
+import { IoMdCloudUpload } from 'react-icons/io';
+import { Button, Form, Row, Col } from 'react-bootstrap';
 
 class ToggleableUploadFileForm extends Component {
   render() {
     var drop_list;
-    var EditorSelectForm;
+    var thread_name =
+      this.props.student.firstname +
+      '-' +
+      this.props.student.lastname +
+      ' ' +
+      this.props.category;
 
-    if (this.props.filetype === "General") {
+    if (this.props.filetype === 'General') {
       drop_list = (
         <Form>
           <Form.Group controlId="formFile" className="mb-3">
@@ -49,16 +54,16 @@ class ToggleableUploadFileForm extends Component {
       // <div className="ui basic content center aligned segment">
       <Row>
         <Col md={6}>{drop_list}</Col>
-
         <Col md={1}>
-          {this.props.filetype === "General" ? (
+          {this.props.filetype === 'General' ? (
             <Button
               variant="primary"
               onClick={(e) =>
                 this.props.handleCreateGeneralMessageThread(
                   e,
                   this.props.student._id,
-                  this.props.category
+                  this.props.category,
+                  thread_name
                 )
               }
             >
@@ -72,7 +77,8 @@ class ToggleableUploadFileForm extends Component {
                   e,
                   this.props.student._id,
                   this.props.application.programId._id,
-                  this.props.category
+                  this.props.category,
+                  thread_name
                 )
               }
             >

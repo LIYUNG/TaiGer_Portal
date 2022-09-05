@@ -8,6 +8,7 @@ const {
   SMTP_USERNAME,
   SMTP_PASSWORD,
   BASE_URL,
+  isDev,
   ORIGIN
 } = require('../config');
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
@@ -23,15 +24,23 @@ const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
 
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
-const transporter = createTransport({
-  // host: SMTP_HOST,
-  // port: 465,
-  service: 'gmail',
-  auth: {
-    user: SMTP_USERNAME,
-    pass: SMTP_PASSWORD
-  }
-});
+
+const transporter = isDev()
+  ? createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      auth: {
+        user: SMTP_USERNAME,
+        pass: SMTP_PASSWORD
+      }
+    })
+  : createTransport({
+      service: 'gmail',
+      auth: {
+        user: SMTP_USERNAME,
+        pass: SMTP_PASSWORD
+      }
+    });
 
 const verifySMTPConfig = () => {
   return transporter.verify();

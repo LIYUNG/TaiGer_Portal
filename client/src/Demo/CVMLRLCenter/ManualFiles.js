@@ -5,16 +5,21 @@ import { Row, Col, Tabs, Tab, Table } from "react-bootstrap";
 
 class ManualFiles extends React.Component {
   state = {
-    category: "",
+    category: ''
   };
 
-  handleCreateGeneralMessageThread = (e, studentId, fileCategory) => {
+  handleCreateGeneralMessageThread = (
+    e,
+    studentId,
+    fileCategory,
+    thread_name
+  ) => {
     e.preventDefault();
     if (!this.state.category) {
-      alert("Please select file type");
+      alert('Please select file type');
     } else {
-      this.props.initGeneralFileThread(e, studentId, fileCategory);
-      this.setState({ category: "" });
+      this.props.initGeneralFileThread(e, studentId, fileCategory, thread_name);
+      this.setState({ category: '' });
     }
   };
 
@@ -22,19 +27,21 @@ class ManualFiles extends React.Component {
     e,
     studentId,
     programId,
-    fileCategory
+    fileCategory,
+    thread_name
   ) => {
     e.preventDefault();
     if (!this.state.category) {
-      alert("Please select file type");
+      alert('Please select file type');
     } else {
       this.props.initProgramSpecificFileThread(
         e,
         studentId,
         programId,
-        fileCategory
+        fileCategory,
+        thread_name
       );
-      this.setState({ category: "" });
+      this.setState({ category: '' });
     }
   };
 
@@ -51,7 +58,6 @@ class ManualFiles extends React.Component {
           </thead>
           <tbody>
             <ManualFilesList
-              filetype={this.props.filetype}
               student={this.props.student}
               onDeleteFileThread={this.props.onDeleteFileThread}
               handleAsFinalFile={this.props.handleAsFinalFile}

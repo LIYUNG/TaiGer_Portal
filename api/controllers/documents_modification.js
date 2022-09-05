@@ -95,28 +95,31 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     params: { studentId, document_category }
   } = req;
 
-  const student = await Student.findById(studentId).populate(
-    'generaldocs_threads.doc_thread_id'
-  );
+  const student = await Student.findById(studentId)
+    .populate('generaldocs_threads.doc_thread_id')
+    .exec();
 
-  if (!student) throw new ErrorResponse(400, 'Invalid student id');
-  // TODO: what if same file_type and same student_id? (ex. ML for 2 programs)
-  const doc_thread_existed = await Documentthread.find({
+  if (!student) {
+    logger.info('initGeneralMessagesThread: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
+
+  const doc_thread_existed = await Documentthread.findOne({
     student_id: studentId,
     file_type: document_category
   });
 
-  if (doc_thread_existed.length > 0) {
-    // should add the existing one thread to student application
-    const thread_in_student_application_existed =
+  if (doc_thread_existed) {
+    // should add the existing one thread to student generaldocs
+    const thread_in_student_generaldoc_existed =
       student.generaldocs_threads.find(
         ({ doc_thread_id }) =>
-          doc_thread_id.toString() == doc_thread_existed._id.toString()
+          doc_thread_id._id.toString() == doc_thread_existed._id.toString()
       );
     // if thread existed but not in student application thread, then add it.
-    if (!thread_in_student_application_existed) {
+    if (!thread_in_student_generaldoc_existed) {
       // console.log('Pass 1.1');
-      const app = application.doc_modification_thread.create({
+      const app = student.generaldocs_threads.create({
         doc_thread_id: doc_thread_existed._id,
         createdAt: new Date()
       });
@@ -130,6 +133,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
         );
       return res.status(200).send({ success: true, data: student_updated });
     }
+    logger.info('initGeneralMessagesThread: Document Thread already existed!');
     throw new ErrorResponse(400, 'Document Thread already existed!');
   }
   const new_doc_thread = new Documentthread({
@@ -169,6 +173,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     .exec();
 
   if (!student) {
+    logger.info('initApplicationMessagesThread: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
   const application = student.applications.find(
@@ -176,6 +181,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   );
 
   if (!application) {
+    logger.info('initApplicationMessagesThread: Invalid application id!');
     throw new ErrorResponse(400, 'Invalid application id');
   }
 

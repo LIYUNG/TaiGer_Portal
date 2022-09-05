@@ -12,8 +12,6 @@ const {
   sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
-  sendSetAsFinalProgramSpecificFileForStudentEmail,
-  sendSetAsFinalProgramSpecificFileForAgentEmail,
   // sendSomeReminderEmail,
 } = require('../services/email');
 const {
@@ -235,6 +233,8 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   });
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
   const { status, feedback } = req.body;
@@ -296,7 +296,8 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     }
   );
 });
-
+// () TODO notification student email works
+// () TODO notification agent email works
 const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId },
@@ -520,6 +521,8 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: me.academic_background });
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -545,6 +548,8 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   }
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const {
     user: student,
@@ -568,6 +573,8 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     .send({ success: true, data: updatedStudent.academic_background.language });
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const updatePersonalData = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -596,6 +603,8 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
   }
 });
 
+// () TODO email : agent notification
+// () TODO email : student notification
 const updateCredentials = asyncHandler(async (req, res, next) => {
   const {
     user,

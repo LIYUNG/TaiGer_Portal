@@ -85,31 +85,6 @@ class Userslist extends React.Component {
     );
   };
 
-  editUser = (edited_user) => {
-    // update remote
-    updateUser(edited_user).then(
-      (resp) => {
-        // update local
-        const { data, success } = resp.data;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            success,
-            data
-          });
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-       this.setState({
-         isLoaded: true,
-         error
-       });
-      }
-    );
-  };
-
   assignUserAs = (user_data) => {
     var updated_user = this.state.data.map((user) => {
       if (user._id === user_data._id) {

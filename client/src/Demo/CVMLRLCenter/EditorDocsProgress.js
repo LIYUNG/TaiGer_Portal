@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import DEMO from '../../store/constant';
 import { AiFillCloseCircle, AiFillQuestionCircle } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
   Row,
@@ -33,6 +34,8 @@ import {
 } from 'react-icons/ai';
 class EditorDocsProgress extends React.Component {
   state = {
+    timeouterror: null,
+    unauthorizederror: null,
     student: this.props.student,
     deleteFileWarningModel: false,
     SetAsFinalFileModel: false,
@@ -43,25 +46,16 @@ class EditorDocsProgress extends React.Component {
     applicationId: '',
     docName: '',
     whoupdate: '',
-    comments: '',
-    updatedAt: '',
-    student_feedback: '',
-    student_feedback_updatedAt: '',
     isLoaded: false,
     ml_requirements: '',
-    file: ''
+    file: '',
+    isThreadExisted: false
   };
   componentDidMount() {
     this.setState((state) => ({
       isLoaded: true
     }));
   }
-  openSetAsFinalFileModelWindow = () => {
-    this.setState((state) => ({
-      ...state,
-      SetAsFinalFileModel: true
-    }));
-  };
   closeSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
@@ -82,8 +76,8 @@ class EditorDocsProgress extends React.Component {
       ml_requirements: ''
     }));
   };
-  openWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
+  closeDocExistedWindow = () => {
+    this.setState((state) => ({ ...state, isThreadExisted: false }));
   };
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
@@ -129,7 +123,7 @@ class EditorDocsProgress extends React.Component {
           }
         },
         (error) => {
-          console.log(error);
+          this.setState({ error });
         }
       );
     } else {
@@ -167,7 +161,7 @@ class EditorDocsProgress extends React.Component {
           }
         },
         (error) => {
-          console.log(error);
+          this.setState({ error });
         }
       );
     }
@@ -176,9 +170,13 @@ class EditorDocsProgress extends React.Component {
   ConfirmSetAsFinalFileHandler = () => {
     this.setState((state) => ({
       ...state,
-      isLoaded: false //false to reload everything
+      isLoaded: false // false to reload everything
     }));
-    SetFileAsFinal(this.state.doc_thread_id, this.state.student_id, this.state.program_id).then(
+    SetFileAsFinal(
+      this.state.doc_thread_id,
+      this.state.student_id,
+      this.state.program_id
+    ).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -208,31 +206,20 @@ class EditorDocsProgress extends React.Component {
         }
       },
       (error) => {
-        console.log(error);
+        this.setState({ error });
       }
     );
   };
 
-  handleAsFinalFile = (doc_thread_id, student_id, program_id, action) => {
-    if (action === 'setfinal') {
-      this.setState((state) => ({
-        ...state,
-        doc_thread_id,
-        student_id,
-        program_id,
-        filetype: 'General',
-        SetAsFinalFileModel: true
-      }));
-    } else if (action === 'undofinal') {
-      this.setState((state) => ({
-        ...state,
-        doc_thread_id,
-        student_id,
-        program_id,
-        filetype: 'General',
-        SetAsFinalFileModel: true
-      }));
-    }
+  handleAsFinalFile = (doc_thread_id, student_id, program_id, docName) => {
+    this.setState((state) => ({
+      ...state,
+      doc_thread_id,
+      student_id,
+      program_id,
+      docName,
+      SetAsFinalFileModel: true
+    }));
   };
 
   onDeleteFileThread = (doc_thread_id, application, studentId) => {
@@ -249,7 +236,8 @@ class EditorDocsProgress extends React.Component {
     e,
     studentId,
     applicationId,
-    document_catgory
+    document_catgory,
+    thread_name
   ) => {
     if ('1' === '') {
       e.preventDefault();
@@ -267,7 +255,17 @@ class EditorDocsProgress extends React.Component {
               file: ''
             });
           } else {
-            alert(res.data.message);
+            if (res.status == 400) {
+              this.setState({
+                isLoaded: true,
+                docName: thread_name,
+                isThreadExisted: true
+              });
+            } else if (res.status == 401) {
+              this.setState({ isLoaded: true, timeouterror: true });
+            } else if (res.status == 403) {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            }
           }
         })
         .catch((err) => {
@@ -276,7 +274,7 @@ class EditorDocsProgress extends React.Component {
     }
   };
 
-  initGeneralFileThread = (e, studentId, document_catgory) => {
+  initGeneralFileThread = (e, studentId, document_catgory, thread_name) => {
     if ('1' === '') {
       e.preventDefault();
       alert('Please select file group');
@@ -293,7 +291,18 @@ class EditorDocsProgress extends React.Component {
               file: ''
             });
           } else {
-            alert(res.data.message);
+            if (res.status == 400) {
+              this.setState({
+                isLoaded: true,
+                docName: thread_name,
+                isThreadExisted: true
+              });
+            } else if (res.status == 401) {
+              this.setState({ isLoaded: true, timeouterror: true });
+            } else if (res.status == 403) {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            }
+            // alert(res.data.message);
           }
         })
         .catch((err) => {
@@ -303,11 +312,25 @@ class EditorDocsProgress extends React.Component {
   };
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { timeouterror, unauthorizederror, error, isLoaded } = this.state;
     if (error) {
       return (
         <div>
           Error: your session is timeout! Please refresh the page and Login
+        </div>
+      );
+    }
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }
@@ -524,6 +547,20 @@ class EditorDocsProgress extends React.Component {
                 </Spinner>
               </div>
             )}
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.isThreadExisted}
+          onHide={this.closeDocExistedWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">Attention</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{this.state.docName} is already existed</Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeDocExistedWindow}>Close</Button>
           </Modal.Footer>
         </Modal>
       </>

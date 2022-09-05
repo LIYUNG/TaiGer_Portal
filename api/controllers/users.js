@@ -6,7 +6,6 @@ const logger = require('../services/logger');
 
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({}).lean();
-  console.log('getUsers');
   res.status(200).send({ success: true, data: users });
 });
 
@@ -16,7 +15,9 @@ const updateUser = asyncHandler(async (req, res) => {
   } = req;
   const fields = _.pick(req.body, ['name', 'email', 'role']);
   // TODO: check if email in use already and if role is valid
-  logger.warn('User role is changed to Admin', fields.role);
+  if (fields.role === Role.Admin) {
+    logger.warn('User role is changed to ', fields.role);
+  }
 
   const new_user = await User.findByIdAndUpdate(id, fields, {
     runValidators: true,

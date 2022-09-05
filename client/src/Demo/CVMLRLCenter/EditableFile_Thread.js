@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { Form, Col, Row, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Form, Col, Row, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 import {
   AiOutlineDownload,
@@ -8,16 +8,16 @@ import {
   AiOutlineCheck,
   AiOutlineComment,
   AiOutlineUndo,
-  AiFillMessage,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
+  AiFillMessage
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 class EditableFile_Thread extends Component {
-  handleAsFinalFileThread = (action) => {
+  handleAsFinalFileThread = (documenName) => {
     this.props.handleAsFinalFile(
       this.props.thread.doc_thread_id._id,
       this.props.student._id,
       this.props.program_id,
-      action
+      documenName
     );
   };
 
@@ -38,17 +38,17 @@ class EditableFile_Thread extends Component {
   };
 
   MouseOver = () => {
-    console.log("Mouse Over");
+    console.log('Mouse Over');
   };
-  
+
   render() {
     let fileStatus;
     let documenName;
     documenName =
       this.props.student.firstname +
-      " " +
+      ' ' +
       this.props.student.lastname +
-      " " +
+      ' ' +
       this.props.thread.doc_thread_id.file_type;
 
     fileStatus = (
@@ -68,7 +68,7 @@ class EditableFile_Thread extends Component {
               <Button
                 size="sm"
                 title="As final version"
-                onClick={() => this.handleAsFinalFileThread("setfinal")}
+                onClick={() => this.handleAsFinalFileThread(documenName)}
               >
                 <AiOutlineCheck size={12} />
               </Button>
@@ -80,15 +80,15 @@ class EditableFile_Thread extends Component {
                 size={24}
                 color="red"
                 title="Un do Final Version"
-                style={{ cursor: "pointer" }}
-                onClick={() => this.handleAsFinalFileThread("undofinal")}
+                style={{ cursor: 'pointer' }}
+                onClick={() => this.handleAsFinalFileThread(documenName)}
               />
             )}
           </Col>
           <Col md={4}>
             <Link
               to={
-                "/document-modification/" + this.props.thread.doc_thread_id._id
+                '/document-modification/' + this.props.thread.doc_thread_id._id
               }
             >
               {documenName}
@@ -98,7 +98,7 @@ class EditableFile_Thread extends Component {
             {new Date(
               this.props.thread.doc_thread_id.updatedAt
             ).toLocaleDateString()}
-            {", "}
+            {', '}
             {new Date(
               this.props.thread.doc_thread_id.updatedAt
             ).toLocaleTimeString()}

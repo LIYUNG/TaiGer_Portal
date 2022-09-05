@@ -14,7 +14,8 @@ const {
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
   informEditorNewStudentEmail,
-  informStudentTheirEditorEmail
+  informStudentTheirEditorEmail,
+  createApplicationToStudentEmail
 } = require('../services/email');
 
 const {
@@ -77,7 +78,7 @@ const getStudents = asyncHandler(async (req, res) => {
       )
       .lean();
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Agent ) {
+  } else if (user.role === Role.Agent) {
     const students = await Student.find({
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -146,7 +147,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
     const students = await Student.find({ archiv: true }).exec();
 
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Agent ) {
+  } else if (user.role === Role.Agent) {
     const students = await Student.find({
       _id: { $in: user.students },
       archiv: true
@@ -198,7 +199,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
           .lean();
 
         res.status(200).send({ success: true, data: students });
-      } else if (user.role === Role.Agent ) {
+      } else if (user.role === Role.Agent) {
         const students = await Student.find({
           _id: { $in: user.students },
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -220,7 +221,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
           .populate('applications.programId agents editors')
           .lean();
         res.status(200).send({ success: true, data: students });
-      } else if (user.role === Role.Agent ) {
+      } else if (user.role === Role.Agent) {
         const students = await Student.find({
           _id: { $in: user.students },
           archiv: true
@@ -319,8 +320,8 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   //TODO: email inform Student for(assigned agent) and inform Agent for (your new student)
 });
 
-// () TODO email : agent notification
-// () TODO email : student notification
+// () TODO email : agent better notification
+// () TODO email : student better notification
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId },
@@ -395,8 +396,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   //TODO: email inform Student for(assigned editor) and inform editor for (your new student)
 });
 
-// () TODO email : agent notification
-// () TODO email : student notification
+// (O) email : student notification
 const createApplication = asyncHandler(async (req, res) => {
   const {
     user,
@@ -459,6 +459,18 @@ const createApplication = asyncHandler(async (req, res) => {
   }
 
   res.status(201).send({ success: true, data: program_id_set });
+
+  await createApplicationToStudentEmail(
+    {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email
+    },
+    {
+      agent_firstname: user.firstname,
+      agent_lastname: user.lastname
+    }
+  );
 });
 
 // () TODO email : agent notification

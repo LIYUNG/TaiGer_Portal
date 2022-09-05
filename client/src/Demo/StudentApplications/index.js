@@ -76,7 +76,12 @@ class StudentApplication extends React.Component {
       );
     }
     if (this.props.user.role === 'Student') {
-      return <StudentApplicationsTableTemplate student={this.state.student} />;
+      return (
+        <StudentApplicationsTableTemplate
+          role={this.props.user.role}
+          student={this.state.student}
+        />
+      );
     } else {
       return <PremiumOnlyError />;
     }

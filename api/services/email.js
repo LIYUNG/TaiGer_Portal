@@ -22,6 +22,7 @@ const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
 // const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
+const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
 
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
 
@@ -294,6 +295,94 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
+const createApplicationToStudentEmail = async (recipient, msg) => {
+  const subject = 'New Programs assigned to you.';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.agent_firstname} ${msg.agent_lastname} has assigned programs for you!
+
+Please go to ${STUDENT_APPLICATION_URL} and see the details.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const updateAcademicBackgroundEmail = async (recipient) => {
+  const subject = 'Academic Background updated successfully';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+You have updated your academic background information successfully!
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const updateLanguageSkillEmail = async (recipient) => {
+  const subject = 'Language skills updated successfully';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+You have updated your Language skills information successfully!
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const updatePersonalDataEmail = async (recipient, msg) => {
+  const subject = 'Personal data updated successfully';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+You have updated your personal data successfully!
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const updateCredentialsEmail = async (recipient, msg) => {
+  const subject = 'TaiGer Portal passwords updated successfully';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+You have updated your passwords successfully!
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const UpdateStudentApplicationsEmail = async (recipient, msg) => {
+  const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.sender_firstname} ${msg.sender_lastname} has updated application status.
+
+Please go to ${STUDENT_APPLICATION_URL} and see details.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendSomeReminderEmail = async (recipient) => {
   const subject = 'File Status changes';
   const message = `\
@@ -307,6 +396,7 @@ ${TAIGER_SIGNATURE}
 
   return sendEmail(recipient, subject, message);
 };
+
 const sendNewApplicationMessageInThreadToEditorEmail = async (
   recipient,
   msg
@@ -593,6 +683,11 @@ module.exports = {
   sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
+  updateAcademicBackgroundEmail,
+  updateLanguageSkillEmail,
+  updatePersonalDataEmail,
+  updateCredentialsEmail,
+  UpdateStudentApplicationsEmail,
   sendSomeReminderEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
@@ -605,5 +700,6 @@ module.exports = {
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   informEditorNewStudentEmail,
-  informStudentTheirEditorEmail
+  informStudentTheirEditorEmail,
+  createApplicationToStudentEmail
 };

@@ -28,7 +28,8 @@ class StudentApplicationsTableTemplate extends React.Component {
     program_id: null,
     success: false,
     error: null,
-    modalDeleteApplication: false
+    modalDeleteApplication: false,
+    modalUpdatedApplication: false
   };
 
   handleChange = (e, application_idx) => {
@@ -54,6 +55,11 @@ class StudentApplicationsTableTemplate extends React.Component {
   onHideModalDeleteApplication = () => {
     this.setState({
       modalDeleteApplication: false
+    });
+  };
+  onHideUpdatedApplicationWindow = () => {
+    this.setState({
+      modalUpdatedApplication: false
     });
   };
 
@@ -100,7 +106,8 @@ class StudentApplicationsTableTemplate extends React.Component {
           this.setState({
             isLoaded: true,
             student: data,
-            success: success
+            success: success,
+            modalUpdatedApplication: true
           });
         } else {
           alert(resp.data.message);
@@ -161,12 +168,6 @@ class StudentApplicationsTableTemplate extends React.Component {
     }
     var applying_university_info;
     var applying_university;
-    var applying_program;
-    var application_deadline;
-    var application_date_left;
-    var application_decided;
-    var application_closed;
-    var application_admission;
     var today = new Date();
     if (
       this.props.student.applications === undefined ||
@@ -175,7 +176,7 @@ class StudentApplicationsTableTemplate extends React.Component {
       applying_university_info = (
         <>
           <tr>
-            <td></td>
+            {this.props.role !== 'Student' && <td></td>}
             <td>
               <h6 className="mb-1"> No University</h6>
             </td>
@@ -206,19 +207,21 @@ class StudentApplicationsTableTemplate extends React.Component {
         (application, application_idx) => (
           <>
             <tr>
-              <td>
-                <Button
-                  onClick={(e) =>
-                    this.handleDelete(
-                      e,
-                      application.programId._id,
-                      this.state.student._id
-                    )
-                  }
-                >
-                  <AiFillDelete size={16} />
-                </Button>
-              </td>
+              {this.props.role !== 'Student' && (
+                <td>
+                  <Button
+                    onClick={(e) =>
+                      this.handleDelete(
+                        e,
+                        application.programId._id,
+                        this.state.student._id
+                      )
+                    }
+                  >
+                    <AiFillDelete size={16} />
+                  </Button>
+                </td>
+              )}
               <td>
                 <Link to={'/programs/' + application.programId._id}>
                   <h6 className="mb-1" key={application_idx}>
@@ -264,6 +267,16 @@ class StudentApplicationsTableTemplate extends React.Component {
                   <Form.Control
                     as="select"
                     onChange={(e) => this.handleChange(e, application_idx)}
+                    disabled={
+                      !(
+                        application.decided !== undefined && application.decided
+                      )
+                    }
+                    // readOnly={
+                    //   !(
+                    //     application.decided !== undefined && application.decided
+                    //   )
+                    // }
                     defaultValue={
                       application.closed !== undefined && application.closed
                         ? 'O'
@@ -280,6 +293,9 @@ class StudentApplicationsTableTemplate extends React.Component {
                   <Form.Control
                     as="select"
                     onChange={(e) => this.handleChange(e, application_idx)}
+                    disabled={
+                      !(application.closed !== undefined && application.closed)
+                    }
                     defaultValue={
                       application.admission !== undefined &&
                       application.admission
@@ -328,7 +344,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                   <thead>
                     <tr>
                       <>
-                        <th></th>
+                        {this.props.role !== 'Student' && <th></th>}
                         <th>University</th>
                         <th>Programs</th>
                         <th>Deadline</th>
@@ -373,6 +389,25 @@ class StudentApplicationsTableTemplate extends React.Component {
               <Modal.Footer>
                 <Button onClick={this.handleDeleteConfirm}>Yes</Button>
                 <Button onClick={this.onHideModalDeleteApplication}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <Modal
+              show={this.state.modalUpdatedApplication}
+              onHide={this.onHideUpdatedApplicationWindow}
+              size="m"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header>
+                <Modal.Title id="contained-modal-title-vcenter">
+                  Info:
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>Applications status updated successfully!</Modal.Body>
+              <Modal.Footer>
+                <Button onClick={this.onHideUpdatedApplicationWindow}>
                   Close
                 </Button>
               </Modal.Footer>

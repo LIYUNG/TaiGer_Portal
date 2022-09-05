@@ -16,7 +16,7 @@ const {
   getMessages,
   getMessageFile,
   SetStatusMessagesThread,
-  deleteMessagesThread,
+  deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
   postMessages
 } = require('../controllers/documents_modification');
@@ -66,7 +66,7 @@ router
 
 router
   .route('/:messagesThreadId/:studentId')
-  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteMessagesThread);
+  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteGeneralMessagesThread);
 
 router
   .route('/:messagesThreadId/:messageId/:fileId')

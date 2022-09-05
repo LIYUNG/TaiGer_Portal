@@ -185,7 +185,6 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid application id');
   }
 
-  // TODO: what if same file_type and same student_id? (ex. ML for 2 programs)
   const doc_thread_existed = await Documentthread.findOne({
     student_id: studentId,
     file_type: document_category,
@@ -313,8 +312,6 @@ const postMessages = asyncHandler(async (req, res) => {
     const student = user;
     for (let i = 0; i < student.editors.length; i++) {
       if (document_thread.program_id) {
-        // TODO: multiple editors(?)
-
         sendNewApplicationMessageInThreadToEditorEmail(
           {
             firstname: student.editors[i].firstname,
@@ -463,7 +460,6 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   }
   logger.info('program_id ', program_id);
   if (program_id) {
-    // TODO: implement update logic
     const student_application = student.applications.find(
       (application) => application.programId._id == program_id
     );
@@ -509,7 +505,6 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       'firstname lastname email'
     );
 
-    // console.log(student3);
     for (let i = 0; i < student.agents.length; i++) {
       await sendSetAsFinalProgramSpecificFileForAgentEmail(
         {
@@ -531,7 +526,6 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       );
     }
   } else {
-    // TODO: implement update logic
     const generaldocs_thread = student.generaldocs_threads.find(
       (thread) => thread.doc_thread_id._id == messagesThreadId
     );
@@ -590,7 +584,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
 });
 
 // () TODO email : notification
-const deleteMessagesThread = asyncHandler(async (req, res) => {
+const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId }
   } = req;
@@ -599,11 +593,11 @@ const deleteMessagesThread = asyncHandler(async (req, res) => {
   const student = await Student.findById(studentId);
 
   if (!to_be_delete_thread) {
-    logger.error('deleteMessagesThread: Invalid message thread id');
+    logger.error('deleteGeneralMessagesThread: Invalid message thread id');
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
   if (!student) {
-    logger.error('deleteMessagesThread: Invalid student id id');
+    logger.error('deleteGeneralMessagesThread: Invalid student id id');
     throw new ErrorResponse(400, 'Invalid student id id');
   }
 
@@ -769,7 +763,7 @@ module.exports = {
   getMessageFile,
   postMessages,
   SetStatusMessagesThread,
-  deleteMessagesThread,
+  deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
   deleteAMessageInThread
 };

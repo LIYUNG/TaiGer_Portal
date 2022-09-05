@@ -12,6 +12,11 @@ const {
   sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
+  updateAcademicBackgroundEmail,
+  updateLanguageSkillEmail,
+  updatePersonalDataEmail,
+  updateCredentialsEmail,
+  UpdateStudentApplicationsEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
 const {
@@ -296,15 +301,18 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     }
   );
 });
-// () TODO notification student email works
-// () TODO notification agent email works
+// (O) notification student email works
+// (O) notification agent email works
 const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   const {
+    user,
     params: { studentId },
     body: { applications }
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId).exec();
+  const student = await Student.findById(studentId)
+    .populate('agents', 'firstname lastname email')
+    .exec();
 
   if (!student) {
     logger.error('UpdateStudentApplications: Invalid student id');
@@ -326,7 +334,33 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     .populate('agents editors', 'firstname lastname email')
     .lean();
   res.status(201).send({ success: true, data: student_updated });
-  // TODO: feedback added email
+  if (user.role === Role.Student) {
+    for (let i = 0; i < student.agents.length; i++) {
+      await UpdateStudentApplicationsEmail(
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email
+        },
+        {
+          sender_firstname: student.firstname,
+          sender_lastname: student.lastname
+        }
+      );
+    }
+  } else {
+    await UpdateStudentApplicationsEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        sender_firstname: user.firstname,
+        sender_lastname: user.lastname
+      }
+    );
+  }
 });
 
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
@@ -521,8 +555,7 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: me.academic_background });
 });
 
-// () TODO email : agent notification
-// () TODO email : student notification
+// (O)  email : self notification
 const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -542,14 +575,22 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       { upsert: true, new: true }
     );
     res.status(200).send({ success: true, data: university });
+
+    await updateAcademicBackgroundEmail(
+      {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        address: user.email
+      },
+      {}
+    );
   } catch (err) {
     logger.error(err);
     throw new ErrorResponse(400, JSON.stringify(err));
   }
 });
 
-// () TODO email : agent notification
-// () TODO email : student notification
+// (O) email : self notification
 const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const {
     user: student,
@@ -571,10 +612,18 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .send({ success: true, data: updatedStudent.academic_background.language });
+
+  await updateLanguageSkillEmail(
+    {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email
+    },
+    {}
+  );
 });
 
-// () TODO email : agent notification
-// () TODO email : student notification
+// (O) email : self notification
 const updatePersonalData = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -598,13 +647,20 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
         lastname: updatedStudent.lastname
       }
     });
+    await updatePersonalDataEmail(
+      {
+        firstname: personaldata.firstname,
+        lastname: personaldata.lastname,
+        address: user.email
+      },
+      {}
+    );
   } catch (err) {
     logger.error(err);
   }
 });
 
-// () TODO email : agent notification
-// () TODO email : student notification
+// (O) email : self notification
 const updateCredentials = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -625,6 +681,14 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
     //   lastname: updatedStudent.lastname
     // }
   });
+  await updateCredentialsEmail(
+    {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      address: user.email
+    },
+    {}
+  );
 });
 
 module.exports = {

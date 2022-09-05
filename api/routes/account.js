@@ -26,7 +26,6 @@ const router = Router();
 
 router.use(protect);
 
-// TODO: get document status
 router
   .route('/files')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);

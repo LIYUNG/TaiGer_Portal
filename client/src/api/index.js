@@ -1,8 +1,5 @@
 import request from './request';
 
-// TODO: organize to different files
-
-// TODO: replace auth APIs
 export const login = (credentials) => request.post('/auth/login', credentials);
 
 export const logout = () => request.get('/auth/logout');
@@ -16,6 +13,7 @@ export const forgotPassword = ({ email }) =>
 export const activation = (email, token) =>
   request.post('/auth/activation', { email, token });
 
+// TODO: make resendActivation works
 export const resendActivation = ({ email }) =>
   request.post('/auth/resend-activation', { email });
 

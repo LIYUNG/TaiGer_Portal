@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { User, Agent, Editor, Student, Role } = require('../models/User');
 const logger = require('../services/logger');
@@ -39,11 +40,19 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const getAgents = asyncHandler(async (req, res, next) => {
   const agents = await Agent.find().populate('students', '_id name');
+  if (!agents) {
+    logger.error('getAgents : no agents');
+    throw new ErrorResponse(400, 'no agents');
+  }
   res.status(200).send({ success: true, data: agents });
 });
 
 const getEditors = asyncHandler(async (req, res, next) => {
   const editors = await Editor.find().populate('students', '_id name');
+  if (!editors) {
+    logger.error('getgetEditorsAgents : no editors');
+    throw new ErrorResponse(400, 'no editors');
+  }
   res.status(200).send({ success: true, data: editors });
 });
 

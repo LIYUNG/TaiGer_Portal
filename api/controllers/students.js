@@ -187,7 +187,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
       {
         archiv: isArchived
       },
-      { strict: false }
+      { new: true, strict: false }
     );
     if (isArchived) {
       // return dashboard students
@@ -317,7 +317,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       agents: updated_agent
     }
   );
-  //TODO: email inform Student for(assigned agent) and inform Agent for (your new student)
+  // TODO: email inform Student for(assigned agent) and inform Agent for (your new student)
 });
 
 // () TODO email : agent better notification

@@ -4,7 +4,6 @@ import { IoMdAdd } from "react-icons/io";
 import { Button } from "react-bootstrap";
 
 class ToggleableArticleForm extends Component {
-  // TODO: replace by database
   state = {
     isOpen: false,
   };

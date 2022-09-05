@@ -216,6 +216,9 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       return res.status(200).send({ success: true, data: student_updated });
     }
     // console.log('Pass 1.2');
+    logger.error(
+      'initApplicationMessagesThread: Document Thread already existed!'
+    );
     throw new ErrorResponse(400, 'Document Thread already existed!');
   }
 
@@ -261,6 +264,7 @@ const getMessages = asyncHandler(async (req, res) => {
     .exec();
 
   if (!document_thread) {
+    logger.error('getMessages: Invalid message thread id!');
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
 
@@ -387,22 +391,32 @@ const getMessageFile = asyncHandler(async (req, res) => {
   } = req;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
-  if (!document_thread) throw new ErrorResponse(400, 'thread not found');
+  if (!document_thread) {
+    logger.error('getMessageFile: thread not found!');
+    throw new ErrorResponse(400, 'thread not found');
+  }
 
   if (
     user.role === Role.Student &&
     document_thread.student_id.toString() !== user._id.toString()
   ) {
+    logger.error('getMessageFile: Not authorized!');
     throw new ErrorResponse(400, 'Not authorized');
   }
 
   const message = document_thread.messages.find(
     (message) => message._id == messageId
   );
-  if (!message) throw new ErrorResponse(400, 'message not found');
+  if (!message) {
+    logger.error('getMessageFile: message not found!');
+    throw new ErrorResponse(400, 'message not found');
+  }
 
   const file = message.file.find((file) => file._id == fileId);
-  if (!file) throw new ErrorResponse(400, 'file not found');
+  if (!file) {
+    logger.error('getMessageFile: file not found!');
+    throw new ErrorResponse(400, 'file not found');
+  }
 
   let path_split = file.path.replace(/\\/g, '/');
   path_split = path_split.split('/');
@@ -653,9 +667,15 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   const student = await Student.findById(studentId);
 
   if (!to_be_delete_thread) {
+    logger.error(
+      'deleteProgramSpecificMessagesThread: Invalid message thread id!'
+    );
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
-  if (!student) throw new ErrorResponse(400, 'Invalid student id id');
+  if (!student) {
+    logger.error('deleteProgramSpecificMessagesThread: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   // TODO: before delete the thread, please delete all of the files in the thread!!
   // Delete folder
@@ -713,10 +733,16 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   } = req;
 
   const student = await Student.findById(studentId);
-  if (!student) throw new ErrorResponse(400, 'Invalid student id id');
+  if (!student) {
+    logger.error('deleteAMessageInThread : Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
 
   const thread = await Documentthread.findById(messagesThreadId);
-  if (!thread) throw new ErrorResponse(400, 'Invalid message thread id');
+  if (!thread) {
+    logger.error('deleteAMessageInThread : Invalid message thread id');
+    throw new ErrorResponse(400, 'Invalid message thread id');
+  }
 
   if (thread) {
     const deleteParams = {

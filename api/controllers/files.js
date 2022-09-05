@@ -39,7 +39,6 @@ const getMyfiles = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid student id');
   }
 
-  // await student.save();
   return res.status(201).send({ success: true, data: student });
 });
 
@@ -230,11 +229,16 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   const filePath = path.join(UPLOAD_PATH, 'TaiGer_Template', category);
   // TODO: S3 bucket
   // FIXME: clear the filePath for consistency?
-  if (!fs.existsSync(filePath))
+  if (!fs.existsSync(filePath)) {
+    logger.error('downloadTemplateFile: File does not exist');
     throw new ErrorResponse(400, 'File does not exist');
+  }
 
   res.status(200).download(filePath, (err) => {
-    if (err) throw new ErrorResponse(500, 'Error occurs while downloading');
+    if (err) {
+      logger.error('downloadTemplateFile: Error occurs while downloading');
+      throw new ErrorResponse(500, 'Error occurs while downloading');
+    }
   });
 });
 
@@ -245,6 +249,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   const { status, feedback } = req.body;
 
   if (!Object.values(DocumentStatus).includes(status)) {
+    logger.error('updateProfileDocumentStatus: Invalid document status');
     throw new ErrorResponse(400, 'Invalid document status');
   }
 
@@ -368,6 +373,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Student) {
     if (studentId !== user._id.toString()) {
+      logger.error('deleteProfileFile: Invalid operation for student');
       throw new ErrorResponse(403, 'Invalid operation for student');
     }
   }
@@ -377,12 +383,19 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   });
 
   if (!student) {
+    logger.error('deleteProfileFile: Invalid student Id or application Id');
     throw new ErrorResponse(400, 'Invalid student Id or application Id');
   }
 
   const document = student.profile.find(({ name }) => name === category);
-  if (!document) throw new ErrorResponse(400, 'Invalid document name');
-  if (!document.path) throw new ErrorResponse(400, 'File not exist');
+  if (!document) {
+    logger.error('deleteProfileFile: Invalid document name');
+    throw new ErrorResponse(400, 'Invalid document name');
+  }
+  if (!document.path) {
+    logger.error('deleteProfileFile: File not exist');
+    throw new ErrorResponse(400, 'File not exist');
+  }
 
   let document_split = document.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
@@ -410,7 +423,10 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
       }
     });
   } catch (err) {
-    if (err) throw new ErrorResponse(500, 'Error occurs while deleting');
+    if (err) {
+      logger.error('deleteProfileFile: ', err);
+      throw new ErrorResponse(500, 'Error occurs while deleting');
+    }
   }
 });
 
@@ -668,6 +684,7 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
   } = req;
   const user_me = await User.findOne({ _id: user._id });
   if (!user_me) {
+    logger.error('updateCredentials: Invalid user');
     throw new ErrorResponse(400, 'Invalid user');
   }
 

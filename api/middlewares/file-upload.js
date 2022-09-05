@@ -205,13 +205,14 @@ const upload_messagesthread_file_s3 = multer({
   storage: storage_messagesthread_file_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(
           400,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
+    }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE) {
       return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
@@ -339,13 +340,14 @@ const upload_program_specific_s3 = multer({
   storage: storage_program_specific_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(
           400,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
+    }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE) {
       return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
@@ -400,12 +402,12 @@ const upload_program_specific_s3 = multer({
 //   },
 // });
 
-//TODO: upload pdf/docx/image
+// TODO: upload pdf/docx/image
 // TranscriptExcelUpload
 
 const transcript_excel_storage3 = multerS3({
-  s3: s3,
-  bucket: function (req, file, cb) {
+  s3,
+  bucket: function (req, _file, cb) {
     var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
@@ -456,13 +458,14 @@ const upload_transcript_s3 = multer({
   storage: transcript_excel_storage3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(
           400,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
+    }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE) {
       return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
@@ -572,13 +575,14 @@ const editor_generaldoc_s3 = multer({
   storage: storage_general_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(
           400,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
+    }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE) {
       return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));

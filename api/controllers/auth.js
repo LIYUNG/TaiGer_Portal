@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const { JWT_SECRET, JWT_EXPIRE } = require('../config');
 const { ErrorResponse } = require('../common/errors');
+const logger = require('../services/logger');
 
 const {
   fieldsValidation,
@@ -43,6 +44,7 @@ const signup = asyncHandler(async (req, res) => {
 
   const existUser = await User.findOne({ email });
   if (existUser) {
+    logger.error('signup: An account with this email address already exists');
     throw new ErrorResponse(
       400,
       'An account with this email address already exists'
@@ -99,10 +101,16 @@ const activateAccount = asyncHandler(async (req, res) => {
   const { email, token: activationToken } = req.body;
 
   const token = await Token.findOne({ value: hashToken(activationToken) });
-  if (!token) throw new ErrorResponse(400, 'Invalid or expired token');
+  if (!token) {
+    logger.error('activateAccount: Invalid or expired token');
+    throw new ErrorResponse(400, 'Invalid or expired token');
+  }
 
   const user = await User.findOne({ _id: token.userId, email });
-  if (!user) throw new ErrorResponse(400, 'Invalid email or token');
+  if (!user) {
+    logger.error('activateAccount: Invalid email or token');
+    throw new ErrorResponse(400, 'Invalid email or token');
+  }
 
   // if (user.role !== Role.Guest)
   //   throw new ErrorResponse(400, "User account already activated");
@@ -138,7 +146,10 @@ const resendActivation = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) throw new ErrorResponse(400, 'Email not found');
+  if (!user) {
+    logger.error('resendActivation: Email not found');
+    throw new ErrorResponse(400, 'Email not found');
+  }
 
   // const activationToken = generateRandomToken();
   // await Token.create({ userId: user._id, value: hashToken(activationToken) });
@@ -171,7 +182,10 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) throw new ErrorResponse(400, 'Email not found');
+  if (!user) {
+    logger.error('forgotPassword: Email not found');
+    throw new ErrorResponse(400, 'Email not found');
+  }
 
   const resetToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(resetToken) });
@@ -190,10 +204,16 @@ const resetPassword = asyncHandler(async (req, res) => {
   const { email, password, token: resetToken } = req.body;
 
   const token = await Token.findOne({ value: hashToken(resetToken) });
-  if (!token) throw new ErrorResponse(400, 'Invalid or expired token');
+  if (!token) {
+    logger.error('resetPassword: Invalid or expired token');
+    throw new ErrorResponse(400, 'Invalid or expired token');
+  }
 
   const user = await User.findOne({ _id: token.userId, email });
-  if (!user) throw new ErrorResponse(404, 'Invalid email or token');
+  if (!user) {
+    logger.error('resetPassword: Invalid email or token');
+    throw new ErrorResponse(404, 'Invalid email or token');
+  }
 
   user.password = password;
   await user.save();

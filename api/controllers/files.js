@@ -42,7 +42,8 @@ const getMyfiles = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: student });
 });
 
-// () TODO email : notification
+// (O) email : student notification
+// (O) email : agent notification
 const saveProfileFilePath = asyncHandler(async (req, res) => {
   const {
     user,
@@ -67,7 +68,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     student.profile.push(document);
     await student.save();
     res.status(201).send({ success: true, data: student });
-    if (user.role == Role.Student) {
+    if (user.role === Role.Student) {
       await sendUploadedProfileFilesEmail(
         {
           firstname: student.firstname,
@@ -120,7 +121,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
-  if (user.role == Role.Student) {
+  if (user.role === Role.Student) {
     await sendUploadedProfileFilesEmail(
       {
         firstname: student.firstname,
@@ -242,8 +243,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   });
 });
 
-// () TODO email : agent notification
-// () TODO email : student notification
+// (O) email : student notification
 const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
   const { status, feedback } = req.body;
@@ -262,7 +262,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     );
     throw new ErrorResponse(400, 'Invalid student Id or application Id');
   }
-  var document = student.profile.find(({ name }) => name === category);
+  let document = student.profile.find(({ name }) => name === category);
   try {
     if (!document) {
       document = student.profile.create({ name: category });
@@ -278,14 +278,13 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   } catch (err) {
     logger.error('updateProfileDocumentStatus: ', err);
   }
-  // TODO: left reject image
-  if (status == DocumentStatus.Rejected) {
+
+  if (status === DocumentStatus.Rejected) {
     document.feedback = feedback;
   }
-  if (status == DocumentStatus.Accepted) {
+  if (status === DocumentStatus.Accepted) {
     document.feedback = '';
   }
-  // TODO: validate status, ex: can't be accepted if document.path is empty
 
   document.status = status;
   document.updatedAt = new Date();
@@ -306,6 +305,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     }
   );
 });
+
 // (O) notification student email works
 // (O) notification agent email works
 const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
@@ -527,7 +527,6 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, 'File not uploaded yet');
   }
 
-  // var fileKey = path.join(UPLOAD_PATH, document.path);
   let input_transcript_excel_split = input_transcript_excel.path.replace(
     /\\/g,
     '/'
@@ -690,13 +689,8 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
 
   user_me.password = credentials.new_password;
   await user_me.save();
-  // const updatedStudent = await User.findById(_id);
   res.status(200).send({
     success: true
-    // data: {
-    //   firstname: updatedStudent.firstname,
-    //   lastname: updatedStudent.lastname
-    // }
   });
   await updateCredentialsEmail(
     {

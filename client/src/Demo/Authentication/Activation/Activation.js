@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
-import { activation } from '../../../api';
+import { activation, resendActivation } from '../../../api';
 
 export default function Activation(props) {
   const query = new URLSearchParams(props.location.search);
   const [email, setEmail] = useState(query.get('email'));
   const [token, setToken] = useState(query.get('token'));
   const [activationsuccess, setActivationSuccess] = React.useState(false);
+  const [emailsent, setEmailsent] = React.useState(false);
 
   useEffect(() => {
     activation(email, token).then((res) => {
@@ -24,6 +25,24 @@ export default function Activation(props) {
   }, []);
 
   //TODO: default call API to get token
+  const handleResendSubmit = async (e) => {
+    e.preventDefault();
+    setEmailsent(true);
+    try {
+      const resp = await resendActivation({
+        email: email
+      });
+      const { success } = resp.data;
+      if (success) {
+        setEmailsent(true);
+      } else {
+        alert(resp.data.message);
+      }
+    } catch (err) {
+      // TODO: handle error
+      console.log(err);
+    }
+  };
 
   const handleonClick = async (e) => {
     window.location.reload(false);
@@ -35,57 +54,78 @@ export default function Activation(props) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div>
-            <div className="card-body text-center">
-              <div className="mb-4">
-                <i className="feather icon-user-plus auth-icon" />
+            <form className="card">
+              <div className="card-body text-center">
+                <h3 className="mb-4">Account activated</h3>
+                <div className="input-group mb-4">
+                  <p className="mb-0 text-muted">
+                    You have activated the account successfully!
+                  </p>
+                </div>
+                <button
+                  className="btn btn-primary shadow-2 mb-4"
+                  onClick={() => handleonClick()}
+                >
+                  Start
+                </button>
               </div>
-              <h3 className="mb-4">Confirmation Email sent</h3>
-              <div className="input-group mb-4">
-                <p className="mb-0 text-muted">
-                  You have activated the account successfully!
-                </p>
-              </div>
-              <button onClick={() => handleonClick()}>Start</button>
-            </div>
+            </form>
           </div>
         </div>
       </Aux>
     );
   } else {
-    return (
-      <Aux>
-        <Breadcrumb />
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div>
-            <div className="card-body text-center">
-              <div className="mb-4">
-                <i className="feather icon-user-plus auth-icon" />
-              </div>
-              <h3 className="mb-4">Link Expired</h3>
-              <div className="input-group mb-4">
-                <p className="mb-0 text-muted">
-                  The activation link is expired. Please request another
-                  activation link!
-                </p>
-              </div>
-              <button className="btn btn-primary shadow-2 mb-4">Resend</button>
+    if (emailsent) {
+      return (
+        <Aux>
+          <Breadcrumb />
+          <div className="auth-wrapper">
+            <div className="auth-content">
+              <form className="card">
+                <div className="card-body text-center">
+                  {/* <div className="mb-4">
+                  <i className="feather icon-user-plus auth-icon" />
+                </div> */}
+                  <h3 className="mb-4">Confirmation Email sent</h3>
+                  <div className="input-group mb-4">
+                    <p className="mb-0 text-muted">
+                      The new activation link is sent to the following address:
+                    </p>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
-        </div>
-      </Aux>
-    );
+        </Aux>
+      );
+    } else {
+      return (
+        <Aux>
+          <Breadcrumb />
+          <div className="auth-wrapper">
+            <div className="auth-content">
+              <form className="card">
+                <div className="card-body text-center">
+                  <h3 className="mb-4">Link Expired</h3>
+                  <div className="input-group mb-4">
+                    <p className="mb-0 text-muted">
+                      The activation link is expired. Please request another
+                      activation link!
+                    </p>
+                  </div>
+                  <button
+                    className="btn btn-primary shadow-2 mb-4"
+                    onClick={(e) => handleResendSubmit(e)}
+                  >
+                    Resend
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </Aux>
+      );
+    }
   }
 }
 

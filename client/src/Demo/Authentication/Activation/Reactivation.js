@@ -50,17 +50,11 @@ export default function Reactivation(props) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div>
-            <form className="card" onSubmit={handleSubmit}>
+            <form className="card">
               <div className="card-body text-center">
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <i className="feather icon-user-plus auth-icon" />
-                </div>
+                </div> */}
                 <h3 className="mb-4">Confirmation Email sent</h3>
                 <div className="input-group mb-4">
                   <p className="mb-0 text-muted">
@@ -88,17 +82,8 @@ export default function Reactivation(props) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div>
             <form className="card" onSubmit={handleSubmit}>
               <div className="card-body text-center">
-                <div className="mb-4">
-                  <i className="feather icon-user-plus auth-icon" />
-                </div>
                 <h3 className="mb-4">Account is not activated</h3>
                 <div className="input-group mb-4">
                   <p className="mb-0 text-muted">

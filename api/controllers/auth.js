@@ -19,7 +19,8 @@ const Token = require('../models/Token');
 const {
   sendConfirmationEmail,
   sendForgotPasswordEmail,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  sendAccountActivationConfirmationEmail
 } = require('../services/email');
 
 const generateAuthToken = (user) => {
@@ -71,7 +72,7 @@ const signup = asyncHandler(async (req, res) => {
 });
 
 const login = (req, res) => {
-  const user = req.user;
+  const { user } = req;
   const token = generateAuthToken(user);
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
@@ -87,7 +88,7 @@ const logout = (req, res) => {
 };
 
 const verify = (req, res) => {
-  const user = req.user;
+  const { user } = req;
   const token = generateAuthToken(user);
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
@@ -95,6 +96,7 @@ const verify = (req, res) => {
     .json({ success: true, data: user });
 };
 
+// (O) Email confirmation notification
 const activateAccount = asyncHandler(async (req, res) => {
   await fieldsValidation(checkEmail, checkToken)(req);
 
@@ -112,16 +114,12 @@ const activateAccount = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid email or token');
   }
 
-  // if (user.role !== Role.Guest)
-  //   throw new ErrorResponse(400, "User account already activated");
+  if (user.isAccountActivated) {
+    logger.error('activateAccount: User account already activated');
+    throw new ErrorResponse(400, 'User account already activated');
+  }
 
-  // await User.findOneAndUpdate(
-  //   { _id: token.userId },
-  //   { $set: { role: Role.Student } },
-  //   { new: true }
-  // );
-
-  await User.findOneAndUpdate(
+  const user_updated = await User.findOneAndUpdate(
     { _id: token.userId },
     { $set: { isAccountActivated: true } },
     { new: true }
@@ -138,6 +136,15 @@ const activateAccount = asyncHandler(async (req, res) => {
     })
     .status(200)
     .json({ success: true });
+
+  await sendAccountActivationConfirmationEmail(
+    {
+      firstname: user_updated.firstname,
+      lastname: user_updated.lastname,
+      address: user_updated.email
+    },
+    {}
+  );
 });
 
 const resendActivation = asyncHandler(async (req, res) => {

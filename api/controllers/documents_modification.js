@@ -657,7 +657,7 @@ const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: student2 });
 });
 
-// () TODO email : notification
+// (-) TODO email : notification
 const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, program_id, studentId }
@@ -672,12 +672,13 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
     );
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
+
   if (!student) {
     logger.error('deleteProgramSpecificMessagesThread: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
 
-  // TODO: before delete the thread, please delete all of the files in the thread!!
+  // Before delete the thread, please delete all of the files in the thread!!
   // Delete folder
   let directory = path.join(studentId, messagesThreadId);
   logger.info('Trying to delete message thread and folder');
@@ -704,6 +705,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
 
     // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
   }
+
   await Student.findOneAndUpdate(
     { _id: studentId, 'applications.programId': program_id },
     {
@@ -725,7 +727,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: student2 });
 });
 
-// () TODO email : notification
+// (-) TODO email : notification
 const deleteAMessageInThread = asyncHandler(async (req, res) => {
   const {
     user,
@@ -749,7 +751,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
       Bucket: AWS_S3_BUCKET_NAME,
       Delete: { Objects: [] }
     };
-    const message = thread.messages.find((message) => message._id == messageId);
+    const message = thread.messages.find((msg) => msg._id == messageId);
     message.file.forEach(({ path }) => {
       deleteParams.Delete.Objects.push({ Key: path });
       logger.info(path);

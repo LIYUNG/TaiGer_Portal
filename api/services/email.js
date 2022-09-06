@@ -119,6 +119,22 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
+const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
+  const subject = 'TaiGer Portal Account activation confirmation';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname},
+
+Your TaiGer Portal Account has been successfully activated.
+
+You can now login and explore the power of TaiGer Portal!
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendUploadedGeneralFilesEmail = async (recipient, msg) => {
   const subject = 'Thank you for your input!';
   const message = `\
@@ -678,6 +694,7 @@ module.exports = {
   sendConfirmationEmail,
   sendForgotPasswordEmail,
   sendPasswordResetEmail,
+  sendAccountActivationConfirmationEmail,
   sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
   sendAgentUploadedProfileFilesForStudentEmail,

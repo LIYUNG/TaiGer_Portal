@@ -147,6 +147,8 @@ const activateAccount = asyncHandler(async (req, res) => {
   );
 });
 
+// send activation link to user
+// (O) email notification self
 const resendActivation = asyncHandler(async (req, res) => {
   await fieldsValidation(checkEmail)(req);
 
@@ -158,16 +160,10 @@ const resendActivation = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Email not found');
   }
 
-  // const activationToken = generateRandomToken();
-  // await Token.create({ userId: user._id, value: hashToken(activationToken) });
-
-  // await sendConfirmationEmail(
-  //   { firstname, lastname, address: email },
-  //   activationToken
-  // );
-
-  // if (user.role !== Role.Guest)
-  //   throw new ErrorResponse(400, 'User account already activated');
+  if (user.isAccountActivated) {
+    logger.error('resendActivation: User account already activated');
+    throw new ErrorResponse(400, 'User account already activated');
+  }
 
   const activationToken = generateRandomToken();
   await Token.create({
@@ -183,6 +179,7 @@ const resendActivation = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true });
 });
 
+// (O) email notification works
 const forgotPassword = asyncHandler(async (req, res) => {
   await fieldsValidation(checkEmail)(req);
 
@@ -205,6 +202,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true });
 });
 
+// (O) email notification works
 const resetPassword = asyncHandler(async (req, res) => {
   await fieldsValidation(checkEmail, checkPassword, checkToken)(req);
 

@@ -42,7 +42,7 @@ const storage_s3 = multerS3({
     var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
-    // TODO: check studentId and applicationId exist
+    // TODO: check studentId exist
     var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
@@ -51,14 +51,14 @@ const storage_s3 = multerS3({
     var { studentId } = req.params;
     if (!studentId) studentId = String(req.user._id);
 
-    // TODO: check studentId and applicationId exist
+    // TODO: check studentId exist
     var directory = studentId;
     cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: function (req, file, cb) {
     // cb(null, file.originalname + "-" + Date.now().toString());
     // cb(null, file.originalname);
-    var { studentId, applicationId } = req.params;
+    var { studentId } = req.params;
 
     Student.findOne({ _id: studentId })
       .populate('applications.programId')
@@ -73,9 +73,6 @@ const storage_s3 = multerS3({
             '_' +
             req.params.category +
             path.extname(file.originalname);
-          // const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
-          // if (fs.existsSync(filePath))
-          //   return cb(new ErrorResponse(400, "Document already existed!22222"));
 
           return {
             fileName: temp_name
@@ -117,17 +114,17 @@ const upload_profile_s3 = multer({
 const storage_messagesthread_file_s3 = multerS3({
   s3,
   bucket: function (req, file, cb) {
-    var { messagesThreadId, studentId } = req.params;
+    const { messagesThreadId, studentId } = req.params;
     // TODO: check studentId and messagesThreadId exist
-    var directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
+    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
     directory = directory.replace(/\\/g, '/');
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
-    var { messagesThreadId, studentId } = req.params;
+    const { messagesThreadId, studentId } = req.params;
 
     // TODO: check studentId and messagesThreadId exist
-    var directory = path.join(studentId, messagesThreadId);
+    let directory = path.join(studentId, messagesThreadId);
     directory = directory.replace(/\\/g, '/'); // g>> replace all!
     cb(null, { fieldName: file.fieldname, path: directory });
   },
@@ -137,15 +134,14 @@ const storage_messagesthread_file_s3 = multerS3({
     var { messagesThreadId, studentId } = req.params;
     Documentthread.findById(messagesThreadId)
       .populate('student_id')
-      // .lean()
-      // .exec()
       .then(function (thread) {
         if (thread) {
           var r2 = /[^\d]/;
           var version_number_max = 0;
 
-          if (!thread)
+          if (!thread) {
             throw new ErrorResponse(400, 'Invalid message thread id');
+          }
 
           thread.messages.forEach((message) => {
             message.file.forEach((file) => {
@@ -170,25 +166,6 @@ const storage_messagesthread_file_s3 = multerS3({
             version_number.toString() +
             `${path.extname(file.originalname)}`;
           temp_name = temp_name.replace(/ /g, '_');
-          // const filePath = path.join(
-          //   UPLOAD_PATH,
-          //   studentId,
-          //   "GeneralDocsEdit",
-          //   temp_name
-          // );
-          // if (thread.messages && thread.messages.length > 0) {
-          //   let student_input_doc = thread.messages.find(
-          //     ({ name }) => name === temp_name
-          //   );
-
-          //   if (student_input_doc) {
-          //     version_number++;
-          //   } else {
-          //     same_file_name = false;
-          //   }
-          // } else {
-          //   same_file_name = false;
-          // }
 
           return {
             fileName: temp_name

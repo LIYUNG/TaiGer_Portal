@@ -354,10 +354,6 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     }
   }
 
-  // TODO: check studentId and editorsId are valid
-  // const editorsIds = await Editor.findById(({ editorsId }) => editorsId);
-  // if (!editorsIds) throw new ErrorResponse(400, "Invalid editorsId");
-
   const student = await Student.findByIdAndUpdate(
     studentId,
     {
@@ -393,7 +389,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       editors: updated_editor
     }
   );
-  //TODO: email inform Student for(assigned editor) and inform editor for (your new student)
+  // TODO: email inform Student for(assigned editor) and inform editor for (your new student)
 });
 
 // (O) email : student notification
@@ -468,7 +464,8 @@ const createApplication = asyncHandler(async (req, res) => {
     },
     {
       agent_firstname: user.firstname,
-      agent_lastname: user.lastname
+      agent_lastname: user.lastname,
+      programs: program
     }
   );
 });

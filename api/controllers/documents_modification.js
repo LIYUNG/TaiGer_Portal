@@ -279,7 +279,7 @@ const postMessages = asyncHandler(async (req, res) => {
   } = req;
   const { message } = req.body;
 
-  const document_thread = await await Documentthread.findById(messagesThreadId)
+  const document_thread = await Documentthread.findById(messagesThreadId)
     .populate('student_id program_id')
     .exec();
 
@@ -310,6 +310,45 @@ const postMessages = asyncHandler(async (req, res) => {
     .populate('student_id program_id messages.user_id')
     .exec();
   res.status(200).send({ success: true, data: document_thread2 });
+  // TODO: update StudentRead, EditorRead, isReceivedEditorFeedback and isReceivedStudentFeedback
+  // in student (User) collections.
+  const student = await Student.findById(document_thread.student_id);
+  if (document_thread.program_id) {
+    const application = student.applications.find(
+      ({ programId }) => programId === document_thread.program_id
+    );
+    const doc_thread = application.doc_modification_thread.find(
+      ({ doc_thread_id }) => doc_thread_id == document_thread._id
+    );
+    if (user.role === Role.Student) {
+      doc_thread.isReceivedStudentFeedback = true;
+      doc_thread.StudentRead = true;
+      doc_thread.EditorRead = false;
+    }
+    if (user.role === Role.Editor) {
+      doc_thread.isReceivedEditorFeedback = true;
+      doc_thread.StudentRead = false;
+      doc_thread.EditorRead = true;
+    }
+  } else {
+    const general_thread = student.generaldocs_threads.find(
+      ({ doc_thread_id }) =>
+        doc_thread_id.toString() == document_thread._id.toString()
+    );
+    if (user.role === Role.Student) {
+      general_thread.isReceivedStudentFeedback = true;
+      general_thread.isReceivedEditorFeedback = false;
+      general_thread.StudentRead = true;
+      general_thread.EditorRead = false;
+    }
+    if (user.role === Role.Editor) {
+      general_thread.isReceivedStudentFeedback = false;
+      general_thread.isReceivedEditorFeedback = true;
+      general_thread.StudentRead = false;
+      general_thread.EditorRead = true;
+    }
+  }
+  await student.save();
 
   if (user.role === Role.Student) {
     // Inform Editor
@@ -328,7 +367,8 @@ const postMessages = asyncHandler(async (req, res) => {
             uploaded_documentname: document_thread.file_type,
             school: document_thread.program_id.school,
             program_name: document_thread.program_id.program_name,
-            uploaded_updatedAt: new Date()
+            uploaded_updatedAt: new Date(),
+            message
           }
         );
       } else {
@@ -342,7 +382,8 @@ const postMessages = asyncHandler(async (req, res) => {
             student_firstname: user.firstname,
             student_lastname: user.lastname,
             uploaded_documentname: document_thread.file_type,
-            uploaded_updatedAt: new Date()
+            uploaded_updatedAt: new Date(),
+            message
           }
         );
       }
@@ -362,7 +403,8 @@ const postMessages = asyncHandler(async (req, res) => {
           uploaded_documentname: document_thread.file_type,
           school: document_thread.program_id.school,
           program_name: document_thread.program_id.program_name,
-          uploaded_updatedAt: new Date()
+          uploaded_updatedAt: new Date(),
+          message
         }
       );
     } else {
@@ -376,7 +418,8 @@ const postMessages = asyncHandler(async (req, res) => {
           editor_firstname: user.firstname,
           editor_lastname: user.lastname,
           uploaded_documentname: document_thread.file_type,
-          uploaded_updatedAt: new Date()
+          uploaded_updatedAt: new Date(),
+          message
         }
       );
     }

@@ -175,6 +175,10 @@ class AgentCenter extends React.Component {
 
   onDownloadFilefromstudent(e, category, id) {
     e.preventDefault();
+    // this.setState((state) => ({
+    //   ...state,
+    //   isLoaded: false
+    // }));
     downloadProfile(category, id).then(
       (resp) => {
         const { status } = resp;
@@ -230,7 +234,10 @@ class AgentCenter extends React.Component {
     let student_arrayidx = this.state.students.findIndex(
       (student) => student._id === student_id
     );
-
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
     uploadforstudent(category, student_id, formData).then(
       (res) => {
         let students = [...this.state.students];

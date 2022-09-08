@@ -66,17 +66,11 @@ export default function SignUp1({ userData }) {
                     Please go to your email and activate your registration.
                   </p>
                 </div>
-
                 <NavLink to="/">
                   <button className="btn btn-primary shadow-2 mb-4">
                     Login{' '}
                   </button>
                 </NavLink>
-
-                {/* <p className="mb-0 text-muted">
-                  Allready have an account?{' '}
-                  <NavLink to="/auth/login">Login</NavLink>
-                </p> */}
               </div>
             </form>
           </div>

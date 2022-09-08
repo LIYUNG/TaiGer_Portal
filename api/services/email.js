@@ -22,6 +22,7 @@ const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
 // const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
+const BASE_DOCUMENT_URL = new URL('/agent-center', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
 
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
@@ -56,6 +57,20 @@ const sendEmail = (to, subject, message) => {
     text: message
   };
   return transporter.sendMail(mail);
+};
+
+const updateNotificationEmail = async (recipient, msg) => {
+  const subject = 'Your status in TaiGer Portal updated';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname},
+
+Your user status in TaiGer Portal has been changed.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  return sendEmail(recipient, subject, message);
 };
 
 const sendConfirmationEmail = async (recipient, token) => {
@@ -176,6 +191,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
 
+Please go to ${BASE_DOCUMENT_URL} and see the details.
+
 If you have any question, feel free to contact your agent.
 
 ${TAIGER_SIGNATURE}
@@ -193,6 +210,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname}
 
 on ${msg.uploaded_updatedAt}.
+
+Please go to ${BASE_DOCUMENT_URL} and see the details.
 
 ${TAIGER_SIGNATURE}
 
@@ -213,6 +232,8 @@ due to the following reason, please upload ${msg.category} again:
 
 ${msg.message}
 
+Please go to ${BASE_DOCUMENT_URL} and see the details.
+
 If you have any question, please contact your agent. 
 
 ${TAIGER_SIGNATURE}
@@ -226,6 +247,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 your uploaded file ${msg.category} is successfully checked by your agent
 
 and it can be used for the application! 
+
+Please go to ${BASE_DOCUMENT_URL} and doueble check the details.
 
 ${TAIGER_SIGNATURE}
 
@@ -313,10 +336,26 @@ ${TAIGER_SIGNATURE}
 
 const createApplicationToStudentEmail = async (recipient, msg) => {
   const subject = 'New Programs assigned to you.';
+  let programList;
+  for (let i = 0; i < msg.programs.length; i += 1) {
+    if (i === 0) {
+      programList = `
+      ${msg.programs[i].school} - ${msg.programs[i].program_name}
+      `;
+    } else {
+      programList += `
+      ${msg.programs[i].school} - ${msg.programs[i].program_name}
+      `;
+    }
+  }
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-${msg.agent_firstname} ${msg.agent_lastname} has assigned programs for you!
+${msg.agent_firstname} ${msg.agent_lastname} has assigned programs for you:
+
+
+${programList}
+
 
 Please go to ${STUDENT_APPLICATION_URL} and see the details.
 
@@ -423,11 +462,16 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your student ${msg.student_firstname} ${msg.student_lastname} have a new update for 
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}:
 
-on ${msg.uploaded_updatedAt} 
+===
 
-for you.
+${msg.message}
+
+===
+
+on ${msg.uploaded_updatedAt}.
+
 
 Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
 
@@ -448,11 +492,16 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your editor ${msg.editor_firstname} ${msg.editor_lastname} have a new update for 
 
-${msg.school} ${msg.program_name} ${msg.uploaded_documentname}
+${msg.school} ${msg.program_name} ${msg.uploaded_documentname}:
 
-on ${msg.uploaded_updatedAt} 
+===
 
-for you.
+${msg.message}
+
+===
+
+on ${msg.uploaded_updatedAt}.
+
 
 Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
 
@@ -474,11 +523,16 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your student ${msg.student_firstname} ${msg.student_lastname} have a new update for 
 
-${msg.uploaded_documentname} 
+${msg.uploaded_documentname} :
 
-on ${msg.uploaded_updatedAt} 
+===
 
-for you.
+${msg.message}
+
+===
+
+on ${msg.uploaded_updatedAt}.
+
 
 Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
 
@@ -499,11 +553,16 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 your editor ${msg.editor_firstname} ${msg.editor_lastname} have a new update for 
 
-${msg.uploaded_documentname} 
+${msg.uploaded_documentname}:
 
-on ${msg.uploaded_updatedAt} 
+===
 
-for you.
+${msg.message}
+
+===
+
+on ${msg.uploaded_updatedAt}.
+
 
 Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
 
@@ -690,6 +749,7 @@ ${TAIGER_SIGNATURE}
 
 module.exports = {
   verifySMTPConfig,
+  updateNotificationEmail,
   sendEmail,
   sendConfirmationEmail,
   sendForgotPasswordEmail,

@@ -606,6 +606,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
 });
 
 // (O) email : self notification
+// () TODO email: notify agents
 const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const {
     user: student,

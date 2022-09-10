@@ -34,9 +34,7 @@ class Application extends Component {
     thread: [],
     editFormOpen: false,
     defaultStep: 1,
-    activeStep: 0,
     editorState: null,
-    completed: {},
     expand: true,
     accordionKeys: [0] // to expand all]
   };
@@ -280,7 +278,6 @@ class Application extends Component {
 
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
-    const { completed, activeStep } = this.state;
     const style = {
       position: 'fixed',
       top: '40%',
@@ -354,6 +351,40 @@ class Application extends Component {
               </Card.Title>
             </Card.Header>
           </Card>
+        </Row>
+        <Row>
+          <Col md={6}>
+            <Card className="mt-0">
+              <Card.Body>
+                <h5>Instruction</h5>
+                <p>
+                  Please fill our TaiGer template and attach the filled template
+                  in this discussion.
+                </p>
+                Donwload template: <b>Link</b>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="mt-0">
+              <Card.Body>
+                <h5>
+                  <b>Requirements:</b>
+                </h5>
+                <p>
+                  {this.state.thread.program_id ? (
+                    this.state.thread.program_id.ml_required ? (
+                      this.state.thread.program_id.ml_requirements
+                    ) : (
+                      'No'
+                    )
+                  ) : (
+                    <><p>CV/RL requirement</p></>
+                  )}
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
         <Row>
           <div>

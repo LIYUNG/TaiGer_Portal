@@ -252,7 +252,7 @@ const routes = [
     component: TaiGerAI
   },
   {
-    path: '/agent-center',
+    path: '/base-documents',
     exact: true,
     name: 'Base Documents',
     component: AgentCenter

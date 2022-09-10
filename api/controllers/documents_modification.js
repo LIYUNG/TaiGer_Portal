@@ -143,6 +143,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     program_id: null,
     updatedAt: new Date()
   });
+
   const temp = student.generaldocs_threads.create({
     doc_thread_id: new_doc_thread._id,
     updatedAt: new Date(),

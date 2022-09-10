@@ -74,7 +74,7 @@ export default {
           id: 'agent_center',
           title: 'Base Documents',
           type: 'item',
-          url: '/agent-center',
+          url: '/base-documents',
           classes: 'nav-item',
           icon: 'feather icon-eye'
         },

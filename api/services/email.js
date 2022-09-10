@@ -22,7 +22,7 @@ const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
 // const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
-const BASE_DOCUMENT_URL = new URL('/agent-center', ORIGIN).href;
+const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
 
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';

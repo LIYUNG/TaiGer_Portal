@@ -6,6 +6,7 @@ import { convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import TimeOutErrors from '../../Utils/TimeOutErrors';
 import UnauthorizedError from '../../Utils/UnauthorizedError';
+import PageNotFoundError from '../../Utils/PageNotFoundError';
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
@@ -28,6 +29,7 @@ class Application extends Component {
     error: null,
     timeouterror: null,
     unauthorizederror: null,
+    pagenotfounderror: null,
     file: null,
     isLoaded: false,
     articles: [],
@@ -61,6 +63,8 @@ class Application extends Component {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status == 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
+          } else if (resp.status == 400) {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
       },
@@ -109,6 +113,8 @@ class Application extends Component {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status == 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
+          } else if (resp.status == 400) {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
       },
@@ -277,7 +283,8 @@ class Application extends Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { pagenotfounderror, unauthorizederror, timeouterror, isLoaded } =
+      this.state;
     const style = {
       position: 'fixed',
       top: '40%',
@@ -295,6 +302,13 @@ class Application extends Component {
       return (
         <div>
           <UnauthorizedError />
+        </div>
+      );
+    }
+    if (pagenotfounderror) {
+      return (
+        <div>
+          <PageNotFoundError />
         </div>
       );
     }
@@ -379,7 +393,9 @@ class Application extends Component {
                       'No'
                     )
                   ) : (
-                    <><p>CV/RL requirement</p></>
+                    <>
+                      <p>CV/RL requirement</p>
+                    </>
                   )}
                 </p>
               </Card.Body>

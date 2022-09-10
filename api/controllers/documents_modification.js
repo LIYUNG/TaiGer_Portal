@@ -13,7 +13,9 @@ const {
   sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
-  sendSetAsFinalProgramSpecificFileForAgentEmail
+  sendSetAsFinalProgramSpecificFileForAgentEmail,
+  assignDocumentTaskToEditorEmail,
+  assignDocumentTaskToStudentEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
@@ -97,6 +99,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   const student = await Student.findById(studentId)
     .populate('generaldocs_threads.doc_thread_id')
+    .populate('agents editors', 'firstname lastname email')
     .exec();
 
   if (!student) {
@@ -121,6 +124,10 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
       // console.log('Pass 1.1');
       const app = student.generaldocs_threads.create({
         doc_thread_id: doc_thread_existed._id,
+        isReceivedEditorFeedback: true,
+        isReceivedStudentFeedback: false,
+        EditorRead: true,
+        StudentRead: false,
         updatedAt: new Date(),
         createdAt: new Date()
       });
@@ -146,6 +153,10 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   const temp = student.generaldocs_threads.create({
     doc_thread_id: new_doc_thread._id,
+    isReceivedEditorFeedback: true,
+    isReceivedStudentFeedback: false,
+    EditorRead: true,
+    StudentRead: false,
     updatedAt: new Date(),
     createdAt: new Date()
   });
@@ -163,8 +174,36 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     );
   res.status(200).send({ success: true, data: student2 });
   // TODO: Email notification
+  let documentname = document_category;
+  for (let i = 0; i < student.editors.length; i += 1) {
+    await assignDocumentTaskToEditorEmail(
+      {
+        firstname: student.editors[i].firstname,
+        lastname: student.editors[i].lastname,
+        address: student.editors[i].email
+      },
+      {
+        student_firstname: student.firstname,
+        student_lastname: student.lastname,
+        thread_id: new_doc_thread._id,
+        documentname,
+        updatedAt: new Date()
+      }
+    );
+  }
+
+  await assignDocumentTaskToStudentEmail(
+    {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      address: student.email
+    },
+    { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
+  );
 });
 
+// () TODO: email inform Editor
+// () TODO: email inform Student
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { studentId, program_id, document_category }
@@ -206,6 +245,10 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       // console.log('Pass 1.1');
       const app = application.doc_modification_thread.create({
         doc_thread_id: doc_thread_existed._id,
+        isReceivedEditorFeedback: true,
+        isReceivedStudentFeedback: false,
+        EditorRead: true,
+        StudentRead: false,
         updatedAt: new Date(),
         createdAt: new Date()
       });
@@ -240,6 +283,10 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   );
   const temp = student.applications[idx].doc_modification_thread.create({
     doc_thread_id: new_doc_thread._id,
+    isReceivedEditorFeedback: true,
+    isReceivedStudentFeedback: false,
+    EditorRead: true,
+    StudentRead: false,
     updatedAt: new Date(),
     createdAt: new Date()
   });
@@ -256,10 +303,42 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       'file_type updatedAt'
     );
   res.status(200).send({ success: true, data: student2 });
+  // TODO: email
+  let documentname =
+    document_category +
+    ' - ' +
+    application.programId.school +
+    ' - ' +
+    application.programId.program_name;
+  for (let i = 0; i < student.editors.length; i += 1) {
+    await assignDocumentTaskToEditorEmail(
+      {
+        firstname: student.editors[i].firstname,
+        lastname: student.editors[i].lastname,
+        address: student.editors[i].email
+      },
+      {
+        student_firstname: student2.firstname,
+        student_lastname: student2.lastname,
+        thread_id: new_doc_thread._id,
+        documentname,
+        updatedAt: new Date()
+      }
+    );
+  }
+  await assignDocumentTaskToStudentEmail(
+    {
+      firstname: student2.firstname,
+      lastname: student2.lastname,
+      address: student2.email
+    },
+    { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
+  );
 });
 
 const getMessages = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { messagesThreadId }
   } = req;
   const document_thread = await Documentthread.findById(messagesThreadId)
@@ -271,6 +350,14 @@ const getMessages = asyncHandler(async (req, res) => {
   if (!document_thread) {
     logger.error('getMessages: Invalid message thread id!');
     throw new ErrorResponse(400, 'Invalid message thread id');
+  }
+
+  // Check student can only access their own thread!!!!
+  if (user.role === Role.Student) {
+    if (document_thread.student_id._id.toString() !== user._id.toString()) {
+      logger.error('getMessages: Unauthorized request!');
+      throw new ErrorResponse(403, 'Unauthorized request');
+    }
   }
 
   res.status(200).send({ success: true, data: document_thread });
@@ -292,7 +379,13 @@ const postMessages = asyncHandler(async (req, res) => {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
-
+  // Check student can only access their own thread!!!!
+  if (user.role === Role.Student) {
+    if (document_thread.student_id._id.toString() !== user._id.toString()) {
+      logger.error('getMessages: Unauthorized request!');
+      throw new ErrorResponse(403, 'Unauthorized request');
+    }
+  }
   let newfile = [];
   if (req.file) {
     newfile = [

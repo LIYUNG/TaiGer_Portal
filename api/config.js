@@ -6,7 +6,9 @@ dotenv.config({
 });
 
 const isProd = () => process.env.NODE_ENV === 'production';
-const isDev = () => process.env.NODE_ENV === 'development';
+const isDev = () =>
+  process.env.NODE_ENV === 'development' ||
+  process.env.NODE_ENV === 'test';
 
 const env = (name, default_) => {
   // FIXME: throw error if both env variable and default not set

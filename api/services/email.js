@@ -513,6 +513,7 @@ ${TAIGER_SIGNATURE}
 
   sendEmail(recipient, subject, message);
 };
+
 const sendNewGeneraldocMessageInThreadToEditorEmail = async (
   recipient,
   msg
@@ -747,6 +748,57 @@ ${TAIGER_SIGNATURE}
   }
 };
 
+const assignDocumentTaskToEditorEmail = async (recipient, msg) => {
+  const subject = `[New Task] ${msg.student_firstname} ${msg.student_lastname} ${msg.documentname} is assigned to you!`;
+  const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
+    .href;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname}:
+
+is assigned to you 
+
+on ${msg.updatedAt}.
+
+
+Please go to TaiGer Portal ${THREAD_LINK} and check the updates. 
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
+const assignDocumentTaskToStudentEmail = async (recipient, msg) => {
+  const subject = `[New Task] ${recipient.firstname} ${recipient.lastname} ${msg.documentname} is assigned to you!`;
+  const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
+    .href;
+
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.documentname}:
+
+is assigned to you 
+
+on ${msg.updatedAt}.
+
+
+Please go to TaiGer Portal ${THREAD_LINK} and check the updates. 
+
+If you have any question, feel free to contact your editor.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -776,6 +828,8 @@ module.exports = {
   sendNewGeneraldocMessageInThreadToStudentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
+  assignDocumentTaskToEditorEmail,
+  assignDocumentTaskToStudentEmail,
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail

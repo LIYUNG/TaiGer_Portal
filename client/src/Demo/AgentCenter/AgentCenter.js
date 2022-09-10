@@ -36,7 +36,11 @@ class AgentCenter extends React.Component {
       this.props.user.students &&
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-        : [0] // to expand all]
+        : [0], // to expand all]
+    // accordionKeys:
+    //   this.props.user.students &&
+    //   new Array(this.props.user.students.length).fill().map((x, i) => i)
+    // // to expand all]
   };
 
   componentDidMount() {
@@ -49,7 +53,7 @@ class AgentCenter extends React.Component {
             students: data,
             success: success,
             // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
-            accordionKeys: new Array(-1, data.length) // to collapse all
+            // accordionKeys: new Array(-1, data.length) // to collapse all
           });
         } else {
           alert(resp.data.message);
@@ -80,7 +84,7 @@ class AgentCenter extends React.Component {
       accordionKeys:
         this.props.user.role === 'Editor' || this.props.user.role === 'Agent'
           ? new Array(this.props.user.students.length).fill().map((x, i) => -1)
-          : [-1] // to expand all]
+          : [-1] // to collapse all]
     }));
   };
 

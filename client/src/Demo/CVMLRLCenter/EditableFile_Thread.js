@@ -44,18 +44,43 @@ class EditableFile_Thread extends Component {
   render() {
     let fileStatus;
     let documenName;
-    documenName =
-      this.props.student.firstname +
-      ' ' +
-      this.props.student.lastname +
-      ' ' +
-      this.props.thread.doc_thread_id.file_type;
+    let school_program_name;
+    if (this.props.application) {
+      school_program_name =
+        this.props.application.programId.school +
+        ' - ' +
+        this.props.application.programId.program_name;
+      documenName =
+        this.props.student.firstname +
+        ' - ' +
+        this.props.student.lastname +
+        ' ' +
+        school_program_name +
+        ' ' +
+        this.props.thread.doc_thread_id.file_type;
+    } else {
+      documenName =
+        this.props.student.firstname +
+        ' - ' +
+        this.props.student.lastname +
+        ' ' +
+        this.props.thread.doc_thread_id.file_type;
+    }
 
     fileStatus = (
       <>
         <Row>
           <Col md={1}>
-            {this.props.thread.isFinalVersion ? (
+            {this.props.role === 'Student' || this.props.role === 'Guest' ? (
+              this.props.thread.isFinalVersion && (
+                <IoCheckmarkCircle
+                  size={24}
+                  color="limegreen"
+                  title="Final Version"
+                  // onMouseEnter={this.MouseOver}
+                />
+              )
+            ) : this.props.thread.isFinalVersion ? (
               <>
                 <IoCheckmarkCircle
                   size={24}
@@ -65,26 +90,39 @@ class EditableFile_Thread extends Component {
                 />
               </>
             ) : (
-              <Button
-                size="sm"
-                title="As final version"
-                onClick={() => this.handleAsFinalFileThread(documenName)}
-              >
-                <AiOutlineCheck size={12} />
-              </Button>
-            )}
-          </Col>
-          <Col md={1}>
-            {this.props.thread.isFinalVersion && (
-              <AiOutlineUndo
+              // <Button
+              //   size="sm"
+              //   title="As final version"
+              //   onClick={() => this.handleAsFinalFileThread(documenName)}
+              // >
+              <AiOutlineCheck
                 size={24}
-                color="red"
-                title="Un do Final Version"
                 style={{ cursor: 'pointer' }}
+                title="Set as final version"
                 onClick={() => this.handleAsFinalFileThread(documenName)}
               />
+              // </Button>
             )}
           </Col>
+
+          <Col md={1}>
+            {this.props.thread.isFinalVersion ? (
+              this.props.role === 'Student' || this.props.role === 'Guest' ? (
+                <p>Closed</p>
+              ) : (
+                <AiOutlineUndo
+                  size={24}
+                  color="red"
+                  title="Un do Final Version"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => this.handleAsFinalFileThread(documenName)}
+                />
+              )
+            ) : (
+              <></>
+            )}
+          </Col>
+
           <Col md={4}>
             <Link
               to={
@@ -103,8 +141,22 @@ class EditableFile_Thread extends Component {
               this.props.thread.doc_thread_id.updatedAt
             ).toLocaleTimeString()}
           </Col>
-
-          <Col md={1}>
+          {this.props.role === 'Student' || this.props.role === 'Guest' ? (
+            <></>
+          ) : (
+            <Col md={1}>
+              <Button
+                size="sm"
+                style={{ cursor: 'pointer' }}
+                title="Delete"
+                variant="danger"
+                onClick={this.handleDeleteFileThread}
+              >
+                <AiOutlineDelete size={20} />
+              </Button>
+            </Col>
+          )}
+          {/* <Col md={1}>
             <Button
               size="sm"
               title="Delete"
@@ -113,7 +165,7 @@ class EditableFile_Thread extends Component {
             >
               <AiOutlineDelete size={20} />
             </Button>
-          </Col>
+          </Col> */}
         </Row>
       </>
     );

@@ -1,7 +1,7 @@
-import React from "react";
-import ManualFilesList from "./ManualFilesList";
-import ToggleableUploadFileForm from "./ToggleableUploadFileForm";
-import { Row, Col, Tabs, Tab, Table } from "react-bootstrap";
+import React from 'react';
+import ManualFilesList from './ManualFilesList';
+import ToggleableUploadFileForm from './ToggleableUploadFileForm';
+import { Row, Col, Tabs, Tab, Table } from 'react-bootstrap';
 
 class ManualFiles extends React.Component {
   state = {
@@ -66,20 +66,24 @@ class ManualFiles extends React.Component {
             />
           </tbody>
         </Table>
-        <ToggleableUploadFileForm
-          role={this.props.role}
-          student={this.props.student}
-          handleSelect={this.handleSelect}
-          handleCreateGeneralMessageThread={
-            this.handleCreateGeneralMessageThread
-          }
-          handleCreateProgramSpecificMessageThread={
-            this.handleCreateProgramSpecificMessageThread
-          }
-          category={this.state.category}
-          filetype={this.props.filetype}
-          application={this.props.application}
-        />
+        {this.props.role === 'Student' || this.props.role === 'Guest' ? (
+          <></>
+        ) : (
+          <ToggleableUploadFileForm
+            role={this.props.role}
+            student={this.props.student}
+            handleSelect={this.handleSelect}
+            handleCreateGeneralMessageThread={
+              this.handleCreateGeneralMessageThread
+            }
+            handleCreateProgramSpecificMessageThread={
+              this.handleCreateProgramSpecificMessageThread
+            }
+            category={this.state.category}
+            filetype={this.props.filetype}
+            application={this.props.application}
+          />
+        )}
       </>
     );
   }

@@ -121,6 +121,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
       // console.log('Pass 1.1');
       const app = student.generaldocs_threads.create({
         doc_thread_id: doc_thread_existed._id,
+        updatedAt: new Date(),
         createdAt: new Date()
       });
       student.generaldocs_threads.push(app);
@@ -144,6 +145,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   });
   const temp = student.generaldocs_threads.create({
     doc_thread_id: new_doc_thread._id,
+    updatedAt: new Date(),
     createdAt: new Date()
   });
 
@@ -203,6 +205,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       // console.log('Pass 1.1');
       const app = application.doc_modification_thread.create({
         doc_thread_id: doc_thread_existed._id,
+        updatedAt: new Date(),
         createdAt: new Date()
       });
       application.doc_modification_thread.push(app);
@@ -236,6 +239,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   );
   const temp = student.applications[idx].doc_modification_thread.create({
     doc_thread_id: new_doc_thread._id,
+    updatedAt: new Date(),
     createdAt: new Date()
   });
 
@@ -310,26 +314,33 @@ const postMessages = asyncHandler(async (req, res) => {
     .populate('student_id program_id messages.user_id')
     .exec();
   res.status(200).send({ success: true, data: document_thread2 });
-  // TODO: update StudentRead, EditorRead, isReceivedEditorFeedback and isReceivedStudentFeedback
+  // update StudentRead, EditorRead, isReceivedEditorFeedback and isReceivedStudentFeedback
   // in student (User) collections.
-  const student = await Student.findById(document_thread.student_id);
+  const student = await Student.findById(document_thread.student_id)
+    .populate('applications.programId')
+    .exec();
   if (document_thread.program_id) {
     const application = student.applications.find(
-      ({ programId }) => programId === document_thread.program_id
+      ({ programId }) =>
+        programId.toString() === document_thread.program_id.toString()
     );
     const doc_thread = application.doc_modification_thread.find(
-      ({ doc_thread_id }) => doc_thread_id == document_thread._id
+      ({ doc_thread_id }) =>
+        doc_thread_id._id.toString() === document_thread._id.toString()
     );
     if (user.role === Role.Student) {
+      doc_thread.isReceivedEditorFeedback = false;
       doc_thread.isReceivedStudentFeedback = true;
       doc_thread.StudentRead = true;
       doc_thread.EditorRead = false;
     }
     if (user.role === Role.Editor) {
       doc_thread.isReceivedEditorFeedback = true;
+      doc_thread.isReceivedStudentFeedback = false;
       doc_thread.StudentRead = false;
       doc_thread.EditorRead = true;
     }
+    doc_thread.updatedAt = new Date();
   } else {
     const general_thread = student.generaldocs_threads.find(
       ({ doc_thread_id }) =>
@@ -347,7 +358,9 @@ const postMessages = asyncHandler(async (req, res) => {
       general_thread.StudentRead = false;
       general_thread.EditorRead = true;
     }
+    general_thread.updatedAt = new Date();
   }
+
   await student.save();
 
   if (user.role === Role.Student) {

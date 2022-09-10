@@ -108,8 +108,11 @@ const getStudents = asyncHandler(async (req, res) => {
   } else if (user.role === Role.Student) {
     const student = await Student.findById(user._id)
       .populate('applications.programId')
-      .populate('agents', '-students')
-      .populate('editors', '-students')
+      .populate('agents editors', '-students')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      )
+      // .populate('editors', '-students')
       .lean()
       .exec();
     res.status(200).send({ success: true, data: [student] });

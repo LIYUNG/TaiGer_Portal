@@ -24,7 +24,8 @@ export const getUsers = () => request.get('/api/users');
 
 export const deleteUser = (id) => request.delete(`/api/users/${id}`);
 
-export const updateUser = (user) => request.post(`/api/users/${user._id}`, user);
+export const updateUser = (user) =>
+  request.post(`/api/users/${user._id}`, user);
 
 export const changeUserRole = (id, role) => updateUser({ _id: id, role });
 
@@ -84,24 +85,22 @@ export const deleteFile = (category, studentId) =>
 // Account APIs
 export const getMyfiles = () => request.get(`/api/account/files`);
 
-export const templateDownload = (category) =>
-  request.get(`/api/account/files/${category}`, { responseType: 'blob' });
-
-export const upload = (studentId, docName, data) =>
-  request.post(`/api/account/files/${studentId}/${docName}`, data);
-
-export const uploadtemplate = (studentId, docName, data) =>
-  request.post(`/api/account/files/template/${docName}`, data);
+export const getTemplates = () =>
+  request.get(`/api/account/files/template`);
+export const uploadtemplate = (category, data) =>
+  request.post(`/api/account/files/template/${category}`, data);
+export const deleteTemplateFile = (category) =>
+  request.delete(`/api/account/files/template/${category}`);
+export const getTemplateDownload = (category) =>
+  request.get(`/api/account/files/template/${category}`, {
+    responseType: 'blob'
+  });
 
 export const transcriptanalyser = (studentId, category, data) =>
   request.post(`/api/account/transcript/${studentId}/${category}`, data);
 
 export const generatedFileDownload = (studentId, filename) =>
   request.get(`/api/account/transcript/${studentId}/${filename}`, {
-    responseType: 'blob'
-  });
-export const getTemplateDownload = (category) =>
-  request.get(`/api/account/download/template/${category}`, {
     responseType: 'blob'
   });
 
@@ -122,7 +121,6 @@ export const deleteProgramSpecificFileThread = (
 
 export const getCVMLRLOverview = () =>
   request.get(`/api/document-threads/overview`);
-
 
 export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
   request.put(`/api/document-threads/${documentsthreadId}/${studentId}`, {

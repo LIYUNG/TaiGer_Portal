@@ -21,6 +21,7 @@ app.use(
     credentials: true
   })
 );
+// TODO: enable logger for production
 if (isDev()) {
   // app.use(morgan('dev'));
   app.use(httpLogger);

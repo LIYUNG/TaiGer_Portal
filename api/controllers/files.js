@@ -4,6 +4,7 @@ const { spawn } = require('child_process');
 const aws = require('aws-sdk');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Student, User } = require('../models/User');
+const { Template } = require('../models/Template');
 const { UPLOAD_PATH } = require('../config');
 const { ErrorResponse } = require('../common/errors');
 const { DocumentStatus } = require('../constants');
@@ -40,6 +41,136 @@ const getMyfiles = asyncHandler(async (req, res) => {
   }
 
   return res.status(201).send({ success: true, data: student });
+});
+
+const getTemplates = asyncHandler(async (req, res) => {
+  const { user } = req;
+
+  if (user.role === Role.Guest) {
+    logger.error('getTemplates: Invalid operation');
+    throw new ErrorResponse(400, 'Invalid operation');
+  }
+
+  const templates = await Template.find({});
+
+  return res.status(201).send({ success: true, data: templates });
+});
+
+// TODO: fix bug in deleting mongoDB
+const deleteTemplate = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { category_name } = req.params;
+
+  if (user.role !== Role.Admin) {
+    logger.error('deleteTemplate: Invalid operation');
+    throw new ErrorResponse(400, 'Invalid operation');
+  }
+  const template = await Template.findOne({ category_name });
+
+  let document_split = template.path.replace(/\\/g, '/');
+  document_split = document_split.split('/');
+  const fileKey = document_split[1];
+  let directory = document_split[0];
+  logger.info('Trying to delete file', fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/g, '/');
+
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+  try {
+    s3.deleteObject(options, (error, data) => {
+      if (error) {
+        logger.error(error);
+      } else {
+        // TODO : Fix bug failing to delete item in DB but success in S3
+        Template.findOneAndDelete({ category_name });
+        const templates = Template.find({});
+        return res.status(200).send({ success: true, data: templates });
+      }
+    });
+  } catch (err) {
+    if (err) {
+      logger.error('deleteTemplate: ', err);
+      throw new ErrorResponse(500, 'Error occurs while deleting');
+    }
+  }
+
+  // return res.status(201).send({ success: true, data: templates });
+});
+
+// TODO Email Admin upload successful
+const uploadTemplate = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { category_name } = req.params;
+  if (user.role !== Role.Admin) {
+    logger.error('uploadTemplate: Invalid operation');
+    throw new ErrorResponse(403, 'Invalid operation');
+  }
+  let template = await Template.findOne({ category_name });
+  if (!template) {
+    template = await Template.create({
+      name: req.file.key,
+      category_name,
+      path: path.join(req.file.metadata.path, req.file.key),
+      updatedAt: new Date()
+    });
+  } else {
+    template.name = req.file.key;
+    template.category_name = category_name;
+    template.path = path.join(req.file.metadata.path, req.file.key);
+    template.updatedAt = new Date();
+    await template.save();
+  }
+  const updated_templates = await Template.find({});
+  res.status(201).send({ success: true, data: updated_templates });
+  // TODO Email Admin upload successful
+});
+
+const downloadTemplateFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { category_name }
+  } = req;
+  // Check authorized role
+  if (user.role === Role.Guest) {
+    logger.error('downloadProfileFile: Invalid role!');
+    throw new ErrorResponse(400, 'Invalid role');
+  }
+  const template = await Template.findOne({ category_name });
+  // AWS S3
+  // download the file via aws s3 here
+  // var fileKey = path.join(UPLOAD_PATH, document.path);
+  let document_split = template.path.replace(/\\/g, '/');
+  document_split = document_split.split('/');
+  const fileKey = document_split[1];
+  let directory = document_split[0];
+  logger.info('Trying to download template file', fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(fileKey);
+      const fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        logger.error('downloadTemplateFile: ', error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
 });
 
 // (O) email : student notification
@@ -221,26 +352,6 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
         .status(error.statusCode)
         .json({ success: false, message: error.message });
     });
-});
-
-const downloadTemplateFile = asyncHandler(async (req, res, next) => {
-  const {
-    params: { category }
-  } = req;
-  const filePath = path.join(UPLOAD_PATH, 'TaiGer_Template', category);
-  // TODO: S3 bucket
-  // FIXME: clear the filePath for consistency?
-  if (!fs.existsSync(filePath)) {
-    logger.error('downloadTemplateFile: File does not exist');
-    throw new ErrorResponse(400, 'File does not exist');
-  }
-
-  res.status(200).download(filePath, (err) => {
-    if (err) {
-      logger.error('downloadTemplateFile: Error occurs while downloading');
-      throw new ErrorResponse(500, 'Error occurs while downloading');
-    }
-  });
 });
 
 // (O) email : student notification
@@ -705,6 +816,9 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   getMyfiles,
+  getTemplates,
+  deleteTemplate,
+  uploadTemplate,
   saveProfileFilePath,
   downloadProfileFile,
   downloadTemplateFile,

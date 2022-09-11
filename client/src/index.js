@@ -114,31 +114,31 @@ window.academic_background_header = {
 window.templatelist = [
   {
     name: "CV",
-    prop: "00_Example_CV_english.pdf",
+    prop: "Example_CV_english",
   },
   {
     name: "ML",
-    prop: "ML_survey_lock_1.xlsx",
+    prop: "ML_survey_lock_1",
   },
   {
     name: "RL",
-    prop: "RL_academic_survey_lock.xlsx",
+    prop: "RL_academic_survey_lock",
   },
   {
     name: "Internship Certificate",
-    prop: "internship_Example.png",
+    prop: "Internship_Certificate_Example",
   },
   {
     name: "Employment Certificate",
-    prop: "employment_template.png",
+    prop: "Employment_Template",
   },
   {
     name: "Module Description",
-    prop: "Module Catalog.docx",
+    prop: "Module_Catalog",
   },
   {
     name: "ECTS Conv.",
-    prop: "NTU_ECTS_Conv_example.pdf",
+    prop: "ECTS_Conv_example",
   },
   // {
   //   name: "Essay",

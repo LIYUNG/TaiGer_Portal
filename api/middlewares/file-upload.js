@@ -35,6 +35,49 @@ var s3 = new aws.S3({
 const some_str = () => {
   return 'GeneralDocsEdit';
 };
+
+// Template file upload
+const template_storage_s3 = multerS3({
+  s3,
+  bucket: function (req, file, cb) {
+    var { category_name } = req.params;
+
+    var directory = path.join(AWS_S3_BUCKET_NAME, 'taiger_template');
+    directory = directory.replace(/\\/, '/');
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    var { category_name } = req.params;
+    var directory = 'taiger_template';
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: function (req, file, cb) {
+    var { category_name } = req.params;
+    var temp_name =
+      category_name + '_TaiGer_Template' + path.extname(file.originalname);
+    cb(null, temp_name);
+  }
+});
+// upload template pdf/docx/image
+const upload_template_s3 = multer({
+  storage: template_storage_s3,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(
+          400,
+          'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
+        )
+      );
+    const fileSize = parseInt(req.headers['content-length']);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    }
+    cb(null, true);
+  }
+});
+
 // Profile file upload
 const storage_s3 = multerS3({
   s3,
@@ -578,9 +621,11 @@ var storage = multer.diskStorage({
 });
 
 var upload = multer({ storage: storage });
+
 module.exports = {
   fileUpload: upload_program_specific_s3.single('file'),
   ProfilefileUpload: upload_profile_s3.single('file'),
+  TemplatefileUpload: upload_template_s3.single('file'),
   TranscriptExcelUpload: upload_transcript_s3.single('file'),
   EditGeneralDocsUpload: editor_generaldoc_s3.single('file'),
   MessagesThreadUpload: upload_messagesthread_file_s3.single('file'),

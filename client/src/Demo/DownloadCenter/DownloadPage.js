@@ -3,55 +3,72 @@ import { Row, Col, Spinner } from 'react-bootstrap';
 import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
 import {
-  deleteFile,
+  deleteTemplateFile,
+  getTemplates,
   uploadtemplate,
-  templateDownload,
   getTemplateDownload
 } from '../../api';
 import EditDownloadFilesSubpage from './EditDownloadFilesSubpage';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
 class DownloadPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.onFileChange = this.onFileChange.bind(this);
-    this.onSubmitFile = this.onSubmitFile.bind(this);
-    this.state = {
-      error: null,
-      file: '',
-      isLoaded: false,
-      student: [],
-      success: false
-    };
-  }
+  state = {
+    error: null,
+    file: '',
+    isLoaded: false,
+    students: [],
+    templates: null,
+    success: false
+  };
   componentDidMount() {
-    this.setState({
-      file: '',
-      isLoaded: true,
-      success: true
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState) {}
-
-  onFileChange(e) {
-    this.setState({
-      file: e.target.files[0]
-    });
-  }
-
-  onSubmitFile = (e, studentId, docName) => {
-    const formData = new FormData();
-    formData.append('file', this.state.file);
-    uploadtemplate(docName, formData).then(
+    getTemplates().then(
       (resp) => {
         const { data, success } = resp.data;
         //TODO: backend logic
         if (success) {
           this.setState({
             isLoaded: true, //false to reload everything
-            students: data,
-            success: success,
-            updateAgentList: []
+            templates: data,
+            success: success
+          });
+        } else {
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      }
+    );
+  }
+
+  // componentDidUpdate(prevProps, prevState) {}
+
+  onFileChange = (e) => {
+    this.setState({
+      file: e.target.files[0]
+    });
+  };
+
+  onSubmitFile = (e, category) => {
+    const formData = new FormData();
+    formData.append('file', this.state.file);
+    uploadtemplate(category, formData).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        //TODO: backend logic
+        if (success) {
+          this.setState({
+            isLoaded: true, //false to reload everything
+            templates: data,
+            success: success
           });
         } else {
           alert(resp.data.message);
@@ -84,15 +101,32 @@ class DownloadPage extends React.Component {
     return match ? match[1] : null;
   }
 
-  onDeleteFilefromstudent = (e, category, id) => {
-    // e.preventDefault();
-    deleteFile(category, id).then(
-      (resp) => {},
-      (error) => {}
+  onDeleteTemplateFile = (e, category) => {
+    e.preventDefault();
+    deleteTemplateFile(category).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        //TODO: backend logic
+        if (success) {
+          this.setState({
+            isLoaded: true, //false to reload everything
+            templates: data,
+            success: success
+          });
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      }
     );
   };
 
-  onDownloadFilefromstudent(e, category) {
+  onDownloadFilefromstudent = (e, category) => {
     e.preventDefault();
     getTemplateDownload(category).then(
       (resp) => {
@@ -132,64 +166,33 @@ class DownloadPage extends React.Component {
         alert('The file is not available.');
       }
     );
-  }
+  };
 
-  // FIXME: id is template
-  // This is download template file.
-  onDownloadFile(e, category) {
-    e.preventDefault();
-    var actualFileName;
-    templateDownload(category).then(
-      (resp) => {
-        actualFileName = resp.headers['content-disposition'].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-        var filetype = actualFileName.split('.'); //split file name
-        filetype = filetype.pop(); //get the file type
-        if (filetype === 'pdf') {
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: 'application/pdf' })
-          );
-
-          // Open the URL on new Window
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert('The file is not available.');
-      }
-    );
-  }
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
     const style = {
       position: 'fixed',
       top: '40%',
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    if (error) {
-      return (
-        <div>
-          Error: your session is timeout! Please refresh the page and Login
-        </div>
-      );
-    }
-    if (!isLoaded) {
+
+    if (!isLoaded && !this.state.templates) {
       return (
         <div style={style}>
           <Spinner animation="border" role="status">
@@ -197,31 +200,18 @@ class DownloadPage extends React.Component {
           </Spinner>
         </div>
       );
-    } else {
-      if (
-        this.props.user.role === 'Student' ||
-        this.props.user.role === 'Admin' ||
-        this.props.user.role === 'Editor' ||
-        this.props.user.role === 'Agent'
-      ) {
-        return (
-          <Aux>
-            <Row>
-              <Col>
-                <Card title="Download TaiGer Document Templates">
-                  <EditDownloadFilesSubpage
-                    role={this.props.user.role}
-                    userId={this.props.user._id}
-                    student={this.state.student}
-                    submitFile={this.submitFile}
-                    onFileChange={this.onFileChange}
-                    templatelist={window.templatelist}
-                    onRejectFilefromstudent={this.onRejectFilefromstudent}
-                    onAcceptFilefromstudent={this.onAcceptFilefromstudent}
-                    onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-                    onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-                  />
-                </Card>
+    }
+    if (
+      this.props.user.role === 'Student' ||
+      this.props.user.role === 'Admin' ||
+      this.props.user.role === 'Editor' ||
+      this.props.user.role === 'Agent'
+    ) {
+      return (
+        <Aux>
+          <Row>
+            <Col>
+              <Card title="Download TaiGer Document Templates">
                 {!isLoaded && (
                   <div style={style}>
                     <Spinner animation="border" role="status">
@@ -229,22 +219,33 @@ class DownloadPage extends React.Component {
                     </Spinner>
                   </div>
                 )}
-              </Col>
-            </Row>
-          </Aux>
-        );
-      } else {
-        // Guest
-        return (
-          <Aux>
-            <Row>
-              <Col>
-                <div> This is for Premium only. Please contact our sales! </div>
-              </Col>
-            </Row>
-          </Aux>
-        );
-      }
+                <EditDownloadFilesSubpage
+                  role={this.props.user.role}
+                  userId={this.props.user._id}
+                  student={this.state.student}
+                  templates={this.state.templates}
+                  submitFile={this.submitFile}
+                  onFileChange={this.onFileChange}
+                  templatelist={window.templatelist}
+                  onDeleteTemplateFile={this.onDeleteTemplateFile}
+                  onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                />
+              </Card>
+            </Col>
+          </Row>
+        </Aux>
+      );
+    } else {
+      // Guest
+      return (
+        <Aux>
+          <Row>
+            <Col>
+              <div> This is for Premium only. Please contact our sales! </div>
+            </Col>
+          </Row>
+        </Aux>
+      );
     }
   }
 }

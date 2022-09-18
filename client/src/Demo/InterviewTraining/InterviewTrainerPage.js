@@ -1,5 +1,9 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
+import PageNotFoundError from '../Utils/PageNotFoundError';
+import ProgramsInterview from './ProgramsInterview';
 
 import Aux from '../../hoc/_Aux';
 import {
@@ -11,9 +15,12 @@ import {
 class InterviewTrainerPage extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
+    pagenotfounderror: null,
     role: '',
     isLoaded: false,
-    data: null,
+    interviews: [],
     success: false,
     academic_background: {},
     updateconfirmed: false,
@@ -27,14 +34,16 @@ class InterviewTrainerPage extends React.Component {
         if (success) {
           this.setState({
             isLoaded: true,
-            academic_background: data,
+            interviews: data,
             success: success
           });
         } else {
           if (resp.status == 401) {
-            this.setState({ isLoaded: true, error: true });
+            this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status == 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
+          } else if (resp.status == 400) {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
       },
@@ -48,20 +57,36 @@ class InterviewTrainerPage extends React.Component {
     this.setState({ isLoaded: true });
   }
   render() {
-    const { error, isLoaded } = this.state;
+    const { pagenotfounderror, unauthorizederror, timeouterror, isLoaded } =
+      this.state;
     const style = {
       position: 'fixed',
       top: '40%',
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
         </div>
       );
     }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+    if (pagenotfounderror) {
+      return (
+        <div>
+          <PageNotFoundError />
+        </div>
+      );
+    }
+
     if (!isLoaded) {
       return (
         <div style={style}>
@@ -79,7 +104,9 @@ class InterviewTrainerPage extends React.Component {
           </Card.Header>
         </Card>
         <Card className="mt-0">
-          <Card.Body>Open interviews</Card.Body>
+          <Card.Body>
+            <ProgramsInterview interviews={this.state.interviews} />
+          </Card.Body>
         </Card>
       </>
     );

@@ -85,8 +85,7 @@ export const deleteFile = (category, studentId) =>
 // Account APIs
 export const getMyfiles = () => request.get(`/api/account/files`);
 
-export const getTemplates = () =>
-  request.get(`/api/account/files/template`);
+export const getTemplates = () => request.get(`/api/account/files/template`);
 export const uploadtemplate = (category, data) =>
   request.post(`/api/account/files/template/${category}`, data);
 export const deleteTemplateFile = (category) =>
@@ -225,5 +224,9 @@ export const updateCredentials = (credentials, email, password) =>
 export const getAllInterviews = () => request.get('/api/interviews');
 export const getInterview = (interview_id) =>
   request.get(`/api/interviews/${interview_id}`);
-export const getMyInterviews = (studnet_id) =>
+export const getMyInterviews = () =>
+  request.get(`/api/interviews/my-interviews`);
+export const createInterview = (program_id, student_id) =>
+  request.post(`/api/interviews/${program_id}/${student_id}`);
+export const getApplications = (studnet_id) =>
   request.get(`/api/interviews/my-interviews`);

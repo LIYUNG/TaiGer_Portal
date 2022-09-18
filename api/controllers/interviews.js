@@ -13,17 +13,14 @@ const logger = require('../services/logger');
 
 const getAllInterviews = asyncHandler(async (req, res) => {
   const { user } = req;
-  if (user.role === Role.Student) {
-    const interviews = await Interview.findById(user._id).lean();
-    // .populate("applications.programId agents editors");
-    // .lean();
-    res.status(200).send({ success: true, data: interviews });
-  } else {
-    const interviews = await Interview.find().lean();
-    // .populate("applications.programId agents editors");
-    // .lean();
-    res.status(200).send({ success: true, data: interviews });
-  }
+
+  const interviews = await Interview.find()
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name')
+    .lean();
+  // .populate("applications.programId agents editors");
+  // .lean();
+  res.status(200).send({ success: true, data: interviews });
 });
 
 const getInterview = asyncHandler(async (req, res) => {
@@ -43,16 +40,19 @@ const getInterview = asyncHandler(async (req, res) => {
 
 const getMyInterview = asyncHandler(async (req, res) => {
   const { user } = req;
-  const interview = await Interview.find({
+  const interviews = await Interview.find({
     student_id: user._id.toString()
-  }).lean();
+  })
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name')
+    .lean();
   // .populate("applications.programId agents editors");
   // .lean();
-  if (!interview) {
+  if (!interviews) {
     logger.info('createInterview: this interview is already existed!');
     throw new ErrorResponse(400, 'this interview is already existed!');
   }
-  res.status(200).send({ success: true, data: interview });
+  res.status(200).send({ success: true, data: interviews });
 });
 
 // () TODO: inform editor
@@ -79,8 +79,14 @@ const createInterview = asyncHandler(async (req, res) => {
     logger.info('createInterview: this interview is already existed!');
     throw new ErrorResponse(400, 'this interview is already existed!');
   }
-  const new_interview = new Interview({ student_id, program_id });
-  res.status(200).send({ success: true, data: interview });
+  // const new_interview = new Interview();
+  await Interview.create({ student_id, program_id });
+  const new_interviews = await Interview.find({})
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name')
+    .lean();
+  // console.log(new_interview);
+  res.status(200).send({ success: true, data: new_interviews });
 });
 
 module.exports = {

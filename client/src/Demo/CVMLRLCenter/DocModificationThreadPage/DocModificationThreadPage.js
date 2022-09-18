@@ -458,11 +458,11 @@ class Application extends Component {
                     </>
                   )}
                 </p>
-                <h5><b>Deadline</b></h5>
+                <h5>
+                  <b>Deadline</b>
+                </h5>
                 {this.state.thread.program_id && (
-                  <h5>
-                    {this.state.thread.program_id.application_deadline}
-                  </h5>
+                  <h5>{this.state.thread.program_id.application_deadline}</h5>
                 )}
               </Card.Body>
             </Card>

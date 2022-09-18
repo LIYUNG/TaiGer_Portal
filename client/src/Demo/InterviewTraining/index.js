@@ -4,22 +4,20 @@ import InterviewTrainerPage from './InterviewTrainerPage';
 import InterviewStudentPage from './InterviewStudentPage';
 import Aux from '../../hoc/_Aux';
 
-
 class InterviewTraining extends React.Component {
-  
-
   render() {
-
     return (
       <Aux>
         {this.props.user.role === 'Student' && (
           <>
-            <InterviewStudentPage />
+            <InterviewStudentPage user={this.props.user} />
           </>
         )}
-        {this.props.user.role === 'Editor' && (
+        {(this.props.user.role === 'Editor' ||
+          this.props.user.role === 'Agent' ||
+          this.props.user.role === 'Admin') && (
           <>
-            <InterviewTrainerPage />
+            <InterviewTrainerPage user={this.props.user} />
           </>
         )}
       </Aux>

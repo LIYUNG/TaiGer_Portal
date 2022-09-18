@@ -9,6 +9,8 @@ const { UPLOAD_PATH } = require('../config');
 const { ErrorResponse } = require('../common/errors');
 const { DocumentStatus } = require('../constants');
 const {
+  deleteTemplateSuccessEmail,
+  uploadTemplateSuccessEmail,
   sendUploadedProfileFilesEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
@@ -56,7 +58,7 @@ const getTemplates = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: templates });
 });
 
-// TODO: fix bug in deleting mongoDB
+// (O) email admin delete template
 const deleteTemplate = asyncHandler(async (req, res) => {
   const { user } = req;
   const { category_name } = req.params;
@@ -82,12 +84,8 @@ const deleteTemplate = asyncHandler(async (req, res) => {
   try {
     s3.deleteObject(options, (error, data) => {
       if (error) {
+        logger.error('deleteObject');
         logger.error(error);
-      } else {
-        // TODO : Fix bug failing to delete item in DB but success in S3
-        Template.findOneAndDelete({ category_name });
-        const templates = Template.find({});
-        return res.status(200).send({ success: true, data: templates });
       }
     });
   } catch (err) {
@@ -96,11 +94,23 @@ const deleteTemplate = asyncHandler(async (req, res) => {
       throw new ErrorResponse(500, 'Error occurs while deleting');
     }
   }
-
-  // return res.status(201).send({ success: true, data: templates });
+  await Template.findOneAndDelete({ category_name });
+  const templates = await Template.find({});
+  res.status(200).send({ success: true, data: templates });
+  await deleteTemplateSuccessEmail(
+    {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      address: user.email
+    },
+    {
+      category_name,
+      updatedAt: new Date()
+    }
+  );
 });
 
-// TODO Email Admin upload successful
+// (O) email admin uploaded template successfully
 const uploadTemplate = asyncHandler(async (req, res) => {
   const { user } = req;
   const { category_name } = req.params;
@@ -125,7 +135,18 @@ const uploadTemplate = asyncHandler(async (req, res) => {
   }
   const updated_templates = await Template.find({});
   res.status(201).send({ success: true, data: updated_templates });
-  // TODO Email Admin upload successful
+
+  await uploadTemplateSuccessEmail(
+    {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      address: user.email
+    },
+    {
+      category_name,
+      updatedAt: new Date()
+    }
+  );
 });
 
 const downloadTemplateFile = asyncHandler(async (req, res, next) => {

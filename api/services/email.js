@@ -23,6 +23,7 @@ const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
+const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
 
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
@@ -65,6 +66,42 @@ const updateNotificationEmail = async (recipient, msg) => {
 Hi ${recipient.firstname} ${recipient.lastname},
 
 Your user status in TaiGer Portal has been changed.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const uploadTemplateSuccessEmail = async (recipient, msg) => {
+  const subject = `Template ${msg.category_name} uploaded successfully!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname},
+
+the template ${msg.category_name} is uploaded sucessfully on
+
+ ${msg.updatedAt}
+
+For more details, please visit: ${TEMPLATE_DOWNLOAD_URL}
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const deleteTemplateSuccessEmail = async (recipient, msg) => {
+  const subject = `Template ${msg.category_name} deleted successfully!`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname},
+
+the template ${msg.category_name} is deleted sucessfully on
+
+ ${msg.updatedAt}
+
+For more details, please visit: ${TEMPLATE_DOWNLOAD_URL}
 
 ${TAIGER_SIGNATURE}
 
@@ -803,6 +840,8 @@ module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
   sendEmail,
+  deleteTemplateSuccessEmail,
+  uploadTemplateSuccessEmail,
   sendConfirmationEmail,
   sendForgotPasswordEmail,
   sendPasswordResetEmail,

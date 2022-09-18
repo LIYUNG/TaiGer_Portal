@@ -215,10 +215,10 @@ class EditFilesSubpage extends React.Component {
                 </Row>
                 <Row>{this.props.SYMBOL_EXPLANATION}</Row>
                 <Row>
-                  <UploadAndGenerate
+                  {/* <UploadAndGenerate
                     user={this.state.student}
                     student={this.state.student}
-                  />
+                  /> */}
                 </Row>
               </Card.Body>
             </div>

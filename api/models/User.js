@@ -268,45 +268,10 @@ const applicationSchema = new Schema({
       student_feedback_updatedAt: Date
     }
   ],
-  student_inputs: [
-    {
-      name: {
-        type: String,
-        required: true
-      },
-      status: {
-        type: String,
-        enum: Object.values(DocumentStatus),
-        default: DocumentStatus.Missing
-      },
-      isFinalVersion: {
-        type: Boolean,
-        default: false
-      },
-      isReceivedFeedback: {
-        type: Boolean,
-        default: false
-      },
-      required: {
-        type: Boolean,
-        required: true
-      },
-      file_category: {
-        type: String,
-        default: 'Others'
-      },
-      feedback: {
-        type: String,
-        default: ''
-      },
-      path: {
-        type: String,
-        default: ''
-      },
-      // TODO: updateBy
-      updatedAt: Date
-    }
-  ],
+  reject_reason: {
+    type: String,
+    default: ''
+  },
   decided: { type: Boolean, default: false },
   closed: { type: Boolean, default: false },
   admission: { type: Boolean, default: false }

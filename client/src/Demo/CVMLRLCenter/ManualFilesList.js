@@ -51,7 +51,6 @@ class ManualFilesList extends Component {
         <Row>
           <>
             <Col>{message_threads}</Col>
-            {/* <Col md={6}>{student_inputs}</Col> */}
           </>
         </Row>
       </>

@@ -29,7 +29,6 @@ import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
 import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
 import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
 import UploadAndGenerate from '../TaiGerAI/UploadAndGenerate';
-import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import SurveyComponent from '../Survey/SurveyComponent';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -416,14 +415,7 @@ class ArchivStudent extends React.Component {
         );
       }
     });
-    const student_editor = (
-      <EditorDocsProgress
-        student={this.state.student}
-        accordionKeys={1}
-        singleExpandtHandler={this.singleExpandtHandler}
-        role={this.props.user.role}
-      />
-    );
+
     return (
       <>
         <Card className="mt-2">
@@ -467,23 +459,18 @@ class ArchivStudent extends React.Component {
               </Table>
             </Row>
             <Row>{SYMBOL_EXPLANATION}</Row>
-            <Row>
+            {/* <Row>
               <UploadAndGenerate
                 user={this.state.student}
                 student={this.state.student}
               />
-            </Row>
+            </Row> */}
           </Tab>
           <Tab eventKey="status" title="Status">
             <Row>
               <Table responsive>
                 <Task student_id={this.state.student._id} />
               </Table>
-            </Row>
-          </Tab>
-          <Tab eventKey="application-files" title="Application Files">
-            <Row>
-              <Col sm={12}>{student_editor}</Col>
             </Row>
           </Tab>
           <Tab eventKey="background" title="Background">

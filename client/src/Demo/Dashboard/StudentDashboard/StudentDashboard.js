@@ -2,9 +2,7 @@ import React from 'react';
 import { Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
 import Card from '../../../App/components/MainCard';
 import StudentMyself from './StudentMyself';
-import StudentTodoList from './StudentTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
-import TabEditorDocsProgress from '../MainViewTab/EditorDocsProgress/TabEditorDocsProgress';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 import { addHours, addDays, addWeeks, startOfWeek } from 'date-fns';
 // import TimeLine from "react-gantt-timeline";
@@ -160,9 +158,7 @@ class StudentDashboard extends React.Component {
       )
     );
 
-    const std_todo = this.props.students.map((student, i) => (
-      <StudentTodoList key={i} student={student} />
-    ));
+
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
@@ -184,6 +180,32 @@ class StudentDashboard extends React.Component {
     return (
       <>
         <Row>
+          <Col>
+            <Card title="My Application Progress">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <>
+                      {this.props.role !== 'Student' ? (
+                        <th>First-, Last Name</th>
+                      ) : (
+                        <th></th>
+                      )}
+                      <th>University</th>
+                      <th>Programs</th>
+                      <th>Deadline</th>
+                    </>
+                    {window.programstatuslist.map((doc, index) => (
+                      <th key={index}>{doc.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                {application_progress}
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
           {/* <Card title={"Schedule"}> */}
           {/* <TimeLine
               data={this.state.data}
@@ -192,36 +214,6 @@ class StudentDashboard extends React.Component {
               onHorizonChange={this.onHorizonChange}
             /> */}
           {/* </Card> */}
-          <Col md={6}>
-            <Card title="Unread messages:">
-              <Table responsive bordered hover>
-                <thead>
-                  <tr>
-                    <th>First-, Last Name</th>
-                    <th>Documents</th>
-                    <th>Last Update</th>
-                  </tr>
-                </thead>
-                {unread_thread}
-              </Table>
-            </Card>
-          </Col>
-          <Col md={6}>
-            <Card title="Pending:">
-              <Table responsive bordered hover>
-                <thead>
-                  <tr>
-                    <th>First-, Last Name</th>
-                    <th>Documents</th>
-                    <th>Last Update</th>
-                  </tr>
-                </thead>
-                {read_thread}
-              </Table>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
           <Col md={6}>
             <Card title="Your TaiGer Team">
               <Table responsive bordered hover>
@@ -238,26 +230,43 @@ class StudentDashboard extends React.Component {
                 </tbody>
               </Table>
             </Card>
+            <Card title="My Uploaded Documents">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Documents</th>
+                  </tr>
+                </thead>
+                <tbody>{stdlist}</tbody>
+              </Table>
+            </Card>
           </Col>
-        </Row>
-        <Row>
-          <Col md={4}>
-            <Tabs defaultActiveKey="x" id="uncontrolled-tab-example">
-              <Tab eventKey="x" title="My Uploaded Documents">
-                <Table responsive>
-                  <thead>
-                    <tr>
-                      <th>Status</th>
-                      <th>Documents</th>
-                    </tr>
-                  </thead>
-                  <tbody>{stdlist}</tbody>
-                </Table>
-                {/* {this.props.SYMBOL_EXPLANATION} */}
-              </Tab>
-            </Tabs>
-          </Col>
-          <Col md={4}>
+          <Col md={6}>
+            <Card title="Unread messages:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>First-, Last Name</th>
+                    <th>Documents</th>
+                    <th>Last Update</th>
+                  </tr>
+                </thead>
+                {unread_thread}
+              </Table>
+            </Card>
+            <Card title="Pending:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>First-, Last Name</th>
+                    <th>Documents</th>
+                    <th>Last Update</th>
+                  </tr>
+                </thead>
+                {read_thread}
+              </Table>
+            </Card>
             <Card title="Agent Reviewing:">
               <Table responsive bordered hover>
                 <thead>
@@ -267,42 +276,6 @@ class StudentDashboard extends React.Component {
                   </tr>
                 </thead>
                 {agent_reviewing}
-              </Table>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Card title="My Editor & Docs Progress">
-              <TabEditorDocsProgress
-                role={this.props.role}
-                students={this.props.students}
-              />
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Card title="My Application Progress">
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <>
-                      {this.props.role !== 'Student' ? (
-                        <th>First-, Last Name</th>
-                      ) : (
-                        <></>
-                      )}
-                      <th>University</th>
-                      <th>Programs</th>
-                      <th>Deadline</th>
-                    </>
-                    {window.programstatuslist.map((doc, index) => (
-                      <th key={index}>{doc.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                {application_progress}
               </Table>
             </Card>
           </Col>

@@ -218,18 +218,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //       `${path.extname(filename)}`;
 //     temp_name = temp_name.replace(/ /g, '_');
 
-//     // let student_input_doc = application.student_inputs.find(
-//     //   ({ name }) => name === temp_name
-//     // );
-//     // let editor_output_doc = application.documents.find(
-//     //   ({ name }) => name === temp_name
-//     // );
-//     // if (editor_output_doc || student_input_doc) {
-//     //   version_number++;
-//     // } else {
-//     same_file_name = false;
-//     db_file_name = temp_name;
-//     // }
 //   }
 //   const doc_idx = application.documents.findIndex(({ name }) =>
 //     name.includes(db_file_name)
@@ -437,18 +425,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //     `${path.extname(filename)}`;
 //   temp_name = temp_name.replace(/ /g, '_');
 
-// let student_input_doc = application.student_inputs.find(
-//   ({ name }) => name === temp_name
-// );
-// let editor_output_doc = application.documents.find(
-//   ({ name }) => name === temp_name
-// );
-// if (editor_output_doc || student_input_doc) {
-//   version_number++;
-// } else {
-// same_file_name = false;
-// db_file_name = temp_name;
-// }
 // }
 
 //     const doc_idx = application.documents.findIndex(({ name }) =>
@@ -585,17 +561,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //       ({ programId }) => programId._id == applicationId
 //     );
 
-//     application.student_inputs.forEach((student_input) => {
-//       if (student_input.name.includes(fileCategory)) {
-//         if (
-//           student_input.name.match(r) !== null &&
-//           student_input.name.match(r)[0] > version_number_max
-//         ) {
-//           version_number_max = student_input.name.match(r)[0]; // get the max version number
-//         }
-//       }
-//     });
-
 //     let version_number = version_number_max;
 //     var same_file_name = true;
 //     while (same_file_name) {
@@ -614,33 +579,7 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //         `${path.extname(filename)}`;
 //       temp_name = temp_name.replace(/ /g, '_');
 
-//       // let student_input_doc = application.student_inputs.find(
-//       //   ({ name }) => name === temp_name
-//       // );
-//       // let editor_output_doc = application.student_inputs.find(
-//       //   ({ name }) => name === temp_name
-//       // );
-//       // if (editor_output_doc || student_input_doc) {
-//       //   version_number++;
-//       // } else {
-//       same_file_name = false;
-//       db_file_name = temp_name;
-//       // }
 //     }
-
-//     const doc_idx = application.student_inputs.findIndex(({ name }) =>
-//       // name.includes(version_number.toString())
-//       name.includes(db_file_name)
-//     );
-//     // expect(
-//     //   updatedStudent.applications[appl_idx].student_inputs[doc_idx].name
-//     // ).toMatchObject({
-//     //   // path: expect.not.stringMatching(/^$/),
-//     //   name: docName,
-//     //   // status: DocumentStatus.Uploaded,
-//     // });
-//     file_name_inDB = path.basename(application.student_inputs[doc_idx].path);
-//     expect(file_name_inDB).toBe(db_file_name);
 
 //     // Test Download:
 //     const resp2 = await request(app)
@@ -769,17 +708,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //         )}`;
 //       temp_name = temp_name.replace(/ /g, '_');
 
-//       // let student_input_doc = application.student_inputs.find(
-//       //   ({ name }) => name === temp_name
-//       // );
-//       // let editor_output_doc = application.documents.find(
-//       //   ({ name }) => name === temp_name
-//       // );
-//       // if (editor_output_doc || student_input_doc) {
-//       //   version_number++;
-//       // } else {
-//       same_file_name = false;
-//       // }
 //     }
 
 //     // expect(
@@ -904,18 +832,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //           updatedStudent.generaldocs.studentinputs[studentinput_idx].path
 //         )}`;
 //       temp_name = temp_name.replace(/ /g, '_');
-
-//       // let student_input_doc = application.student_inputs.find(
-//       //   ({ name }) => name === temp_name
-//       // );
-//       // let editor_output_doc = application.documents.find(
-//       //   ({ name }) => name === temp_name
-//       // );
-//       // if (editor_output_doc || student_input_doc) {
-//       //   version_number++;
-//       // } else {
-//       same_file_name = false;
-//       // }
 //     }
 
 //     // expect(

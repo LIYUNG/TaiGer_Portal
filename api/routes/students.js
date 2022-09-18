@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const { ErrorResponse } = require('../common/errors');
 const { protect, permit } = require('../middlewares/auth');
-const { fileUpload, ProfilefileUpload } = require('../middlewares/file-upload');
+const { ProfilefileUpload } = require('../middlewares/file-upload');
 const { Role, Student } = require('../models/User');
 
 const {

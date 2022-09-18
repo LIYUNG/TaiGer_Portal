@@ -3,8 +3,6 @@ import { Row, Col, Tabs, Tab, Table } from 'react-bootstrap';
 import Card from '../../../App/components/MainCard';
 import EditorTodoList from './EditorTodoList';
 import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
-import EditorReviewing from '../MainViewTab/EditorReview/EditorReviewing';
-import TabEditorDocsProgress from '../MainViewTab/EditorDocsProgress/TabEditorDocsProgress';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
@@ -27,13 +25,6 @@ class EditorMainView extends React.Component {
     ));
     const unread_thread = this.props.students.map((student, i) => (
       <NewUpdatedThreadFromStudent
-        key={student._id}
-        role={this.props.role}
-        student={student}
-      />
-    ));
-    const editor_reviewing = this.props.students.map((student, i) => (
-      <EditorReviewing
         key={student._id}
         role={this.props.role}
         student={student}
@@ -86,6 +77,7 @@ class EditorMainView extends React.Component {
                   <tr>
                     <th>First-, Last Name</th>
                     <th>Documents</th>
+                    <th>Deadline</th>
                     <th>Last Update</th>
                   </tr>
                 </thead>
@@ -106,15 +98,7 @@ class EditorMainView extends React.Component {
         </Row>
         <Row>
           <Col sm={12}>
-            <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-              <Tab eventKey="w" title="Editor & Docs Progress">
-                <TabEditorDocsProgress
-                  role={this.props.role}
-                  students={this.props.students}
-                  startEditingProgram={this.props.startEditingProgram}
-                  documentslist={this.props.documentslist}
-                />
-              </Tab>
+            <Tabs defaultActiveKey="dz" id="uncontrolled-tab-example">
               <Tab eventKey="dz" title="Agents and Editors">
                 <Table responsive>
                   <thead>

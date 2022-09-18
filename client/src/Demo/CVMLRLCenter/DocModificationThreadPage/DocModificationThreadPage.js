@@ -11,6 +11,7 @@ import PageNotFoundError from '../../Utils/PageNotFoundError';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
   updateDoc,
+  getTemplateDownload,
   deleteDoc,
   SubmitMessageWithAttachment,
   getMessageFileDownload,
@@ -179,6 +180,48 @@ class Application extends Component {
     );
   };
 
+  onDownloadTemplate = (e, category) => {
+    e.preventDefault();
+    getTemplateDownload(category).then(
+      (resp) => {
+        const actualFileName =
+          resp.headers['content-disposition'].split('"')[1];
+        const { data: blob } = resp;
+        if (blob.size === 0) return;
+
+        var filetype = actualFileName.split('.'); //split file name
+        filetype = filetype.pop(); //get the file type
+
+        if (filetype === 'pdf') {
+          const url = window.URL.createObjectURL(
+            new Blob([blob], { type: 'application/pdf' })
+          );
+
+          // Open the URL on new Window
+          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
+          newWindow.document.title = actualFileName;
+        } else {
+          //if not pdf, download instead.
+
+          const url = window.URL.createObjectURL(new Blob([blob]));
+
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', actualFileName);
+          // Append to html link element page
+          document.body.appendChild(link);
+          // Start download
+          link.click();
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+        }
+      },
+      (error) => {
+        alert('The file is not available.');
+      }
+    );
+  };
+
   onDownloadFileInMessage = (e, message_id, file_id) => {
     e.preventDefault();
     getMessageFileDownload(
@@ -321,6 +364,11 @@ class Application extends Component {
         </div>
       );
     }
+
+    let template_obj = window.templatelist.find(({ prop }) =>
+      prop.includes(this.state.thread.file_type.split('_')[0])
+    );
+
     return (
       <Aux>
         {!isLoaded && (
@@ -375,7 +423,19 @@ class Application extends Component {
                   Please fill our TaiGer template and attach the filled template
                   in this discussion.
                 </p>
-                Donwload template: <b>Link</b>
+                Donwload template:{' '}
+                {template_obj ? (
+                  <b
+                    style={{ cursor: 'pointer' }}
+                    onClick={(e) =>
+                      this.onDownloadTemplate(e, template_obj.prop)
+                    }
+                  >
+                    Link
+                  </b>
+                ) : (
+                  <>Not available</>
+                )}
               </Card.Body>
             </Card>
           </Col>
@@ -398,6 +458,12 @@ class Application extends Component {
                     </>
                   )}
                 </p>
+                <h5><b>Deadline</b></h5>
+                {this.state.thread.program_id && (
+                  <h5>
+                    {this.state.thread.program_id.application_deadline}
+                  </h5>
+                )}
               </Card.Body>
             </Card>
           </Col>

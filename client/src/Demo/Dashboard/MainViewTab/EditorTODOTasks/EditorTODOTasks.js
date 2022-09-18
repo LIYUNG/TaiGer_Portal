@@ -49,14 +49,11 @@ class EditorTODOTasks extends React.Component {
                     {generaldocs_threads.doc_thread_id.file_type}
                   </Link>
                 </td>
+                <td></td>
                 <td>
-                  {new Date(
-                    generaldocs_threads.updatedAt
-                  ).toLocaleDateString()}
+                  {new Date(generaldocs_threads.updatedAt).toLocaleDateString()}
                   {', '}
-                  {new Date(
-                    generaldocs_threads.updatedAt
-                  ).toLocaleTimeString()}
+                  {new Date(generaldocs_threads.updatedAt).toLocaleTimeString()}
                 </td>
               </tr>
             )}
@@ -97,6 +94,7 @@ class EditorTODOTasks extends React.Component {
                       {application.programId.program_name}
                     </Link>
                   </td>
+                  <td>{application.programId.application_deadline}</td>
                   <td>
                     {new Date(
                       application_doc_thread.updatedAt

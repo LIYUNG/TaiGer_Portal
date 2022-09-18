@@ -501,51 +501,50 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     // remove uploaded files before remove program in database
     let messagesThreadId;
     let directory;
-    if (application) {
-      for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
-        messagesThreadId =
-          application.doc_modification_thread[i].doc_thread_id.toString();
-        directory = path.join(
-          studentId,
-          application.doc_modification_thread[i].doc_thread_id.toString()
-        );
-        logger.info('Trying to delete message threads and S3 thread folders');
-        directory = directory.replace(/\\/g, '/');
+    for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
+      messagesThreadId =
+        application.doc_modification_thread[i].doc_thread_id.toString();
+      directory = path.join(
+        studentId,
+        application.doc_modification_thread[i].doc_thread_id.toString()
+      );
+      logger.info('Trying to delete message threads and S3 thread folders');
+      directory = directory.replace(/\\/g, '/');
 
-        const listParams = {
+      const listParams = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Prefix: directory
+      };
+      const listedObjects = await s3.listObjectsV2(listParams).promise();
+
+      if (listedObjects.Contents.length > 0) {
+        const deleteParams = {
           Bucket: AWS_S3_BUCKET_NAME,
-          Prefix: directory
+          Delete: { Objects: [] }
         };
-        const listedObjects = await s3.listObjectsV2(listParams).promise();
 
-        if (listedObjects.Contents.length > 0) {
-          const deleteParams = {
-            Bucket: AWS_S3_BUCKET_NAME,
-            Delete: { Objects: [] }
-          };
+        listedObjects.Contents.forEach(({ Key }) => {
+          deleteParams.Delete.Objects.push({ Key });
+          logger.info('Deleting ', Key);
+        });
 
-          listedObjects.Contents.forEach(({ Key }) => {
-            deleteParams.Delete.Objects.push({ Key });
-            logger.info('Deleting ', Key);
-          });
+        await s3.deleteObjects(deleteParams).promise();
 
-          await s3.deleteObjects(deleteParams).promise();
-
-          // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-        }
-        await Documentthread.findByIdAndDelete(messagesThreadId);
-        await Student.findOneAndUpdate(
-          { _id: studentId, 'applications.programId': program_id },
-          {
-            $pull: {
-              'applications.$.doc_modification_thread': {
-                doc_thread_id: { _id: messagesThreadId }
-              }
+        // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+      }
+      await Documentthread.findByIdAndDelete(messagesThreadId);
+      await Student.findOneAndUpdate(
+        { _id: studentId, 'applications.programId': program_id },
+        {
+          $pull: {
+            'applications.$.doc_modification_thread': {
+              doc_thread_id: { _id: messagesThreadId }
             }
           }
-        );
-      }
+        }
+      );
     }
+
     const student_updated = await Student.findByIdAndUpdate(
       studentId,
       {

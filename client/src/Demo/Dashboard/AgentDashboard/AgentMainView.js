@@ -4,8 +4,6 @@ import Card from "../../../App/components/MainCard";
 import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
 import AgentTodoList from "./AgentTodoList";
 import AgentReviewing from "../MainViewTab/AgentReview/AgentReviewing";
-import EditorReviewing from "../MainViewTab/EditorReview/EditorReviewing";
-import TabEditorDocsProgress from "../MainViewTab/EditorDocsProgress/TabEditorDocsProgress";
 import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
 import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
 import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
@@ -33,13 +31,6 @@ class AgentMainView extends React.Component {
         student={student}
       />
     ));
-    const editor_reviewing = this.props.students.map((student, i) => (
-      <EditorReviewing
-        key={i}
-        role={this.props.role}
-        student={student}
-      />
-    ));
     const application_progress = this.props.students.map((student, i) => (
       <ApplicationProgress
         key={i}
@@ -62,24 +53,6 @@ class AgentMainView extends React.Component {
                   </tr>
                 </thead>
                 {agent_reviewing}
-              </Table>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <Card title="Editor Progress:">
-              <Table responsive bordered hover>
-                <thead>
-                  <tr>
-                    <th>First-, Last Name</th>
-                    <th>Waiting Inputs:</th>
-                    <th>Editor reviewing:</th>
-                    <th>Waiting Student's Feedback</th>
-                    <th>Close</th>
-                  </tr>
-                </thead>
-                <tbody>{editor_reviewing}</tbody>
               </Table>
             </Card>
           </Col>
@@ -129,12 +102,6 @@ class AgentMainView extends React.Component {
                   </thead>
                   {students_agent_editor}
                 </Table>
-              </Tab>
-              <Tab eventKey="y" title="Editor & Docs Progress">
-                <TabEditorDocsProgress
-                  role={this.props.role}
-                  students={this.props.students}
-                />
               </Tab>
               <Tab eventKey="z" title="Application Overview">
                 <Table responsive>

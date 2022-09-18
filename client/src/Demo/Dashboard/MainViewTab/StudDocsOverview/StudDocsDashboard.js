@@ -39,16 +39,6 @@ class StudDocsDashboard extends React.Component {
                 id={`dropdown-variants-${this.props.student._id}`}
                 key={this.props.student._id}
               >
-                {this.props.role !== "Editor" && !this.props.isArchivPage ? (
-                  <Dropdown.Item
-                    eventKey="3"
-                    onSelect={() => this.startEditingProgram()}
-                  >
-                    Edit Program
-                  </Dropdown.Item>
-                ) : (
-                  <></>
-                )}
                 {this.props.isDashboard ? (
                   <Dropdown.Item
                     eventKey="5"

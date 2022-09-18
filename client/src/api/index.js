@@ -220,3 +220,10 @@ export const updatePersonalData = (personaldata) =>
 
 export const updateCredentials = (credentials, email, password) =>
   request.post(`/api/account/credentials`, { credentials, email, password });
+
+//Interview:
+export const getAllInterviews = () => request.get('/api/interviews');
+export const getInterview = (interview_id) =>
+  request.get(`/api/interviews/${interview_id}`);
+export const getMyInterviews = (studnet_id) =>
+  request.get(`/api/interviews/my-interviews`);

@@ -40,6 +40,12 @@ const StudentApplications = React.lazy(() =>
 const SingleProgram = React.lazy(() => import("./Demo/Program/SingleProgram"));
 const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
 const Survey = React.lazy(() => import("./Demo/Survey/index"));
+const InterviewTraining = React.lazy(() =>
+  import('./Demo/InterviewTraining/index')
+);
+const SingleInterviewTraining = React.lazy(() =>
+  import('./Demo/InterviewTraining/SingleInterviewTraining')
+);
 const Settings = React.lazy(() => import("./Demo/Settings/index"));
 const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
 const Statistics = React.lazy(() =>
@@ -264,6 +270,18 @@ const routes = [
     component: CVMLRLCenter
   },
   {
+    path: '/interview-training',
+    exact: true,
+    name: 'InterviewTraining',
+    component: InterviewTraining
+  },
+  {
+    path: '/interview-training/:interview_id',
+    exact: true,
+    name: 'SingleInterviewTraining',
+    component: SingleInterviewTraining
+  },
+  {
     path: '/settings',
     exact: true,
     name: 'Settings',
@@ -274,7 +292,7 @@ const routes = [
     exact: true,
     name: '',
     component: Survey
-  },
+  }
   // {
   //   path: "/",
   //   component: DashboardDefault,

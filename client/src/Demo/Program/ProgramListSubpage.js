@@ -28,6 +28,14 @@ class ProgramListSubpage extends React.Component {
   }
 
   render() {
+    // const school_program = this.props.uni_name ;
+    let program_names = [];
+    for (let i = 0; i < this.props.uni_name.length; i++) {
+      program_names.push(
+        this.props.uni_name[i] + ' - ' + this.props.program_name[i]
+      );
+    }
+    console.log(program_names);
     return (
       <Modal
         show={this.props.show}
@@ -38,7 +46,11 @@ class ProgramListSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Assign {this.props.uni_name} - {this.props.program_name} to
+            Assign{' '}
+            {program_names.map((program_name) => (
+              <h5>{program_name}</h5>
+            ))}{' '}
+            to
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

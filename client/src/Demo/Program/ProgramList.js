@@ -263,7 +263,7 @@ const IndeterminateCheckbox = React.forwardRef(
 );
 
 // Our table component
-function Table2({ columns, data, setProgramIds }) {
+function Table2({ columns, data, setPrograms }) {
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -342,9 +342,13 @@ function Table2({ columns, data, setProgramIds }) {
   // We don't want to render all of the rows for this example, so cap
   // it for this use case
   const firstPageRows = rows.slice(0, 12);
-  // setProgramIds(selectedFlatRows.map((d) => d.original._id));
+  // setPrograms(selectedFlatRows.map((d) => d.original._id));
   useEffect(() => {
-    setProgramIds(selectedFlatRows.map((d) => d.original._id));
+    setPrograms({
+      programIds: selectedFlatRows.map((d) => d.original._id),
+      schools: selectedFlatRows.map((d) => d.original.school),
+      program_names: selectedFlatRows.map((d) => d.original.program_name)
+    });
   }, [selectedFlatRows]);
 
   return (
@@ -449,7 +453,11 @@ function Programlist(props) {
     everlogin: false,
     modalShow: false
   });
-  let [programIds, setProgramIds] = useState([]);
+  let [programs, setPrograms] = useState({
+    programIds: [],
+    schools: [],
+    program_names: []
+  });
   let [modalShow, setModalShow] = useState(false);
   let [studentId, setStudentId] = useState('');
   useEffect(() => {
@@ -606,7 +614,7 @@ function Programlist(props) {
   const onSubmitAddToStudentProgramList = (e) => {
     e.preventDefault();
     const student_id = studentId;
-    assignProgram({ student_id, program_ids: programIds });
+    assignProgram({ student_id, program_ids: programs.programIds });
     setModalShow(false);
   };
 
@@ -619,7 +627,7 @@ function Programlist(props) {
     // <Styles>
     <Card>
       <Card.Body>
-        {programIds.length !== 0 && (
+        {programs.programIds.length !== 0 && (
           <>
             <DropdownButton size="sm" title="Option" variant="primary">
               <Dropdown.Item eventKey="2" onSelect={setModalShow2}>
@@ -632,7 +640,7 @@ function Programlist(props) {
           <Table2
             columns={columns}
             data={statedata.programs}
-            setProgramIds={setProgramIds}
+            setPrograms={setPrograms}
           />
         </Table>
       </Card.Body>
@@ -640,8 +648,8 @@ function Programlist(props) {
         userId={props.userId}
         show={modalShow}
         setModalHide={setModalHide}
-        uni_name={statedata.uni_name}
-        program_name={statedata.program_name}
+        uni_name={programs.schools}
+        program_name={programs.program_names}
         handleChange2={handleSetStudentId}
         onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
       />

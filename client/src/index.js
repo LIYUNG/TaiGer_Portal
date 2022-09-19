@@ -181,6 +181,41 @@ window.ProgramlistHeader = [
   },
 ];
 
+window.ProgramlistHeader22 = [
+  {
+    Header: 'University',
+    accessor: 'school'
+  },
+  {
+    Header: 'Program',
+    accessor: 'program_name'
+  },
+  {
+    Header: 'TOEFL',
+    accessor: 'toefl'
+  },
+  {
+    Header: 'IELTS',
+    accessor: 'ielts'
+  },
+  {
+    Header: 'Degree',
+    accessor: 'degree'
+  },
+  {
+    Header: 'GRE/GMAT',
+    accessor: 'gre'
+  },
+  {
+    Header: 'Application Deadline',
+    accessor: 'application_deadline'
+  },
+  {
+    Header: 'Last Update',
+    accessor: 'updatedAt'
+  }
+];
+
 window.NewProgramHeader = [
   {
     name: "University",

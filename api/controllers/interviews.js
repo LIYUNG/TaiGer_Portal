@@ -28,9 +28,11 @@ const getInterview = asyncHandler(async (req, res) => {
     user,
     params: { interview_id }
   } = req;
-  const interview = await Interview.find(interview_id).lean();
-  // .populate("applications.programId agents editors");
-  // .lean();
+  const interview = await Interview.find(interview_id)
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name')
+    .lean();
+
   if (!interview) {
     logger.info('createInterview: this interview is already existed!');
     throw new ErrorResponse(400, 'this interview is already existed!');
@@ -46,8 +48,7 @@ const getMyInterview = asyncHandler(async (req, res) => {
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name')
     .lean();
-  // .populate("applications.programId agents editors");
-  // .lean();
+
   if (!interviews) {
     logger.info('createInterview: this interview is already existed!');
     throw new ErrorResponse(400, 'this interview is already existed!');

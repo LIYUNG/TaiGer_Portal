@@ -4,10 +4,13 @@ import {
   useTable,
   useFilters,
   useGlobalFilter,
-  useAsyncDebounce
+  useAsyncDebounce,
+  useRowSelect
 } from 'react-table';
+import ProgramListSubpage from './ProgramListSubpage';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import TimeOutErrors from '../Utils/TimeOutErrors';
+import { Link } from 'react-router-dom';
 
 import {
   Button,
@@ -242,8 +245,25 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef();
+    const resolvedRef = ref || defaultRef;
+
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
+
+    return (
+      <>
+        <input type="checkbox" ref={resolvedRef} {...rest} />
+      </>
+    );
+  }
+);
+
 // Our table component
-function Table2({ columns, data }) {
+function Table2({ columns, data, setProgramIds }) {
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -281,7 +301,9 @@ function Table2({ columns, data }) {
     state,
     visibleColumns,
     preGlobalFilteredRows,
-    setGlobalFilter
+    setGlobalFilter,
+    selectedFlatRows,
+    state: { selectedRowIds }
   } = useTable(
     {
       columns,
@@ -290,12 +312,40 @@ function Table2({ columns, data }) {
       filterTypes
     },
     useFilters, // useFilters!
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        // Let's make a column for selection
+        {
+          id: 'selection',
+          // The header can use the table's getToggleAllRowsSelectedProps method
+          // to render a checkbox
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <div>
+              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+            </div>
+          ),
+          // The cell can use the individual row's getToggleRowSelectedProps method
+          // to the render a checkbox
+          Cell: ({ row }) => (
+            <div>
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+            </div>
+          )
+        },
+        ...columns
+      ]);
+    },
     useGlobalFilter // useGlobalFilter!
   );
 
   // We don't want to render all of the rows for this example, so cap
   // it for this use case
-  const firstPageRows = rows.slice(0, 15);
+  const firstPageRows = rows.slice(0, 12);
+  // setProgramIds(selectedFlatRows.map((d) => d.original._id));
+  useEffect(() => {
+    setProgramIds(selectedFlatRows.map((d) => d.original._id));
+  }, [selectedFlatRows]);
 
   return (
     <>
@@ -332,9 +382,17 @@ function Table2({ columns, data }) {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
+                {row.cells.map((cell, j) => {
                   return (
-                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    <td {...cell.getCellProps()}>
+                      {j === 0 ? (
+                        <>{cell.render('Cell')}</>
+                      ) : (
+                        <Link to={'/programs/' + row.original._id}>
+                          {cell.render('Cell')}
+                        </Link>
+                      )}
+                    </td>
                   );
                 })}
               </tr>
@@ -343,10 +401,24 @@ function Table2({ columns, data }) {
         </tbody>
       </table>
       <br />
-      <div>Showing the first 20 results of {rows.length} rows</div>
+      <div>Showing the first 12 results of {rows.length} rows</div>
       <div>
         <pre>
           <code>{JSON.stringify(state.filters, null, 2)}</code>
+        </pre>
+        <pre>
+          <code>
+            {JSON.stringify(
+              {
+                selectedRowIds: selectedRowIds,
+                'selectedFlatRows[].original': selectedFlatRows.map(
+                  (d) => d.original._id
+                )
+              },
+              null,
+              2
+            )}
+          </code>
         </pre>
       </div>
     </>
@@ -367,16 +439,19 @@ function filterGreaterThan(rows, id, filterValue) {
 // check, but here, we want to remove the filter if it's not a number
 filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
-function Programlist() {
+function Programlist(props) {
   let [statedata, setStatedata] = useState({
     success: false,
     programs: null,
     isloaded: false,
     error: null,
     unauthorizederror: null,
-    everlogin: false
+    everlogin: false,
+    modalShow: false
   });
-
+  let [programIds, setProgramIds] = useState([]);
+  let [modalShow, setModalShow] = useState(false);
+  let [studentId, setStudentId] = useState('');
   useEffect(() => {
     getPrograms().then(
       (resp) => {
@@ -407,9 +482,15 @@ function Programlist() {
           }
         }
       },
-      (error) => this.setState({ isLoaded: true, error })
+      (error) =>
+        setStatedata((state) => ({
+          ...state,
+          error,
+          isloaded: true
+        }))
     );
   }, []);
+  // useEffect(() => {}, []);
   const columns = React.useMemo(
     () => [
       {
@@ -496,14 +577,74 @@ function Programlist() {
       </div>
     );
   }
+
+  const assignProgram = (assign_data) => {
+    const { student_id, program_ids } = assign_data;
+    assignProgramToStudent(student_id, program_ids).then(
+      (resp) => {
+        const { success } = resp.data;
+        if (success) {
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            success
+          }));
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {}
+    );
+  };
+  const setModalHide = () => {
+    setModalShow(false);
+  };
+
+  const setModalShow2 = () => {
+    setModalShow(true);
+  };
+  const onSubmitAddToStudentProgramList = (e) => {
+    e.preventDefault();
+    const student_id = studentId;
+    assignProgram({ student_id, program_ids: programIds });
+    setModalShow(false);
+  };
+
+  const handleSetStudentId = (e) => {
+    const { value } = e.target;
+    setStudentId(value);
+  };
+
   return (
     // <Styles>
     <Card>
       <Card.Body>
+        {programIds.length !== 0 && (
+          <>
+            <DropdownButton size="sm" title="Option" variant="primary">
+              <Dropdown.Item eventKey="2" onSelect={setModalShow2}>
+                Assign to student...
+              </Dropdown.Item>
+            </DropdownButton>
+          </>
+        )}
         <Table responsive border hover>
-          <Table2 columns={columns} data={statedata.programs} />
+          <Table2
+            columns={columns}
+            data={statedata.programs}
+            setProgramIds={setProgramIds}
+          />
         </Table>
       </Card.Body>
+      <ProgramListSubpage
+        userId={props.userId}
+        show={modalShow}
+        setModalHide={setModalHide}
+        uni_name={statedata.uni_name}
+        program_name={statedata.program_name}
+        handleChange2={handleSetStudentId}
+        onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+      />
     </Card>
     // </Styles>
   );

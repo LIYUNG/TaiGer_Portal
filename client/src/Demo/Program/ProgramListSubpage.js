@@ -35,7 +35,7 @@ class ProgramListSubpage extends React.Component {
         this.props.uni_name[i] + ' - ' + this.props.program_name[i]
       );
     }
-    console.log(program_names);
+    // console.log(program_names);
     return (
       <Modal
         show={this.props.show}

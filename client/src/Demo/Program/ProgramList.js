@@ -5,7 +5,8 @@ import {
   useFilters,
   useGlobalFilter,
   useAsyncDebounce,
-  useRowSelect
+  useRowSelect,
+  usePagination
 } from 'react-table';
 import ProgramListSubpage from './ProgramListSubpage';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -296,22 +297,36 @@ function Table2({ columns, data, setPrograms }) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
     state,
     visibleColumns,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
     preGlobalFilteredRows,
     setGlobalFilter,
     selectedFlatRows,
-    state: { selectedRowIds }
+    state: { pageIndex, pageSize, selectedRowIds, selectedRows }
   } = useTable(
     {
       columns,
       data,
       defaultColumn, // Be sure to pass the defaultColumn option
-      filterTypes
+      filterTypes,
+      // autoResetSelectedRows: false,
+      // autoResetSelectedCell: false,
+      // autoResetSelectedColumn: false
     },
     useFilters, // useFilters!
+
+    useGlobalFilter, // useGlobalFilter!
+    usePagination,
     useRowSelect,
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
@@ -335,22 +350,22 @@ function Table2({ columns, data, setPrograms }) {
         },
         ...columns
       ]);
-    },
-    useGlobalFilter // useGlobalFilter!
+    }
   );
 
   // We don't want to render all of the rows for this example, so cap
   // it for this use case
-  const firstPageRows = rows.slice(0, 12);
+  // const firstPageRows = rows.slice(0, 12);
   // setPrograms(selectedFlatRows.map((d) => d.original._id));
   useEffect(() => {
+    console.log(selectedFlatRows.map((d) => d.original._id));
     setPrograms({
       programIds: selectedFlatRows.map((d) => d.original._id),
       schools: selectedFlatRows.map((d) => d.original.school),
       program_names: selectedFlatRows.map((d) => d.original.program_name)
     });
   }, [selectedFlatRows]);
-
+  console.log(selectedRows);
   return (
     <>
       <table {...getTableProps()}>
@@ -382,7 +397,7 @@ function Table2({ columns, data, setPrograms }) {
           </tr>
         </thead>
         <tbody {...getTableBodyProps()}>
-          {firstPageRows.map((row, i) => {
+          {page.map((row, i) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
@@ -404,8 +419,70 @@ function Table2({ columns, data, setPrograms }) {
           })}
         </tbody>
       </table>
-      <br />
-      <div>Showing the first 12 results of {rows.length} rows</div>
+      <div className="pagination">
+        <Row>
+          <Col md={1}>
+            <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+              {'<<'}
+            </Button>
+          </Col>{' '}
+          <Col md={1}>
+            <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+              {'<'}
+            </Button>
+          </Col>{' '}
+          <Col md={1}>
+            <Button onClick={() => nextPage()} disabled={!canNextPage}>
+              {'>'}
+            </Button>
+          </Col>{' '}
+          <Col md={1}>
+            <Button
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            >
+              {'>>'}
+            </Button>
+          </Col>{' '}
+          <Col md={2}>
+            <span>
+              Page{' '}
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>{' '}
+            </span>
+          </Col>
+          <Col md={4}>
+            <span>
+              | Go to page:{' '}
+              <input
+                type="number"
+                defaultValue={pageIndex + 1}
+                onChange={(e) => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                  gotoPage(page);
+                }}
+                style={{ width: '100px' }}
+              />
+            </span>
+          </Col>{' '}
+          <Col md={2}>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+              }}
+            >
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
+          </Col>
+        </Row>
+      </div>
+
       <div>
         <pre>
           <code>{JSON.stringify(state.filters, null, 2)}</code>
@@ -464,7 +541,6 @@ function Programlist(props) {
     getPrograms().then(
       (resp) => {
         const { data, success } = resp.data;
-        console.log(data);
         if (success) {
           setStatedata((state) => ({
             ...state,

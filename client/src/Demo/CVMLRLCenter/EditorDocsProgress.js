@@ -389,27 +389,6 @@ class EditorDocsProgress extends React.Component {
                             </h5>
                           </Col>
                           <Col>
-                            {application.programId.ml_requirements !==
-                              undefined &&
-                            application.programId.ml_requirements !== '' ? (
-                              <>
-                                ML Req.: {'           '}{' '}
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="light"
-                                  onClick={() =>
-                                    this.openML_Requirements_ModalWindow(
-                                      application.programId.ml_requirements
-                                    )
-                                  }
-                                >
-                                  <AiOutlineMore size={20} />
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}{' '}
                             {application.programId.essay_requirements !==
                               undefined &&
                             application.programId.essay_requirements !== '' ? (
@@ -431,6 +410,11 @@ class EditorDocsProgress extends React.Component {
                             ) : (
                               <></>
                             )}
+                          </Col>
+                          <Col>
+                            <h5>
+                              Deadline: {application.programId.application_deadline}
+                            </h5>
                           </Col>
                         </Row>
                         <ManualFiles
@@ -557,7 +541,9 @@ class EditorDocsProgress extends React.Component {
           centered
         >
           <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">Attention</Modal.Title>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Attention
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>{this.state.docName} is already existed</Modal.Body>
           <Modal.Footer>

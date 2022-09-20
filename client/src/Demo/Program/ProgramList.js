@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 
 import {
   Button,
+  Modal,
   Table,
   Row,
   Col,
@@ -264,7 +265,22 @@ const IndeterminateCheckbox = React.forwardRef(
 );
 
 // Our table component
-function Table2({ columns, data, setPrograms }) {
+function Table2({ columns, data, userId }) {
+  let [statedataTable2, setStatedataTable2] = useState({
+    success: false,
+    isloaded: false,
+    error: null,
+    everlogin: false,
+    modalShowAssignWindow: false,
+    modalShowAssignSuccessWindow: false
+  });
+  let [programs, setPrograms] = useState({
+    programIds: [],
+    schools: [],
+    program_names: []
+  });
+  let [modalShowAssignWindow, setModalShow] = useState(false);
+  let [studentId, setStudentId] = useState('');
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -312,6 +328,7 @@ function Table2({ columns, data, setPrograms }) {
     preGlobalFilteredRows,
     setGlobalFilter,
     selectedFlatRows,
+    toggleAllRowsSelected,
     state: { pageIndex, pageSize, selectedRowIds, selectedRows }
   } = useTable(
     {
@@ -356,7 +373,6 @@ function Table2({ columns, data, setPrograms }) {
   // We don't want to render all of the rows for this example, so cap
   // it for this use case
   // const firstPageRows = rows.slice(0, 12);
-  // setPrograms(selectedFlatRows.map((d) => d.original._id));
   useEffect(() => {
     const data_idxes = Object.keys(selectedRowIds);
     // console.log(data_idxes);
@@ -367,9 +383,71 @@ function Table2({ columns, data, setPrograms }) {
       program_names: data_idxes.map((idx) => data[idx].program_name)
     });
   }, [selectedRowIds]);
-  console.log(selectedRows);
+
+  const assignProgram = (assign_data) => {
+    const { student_id, program_ids } = assign_data;
+    assignProgramToStudent(student_id, program_ids).then(
+      (resp) => {
+        const { success } = resp.data;
+        if (success) {
+          toggleAllRowsSelected(false);
+          setStatedataTable2((state) => ({
+            ...state,
+            isLoaded: true,
+            modalShowAssignSuccessWindow: true,
+            modalShowAssignWindow: false,
+            success
+          }));
+        } else {
+          alert(resp.data.message);
+        }
+      },
+      (error) => {}
+    );
+  };
+  const setModalHide = () => {
+    // setModalShow(false);
+    setStatedataTable2((state) => ({
+      ...state,
+      modalShowAssignWindow: false
+    }));
+  };
+  const onHideAssignSuccessWindow = () => {
+    // setModalShow(false);
+    setStatedataTable2((state) => ({
+      ...state,
+      modalShowAssignSuccessWindow: false
+    }));
+  };
+
+  const setModalShow2 = () => {
+    setStatedataTable2((state) => ({
+      ...state,
+      modalShowAssignWindow: true
+    }));
+  };
+  const onSubmitAddToStudentProgramList = (e) => {
+    e.preventDefault();
+    const student_id = studentId;
+    assignProgram({ student_id, program_ids: programs.programIds });
+  };
+
+  const handleSetStudentId = (e) => {
+    const { value } = e.target;
+    setStudentId(value);
+  };
+
   return (
     <>
+      {programs.programIds.length !== 0 && (
+        <>
+          <DropdownButton size="sm" title="Option" variant="primary">
+            <Dropdown.Item eventKey="2" onSelect={setModalShow2}>
+              Assign to student...
+            </Dropdown.Item>
+          </DropdownButton>
+        </>
+      )}
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -504,6 +582,30 @@ function Table2({ columns, data, setPrograms }) {
           </code>
         </pre> */}
       </div>
+      <ProgramListSubpage
+        userId={userId}
+        show={statedataTable2.modalShowAssignWindow}
+        setModalHide={setModalHide}
+        uni_name={programs.schools}
+        program_name={programs.program_names}
+        handleChange2={handleSetStudentId}
+        onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+      />
+      <Modal
+        show={statedataTable2.modalShowAssignSuccessWindow}
+        onHide={onHideAssignSuccessWindow}
+        size="m"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Program(s) assigned to student successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={onHideAssignSuccessWindow}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
@@ -529,16 +631,9 @@ function Programlist(props) {
     isloaded: false,
     error: null,
     unauthorizederror: null,
-    everlogin: false,
-    modalShow: false
+    everlogin: false
   });
-  let [programs, setPrograms] = useState({
-    programIds: [],
-    schools: [],
-    program_names: []
-  });
-  let [modalShow, setModalShow] = useState(false);
-  let [studentId, setStudentId] = useState('');
+
   useEffect(() => {
     getPrograms().then(
       (resp) => {
@@ -664,73 +759,18 @@ function Programlist(props) {
     );
   }
 
-  const assignProgram = (assign_data) => {
-    const { student_id, program_ids } = assign_data;
-    assignProgramToStudent(student_id, program_ids).then(
-      (resp) => {
-        const { success } = resp.data;
-        if (success) {
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            success
-          }));
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {}
-    );
-  };
-  const setModalHide = () => {
-    setModalShow(false);
-  };
-
-  const setModalShow2 = () => {
-    setModalShow(true);
-  };
-  const onSubmitAddToStudentProgramList = (e) => {
-    e.preventDefault();
-    const student_id = studentId;
-    assignProgram({ student_id, program_ids: programs.programIds });
-    setModalShow(false);
-  };
-
-  const handleSetStudentId = (e) => {
-    const { value } = e.target;
-    setStudentId(value);
-  };
-
   return (
     // <Styles>
     <Card>
       <Card.Body>
-        {programs.programIds.length !== 0 && (
-          <>
-            <DropdownButton size="sm" title="Option" variant="primary">
-              <Dropdown.Item eventKey="2" onSelect={setModalShow2}>
-                Assign to student...
-              </Dropdown.Item>
-            </DropdownButton>
-          </>
-        )}
         <Table responsive border hover>
           <Table2
             columns={columns}
             data={statedata.programs}
-            setPrograms={setPrograms}
+            userId={props.userId}
           />
         </Table>
       </Card.Body>
-      <ProgramListSubpage
-        userId={props.userId}
-        show={modalShow}
-        setModalHide={setModalHide}
-        uni_name={programs.schools}
-        program_name={programs.program_names}
-        handleChange2={handleSetStudentId}
-        onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-      />
     </Card>
     // </Styles>
   );

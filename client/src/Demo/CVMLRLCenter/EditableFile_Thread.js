@@ -45,6 +45,7 @@ class EditableFile_Thread extends Component {
     let fileStatus;
     let documenName;
     let school_program_name;
+    // let program_deadline;
     if (this.props.application) {
       school_program_name =
         this.props.application.programId.school +
@@ -58,6 +59,7 @@ class EditableFile_Thread extends Component {
         school_program_name +
         ' ' +
         this.props.thread.doc_thread_id.file_type;
+        // program_deadline = this.props.application.programId.application_deadline
     } else {
       documenName =
         this.props.student.firstname +

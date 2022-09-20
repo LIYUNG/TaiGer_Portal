@@ -52,6 +52,7 @@ class EditorDocsProgress extends React.Component {
     isThreadExisted: false
   };
   componentDidMount() {
+    console.log(this.props.student);
     this.setState((state) => ({
       isLoaded: true
     }));

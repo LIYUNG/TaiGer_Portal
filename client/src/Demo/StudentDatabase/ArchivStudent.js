@@ -28,6 +28,9 @@ import ButtonSetAccepted from '../AgentCenter/ButtonSetAccepted';
 import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
 import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
 import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
+import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 import UploadAndGenerate from '../TaiGerAI/UploadAndGenerate';
 import SurveyComponent from '../Survey/SurveyComponent';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
@@ -39,6 +42,8 @@ class ArchivStudent extends React.Component {
     isLoaded: false,
     student: null,
     success: false,
+    timeouterror: null,
+    unauthorizederror: null,
     error: null
   };
   componentDidMount() {
@@ -52,7 +57,11 @@ class ArchivStudent extends React.Component {
             success: success
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -85,10 +94,10 @@ class ArchivStudent extends React.Component {
         }
       },
       (error) => {
-       this.setState({
-         isLoaded: true,
-         error
-       });
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   };
@@ -205,15 +214,15 @@ class ArchivStudent extends React.Component {
         }
       },
       (error) => {
-      this.setState({
-        isLoaded: true,
-        error
-      });
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   };
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
     let FILE_OK_SYMBOL = (
       <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
     );
@@ -257,10 +266,17 @@ class ArchivStudent extends React.Component {
       </>
     );
 
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }
@@ -465,6 +481,15 @@ class ArchivStudent extends React.Component {
                 student={this.state.student}
               />
             </Row> */}
+          </Tab>
+          <Tab eventKey="CV_ML_RL" title="CV ML RL">
+            <EditorDocsProgress
+              student={this.state.student}
+              idx={0}
+              accordionKeys={[0]}
+              singleExpandtHandler={this.singleExpandtHandler}
+              role={this.props.user.role}
+            />
           </Tab>
           <Tab eventKey="status" title="Status">
             <Row>

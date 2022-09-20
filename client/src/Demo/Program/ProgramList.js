@@ -318,7 +318,7 @@ function Table2({ columns, data, setPrograms }) {
       columns,
       data,
       defaultColumn, // Be sure to pass the defaultColumn option
-      filterTypes,
+      filterTypes
       // autoResetSelectedRows: false,
       // autoResetSelectedCell: false,
       // autoResetSelectedColumn: false
@@ -358,13 +358,15 @@ function Table2({ columns, data, setPrograms }) {
   // const firstPageRows = rows.slice(0, 12);
   // setPrograms(selectedFlatRows.map((d) => d.original._id));
   useEffect(() => {
-    console.log(selectedFlatRows.map((d) => d.original._id));
+    const data_idxes = Object.keys(selectedRowIds);
+    // console.log(data_idxes);
+    // console.log(data_idxes.map((idx) => data[idx]._id));
     setPrograms({
-      programIds: selectedFlatRows.map((d) => d.original._id),
-      schools: selectedFlatRows.map((d) => d.original.school),
-      program_names: selectedFlatRows.map((d) => d.original.program_name)
+      programIds: data_idxes.map((idx) => data[idx]._id),
+      schools: data_idxes.map((idx) => data[idx].school),
+      program_names: data_idxes.map((idx) => data[idx].program_name)
     });
-  }, [selectedFlatRows]);
+  }, [selectedRowIds]);
   console.log(selectedRows);
   return (
     <>
@@ -484,7 +486,7 @@ function Table2({ columns, data, setPrograms }) {
       </div>
 
       <div>
-        <pre>
+        {/* <pre>
           <code>{JSON.stringify(state.filters, null, 2)}</code>
         </pre>
         <pre>
@@ -500,7 +502,7 @@ function Table2({ columns, data, setPrograms }) {
               2
             )}
           </code>
-        </pre>
+        </pre> */}
       </div>
     </>
   );
@@ -613,9 +615,9 @@ function Programlist(props) {
           },
           {
             Header: 'GRE/GMAT',
-            accessor: 'gre',
-            Filter: SliderColumnFilter,
-            filter: filterGreaterThan
+            accessor: 'gre'
+            // Filter: SliderColumnFilter,
+            // filter: filterGreaterThan
           },
           {
             Header: 'Application Deadline',

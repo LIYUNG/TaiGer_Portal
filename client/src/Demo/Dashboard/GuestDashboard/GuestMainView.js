@@ -1,7 +1,7 @@
 import React from 'react';
-import GuestMyself from './GuestMyself';
-import GuestDashboard from './GuestDashboard';
-import TimeOutErrors from '../../Utils/TimeOutErrors';
+// import GuestMyself from './GuestMyself';
+// import GuestDashboard from './GuestDashboard';
+// import TimeOutErrors from '../../Utils/TimeOutErrors';
 // import Card from '../../../App/components/MainCard';
 import { Card } from 'react-bootstrap';
 

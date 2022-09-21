@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import {
@@ -8,7 +8,7 @@ import {
   updateLanguageSkill
 } from '../../api';
 
-class InterviewTraining extends React.Component {
+class SingleInterviewTraining extends React.Component {
   state = {
     error: null,
     role: '',
@@ -179,4 +179,4 @@ class InterviewTraining extends React.Component {
   }
 }
 
-export default InterviewTraining;
+export default SingleInterviewTraining;

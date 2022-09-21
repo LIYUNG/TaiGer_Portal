@@ -1,8 +1,8 @@
 import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import StudentApplicationsTableTemplate from './StudentApplicationsTableTemplate';
 // import Card from '../../App/components/MainCard';
-import Aux from '../../hoc/_Aux';
+// import Aux from '../../hoc/_Aux';
 import { getStudent } from '../../api';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -28,9 +28,9 @@ class StudentApplication extends React.Component {
             success: success
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             if (this.props.user.role !== 'Guest') {
               this.setState({ isLoaded: true, unauthorizederror: true });
             } else {

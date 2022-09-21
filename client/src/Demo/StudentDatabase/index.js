@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col, Tabs, Card, Spinner } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Row, Col, Card, Spinner } from 'react-bootstrap';
+// import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 // import DEMO from "../../store/constant";
 import {

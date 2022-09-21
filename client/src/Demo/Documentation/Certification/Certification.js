@@ -14,7 +14,7 @@ import {
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
+// import StepLabel from '@mui/material/StepLabel';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -125,7 +125,7 @@ class Certification extends Component {
 
     updateDoc(attrs._id, article_temp).then(
       (resp) => {
-        const { success, data } = resp.data;
+        const { success } = resp.data;
         if (success) {
           this.setState({
             articles: this.state.articles.map((article) => {

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Form, Col, Row, Button } from 'react-bootstrap';
+import { Col, Row, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import {
-  AiOutlineDownload,
+  // AiOutlineDownload,
   AiOutlineDelete,
   AiOutlineCheck,
-  AiOutlineComment,
+  // AiOutlineComment,
   AiOutlineUndo,
-  AiFillMessage
+  // AiFillMessage
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 class EditableFile_Thread extends Component {

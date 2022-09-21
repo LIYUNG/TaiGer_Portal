@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Card, Table, Modal, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Spinner, Modal, Button } from 'react-bootstrap';
+// import { Link } from 'react-router-dom';
 
-import Aux from '../../hoc/_Aux';
+// import Aux from '../../hoc/_Aux';
 // import TasksList from "./TasksList";
-import TaskItem from './TaskItem';
+// import TaskItem from './TaskItem';
 import Board from 'react-trello';
-import data_test from './demo_task_data.json';
+// import data_test from './demo_task_data.json';
 import { getMyStudentsTasks, initTasks } from '../../api';
 import './MyTask.css';
 
@@ -33,7 +33,7 @@ class MyTask extends Component {
     tasks: null,
     success: null,
     card_title: '',
-    card_description:'',
+    card_description: '',
     card_modal_flag: false,
     empty: false
   };

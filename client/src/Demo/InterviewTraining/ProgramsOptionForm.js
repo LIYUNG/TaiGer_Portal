@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Col, Form, Button, Spinner } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import { getCVMLRLOverview } from '../../api';
@@ -28,9 +28,9 @@ class ProgramsOptionForm extends React.Component {
             success: success
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, error: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
           }
         }

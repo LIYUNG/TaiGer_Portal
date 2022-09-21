@@ -97,7 +97,7 @@ class ButtonSetAccepted extends React.Component {
   };
   render() {
     const deleteStyle = 'danger';
-    const graoutStyle = 'light';
+    // const graoutStyle = 'light';
     var ButttonRow_Accepted;
     ButttonRow_Accepted = (
       <tr>

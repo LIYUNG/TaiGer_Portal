@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import DEMO from "../../store/constant";
 // import avatar1 from "../../assets/images/user/avatar-1.jpg";

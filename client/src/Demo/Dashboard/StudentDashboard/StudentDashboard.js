@@ -1,89 +1,89 @@
 import React from 'react';
-import { Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
+import { Row, Col, Table } from 'react-bootstrap';
 import Card from '../../../App/components/MainCard';
 import StudentMyself from './StudentMyself';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
-import { addHours, addDays, addWeeks, startOfWeek } from 'date-fns';
+// import { addHours, addDays, addWeeks, startOfWeek } from 'date-fns';
 // import TimeLine from "react-gantt-timeline";
 import Generator from './Generator';
 import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
 import NewUpdatedThreadFromEditor from '../MainViewTab/NewUpdatedThreadFromEditor/NewUpdatedThreadFromEditor';
 
-import format from 'date-fns/format';
-import getDay from 'date-fns/getDay';
-import parse from 'date-fns/parse';
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+// import format from 'date-fns/format';
+// import getDay from 'date-fns/getDay';
+// import parse from 'date-fns/parse';
+// import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-const config = {
-  header: {
-    top: {
-      style: {
-        background: 'linear-gradient( grey, black)',
-        textShadow: '0.5px 0.5px black',
-        fontSize: 12
-      }
-    },
-    middle: {
-      style: {
-        background: 'linear-gradient( orange, grey)',
-        fontSize: 9
-      }
-    },
-    bottom: {
-      style: {
-        background: 'linear-gradient( grey, black)',
-        fontSize: 9,
-        color: 'orange'
-      },
-      selectedStyle: {
-        background: 'linear-gradient( #d011dd ,#d011dd)',
-        fontWeight: 'bold',
-        color: 'white'
-      }
-    }
-  },
-  taskList: {
-    title: {
-      label: 'Task Todo',
-      style: {
-        background: 'linear-gradient( grey, black)'
-      }
-    },
-    task: {
-      style: {
-        backgroundColor: 'grey',
-        color: 'white'
-      }
-    },
-    verticalSeparator: {
-      style: {
-        backgroundColor: '#fbf9f9'
-      },
-      grip: {
-        style: {
-          backgroundColor: 'red'
-        }
-      }
-    }
-  },
-  dataViewPort: {
-    rows: {
-      style: {
-        backgroundColor: 'white',
-        borderBottom: 'solid 0.5px silver'
-      }
-    },
-    task: {
-      showLabel: true,
-      style: {
-        borderRadius: 1,
-        boxShadow: '2px 2px 8px #888888'
-      }
-    }
-  }
-};
+// const config = {
+//   header: {
+//     top: {
+//       style: {
+//         background: 'linear-gradient( grey, black)',
+//         textShadow: '0.5px 0.5px black',
+//         fontSize: 12
+//       }
+//     },
+//     middle: {
+//       style: {
+//         background: 'linear-gradient( orange, grey)',
+//         fontSize: 9
+//       }
+//     },
+//     bottom: {
+//       style: {
+//         background: 'linear-gradient( grey, black)',
+//         fontSize: 9,
+//         color: 'orange'
+//       },
+//       selectedStyle: {
+//         background: 'linear-gradient( #d011dd ,#d011dd)',
+//         fontWeight: 'bold',
+//         color: 'white'
+//       }
+//     }
+//   },
+//   taskList: {
+//     title: {
+//       label: 'Task Todo',
+//       style: {
+//         background: 'linear-gradient( grey, black)'
+//       }
+//     },
+//     task: {
+//       style: {
+//         backgroundColor: 'grey',
+//         color: 'white'
+//       }
+//     },
+//     verticalSeparator: {
+//       style: {
+//         backgroundColor: '#fbf9f9'
+//       },
+//       grip: {
+//         style: {
+//           backgroundColor: 'red'
+//         }
+//       }
+//     }
+//   },
+//   dataViewPort: {
+//     rows: {
+//       style: {
+//         backgroundColor: 'white',
+//         borderBottom: 'solid 0.5px silver'
+//       }
+//     },
+//     task: {
+//       showLabel: true,
+//       style: {
+//         borderRadius: 1,
+//         boxShadow: '2px 2px 8px #888888'
+//       }
+//     }
+//   }
+// };
 
 class StudentDashboard extends React.Component {
   constructor(props) {
@@ -252,7 +252,7 @@ class StudentDashboard extends React.Component {
                     <th>Last Update</th>
                   </tr>
                 </thead>
-                {unread_thread}
+                <tbody>{unread_thread}</tbody>
               </Table>
             </Card>
             <Card title="Pending:">
@@ -264,7 +264,7 @@ class StudentDashboard extends React.Component {
                     <th>Last Update</th>
                   </tr>
                 </thead>
-                {read_thread}
+                <tbody>{read_thread}</tbody>
               </Table>
             </Card>
             <Card title="Agent Reviewing:">

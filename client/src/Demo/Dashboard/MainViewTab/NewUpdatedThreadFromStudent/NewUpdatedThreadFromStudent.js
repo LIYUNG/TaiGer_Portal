@@ -23,10 +23,10 @@ class NewUpdatedThreadFromStudent extends React.Component {
     } else {
       unread_general_generaldocs = this.props.student.generaldocs_threads.map(
         (generaldocs_threads, i) => (
-          <>
+          <tr key={i}>
             {!generaldocs_threads.isFinalVersion &&
               !generaldocs_threads.EditorRead && (
-                <tr>
+                <>
                   <td>
                     <Link
                       to={
@@ -63,9 +63,9 @@ class NewUpdatedThreadFromStudent extends React.Component {
                       generaldocs_threads.updatedAt
                     ).toLocaleTimeString()}
                   </td>
-                </tr>
+                </>
               )}
-          </>
+          </tr>
         )
       );
 
@@ -73,10 +73,10 @@ class NewUpdatedThreadFromStudent extends React.Component {
         (application, i) =>
           application.doc_modification_thread.map(
             (application_doc_thread, idx) => (
-              <>
+              <tr key={i}>
                 {!application_doc_thread.isFinalVersion &&
                   !application_doc_thread.EditorRead && (
-                    <tr>
+                    <>
                       <td>
                         <Link
                           to={
@@ -117,9 +117,9 @@ class NewUpdatedThreadFromStudent extends React.Component {
                           application_doc_thread.updatedAt
                         ).toLocaleTimeString()}
                       </td>
-                    </tr>
+                    </>
                   )}
-              </>
+              </tr>
             )
           )
       );

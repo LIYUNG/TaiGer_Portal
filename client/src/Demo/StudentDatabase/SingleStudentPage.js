@@ -483,9 +483,9 @@ class SingleStudentPage extends React.Component {
                   <th>Editors</th>
                 </tr>
               </thead>
-              <tobdy>
+              <tbody>
                 <StudentsAgentEditor student={this.state.student} />
-              </tobdy>
+              </tbody>
             </Table>
             <Row>
               <Table responsive>

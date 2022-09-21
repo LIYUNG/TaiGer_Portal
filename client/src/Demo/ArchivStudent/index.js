@@ -18,8 +18,8 @@ import {
   getAgents,
   updateAgents,
   getEditors,
-  updateEditors,
-  deleteFile
+  updateEditors
+  // deleteFile
 } from '../../api';
 
 class Dashboard extends React.Component {

@@ -1,7 +1,6 @@
 import React from "react";
-import { Dropdown, Row, Col, Spinner, Card } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-import { getProgram } from "../../api";
+import { Row, Col, Card } from "react-bootstrap";
+
 class SingleProgramView extends React.Component {
   render() {
     return (

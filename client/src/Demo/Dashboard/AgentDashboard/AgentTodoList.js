@@ -28,24 +28,24 @@ class AgentTodoList extends React.Component {
       }
     } else {
     }
-    let missing_profiles = keys.map((key, i) => {
-      if (object_init[key] !== 'accepted' && object_init[key] !== 'notneeded') {
-        return (
-          <>
-            <h6>{window.profile_list[key]}</h6>
-          </>
-        );
-      }
-    });
-    let to_be_checked_profiles = keys.map((key, i) => {
-      if (object_init[key] === 'uploaded') {
-        return (
-          <>
-            <h6>{window.profile_list[key]}</h6>
-          </>
-        );
-      }
-    });
+    // let missing_profiles = keys.map((key, i) => {
+    //   if (object_init[key] !== 'accepted' && object_init[key] !== 'notneeded') {
+    //     return (
+    //       <>
+    //         <h6>{window.profile_list[key]}</h6>
+    //       </>
+    //     );
+    //   }
+    // });
+    // let to_be_checked_profiles = keys.map((key, i) => {
+    //   if (object_init[key] === 'uploaded') {
+    //     return (
+    //       <>
+    //         <h6>{window.profile_list[key]}</h6>
+    //       </>
+    //     );
+    //   }
+    // });
 
     return (
       <tr>

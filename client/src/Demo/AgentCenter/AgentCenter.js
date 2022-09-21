@@ -1,7 +1,7 @@
 import React from 'react';
-import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
-import DEMO from '../../store/constant';
+// import DEMO from '../../store/constant';
 import EditFilesSubpage from './EditFilesSubpage';
 import {
   AiFillCloseCircle,
@@ -103,14 +103,14 @@ class AgentCenter extends React.Component {
     var student_arrayidx = this.state.students.findIndex(
       (student) => student._id === student_id
     );
-    var student = this.state.students.find(
-      (student) => student._id === student_id
-    );
+    // var student = this.state.students.find(
+    //   (student) => student._id === student_id
+    // );
     var students = [...this.state.students];
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (res) => {
         students[student_arrayidx] = res.data.data;
-        const { data, success } = res.data;
+        const { success } = res.data;
         if (success) {
           this.setState((state) => ({
             ...state,

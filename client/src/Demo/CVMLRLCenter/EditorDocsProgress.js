@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import DEMO from '../../store/constant';
-import { AiFillCloseCircle, AiFillQuestionCircle } from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
+import React from 'react';
+// import DEMO from '../../store/constant';
+// import { AiFillCloseCircle, AiFillQuestionCircle } from 'react-icons/ai';
+// import { IoCheckmarkCircle } from 'react-icons/io5';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
@@ -11,7 +11,7 @@ import {
   Button,
   Card,
   Collapse,
-  Form,
+  // Form,
   Modal,
   Spinner
 } from 'react-bootstrap';
@@ -20,17 +20,17 @@ import {
   deleteProgramSpecificFileThread,
   SetFileAsFinal,
   initGeneralMessageThread,
-  initApplicationMessageThread,
-  SubmitMessageWithAttachment
+  initApplicationMessageThread
+  // SubmitMessageWithAttachment
 } from '../../api';
 import ManualFiles from './ManualFiles';
 import {
-  AiOutlineDownload,
-  AiOutlineDelete,
-  AiOutlineCheck,
-  AiOutlineMore,
-  AiOutlineUndo,
-  AiFillMessage
+  // AiOutlineDownload,
+  // AiOutlineDelete,
+  // AiOutlineCheck,
+  AiOutlineMore
+  // AiOutlineUndo,
+  // AiFillMessage
 } from 'react-icons/ai';
 class EditorDocsProgress extends React.Component {
   state = {
@@ -256,15 +256,15 @@ class EditorDocsProgress extends React.Component {
               file: ''
             });
           } else {
-            if (res.status == 400) {
+            if (res.status === 400) {
               this.setState({
                 isLoaded: true,
                 docName: thread_name,
                 isThreadExisted: true
               });
-            } else if (res.status == 401) {
+            } else if (res.status === 401) {
               this.setState({ isLoaded: true, timeouterror: true });
-            } else if (res.status == 403) {
+            } else if (res.status === 403) {
               this.setState({ isLoaded: true, unauthorizederror: true });
             }
           }
@@ -292,15 +292,15 @@ class EditorDocsProgress extends React.Component {
               file: ''
             });
           } else {
-            if (res.status == 400) {
+            if (res.status === 400) {
               this.setState({
                 isLoaded: true,
                 docName: thread_name,
                 isThreadExisted: true
               });
-            } else if (res.status == 401) {
+            } else if (res.status === 401) {
               this.setState({ isLoaded: true, timeouterror: true });
-            } else if (res.status == 403) {
+            } else if (res.status === 403) {
               this.setState({ isLoaded: true, unauthorizederror: true });
             }
             // alert(res.data.message);

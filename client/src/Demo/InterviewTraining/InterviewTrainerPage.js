@@ -1,16 +1,12 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Card, Spinner } from 'react-bootstrap';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import PageNotFoundError from '../Utils/PageNotFoundError';
 import ProgramsInterview from './ProgramsInterview';
 
-import Aux from '../../hoc/_Aux';
-import {
-  getAllInterviews,
-  updateAcademicBackground,
-  updateLanguageSkill
-} from '../../api';
+// import Aux from '../../hoc/_Aux';
+import { getAllInterviews } from '../../api';
 
 class InterviewTrainerPage extends React.Component {
   state = {
@@ -23,8 +19,7 @@ class InterviewTrainerPage extends React.Component {
     interviews: [],
     success: false,
     academic_background: {},
-    updateconfirmed: false,
-    unauthorizederror: null
+    updateconfirmed: false
   };
 
   componentDidMount() {
@@ -38,11 +33,11 @@ class InterviewTrainerPage extends React.Component {
             success: success
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status == 400) {
+          } else if (resp.status === 400) {
             this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }

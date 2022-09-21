@@ -1,12 +1,12 @@
 import React from 'react';
-import { Row, Col, Spinner, Card, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
+// import { Link } from 'react-router-dom';
 import StudentApplicationsTableTemplate from './StudentApplicationsTableTemplate';
 // import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
 import { getStudent } from '../../api';
 
-class StudentApplication extends React.Component {
+class StudentApplicationsIndividual extends React.Component {
   state = {
     isLoaded: false,
     student: null,
@@ -51,7 +51,7 @@ class StudentApplication extends React.Component {
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    
+
     if (!isLoaded && !this.state.student) {
       return (
         <div style={style}>
@@ -71,4 +71,4 @@ class StudentApplication extends React.Component {
   }
 }
 
-export default StudentApplication;
+export default StudentApplicationsIndividual;

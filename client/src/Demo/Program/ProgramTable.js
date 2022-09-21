@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import Card from "../../App/components/MainCard";
 import Aux from "../../hoc/_Aux";
 import Programlist from "./ProgramList";

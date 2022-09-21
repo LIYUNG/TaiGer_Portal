@@ -1,13 +1,13 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Row, Card, Spinner } from 'react-bootstrap';
 import ProgramsOptionForm from './ProgramsOptionForm';
 import ProgramsInterview from './ProgramsInterview';
 import Aux from '../../hoc/_Aux';
 import {
   getMyInterviews,
-  createInterview,
-  updateAcademicBackground,
-  updateLanguageSkill
+  createInterview
+  // updateAcademicBackground,
+  // updateLanguageSkill
 } from '../../api';
 
 class InterviewStudentPage extends React.Component {
@@ -36,9 +36,9 @@ class InterviewStudentPage extends React.Component {
             success: success
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, error: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
           }
         }
@@ -72,9 +72,9 @@ class InterviewStudentPage extends React.Component {
             success: success
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, error: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
           }
         }

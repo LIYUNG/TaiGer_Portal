@@ -52,7 +52,7 @@ class AgentMainView extends React.Component {
                     <th>ProgramTobeDecided</th>
                   </tr>
                 </thead>
-                {agent_reviewing}
+                <tbody>{agent_reviewing}</tbody>
               </Table>
             </Card>
           </Col>

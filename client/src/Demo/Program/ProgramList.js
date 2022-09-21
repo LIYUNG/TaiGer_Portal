@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import {
   useTable,
   useFilters,
@@ -19,7 +19,7 @@ import {
   Table,
   Row,
   Col,
-  ButtonToolbar,
+  // ButtonToolbar,
   DropdownButton,
   Dropdown,
   Spinner,
@@ -27,43 +27,43 @@ import {
 } from 'react-bootstrap';
 import {
   getPrograms,
-  createProgram,
-  deleteProgram,
+  // createProgram,
+  // deleteProgram,
   assignProgramToStudent
 } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
 
-import makeData from './makeData';
+// import makeData from './makeData';
 
-const Styles = styled.div`
-  padding: 1rem;
+// const Styles = styled.div`
+//   padding: 1rem;
 
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
+//   table {
+//     border-spacing: 0;
+//     border: 1px solid black;
 
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
+//     tr {
+//       :last-child {
+//         td {
+//           border-bottom: 0;
+//         }
+//       }
+//     }
 
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
+//     th,
+//     td {
+//       margin: 0;
+//       padding: 0.5rem;
+//       border-bottom: 1px solid black;
+//       border-right: 1px solid black;
 
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`;
+//       :last-child {
+//         border-right: 0;
+//       }
+//     }
+//   }
+// `;
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -149,96 +149,96 @@ function SelectColumnFilter({
 // This is a custom filter UI that uses a
 // slider to set the filter value between a column's
 // min and max values
-function SliderColumnFilter({
-  column: { filterValue, setFilter, preFilteredRows, id }
-}) {
-  // Calculate the min and max
-  // using the preFilteredRows
+// function SliderColumnFilter({
+//   column: { filterValue, setFilter, preFilteredRows, id }
+// }) {
+//   // Calculate the min and max
+//   // using the preFilteredRows
 
-  const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    preFilteredRows.forEach((row) => {
-      min = Math.min(row.values[id], min);
-      max = Math.max(row.values[id], max);
-    });
-    return [min, max];
-  }, [id, preFilteredRows]);
+//   const [min, max] = React.useMemo(() => {
+//     let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
+//     let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
+//     preFilteredRows.forEach((row) => {
+//       min = Math.min(row.values[id], min);
+//       max = Math.max(row.values[id], max);
+//     });
+//     return [min, max];
+//   }, [id, preFilteredRows]);
 
-  return (
-    <>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={filterValue || min}
-        onChange={(e) => {
-          setFilter(parseInt(e.target.value, 10));
-        }}
-      />
-      <button onClick={() => setFilter(undefined)}>Off</button>
-    </>
-  );
-}
+//   return (
+//     <>
+//       <input
+//         type="range"
+//         min={min}
+//         max={max}
+//         value={filterValue || min}
+//         onChange={(e) => {
+//           setFilter(parseInt(e.target.value, 10));
+//         }}
+//       />
+//       <button onClick={() => setFilter(undefined)}>Off</button>
+//     </>
+//   );
+// }
 
 // This is a custom UI for our 'between' or number range
 // filter. It uses two number boxes and filters rows to
 // ones that have values between the two
-function NumberRangeColumnFilter({
-  column: { filterValue = [], preFilteredRows, setFilter, id }
-}) {
-  const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    preFilteredRows.forEach((row) => {
-      min = Math.min(row.values[id], min);
-      max = Math.max(row.values[id], max);
-    });
-    return [min, max];
-  }, [id, preFilteredRows]);
+// function NumberRangeColumnFilter({
+//   column: { filterValue = [], preFilteredRows, setFilter, id }
+// }) {
+//   const [min, max] = React.useMemo(() => {
+//     let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
+//     let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
+//     preFilteredRows.forEach((row) => {
+//       min = Math.min(row.values[id], min);
+//       max = Math.max(row.values[id], max);
+//     });
+//     return [min, max];
+//   }, [id, preFilteredRows]);
 
-  return (
-    <div
-      style={{
-        display: 'flex'
-      }}
-    >
-      <input
-        value={filterValue[0] || ''}
-        type="number"
-        onChange={(e) => {
-          const val = e.target.value;
-          setFilter((old = []) => [
-            val ? parseInt(val, 10) : undefined,
-            old[1]
-          ]);
-        }}
-        placeholder={`Min (${min})`}
-        style={{
-          width: '70px',
-          marginRight: '0.5rem'
-        }}
-      />
-      to
-      <input
-        value={filterValue[1] || ''}
-        type="number"
-        onChange={(e) => {
-          const val = e.target.value;
-          setFilter((old = []) => [
-            old[0],
-            val ? parseInt(val, 10) : undefined
-          ]);
-        }}
-        placeholder={`Max (${max})`}
-        style={{
-          width: '70px',
-          marginLeft: '0.5rem'
-        }}
-      />
-    </div>
-  );
-}
+//   return (
+//     <div
+//       style={{
+//         display: 'flex'
+//       }}
+//     >
+//       <input
+//         value={filterValue[0] || ''}
+//         type="number"
+//         onChange={(e) => {
+//           const val = e.target.value;
+//           setFilter((old = []) => [
+//             val ? parseInt(val, 10) : undefined,
+//             old[1]
+//           ]);
+//         }}
+//         placeholder={`Min (${min})`}
+//         style={{
+//           width: '70px',
+//           marginRight: '0.5rem'
+//         }}
+//       />
+//       to
+//       <input
+//         value={filterValue[1] || ''}
+//         type="number"
+//         onChange={(e) => {
+//           const val = e.target.value;
+//           setFilter((old = []) => [
+//             old[0],
+//             val ? parseInt(val, 10) : undefined
+//           ]);
+//         }}
+//         placeholder={`Max (${max})`}
+//         style={{
+//           width: '70px',
+//           marginLeft: '0.5rem'
+//         }}
+//       />
+//     </div>
+//   );
+// }
 
 function fuzzyTextFilterFn(rows, id, filterValue) {
   return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
@@ -279,7 +279,7 @@ function Table2({ columns, data, userId }) {
     schools: [],
     program_names: []
   });
-  let [modalShowAssignWindow, setModalShow] = useState(false);
+  // let [modalShowAssignWindow, setModalShow] = useState(false);
   let [studentId, setStudentId] = useState('');
   const filterTypes = React.useMemo(
     () => ({
@@ -327,9 +327,9 @@ function Table2({ columns, data, userId }) {
     setPageSize,
     preGlobalFilteredRows,
     setGlobalFilter,
-    selectedFlatRows,
+    // selectedFlatRows,
     toggleAllRowsSelected,
-    state: { pageIndex, pageSize, selectedRowIds, selectedRows }
+    state: { pageIndex, pageSize, selectedRowIds }
   } = useTable(
     {
       columns,
@@ -648,14 +648,14 @@ function Programlist(props) {
             isloaded: true
           }));
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             // this.setState({ isLoaded: true, error: true });
             setStatedata((state) => ({
               ...state,
               error: true,
               isloaded: true
             }));
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             setStatedata((state) => ({
               ...state,
               unauthorizederror: true,

@@ -123,6 +123,10 @@ const UserSchema = new Schema(
           type: String,
           default: ''
         },
+        expected_application_semester: {
+          type: String,
+          default: ''
+        },
         Highest_GPA_Uni: {
           type: Number,
           default: 0

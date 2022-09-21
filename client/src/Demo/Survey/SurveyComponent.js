@@ -283,9 +283,9 @@ class SurveyComponent extends React.Component {
                         value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
-                            .expected_application_date
+                            .expected_application_semester
                             ? this.state.academic_background.university
-                                .expected_application_date
+                                .expected_application_semester
                             : ''
                         }
                         onChange={(e) => this.handleChange_Academic(e)}

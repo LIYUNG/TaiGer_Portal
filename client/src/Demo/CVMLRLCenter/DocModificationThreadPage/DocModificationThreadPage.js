@@ -10,7 +10,6 @@ import PageNotFoundError from '../../Utils/PageNotFoundError';
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
-  updateDoc,
   getTemplateDownload,
   deleteDoc,
   SubmitMessageWithAttachment,
@@ -18,14 +17,14 @@ import {
   getMessagThread
 } from '../../../api';
 
-const steps = [
-  'Step 1: Get an account',
-  'Step 2: Fill personal information',
-  'Step 3: Choose programs',
-  'Step 4: Pay',
-  'Step 5: Send copy to Germany'
-];
-class Application extends Component {
+// const steps = [
+//   'Step 1: Get an account',
+//   'Step 2: Fill personal information',
+//   'Step 3: Choose programs',
+//   'Step 4: Pay',
+//   'Step 5: Send copy to Germany'
+// ];
+class DocModificationThreadPage extends Component {
   state = {
     error: null,
     timeouterror: null,
@@ -60,11 +59,11 @@ class Application extends Component {
             //   accordionKeys: new Array(-1, data.length), // to collapse all
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status == 400) {
+          } else if (resp.status === 400) {
             this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
@@ -110,72 +109,17 @@ class Application extends Component {
             isLoaded: true
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status == 400) {
+          } else if (resp.status === 400) {
             this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
       },
       (error) => {
         this.setState({ error });
-      }
-    );
-  };
-
-  handleEditFormSubmit = (update_article) => {
-    this.updateArticle(update_article);
-  };
-
-  updateArticle = (attrs) => {
-    //update article
-    this.setState({
-      articles: this.state.articles.map((article) => {
-        if (article._id === attrs._id) {
-          return Object.assign({}, article, {
-            _id: attrs._id,
-            Titel_: attrs.Titel_,
-            Content_: attrs.Content_,
-            Category_: attrs.Category_,
-            LastUpdate_: attrs.LastUpdate_
-          });
-        } else {
-          return article;
-        }
-      })
-    });
-    let article_temp = {};
-    Object.assign(article_temp, {
-      //remove _id
-      Titel_: attrs.Titel_,
-      Content_: attrs.Content_,
-      Category_: attrs.Category_,
-      LastUpdate_: attrs.LastUpdate_
-    });
-    updateDoc(attrs._id, article_temp).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        if (success) {
-          this.setState({
-            articles: this.state.articles.map((article) => {
-              if (article._id === attrs._id) {
-                return Object.assign(article, attrs);
-              } else {
-                return article;
-              }
-            })
-          });
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error
-        });
       }
     );
   };
@@ -477,7 +421,6 @@ class Application extends Component {
                   accordionKeys={this.state.accordionKeys}
                   singleExpandtHandler={this.singleExpandtHandler}
                   thread={this.state.thread}
-                  onFormSubmit={this.handleEditFormSubmit}
                   onTrashClick={this.handleTrashClick}
                   // role={this.props.user.role}
                   isLoaded={this.state.isLoaded}
@@ -577,4 +520,4 @@ class Application extends Component {
   }
 }
 
-export default Application;
+export default DocModificationThreadPage;

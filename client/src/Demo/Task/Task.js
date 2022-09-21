@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Button, Modal } from 'react-bootstrap';
+import { Spinner, Button, Modal } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import TasksList from "./TasksList";
-import TaskItem from './TaskItem';
+// import TaskItem from './TaskItem';
 import Board from 'react-trello';
 
 import { getStudentTask, initTasks } from '../../api';

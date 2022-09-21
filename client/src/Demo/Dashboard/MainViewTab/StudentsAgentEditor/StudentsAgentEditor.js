@@ -59,14 +59,14 @@ class StudentsAgentEditor extends React.Component {
       studentsAgent = <h6 className="mb-1"> No Agent assigned</h6>;
     } else {
       studentsAgent = this.props.student.agents.map((agent, i) => (
-        <>
-          <h6 className="mb-1" key={i}>
+        <div key={agent._id}>
+          <h6 className="mb-1">
             {agent.firstname}
             {', '}
             {agent.lastname}
           </h6>
           {agent.email}
-        </>
+        </div>
       ));
     }
     if (
@@ -76,60 +76,58 @@ class StudentsAgentEditor extends React.Component {
       studentsEditor = <h6 className="mb-1"> No Editor assigned</h6>;
     } else {
       studentsEditor = this.props.student.editors.map((editor, i) => (
-        <>
-          <h6 className="mb-1" key={i}>
+        <div key={editor._id}>
+          <h6 className="mb-1">
             {editor.firstname}
             {', '}
             {editor.lastname}
           </h6>
           {editor.email}
-        </>
+        </div>
       ));
     }
     return (
       <>
-        <tbody>
-          <tr>
-            {this.props.role === 'Admin' && !this.props.isArchivPage && (
-              <td>
-                <DropdownButton
-                  size="sm"
-                  title="Option"
-                  variant="primary"
-                  id={`dropdown-variants-${this.props.student._id}`}
-                  key={this.props.student._id}
+        <tr>
+          {this.props.role === 'Admin' && !this.props.isArchivPage && (
+            <td>
+              <DropdownButton
+                size="sm"
+                title="Option"
+                variant="primary"
+                id={`dropdown-variants-${this.props.student._id}`}
+                key={this.props.student._id}
+              >
+                <Dropdown.Item
+                  eventKey="1"
+                  onSelect={() => this.startEditingAgent(this.props.student)}
                 >
-                  <Dropdown.Item
-                    eventKey="1"
-                    onSelect={() => this.startEditingAgent(this.props.student)}
-                  >
-                    Edit Agent
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    eventKey="2"
-                    onSelect={() => this.startEditingEditor(this.props.student)}
-                  >
-                    Edit Editor
-                  </Dropdown.Item>
-                </DropdownButton>
-              </td>
-            )}
+                  Edit Agent
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="2"
+                  onSelect={() => this.startEditingEditor(this.props.student)}
+                >
+                  Edit Editor
+                </Dropdown.Item>
+              </DropdownButton>
+            </td>
+          )}
 
-            {this.props.role !== 'Student' ? (
-              <td>
-                <h6>
-                  {this.props.student.firstname}, {this.props.student.lastname}
-                </h6>
-                {this.props.student.email}
-              </td>
-            ) : (
-              <></>
-            )}
-            <td>{studentsAgent}</td>
-            <td>{studentsEditor}</td>
-            <td></td>
-          </tr>
-        </tbody>
+          {this.props.role !== 'Student' ? (
+            <td>
+              <h6>
+                {this.props.student.firstname}, {this.props.student.lastname}
+              </h6>
+              {this.props.student.email}
+            </td>
+          ) : (
+            <></>
+          )}
+          <td>{studentsAgent}</td>
+          <td>{studentsEditor}</td>
+          <td></td>
+        </tr>
         {this.props.role === 'Admin' && (
           <>
             <EditAgentsSubpage

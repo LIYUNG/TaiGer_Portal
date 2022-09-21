@@ -12,7 +12,7 @@ import ButtonSetRejected from "./ButtonSetRejected";
 import ButtonSetNotNeeded from "./ButtonSetNotNeeded";
 import ButtonSetMissing from "./ButtonSetMissing";
 
-import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
+// import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
 
 class EditFilesSubpage extends React.Component {
   state = {
@@ -27,8 +27,8 @@ class EditFilesSubpage extends React.Component {
     this.props.SubmitGeneralFile(e, studentId, fileCategory);
   };
   render() {
-    const deleteStyle = "danger";
-    const graoutStyle = "light";
+    // const deleteStyle = "danger";
+    // const graoutStyle = "light";
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_list);
     let object_init = {};

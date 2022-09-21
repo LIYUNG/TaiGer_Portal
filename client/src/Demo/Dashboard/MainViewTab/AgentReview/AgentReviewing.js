@@ -38,7 +38,7 @@ class AgentReviewing extends React.Component {
     var to_be_checked_profiles = keys.map((key, i) => {
       if (object_init[key] === 'uploaded') {
         return (
-          <h6>
+          <h6 key={i}>
             {' '}
             <AiOutlineLoading3Quarters
               size={18}
@@ -57,17 +57,15 @@ class AgentReviewing extends React.Component {
         object_init[key] !== 'uploaded'
       ) {
         return (
-          <>
-            <h6>
-              {' '}
-              <AiFillQuestionCircle
-                size={18}
-                color="lightgray"
-                title="No Document uploaded"
-              />{' '}
-              {key.replace(/_/g, ' ')}
-            </h6>
-          </>
+          <h6 key={i}>
+            {' '}
+            <AiFillQuestionCircle
+              size={18}
+              color="lightgray"
+              title="No Document uploaded"
+            />{' '}
+            {key.replace(/_/g, ' ')}
+          </h6>
         );
       }
     });
@@ -90,30 +88,28 @@ class AgentReviewing extends React.Component {
 
     return (
       <>
-        <tbody>
-          <tr>
-            {this.props.role !== 'Student' ? (
-              <>
-                <td>
-                  <Link
-                    to={
-                      '/student-database/' + this.props.student._id + '/profile'
-                    }
-                  >
-                    {this.props.student.firstname}
-                    {' - '}
-                    {this.props.student.lastname}
-                  </Link>
-                </td>
-                <td>{missing_profiles}</td>
-              </>
-            ) : (
-              <></>
-            )}
-            <td>{to_be_checked_profiles}</td>
-            <td>{no_decided_program}</td>
-          </tr>
-        </tbody>
+        <tr>
+          {this.props.role !== 'Student' ? (
+            <>
+              <td>
+                <Link
+                  to={
+                    '/student-database/' + this.props.student._id + '/profile'
+                  }
+                >
+                  {this.props.student.firstname}
+                  {' - '}
+                  {this.props.student.lastname}
+                </Link>
+              </td>
+              <td>{missing_profiles}</td>
+            </>
+          ) : (
+            <></>
+          )}
+          <td>{to_be_checked_profiles}</td>
+          <td>{no_decided_program}</td>
+        </tr>
       </>
     );
   }

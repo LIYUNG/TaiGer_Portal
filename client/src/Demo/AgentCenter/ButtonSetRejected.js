@@ -154,10 +154,10 @@ class ButtonSetRejected extends React.Component {
         }
       },
       (error) => {
-       this.setState({
-         isLoaded: true,
-         error
-       });
+        this.setState({
+          isLoaded: true,
+          error
+        });
       }
     );
   };
@@ -166,7 +166,7 @@ class ButtonSetRejected extends React.Component {
     const graoutStyle = 'light';
     var ButttonRow_Rejected;
     ButttonRow_Rejected = (
-      <tr key={this.props.key + 1}>
+      <tr>
         <td>
           <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
         </td>

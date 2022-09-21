@@ -37,9 +37,9 @@ class EditableFile_Thread extends Component {
     );
   };
 
-  MouseOver = () => {
-    console.log('Mouse Over');
-  };
+  // MouseOver = () => {
+  //   console.log('Mouse Over');
+  // };
 
   render() {
     let fileStatus;

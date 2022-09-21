@@ -275,7 +275,7 @@ class StudentDashboard extends React.Component {
                     <th>Programs will be reviewed by your agent:</th>
                   </tr>
                 </thead>
-                {agent_reviewing}
+                <tbody>{agent_reviewing}</tbody>
               </Table>
             </Card>
           </Col>

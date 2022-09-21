@@ -12,9 +12,9 @@ import {
 import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime,
+  // AiFillCloseCircle,
+  // AiFillQuestionCircle,
+  // AiOutlineFieldTime,
   AiFillDelete
 } from 'react-icons/ai';
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
@@ -167,7 +167,7 @@ class StudentApplicationsTableTemplate extends React.Component {
       );
     }
     var applying_university_info;
-    var applying_university;
+    // var applying_university;
     var today = new Date();
     if (
       this.props.student.applications === undefined ||
@@ -205,126 +205,123 @@ class StudentApplicationsTableTemplate extends React.Component {
       // applying_university = this.props.student.applications.map(
       applying_university_info = this.state.student.applications.map(
         (application, application_idx) => (
-          <>
-            <tr>
-              {this.props.role !== 'Student' && (
-                <td>
-                  <Button
-                    onClick={(e) =>
-                      this.handleDelete(
-                        e,
-                        application.programId._id,
-                        this.state.student._id
-                      )
-                    }
-                  >
-                    <AiFillDelete size={16} />
-                  </Button>
-                </td>
-              )}
+          <tr key={application_idx}>
+            {this.props.role !== 'Student' && (
               <td>
-                <Link to={'/programs/' + application.programId._id}>
-                  <h6 className="mb-1" key={application_idx}>
-                    {application.programId.school}
-                  </h6>
-                </Link>
+                <Button
+                  onClick={(e) =>
+                    this.handleDelete(
+                      e,
+                      application.programId._id,
+                      this.state.student._id
+                    )
+                  }
+                >
+                  <AiFillDelete size={16} />
+                </Button>
               </td>
-              <td>
-                <Link to={'/programs/' + application.programId._id}>
-                  <h6 className="mb-1" key={application_idx}>
-                    {application.programId.program_name}
-                  </h6>
-                </Link>
-              </td>
-              <td>
+            )}
+            <td>
+              <Link to={'/programs/' + application.programId._id}>
                 <h6 className="mb-1" key={application_idx}>
-                  {this.props.student.academic_background.university
-                    .expected_application_date
-                    ? this.props.student.academic_background.university
-                        .expected_application_date + '-'
-                    : ''}
-                  {application.programId.application_deadline}
+                  {application.programId.school}
                 </h6>
-              </td>
-              <td>
-                <Form.Group controlId="decided">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => this.handleChange(e, application_idx)}
-                    defaultValue={
-                      application.decided !== undefined && application.decided
-                        ? 'O'
-                        : 'X'
-                    }
-                  >
-                    <option value={'X'}>No</option>
-                    <option value={'O'}>Yes</option>
-                  </Form.Control>
-                </Form.Group>
-              </td>
-              <td>
-                <Form.Group controlId="closed">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => this.handleChange(e, application_idx)}
-                    disabled={
-                      !(
-                        application.decided !== undefined && application.decided
-                      )
-                    }
-                    // readOnly={
-                    //   !(
-                    //     application.decided !== undefined && application.decided
-                    //   )
-                    // }
-                    defaultValue={
-                      application.closed !== undefined && application.closed
-                        ? 'O'
-                        : 'X'
-                    }
-                  >
-                    <option value={'X'}>No</option>
-                    <option value={'O'}>Yes</option>
-                  </Form.Control>
-                </Form.Group>
-              </td>
-              <td>
-                <Form.Group controlId="admission">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => this.handleChange(e, application_idx)}
-                    disabled={
-                      !(application.closed !== undefined && application.closed)
-                    }
-                    defaultValue={
-                      application.admission !== undefined &&
-                      application.admission
-                        ? 'O'
-                        : 'X'
-                    }
-                  >
-                    <option value={'X'}>No</option>
-                    <option value={'O'}>Yes</option>
-                  </Form.Control>
-                </Form.Group>
-              </td>
-              <td>
+              </Link>
+            </td>
+            <td>
+              <Link to={'/programs/' + application.programId._id}>
                 <h6 className="mb-1" key={application_idx}>
-                  {application.closed
-                    ? '-'
-                    : this.props.student.academic_background.university
-                        .expected_application_date &&
-                      this.getNumberOfDays(
-                        today,
-                        this.props.student.academic_background.university
-                          .expected_application_date +
-                          '-' +
-                          application.programId.application_deadline
-                      )}
+                  {application.programId.program_name}
                 </h6>
-              </td>
-            </tr>
-          </>
+              </Link>
+            </td>
+            <td>
+              <h6 className="mb-1" key={application_idx}>
+                {this.props.student.academic_background.university
+                  .expected_application_date
+                  ? this.props.student.academic_background.university
+                      .expected_application_date + '-'
+                  : ''}
+                {application.programId.application_deadline}
+              </h6>
+            </td>
+            <td>
+              <Form.Group controlId="decided">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => this.handleChange(e, application_idx)}
+                  defaultValue={
+                    application.decided !== undefined && application.decided
+                      ? 'O'
+                      : 'X'
+                  }
+                >
+                  <option value={'X'}>No</option>
+                  <option value={'O'}>Yes</option>
+                </Form.Control>
+              </Form.Group>
+            </td>
+            <td>
+              <Form.Group controlId="closed">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => this.handleChange(e, application_idx)}
+                  disabled={
+                    !(application.decided !== undefined && application.decided)
+                  }
+                  // readOnly={
+                  //   !(
+                  //     application.decided !== undefined && application.decided
+                  //   )
+                  // }
+                  defaultValue={
+                    application.closed !== undefined && application.closed
+                      ? 'O'
+                      : 'X'
+                  }
+                >
+                  <option value={'X'}>No</option>
+                  <option value={'O'}>Yes</option>
+                </Form.Control>
+              </Form.Group>
+            </td>
+            <td>
+              <Form.Group controlId="admission">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => this.handleChange(e, application_idx)}
+                  disabled={
+                    !(application.closed !== undefined && application.closed)
+                  }
+                  defaultValue={
+                    application.admission !== undefined && application.admission
+                      ? 'O'
+                      : 'X'
+                  }
+                >
+                  <option value={'X'}>No</option>
+                  <option value={'O'}>Yes</option>
+                </Form.Control>
+              </Form.Group>
+            </td>
+            <td>
+              <h6 className="mb-1" key={application_idx}>
+                {application.closed
+                  ? '-'
+                  : application.programId.application_deadline
+                  ? this.props.student.academic_background.university
+                      .expected_application_date &&
+                    this.getNumberOfDays(
+                      today,
+                      this.props.student.academic_background.university
+                        .expected_application_date +
+                        '-' +
+                        application.programId.application_deadline
+                    )
+                  : '-'}
+              </h6>
+            </td>
+          </tr>
         )
       );
     }

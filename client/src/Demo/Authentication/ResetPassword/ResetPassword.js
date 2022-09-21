@@ -47,7 +47,8 @@ export default function ResetPassword(props) {
           alert('Password did not match!');
         }
       } catch (err) {
-        console.log(err);
+        // TODO: error handler
+        // console.log(err);
       }
     } else {
       alert('Password is not valid');

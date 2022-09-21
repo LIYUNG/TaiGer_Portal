@@ -1,30 +1,21 @@
-import React from "react";
-import {
-  Col,
-  Form,
-  Button,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
-import {
-  AiOutlineDownload,
-  AiOutlineDelete,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
+import React from 'react';
+import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 
 class ButtonSetAccepted extends React.Component {
   state = {
     student: this.props.student,
-    student_id: "",
-    category: "",
-    docName: "",
-    comments: "",
-    file: "",
+    student_id: '',
+    category: '',
+    docName: '',
+    comments: '',
+    file: '',
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: false,
     CommentModel: false,
     rejectProfileFileModel: false,
-    acceptProfileFileModel: false,
+    acceptProfileFileModel: false
   };
 
   closeWarningWindow = () => {
@@ -46,7 +37,7 @@ class ButtonSetAccepted extends React.Component {
       student_id,
       category,
       docName,
-      deleteFileWarningModel: true,
+      deleteFileWarningModel: true
     }));
   };
 
@@ -54,19 +45,19 @@ class ButtonSetAccepted extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      feedback: rejectmessage,
+      feedback: rejectmessage
     }));
   };
 
   onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
-    if (status === "accepted") {
+    if (status === 'accepted') {
       this.setState((state) => ({
         ...state,
         student_id,
         category,
         status,
-        acceptProfileFileModel: true,
+        acceptProfileFileModel: true
       }));
     } else {
       this.setState((state) => ({
@@ -74,7 +65,7 @@ class ButtonSetAccepted extends React.Component {
         student_id,
         category,
         status,
-        rejectProfileFileModel: true,
+        rejectProfileFileModel: true
       }));
     }
   };
@@ -83,7 +74,7 @@ class ButtonSetAccepted extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     this.props.onDeleteFilefromstudent(
       this.state.category,
@@ -95,7 +86,7 @@ class ButtonSetAccepted extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     this.props.onUpdateProfileFilefromstudent(
       this.state.category,
@@ -105,11 +96,11 @@ class ButtonSetAccepted extends React.Component {
     );
   };
   render() {
-    const deleteStyle = "danger";
-    const graoutStyle = "light";
+    const deleteStyle = 'danger';
+    const graoutStyle = 'light';
     var ButttonRow_Accepted;
     ButttonRow_Accepted = (
-      <tr key={this.props.key + 1}>
+      <tr>
         <th>
           <IoCheckmarkCircle
             size={24}
@@ -119,9 +110,9 @@ class ButtonSetAccepted extends React.Component {
         </th>
         <td>
           {this.props.docName}
-          {" - "}
+          {' - '}
           {this.props.date}
-          {" - "}
+          {' - '}
           {this.props.time}
         </td>
         <td>
@@ -143,7 +134,7 @@ class ButtonSetAccepted extends React.Component {
             </Form>
           </Col>
         </td>
-        {this.props.role === "Editor" ? (
+        {this.props.role === 'Editor' ? (
           <>
             <td></td>
             <td></td>
@@ -152,7 +143,7 @@ class ButtonSetAccepted extends React.Component {
           </>
         ) : (
           <>
-            {this.props.role === "Student" ? (
+            {this.props.role === 'Student' ? (
               <>
                 <td></td>
                 <td></td>
@@ -169,7 +160,7 @@ class ButtonSetAccepted extends React.Component {
                           e,
                           this.props.k,
                           this.props.student_id,
-                          "rejected"
+                          'rejected'
                         )
                       }
                     >
@@ -244,10 +235,10 @@ class ButtonSetAccepted extends React.Component {
     );
 
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     return (
       <>
@@ -303,7 +294,7 @@ class ButtonSetAccepted extends React.Component {
               <Form.Control
                 type="text"
                 placeholder="ex. Poor scanned quality."
-                defaultValue={""}
+                defaultValue={''}
                 onChange={(e) => this.handleRejectMessage(e, e.target.value)}
               />
             </Form.Group>

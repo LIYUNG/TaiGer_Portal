@@ -46,7 +46,8 @@ export default function Signin1({ setUserdata }) {
         // setButtondisable(false);
       }
     } catch (e) {
-      console.log(e);
+      // TODO: Error handler
+      // console.log(e);
     }
   };
 
@@ -64,7 +65,7 @@ export default function Signin1({ setUserdata }) {
           // TODO: handle error
           alert('Server no response! Please try later.');
           // setButtondisable(false);
-          console.log(err);
+          // console.log(err);
         }
       }
     } else {

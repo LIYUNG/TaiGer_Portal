@@ -27,7 +27,7 @@ class User extends React.Component {
               >
                 Set User as...
               </Dropdown.Item>
-              <Dropdown.Item
+              {/* <Dropdown.Item
                 eventKey="3"
                 onSelect={() =>
                   // this.props.RemoveUserHandler3(this.props.user._id)
@@ -39,7 +39,7 @@ class User extends React.Component {
                 }
               >
                 Delete
-              </Dropdown.Item>
+              </Dropdown.Item> */}
             </DropdownButton>
           </th>
           {this.props.header.map((y, k) => (

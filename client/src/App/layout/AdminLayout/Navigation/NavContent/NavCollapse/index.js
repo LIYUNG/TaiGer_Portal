@@ -23,13 +23,20 @@ class NavCollapse extends Component {
   menuGroupFilterByRole = (collapse) => {
     if (collapse.children) {
       if (this.props.role === 'Admin') {
+        if (
+          collapse.title === 'Component' ||
+          collapse.title === 'Documentation' ||
+          collapse.title === 'Menu Levels'
+        ) {
+          return false;
+        }
         return true;
       }
       if (this.props.role === 'Agent') {
         if (
           collapse.title === 'Component' ||
-          collapse.title === 'Menu Levels' ||
-          collapse.title === 'Component'
+          collapse.title === 'Documentation' ||
+          collapse.title === 'Menu Levels'
         ) {
           return false;
         }
@@ -38,8 +45,8 @@ class NavCollapse extends Component {
       if (this.props.role === 'Editor') {
         if (
           collapse.title === 'Component' ||
-          collapse.title === 'Menu Levels' ||
-          collapse.title === 'Component'
+          collapse.title === 'Documentation' ||
+          collapse.title === 'Menu Levels'
         ) {
           return false;
         }
@@ -48,8 +55,8 @@ class NavCollapse extends Component {
       if (this.props.role === 'Student') {
         if (
           collapse.title === 'Component' ||
-          collapse.title === 'Menu Levels' ||
-          collapse.title === 'Component'
+          collapse.title === 'Documentation' ||
+          collapse.title === 'Menu Levels'
         ) {
           return false;
         }
@@ -58,8 +65,8 @@ class NavCollapse extends Component {
       if (this.props.role === 'Guest') {
         if (
           collapse.title === 'Component' ||
-          collapse.title === 'Menu Levels' ||
-          collapse.title === 'Component'
+          collapse.title === 'Documentation' ||
+          collapse.title === 'Menu Levels'
         ) {
           return false;
         }

@@ -11,7 +11,7 @@ class EditDownloadFilesSubpage extends React.Component {
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = 'missing';
     }
-    console.log(this.props.templates);
+    // console.log(this.props.templates);
     for (let i = 0; i < this.props.templates.length; i++) {
       object_init[this.props.templates[i].category_name] = 'uploaded';
     }

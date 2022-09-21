@@ -39,7 +39,7 @@ export default function Reactivation(props) {
       }
     } catch (err) {
       // TODO: handle error
-      console.log(err);
+      // console.log(err);
     }
   };
 

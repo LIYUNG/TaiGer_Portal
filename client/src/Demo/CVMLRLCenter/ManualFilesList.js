@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import EditableFile_Thread from "./EditableFile_Thread";
-import { Row, Col } from "react-bootstrap";
+import React, { Component } from 'react';
+import EditableFile_Thread from './EditableFile_Thread';
+import { Row, Col } from 'react-bootstrap';
 
 class ManualFilesList extends Component {
   render() {
@@ -23,7 +23,7 @@ class ManualFilesList extends Component {
               role={this.props.role}
             />
           ))
-        : "";
+        : '';
     } else {
       message_threads =
         this.props.application && this.props.application.doc_modification_thread
@@ -46,15 +46,7 @@ class ManualFilesList extends Component {
           : '';
     }
 
-    return (
-      <>
-        <Row>
-          <>
-            <Col>{message_threads}</Col>
-          </>
-        </Row>
-      </>
-    );
+    return <>{message_threads}</>;
   }
 }
 

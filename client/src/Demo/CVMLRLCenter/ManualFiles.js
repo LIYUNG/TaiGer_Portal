@@ -52,20 +52,14 @@ class ManualFiles extends React.Component {
   render() {
     return (
       <>
-        <Table>
-          <thead>
-            <tr></tr>
-          </thead>
-          <tbody>
-            <ManualFilesList
-              student={this.props.student}
-              onDeleteFileThread={this.props.onDeleteFileThread}
-              handleAsFinalFile={this.props.handleAsFinalFile}
-              role={this.props.role}
-              application={this.props.application}
-            />
-          </tbody>
-        </Table>
+        <ManualFilesList
+          student={this.props.student}
+          onDeleteFileThread={this.props.onDeleteFileThread}
+          handleAsFinalFile={this.props.handleAsFinalFile}
+          role={this.props.role}
+          application={this.props.application}
+        />
+
         {this.props.role === 'Student' || this.props.role === 'Guest' ? (
           <></>
         ) : (

@@ -448,7 +448,8 @@ function Table2({ columns, data, userId }) {
           </DropdownButton>
         </>
       )}
-      <table {...getTableProps()}>
+      <Table responsive hover {...getTableProps()}>
+        {/* <table {...getTableProps()}> */}
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -498,7 +499,8 @@ function Table2({ columns, data, userId }) {
             );
           })}
         </tbody>
-      </table>
+        {/* </table> */}
+      </Table>
       <div className="pagination">
         <Row>
           <Col md={1}>
@@ -763,13 +765,13 @@ function Programlist(props) {
     // <Styles>
     <Card>
       <Card.Body>
-        <Table responsive border hover>
+        {/* <Table responsive border hover> */}
           <Table2
             columns={columns}
             data={statedata.programs}
             userId={props.userId}
           />
-        </Table>
+        {/* </Table> */}
       </Card.Body>
     </Card>
     // </Styles>

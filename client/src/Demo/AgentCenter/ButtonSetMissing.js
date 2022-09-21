@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Row,
   Col,
@@ -8,38 +8,35 @@ import {
   Card,
   Collapse,
   Modal,
-  Spinner,
-} from "react-bootstrap";
-import UcFirst from "../../App/components/UcFirst";
-import { IoMdCloudUpload } from "react-icons/io";
+  Spinner
+} from 'react-bootstrap';
+import UcFirst from '../../App/components/UcFirst';
+import { IoMdCloudUpload } from 'react-icons/io';
 import {
   AiOutlineDownload,
   AiOutlineFieldTime,
   AiFillCloseCircle,
   AiFillQuestionCircle,
   AiOutlineComment,
-  AiOutlineDelete,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-import {
-  updateProfileDocumentStatus,
-  deleteFile,
-} from "../../api";
+  AiOutlineDelete
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { BsDash } from 'react-icons/bs';
+import { updateProfileDocumentStatus, deleteFile } from '../../api';
 
 class ButtonSetMissing extends React.Component {
   state = {
     student: this.props.student,
-    student_id: "",
-    category: "",
-    docName: "",
-    comments: "",
-    file: "",
+    student_id: '',
+    category: '',
+    docName: '',
+    comments: '',
+    file: '',
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: false,
     CommentModel: false,
     setMissingWindow: false,
-    acceptProfileFileModel: false,
+    acceptProfileFileModel: false
   };
 
   closeSetMissingWindow = () => {
@@ -53,7 +50,7 @@ class ButtonSetMissing extends React.Component {
       student_id,
       category,
       status,
-      setMissingWindow: true,
+      setMissingWindow: true
     }));
   };
 
@@ -61,7 +58,7 @@ class ButtonSetMissing extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     this.props.onUpdateProfileFilefromstudent(
       this.state.category,
@@ -72,11 +69,11 @@ class ButtonSetMissing extends React.Component {
   };
 
   render() {
-    const deleteStyle = "danger";
-    const graoutStyle = "light";
+    const deleteStyle = 'danger';
+    const graoutStyle = 'light';
     var ButttonRow_Rejected;
     ButttonRow_Rejected = (
-      <tr key={this.props.key + 1}>
+      <tr>
         <th>
           <AiFillQuestionCircle
             size={24}
@@ -85,7 +82,7 @@ class ButtonSetMissing extends React.Component {
           />
         </th>
         <td>{this.props.docName}</td>
-        {this.props.role === "Editor" ? (
+        {this.props.role === 'Editor' ? (
           <></>
         ) : (
           <>
@@ -106,7 +103,7 @@ class ButtonSetMissing extends React.Component {
                 </Form.File.Label>
               </Form>
             </td>
-            {this.props.role === "Student" ? (
+            {this.props.role === 'Student' ? (
               <></>
             ) : (
               <td>
@@ -117,12 +114,12 @@ class ButtonSetMissing extends React.Component {
                         e,
                         this.props.k,
                         this.props.student_id,
-                        "notneeded"
+                        'notneeded'
                       )
                     }
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button variant={"secondary"} size="sm" type="submit">
+                      <Button variant={'secondary'} size="sm" type="submit">
                         Set notneeded
                       </Button>
                     </Form.Group>
@@ -137,10 +134,10 @@ class ButtonSetMissing extends React.Component {
     );
 
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     return (
       <>

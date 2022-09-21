@@ -38,7 +38,7 @@ export default function SignUp1({ userData }) {
       }
     } catch (err) {
       // TODO: handle error
-      console.log(err);
+      // console.log(err);
     }
   };
 

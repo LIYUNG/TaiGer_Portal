@@ -37,7 +37,7 @@ import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/Ap
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import Task from '../Task/Task';
 
-class ArchivStudent extends React.Component {
+class SingleStudentPage extends React.Component {
   state = {
     isLoaded: false,
     student: null,
@@ -443,6 +443,33 @@ class ArchivStudent extends React.Component {
             </Card.Title>
           </Card.Header>
         </Card>
+        <Row>
+          <Card className="mt-2">
+            <Card.Body>
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <>
+                      <th></th>
+                      <th>First-, Last Name</th>
+                      <th>University</th>
+                      <th>Programs</th>
+                      <th>Deadline</th>
+                    </>
+                    {window.programstatuslist.map((doc, index) => (
+                      <th key={index}>{doc.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <ApplicationProgress
+                  role={this.props.user.role}
+                  student={this.state.student}
+                  isLoaded={this.state.isLoaded}
+                />
+              </Table>
+            </Card.Body>
+          </Card>
+        </Row>
         <Tabs
           defaultActiveKey={this.props.match.params.tab}
           id="uncontrolled-tab-example"
@@ -456,7 +483,9 @@ class ArchivStudent extends React.Component {
                   <th>Editors</th>
                 </tr>
               </thead>
-              <StudentsAgentEditor student={this.state.student} />
+              <tobdy>
+                <StudentsAgentEditor student={this.state.student} />
+              </tobdy>
             </Table>
             <Row>
               <Table responsive>
@@ -491,20 +520,20 @@ class ArchivStudent extends React.Component {
               role={this.props.user.role}
             />
           </Tab>
-          <Tab eventKey="status" title="Status">
+          {/* <Tab eventKey="status" title="Status">
             <Row>
               <Table responsive>
                 <Task student_id={this.state.student._id} />
               </Table>
             </Row>
-          </Tab>
+          </Tab> */}
           <Tab eventKey="background" title="Background">
             <SurveyComponent
               academic_background={this.state.student.academic_background}
               isLoaded={this.state.isLoaded}
             />
           </Tab>
-          <Tab eventKey="applied-schools" title="Applied Schools">
+          {/* <Tab eventKey="applied-schools" title="Applied Schools">
             <Table responsive>
               <thead>
                 <tr>
@@ -526,10 +555,10 @@ class ArchivStudent extends React.Component {
                 isLoaded={this.state.isLoaded}
               />
             </Table>
-          </Tab>
+          </Tab> */}
         </Tabs>
       </>
     );
   }
 }
-export default ArchivStudent;
+export default SingleStudentPage;

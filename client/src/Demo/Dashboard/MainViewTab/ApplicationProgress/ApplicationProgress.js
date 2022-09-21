@@ -49,30 +49,28 @@ class ApplicationProgress extends React.Component {
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
-          <Link to={'/programs/' + application.programId._id}>
-            <h6 className="mb-1" key={i}>
-              {application.programId.school}
-            </h6>
+          <Link to={'/programs/' + application.programId._id} key={i}>
+            <h6 className="mb-1">{application.programId.school}</h6>
           </Link>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
-          <Link to={'/programs/' + application.programId._id}>
-            <h6 className="mb-1" key={i}>
-              {application.programId.program_name}
-            </h6>
+          <Link to={'/programs/' + application.programId._id} key={i}>
+            <h6 className="mb-1">{application.programId.program_name}</h6>
           </Link>
         )
       );
       application_deadline = this.props.student.applications.map(
         (application, i) => (
           <h6 className="mb-1" key={i}>
-            {this.props.student.academic_background.university
-              .expected_application_date
+            {application.programId.application_deadline
               ? this.props.student.academic_background.university
-                  .expected_application_date + '-'
-              : ''}
+                  .expected_application_date
+                ? this.props.student.academic_background.university
+                    .expected_application_date + '-'
+                : ''
+              : '-'}
             {application.programId.application_deadline}
           </h6>
         )
@@ -83,7 +81,8 @@ class ApplicationProgress extends React.Component {
           <h6 className="mb-1" key={i}>
             {application.closed
               ? '-'
-              : this.props.student.academic_background.university
+              : application.programId.application_deadline
+              ? this.props.student.academic_background.university
                   .expected_application_date &&
                 this.getNumberOfDays(
                   today,
@@ -91,7 +90,8 @@ class ApplicationProgress extends React.Component {
                     .expected_application_date +
                     '-' +
                     application.programId.application_deadline
-                )}
+                )
+              : '-'}
           </h6>
         )
       );
@@ -102,7 +102,7 @@ class ApplicationProgress extends React.Component {
               O
             </h6>
           ) : (
-            <h6 className="mb-1" key={i}>
+            <h6 className="mb-1" key={application._id}>
               X
             </h6>
           )
@@ -114,7 +114,7 @@ class ApplicationProgress extends React.Component {
               O
             </h6>
           ) : (
-            <h6 className="mb-1" key={i}>
+            <h6 className="mb-1" key={application._id}>
               X
             </h6>
           )
@@ -127,7 +127,7 @@ class ApplicationProgress extends React.Component {
               O
             </h6>
           ) : (
-            <h6 className="mb-1" key={i}>
+            <h6 className="mb-1" key={application._id}>
               X
             </h6>
           )
@@ -147,14 +147,9 @@ class ApplicationProgress extends React.Component {
                 key={this.props.student._id}
               >
                 {this.props.role !== 'Editor' && !this.props.isArchivPage ? (
-                  <Dropdown.Item
-                    eventKey="3"
-                  >
+                  <Dropdown.Item eventKey="3">
                     <Link
-                      to={
-                        '/student-applications/' +
-                        this.props.student._id
-                      }
+                      to={'/student-applications/' + this.props.student._id}
                     >
                       Edit Program
                     </Link>
@@ -200,7 +195,7 @@ class ApplicationProgress extends React.Component {
                   to={
                     '/student-database/' +
                     this.props.student._id +
-                    '/applied-schools'
+                    '/background'
                   }
                 >
                   <h6>

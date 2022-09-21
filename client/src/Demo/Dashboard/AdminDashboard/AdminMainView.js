@@ -10,9 +10,6 @@ import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgen
 
 class AdminMainView extends React.Component {
   render() {
-    const agent_todo = this.props.students.map((student, i) => (
-      <AdminTodoList key={i} student={student} />
-    ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
@@ -57,7 +54,7 @@ class AdminMainView extends React.Component {
                     <th>Under checking</th>
                   </tr>
                 </thead>
-                {agent_reviewing}
+                <tbody>{agent_reviewing}</tbody>
               </Table>
             </Card>
           </Col>
@@ -86,7 +83,7 @@ class AdminMainView extends React.Component {
                       <th>Editors</th>
                     </tr>
                   </thead>
-                  {students_agent_editor}
+                  <tbody>{students_agent_editor}</tbody>
                 </Table>
               </Tab>
               <Tab eventKey="z" title="Application Overview">

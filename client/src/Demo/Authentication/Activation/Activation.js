@@ -40,7 +40,7 @@ export default function Activation(props) {
       }
     } catch (err) {
       // TODO: handle error
-      console.log(err);
+      // console.log(err);
     }
   };
 

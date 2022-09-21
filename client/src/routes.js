@@ -63,8 +63,8 @@ const TasksOverview = React.lazy(() => import('./Demo/Task/TasksOverview'));
 const Task = React.lazy(() => import('./Demo/Task/Task'));
 const MyTask = React.lazy(() => import("./Demo/Task/MyTask"));
 
-const ArchivStudentDatabase = React.lazy(() =>
-  import("./Demo/StudentDatabase/ArchivStudent")
+const SingleStudentPage = React.lazy(() =>
+  import('./Demo/StudentDatabase/SingleStudentPage')
 );
 const GoogleMap = React.lazy(() => import("./Demo/Maps/GoogleMap/index"));
 const DocsApplication = React.lazy(() =>
@@ -200,8 +200,8 @@ const routes = [
   {
     path: '/student-database/:studentId/:tab',
     exact: true,
-    name: 'ArchivStudentDatabase',
-    component: ArchivStudentDatabase
+    name: 'SingleStudentPage',
+    component: SingleStudentPage
   },
   {
     path: '/statistics',

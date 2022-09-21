@@ -71,7 +71,7 @@ class AgentMainView extends React.Component {
                     ))}
                   </tr>
                 </thead>
-                {agent_todo}
+                <tbody>{agent_todo}</tbody>
               </Table>
             </Card>
           </Col>
@@ -100,7 +100,7 @@ class AgentMainView extends React.Component {
                       <th>Editors</th>
                     </tr>
                   </thead>
-                  {students_agent_editor}
+                  <tbody>{students_agent_editor}</tbody>
                 </Table>
               </Tab>
               <Tab eventKey="z" title="Application Overview">

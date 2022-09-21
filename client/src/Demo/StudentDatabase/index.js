@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
+import { Row, Col, Tabs, Card, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 // import DEMO from "../../store/constant";
@@ -308,30 +308,36 @@ class Dashboard extends React.Component {
           <Aux>
             <Row>
               <Col>
-                {this.props.user.role === 'Admin' ||
-                this.props.user.role === 'Agent' ||
-                this.props.user.role === 'Editor' ? (
-                  <TabStudDocsDashboard
-                    role={this.props.user.role}
-                    students={this.state.students}
-                    editAgent={this.state.editAgent}
-                    editEditor={this.state.editEditor}
-                    agent_list={this.state.agent_list}
-                    editor_list={this.state.editor_list}
-                    updateStudentArchivStatus={this.updateStudentArchivStatus}
-                    isArchivPage={this.state.isArchivPage}
-                    SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                  />
-                ) : (
-                  <></>
-                )}
-                {!isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
+                <Card>
+                  <Card.Body>
+                    {this.props.user.role === 'Admin' ||
+                    this.props.user.role === 'Agent' ||
+                    this.props.user.role === 'Editor' ? (
+                      <TabStudDocsDashboard
+                        role={this.props.user.role}
+                        students={this.state.students}
+                        editAgent={this.state.editAgent}
+                        editEditor={this.state.editEditor}
+                        agent_list={this.state.agent_list}
+                        editor_list={this.state.editor_list}
+                        updateStudentArchivStatus={
+                          this.updateStudentArchivStatus
+                        }
+                        isArchivPage={this.state.isArchivPage}
+                        SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+                      />
+                    ) : (
+                      <></>
+                    )}
+                    {!isLoaded && (
+                      <div style={style}>
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden"></span>
+                        </Spinner>
+                      </div>
+                    )}
+                  </Card.Body>
+                </Card>
               </Col>
             </Row>
           </Aux>

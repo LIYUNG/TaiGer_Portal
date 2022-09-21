@@ -30,7 +30,8 @@ export default function ResetPasswordRequest() {
           alert("Email is not existed!");
         }
       } catch (err) {
-        console.log(err);
+        // TODO: error handler
+        // console.log(err);
       }
     } else {
       alert("Email is not valid");

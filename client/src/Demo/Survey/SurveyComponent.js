@@ -177,7 +177,7 @@ class SurveyComponent extends React.Component {
                             .attended_university
                             ? this.state.academic_background.university
                                 .attended_university
-                            : ""
+                            : ''
                         }
                       />
                     </Form.Group>
@@ -196,7 +196,7 @@ class SurveyComponent extends React.Component {
                             .attended_university_program
                             ? this.state.academic_background.university
                                 .attended_university_program
-                            : ""
+                            : ''
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       />
@@ -216,7 +216,7 @@ class SurveyComponent extends React.Component {
                           this.state.academic_background.university.isGraduated
                             ? this.state.academic_background.university
                                 .isGraduated
-                            : ""
+                            : ''
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       >
@@ -236,7 +236,7 @@ class SurveyComponent extends React.Component {
                             .expected_grad_date
                             ? this.state.academic_background.university
                                 .expected_grad_date
-                            : ""
+                            : ''
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       >
@@ -262,7 +262,7 @@ class SurveyComponent extends React.Component {
                             .expected_application_date
                             ? this.state.academic_background.university
                                 .expected_application_date
-                            : ""
+                            : ''
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       >
@@ -271,6 +271,29 @@ class SurveyComponent extends React.Component {
                         <option value="2023">2023</option>
                         <option value="2024">2024</option>
                         <option value="2025">2025</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="expected_application_semester">
+                      <Form.Label>Expected Application Semester</Form.Label>
+                      <Form.Control
+                        as="select"
+                        value={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university
+                            .expected_application_date
+                            ? this.state.academic_background.university
+                                .expected_application_date
+                            : ''
+                        }
+                        onChange={(e) => this.handleChange_Academic(e)}
+                      >
+                        <option value="">Please Select</option>
+                        <option value="WS">Winter Semester</option>
+                        <option value="SS">Summer Semester</option>
+                        <option value="WSSS">Winter + Summer Semester</option>
                       </Form.Control>
                     </Form.Group>
                     <br />
@@ -285,7 +308,7 @@ class SurveyComponent extends React.Component {
                       <Form.Control
                         type="number"
                         placeholder="4.3"
-                        value={
+                        defaultValue={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .Highest_GPA_Uni
@@ -302,7 +325,7 @@ class SurveyComponent extends React.Component {
                       <Form.Control
                         type="number"
                         placeholder="1.7"
-                        value={
+                        defaultValue={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .Passing_GPA_Uni
@@ -320,7 +343,7 @@ class SurveyComponent extends React.Component {
                       <Form.Control
                         type="number"
                         placeholder="3.8"
-                        value={
+                        defaultValue={
                           this.state.academic_background.university &&
                           this.state.academic_background.university.My_GPA_Uni
                         }
@@ -361,19 +384,19 @@ class SurveyComponent extends React.Component {
                   <Col md={10}>
                     <br />
                     <br />
-                    Last update at:{" "}
+                    Last update at:{' '}
                     {this.state.academic_background.university &&
                     this.state.academic_background.university.updatedAt
                       ? new Date(
                           this.state.academic_background.university.updatedAt
                         ).toLocaleDateString() +
-                        ", " +
+                        ', ' +
                         new Date(
                           this.state.academic_background.university.updatedAt
                         ).toLocaleTimeString()
-                      : ""}
+                      : ''}
                   </Col>
-                  {this.props.role === "Student" ? (
+                  {this.props.role === 'Student' ? (
                     <Col md={2}>
                       <br />
                       <Button
@@ -412,7 +435,7 @@ class SurveyComponent extends React.Component {
                             .english_certificate
                             ? this.state.academic_background.language
                                 .english_certificate
-                            : ""
+                            : ''
                         }
                         onChange={(e) => this.handleChange_Language(e)}
                       >
@@ -433,12 +456,12 @@ class SurveyComponent extends React.Component {
                           this.state.academic_background.language.english_score
                             ? this.state.academic_background.language
                                 .english_score
-                            : ""
+                            : ''
                         }
                         disabled={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
-                            .english_certificate === "No"
+                            .english_certificate === 'No'
                             ? true
                             : false
                         }
@@ -458,12 +481,12 @@ class SurveyComponent extends React.Component {
                             .english_test_date
                             ? this.state.academic_background.language
                                 .english_test_date
-                            : ""
+                            : ''
                         }
                         disabled={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
-                            .english_certificate === "No"
+                            .english_certificate === 'No'
                             ? false
                             : true
                         }
@@ -485,7 +508,7 @@ class SurveyComponent extends React.Component {
                             .german_certificate
                             ? this.state.academic_background.language
                                 .german_certificate
-                            : ""
+                            : ''
                         }
                         onChange={(e) => this.handleChange_Language(e)}
                       >
@@ -518,12 +541,12 @@ class SurveyComponent extends React.Component {
                           this.state.academic_background.language.german_score
                             ? this.state.academic_background.language
                                 .german_score
-                            : ""
+                            : ''
                         }
                         disabled={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
-                            .german_certificate === "No"
+                            .german_certificate === 'No'
                             ? true
                             : false
                         }
@@ -543,12 +566,12 @@ class SurveyComponent extends React.Component {
                             .german_test_date
                             ? this.state.academic_background.language
                                 .german_test_date
-                            : ""
+                            : ''
                         }
                         disabled={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
-                            .german_certificate === "No"
+                            .german_certificate === 'No'
                             ? false
                             : true
                         }
@@ -562,19 +585,19 @@ class SurveyComponent extends React.Component {
                   <Col md={10}>
                     <br />
                     <br />
-                    Last update at:{" "}
+                    Last update at:{' '}
                     {this.state.academic_background.language &&
                     this.state.academic_background.language.updatedAt
                       ? new Date(
                           this.state.academic_background.language.updatedAt
                         ).toLocaleDateString() +
-                        ", " +
+                        ', ' +
                         new Date(
                           this.state.academic_background.language.updatedAt
                         ).toLocaleTimeString()
-                      : ""}
+                      : ''}
                   </Col>
-                  {this.props.role === "Student" ? (
+                  {this.props.role === 'Student' ? (
                     <Col md={2}>
                       <br />
                       <Button
@@ -633,7 +656,7 @@ class SurveyComponent extends React.Component {
                       </Form.Group>
                     </Form>
                   </Col>
-                  {this.props.role === "Student" ? (
+                  {this.props.role === 'Student' ? (
                     <Col md={6}>
                       <br />
                       <Button variant="primary">Update</Button>

@@ -52,7 +52,7 @@ class EditorDocsProgress extends React.Component {
     isThreadExisted: false
   };
   componentDidMount() {
-    console.log(this.props.student);
+    // console.log(this.props.student);
     this.setState((state) => ({
       isLoaded: true
     }));
@@ -374,9 +374,10 @@ class EditorDocsProgress extends React.Component {
                 }
                 application={null}
               />
+              <hr></hr>
               {this.state.student.applications &&
                 this.state.student.applications.map((application, i) => (
-                  <>
+                  <div key={i}>
                     {application.decided !== undefined &&
                     application.decided === true ? (
                       <>
@@ -413,7 +414,8 @@ class EditorDocsProgress extends React.Component {
                           </Col>
                           <Col>
                             <h5>
-                              Deadline: {application.programId.application_deadline}
+                              Deadline:{' '}
+                              {application.programId.application_deadline}
                             </h5>
                           </Col>
                         </Row>
@@ -433,7 +435,7 @@ class EditorDocsProgress extends React.Component {
                     ) : (
                       <></>
                     )}
-                  </>
+                  </div>
                 ))}
             </Card.Body>
           </div>

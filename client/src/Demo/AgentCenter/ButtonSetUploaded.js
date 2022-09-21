@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Row,
   Col,
@@ -8,38 +8,35 @@ import {
   Card,
   Collapse,
   Modal,
-  Spinner,
-} from "react-bootstrap";
-import UcFirst from "../../App/components/UcFirst";
-import { IoMdCloudUpload } from "react-icons/io";
+  Spinner
+} from 'react-bootstrap';
+import UcFirst from '../../App/components/UcFirst';
+import { IoMdCloudUpload } from 'react-icons/io';
 import {
   AiOutlineDownload,
   AiOutlineFieldTime,
   AiFillCloseCircle,
   AiFillQuestionCircle,
   AiOutlineComment,
-  AiOutlineDelete,
-} from "react-icons/ai";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { BsDash } from "react-icons/bs";
-import {
-  deleteFile,
-  getStudents,
-} from "../../api";
+  AiOutlineDelete
+} from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { BsDash } from 'react-icons/bs';
+import { deleteFile, getStudents } from '../../api';
 
 class ButtonSetUploaded extends React.Component {
   state = {
     student: this.props.student,
-    student_id: "",
-    category: "",
-    docName: "",
-    comments: "",
-    file: "",
+    student_id: '',
+    category: '',
+    docName: '',
+    comments: '',
+    file: '',
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: false,
     CommentModel: false,
     rejectProfileFileModel: false,
-    acceptProfileFileModel: false,
+    acceptProfileFileModel: false
   };
 
   closeWarningWindow = () => {
@@ -65,7 +62,7 @@ class ButtonSetUploaded extends React.Component {
       student_id,
       category,
       docName,
-      deleteFileWarningModel: true,
+      deleteFileWarningModel: true
     }));
   };
 
@@ -73,19 +70,19 @@ class ButtonSetUploaded extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      feedback: rejectmessage,
+      feedback: rejectmessage
     }));
   };
 
   onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
-    if (status === "accepted") {
+    if (status === 'accepted') {
       this.setState((state) => ({
         ...state,
         student_id,
         category,
         status,
-        acceptProfileFileModel: true,
+        acceptProfileFileModel: true
       }));
     } else {
       this.setState((state) => ({
@@ -93,7 +90,7 @@ class ButtonSetUploaded extends React.Component {
         student_id,
         category,
         status,
-        rejectProfileFileModel: true,
+        rejectProfileFileModel: true
       }));
     }
   };
@@ -102,7 +99,7 @@ class ButtonSetUploaded extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     this.props.onDeleteFilefromstudent(
       this.state.category,
@@ -114,7 +111,7 @@ class ButtonSetUploaded extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     this.props.onUpdateProfileFilefromstudent(
       this.state.category,
@@ -124,11 +121,11 @@ class ButtonSetUploaded extends React.Component {
     );
   };
   render() {
-    const deleteStyle = "danger";
-    const graoutStyle = "light";
+    const deleteStyle = 'danger';
+    const graoutStyle = 'light';
     var ButttonRow_Uploaded;
     ButttonRow_Uploaded = (
-      <tr key={this.props.key + 1}>
+      <tr>
         <td>
           <AiOutlineFieldTime
             size={24}
@@ -138,9 +135,9 @@ class ButtonSetUploaded extends React.Component {
         </td>
         <td>
           {this.props.docName}
-          {" - "}
+          {' - '}
           {this.props.date}
-          {" - "}
+          {' - '}
           {this.props.time}
         </td>
         <td>
@@ -162,7 +159,7 @@ class ButtonSetUploaded extends React.Component {
             </Form>
           </Col>
         </td>
-        {this.props.role === "Editor" || this.props.role === "Student" ? (
+        {this.props.role === 'Editor' || this.props.role === 'Student' ? (
           <>
             <td></td>
             <td></td>
@@ -178,7 +175,7 @@ class ButtonSetUploaded extends React.Component {
                       e,
                       this.props.k,
                       this.props.student_id,
-                      "rejected"
+                      'rejected'
                     )
                   }
                 >
@@ -203,7 +200,7 @@ class ButtonSetUploaded extends React.Component {
                       e,
                       this.props.k,
                       this.props.student_id,
-                      "accepted"
+                      'accepted'
                     )
                   }
                 >
@@ -221,7 +218,7 @@ class ButtonSetUploaded extends React.Component {
             </td>
           </>
         )}
-        {this.props.role === "Editor" ? (
+        {this.props.role === 'Editor' ? (
           <td></td>
         ) : (
           <td>
@@ -255,14 +252,14 @@ class ButtonSetUploaded extends React.Component {
     );
 
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     return (
       <>
-        {ButttonRow_Uploaded}{" "}
+        {ButttonRow_Uploaded}
         <Modal
           show={this.state.deleteFileWarningModel}
           onHide={this.closeWarningWindow}
@@ -314,7 +311,7 @@ class ButtonSetUploaded extends React.Component {
               <Form.Control
                 type="text"
                 placeholder="ex. Poor scanned quality."
-                defaultValue={""}
+                defaultValue={''}
                 onChange={(e) => this.handleRejectMessage(e, e.target.value)}
               />
             </Form.Group>

@@ -1,24 +1,18 @@
-import React from "react";
-import {
-  Col,
-  Form,
-  Button,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
-import { IoMdCloudUpload } from "react-icons/io";
-import { BsDash } from "react-icons/bs";
+import React from 'react';
+import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import { IoMdCloudUpload } from 'react-icons/io';
+import { BsDash } from 'react-icons/bs';
 
 class ButtonSetNotNeeded extends React.Component {
   state = {
     student: this.props.student,
-    student_id: "",
-    category: "",
-    docName: "",
-    comments: "",
-    file: "",
+    student_id: '',
+    category: '',
+    docName: '',
+    comments: '',
+    file: '',
     isLoaded: this.props.isLoaded,
-    SetNeededWindow: false,
+    SetNeededWindow: false
   };
 
   closeSetNeededWindow = () => {
@@ -32,7 +26,7 @@ class ButtonSetNotNeeded extends React.Component {
       student_id,
       category,
       status,
-      SetNeededWindow: true,
+      SetNeededWindow: true
     }));
   };
 
@@ -40,7 +34,7 @@ class ButtonSetNotNeeded extends React.Component {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
-      isLoaded: false,
+      isLoaded: false
     }));
     this.props.onUpdateProfileFilefromstudent(
       this.state.category,
@@ -50,26 +44,26 @@ class ButtonSetNotNeeded extends React.Component {
     );
   };
   render() {
-    const deleteStyle = "danger";
-    const graoutStyle = "light";
+    const deleteStyle = 'danger';
+    const graoutStyle = 'light';
     var ButttonRow_NotNeeded;
     ButttonRow_NotNeeded = (
-      <tr key={this.props.key + 1}>
+      <tr>
         <th>
           <BsDash size={24} color="lightgray" title="Not needed" />
         </th>
         <td>
           {this.props.docName}
-          {" - "}
+          {' - '}
           {this.props.date}
-          {" - "}
+          {' - '}
           {this.props.time}
         </td>
-        {this.props.role === "Editor" ? (
+        {this.props.role === 'Editor' ? (
           <></>
         ) : (
           <>
-            {this.props.role === "Student" ? (
+            {this.props.role === 'Student' ? (
               <></>
             ) : (
               <td>
@@ -80,7 +74,7 @@ class ButtonSetNotNeeded extends React.Component {
                         e,
                         this.props.k,
                         this.props.student_id,
-                        "missing"
+                        'missing'
                       )
                     }
                   >
@@ -93,21 +87,23 @@ class ButtonSetNotNeeded extends React.Component {
                 </Col>
               </td>
             )}
-            <Form>
-              <Form.File.Label
-                onChange={(e) =>
-                  this.handleGeneralDocSubmit(
-                    e,
-                    this.props.k,
-                    this.props.student_id
-                  )
-                }
-                onClick={(e) => (e.target.value = null)}
-              >
-                <Form.File.Input hidden />
-                <IoMdCloudUpload size={32} />
-              </Form.File.Label>
-            </Form>
+            <td>
+              <Form>
+                <Form.File.Label
+                  onChange={(e) =>
+                    this.handleGeneralDocSubmit(
+                      e,
+                      this.props.k,
+                      this.props.student_id
+                    )
+                  }
+                  onClick={(e) => (e.target.value = null)}
+                >
+                  <Form.File.Input hidden />
+                  <IoMdCloudUpload size={32} />
+                </Form.File.Label>
+              </Form>
+            </td>
           </>
         )}
         <td></td>
@@ -115,10 +111,10 @@ class ButtonSetNotNeeded extends React.Component {
     );
 
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     return (
       <>

@@ -1,24 +1,28 @@
-import React from "react";
-import { Table } from "react-bootstrap";
-import StudDocsDashboard from "./StudDocsDashboard";
+import React from 'react';
+import { Table } from 'react-bootstrap';
+import StudDocsDashboard from './StudDocsDashboard';
 import {
   useTable,
   useFilters,
   useGlobalFilter,
-  useAsyncDebounce,
-} from "react-table";
+  useAsyncDebounce
+} from 'react-table';
 class TabStudDocsDashboard extends React.Component {
   render() {
-    const stdlist = this.props.students.map((student, i) => (
-      <StudDocsDashboard
-        key={i}
-        role={this.props.role}
-        student={student}
-        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-        isDashboard={this.props.isDashboard}
-        isArchivPage={this.props.isArchivPage}
-      />
-    ));
+    const stdlist = (
+      <tbody>
+        {this.props.students.map((student, i) => (
+          <StudDocsDashboard
+            key={i}
+            role={this.props.role}
+            student={student}
+            updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+            isDashboard={this.props.isDashboard}
+            isArchivPage={this.props.isArchivPage}
+          />
+        ))}
+      </tbody>
+    );
     let header = Object.values(window.academic_background_header);
     return (
       <>

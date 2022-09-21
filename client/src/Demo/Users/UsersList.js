@@ -150,7 +150,7 @@ class Userslist extends React.Component {
       ));
       return (
         <>
-          <Table table-responsive>
+          <Table>
             <thead>{headers}</thead>
             <tbody>{users}</tbody>
           </Table>

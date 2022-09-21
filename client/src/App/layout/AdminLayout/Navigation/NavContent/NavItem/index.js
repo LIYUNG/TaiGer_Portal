@@ -15,6 +15,12 @@ class NavItem extends Component {
       if (
         itemTitle === 'Academic Survey' ||
         itemTitle === 'My Applications' ||
+        itemTitle === 'My Tasks Overview' ||
+        itemTitle === 'Charts' ||
+        itemTitle === 'Interview Training' ||
+        itemTitle === 'Statistics' ||
+        itemTitle === 'TaiGer AI' ||
+        itemTitle === 'Map' ||
         itemTitle === 'Tasks Overview'
       ) {
         return false;
@@ -27,6 +33,9 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
+        itemTitle === 'Interview Training' ||
+        itemTitle === 'Statistics' ||
+        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
         itemTitle === 'User List'
@@ -41,7 +50,10 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'My Applications' ||
+        itemTitle === 'Interview Training' ||
         itemTitle === 'Program List' ||
+        itemTitle === 'Statistics' ||
+        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
         itemTitle === 'User List'
@@ -55,8 +67,11 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Statistics' ||
+        itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Program List' ||
+        itemTitle === 'Interview Training' ||
         itemTitle === 'Map' ||
+        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Student Database' ||
         itemTitle === 'User List'
@@ -69,7 +84,6 @@ class NavItem extends Component {
       if (
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Base Documents' ||
-        // itemTitle === 'Dashboard' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'CV/ML/RL Center' ||
         itemTitle === 'Statistics' ||

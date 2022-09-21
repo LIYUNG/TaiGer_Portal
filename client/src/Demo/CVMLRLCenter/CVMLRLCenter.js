@@ -7,7 +7,7 @@ import EditorDocsProgress from './EditorDocsProgress';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 
-class EditorCenter extends React.Component {
+class CVMLRLCenter extends React.Component {
   state = {
     error: null,
     timeouterror: null,
@@ -27,10 +27,10 @@ class EditorCenter extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.user);
+    // console.log(this.props.user);
     getCVMLRLOverview().then(
       (resp) => {
-        console.log(resp.data);
+        // console.log(resp.data);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
@@ -49,8 +49,8 @@ class EditorCenter extends React.Component {
         }
       },
       (error) => {
-        console.log(error);
-        console.log(': ' + error);
+        // console.log(error);
+        // console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true
@@ -124,29 +124,26 @@ class EditorCenter extends React.Component {
     }
 
     const student_editor = this.state.students.map((student, i) => (
-      <>
-        <Card className="mt-2" key={i}>
-          <Card.Header onClick={() => this.singleExpandtHandler(i)}>
-            <Card.Title
-              as="h5"
-              aria-controls={'accordion' + i}
-              aria-expanded={this.state.accordionKeys[i] === i}
-            >
-              {student.firstname}
-              {' ,'}
-              {student.lastname}
-            </Card.Title>
-          </Card.Header>
-          <EditorDocsProgress
-            key={i}
-            idx={i}
-            student={student}
-            accordionKeys={this.state.accordionKeys}
-            singleExpandtHandler={this.singleExpandtHandler}
-            role={this.props.user.role}
-          />
-        </Card>
-      </>
+      <Card className="mt-2" key={i}>
+        <Card.Header onClick={() => this.singleExpandtHandler(i)}>
+          <Card.Title
+            as="h5"
+            aria-controls={'accordion' + i}
+            aria-expanded={this.state.accordionKeys[i] === i}
+          >
+            {student.firstname}
+            {' ,'}
+            {student.lastname}
+          </Card.Title>
+        </Card.Header>
+        <EditorDocsProgress
+          idx={i}
+          student={student}
+          accordionKeys={this.state.accordionKeys}
+          singleExpandtHandler={this.singleExpandtHandler}
+          role={this.props.user.role}
+        />
+      </Card>
     ));
 
     return (
@@ -189,4 +186,4 @@ class EditorCenter extends React.Component {
   }
 }
 
-export default EditorCenter;
+export default CVMLRLCenter;

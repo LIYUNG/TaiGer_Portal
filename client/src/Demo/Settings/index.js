@@ -10,6 +10,7 @@ class Settings extends React.Component {
     data: null,
     success: false,
     user: {},
+    changed_personaldata: false,
     personaldata: {
       firstname: this.props.user.firstname,
       lastname: this.props.user.lastname
@@ -36,6 +37,7 @@ class Settings extends React.Component {
     personaldata_temp[e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
+      changed_personaldata: true,
       personaldata: personaldata_temp
     }));
   };
@@ -50,6 +52,7 @@ class Settings extends React.Component {
             isLoaded: true,
             personaldata: data,
             success: success,
+            changed_personaldata: false,
             updateconfirmed: true
           }));
         } else {
@@ -220,7 +223,8 @@ class Settings extends React.Component {
                       variant="primary"
                       disabled={
                         this.state.personaldata.firstname === '' ||
-                        this.state.personaldata.lastname === ''
+                        this.state.personaldata.lastname === '' ||
+                        !this.state.changed_personaldata
                       }
                       onClick={(e) =>
                         this.handleSubmit_PersonalData(

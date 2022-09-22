@@ -51,7 +51,7 @@ class AdminMainView extends React.Component {
                   <tr>
                     <th>First-/Lastname</th>
                     <th>Missing</th>
-                    <th>Under checking</th>
+                    <th>ProgramTobeDecided</th>
                   </tr>
                 </thead>
                 <tbody>{agent_reviewing}</tbody>

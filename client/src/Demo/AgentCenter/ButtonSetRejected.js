@@ -20,6 +20,7 @@ class ButtonSetRejected extends React.Component {
     student_id: '',
     category: '',
     docName: '',
+    feedback: '',
     comments: this.props.message,
     file: '',
     isLoaded: this.props.isLoaded,
@@ -163,7 +164,7 @@ class ButtonSetRejected extends React.Component {
   };
   render() {
     const deleteStyle = 'danger';
-    const graoutStyle = 'light';
+    const acceptStyle = 'warning';
     var ButttonRow_Rejected;
     ButttonRow_Rejected = (
       <tr>
@@ -270,11 +271,12 @@ class ButtonSetRejected extends React.Component {
                     >
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <Button
+                          variant={acceptStyle}
                           size="sm"
                           type="submit"
                           disabled={!this.state.isLoaded}
                         >
-                          Accept
+                          O
                         </Button>
                       </Form.Group>
                     </Form>
@@ -430,7 +432,10 @@ class ButtonSetRejected extends React.Component {
                 )}
               </Modal.Body>
               <Modal.Footer>
-                <Button onClick={(e) => this.onUpdateRejectMessageStudent(e)}>
+                <Button
+                  disabled={this.state.comments === ''}
+                  onClick={(e) => this.onUpdateRejectMessageStudent(e)}
+                >
                   Update
                 </Button>
                 <Button onClick={this.closeCommentWindow}>Close</Button>

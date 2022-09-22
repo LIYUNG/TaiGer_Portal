@@ -1,20 +1,25 @@
-import React from "react";
-import { Row, Col, Table, Tabs, Tab } from "react-bootstrap";
-import Card from "../../../App/components/MainCard";
-import TabStudDocsDashboard from "../MainViewTab/StudDocsOverview/TabStudDocsDashboard";
-import AgentTodoList from "./AgentTodoList";
-import AgentReviewing from "../MainViewTab/AgentReview/AgentReviewing";
-import TabProgramConflict from "../MainViewTab/ProgramConflict/TabProgramConflict";
-import ApplicationProgress from "../MainViewTab/ApplicationProgress/ApplicationProgress";
-import StudentsAgentEditor from "../MainViewTab/StudentsAgentEditor/StudentsAgentEditor";
-
+import React from 'react';
+import { Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
+import Card from '../../../App/components/MainCard';
+import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
+import AgentTodoList from './AgentTodoList';
+import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
+import NewBaseFilesUploaded from '../MainViewTab/NewBaseFilesUploaded/NewBaseFilesUploaded';
+import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
+import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
+import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
+import {
+  uploadforstudent,
+  updateProfileDocumentStatus,
+  deleteFile,
+  getStudents,
+  downloadProfile
+} from '../../../api';
 class AgentMainView extends React.Component {
+ 
   render() {
     const agent_todo = this.props.students.map((student, i) => (
-      <AgentTodoList
-        key={i}
-        student={student}
-      />
+      <AgentTodoList key={i} student={student} />
     ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
@@ -22,6 +27,17 @@ class AgentMainView extends React.Component {
         role={this.props.role}
         student={student}
         documentslist={this.props.documentslist}
+      />
+    ));
+    const new_base_files_card = this.props.students.map((student, i) => (
+      <NewBaseFilesUploaded
+        key={i}
+        role={this.props.role}
+        student={student}
+        isLoaded={this.props.isLoaded}
+        onUpdateProfileFilefromstudent={
+          this.props.onUpdateProfileFilefromstudent
+        }
       />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
@@ -32,14 +48,26 @@ class AgentMainView extends React.Component {
       />
     ));
     const application_progress = this.props.students.map((student, i) => (
-      <ApplicationProgress
-        key={i}
-        student={student}
-      />
+      <ApplicationProgress key={i} student={student} />
     ));
 
     return (
       <>
+        <Row>
+          <Col md={12}>
+            <Card title="New Uploaded Files:">
+              <Table responsive bordered hover>
+                <thead>
+                  <tr>
+                    <th>First-/Lastname</th>
+                    <th>New Uploaded Files</th>
+                  </tr>
+                </thead>
+                <tbody>{new_base_files_card}</tbody>
+              </Table>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col md={12}>
             <Card title="Agent Reviewing:">
@@ -48,7 +76,6 @@ class AgentMainView extends React.Component {
                   <tr>
                     <th>First-/Lastname</th>
                     <th>Missing</th>
-                    <th>Under checking</th>
                     <th>ProgramTobeDecided</th>
                   </tr>
                 </thead>

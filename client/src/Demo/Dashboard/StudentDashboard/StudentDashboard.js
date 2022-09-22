@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Table } from 'react-bootstrap';
 import Card from '../../../App/components/MainCard';
 import StudentMyself from './StudentMyself';
-import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
+import AgentReviewing_StudentView from '../MainViewTab/AgentReview/AgentReviewing_StudentView';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 // import { addHours, addDays, addWeeks, startOfWeek } from 'date-fns';
 // import TimeLine from "react-gantt-timeline";
@@ -160,7 +160,11 @@ class StudentDashboard extends React.Component {
 
 
     const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing key={i} role={this.props.role} student={student} />
+      <AgentReviewing_StudentView
+        key={i}
+        role={this.props.role}
+        student={student}
+      />
     ));
     const read_thread = this.props.students.map((student, i) => (
       <NewUpdatedThreadFromStudent

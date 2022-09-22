@@ -1,23 +1,26 @@
-import React from "react";
-import { Spinner } from "react-bootstrap";
+import React from 'react';
+import { Spinner } from 'react-bootstrap';
 
-import Aux from "../../hoc/_Aux";
+import Aux from '../../hoc/_Aux';
 import {
   getMyAcademicBackground,
   updateAcademicBackground,
-  updateLanguageSkill,
-} from "../../api";
-import SurveyComponent from "./SurveyComponent";
+  updateLanguageSkill
+} from '../../api';
+import SurveyComponent from './SurveyComponent';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
 class Survey extends React.Component {
   state = {
     error: null,
-    role: "",
+    role: '',
     isLoaded: false,
     data: null,
     success: false,
     academic_background: {},
-    updateconfirmed: false,
+    unauthorizederror: null,
+    updateconfirmed: false
   };
 
   componentDidMount() {
@@ -28,16 +31,20 @@ class Survey extends React.Component {
           this.setState({
             isLoaded: true,
             academic_background: data,
-            success: success,
+            success: success
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -52,8 +59,8 @@ class Survey extends React.Component {
       ...state,
       academic_background: {
         ...state.academic_background,
-        university: university_temp,
-      },
+        university: university_temp
+      }
     }));
   };
 
@@ -65,8 +72,8 @@ class Survey extends React.Component {
       ...state,
       academic_background: {
         ...state.academic_background,
-        language: language_temp,
-      },
+        language: language_temp
+      }
     }));
   };
 
@@ -81,10 +88,10 @@ class Survey extends React.Component {
             isLoaded: true,
             academic_background: {
               ...state.academic_background,
-              university: data,
+              university: data
             },
             success: success,
-            updateconfirmed: true,
+            updateconfirmed: true
           }));
         } else {
           alert(resp.data.message);
@@ -93,7 +100,7 @@ class Survey extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -110,10 +117,10 @@ class Survey extends React.Component {
             isLoaded: true,
             academic_background: {
               ...state.academic_background,
-              language: data,
+              language: data
             },
             success: success,
-            updateconfirmed: true,
+            updateconfirmed: true
           }));
         } else {
           alert(resp.data.message);
@@ -122,7 +129,7 @@ class Survey extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -137,31 +144,41 @@ class Survey extends React.Component {
 
   onHide = () => {
     this.setState({
-      updateconfirmed: false,
+      updateconfirmed: false
     });
   };
 
   setmodalhide = () => {
     this.setState({
-      updateconfirmed: false,
+      updateconfirmed: false
     });
   };
 
   render() {
-    const { error, isLoaded } = this.state;
-    const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-    };
-    if (error) {
+    const { timeouterror, unauthorizederror, isLoaded } = this.state;
+
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
         </div>
       );
     }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
+    const style = {
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    };
+
     if (!isLoaded) {
       return (
         <div style={style}>

@@ -23,6 +23,7 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import {
   getStudents,
   updateArchivStudents,
+  updateProfileDocumentStatus,
   getAgents,
   updateAgents,
   getEditors,
@@ -86,7 +87,7 @@ class Dashboard extends React.Component {
             });
           } else {
             if (resp.status == 401) {
-              this.setState({ isLoaded: true, error: true });
+              this.setState({ isLoaded: true, timeouterror: true });
             } else if (resp.status == 403) {
               this.setState({ isLoaded: true, unauthorizederror: true });
             }
@@ -260,6 +261,42 @@ class Dashboard extends React.Component {
     );
   };
 
+  onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
+    var student_arrayidx = this.state.students.findIndex(
+      (student) => student._id === student_id
+    );
+    // var student = this.state.students.find(
+    //   (student) => student._id === student_id
+    // );
+    var students = [...this.state.students];
+    updateProfileDocumentStatus(category, student_id, status, feedback).then(
+      (res) => {
+        students[student_arrayidx] = res.data.data;
+        const { success } = res.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            students: students,
+            success,
+            isLoaded: true
+          }));
+        } else {
+          alert(res.data.message);
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true
+          }));
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      }
+    );
+  };
+
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
     let FILE_OK_SYMBOL = (
@@ -376,10 +413,14 @@ class Dashboard extends React.Component {
             )}
             <AgentMainView
               role={this.props.user.role}
+              isLoaded={isLoaded}
               students={this.state.students}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
               updateStudentArchivStatus={this.updateStudentArchivStatus}
               isDashboard={this.state.isDashboard}
+              onUpdateProfileFilefromstudent={
+                this.onUpdateProfileFilefromstudent
+              }
             />
           </Aux>
         );

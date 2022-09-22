@@ -11,7 +11,7 @@ import {
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 
-class AgentReviewing extends React.Component {
+class AgentReviewing_StudentView extends React.Component {
   render() {
     let keys = Object.keys(window.profile_list);
     let object_init = {};
@@ -69,6 +69,25 @@ class AgentReviewing extends React.Component {
         );
       }
     });
+    var to_be_checked_profiles = keys.map((key, i) => {
+      if (object_init[key] === 'uploaded') {
+        return (
+          <h6 key={i}>
+            {' '}
+            <AiOutlineLoading3Quarters
+              size={18}
+              color="lightred"
+              title="Under agent's check"
+            />{' '}
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+            >
+              {key.replace(/_/g, ' ')}
+            </Link>
+          </h6>
+        );
+      }
+    });
     var no_decided_program =
       this.props.student.applications &&
       this.props.student.applications.map((application, i) => {
@@ -107,6 +126,7 @@ class AgentReviewing extends React.Component {
           ) : (
             <></>
           )}
+          <td>{to_be_checked_profiles}</td>
           <td>{no_decided_program}</td>
         </tr>
       </>
@@ -114,4 +134,4 @@ class AgentReviewing extends React.Component {
   }
 }
 
-export default AgentReviewing;
+export default AgentReviewing_StudentView;

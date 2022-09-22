@@ -10,6 +10,7 @@ class ButtonSetAccepted extends React.Component {
     category: '',
     docName: '',
     comments: '',
+    feedback: '',
     file: '',
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: false,
@@ -166,11 +167,12 @@ class ButtonSetAccepted extends React.Component {
                     >
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <Button
+                          variant={deleteStyle}
                           size="sm"
                           type="submit"
                           disabled={!this.state.isLoaded}
                         >
-                          Reject
+                          X
                         </Button>
                       </Form.Group>
                     </Form>
@@ -308,7 +310,7 @@ class ButtonSetAccepted extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded}
+              disabled={this.state.feedback === ''}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
               Yes

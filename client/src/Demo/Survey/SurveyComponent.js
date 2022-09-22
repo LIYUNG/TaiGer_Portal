@@ -1,20 +1,22 @@
-import React from "react";
-import { Row, Col, Card, Form, Button, Spinner, Modal } from "react-bootstrap";
+import React from 'react';
+import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 
-import Aux from "../../hoc/_Aux";
+import Aux from '../../hoc/_Aux';
 import {
   getMyAcademicBackground,
   updateAcademicBackground,
-  updateLanguageSkill,
-} from "../../api";
+  updateLanguageSkill
+} from '../../api';
 class SurveyComponent extends React.Component {
   state = {
     error: null,
-    role: "",
+    role: '',
     isLoaded: this.props.isLoaded,
     success: false,
     academic_background: this.props.academic_background,
     updateconfirmed: false,
+    changed_academic: false,
+    changed_language: false
   };
 
   componentDidUpdate(prevProps) {
@@ -22,7 +24,7 @@ class SurveyComponent extends React.Component {
     if (prevProps.academic_background !== this.props.academic_background) {
       this.setState((state) => ({
         ...state,
-        academic_background: this.props.academic_background,
+        academic_background: this.props.academic_background
       }));
     }
   }
@@ -33,10 +35,11 @@ class SurveyComponent extends React.Component {
     university_temp[e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
+      changed_academic: true,
       academic_background: {
         ...state.academic_background,
-        university: university_temp,
-      },
+        university: university_temp
+      }
     }));
   };
 
@@ -46,10 +49,11 @@ class SurveyComponent extends React.Component {
     language_temp[e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
+      changed_language: true,
       academic_background: {
         ...state.academic_background,
-        language: language_temp,
-      },
+        language: language_temp
+      }
     }));
   };
 
@@ -62,12 +66,13 @@ class SurveyComponent extends React.Component {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
+            changed_academic: false,
             academic_background: {
               ...state.academic_background,
-              university: data,
+              university: data
             },
             success: success,
-            updateconfirmed: true,
+            updateconfirmed: true
           }));
         } else {
           alert(resp.data.message);
@@ -76,7 +81,7 @@ class SurveyComponent extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -91,12 +96,13 @@ class SurveyComponent extends React.Component {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
+            changed_language: true,
             academic_background: {
               ...state.academic_background,
-              language: data,
+              language: data
             },
             success: success,
-            updateconfirmed: true,
+            updateconfirmed: true
           }));
         } else {
           alert(resp.data.message);
@@ -105,7 +111,7 @@ class SurveyComponent extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -120,23 +126,23 @@ class SurveyComponent extends React.Component {
 
   onHide = () => {
     this.setState({
-      updateconfirmed: false,
+      updateconfirmed: false
     });
   };
 
   setmodalhide = () => {
     this.setState({
-      updateconfirmed: false,
+      updateconfirmed: false
     });
   };
 
   render() {
     const { error, isLoaded } = this.state;
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (error) {
       return (
@@ -401,6 +407,7 @@ class SurveyComponent extends React.Component {
                       <br />
                       <Button
                         variant="primary"
+                        disabled={!this.state.changed_academic}
                         onClick={(e) =>
                           this.handleSubmit_AcademicBackground(
                             e,
@@ -602,6 +609,7 @@ class SurveyComponent extends React.Component {
                       <br />
                       <Button
                         variant="primary"
+                        disabled={!this.state.changed_language}
                         onClick={(e) =>
                           this.handleSubmit_Language(
                             e,

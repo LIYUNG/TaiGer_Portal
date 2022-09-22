@@ -1,28 +1,10 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Table,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-  Spinner
-} from 'react-bootstrap';
-import UcFirst from '../../App/components/UcFirst';
-import { IoMdCloudUpload } from 'react-icons/io';
+import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
 import {
   AiOutlineDownload,
   AiOutlineFieldTime,
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineComment,
   AiOutlineDelete
 } from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
-import { deleteFile, getStudents } from '../../api';
 
 class ButtonSetUploaded extends React.Component {
   state = {
@@ -32,6 +14,7 @@ class ButtonSetUploaded extends React.Component {
     docName: '',
     comments: '',
     file: '',
+    feedback: '',
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: false,
     CommentModel: false,
@@ -122,7 +105,7 @@ class ButtonSetUploaded extends React.Component {
   };
   render() {
     const deleteStyle = 'danger';
-    const graoutStyle = 'light';
+    const acceptStyle = 'warning';
     var ButttonRow_Uploaded;
     ButttonRow_Uploaded = (
       <tr>
@@ -142,8 +125,11 @@ class ButtonSetUploaded extends React.Component {
         </td>
         <td>
           <Col md>
-            <Form
-              onSubmit={(e) =>
+            <Button
+              size="sm"
+              type="submit"
+              title="Download"
+              onClick={(e) =>
                 this.props.onDownloadFilefromstudent(
                   e,
                   this.props.k,
@@ -151,12 +137,8 @@ class ButtonSetUploaded extends React.Component {
                 )
               }
             >
-              <Form.Group controlId="exampleForm.ControlSelect1">
-                <Button size="sm" type="submit" title="Download">
-                  <AiOutlineDownload size={16} />
-                </Button>
-              </Form.Group>
-            </Form>
+              <AiOutlineDownload size={16} />
+            </Button>
           </Col>
         </td>
         {this.props.role === 'Editor' || this.props.role === 'Student' ? (
@@ -169,8 +151,12 @@ class ButtonSetUploaded extends React.Component {
           <>
             <td>
               <Col md>
-                <Form
-                  onSubmit={(e) =>
+                <Button
+                  variant={deleteStyle}
+                  size="sm"
+                  type="submit"
+                  disabled={!this.state.isLoaded}
+                  onClick={(e) =>
                     this.onUpdateProfileDocStatus(
                       e,
                       this.props.k,
@@ -179,23 +165,19 @@ class ButtonSetUploaded extends React.Component {
                     )
                   }
                 >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button
-                      size="sm"
-                      type="submit"
-                      disabled={!this.state.isLoaded}
-                    >
-                      Reject
-                    </Button>
-                  </Form.Group>
-                </Form>
+                  X
+                </Button>
               </Col>
             </td>
             <td></td>
             <td>
               <Col md>
-                <Form
-                  onSubmit={(e) =>
+                <Button
+                  variant={acceptStyle}
+                  size="sm"
+                  type="submit"
+                  disabled={!this.state.isLoaded}
+                  onClick={(e) =>
                     this.onUpdateProfileDocStatus(
                       e,
                       this.props.k,
@@ -204,16 +186,8 @@ class ButtonSetUploaded extends React.Component {
                     )
                   }
                 >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button
-                      size="sm"
-                      type="submit"
-                      disabled={!this.state.isLoaded}
-                    >
-                      Accept
-                    </Button>
-                  </Form.Group>
-                </Form>
+                  O
+                </Button>
               </Col>
             </td>
           </>
@@ -223,8 +197,13 @@ class ButtonSetUploaded extends React.Component {
         ) : (
           <td>
             <Col md>
-              <Form
-                onSubmit={(e) =>
+              <Button
+                variant={deleteStyle}
+                size="sm"
+                type="submit"
+                title="Delete"
+                disabled={!this.state.isLoaded}
+                onClick={(e) =>
                   this.onDeleteFileWarningPopUp(
                     e,
                     this.props.k,
@@ -233,18 +212,8 @@ class ButtonSetUploaded extends React.Component {
                   )
                 }
               >
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Button
-                    variant={deleteStyle}
-                    size="sm"
-                    type="submit"
-                    title="Delete"
-                    disabled={!this.state.isLoaded}
-                  >
-                    <AiOutlineDelete size={16} />
-                  </Button>
-                </Form.Group>
-              </Form>
+                <AiOutlineDelete size={16} />
+              </Button>
             </Col>
           </td>
         )}
@@ -325,7 +294,7 @@ class ButtonSetUploaded extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded}
+              disabled={this.state.feedback === ''}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
               Yes

@@ -1,6 +1,6 @@
-import React from "react";
-import { Table } from "react-bootstrap";
-import ProgramConflict from "./ProgramConflict";
+import React from 'react';
+import { Table } from 'react-bootstrap';
+import ProgramConflict from './ProgramConflict';
 
 class TabProgramConflict extends React.Component {
   render() {
@@ -33,7 +33,7 @@ class TabProgramConflict extends React.Component {
                   this.props.students[i].applications[j].programId.program_name,
                 application_deadline:
                   this.props.students[i].applications[j].programId
-                    .application_deadline,
+                    .application_deadline
               };
             } else {
               conflict_map[
@@ -65,12 +65,10 @@ class TabProgramConflict extends React.Component {
         <Table responsive>
           <thead>
             <tr>
-              <>
-                <th>University</th>
-                <th>Programs</th>
-                <th>First-, Last Name</th>
-                <th>Deadline</th>
-              </>
+              <th>University</th>
+              <th>Programs</th>
+              <th>First-, Last Name</th>
+              <th>Deadline</th>
             </tr>
           </thead>
           {program_conflict}

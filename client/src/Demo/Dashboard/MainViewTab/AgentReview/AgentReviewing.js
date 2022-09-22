@@ -77,8 +77,11 @@ class AgentReviewing extends React.Component {
           (application.decided !== undefined && application.decided === false)
         ) {
           return (
-            <Link to={'/student-applications/' + this.props.student._id}>
-              <h6 key={i}>
+            <Link
+              to={'/student-applications/' + this.props.student._id}
+              key={i}
+            >
+              <h6>
                 {application.programId.school}
                 {' - '}
                 {application.programId.program_name}

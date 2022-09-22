@@ -109,6 +109,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             isLoaded: true,
             student: data,
             success: success,
+            application_status_changed: false,
             modalUpdatedApplication: true
           });
         } else {

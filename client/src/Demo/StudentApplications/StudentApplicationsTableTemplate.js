@@ -27,6 +27,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     student_id: null,
     program_id: null,
     success: false,
+    application_status_changed: false,
     error: null,
     modalDeleteApplication: false,
     modalUpdatedApplication: false
@@ -39,6 +40,7 @@ class StudentApplicationsTableTemplate extends React.Component {
       e.target.value === 'O' ? true : false;
     this.setState((state) => ({
       ...state,
+      application_status_changed: true,
       applications: applications_temp
     }));
   };
@@ -355,6 +357,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                   <tbody>{applying_university_info}</tbody>
                 </Table>
                 <Button
+                  disabled={!this.state.application_status_changed}
                   onClick={(e) =>
                     this.handleSubmit(
                       e,

@@ -146,7 +146,7 @@
     .m-header {
         display: none;
 
-        .logo-dark,
+        .taiger-logo,
         .logo-thumb {
             display: none;
         }
@@ -616,7 +616,7 @@
         padding: 10px 20px;
         transition: all 0.3s ease-in-out;
 
-        .logo-dark {
+        .taiger-logo {
             display: none;
         }
 
@@ -1442,7 +1442,7 @@
                     display: none;
                 }
 
-                .logo-dark {
+                .taiger-logo {
                     display: inline-block;
                 }
             }
@@ -1456,7 +1456,7 @@
                     display: inline-flex;
                     padding: 0 15px;
 
-                    .logo-dark,
+                    .taiger-logo,
                     .logo-thumb {
                         display: none;
                     }

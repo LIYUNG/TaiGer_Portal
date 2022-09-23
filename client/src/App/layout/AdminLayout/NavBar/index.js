@@ -6,6 +6,7 @@ import NavRight from "./NavRight";
 import Aux from "../../../../hoc/_Aux";
 import DEMO from "../../../../store/constant";
 import * as actionTypes from "../../../../store/actions";
+import taiger_logo_small from '../../../../assets/images/taiger_logo_small.png';
 
 class NavBar extends Component {
    
@@ -22,10 +23,10 @@ class NavBar extends Component {
 
         return (
           <Aux>
-            <header className={headerClass.join(" ")}>
+            <header className={headerClass.join(' ')}>
               <div className="m-header">
                 <a
-                  className={toggleClass.join(" ")}
+                  className={toggleClass.join(' ')}
                   id="mobile-collapse1"
                   href={DEMO.BLANK_LINK}
                   onClick={this.props.onToggleNavigation}
@@ -33,9 +34,15 @@ class NavBar extends Component {
                   <span />
                 </a>
                 <a href={DEMO.BLANK_LINK} className="b-brand">
-                  <div className="b-bg">
+                  <img
+                    className="img-radius"
+                    src={taiger_logo_small}
+                    alt="Generic placeholder"
+                  />
+
+                  {/* <div className="b-bg">
                     <i className="feather icon-trending-up" />
-                  </div>
+                  </div> */}
                   <span className="b-title">TaiGer</span>
                 </a>
               </div>
@@ -47,7 +54,7 @@ class NavBar extends Component {
                 <i className="feather icon-more-horizontal" />
               </a>
               <div className="collapse navbar-collapse">
-                <NavLeft />
+                {/* <NavLeft /> */}
                 <NavRight
                   rtlLayout={this.props.rtlLayout}
                   userdata={this.props.userdata}

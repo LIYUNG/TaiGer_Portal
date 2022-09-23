@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { login } from '../../../api';
 import Reactivation from '../Activation/Reactivation';
+import taiger_logo from '../../../assets/images/taiger_logo.png';
 
 // export default function Signin1({ setToken }) {
 export default function Signin1({ setUserdata }) {
@@ -96,13 +97,19 @@ export default function Signin1({ setUserdata }) {
             <span className="r s" />
             <span className="r" />
           </div> */}
-            <form className="card">
+
+            <form>
               <div className="card-body text-center">
+                <img
+                  className="img-radius"
+                  src={taiger_logo}
+                  alt="Generic placeholder"
+                />
                 {/* <div className="mb-4">
                   <i className="feather icon-unlock auth-icon" />
                 </div> */}
-                <h3 className="mb-4"> TaiGer - Portal</h3>
-                <p className="mb-4"> Study in Germany</p>
+                {/* <h3 className="mb-4"> TaiGer - Portal</h3> */}
+                <p className="mb-4"></p>
                 <div className="input-group mb-3">
                   <input
                     type="email"
@@ -112,7 +119,7 @@ export default function Signin1({ setUserdata }) {
                     onChange={(e) => setEmailaddress(e.target.value)}
                   />
                 </div>
-                <div className="input-group mb-4">
+                <div className="input-group mb-3">
                   <input
                     type="password"
                     className="form-control"
@@ -129,11 +136,11 @@ export default function Signin1({ setUserdata }) {
                 >
                   Login
                 </button>
-                <p className="mb-2 text-muted">
+                <p className="mb-2">
                   Forgot password?{' '}
                   <NavLink to="/account/forgot-password">Reset</NavLink>
                 </p>
-                <p className="mb-0 text-muted">
+                <p className="mb-2">
                   Don’t have an account?{' '}
                   <NavLink to="/auth/sign-up">Sign up</NavLink>
                 </p>

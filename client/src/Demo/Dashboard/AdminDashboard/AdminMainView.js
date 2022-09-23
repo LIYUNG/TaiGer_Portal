@@ -2,14 +2,42 @@ import React from 'react';
 import { Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
 import Card from '../../../App/components/MainCard';
 import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
-import AdminTodoList from './AdminTodoList';
+// import AdminTodoList from './AdminTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
+import NoEditorsStudentsCard from '../MainViewTab/NoEditorsStudentsCard/NoEditorsStudentsCard';
+import NoAgentsStudentsCard from '../MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
 
 class AdminMainView extends React.Component {
   render() {
+    const no_agent_students = this.props.students.map((student, i) => (
+      <NoAgentsStudentsCard
+        key={i}
+        role={this.props.role}
+        student={student}
+        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+        editAgent={this.props.editAgent}
+        agent_list={this.props.agent_list}
+        updateAgentList={this.props.updateAgentList}
+        handleChangeAgentlist={this.props.handleChangeAgentlist}
+        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+      />
+    ));
+    const no_editor_students = this.props.students.map((student, i) => (
+      <NoEditorsStudentsCard
+        key={i}
+        role={this.props.role}
+        student={student}
+        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+        editEditor={this.props.editEditor}
+        editor_list={this.props.editor_list}
+        updateEditorList={this.props.updateEditorList}
+        handleChangeEditorlist={this.props.handleChangeEditorlist}
+        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+      />
+    ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
@@ -36,6 +64,36 @@ class AdminMainView extends React.Component {
     ));
     return (
       <>
+        <Row>
+          <Col sm={6}>
+            <Card title="No Agents Students">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>First-, Last Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>{no_agent_students}</tbody>
+              </Table>
+            </Card>
+          </Col>
+          <Col sm={6}>
+            <Card title="No Editors Students">
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>First-, Last Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>{no_editor_students}</tbody>
+              </Table>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col sm={12}>
             <Card title="Program Conflicts">

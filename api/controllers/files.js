@@ -387,7 +387,9 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
 
   const student = await Student.findOne({
     _id: studentId
-  });
+  })
+    .populate('applications.programId')
+    .populate('agents editors', 'firstname lastname email');
   if (!student) {
     logger.error(
       'updateProfileDocumentStatus: Invalid student Id or application Id'

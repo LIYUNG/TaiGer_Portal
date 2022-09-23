@@ -106,6 +106,18 @@ class Dashboard extends React.Component {
   editAgent = (student) => {
     getAgents().then(
       (resp) => {
+        const { success } = resp;
+        if (success) {
+        } else {
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
         const { data: agents } = resp.data; //get all agent
         const { agents: student_agents } = student;
         const updateAgentList = agents.reduce(
@@ -133,6 +145,18 @@ class Dashboard extends React.Component {
   editEditor = (student) => {
     getEditors().then(
       (resp) => {
+        const { success } = resp;
+        if (success) {
+        } else {
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
         const { data: editors } = resp.data;
         const { editors: student_editors } = student;
         const updateEditorList = editors.reduce(
@@ -205,7 +229,14 @@ class Dashboard extends React.Component {
             updateAgentList: []
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -232,7 +263,14 @@ class Dashboard extends React.Component {
             updateAgentList: []
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -245,12 +283,23 @@ class Dashboard extends React.Component {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          students: data,
-          success: success
-        }));
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            students: data,
+            success: success
+          }));
+        } else {
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
       },
       (error) => {
         this.setState({
@@ -281,11 +330,11 @@ class Dashboard extends React.Component {
             isLoaded: true
           }));
         } else {
-          alert(res.data.message);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true
-          }));
+          if (res.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (res.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {

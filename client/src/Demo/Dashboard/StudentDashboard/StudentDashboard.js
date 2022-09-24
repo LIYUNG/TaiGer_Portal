@@ -158,7 +158,6 @@ class StudentDashboard extends React.Component {
       )
     );
 
-
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing_StudentView
         key={i}
@@ -227,8 +226,18 @@ class StudentDashboard extends React.Component {
             /> */}
           {/* </Card> */}
           <Col md={6}>
-            <Card title="Your TaiGer Team">
-              <Table responsive bordered hover>
+            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">Your TaiGer Team</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>Role</th>
@@ -242,8 +251,18 @@ class StudentDashboard extends React.Component {
                 </tbody>
               </Table>
             </Card>
-            <Card title="My Uploaded Documents">
-              <Table responsive>
+            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">
+                  My Uploaded Documents
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>Status</th>
@@ -255,8 +274,18 @@ class StudentDashboard extends React.Component {
             </Card>
           </Col>
           <Col md={6}>
-            <Card title="Unread messages:">
-              <Table responsive bordered hover>
+            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">Unread messages:</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>First-, Last Name</th>
@@ -267,8 +296,18 @@ class StudentDashboard extends React.Component {
                 <tbody>{unread_thread}</tbody>
               </Table>
             </Card>
-            <Card title="Pending:">
-              <Table responsive bordered hover>
+            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">Pending</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>First-, Last Name</th>
@@ -279,8 +318,18 @@ class StudentDashboard extends React.Component {
                 <tbody>{read_thread}</tbody>
               </Table>
             </Card>
-            <Card title="Agent Reviewing:">
-              <Table responsive bordered hover>
+            <Card className="my-0 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">Agent Reviewing:</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>Uploaded files will be reviewed by your agent:</th>

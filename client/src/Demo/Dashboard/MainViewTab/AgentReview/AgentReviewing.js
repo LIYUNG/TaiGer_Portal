@@ -38,7 +38,7 @@ class AgentReviewing extends React.Component {
     var to_be_checked_profiles = keys.map((key, i) => {
       if (object_init[key] === 'uploaded') {
         return (
-          <h6 key={i}>
+          <p key={i}>
             {' '}
             <AiOutlineLoading3Quarters
               size={18}
@@ -46,7 +46,7 @@ class AgentReviewing extends React.Component {
               title="No Document uploaded"
             />{' '}
             {key.replace(/_/g, ' ')}
-          </h6>
+          </p>
         );
       }
     });
@@ -57,7 +57,7 @@ class AgentReviewing extends React.Component {
         object_init[key] !== 'uploaded'
       ) {
         return (
-          <h6 key={i}>
+          <p key={i}>
             {' '}
             <AiFillQuestionCircle
               size={18}
@@ -65,7 +65,7 @@ class AgentReviewing extends React.Component {
               title="No Document uploaded"
             />{' '}
             {key.replace(/_/g, ' ')}
-          </h6>
+          </p>
         );
       }
     });
@@ -81,11 +81,11 @@ class AgentReviewing extends React.Component {
               to={'/student-applications/' + this.props.student._id}
               key={i}
             >
-              <h6>
+              <p>
                 {application.programId.school}
                 {' - '}
                 {application.programId.program_name}
-              </h6>
+              </p>
             </Link>
           );
         }

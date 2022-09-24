@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
-import Card from '../../../App/components/MainCard';
+import { Row, Col, Table, Tabs, Tab, Card } from 'react-bootstrap';
+// import Card from '../../../App/components/MainCard';
 import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
 import AgentTodoList from './AgentTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
@@ -70,8 +70,18 @@ class AgentMainView extends React.Component {
         </Row>
         <Row>
           <Col md={12}>
-            <Card title="Agent Reviewing:">
-              <Table responsive bordered hover>
+            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title>Agent Reviewing</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>First-/Lastname</th>

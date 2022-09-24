@@ -496,7 +496,10 @@ function Table2({ columns, data, userId }) {
                       {j === 0 ? (
                         <>{cell.render('Cell')}</>
                       ) : (
-                        <Link to={'/programs/' + row.original._id}>
+                        <Link
+                          to={'/programs/' + row.original._id}
+                          className="text-info"
+                        >
                           {cell.render('Cell')}
                         </Link>
                       )}
@@ -773,13 +776,13 @@ function ProgramList(props) {
     // <Styles>
     <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
       {/* <Card.Body> */}
-        {/* <Table responsive border hover> */}
-        <Table2
-          columns={columns}
-          data={statedata.programs}
-          userId={props.userId}
-        />
-        {/* </Table> */}
+      {/* <Table responsive border hover> */}
+      <Table2
+        columns={columns}
+        data={statedata.programs}
+        userId={props.userId}
+      />
+      {/* </Table> */}
       {/* </Card.Body> */}
     </Card>
     // </Styles>

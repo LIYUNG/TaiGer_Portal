@@ -22,8 +22,8 @@ router
 
 router
   .route('/:programId')
-  .get(permit(Role.Admin, Role.Agent, Role.Student), getProgram)
-  .put(permit(Role.Admin, Role.Agent), updateProgram)
-  .delete(permit(Role.Admin, Role.Agent), deleteProgram);
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getProgram)
+  .put(permit(Role.Admin, Role.Editor, Role.Agent), updateProgram)
+  .delete(permit(Role.Admin), deleteProgram);
 
 module.exports = router;

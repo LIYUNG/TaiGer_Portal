@@ -216,7 +216,7 @@ class Dashboard extends React.Component {
             <Row>
               <Col>
                 <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-                  <Tab eventKey="w" title="Archiv Student Overview">
+                  <Tab eventKey="w" title="My Closed Student">
                     {this.props.user.role === 'Admin' ||
                     this.props.user.role === 'Agent' ||
                     this.props.user.role === 'Editor' ? (

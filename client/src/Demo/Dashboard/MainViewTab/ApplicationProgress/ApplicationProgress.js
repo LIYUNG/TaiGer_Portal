@@ -49,14 +49,22 @@ class ApplicationProgress extends React.Component {
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
-          <Link to={'/programs/' + application.programId._id} key={i}>
+          <Link
+            to={'/programs/' + application.programId._id}
+            className="text-info"
+            key={i}
+          >
             <p className="mb-1">{application.programId.school}</p>
           </Link>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
-          <Link to={'/programs/' + application.programId._id} key={i}>
+          <Link
+            to={'/programs/' + application.programId._id}
+            className="text-info"
+            key={i}
+          >
             <p className="mb-1">{application.programId.program_name}</p>
           </Link>
         )
@@ -197,6 +205,7 @@ class ApplicationProgress extends React.Component {
                     this.props.student._id +
                     '/background'
                   }
+                  className="text-info"
                 >
                   <p>
                     {this.props.student.firstname},{' '}

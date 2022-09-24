@@ -116,7 +116,7 @@ class AdminMainView extends React.Component {
         </Row>
         <Row className="mb-2">
           <Col md={12}>
-            <Card className="my-0 mx-0">
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0">Program Conflicts</Card.Title>
               </Card.Header>
@@ -126,11 +126,18 @@ class AdminMainView extends React.Component {
         </Row>
         <Row className="mb-2">
           <Col md={12}>
-            <Card className="my-0 mx-0">
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0">Agent Reviewing:</Card.Title>
               </Card.Header>
-              <Table responsive bordered hover>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>First-/Lastname</th>

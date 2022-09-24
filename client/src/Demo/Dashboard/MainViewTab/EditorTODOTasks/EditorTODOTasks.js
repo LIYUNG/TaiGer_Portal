@@ -8,6 +8,7 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import { convertDate } from '../../../Utils/contants';
 
 class EditorTODOTasks extends React.Component {
   render() {
@@ -33,6 +34,7 @@ class EditorTODOTasks extends React.Component {
                       this.props.student._id +
                       '/application-files'
                     }
+                    className="text-info"
                   >
                     {this.props.student.firstname}
                     {' - '}
@@ -45,6 +47,7 @@ class EditorTODOTasks extends React.Component {
                       '/document-modification/' +
                       generaldocs_threads.doc_thread_id._id
                     }
+                    className="text-info"
                   >
                     {generaldocs_threads.doc_thread_id.file_type}
                   </Link>
@@ -74,6 +77,7 @@ class EditorTODOTasks extends React.Component {
                         this.props.student._id +
                         '/application-files'
                       }
+                      className="text-info"
                     >
                       {this.props.student.firstname}
                       {' - '}
@@ -86,6 +90,7 @@ class EditorTODOTasks extends React.Component {
                         '/document-modification/' +
                         application_doc_thread.doc_thread_id._id
                       }
+                      className="text-info"
                     >
                       {application_doc_thread.doc_thread_id.file_type}
                       {' - '}
@@ -95,15 +100,7 @@ class EditorTODOTasks extends React.Component {
                     </Link>
                   </td>
                   <td>{application.programId.application_deadline}</td>
-                  <td>
-                    {new Date(
-                      application_doc_thread.updatedAt
-                    ).toLocaleDateString()}
-                    {', '}
-                    {new Date(
-                      application_doc_thread.updatedAt
-                    ).toLocaleTimeString()}
-                  </td>
+                  <td>{convertDate(application_doc_thread.updatedAt)}</td>
                 </tr>
               </>
             )

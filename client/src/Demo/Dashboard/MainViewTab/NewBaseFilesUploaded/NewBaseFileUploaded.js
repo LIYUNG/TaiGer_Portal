@@ -142,6 +142,7 @@ class NewBaseFileUploaded extends React.Component {
           <td>
             <Link
               to={'/student-database/' + this.props.student._id + '/profile'}
+              className="text-info"
             >
               {this.props.student.firstname}
               {' - '}
@@ -149,7 +150,7 @@ class NewBaseFileUploaded extends React.Component {
             </Link>
           </td>
           <td>
-            <h6>{this.props.Doc_key.replace(/_/g, ' ')}</h6>
+            <p>{this.props.Doc_key.replace(/_/g, ' ')}</p>
           </td>
           <td>
             <Button

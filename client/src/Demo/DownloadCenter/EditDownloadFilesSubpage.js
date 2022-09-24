@@ -24,22 +24,26 @@ class EditDownloadFilesSubpage extends React.Component {
           {this.props.role !== 'Student' ? (
             object_init[template.prop] === 'uploaded' ? (
               <>
-                <td>
-                  <Col>
-                    <Button
-                      variant={deleteStyle}
-                      size="sm"
-                      type="submit"
-                      title="Delete"
-                      disabled={this.props.isLoaded}
-                      onClick={(e) =>
-                        this.props.onDeleteTemplateFile(e, template.prop)
-                      }
-                    >
-                      <AiOutlineDelete size={16} />
-                    </Button>
-                  </Col>
-                </td>
+                {this.props.role === 'Admin' ? (
+                  <td>
+                    <Col>
+                      <Button
+                        variant={deleteStyle}
+                        size="sm"
+                        type="submit"
+                        title="Delete"
+                        disabled={this.props.isLoaded}
+                        onClick={(e) =>
+                          this.props.onDeleteTemplateFile(e, template.prop)
+                        }
+                      >
+                        <AiOutlineDelete size={16} />
+                      </Button>
+                    </Col>
+                  </td>
+                ) : (
+                  <td></td>
+                )}
                 <td></td>
                 <td>
                   <Col>

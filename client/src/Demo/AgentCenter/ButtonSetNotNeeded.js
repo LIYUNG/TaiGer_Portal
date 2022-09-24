@@ -60,11 +60,14 @@ class ButtonSetNotNeeded extends React.Component {
           {this.props.time}
         </td>
         {this.props.role === 'Editor' ? (
-          <></>
+          <>
+            <td></td>
+            <td></td>
+          </>
         ) : (
           <>
             {this.props.role === 'Student' ? (
-              <></>
+              <td></td>
             ) : (
               <td>
                 <Col>
@@ -106,6 +109,8 @@ class ButtonSetNotNeeded extends React.Component {
             </td>
           </>
         )}
+        <td></td>
+        <td></td>
         <td></td>
       </tr>
     );

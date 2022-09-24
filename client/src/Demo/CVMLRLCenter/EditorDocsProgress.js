@@ -358,9 +358,7 @@ class EditorDocsProgress extends React.Component {
           <div id="accordion1">
             <Card.Body>
               <Row>
-                <Col md={8} as="h6">
-                  General Documents (CV, Recommendation Letters)
-                </Col>
+                <Col md={8}>General Documents (CV, Recommendation Letters)</Col>
               </Row>
               <ManualFiles
                 onDeleteFileThread={this.onDeleteFileThread}
@@ -382,7 +380,7 @@ class EditorDocsProgress extends React.Component {
                     application.decided === true ? (
                       <>
                         <Row>
-                          <Col as="h6">
+                          <Col>
                             {application.programId.school}
                             {' - '}
                             {application.programId.program_name}
@@ -410,9 +408,11 @@ class EditorDocsProgress extends React.Component {
                               <></>
                             )}
                           </Col>
-                          <Col as="h6">
-                              Deadline:{' '}
-                              {application.programId.application_deadline}
+                          <Col>
+                            Deadline:{' '}
+                            {application.programId.application_deadline
+                              ? application.programId.application_deadline
+                              : '-'}
                           </Col>
                         </Row>
                         <ManualFiles

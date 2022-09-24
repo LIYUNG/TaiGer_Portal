@@ -3,6 +3,8 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
+import { Link } from 'react-router-dom';
+
 class StudentsAgentEditor extends React.Component {
   state = {
     showAgentPage: false,
@@ -56,11 +58,11 @@ class StudentsAgentEditor extends React.Component {
       this.props.student.agents === undefined ||
       this.props.student.agents.length === 0
     ) {
-      studentsAgent = <p className="text-info">No Agent assigned</p>;
+      studentsAgent = <p className="text-danger">No Agent assigned</p>;
     } else {
       studentsAgent = this.props.student.agents.map((agent, i) => (
         <div key={agent._id}>
-          <p className="mb-1">
+          <p className="mb-1 ">
             {agent.firstname}
             {', '}
             {agent.lastname}
@@ -73,7 +75,7 @@ class StudentsAgentEditor extends React.Component {
       this.props.student.editors === undefined ||
       this.props.student.editors.length === 0
     ) {
-      studentsEditor = <p className="text-info">No Editor assigned</p>;
+      studentsEditor = <p className="text-danger">No Editor assigned</p>;
     } else {
       studentsEditor = this.props.student.editors.map((editor, i) => (
         <div key={editor._id}>
@@ -113,11 +115,19 @@ class StudentsAgentEditor extends React.Component {
               </DropdownButton>
             </td>
           )}
-
           {this.props.role !== 'Student' ? (
             <td>
               <p className="mb-1">
-                {this.props.student.firstname}, {this.props.student.lastname}
+                <Link
+                  to={
+                    '/student-database/' +
+                    this.props.student._id +
+                    '/background'
+                  }
+                  className="text-info"
+                >
+                  {this.props.student.firstname}, {this.props.student.lastname}
+                </Link>
               </p>
               <p className="mb-0 text-muted">{this.props.student.email}</p>
             </td>

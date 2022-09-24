@@ -124,10 +124,9 @@ class CVMLRLCenter extends React.Component {
     }
 
     const student_editor = this.state.students.map((student, i) => (
-      <Card className="mb-2 mx-0" key={i}>
+      <Card className="mb-2 mx-0" bg={'dark'} text={'light'} key={i}>
         <Card.Header onClick={() => this.singleExpandtHandler(i)}>
           <Card.Title
-            as="h5"
             aria-controls={'accordion' + i}
             aria-expanded={this.state.accordionKeys[i] === i}
           >
@@ -150,9 +149,9 @@ class CVMLRLCenter extends React.Component {
       <Aux>
         <Row className="sticky-top ">
           <Col>
-            <Card className="mb-2 mx-0">
+            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header text={'dark'}>
-                <Card.Title as="h5">
+                <Card.Title>
                   <Row>
                     <Col>CV/ML/RL Center</Col>
                     <Col md={{ span: 2, offset: 0 }}>

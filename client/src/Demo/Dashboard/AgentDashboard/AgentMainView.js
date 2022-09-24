@@ -55,12 +55,25 @@ class AgentMainView extends React.Component {
       <>
         <Row>
           <Col md={12}>
-            <Card title="New Uploaded Files:">
-              <Table responsive bordered hover>
+            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title>New Uploaded Files:</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>First-/Lastname</th>
                     <th>New Uploaded Files</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>{new_base_files_card}</tbody>
@@ -94,10 +107,17 @@ class AgentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col sm={12}>
             <Card title="Agent: To Do">
-              <Table responsive bordered hover>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <>
@@ -112,7 +132,7 @@ class AgentMainView extends React.Component {
               </Table>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
         <Row>
           <Col sm={12}>
             <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
@@ -129,7 +149,12 @@ class AgentMainView extends React.Component {
                 />
               </Tab>
               <Tab eventKey="dz" title="Agents and Editors">
-                <Table responsive>
+                <Table
+                  responsive
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
                   <thead>
                     <tr>
                       <th>First-, Last Name</th>
@@ -141,7 +166,12 @@ class AgentMainView extends React.Component {
                 </Table>
               </Tab>
               <Tab eventKey="z" title="Application Overview">
-                <Table responsive>
+                <Table
+                  responsive
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
                   <thead>
                     <tr>
                       <>
@@ -161,10 +191,12 @@ class AgentMainView extends React.Component {
                 </Table>
               </Tab>
               <Tab eventKey="zz" title="Program Conflicts">
-                <TabProgramConflict
-                  students={this.props.students}
-                  startEditingProgram={this.props.startEditingProgram}
-                />
+                <Card className="my-0 mx-0">
+                  <TabProgramConflict
+                    students={this.props.students}
+                    startEditingProgram={this.props.startEditingProgram}
+                  />
+                </Card>
               </Tab>
             </Tabs>
           </Col>

@@ -83,7 +83,10 @@ class ButtonSetMissing extends React.Component {
         </th>
         <td>{this.props.docName}</td>
         {this.props.role === 'Editor' ? (
-          <td></td>
+          <>
+            <td></td>
+            <td></td>
+          </>
         ) : (
           <>
             <td>

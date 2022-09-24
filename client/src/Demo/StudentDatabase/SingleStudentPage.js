@@ -393,48 +393,60 @@ class SingleStudentPage extends React.Component {
 
     return (
       <>
-        <Card className="mt-2">
-          <Card.Header>
-            <Card.Title as="h5">
-              {this.state.student.firstname}
-              {' ,'}
-              {this.state.student.lastname}
-            </Card.Title>
-          </Card.Header>
-        </Card>
         <Row>
-          <Card className="mt-2">
-            <Card.Body>
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <>
-                      <th></th>
-                      <th>First-, Last Name</th>
-                      <th>University</th>
-                      <th>Programs</th>
-                      <th>Deadline</th>
-                    </>
-                    {window.programstatuslist.map((doc, index) => (
-                      <th key={index}>{doc.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <ApplicationProgress
-                  role={this.props.user.role}
-                  student={this.state.student}
-                  isLoaded={this.state.isLoaded}
-                />
-              </Table>
-            </Card.Body>
-          </Card>
+          <Col>
+            <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+              <Card.Header>
+                <Card.Title>
+                  {this.state.student.firstname}
+                  {' ,'}
+                  {this.state.student.lastname}
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+              <Card.Body>
+                <Table
+                  responsive
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr>
+                      <>
+                        <th></th>
+                        <th>First-, Last Name</th>
+                        <th>University</th>
+                        <th>Programs</th>
+                        <th>Deadline</th>
+                      </>
+                      {window.programstatuslist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <ApplicationProgress
+                    role={this.props.user.role}
+                    student={this.state.student}
+                    isLoaded={this.state.isLoaded}
+                  />
+                </Table>
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
         <Tabs
           defaultActiveKey={this.props.match.params.tab}
           id="uncontrolled-tab-example"
         >
           <Tab eventKey="profile" title="Profile Overview">
-            <Table responsive>
+            <Table responsive className="my-2 mx-0" variant="dark" text="light">
               <thead>
                 <tr>
                   <th>First-, Last Name</th>
@@ -447,7 +459,12 @@ class SingleStudentPage extends React.Component {
               </tbody>
             </Table>
             <Row>
-              <Table responsive>
+              <Table
+                responsive
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th>Status</th>
@@ -471,13 +488,16 @@ class SingleStudentPage extends React.Component {
             </Row> */}
           </Tab>
           <Tab eventKey="CV_ML_RL" title="CV ML RL">
-            <EditorDocsProgress
-              student={this.state.student}
-              idx={0}
-              accordionKeys={[0]}
-              singleExpandtHandler={this.singleExpandtHandler}
-              role={this.props.user.role}
-            />
+            {' '}
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+              <EditorDocsProgress
+                student={this.state.student}
+                idx={0}
+                accordionKeys={[0]}
+                singleExpandtHandler={this.singleExpandtHandler}
+                role={this.props.user.role}
+              />
+            </Card>
           </Tab>
           {/* <Tab eventKey="status" title="Status">
             <Row>

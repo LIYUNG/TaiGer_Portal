@@ -79,6 +79,7 @@ class AgentReviewing extends React.Component {
           return (
             <Link
               to={'/student-applications/' + this.props.student._id}
+              className='text-info'
               key={i}
             >
               <p>
@@ -101,6 +102,7 @@ class AgentReviewing extends React.Component {
                   to={
                     '/student-database/' + this.props.student._id + '/profile'
                   }
+                  className="text-info"
                 >
                   {this.props.student.firstname}
                   {' - '}

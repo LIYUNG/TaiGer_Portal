@@ -11,6 +11,8 @@ import {
   // AiFillMessage
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
+import { convertDate } from '../Utils/contants';
+
 class EditableFile_Thread extends Component {
   handleAsFinalFileThread = (documenName) => {
     this.props.handleAsFinalFile(
@@ -130,18 +132,13 @@ class EditableFile_Thread extends Component {
               to={
                 '/document-modification/' + this.props.thread.doc_thread_id._id
               }
+              className="text-info"
             >
               {documenName}
             </Link>
           </Col>
           <Col md={2}>
-            {new Date(
-              this.props.thread.doc_thread_id.updatedAt
-            ).toLocaleDateString()}
-            {', '}
-            {new Date(
-              this.props.thread.doc_thread_id.updatedAt
-            ).toLocaleTimeString()}
+            {convertDate(this.props.thread.doc_thread_id.updatedAt)}
           </Col>
           {this.props.role === 'Student' || this.props.role === 'Guest' ? (
             <></>

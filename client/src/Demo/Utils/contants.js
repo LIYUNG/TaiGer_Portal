@@ -44,3 +44,10 @@ export const SYMBOL_EXPLANATION = (
     <p>{FILE_DONT_CARE_SYMBOL}: This document is not needed.</p>
   </>
 );
+
+export const convertDate = (date) => {
+  let date_str = '';
+  let dat = new Date(date).toLocaleDateString();
+  let time = new Date(date).toLocaleTimeString();
+  return dat + ', ' + time;
+};

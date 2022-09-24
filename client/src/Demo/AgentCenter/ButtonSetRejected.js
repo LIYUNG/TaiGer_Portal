@@ -214,6 +214,7 @@ class ButtonSetRejected extends React.Component {
               </Button>
             </td>
             <td></td>
+            <td></td>
           </>
         ) : (
           <>
@@ -236,6 +237,7 @@ class ButtonSetRejected extends React.Component {
                     <AiOutlineComment size={20} />
                   </Button>
                 </td>
+                <td></td>
                 <td></td>
               </>
             ) : (

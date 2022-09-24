@@ -8,6 +8,7 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import { convertDate } from '../../../Utils/contants';
 
 class NewUpdatedThreadFromEditor extends React.Component {
   render() {
@@ -37,6 +38,7 @@ class NewUpdatedThreadFromEditor extends React.Component {
                             this.props.student._id +
                             '/application-files'
                       }
+                      className="text-info"
                     >
                       {this.props.student.firstname}
                       {' - '}
@@ -49,20 +51,12 @@ class NewUpdatedThreadFromEditor extends React.Component {
                         '/document-modification/' +
                         generaldocs_threads.doc_thread_id._id
                       }
+                      className="text-info"
                     >
                       {generaldocs_threads.doc_thread_id.file_type}
                     </Link>
                   </td>
-                  <td>
-                    {' '}
-                    {new Date(
-                      generaldocs_threads.updatedAt
-                    ).toLocaleDateString()}
-                    {', '}
-                    {new Date(
-                      generaldocs_threads.updatedAt
-                    ).toLocaleTimeString()}
-                  </td>
+                  <td> {convertDate(generaldocs_threads.updatedAt)}</td>
                 </>
               )}
           </tr>

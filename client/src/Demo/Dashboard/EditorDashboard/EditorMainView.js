@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col, Tabs, Tab, Table } from 'react-bootstrap';
-import Card from '../../../App/components/MainCard';
+import { Row, Col, Tabs, Tab, Table ,Card} from 'react-bootstrap';
+// import Card from '../../../App/components/MainCard';
 import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -98,15 +98,35 @@ class EditorMainView extends React.Component {
       <>
         <Row>
           <Col md={6}>
-            <Card title="Unread messages:">
-              <Table responsive bordered hover>
+            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title>Unread messages:</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 {unread_thread}
               </Table>
             </Card>
           </Col>
           <Col md={6}>
-            <Card title="Waiting responses:">
-              <Table responsive bordered hover>
+            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title>Waiting responses:</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 {read_thread}
               </Table>
             </Card>
@@ -114,8 +134,18 @@ class EditorMainView extends React.Component {
         </Row>
         <Row>
           <Col md={12}>
-            <Card title="Editor Tasks:">
-              <Table responsive bordered hover>
+            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title>Editor Tasks:</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 {editor_todo_tasks}
               </Table>
             </Card>
@@ -123,7 +153,10 @@ class EditorMainView extends React.Component {
         </Row>
         <Row>
           <Col sm={12}>
-            <Card title="Program Conflicts">
+            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title>Program Conflicts</Card.Title>
+              </Card.Header>
               <TabProgramConflict
                 students={this.props.students}
                 startEditingProgram={this.props.startEditingProgram}
@@ -135,7 +168,14 @@ class EditorMainView extends React.Component {
           <Col sm={12}>
             <Tabs defaultActiveKey="dz" id="uncontrolled-tab-example">
               <Tab eventKey="dz" title="Agents and Editors">
-                <Table responsive>{students_agent_editor}</Table>
+                <Table
+                  responsive
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  {students_agent_editor}
+                </Table>
               </Tab>
               <Tab eventKey="y" title="Student Profile Overview">
                 <TabStudDocsDashboard

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Col } from 'react-bootstrap';
 import ProgramConflict from './ProgramConflict';
 
 class TabProgramConflict extends React.Component {
@@ -62,17 +62,23 @@ class TabProgramConflict extends React.Component {
     ));
     return (
       <>
-        <Table responsive>
-          <thead>
-            <tr>
-              <th>University</th>
-              <th>Programs</th>
-              <th>First-, Last Name</th>
-              <th>Deadline</th>
-            </tr>
-          </thead>
-          {program_conflict}
-        </Table>
+        {program_conflict.length !== 0 ? (
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>University</th>
+                <th>Programs</th>
+                <th>First-, Last Name</th>
+                <th>Deadline</th>
+              </tr>
+            </thead>
+            {program_conflict}
+          </Table>
+        ) : (
+          <Col>
+            <p className="mt-2 text-center">No conflict programs!</p>
+          </Col>
+        )}
       </>
     );
   }

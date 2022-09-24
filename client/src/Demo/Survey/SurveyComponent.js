@@ -7,6 +7,8 @@ import {
   updateAcademicBackground,
   updateLanguageSkill
 } from '../../api';
+import { convertDate } from '../Utils/contants';
+
 class SurveyComponent extends React.Component {
   state = {
     error: null,
@@ -164,7 +166,7 @@ class SurveyComponent extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title>Academic Background Surney</Card.Title>
               </Card.Header>
@@ -393,13 +395,9 @@ class SurveyComponent extends React.Component {
                     Last update at:{' '}
                     {this.state.academic_background.university &&
                     this.state.academic_background.university.updatedAt
-                      ? new Date(
+                      ? convertDate(
                           this.state.academic_background.university.updatedAt
-                        ).toLocaleDateString() +
-                        ', ' +
-                        new Date(
-                          this.state.academic_background.university.updatedAt
-                        ).toLocaleTimeString()
+                        )
                       : ''}
                   </Col>
                   {this.props.role === 'Student' ||
@@ -596,13 +594,9 @@ class SurveyComponent extends React.Component {
                     Last update at:{' '}
                     {this.state.academic_background.language &&
                     this.state.academic_background.language.updatedAt
-                      ? new Date(
+                      ? convertDate(
                           this.state.academic_background.language.updatedAt
-                        ).toLocaleDateString() +
-                        ', ' +
-                        new Date(
-                          this.state.academic_background.language.updatedAt
-                        ).toLocaleTimeString()
+                        )
                       : ''}
                   </Col>
                   {this.props.role === 'Student' ||

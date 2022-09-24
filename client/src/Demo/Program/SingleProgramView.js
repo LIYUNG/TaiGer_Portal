@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
+import { convertDate } from '../Utils/contants';
 
 class SingleProgramView extends React.Component {
   render() {
@@ -145,7 +146,7 @@ class SingleProgramView extends React.Component {
               </Col>
             </Row>
             <Row>
-              {" "}
+              {' '}
               <Col md={4}>
                 <h5>Essay Required?</h5>
               </Col>
@@ -170,7 +171,7 @@ class SingleProgramView extends React.Component {
               </Col>
             </Row>
             <Row>
-              {" "}
+              {' '}
               <Col md={4}>
                 <h5>Comments</h5>
               </Col>
@@ -216,9 +217,8 @@ class SingleProgramView extends React.Component {
               </Col>
               <Col md={4}>
                 <h5>
-                  {new Date(this.props.program.updatedAt).toLocaleDateString()}
-                  {", "}
-                  {new Date(this.props.program.updatedAt).toLocaleTimeString()}
+                  {convertDate(this.props.program.updatedAt)}
+                
                 </h5>
               </Col>
             </Row>

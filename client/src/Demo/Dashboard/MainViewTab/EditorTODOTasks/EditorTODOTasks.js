@@ -35,6 +35,7 @@ class EditorTODOTasks extends React.Component {
                       '/application-files'
                     }
                     className="text-info"
+                    style={{ textDecoration: 'none' }}
                   >
                     {this.props.student.firstname}
                     {' - '}
@@ -48,6 +49,7 @@ class EditorTODOTasks extends React.Component {
                       generaldocs_threads.doc_thread_id._id
                     }
                     className="text-info"
+                    style={{ textDecoration: 'none' }}
                   >
                     {generaldocs_threads.doc_thread_id.file_type}
                   </Link>
@@ -78,6 +80,7 @@ class EditorTODOTasks extends React.Component {
                         '/application-files'
                       }
                       className="text-info"
+                      style={{ textDecoration: 'none' }}
                     >
                       {this.props.student.firstname}
                       {' - '}
@@ -91,6 +94,7 @@ class EditorTODOTasks extends React.Component {
                         application_doc_thread.doc_thread_id._id
                       }
                       className="text-info"
+                      style={{ textDecoration: 'none' }}
                     >
                       {application_doc_thread.doc_thread_id.file_type}
                       {' - '}

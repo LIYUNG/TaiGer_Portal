@@ -57,15 +57,21 @@ class AgentReviewing extends React.Component {
         object_init[key] !== 'uploaded'
       ) {
         return (
-          <p key={i}>
-            {' '}
-            <AiFillQuestionCircle
-              size={18}
-              color="lightgray"
-              title="No Document uploaded"
-            />{' '}
-            {key.replace(/_/g, ' ')}
-          </p>
+          <Link
+            to={'/student-database/' + this.props.student._id + '/profile'}
+            key={i}
+            style={{ textDecoration: 'none' }}
+          >
+            <p className="text-warning">
+              {' '}
+              <AiFillQuestionCircle
+                size={18}
+                color="lightgray"
+                title="No Document uploaded"
+              />{' '}
+              {key.replace(/_/g, ' ')}
+            </p>{' '}
+          </Link>
         );
       }
     });
@@ -79,10 +85,11 @@ class AgentReviewing extends React.Component {
           return (
             <Link
               to={'/student-applications/' + this.props.student._id}
-              className='text-info'
+              className="text-info"
               key={i}
+              style={{ textDecoration: 'none' }}
             >
-              <p>
+              <p className="text-danger">
                 {application.programId.school}
                 {' - '}
                 {application.programId.program_name}
@@ -103,6 +110,7 @@ class AgentReviewing extends React.Component {
                     '/student-database/' + this.props.student._id + '/profile'
                   }
                   className="text-info"
+                  style={{ textDecoration: 'none' }}
                 >
                   {this.props.student.firstname}
                   {' - '}

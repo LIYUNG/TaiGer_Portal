@@ -63,7 +63,14 @@ class TabProgramConflict extends React.Component {
     return (
       <>
         {program_conflict.length !== 0 ? (
-          <Table responsive>
+          <Table
+            responsive
+            bordered
+            hover
+            className="my-0 mx-0"
+            variant="dark"
+            text="light"
+          >
             <thead>
               <tr>
                 <th>University</th>

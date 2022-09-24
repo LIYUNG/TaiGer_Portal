@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Table, Card, Collapse } from 'react-bootstrap';
+import { Row, Col, Table, Card, Collapse } from 'react-bootstrap';
 // import UcFirst from "../../App/components/UcFirst";
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
@@ -216,7 +216,9 @@ class EditFilesSubpage extends React.Component {
                   <tbody>{file_information}</tbody>
                 </Table>
               </Row>
-              <Row>{this.props.SYMBOL_EXPLANATION}</Row>
+              <Row>
+                <Col className='md-4'>{this.props.SYMBOL_EXPLANATION}</Col>
+              </Row>
               <Row>
                 {/* <UploadAndGenerate
                     user={this.state.student}

@@ -12,12 +12,20 @@ class Program extends React.Component {
         <tr key={this.props.program._id}>
           <td>
             <Form.Group>
-              <Form.Check custom type="checkbox" id={this.props.program._id} onChange={(e)=> this.props.selectPrograms(e)} />
+              <Form.Check
+                custom
+                type="checkbox"
+                id={this.props.program._id}
+                onChange={(e) => this.props.selectPrograms(e)}
+              />
             </Form.Group>
           </td>
           {window.ProgramlistHeader.map((y, k) => (
             <td key={k}>
-              <Link to={"/programs/" + this.props.program._id}>
+              <Link
+                to={'/programs/' + this.props.program._id}
+                style={{ textDecoration: 'none' }}
+              >
                 {this.props.program[y.prop]}
               </Link>
             </td>

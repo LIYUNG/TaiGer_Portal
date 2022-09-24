@@ -143,6 +143,7 @@ class NewBaseFileUploaded extends React.Component {
             <Link
               to={'/student-database/' + this.props.student._id + '/profile'}
               className="text-info"
+              style={{ textDecoration: 'none' }}
             >
               {this.props.student.firstname}
               {' - '}

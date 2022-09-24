@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 
 const SignUp1 = React.lazy(() =>
-  import("./Demo/Authentication/SignUp/SignUp1")
+  import('./Demo/Authentication/SignUp/SignUp1')
 );
 const Signin1 = React.lazy(() =>
-  import("./Demo/Authentication/SignIn/SignIn1")
+  import('./Demo/Authentication/SignIn/SignIn1')
 );
 const ResetPasswordRequest = React.lazy(() =>
-  import("./Demo/Authentication/ResetPasswordRequest/ResetPasswordRequest")
+  import('./Demo/Authentication/ResetPasswordRequest/ResetPasswordRequest')
 );
 const ResetPassword = React.lazy(() =>
-  import("./Demo/Authentication/ResetPassword/ResetPassword")
+  import('./Demo/Authentication/ResetPassword/ResetPassword')
 );
 const AccountActivation = React.lazy(() =>
   import('./Demo/Authentication/Activation/Activation')
@@ -26,7 +26,7 @@ const route = [
   },
   {
     path: '/account/reset-password',
-    exact: false,
+    exact: true,
     name: 'ResetPassword',
     component: ResetPassword
   },
@@ -36,6 +36,7 @@ const route = [
     name: 'ResetPassword 1',
     component: ResetPasswordRequest
   },
+  { path: '/auth/login', component: Signin1 },
   { path: '/', component: Signin1 }
 ];
 

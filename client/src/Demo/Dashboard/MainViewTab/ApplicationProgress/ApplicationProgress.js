@@ -40,21 +40,21 @@ class ApplicationProgress extends React.Component {
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
     ) {
-      applying_university = <p className="mb-1"> No University</p>;
-      applying_program = <p className="mb-1"> No Program</p>;
-      application_deadline = <p className="mb-1"> No Date</p>;
-      application_date_left = <p className="mb-1"></p>;
-      application_decided = <p className="mb-1"></p>;
-      application_closed = <p className="mb-1"></p>;
+      applying_university = <p className="mb-1  text-danger"> No University</p>;
+      applying_program = <p className="mb-1  text-danger"> No Program</p>;
+      application_deadline = <p className="mb-1  text-danger"> No Date</p>;
+      application_date_left = <p className="mb-1  text-danger"></p>;
+      application_decided = <p className="mb-1  text-danger"></p>;
+      application_closed = <p className="mb-1  text-danger"></p>;
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
           <Link
             to={'/programs/' + application.programId._id}
-            className="text-info"
+            style={{ textDecoration: 'none' }}
             key={i}
           >
-            <p className="mb-1">{application.programId.school}</p>
+            <p className="mb-1 text-info">{application.programId.school}</p>
           </Link>
         )
       );
@@ -62,16 +62,18 @@ class ApplicationProgress extends React.Component {
         (application, i) => (
           <Link
             to={'/programs/' + application.programId._id}
-            className="text-info"
+            style={{ textDecoration: 'none' }}
             key={i}
           >
-            <p className="mb-1">{application.programId.program_name}</p>
+            <p className="mb-1 text-info">
+              {application.programId.program_name}
+            </p>
           </Link>
         )
       );
       application_deadline = this.props.student.applications.map(
         (application, i) => (
-          <p className="mb-1" key={i}>
+          <p className="mb-1 text-info" key={i}>
             {application.programId.application_deadline
               ? this.props.student.academic_background.university
                   .expected_application_date
@@ -86,7 +88,7 @@ class ApplicationProgress extends React.Component {
 
       application_date_left = this.props.student.applications.map(
         (application, i) => (
-          <p className="mb-1" key={i}>
+          <p className="mb-1 text-info" key={i}>
             {application.closed
               ? '-'
               : application.programId.application_deadline
@@ -106,11 +108,11 @@ class ApplicationProgress extends React.Component {
       application_decided = this.props.student.applications.map(
         (application, i) =>
           application.decided !== undefined && application.decided === true ? (
-            <p className="mb-1" key={i}>
+            <p className="mb-1 text-info" key={i}>
               O
             </p>
           ) : (
-            <p className="mb-1" key={application._id}>
+            <p className="mb-1 text-info" key={application._id}>
               X
             </p>
           )
@@ -118,11 +120,11 @@ class ApplicationProgress extends React.Component {
       application_closed = this.props.student.applications.map(
         (application, i) =>
           application.closed !== undefined && application.closed === true ? (
-            <p className="mb-1" key={i}>
+            <p className="mb-1 text-info" key={i}>
               O
             </p>
           ) : (
-            <p className="mb-1" key={application._id}>
+            <p className="mb-1 text-info" key={application._id}>
               X
             </p>
           )
@@ -131,11 +133,11 @@ class ApplicationProgress extends React.Component {
         (application, i) =>
           application.admission !== undefined &&
           application.admission === true ? (
-            <p className="mb-1" key={i}>
+            <p className="mb-1 text-info" key={i}>
               O
             </p>
           ) : (
-            <p className="mb-1" key={application._id}>
+            <p className="mb-1 text-info" key={application._id}>
               X
             </p>
           )
@@ -158,6 +160,7 @@ class ApplicationProgress extends React.Component {
                   <Dropdown.Item eventKey="3">
                     <Link
                       to={'/student-applications/' + this.props.student._id}
+                      style={{ textDecoration: 'none' }}
                     >
                       Edit Program
                     </Link>
@@ -205,9 +208,9 @@ class ApplicationProgress extends React.Component {
                     this.props.student._id +
                     '/background'
                   }
-                  className="text-info"
+                  style={{ textDecoration: 'none' }}
                 >
-                  <p>
+                  <p className="text-info">
                     {this.props.student.firstname},{' '}
                     {this.props.student.lastname}
                   </p>

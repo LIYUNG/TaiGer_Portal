@@ -133,6 +133,7 @@ class EditableFile_Thread extends Component {
                 '/document-modification/' + this.props.thread.doc_thread_id._id
               }
               className="text-info"
+              style={{ textDecoration: 'none' }}
             >
               {documenName}
             </Link>

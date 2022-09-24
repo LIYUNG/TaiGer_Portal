@@ -71,6 +71,7 @@ class StudDocsDashboard extends React.Component {
             <Link
               to={'/student-database/' + this.props.student._id + '/background'}
               className="text-info"
+              style={{ textDecoration: 'none' }}
             >
               {this.props.student.firstname}, {this.props.student.lastname}
             </Link>

@@ -8,7 +8,8 @@ import TimeOutErrors from '../../Utils/TimeOutErrors';
 import UnauthorizedError from '../../Utils/UnauthorizedError';
 import PageNotFoundError from '../../Utils/PageNotFoundError';
 
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+// import '../../../components/DraftEditor.css';
 import {
   getTemplateDownload,
   deleteDoc,
@@ -233,12 +234,6 @@ class DocModificationThreadPage extends Component {
       }
     );
   };
-  handleClick = (e) => {
-    this.setState((state) => ({
-      ...state,
-      defaultStep: this.state.defaultStep + 1
-    }));
-  };
 
   singleExpandtHandler = (idx) => {
     let accordionKeys = [...this.state.accordionKeys];
@@ -367,19 +362,21 @@ class DocModificationThreadPage extends Component {
                   Please fill our TaiGer template and attach the filled template
                   in this discussion.
                 </p>
-                Donwload template:{' '}
-                {template_obj ? (
-                  <b
-                    style={{ cursor: 'pointer' }}
-                    onClick={(e) =>
-                      this.onDownloadTemplate(e, template_obj.prop)
-                    }
-                  >
-                    Link
-                  </b>
-                ) : (
-                  <>Not available</>
-                )}
+                <p>
+                  Donwload template:{' '}
+                  {template_obj ? (
+                    <b
+                      style={{ cursor: 'pointer' }}
+                      onClick={(e) =>
+                        this.onDownloadTemplate(e, template_obj.prop)
+                      }
+                    >
+                      Link
+                    </b>
+                  ) : (
+                    <>Not available</>
+                  )}
+                </p>
               </Card.Body>
             </Card>
           </Col>
@@ -427,11 +424,11 @@ class DocModificationThreadPage extends Component {
           <Col>
             <Card className="my-0 mx-0">
               <Card.Header>
-                <Card.Title>
+                <Card.Title as="h5">
                   {this.props.user.firstname} {this.props.user.lastname}
                 </Card.Title>
               </Card.Header>
-              <Row>
+              <Row style={{ textDecoration: 'none' }}>
                 <Col className="my-0 mx-0">
                   <Editor
                     // toolbarOnFocus
@@ -445,17 +442,17 @@ class DocModificationThreadPage extends Component {
                     editorClassName="editor-class"
                     toolbarClassName="toolbar-class"
                     toolbar={{
-                      options: [
-                        'inline',
-                        'fontSize',
-                        'fontFamily',
-                        'list',
-                        'textAlign',
-                        // "colorPicker",
-                        'link',
-                        'image'
-                        // "file",
-                      ],
+                      // options: [
+                      //   'inline',
+                      //   'fontSize',
+                      //   'fontFamily',
+                      //   'list',
+                      //   'textAlign',
+                      //   // "colorPicker",
+                      //   'link',
+                      //   'image'
+                      //   // "file",
+                      // ],
                       link: {
                         defaultTargetOption: '_blank',
                         popupClassName: 'mail-editor-link'
@@ -496,8 +493,7 @@ class DocModificationThreadPage extends Component {
                       !this.state.editorState ||
                       !this.state.editorState.getCurrentContent().hasText()
                     }
-                    className="float-right"
-                    className="my-2 mx-2"
+                    className="my-2 mx-2 float-right"
                     onClick={(e) =>
                       this.ConfirmSubmitMessageHandler(
                         e,

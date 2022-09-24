@@ -184,7 +184,6 @@ class AgentMainView extends React.Component {
                       {window.programstatuslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
-                      <th>Days left</th>
                     </tr>
                   </thead>
                   {application_progress}

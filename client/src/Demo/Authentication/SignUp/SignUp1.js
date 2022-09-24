@@ -137,12 +137,10 @@ export default function SignUp1({ userData }) {
                 <button className="btn btn-success shadow-2 mb-3">
                   Sign up
                 </button>
-                <p className="mb-0">
-                  Allready have an account?
-                  <NavLink to="/auth/login">
-                    <p className="mb-0 text-muted">Login</p>Login
-                  </NavLink>
-                </p>
+                <p className="mb-0 text-light">Allready have an account?</p>
+                <NavLink to="/auth/login">
+                  <p className="mb-0 text-muted">Login</p>Login
+                </NavLink>
               </div>
             </form>
           </div>

@@ -357,7 +357,7 @@ class EditorDocsProgress extends React.Component {
         >
           <div id="accordion1">
             <Card.Body>
-              <Row>
+              <Row className="mb-4 mx-0">
                 <Col md={8}>General Documents (CV, Recommendation Letters)</Col>
               </Row>
               <ManualFiles
@@ -379,7 +379,7 @@ class EditorDocsProgress extends React.Component {
                     {application.decided !== undefined &&
                     application.decided === true ? (
                       <>
-                        <Row>
+                        <Row className="mb-2 mx-0">
                           <Col>
                             {application.programId.school}
                             {' - '}

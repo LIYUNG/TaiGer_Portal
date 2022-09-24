@@ -13,7 +13,11 @@ const navLogo = (props) => {
   return (
     <Aux>
       <div className="navbar-brand header-logo">
-        <a href={DEMO.BLANK_LINK} className="b-brand">
+        <a
+          href={DEMO.BLANK_LINK}
+          className="b-brand"
+          style={{ textDecoration: 'none' }}
+        >
           {/* <div>TODO:Put Logo</div>
           <div className="b-bg">
             <i className="feather icon-trending-up" />
@@ -23,9 +27,7 @@ const navLogo = (props) => {
             src={taiger_logo_small}
             alt="Generic placeholder"
           />
-          <Link to={'/dashboard/default'}>
-            <span className="b-title">TaiGer2</span>
-          </Link>
+          <span className="b-title">TaiGer</span>
         </a>
         <a
           // href={DEMO.BLANK_LINK}

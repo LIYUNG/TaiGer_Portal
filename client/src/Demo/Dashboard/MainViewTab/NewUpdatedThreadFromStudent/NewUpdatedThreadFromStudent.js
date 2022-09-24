@@ -39,6 +39,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                             '/application-files'
                       }
                       className="text-info"
+                      style={{ textDecoration: 'none' }}
                     >
                       {this.props.student.firstname}
                       {' - '}
@@ -52,6 +53,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                         generaldocs_threads.doc_thread_id._id
                       }
                       className="text-info"
+                      style={{ textDecoration: 'none' }}
                     >
                       {generaldocs_threads.doc_thread_id.file_type}
                     </Link>
@@ -84,6 +86,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                                 this.props.student._id +
                                 '/application-files'
                           }
+                          style={{ textDecoration: 'none' }}
                         >
                           {this.props.student.firstname}
                           {' - '}
@@ -96,6 +99,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                             '/document-modification/' +
                             application_doc_thread.doc_thread_id._id
                           }
+                          style={{ textDecoration: 'none' }}
                         >
                           {application_doc_thread.doc_thread_id.file_type}
                           {' - '}

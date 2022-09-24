@@ -181,13 +181,13 @@ class StudentApplicationsTableTemplate extends React.Component {
           <tr>
             {this.props.role !== 'Student' && <td></td>}
             <td>
-              <p className="mb-1"> No University</p>
+              <p className="mb-1 text-danger"> No University</p>
             </td>
             <td>
-              <p className="mb-1"> No Program</p>
+              <p className="mb-1 text-danger"> No Program</p>
             </td>
             <td>
-              <p className="mb-1"> No Date</p>
+              <p className="mb-1 text-danger"> No Date</p>
             </td>
             <td>
               <p className="mb-1"> </p>
@@ -225,21 +225,27 @@ class StudentApplicationsTableTemplate extends React.Component {
               </td>
             )}
             <td>
-              <Link to={'/programs/' + application.programId._id}>
-                <p className="mb-1" key={application_idx}>
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+              >
+                <p className="mb-1 text-info" key={application_idx}>
                   {application.programId.school}
                 </p>
               </Link>
             </td>
             <td>
-              <Link to={'/programs/' + application.programId._id}>
-                <p className="mb-1" key={application_idx}>
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+              >
+                <p className="mb-1 text-info" key={application_idx}>
                   {application.programId.program_name}
                 </p>
               </Link>
             </td>
             <td>
-              <p className="mb-1" key={application_idx}>
+              <p className="mb-1 text-info" key={application_idx}>
                 {this.props.student.academic_background.university
                   .expected_application_date
                   ? this.props.student.academic_background.university
@@ -308,7 +314,7 @@ class StudentApplicationsTableTemplate extends React.Component {
               </Form.Group>
             </td>
             <td>
-              <p className="mb-1" key={application_idx}>
+              <p className="mb-1 text-info" key={application_idx}>
                 {application.closed
                   ? '-'
                   : application.programId.application_deadline
@@ -357,7 +363,6 @@ class StudentApplicationsTableTemplate extends React.Component {
                         {window.programstatuslist.map((doc, index) => (
                           <th key={index}>{doc.name}</th>
                         ))}
-                        <th>Days left</th>
                       </tr>
                     </thead>
                     <tbody>{applying_university_info}</tbody>

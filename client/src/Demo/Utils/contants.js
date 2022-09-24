@@ -27,21 +27,25 @@ let FILE_DONT_CARE_SYMBOL = (
 );
 export const SYMBOL_EXPLANATION = (
   <>
-    <p></p>
-    <p>
-      {FILE_OK_SYMBOL}: The document is valid and can be used in the
-      application.
-    </p>
-    <p>
-      {FILE_NOT_OK_SYMBOL}: The document is invalud and cannot be used in the
-      application. Please properly scan a new one.
-    </p>
-    <p>
-      {FILE_UPLOADED_SYMBOL}: The document is uploaded. Your agent will check it
-      as soon as possible.
-    </p>
-    <p>{FILE_MISSING_SYMBOL}: Please upload the copy of the document.</p>
-    <p>{FILE_DONT_CARE_SYMBOL}: This document is not needed.</p>
+      <p className="text-muted"> </p>
+      <p className="text-info">
+        {FILE_OK_SYMBOL}: The document is valid and can be used in the
+        application.
+      </p>
+      <p className="text-info">
+        {FILE_NOT_OK_SYMBOL}: The document is invalud and cannot be used in the
+        application. Please properly scan a new one.
+      </p>
+      <p className="text-info">
+        {FILE_UPLOADED_SYMBOL}: The document is uploaded. Your agent will check
+        it as soon as possible.
+      </p>
+      <p className="text-info">
+        {FILE_MISSING_SYMBOL}: Please upload the copy of the document.
+      </p>
+      <p className="text-info">
+        {FILE_DONT_CARE_SYMBOL}: This document is not needed.
+      </p>{' '}
   </>
 );
 

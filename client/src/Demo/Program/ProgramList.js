@@ -499,6 +499,7 @@ function Table2({ columns, data, userId }) {
                         <Link
                           to={'/programs/' + row.original._id}
                           className="text-info"
+                          style={{ textDecoration: 'none' }}
                         >
                           {cell.render('Cell')}
                         </Link>

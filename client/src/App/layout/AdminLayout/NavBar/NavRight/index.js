@@ -25,9 +25,9 @@ class NavRight extends Component {
         {/* <Container> */}
         <Col>
           <ul className="navbar-nav ml-auto">
-            <li className={this.props.rtlLayout ? "m-r-15" : "m-l-15"}>
-              <Link to={DEMO.SETTINGS}>
-                <i className="icon feather icon-user" />{" "}
+            <li className={this.props.rtlLayout ? 'm-r-15' : 'm-l-15'}>
+              <Link to={DEMO.SETTINGS} style={{ textDecoration: 'none' }}>
+                <i className="icon feather icon-user" />{' '}
                 {this.props.userdata.firstname} {this.props.userdata.lastname}
               </Link>
             </li>
@@ -132,9 +132,10 @@ class NavRight extends Component {
               {/* <a href={DEMO.LOG_OUT} className="dud-logout" title="Logout">
                         <i className="feather icon-log-out" /> Logout</a> */}
               <Link
-                to={"/"}
+                to={'/'}
                 onClick={(e) => this.handleOnClick(e)}
                 className="dud-logout"
+                style={{ textDecoration: 'none' }}
               >
                 Logout
               </Link>

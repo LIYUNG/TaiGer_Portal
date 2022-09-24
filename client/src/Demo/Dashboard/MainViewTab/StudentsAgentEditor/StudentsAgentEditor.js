@@ -62,7 +62,7 @@ class StudentsAgentEditor extends React.Component {
     } else {
       studentsAgent = this.props.student.agents.map((agent, i) => (
         <div key={agent._id}>
-          <p className="mb-1 ">
+          <p className="mb-1 text-info">
             {agent.firstname}
             {', '}
             {agent.lastname}
@@ -79,7 +79,7 @@ class StudentsAgentEditor extends React.Component {
     } else {
       studentsEditor = this.props.student.editors.map((editor, i) => (
         <div key={editor._id}>
-          <p className="mb-1">
+          <p className="mb-1 text-info">
             {editor.firstname}
             {', '}
             {editor.lastname}
@@ -125,6 +125,7 @@ class StudentsAgentEditor extends React.Component {
                     '/background'
                   }
                   className="text-info"
+                  style={{ textDecoration: 'none' }}
                 >
                   {this.props.student.firstname}, {this.props.student.lastname}
                 </Link>

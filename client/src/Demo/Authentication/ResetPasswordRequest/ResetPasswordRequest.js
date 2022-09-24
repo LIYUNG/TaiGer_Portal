@@ -44,21 +44,21 @@ export default function ResetPasswordRequest() {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <div className="card">
+            <div>
               <div className="card-body text-center">
                 <img
                   className="mb-3 img-radius"
                   src={taiger_logo}
                   alt="Generic placeholder"
                 />
-                <h3 className="mb-3">Reset Password</h3>
+                <h3 className="mb-3 text-light">Reset Password</h3>
                 <div className="input-group mb-3">
-                  <p>
+                  <p className="mb-3 text-light">
                     Password reset email is already sent to your give email
                     address. Please have a check.
                   </p>
                 </div>
-                <p className="mb-2">
+                <p className="mb-2 text-light">
                   Allready have an account?{' '}
                   <NavLink to="/auth/login">
                     <p className="text-muted">Login</p>
@@ -78,16 +78,13 @@ export default function ResetPasswordRequest() {
           <div className="auth-content">
             <form onSubmit={handleSubmit}>
               <div className="card-body text-center">
-                {/* <div className="mb-4">
-                  <i className="feather icon-user-plus auth-icon" />
-                </div> */}
                 <img
                   className="mb-3 img-radius"
                   src={taiger_logo}
                   alt="Generic placeholder"
                 />
                 <p className="mb-4"></p>
-                <h3 className="mb-4 text-info">Reset Password</h3>
+                <h3 className="mb-4 text-light">Reset Password</h3>
                 <div className="input-group mb-3">
                   <input
                     type="text"
@@ -103,12 +100,11 @@ export default function ResetPasswordRequest() {
                 >
                   Reset
                 </button>
-                <p className="mb-2">
-                  Allready have an account?{' '}
-                  <NavLink to="/auth/login">
-                    <p className="text-muted">Login</p>
-                  </NavLink>
-                </p>
+                <p className="mb-2 text-light"></p>
+                Allready have an account?{' '}
+                <NavLink to="/auth/login">
+                  <p className="text-muted">Login</p>
+                </NavLink>
               </div>
             </form>
           </div>

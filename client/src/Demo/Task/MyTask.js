@@ -282,7 +282,10 @@ class MyTask extends Component {
     //         <>
     //           <tr>
     //             <td>
-    //               <Link to={'/tasks/' + student.student_id._id}>
+    //               <Link 
+    //                  to={'/tasks/' + student.student_id._id}
+    //                  style={{ textDecoration: 'none' }}
+    //               >
     //                 {student.student_id.firstname} {student.student_id.lastname}
     //               </Link>
     //             </td>

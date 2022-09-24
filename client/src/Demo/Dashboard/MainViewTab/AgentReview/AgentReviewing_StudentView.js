@@ -81,6 +81,7 @@ class AgentReviewing_StudentView extends React.Component {
             />{' '}
             <Link
               to={'/student-database/' + this.props.student._id + '/profile'}
+              style={{ textDecoration: 'none' }}
             >
               {key.replace(/_/g, ' ')}
             </Link>
@@ -115,6 +116,8 @@ class AgentReviewing_StudentView extends React.Component {
                   to={
                     '/student-database/' + this.props.student._id + '/profile'
                   }
+                  className="text-info"
+                  style={{ textDecoration: 'none' }}
                 >
                   {this.props.student.firstname}
                   {' - '}

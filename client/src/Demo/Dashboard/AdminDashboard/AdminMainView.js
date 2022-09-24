@@ -171,6 +171,8 @@ class AdminMainView extends React.Component {
               <Tab eventKey="dz" title="Agents and Editors">
                 <Table
                   responsive
+                  bordered
+                  hover
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
@@ -189,6 +191,8 @@ class AdminMainView extends React.Component {
               <Tab eventKey="z" title="Application Overview">
                 <Table
                   responsive
+                  bordered
+                  hover
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
@@ -205,7 +209,6 @@ class AdminMainView extends React.Component {
                       {window.programstatuslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
-                      <th>Days left</th>
                     </tr>
                   </thead>
                   {application_progress}

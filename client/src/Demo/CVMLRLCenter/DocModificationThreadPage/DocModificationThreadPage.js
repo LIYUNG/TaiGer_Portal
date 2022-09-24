@@ -323,10 +323,10 @@ class DocModificationThreadPage extends Component {
           </div>
         )}
         <Row>
-          <Card className="mt-0">
-            <Card.Header>
-              <Card.Title as="h5">
-                <h4>
+          <Col>
+            <Card className="mb-2 mx-0">
+              <Card.Header>
+                <Card.Title as="h5">
                   {this.state.thread.student_id.firstname}{' '}
                   {this.state.thread.student_id.lastname}
                   {' - '}
@@ -353,14 +353,14 @@ class DocModificationThreadPage extends Component {
                       Expand
                     </Button>
                   )}
-                </h4>
-              </Card.Title>
-            </Card.Header>
-          </Card>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Col>
         </Row>
         <Row>
           <Col md={6}>
-            <Card className="mt-0">
+            <Card className="mb-2 mx-0">
               <Card.Body>
                 <h5>Instruction</h5>
                 <p>
@@ -384,136 +384,133 @@ class DocModificationThreadPage extends Component {
             </Card>
           </Col>
           <Col md={6}>
-            <Card className="mt-0">
+            <Card className="mb-2 mx-0">
               <Card.Body>
-                <h5>
+                <h6>
                   <b>Requirements:</b>
-                </h5>
-                <p>
-                  {this.state.thread.program_id ? (
-                    this.state.thread.program_id.ml_required ? (
-                      this.state.thread.program_id.ml_requirements
-                    ) : (
-                      'No'
-                    )
+                </h6>
+                {this.state.thread.program_id ? (
+                  this.state.thread.program_id.ml_required ? (
+                    this.state.thread.program_id.ml_requirements
                   ) : (
-                    <>
-                      <p>CV/RL requirement</p>
-                    </>
-                  )}
-                </p>
-                <h5>
+                    <p>'No'</p>
+                  )
+                ) : (
+                  <>
+                    <p>CV/RL requirement</p>
+                  </>
+                )}
+                <h6>
                   <b>Deadline</b>
-                </h5>
+                </h6>
                 {this.state.thread.program_id && (
-                  <h5>{this.state.thread.program_id.application_deadline}</h5>
+                  <h6>{this.state.thread.program_id.application_deadline}</h6>
                 )}
               </Card.Body>
             </Card>
           </Col>
         </Row>
         <Row>
-          <div>
-            <Row>
-              <Col>
-                <MessageList
-                  onDownloadFileInMessage={this.onDownloadFileInMessage}
-                  accordionKeys={this.state.accordionKeys}
-                  singleExpandtHandler={this.singleExpandtHandler}
-                  thread={this.state.thread}
-                  onTrashClick={this.handleTrashClick}
-                  // role={this.props.user.role}
-                  isLoaded={this.state.isLoaded}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Card>
-                  <Card.Header>
-                    <Card.Title as="h5">
-                      {this.props.user.firstname} {this.props.user.lastname}
-                    </Card.Title>
-                  </Card.Header>
-                  <Card.Body>
-                    <Editor
-                      spellCheck={true}
-                      // onFocus={onClick={this.handle}}
-                      placeholder={'Write comments'}
-                      editorState={this.state.editorState}
-                      onEditorStateChange={this.handleEditorChange}
-                      wrapperClassName="wrapper-class"
-                      editorClassName="editor-class"
-                      toolbarClassName="toolbar-class"
-                      toolbar={{
-                        // options: [
-                        //   "inline",
-                        //   "fontSize",
-                        //   "fontFamily",
-                        //   "list",
-                        //   "textAlign",
-                        //   "colorPicker",
-                        //   "link",
-                        //   "image",
-                        //   // "file",
-                        // ],
-                        link: {
-                          defaultTargetOption: '_blank',
-                          popupClassName: 'mail-editor-link'
+          <Col>
+            <MessageList
+              onDownloadFileInMessage={this.onDownloadFileInMessage}
+              accordionKeys={this.state.accordionKeys}
+              singleExpandtHandler={this.singleExpandtHandler}
+              thread={this.state.thread}
+              onTrashClick={this.handleTrashClick}
+              // role={this.props.user.role}
+              isLoaded={this.state.isLoaded}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Card className="my-0 mx-0">
+              <Card.Header>
+                <Card.Title>
+                  {this.props.user.firstname} {this.props.user.lastname}
+                </Card.Title>
+              </Card.Header>
+              <Row>
+                <Col className="my-0 mx-0">
+                  <Editor
+                    // toolbarOnFocus
+                    // toolbarHidden
+                    spellCheck={true}
+                    // onFocus={onClick={this.handle}}
+                    placeholder={'Write comments'}
+                    editorState={this.state.editorState}
+                    onEditorStateChange={this.handleEditorChange}
+                    wrapperClassName="wrapper-class"
+                    editorClassName="editor-class"
+                    toolbarClassName="toolbar-class"
+                    toolbar={{
+                      options: [
+                        'inline',
+                        'fontSize',
+                        'fontFamily',
+                        'list',
+                        'textAlign',
+                        // "colorPicker",
+                        'link',
+                        'image'
+                        // "file",
+                      ],
+                      link: {
+                        defaultTargetOption: '_blank',
+                        popupClassName: 'mail-editor-link'
+                      },
+                      image: {
+                        urlEnabled: true,
+                        uploadEnabled: true,
+                        uploadCallback: this.uploadImageCallBack,
+                        alignmentEnabled: true,
+                        defaultSize: {
+                          height: 'auto',
+                          width: 'auto'
                         },
-                        image: {
-                          urlEnabled: true,
-                          uploadEnabled: true,
-                          uploadCallback: this.uploadImageCallBack,
-                          alignmentEnabled: true,
-                          defaultSize: {
-                            height: 'auto',
-                            width: 'auto'
-                          },
-                          inputAccept:
-                            'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
-                        }
-                      }}
-                    />
-                    <Row>
-                      <Form>
-                        <Row>
-                          <Form.File.Label
-                            // key={this.state.file || ""}
-                            onClick={(e) =>
-                              (e.target.value = this.state.file || '')
-                            }
-                          >
-                            <Form.File.Input
-                              onChange={(e) => this.onFileChange(e)}
-                            />
-                            {/* <IoMdCloudUpload size={32} /> */}
-                          </Form.File.Label>
-                        </Row>
-                      </Form>
-                    </Row>
-                    <Row>
-                      <Button
-                        disabled={
-                          !this.state.editorState ||
-                          !this.state.editorState.getCurrentContent().hasText()
-                        }
-                        className="float-right"
-                        onClick={(e) =>
-                          this.ConfirmSubmitMessageHandler(
-                            e,
-                            this.state.editorState
-                          )
-                        }
-                      >
-                        Submit
-                      </Button>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </div>
+                        inputAccept:
+                          'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
+                      }
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form className="my-2 mx-2">
+                    <Form.File.Label
+                      // key={this.state.file || ""}
+                      onClick={(e) => (e.target.value = this.state.file || '')}
+                    >
+                      <Form.File.Input onChange={(e) => this.onFileChange(e)} />
+                      {/* <IoMdCloudUpload size={32} /> */}
+                    </Form.File.Label>
+                  </Form>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Button
+                    disabled={
+                      !this.state.editorState ||
+                      !this.state.editorState.getCurrentContent().hasText()
+                    }
+                    className="float-right"
+                    className="my-2 mx-2"
+                    onClick={(e) =>
+                      this.ConfirmSubmitMessageHandler(
+                        e,
+                        this.state.editorState
+                      )
+                    }
+                  >
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
         </Row>
       </Aux>
     );

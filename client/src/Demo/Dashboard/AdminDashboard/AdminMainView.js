@@ -146,7 +146,11 @@ class AdminMainView extends React.Component {
         <Row>
           <Col>
             <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-              <Tab eventKey="w" title="Student Background Overview">
+              <Tab
+                eventKey="w"
+                title="Student Background Overview"
+                className="my-0 mx-0"
+              >
                 <TabStudDocsDashboard
                   role={this.props.role}
                   students={this.props.students}
@@ -158,7 +162,12 @@ class AdminMainView extends React.Component {
                 />
               </Tab>
               <Tab eventKey="dz" title="Agents and Editors">
-                <Table responsive>
+                <Table
+                  responsive
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
                   <thead>
                     <tr>
                       <th></th>
@@ -171,7 +180,12 @@ class AdminMainView extends React.Component {
                 </Table>
               </Tab>
               <Tab eventKey="z" title="Application Overview">
-                <Table responsive>
+                <Table
+                  responsive
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
                   <thead>
                     <tr>
                       <>

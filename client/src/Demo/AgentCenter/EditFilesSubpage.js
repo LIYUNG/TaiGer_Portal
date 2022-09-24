@@ -1,25 +1,20 @@
-import React from "react";
-import {
-  Row,
-  Table,
-  Card,
-  Collapse,
-} from "react-bootstrap";
+import React from 'react';
+import { Row, Table, Card, Collapse } from 'react-bootstrap';
 // import UcFirst from "../../App/components/UcFirst";
-import ButtonSetUploaded from "./ButtonSetUploaded";
-import ButtonSetAccepted from "./ButtonSetAccepted";
-import ButtonSetRejected from "./ButtonSetRejected";
-import ButtonSetNotNeeded from "./ButtonSetNotNeeded";
-import ButtonSetMissing from "./ButtonSetMissing";
+import ButtonSetUploaded from './ButtonSetUploaded';
+import ButtonSetAccepted from './ButtonSetAccepted';
+import ButtonSetRejected from './ButtonSetRejected';
+import ButtonSetNotNeeded from './ButtonSetNotNeeded';
+import ButtonSetMissing from './ButtonSetMissing';
 
 // import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
 
 class EditFilesSubpage extends React.Component {
   state = {
     student: this.props.student,
-    student_id: "",
-    docName: "",
-    file: "",
+    student_id: '',
+    docName: '',
+    file: ''
   };
 
   handleGeneralDocSubmit = (e, studentId, fileCategory) => {
@@ -36,29 +31,29 @@ class EditFilesSubpage extends React.Component {
     let object_date_init = {};
     let object_time_init = {};
     for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = "missing";
-      object_message[keys2[i]] = "";
-      object_date_init[keys2[i]] = "";
-      object_time_init[keys2[i]] = "";
+      object_init[keys2[i]] = 'missing';
+      object_message[keys2[i]] = '';
+      object_date_init[keys2[i]] = '';
+      object_time_init[keys2[i]] = '';
     }
 
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
-        if (this.props.student.profile[i].status === "uploaded") {
-          object_init[this.props.student.profile[i].name] = "uploaded";
-        } else if (this.props.student.profile[i].status === "accepted") {
-          object_init[this.props.student.profile[i].name] = "accepted";
-        } else if (this.props.student.profile[i].status === "rejected") {
-          object_init[this.props.student.profile[i].name] = "rejected";
-        } else if (this.props.student.profile[i].status === "notneeded") {
-          object_init[this.props.student.profile[i].name] = "notneeded";
-        } else if (this.props.student.profile[i].status === "missing") {
-          object_init[this.props.student.profile[i].name] = "missing";
+        if (this.props.student.profile[i].status === 'uploaded') {
+          object_init[this.props.student.profile[i].name] = 'uploaded';
+        } else if (this.props.student.profile[i].status === 'accepted') {
+          object_init[this.props.student.profile[i].name] = 'accepted';
+        } else if (this.props.student.profile[i].status === 'rejected') {
+          object_init[this.props.student.profile[i].name] = 'rejected';
+        } else if (this.props.student.profile[i].status === 'notneeded') {
+          object_init[this.props.student.profile[i].name] = 'notneeded';
+        } else if (this.props.student.profile[i].status === 'missing') {
+          object_init[this.props.student.profile[i].name] = 'missing';
         }
         object_message[this.props.student.profile[i].name] = this.props.student
           .profile[i].feedback
           ? this.props.student.profile[i].feedback
-          : "";
+          : '';
         object_date_init[this.props.student.profile[i].name] = new Date(
           this.props.student.profile[i].updatedAt
         ).toLocaleDateString();
@@ -70,7 +65,7 @@ class EditFilesSubpage extends React.Component {
     }
     var file_information;
     file_information = keys2.map((k, i) => {
-      if (object_init[k] === "uploaded") {
+      if (object_init[k] === 'uploaded') {
         return (
           <ButtonSetUploaded
             key={i + 1}
@@ -89,7 +84,7 @@ class EditFilesSubpage extends React.Component {
             SubmitGeneralFile={this.props.SubmitGeneralFile}
           />
         );
-      } else if (object_init[k] === "accepted") {
+      } else if (object_init[k] === 'accepted') {
         return (
           <ButtonSetAccepted
             key={i + 1}
@@ -109,7 +104,7 @@ class EditFilesSubpage extends React.Component {
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
         );
-      } else if (object_init[k] === "rejected") {
+      } else if (object_init[k] === 'rejected') {
         return (
           <ButtonSetRejected
             key={i + 1}
@@ -130,7 +125,7 @@ class EditFilesSubpage extends React.Component {
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
         );
-      } else if (object_init[k] === "notneeded") {
+      } else if (object_init[k] === 'notneeded') {
         return (
           <ButtonSetNotNeeded
             key={i + 1}
@@ -176,19 +171,23 @@ class EditFilesSubpage extends React.Component {
 
     return (
       <>
-        <Card className="mt-2" key={this.props.idx}>
+        <Card
+          className="mb-2 mx-0"
+          bg={'dark'}
+          text={'light'}
+          key={this.props.idx}
+        >
           <Card.Header
             onClick={() => this.props.singleExpandtHandler(this.props.idx)}
           >
             <Card.Title
-              as="h5"
-              aria-controls={"accordion" + this.props.idx}
+              aria-controls={'accordion' + this.props.idx}
               aria-expanded={
                 this.props.accordionKeys[this.props.idx] === this.props.idx
               }
             >
               {this.state.student.firstname}
-              {" ,"}
+              {' ,'}
               {this.state.student.lastname}
             </Card.Title>
           </Card.Header>
@@ -196,31 +195,34 @@ class EditFilesSubpage extends React.Component {
             in={this.props.accordionKeys[this.props.idx] === this.props.idx}
           >
             <div id="accordion1">
-              <Card.Body>
-                <Row>
-                  <Table responsive>
-                    <thead>
-                      <tr>
-                        <th>Status</th>
-                        <th>File Name:</th>
-                        <th></th>
-                        <th></th>
-                        <th>Feedback</th>
-                        <th></th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>{file_information}</tbody>
-                  </Table>
-                </Row>
-                <Row>{this.props.SYMBOL_EXPLANATION}</Row>
-                <Row>
-                  {/* <UploadAndGenerate
+              <Row>
+                <Table
+                  responsive
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>File Name:</th>
+                      <th></th>
+                      <th></th>
+                      <th>Feedback</th>
+                      <th></th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>{file_information}</tbody>
+                </Table>
+              </Row>
+              <Row>{this.props.SYMBOL_EXPLANATION}</Row>
+              <Row>
+                {/* <UploadAndGenerate
                     user={this.state.student}
                     student={this.state.student}
                   /> */}
-                </Row>
-              </Card.Body>
+              </Row>
             </div>
           </Collapse>
         </Card>

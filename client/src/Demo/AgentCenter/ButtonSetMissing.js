@@ -83,7 +83,7 @@ class ButtonSetMissing extends React.Component {
         </th>
         <td>{this.props.docName}</td>
         {this.props.role === 'Editor' ? (
-          <></>
+          <td></td>
         ) : (
           <>
             <td>
@@ -104,7 +104,7 @@ class ButtonSetMissing extends React.Component {
               </Form>
             </td>
             {this.props.role === 'Student' ? (
-              <></>
+              <td></td>
             ) : (
               <td>
                 <Col md>
@@ -129,6 +129,8 @@ class ButtonSetMissing extends React.Component {
             )}
           </>
         )}
+        <td></td>
+        <td></td>
         <td></td>
       </tr>
     );

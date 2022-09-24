@@ -76,17 +76,21 @@ window.documentsprogresslist = [
 
 window.programstatuslist = [
   {
-    name: "Decided",
-    prop: "decided",
+    name: 'Decided',
+    prop: 'decided'
   },
   {
-    name: "Submitted",
-    prop: "Submitted",
+    name: 'Submitted',
+    prop: 'Submitted'
   },
   {
-    name: "Offer",
-    prop: "offer",
+    name: 'Offer',
+    prop: 'offer'
   },
+  {
+    name: 'Days left',
+    prop: 'days_left'
+  }
 ];
 window.profile_list = {
   Bachelor_Certificate: "B.Sc Certificate",

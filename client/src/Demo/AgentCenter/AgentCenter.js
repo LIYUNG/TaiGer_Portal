@@ -10,6 +10,8 @@ import {
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
+import { SYMBOL_EXPLANATION } from '../Utils/contants';
+
 import {
   uploadforstudent,
   updateProfileDocumentStatus,
@@ -276,48 +278,7 @@ class AgentCenter extends React.Component {
 
   render() {
     const { error, isLoaded } = this.state;
-    let FILE_OK_SYMBOL = (
-      <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
-    );
-    let FILE_NOT_OK_SYMBOL = (
-      <AiFillCloseCircle size={18} color="red" title="Invalid Document" />
-    );
-    let FILE_UPLOADED_SYMBOL = (
-      <AiOutlineFieldTime
-        size={18}
-        color="orange"
-        title="Uploaded successfully"
-      />
-    );
-    let FILE_MISSING_SYMBOL = (
-      <AiFillQuestionCircle
-        size={18}
-        color="lightgray"
-        title="No Document uploaded"
-      />
-    );
-    let FILE_DONT_CARE_SYMBOL = (
-      <BsDash size={18} color="lightgray" title="Not needed" />
-    );
-    let SYMBOL_EXPLANATION = (
-      <>
-        <p></p>
-        <p>
-          {FILE_OK_SYMBOL}: The document is valid and can be used in the
-          application.
-        </p>
-        <p>
-          {FILE_NOT_OK_SYMBOL}: The document is invalud and cannot be used in
-          the application. Please properly scan a new one.
-        </p>
-        <p>
-          {FILE_UPLOADED_SYMBOL}: The document is uploaded. Your agent will
-          check it as soon as possible.
-        </p>
-        <p>{FILE_MISSING_SYMBOL}: Please upload the copy of the document.</p>
-        <p>{FILE_DONT_CARE_SYMBOL}: This document is not needed.</p>
-      </>
-    );
+   
     const style = {
       position: 'fixed',
       top: '40%',
@@ -366,35 +327,35 @@ class AgentCenter extends React.Component {
     ));
     return (
       <Aux>
-        <Row className="sticky-top ">
-          <Card className="mt-0">
-            <Card.Header>
-              <Card.Title as="h5">
-                <Row>
-                  <Col>
-                    <h4>Base Documents</h4>
-                  </Col>
-                  <Col md={{ span: 2, offset: 0 }}>
-                    {this.state.expand ? (
-                      <Button
-                        className="btn-sm"
-                        onClick={() => this.AllCollapsetHandler()}
-                      >
-                        Collaspse
-                      </Button>
-                    ) : (
-                      <Button
-                        className="btn-sm"
-                        onClick={() => this.AllExpandtHandler()}
-                      >
-                        Expand
-                      </Button>
-                    )}
-                  </Col>
-                </Row>
-              </Card.Title>
-            </Card.Header>
-          </Card>
+        <Row className="sticky-top">
+          <Col>
+            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title>
+                  <Row>
+                    <Col>Base Documents</Col>
+                    <Col md={{ span: 2, offset: 0 }}>
+                      {this.state.expand ? (
+                        <Button
+                          className="btn-sm"
+                          onClick={() => this.AllCollapsetHandler()}
+                        >
+                          Collaspse
+                        </Button>
+                      ) : (
+                        <Button
+                          className="btn-sm"
+                          onClick={() => this.AllExpandtHandler()}
+                        >
+                          Expand
+                        </Button>
+                      )}
+                    </Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Col>
         </Row>
         <Row>
           <Col sm={12}>

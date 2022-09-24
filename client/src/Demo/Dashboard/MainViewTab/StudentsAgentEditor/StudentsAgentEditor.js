@@ -56,16 +56,16 @@ class StudentsAgentEditor extends React.Component {
       this.props.student.agents === undefined ||
       this.props.student.agents.length === 0
     ) {
-      studentsAgent = <h6 className="mb-1"> No Agent assigned</h6>;
+      studentsAgent = <p className="text-info">No Agent assigned</p>;
     } else {
       studentsAgent = this.props.student.agents.map((agent, i) => (
         <div key={agent._id}>
-          <h6 className="mb-1">
+          <p className="mb-1">
             {agent.firstname}
             {', '}
             {agent.lastname}
-          </h6>
-          {agent.email}
+          </p>
+          <p className="mb-0 text-muted">{agent.email}</p>
         </div>
       ));
     }
@@ -73,16 +73,16 @@ class StudentsAgentEditor extends React.Component {
       this.props.student.editors === undefined ||
       this.props.student.editors.length === 0
     ) {
-      studentsEditor = <h6 className="mb-1"> No Editor assigned</h6>;
+      studentsEditor = <p className="text-info">No Editor assigned</p>;
     } else {
       studentsEditor = this.props.student.editors.map((editor, i) => (
         <div key={editor._id}>
-          <h6 className="mb-1">
+          <p className="mb-1">
             {editor.firstname}
             {', '}
             {editor.lastname}
-          </h6>
-          {editor.email}
+          </p>
+          <p className="mb-0 text-muted">{editor.email}</p>
         </div>
       ));
     }
@@ -116,17 +116,16 @@ class StudentsAgentEditor extends React.Component {
 
           {this.props.role !== 'Student' ? (
             <td>
-              <h6>
+              <p className="mb-1">
                 {this.props.student.firstname}, {this.props.student.lastname}
-              </h6>
-              {this.props.student.email}
+              </p>
+              <p className="mb-0 text-muted">{this.props.student.email}</p>
             </td>
           ) : (
             <></>
           )}
           <td>{studentsAgent}</td>
           <td>{studentsEditor}</td>
-          <td></td>
         </tr>
         {this.props.role === 'Admin' && (
           <>

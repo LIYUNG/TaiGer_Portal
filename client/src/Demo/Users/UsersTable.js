@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col, Spinner } from 'react-bootstrap';
-import Card from '../../App/components/MainCard';
+import { Row, Col, Spinner, Card } from 'react-bootstrap';
+// import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
 import UsersList from './UsersList';
 import TimeOutErrors from '../Utils/TimeOutErrors';
@@ -122,7 +122,10 @@ class UsersTable extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card title={'Users List'}>
+            <Card bg={'primary'} text='light'>
+              <Card.Header>
+                <Card.Title>Users List</Card.Title>
+              </Card.Header>
               <UsersList
                 success={this.state.success}
                 user={this.state.user}

@@ -124,7 +124,7 @@ class CVMLRLCenter extends React.Component {
     }
 
     const student_editor = this.state.students.map((student, i) => (
-      <Card className="mt-2" key={i}>
+      <Card className="mb-2 mx-0" key={i}>
         <Card.Header onClick={() => this.singleExpandtHandler(i)}>
           <Card.Title
             as="h5"
@@ -149,32 +149,34 @@ class CVMLRLCenter extends React.Component {
     return (
       <Aux>
         <Row className="sticky-top ">
-          <Card className="mt-0">
-            <Card.Header text={'dark'}>
-              <Card.Title as="h5">
-                <Row>
-                  <Col>CV/ML/RL Center</Col>
-                  <Col md={{ span: 2, offset: 0 }}>
-                    {this.state.expand ? (
-                      <Button
-                        size="sm"
-                        onClick={() => this.AllCollapsetHandler()}
-                      >
-                        Collaspse
-                      </Button>
-                    ) : (
-                      <Button
-                        size={'sm'}
-                        onClick={() => this.AllExpandtHandler()}
-                      >
-                        Expand
-                      </Button>
-                    )}
-                  </Col>
-                </Row>
-              </Card.Title>
-            </Card.Header>
-          </Card>
+          <Col>
+            <Card className="mb-2 mx-0">
+              <Card.Header text={'dark'}>
+                <Card.Title as="h5">
+                  <Row>
+                    <Col>CV/ML/RL Center</Col>
+                    <Col md={{ span: 2, offset: 0 }}>
+                      {this.state.expand ? (
+                        <Button
+                          size="sm"
+                          onClick={() => this.AllCollapsetHandler()}
+                        >
+                          Collaspse
+                        </Button>
+                      ) : (
+                        <Button
+                          size={'sm'}
+                          onClick={() => this.AllExpandtHandler()}
+                        >
+                          Expand
+                        </Button>
+                      )}
+                    </Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Col>
         </Row>
         <Row>
           <Col sm={12}>{student_editor}</Col>

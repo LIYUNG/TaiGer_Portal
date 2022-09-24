@@ -120,7 +120,7 @@ class EditDownloadFilesSubpage extends React.Component {
     });
 
     return (
-      <Table>
+      <Table variant="dark" text="light" className="my-0 mx-0">
         <tbody>{templatelist2}</tbody>
       </Table>
     );

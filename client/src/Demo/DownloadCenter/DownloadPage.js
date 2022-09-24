@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col, Spinner } from 'react-bootstrap';
-import Card from '../../App/components/MainCard';
+import { Row, Col, Spinner, Card } from 'react-bootstrap';
+// import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
 import {
   deleteTemplateFile,
@@ -211,7 +211,12 @@ class DownloadPage extends React.Component {
         <Aux>
           <Row>
             <Col>
-              <Card title="Download TaiGer Document Templates">
+              <Card className="my-0 mx-0" bg={'primary'} text={'white'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0">
+                    Download TaiGer Document Templates
+                  </Card.Title>
+                </Card.Header>
                 {!isLoaded && (
                   <div style={style}>
                     <Spinner animation="border" role="status">

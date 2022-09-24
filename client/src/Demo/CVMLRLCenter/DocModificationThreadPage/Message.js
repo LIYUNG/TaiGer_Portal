@@ -70,22 +70,22 @@ class Message extends Component {
 
 
     return (
-      <Card border="primary" key={this.props.id}>
+      <Card border="primary" className="mb-2 mx-0">
         <Card.Header
           onClick={() => this.props.singleExpandtHandler(this.props.idx)}
         >
           <Card.Title
             as="h5"
-            aria-controls={"accordion" + this.props.idx}
+            aria-controls={'accordion' + this.props.idx}
             aria-expanded={
               this.props.accordionKeys[this.props.idx] === this.props.idx
             }
           >
-            {this.props.message.user_id.firstname}{" "}
+            {this.props.message.user_id.firstname}{' '}
             {this.props.message.user_id.lastname}
-            {" on "}
+            {' on '}
             {new Date(this.props.message.createdAt).toLocaleTimeString()}
-            {", "}
+            {', '}
             {new Date(this.props.message.createdAt).toLocaleDateString()}
           </Card.Title>
           <RiMoreFill />

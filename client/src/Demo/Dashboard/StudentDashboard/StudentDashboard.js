@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col, Table } from 'react-bootstrap';
-import Card from '../../../App/components/MainCard';
+import { Row, Col, Table, Card } from 'react-bootstrap';
+// import Card from '../../../App/components/MainCard';
 import StudentMyself from './StudentMyself';
 import AgentReviewing_StudentView from '../MainViewTab/AgentReview/AgentReviewing_StudentView';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
@@ -185,8 +185,16 @@ class StudentDashboard extends React.Component {
       <>
         <Row>
           <Col>
-            <Card title="My Application Progress">
-              <Table responsive>
+            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title>My Application Progress</Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <>

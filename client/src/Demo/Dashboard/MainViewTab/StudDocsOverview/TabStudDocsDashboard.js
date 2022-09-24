@@ -26,7 +26,14 @@ class TabStudDocsDashboard extends React.Component {
     let header = Object.values(window.academic_background_header);
     return (
       <>
-        <Table responsive bordered hover>
+        <Table
+          responsive
+          bordered
+          hover
+          className="my-0 mx-0"
+          variant="dark"
+          text="light"
+        >
           <thead>
             <tr>
               <>

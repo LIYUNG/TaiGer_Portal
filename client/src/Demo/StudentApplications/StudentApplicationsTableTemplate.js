@@ -181,25 +181,25 @@ class StudentApplicationsTableTemplate extends React.Component {
           <tr>
             {this.props.role !== 'Student' && <td></td>}
             <td>
-              <h6 className="mb-1"> No University</h6>
+              <p className="mb-1"> No University</p>
             </td>
             <td>
-              <h6 className="mb-1"> No Program</h6>
+              <p className="mb-1"> No Program</p>
             </td>
             <td>
-              <h6 className="mb-1"> No Date</h6>
+              <p className="mb-1"> No Date</p>
             </td>
             <td>
-              <h6 className="mb-1"> </h6>
+              <p className="mb-1"> </p>
             </td>
             <td>
-              <h6 className="mb-1"> </h6>
+              <p className="mb-1"> </p>
             </td>
             <td>
-              <h6 className="mb-1"> </h6>
+              <p className="mb-1"> </p>
             </td>
             <td>
-              <h6 className="mb-1"> </h6>
+              <p className="mb-1"> </p>
             </td>
           </tr>
         </>
@@ -226,27 +226,27 @@ class StudentApplicationsTableTemplate extends React.Component {
             )}
             <td>
               <Link to={'/programs/' + application.programId._id}>
-                <h6 className="mb-1" key={application_idx}>
+                <p className="mb-1" key={application_idx}>
                   {application.programId.school}
-                </h6>
+                </p>
               </Link>
             </td>
             <td>
               <Link to={'/programs/' + application.programId._id}>
-                <h6 className="mb-1" key={application_idx}>
+                <p className="mb-1" key={application_idx}>
                   {application.programId.program_name}
-                </h6>
+                </p>
               </Link>
             </td>
             <td>
-              <h6 className="mb-1" key={application_idx}>
+              <p className="mb-1" key={application_idx}>
                 {this.props.student.academic_background.university
                   .expected_application_date
                   ? this.props.student.academic_background.university
                       .expected_application_date + '-'
                   : ''}
                 {application.programId.application_deadline}
-              </h6>
+              </p>
             </td>
             <td>
               <Form.Group controlId="decided">
@@ -308,7 +308,7 @@ class StudentApplicationsTableTemplate extends React.Component {
               </Form.Group>
             </td>
             <td>
-              <h6 className="mb-1" key={application_idx}>
+              <p className="mb-1" key={application_idx}>
                 {application.closed
                   ? '-'
                   : application.programId.application_deadline
@@ -322,7 +322,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                         application.programId.application_deadline
                     )
                   : '-'}
-              </h6>
+              </p>
             </td>
           </tr>
         )
@@ -332,44 +332,54 @@ class StudentApplicationsTableTemplate extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card className="mt-0">
+            <Card className="my-0 mx-0" bg={'info'} text={'white'}>
               <Card.Header>
-                <Card.Title as="h5">
-                  {' '}
+                <Card.Title>
                   {this.props.student.firstname} {this.props.student.lastname}
                 </Card.Title>
               </Card.Header>
-              <Card.Body>
-                <Table responsive>
-                  <thead>
-                    <tr>
-                      <>
-                        {this.props.role !== 'Student' && <th></th>}
-                        <th>University</th>
-                        <th>Programs</th>
-                        <th>Deadline</th>
-                      </>
-                      {window.programstatuslist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                      <th>Days left</th>
-                    </tr>
-                  </thead>
-                  <tbody>{applying_university_info}</tbody>
-                </Table>
-                <Button
-                  disabled={!this.state.application_status_changed}
-                  onClick={(e) =>
-                    this.handleSubmit(
-                      e,
-                      this.state.student._id,
-                      this.state.applications
-                    )
-                  }
-                >
-                  Update
-                </Button>
-              </Card.Body>
+              <Row>
+                <Col>
+                  <Table
+                    responsive
+                    className="my-0 mx-0"
+                    variant="dark"
+                    text="light"
+                  >
+                    <thead>
+                      <tr>
+                        <>
+                          {this.props.role !== 'Student' && <th></th>}
+                          <th>University</th>
+                          <th>Programs</th>
+                          <th>Deadline</th>
+                        </>
+                        {window.programstatuslist.map((doc, index) => (
+                          <th key={index}>{doc.name}</th>
+                        ))}
+                        <th>Days left</th>
+                      </tr>
+                    </thead>
+                    <tbody>{applying_university_info}</tbody>
+                  </Table>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={12}>
+                  <Button
+                    disabled={!this.state.application_status_changed}
+                    onClick={(e) =>
+                      this.handleSubmit(
+                        e,
+                        this.state.student._id,
+                        this.state.applications
+                      )
+                    }
+                  >
+                    Update
+                  </Button>
+                </Col>
+              </Row>
             </Card>
             <Modal
               show={this.state.modalDeleteApplication}

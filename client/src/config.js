@@ -14,7 +14,7 @@ export default {
   navFixedLayout: true,
   headerFixedLayout: false, // not available in lite version
   boxLayout: false,
-  navDropdownIcon: "style2", // style1, (style2, style3 are not available in lite version)
+  navDropdownIcon: "style1", // style1, (style2, style3 are not available in lite version)
   navListIcon: "style1", // style1, (style2, style3, style4, style5, style6 are not available in lite version)
   navActiveListColor: "active-default", // active-default, (active-blue, active-red, active-purple, active-lightblue, active-dark are not available in lite version)
   navListTitleColor: "title-default", // title-default, (title-blue, title-red, title-purple, title-lightblue, title-dark are not available in lite version)

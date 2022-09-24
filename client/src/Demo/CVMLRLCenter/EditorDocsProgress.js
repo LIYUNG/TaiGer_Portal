@@ -358,8 +358,8 @@ class EditorDocsProgress extends React.Component {
           <div id="accordion1">
             <Card.Body>
               <Row>
-                <Col md={8}>
-                  <h5>General Documents (CV, Recommendation Letters)</h5>
+                <Col md={8} as="h6">
+                  General Documents (CV, Recommendation Letters)
                 </Col>
               </Row>
               <ManualFiles
@@ -382,12 +382,10 @@ class EditorDocsProgress extends React.Component {
                     application.decided === true ? (
                       <>
                         <Row>
-                          <Col>
-                            <h5>
-                              {application.programId.school}
-                              {' - '}
-                              {application.programId.program_name}
-                            </h5>
+                          <Col as="h6">
+                            {application.programId.school}
+                            {' - '}
+                            {application.programId.program_name}
                           </Col>
                           <Col>
                             {application.programId.essay_requirements !==
@@ -412,11 +410,9 @@ class EditorDocsProgress extends React.Component {
                               <></>
                             )}
                           </Col>
-                          <Col>
-                            <h5>
+                          <Col as="h6">
                               Deadline:{' '}
                               {application.programId.application_deadline}
-                            </h5>
                           </Col>
                         </Row>
                         <ManualFiles

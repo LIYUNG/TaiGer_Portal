@@ -5,6 +5,7 @@ import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { resendActivation } from '../../../api';
+import taiger_logo from '../../../assets/images/taiger_logo.png';
 
 export default function Reactivation(props) {
   // const query = new URLSearchParams(props.location.search);
@@ -50,18 +51,21 @@ export default function Reactivation(props) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <form className="card">
+            <form>
               <div className="card-body text-center">
-                {/* <div className="mb-4">
-                  <i className="feather icon-user-plus auth-icon" />
-                </div> */}
-                <h3 className="mb-4">Confirmation Email sent</h3>
-                <div className="input-group mb-4">
-                  <p className="mb-0 text-muted">
+                <img
+                  className="img-radius"
+                  src={taiger_logo}
+                  alt="Generic placeholder"
+                />
+                <p className="mb-4"></p>
+                <p className="mb-2">Confirmation Email sent</p>
+                <div className="input-group mb-2">
+                  <p className="mb-0 text-success">
                     The new activation link is sent to the following address:
                   </p>
                 </div>
-                <div className="input-group mb-3">
+                {/* <div className="input-group mb-3">
                   <input
                     type="email"
                     className="form-control"
@@ -69,7 +73,8 @@ export default function Reactivation(props) {
                     readonly="readonly"
                     value={props.email}
                   />
-                </div>
+                </div> */}
+                <p className="mb-4 text-muted">{props.email}</p>
               </div>
             </form>
           </div>
@@ -82,11 +87,17 @@ export default function Reactivation(props) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <form className="card" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="card-body text-center">
-                <h3 className="mb-4">Account is not activated</h3>
+                <img
+                  className="img-radius"
+                  src={taiger_logo}
+                  alt="Generic placeholder"
+                />
+                <p className="mb-4"></p>
+                <p className="mb-4">Account is not activated</p>
                 <div className="input-group mb-4">
-                  <p className="mb-0 text-muted">
+                  <p className="mb-0 text-success">
                     Please click "Resend" to receive the new activation link in
                     your email.
                   </p>

@@ -85,18 +85,18 @@ export default function ResetPassword(props) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <div className="auth-bg">
+            {/* <div className="auth-bg">
               <span className="r" />
               <span className="r s" />
               <span className="r s" />
               <span className="r" />
-            </div>
-            <form className="card" onSubmit={handleSubmit}>
+            </div> */}
+            <form onSubmit={handleSubmit}>
               <div className="card-body text-center">
                 <div className="mb-4">
                   <i className="feather icon-user-plus auth-icon" />
                 </div>
-                <h3 className="mb-4">Reset Password</h3>
+                <h3 className="mb-3">Reset Password</h3>
                 <h5 className="mb-3">Enter New Password</h5>
                 <p>
                   Password must contain at least:

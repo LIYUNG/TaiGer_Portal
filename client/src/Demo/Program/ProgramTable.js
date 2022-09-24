@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col } from "react-bootstrap";
 import Card from "../../App/components/MainCard";
 import Aux from "../../hoc/_Aux";
-import Programlist from "./ProgramList";
+import ProgramList from "./ProgramList";
 
 class ProgramTable extends React.Component {
 
@@ -14,7 +14,7 @@ class ProgramTable extends React.Component {
             {this.props.user.role === "Guest" ? (
               <Card>This is for Premium only. Please contact our sales!</Card>
             ) : (
-              <Programlist
+              <ProgramList
                 role={this.props.user.role}
                 userId={this.props.user._id}
               />

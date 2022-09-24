@@ -28,7 +28,7 @@
             List of color for sidebar menu items icon colors
 */
 $header-height: 70px;
-$Menu-width: 264px;
+$Menu-width: 250px;
 $Menu-collapsed-width: 80px;
 
 // color list for build layouts
@@ -50,22 +50,22 @@ $theme-border: #eaeaea;
 
 // header
 $brand-background: #3f4d67;
-$header-dark-background: #3f4d67;
-$header-dark-text-color: #fff;
+$header-dark-background: #000000;
+$header-dark-text-color: #eff1f5;
 $header-light-background: #fff;
 $header-light-text-color: #3f4d67;
 
 // Menu
 $menu-caption-color: #14171d;
-$menu-dark-background: #3f4d67;
-$menu-dark-text-color: #a9b7d0;
+$menu-dark-background: #000000;
+$menu-dark-text-color: #eff1f5;
 $menu-light-background: #fff;
 $menu-light-text-color: #3f4d67;
 $menu-active-color: #04a9f5;
 
 // dark layout colors
 $dark-layout: #212224;
-$dark-layout-font: #adb7be;
+$dark-layout-font: #e2e8ec;
 
 
 // Menu icon
@@ -89,9 +89,9 @@ $layout-6-bg-color:#23b7e5;
 
 $theme-font-family: 'Open Sans', sans-serif;
 $theme-font-size: 14px;
-$theme-background: #f4f7fa;
+$theme-background: #c2c2c2;
 $theme-font-color: #888;
-$theme-heading-color: #111;
+$theme-heading-color: #000000;
 
 $color-name: c-blue,c-red,c-green,c-yellow,c-purple;
 $color-color: $primary-color,$danger-color,$success-color ,$warning-color ,$purple-color;

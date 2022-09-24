@@ -36,6 +36,7 @@ class NoAgentsStudentsCard extends React.Component {
               {this.props.role === 'Admin' && !this.props.isArchivPage && (
                 <td>
                   <DropdownButton
+                    className="my-0 mx-0"
                     size="sm"
                     title="Option"
                     variant="primary"
@@ -55,9 +56,7 @@ class NoAgentsStudentsCard extends React.Component {
               )}
 
               <td>
-                <h6>
-                  {this.props.student.firstname}, {this.props.student.lastname}
-                </h6>
+                {this.props.student.firstname}, {this.props.student.lastname}
               </td>
               <td>{this.props.student.email}</td>
             </tr>

@@ -5,6 +5,7 @@ import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { register } from '../../../api';
+import taiger_logo from '../../../assets/images/taiger_logo.png';
 
 export default function SignUp1({ userData }) {
   const [email, setEmail] = useState();
@@ -49,25 +50,21 @@ export default function SignUp1({ userData }) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div>
-            <form className="card" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="card-body text-center">
-                <div className="mb-4">
-                  <i className="feather icon-user-plus auth-icon" />
-                </div>
-                <h3 className="mb-4">Confirmation Email sent</h3>
-                <div className="input-group mb-4">
-                  <p className="mb-0 text-muted">
+                <img
+                  className="mb-3 img-radius"
+                  src={taiger_logo}
+                  alt="Generic placeholder"
+                />
+                <h3 className="mb-3 text-info">Confirmation Email sent</h3>
+                <div className="input-group mb-3">
+                  <p className="mb-3 text-muted">
                     Please go to your email and activate your registration.
                   </p>
                 </div>
                 <NavLink to="/">
-                  <button className="btn btn-primary shadow-2 mb-4">
+                  <button className="btn btn-success shadow-2 mb-3">
                     Login{' '}
                   </button>
                 </NavLink>
@@ -83,18 +80,14 @@ export default function SignUp1({ userData }) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div>
-            <form className="card" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="card-body text-center">
-                <div className="mb-4">
-                  <i className="feather icon-user-plus auth-icon" />
-                </div>
-                <h3 className="mb-4">Sign up</h3>
+                <img
+                  className="mb-2 img-radius"
+                  src={taiger_logo}
+                  alt="Generic placeholder"
+                />
+                <h3 className="mb-3 text-info">Sign up</h3>
                 <div className="input-group mb-3">
                   <input
                     type="text"
@@ -119,7 +112,7 @@ export default function SignUp1({ userData }) {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <div className="input-group mb-4">
+                <div className="input-group mb-3">
                   <input
                     type="password"
                     className="form-control"
@@ -127,7 +120,7 @@ export default function SignUp1({ userData }) {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <div className="input-group mb-4">
+                <div className="input-group mb-3">
                   <input
                     type="password"
                     className="form-control"
@@ -141,12 +134,14 @@ export default function SignUp1({ userData }) {
                                     <label htmlFor="checkbox-fill-2" className="cr">Send me the <a href={DEMO.BLANK_LINK}> Newsletter</a> weekly.</label>
                                 </div>
                             </div> */}
-                <button className="btn btn-primary shadow-2 mb-4">
+                <button className="btn btn-success shadow-2 mb-3">
                   Sign up
                 </button>
-                <p className="mb-0 text-muted">
-                  Allready have an account?{' '}
-                  <NavLink to="/auth/login">Login</NavLink>
+                <p className="mb-0">
+                  Allready have an account?
+                  <NavLink to="/auth/login">
+                    <p className="mb-0 text-muted">Login</p>Login
+                  </NavLink>
                 </p>
               </div>
             </form>

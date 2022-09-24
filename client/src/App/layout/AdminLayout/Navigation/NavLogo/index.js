@@ -28,7 +28,7 @@ const navLogo = (props) => {
           </Link>
         </a>
         <a
-          href={DEMO.BLANK_LINK}
+          // href={DEMO.BLANK_LINK}
           className={toggleClass.join(' ')}
           id="mobile-collapse"
           onClick={props.onToggleNavigation}

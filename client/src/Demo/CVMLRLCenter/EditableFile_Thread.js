@@ -7,7 +7,7 @@ import {
   AiOutlineDelete,
   AiOutlineCheck,
   // AiOutlineComment,
-  AiOutlineUndo,
+  AiOutlineUndo
   // AiFillMessage
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
@@ -59,7 +59,7 @@ class EditableFile_Thread extends Component {
         school_program_name +
         ' ' +
         this.props.thread.doc_thread_id.file_type;
-        // program_deadline = this.props.application.programId.application_deadline
+      // program_deadline = this.props.application.programId.application_deadline
     } else {
       documenName =
         this.props.student.firstname +
@@ -125,7 +125,7 @@ class EditableFile_Thread extends Component {
             )}
           </Col>
 
-          <Col md={4}>
+          <Col md={6}>
             <Link
               to={
                 '/document-modification/' + this.props.thread.doc_thread_id._id
@@ -158,16 +158,6 @@ class EditableFile_Thread extends Component {
               </Button>
             </Col>
           )}
-          {/* <Col md={1}>
-            <Button
-              size="sm"
-              title="Delete"
-              variant="danger"
-              onClick={this.handleDeleteFileThread}
-            >
-              <AiOutlineDelete size={20} />
-            </Button>
-          </Col> */}
         </Row>
       </>
     );

@@ -5,6 +5,7 @@ import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { activation, resendActivation } from '../../../api';
+import taiger_logo from '../../../assets/images/taiger_logo.png';
 
 export default function Activation(props) {
   const query = new URLSearchParams(props.location.search);
@@ -54,11 +55,16 @@ export default function Activation(props) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <form className="card">
+            <form>
               <div className="card-body text-center">
-                <h3 className="mb-4">Account activated</h3>
+                <img
+                  className="img-radius"
+                  src={taiger_logo}
+                  alt="Generic placeholder"
+                />
+                <p className="mb-4">Account activated</p>
                 <div className="input-group mb-4">
-                  <p className="mb-0 text-muted">
+                  <p className="mb-0 text-success">
                     You have activated the account successfully!
                   </p>
                 </div>
@@ -81,17 +87,21 @@ export default function Activation(props) {
           <Breadcrumb />
           <div className="auth-wrapper">
             <div className="auth-content">
-              <form className="card">
+              <form>
                 <div className="card-body text-center">
-                  {/* <div className="mb-4">
-                  <i className="feather icon-user-plus auth-icon" />
-                </div> */}
-                  <h3 className="mb-4">Confirmation Email sent</h3>
-                  <div className="input-group mb-4">
-                    <p className="mb-0 text-muted">
+                  <img
+                    className="img-radius"
+                    src={taiger_logo}
+                    alt="Generic placeholder"
+                  />
+                  <p className="mb-4"></p>
+                  <p className="mb-2">Confirmation Email sent</p>
+                  <div className="input-group mb-2">
+                    <p className="mb-0 text-success">
                       The new activation link is sent to the following address:
                     </p>
                   </div>
+                  <p className="mb-4 text-muted">{email}</p>
                 </div>
               </form>
             </div>
@@ -104,9 +114,15 @@ export default function Activation(props) {
           <Breadcrumb />
           <div className="auth-wrapper">
             <div className="auth-content">
-              <form className="card">
+              <form>
                 <div className="card-body text-center">
-                  <h3 className="mb-4">Link Expired</h3>
+                  <img
+                    className="img-radius"
+                    src={taiger_logo}
+                    alt="Generic placeholder"
+                  />
+                  <p className="mb-4"></p>
+                  <p className="mb-4">Link Expired</p>
                   <div className="input-group mb-4">
                     <p className="mb-0 text-muted">
                       The activation link is expired. Please request another

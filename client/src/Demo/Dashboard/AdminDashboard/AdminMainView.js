@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
-import Card from '../../../App/components/MainCard';
+import { Row, Card, Col, Table, Tabs, Tab } from 'react-bootstrap';
+// import Card from '../../../App/components/MainCard';
 import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
 // import AdminTodoList from './AdminTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
@@ -64,10 +64,20 @@ class AdminMainView extends React.Component {
     ));
     return (
       <>
-        <Row>
-          <Col sm={6}>
-            <Card title="No Agents Students">
-              <Table responsive>
+        <Row className="mb-2">
+          <Col md={6} className="mx-0">
+            <Card className="my-0 mx-0" bg={'danger'} text={'white'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">
+                  No Agents Students
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                variant="dark"
+                text="light"
+                className="my-0 mx-0"
+              >
                 <thead>
                   <tr>
                     <th></th>
@@ -79,9 +89,19 @@ class AdminMainView extends React.Component {
               </Table>
             </Card>
           </Col>
-          <Col sm={6}>
-            <Card title="No Editors Students">
-              <Table responsive>
+          <Col md={6} className="mx-0">
+            <Card className="my-0 mx-0" bg={'danger'} text={'white'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">
+                  No Editors Students
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
                 <thead>
                   <tr>
                     <th></th>
@@ -94,16 +114,22 @@ class AdminMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row>
-          <Col sm={12}>
-            <Card title="Program Conflicts">
+        <Row className="mb-2">
+          <Col md={12}>
+            <Card className="my-0 mx-0">
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">Program Conflicts</Card.Title>
+              </Card.Header>
               <TabProgramConflict students={this.props.students} />
             </Card>
           </Col>
         </Row>
-        <Row>
+        <Row className="mb-2">
           <Col md={12}>
-            <Card title="Agent Reviewing:">
+            <Card className="my-0 mx-0">
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">Agent Reviewing:</Card.Title>
+              </Card.Header>
               <Table responsive bordered hover>
                 <thead>
                   <tr>

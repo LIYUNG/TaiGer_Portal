@@ -308,7 +308,7 @@ class Dashboard extends React.Component {
           <Aux>
             <Row>
               <Col>
-                <Card>
+                <Card className="my-0 mx-0">
                   <Card.Body>
                     {this.props.user.role === 'Admin' ||
                     this.props.user.role === 'Agent' ||

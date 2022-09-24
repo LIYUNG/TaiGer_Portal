@@ -91,13 +91,6 @@ export default function Signin1({ setUserdata }) {
       <Aux>
         <div className="auth-wrapper">
           <div className="auth-content">
-            {/* <div className="auth-bg">
-            <span className="r" />
-            <span className="r s" />
-            <span className="r s" />
-            <span className="r" />
-          </div> */}
-
             <form>
               <div className="card-body text-center">
                 <img
@@ -105,10 +98,6 @@ export default function Signin1({ setUserdata }) {
                   src={taiger_logo}
                   alt="Generic placeholder"
                 />
-                {/* <div className="mb-4">
-                  <i className="feather icon-unlock auth-icon" />
-                </div> */}
-                {/* <h3 className="mb-4"> TaiGer - Portal</h3> */}
                 <p className="mb-4"></p>
                 <div className="input-group mb-3">
                   <input
@@ -132,17 +121,17 @@ export default function Signin1({ setUserdata }) {
                   disabled={!emailaddress || !password}
                   onClick={(e) => onButtonClick(e, true)}
                   type="submit"
-                  className="btn btn-primary shadow-2 mb-4"
+                  className="btn btn-success shadow-2 mb-2"
                 >
                   Login
                 </button>
                 <p className="mb-2">
-                  Forgot password?{' '}
-                  <NavLink to="/account/forgot-password">Reset</NavLink>
+                  Forgot password?
+                  <NavLink to="/account/forgot-password"><p className="text-muted">Reset</p></NavLink>
                 </p>
                 <p className="mb-2">
-                  Don’t have an account?{' '}
-                  <NavLink to="/auth/sign-up">Sign up</NavLink>
+                  New in TaiGer Portal?
+                  <NavLink to="/auth/sign-up"><p className="text-muted">Sign up</p></NavLink>
                 </p>
               </div>
             </form>

@@ -54,9 +54,7 @@ class NoEditorsStudentsCard extends React.Component {
                 </td>
               )}
               <td>
-                <h6>
-                  {this.props.student.firstname}, {this.props.student.lastname}
-                </h6>
+                {this.props.student.firstname}, {this.props.student.lastname}
               </td>
               <td>{this.props.student.email}</td>
             </tr>

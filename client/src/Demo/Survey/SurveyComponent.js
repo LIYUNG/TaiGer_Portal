@@ -164,9 +164,9 @@ class SurveyComponent extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card>
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title as="h5">Academic Background Surney</Card.Title>
+                <Card.Title>Academic Background Surney</Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
@@ -389,7 +389,7 @@ class SurveyComponent extends React.Component {
                 <Row>
                   <Col md={10}>
                     <br />
-                    <br />
+                    {/* <br /> */}
                     Last update at:{' '}
                     {this.state.academic_background.university &&
                     this.state.academic_background.university.updatedAt
@@ -402,7 +402,8 @@ class SurveyComponent extends React.Component {
                         ).toLocaleTimeString()
                       : ''}
                   </Col>
-                  {this.props.role === 'Student' ? (
+                  {this.props.role === 'Student' ||
+                  this.props.role === 'Guest' ? (
                     <Col md={2}>
                       <br />
                       <Button
@@ -425,9 +426,9 @@ class SurveyComponent extends React.Component {
                 </Row>
               </Card.Body>
             </Card>
-            <Card>
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title as="h5">Languages</Card.Title>
+                <Card.Title>Languages</Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
@@ -591,7 +592,7 @@ class SurveyComponent extends React.Component {
                 <Row>
                   <Col md={10}>
                     <br />
-                    <br />
+                    {/* <br /> */}
                     Last update at:{' '}
                     {this.state.academic_background.language &&
                     this.state.academic_background.language.updatedAt
@@ -604,7 +605,8 @@ class SurveyComponent extends React.Component {
                         ).toLocaleTimeString()
                       : ''}
                   </Col>
-                  {this.props.role === 'Student' ? (
+                  {this.props.role === 'Student' ||
+                  this.props.role === 'Guest' ? (
                     <Col md={2}>
                       <br />
                       <Button
@@ -631,29 +633,38 @@ class SurveyComponent extends React.Component {
         </Row>
         <Row>
           <Col>
-            <Card>
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title as="h5">Application Preference</Card.Title>
+                <Card.Title>Application Preference</Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
                   <Col md={6}>
                     <Form>
-                      <Form.Group controlId="form.firstname">
+                      <Form.Group
+                        controlId="form.firstname"
+                        className="my-0 mx-0"
+                      >
                         <Form.Label>Target Application Fields</Form.Label>
                         <Form.Control
                           type="text"
                           placeholder="M.Sc. Data Science, MBA, etc."
                         />
                       </Form.Group>
-                      <Form.Group controlId="exampleForm.ControlSelect1">
+                      <Form.Group
+                        controlId="exampleForm.ControlSelect1"
+                        className="my-4 mx-0"
+                      >
                         <Form.Label>Universities outsid Germany?</Form.Label>
                         <Form.Control as="select" defaultValue="No">
                           <option>Yes</option>
                           <option>No</option>
                         </Form.Control>
                       </Form.Group>
-                      <Form.Group controlId="exampleForm.ControlSelect1">
+                      <Form.Group
+                        controlId="exampleForm.ControlSelect1"
+                        className="my-0 mx-0"
+                      >
                         <Form.Label>
                           Considering Private Universities? (Tuition Fee)
                         </Form.Label>
@@ -663,15 +674,16 @@ class SurveyComponent extends React.Component {
                         </Form.Control>
                       </Form.Group>
                     </Form>
+                    {this.props.role === 'Student' ||
+                    this.props.role === 'Guest' ? (
+                      <Col md={6}>
+                        <br />
+                        <Button variant="primary">Update</Button>
+                      </Col>
+                    ) : (
+                      <></>
+                    )}
                   </Col>
-                  {this.props.role === 'Student' ? (
-                    <Col md={6}>
-                      <br />
-                      <Button variant="primary">Update</Button>
-                    </Col>
-                  ) : (
-                    <></>
-                  )}
                 </Row>
               </Card.Body>
             </Card>

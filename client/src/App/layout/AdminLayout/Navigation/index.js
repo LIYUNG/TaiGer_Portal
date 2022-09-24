@@ -133,7 +133,6 @@ class Navigation extends Component {
               user={this.props.userdata}
               navigation={navigation_all.items}
             />
-            ;
           </div>
         </OutsideClick>
       );

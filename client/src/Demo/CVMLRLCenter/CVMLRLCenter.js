@@ -150,23 +150,21 @@ class CVMLRLCenter extends React.Component {
       <Aux>
         <Row className="sticky-top ">
           <Card className="mt-0">
-            <Card.Header>
+            <Card.Header text={'dark'}>
               <Card.Title as="h5">
                 <Row>
-                  <Col>
-                    <h4>CV/ML/RL Center</h4>
-                  </Col>
+                  <Col>CV/ML/RL Center</Col>
                   <Col md={{ span: 2, offset: 0 }}>
                     {this.state.expand ? (
                       <Button
-                        className="btn-sm"
+                        size="sm"
                         onClick={() => this.AllCollapsetHandler()}
                       >
                         Collaspse
                       </Button>
                     ) : (
                       <Button
-                        className="btn-sm"
+                        size={'sm'}
                         onClick={() => this.AllExpandtHandler()}
                       >
                         Expand

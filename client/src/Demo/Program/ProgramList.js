@@ -86,9 +86,10 @@ function GlobalFilter({
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder={`${count} records...`}
+        // placeholder={`${count} records...`}
+        placeholder={` TU Munich, Management ...`}
         style={{
-          fontSize: '1.1rem',
+          fontSize: '0.9rem',
           border: '0'
         }}
       />
@@ -448,7 +449,14 @@ function Table2({ columns, data, userId }) {
           </DropdownButton>
         </>
       )}
-      <Table responsive hover {...getTableProps()}>
+      <Table
+        className="my-0 mx-2"
+        variant="dark"
+        text="light"
+        responsive
+        hover
+        {...getTableProps()}
+      >
         {/* <table {...getTableProps()}> */}
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -626,7 +634,7 @@ function filterGreaterThan(rows, id, filterValue) {
 // check, but here, we want to remove the filter if it's not a number
 filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
-function Programlist(props) {
+function ProgramList(props) {
   let [statedata, setStatedata] = useState({
     success: false,
     programs: null,
@@ -677,7 +685,7 @@ function Programlist(props) {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Programlist',
+        Header: 'Program Database',
         columns: [
           {
             Header: 'University',
@@ -763,19 +771,19 @@ function Programlist(props) {
 
   return (
     // <Styles>
-    <Card>
-      <Card.Body>
+    <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+      {/* <Card.Body> */}
         {/* <Table responsive border hover> */}
-          <Table2
-            columns={columns}
-            data={statedata.programs}
-            userId={props.userId}
-          />
+        <Table2
+          columns={columns}
+          data={statedata.programs}
+          userId={props.userId}
+        />
         {/* </Table> */}
-      </Card.Body>
+      {/* </Card.Body> */}
     </Card>
     // </Styles>
   );
 }
 
-export default Programlist;
+export default ProgramList;

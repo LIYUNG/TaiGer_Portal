@@ -171,9 +171,9 @@ class Settings extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card>
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title as="h5">Personal Data</Card.Title>
+                <Card.Title>Personal Data</Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
@@ -191,21 +191,18 @@ class Settings extends React.Component {
                     <br />
                     <Form.Group className="mb-2">
                       <Form.Label>Email</Form.Label>
-                      <Form.Control
+                      {/* <Form.Control
                         plaintext
                         readOnly
                         defaultValue={this.props.user.email}
-                      />
+                      /> */}
+                      <p className="text-primary">{this.props.user.email}</p>
                     </Form.Group>
+                    {/* <p>{this.props.user.email}</p> */}
                     {/* <Form.Group controlId="birthday">
                       <Form.Label>Birthday Date</Form.Label>
                       <Form.Control type="date" placeholder="Date of Birth" />
                     </Form.Group> */}
-                    {/* <Form.Group controlId="form.BasicPassword">
-                      <Form.Label>Password</Form.Label>
-                      <Form.Control type="password" placeholder="Password" />
-                    </Form.Group> */}
-                    {/* </Form> */}
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="lastname">
@@ -250,12 +247,12 @@ class Settings extends React.Component {
         </Row>
         <Row>
           <Col md={6}>
-            <Card>
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title as="h5">Login</Card.Title>
+                <Card.Title>Login</Card.Title>
               </Card.Header>
               <Card.Body>
-                <Row>
+                <Row className="my-0 mx-0">
                   <Col>
                     {/* <Form> */}
                     <Form.Group controlId="current_password">
@@ -271,7 +268,7 @@ class Settings extends React.Component {
                     </Form.Group>
                   </Col>
                 </Row>
-                <Row>
+                <Row className="my-4 mx-0">
                   <Col>
                     <Form.Group controlId="new_password">
                       <Form.Label>New Password</Form.Label>
@@ -286,7 +283,7 @@ class Settings extends React.Component {
                     </Form.Group>
                   </Col>
                 </Row>
-                <Row>
+                <Row className="my-0 mx-0">
                   <Col>
                     <Form.Group controlId="new_password_again">
                       <Form.Label>Enter New Password Again</Form.Label>

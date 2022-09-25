@@ -37,7 +37,7 @@ const route = [
     component: ResetPasswordRequest
   },
   {
-    path: '/auth/login',
+    path: '/login',
     exact: true,
     name: 'Login',
     component: Signin1

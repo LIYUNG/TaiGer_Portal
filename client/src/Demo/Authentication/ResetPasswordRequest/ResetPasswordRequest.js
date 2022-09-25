@@ -60,7 +60,7 @@ export default function ResetPasswordRequest() {
                 </div>
                 <p className="mb-2 text-light">
                   Allready have an account?{' '}
-                  <NavLink to="/auth/login">
+                  <NavLink to="/login">
                     <p className="text-muted">Login</p>
                   </NavLink>
                 </p>
@@ -102,7 +102,7 @@ export default function ResetPasswordRequest() {
                 </button>
                 <p className="mb-2 text-light"></p>
                 Allready have an account?{' '}
-                <NavLink to="/auth/login">
+                <NavLink to="/login">
                   <p className="text-muted">Login</p>
                 </NavLink>
               </div>

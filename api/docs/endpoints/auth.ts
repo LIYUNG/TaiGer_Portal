@@ -12,7 +12,7 @@ import {
   ResetPasswordRequest,
 } from "../types";
 
-@endpoint({ method: "POST", path: "/auth/signup" })
+@endpoint({ method: "POST", path: "/auth/sign-up" })
 class SignUp {
   @request
   request(@body body: SignUpRequest) {}
@@ -21,7 +21,7 @@ class SignUp {
   successfulResponse(@body body: SignUpResponse) {}
 }
 
-@endpoint({ method: "POST", path: "/auth/login" })
+@endpoint({ method: "POST", path: "/login" })
 class Login {
   @request
   request(@body body: LoginRequest) {}

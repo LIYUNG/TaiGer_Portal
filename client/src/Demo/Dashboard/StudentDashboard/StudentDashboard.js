@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Table, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 // import Card from '../../../App/components/MainCard';
 import StudentMyself from './StudentMyself';
 import AgentReviewing_StudentView from '../MainViewTab/AgentReview/AgentReviewing_StudentView';
@@ -97,9 +98,6 @@ class StudentDashboard extends React.Component {
     };
   }
 
-  // handleAddEvent = () => {
-  //   setState((state) => ({ ...state, allEvents }));
-  // };
   onHorizonChange = (start, end) => {
     //Return data the is in the range
     let result = this.data.filter((item) => {
@@ -111,7 +109,22 @@ class StudentDashboard extends React.Component {
     });
     this.setState({ data: result });
   };
-
+  check_survey_filled = (student) => {
+    if (
+      !student.academic_background ||
+      !student.academic_background.university ||
+      !student.academic_background.language
+    ) {
+      return false;
+    }
+    if (
+      !student.academic_background.university.expected_application_date ||
+      !student.academic_background.university.expected_application_semester
+    ) {
+      return false;
+    }
+    return true;
+  };
   render() {
     const stdlist = this.props.students.map((student, i) => (
       <StudentMyself
@@ -179,9 +192,25 @@ class StudentDashboard extends React.Component {
         student={student}
       />
     ));
+    const student = this.props.students[0];
 
     return (
       <>
+        {!this.check_survey_filled(student) && (
+          <Row>
+            <Col>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  <b>Reminder:</b> It looks like you did not finish survey:{' '}
+                  <Link to={'/survey'} style={{ textDecoration: 'none' }}>
+                    Survey
+                  </Link>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
+
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>

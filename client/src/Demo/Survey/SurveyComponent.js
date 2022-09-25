@@ -366,29 +366,25 @@ class SurveyComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="bayerische_formel">
                       <Form.Label>Corresponding German GPA System:</Form.Label>
-                      <Form.Control
-                        plaintext
-                        readOnly
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .My_GPA_Uni &&
-                          this.state.academic_background.university
-                            .Passing_GPA_Uni &&
-                          this.state.academic_background.university
-                            .Highest_GPA_Uni
-                            ? this.Bayerische_Formel(
-                                this.state.academic_background.university
-                                  .Highest_GPA_Uni,
-                                this.state.academic_background.university
-                                  .Passing_GPA_Uni,
-                                this.state.academic_background.university
-                                  .My_GPA_Uni
-                              )
-                            : 0
-                        }
-                      />
+                      <p className="text-info">
+                        {this.state.academic_background.university &&
+                        this.state.academic_background.university.My_GPA_Uni &&
+                        this.state.academic_background.university
+                          .Passing_GPA_Uni &&
+                        this.state.academic_background.university
+                          .Highest_GPA_Uni
+                          ? this.Bayerische_Formel(
+                              this.state.academic_background.university
+                                .Highest_GPA_Uni,
+                              this.state.academic_background.university
+                                .Passing_GPA_Uni,
+                              this.state.academic_background.university
+                                .My_GPA_Uni
+                            )
+                          : 0}
+                      </p>
                     </Form.Group>
+
                     <br />
                   </Col>
                 </Row>

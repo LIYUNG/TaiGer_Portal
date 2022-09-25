@@ -138,7 +138,7 @@ export default function SignUp1({ userData }) {
                   Sign up
                 </button>
                 <p className="mb-0 text-light">Allready have an account?</p>
-                <NavLink to="/auth/login">
+                <NavLink to="/login">
                   <p className="mb-0 text-muted">Login</p>Login
                 </NavLink>
               </div>

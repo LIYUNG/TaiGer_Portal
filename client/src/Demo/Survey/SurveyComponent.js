@@ -4,10 +4,14 @@ import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import { updateAcademicBackground, updateLanguageSkill } from '../../api';
 import { convertDate } from '../Utils/contants';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
 class SurveyComponent extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     role: '',
     isLoaded: this.props.isLoaded,
     student_id: this.props.student_id,
@@ -81,7 +85,11 @@ class SurveyComponent extends React.Component {
             updateconfirmed: true
           }));
         } else {
-          alert(resp.data.message);
+         if (resp.status === 401) {
+           this.setState({ isLoaded: true, timeouterror: true });
+         } else if (resp.status === 403) {
+           this.setState({ isLoaded: true, unauthorizederror: true });
+         }
         }
       },
       (error) => {
@@ -111,7 +119,11 @@ class SurveyComponent extends React.Component {
             updateconfirmed: true
           }));
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -143,20 +155,29 @@ class SurveyComponent extends React.Component {
   };
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
     const style = {
       position: 'fixed',
       top: '40%',
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    if (error) {
-      return (
-        <div>
-          Error: your session is timeout! Please refresh the page and Login
-        </div>
-      );
-    }
+
     if (!isLoaded) {
       return (
         <div style={style}>

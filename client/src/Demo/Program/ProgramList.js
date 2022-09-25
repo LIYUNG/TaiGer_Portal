@@ -703,7 +703,12 @@ function ProgramList(props) {
             // Use our custom `fuzzyText` filter on this column
             filter: 'fuzzyText'
           },
-
+          {
+            Header: 'Semester',
+            accessor: 'semester',
+            Filter: SelectColumnFilter,
+            filter: 'includes'
+          },
           {
             Header: 'TOEFL',
             accessor: 'toefl'

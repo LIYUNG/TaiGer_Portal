@@ -17,8 +17,6 @@ import {
   Table,
   Row,
   Col,
-  DropdownButton,
-  Dropdown,
   Spinner,
   Card
 } from 'react-bootstrap';
@@ -652,9 +650,6 @@ function AdmissionsTable(props) {
             lastname: student.lastname,
             year: student.academic_background.university
               .expected_application_date,
-            semester:
-              student.academic_background.university
-                .expected_application_semester,
             school: application.programId.school,
             program_name: application.programId.program_name,
             semester: application.programId.semester
@@ -667,9 +662,6 @@ function AdmissionsTable(props) {
             lastname: student.lastname,
             year: student.academic_background.university
               .expected_application_date,
-            semester:
-              student.academic_background.university
-                .expected_application_semester,
             school: application.programId.school,
             program_name: application.programId.program_name,
             semester: application.programId.semester
@@ -682,9 +674,6 @@ function AdmissionsTable(props) {
             lastname: student.lastname,
             year: student.academic_background.university
               .expected_application_date,
-            semester:
-              student.academic_background.university
-                .expected_application_semester,
             school: application.programId.school,
             program_name: application.programId.program_name,
             semester: application.programId.semester

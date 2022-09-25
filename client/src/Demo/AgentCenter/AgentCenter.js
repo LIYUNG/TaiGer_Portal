@@ -3,14 +3,9 @@ import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import DEMO from '../../store/constant';
 import EditFilesSubpage from './EditFilesSubpage';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
 import {
   uploadforstudent,
@@ -22,6 +17,8 @@ import {
 class AgentCenter extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     isLoaded: false,
     data: null,
     success: false,
@@ -38,7 +35,7 @@ class AgentCenter extends React.Component {
       this.props.user.students &&
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-        : [0], // to expand all]
+        : [0] // to expand all]
     // accordionKeys:
     //   this.props.user.students &&
     //   new Array(this.props.user.students.length).fill().map((x, i) => i)
@@ -53,12 +50,19 @@ class AgentCenter extends React.Component {
           this.setState({
             isLoaded: true,
             students: data,
-            success: success,
+            success: success
             // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
             // accordionKeys: new Array(-1, data.length) // to collapse all
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -110,9 +114,9 @@ class AgentCenter extends React.Component {
     // );
     var students = [...this.state.students];
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
-      (res) => {
-        students[student_arrayidx] = res.data.data;
-        const { success } = res.data;
+      (resp) => {
+        students[student_arrayidx] = resp.data.data;
+        const { success } = resp.data;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -121,11 +125,14 @@ class AgentCenter extends React.Component {
             isLoaded: true
           }));
         } else {
-          alert(res.data.message);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true
-          }));
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -148,10 +155,10 @@ class AgentCenter extends React.Component {
     let idx = student.profile.findIndex((doc) => doc.name === category);
     let students = [...this.state.students];
     deleteFile(category, student_id).then(
-      (res) => {
-        const { data, success } = res.data;
+      (resp) => {
+        const { data, success } = resp.data;
         students[student_arrayidx].profile[idx] = data;
-        // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
+        // std.profile[idx] = resp.data.data; // resp.data = {success: true, data:{...}}
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -163,11 +170,14 @@ class AgentCenter extends React.Component {
             deleteFileWarningModel: false
           }));
         } else {
-          alert(res.data.message);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true
-          }));
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -220,7 +230,14 @@ class AgentCenter extends React.Component {
             link.parentNode.removeChild(link);
           }
         } else {
-          alert('resp.data.message');
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -245,26 +262,29 @@ class AgentCenter extends React.Component {
       isLoaded: false
     }));
     uploadforstudent(category, student_id, formData).then(
-      (res) => {
+      (resp) => {
         let students = [...this.state.students];
-        const { data, success } = res.data;
+        const { data, success } = resp.data;
         students[student_arrayidx] = data;
 
         if (success) {
           this.setState((state) => ({
             ...state,
-            students: students, // res.data = {success: true, data:{...}}
+            students: students, // resp.data = {success: true, data:{...}}
             success,
             category: '',
             isLoaded: true,
             file: ''
           }));
         } else {
-          alert(res.data.message);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true
-          }));
+           if (resp.status === 401) {
+             this.setState({ isLoaded: true, timeouterror: true });
+           } else if (resp.status === 403) {
+             this.setState({
+               isLoaded: true,
+               unauthorizederror: true
+             });
+           }
         }
       },
       (error) => {
@@ -277,21 +297,30 @@ class AgentCenter extends React.Component {
   };
 
   render() {
-    const { error, isLoaded } = this.state;
-   
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
     const style = {
       position: 'fixed',
       top: '40%',
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    if (error) {
-      return (
-        <div>
-          Error: your session is timeout! Please refresh the page and Login
-        </div>
-      );
-    }
+
     if (!isLoaded && !this.state.students) {
       return (
         <div style={style}>

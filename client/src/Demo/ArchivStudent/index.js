@@ -1,17 +1,8 @@
 import React from 'react';
 import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
-// import DEMO from "../../store/constant";
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
 import TabStudDocsDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard';
-// import Card from "../../App/components/MainCard";
-import {SYMBOL_EXPLANATION} from '../Utils/contants'
+import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import {
   getArchivStudents,
   updateArchivStudents,
@@ -21,10 +12,14 @@ import {
   updateEditors
   // deleteFile
 } from '../../api';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
 class Dashboard extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     modalShow: false,
     agent_list: [],
     editor_list: [],
@@ -43,7 +38,11 @@ class Dashboard extends React.Component {
         if (success) {
           this.setState({ isLoaded: true, students: data, success: success });
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -186,12 +185,19 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { error, isLoaded } = this.state;
-  
-    if (error) {
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }

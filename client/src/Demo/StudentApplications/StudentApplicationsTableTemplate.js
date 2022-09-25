@@ -36,8 +36,7 @@ class StudentApplicationsTableTemplate extends React.Component {
   handleChange = (e, application_idx) => {
     e.preventDefault();
     let applications_temp = [...this.state.applications];
-    applications_temp[application_idx][e.target.id] =
-      e.target.value === 'O' ? true : false;
+    applications_temp[application_idx][e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
       application_status_changed: true,
@@ -302,14 +301,11 @@ class StudentApplicationsTableTemplate extends React.Component {
                   disabled={
                     !(application.closed !== undefined && application.closed)
                   }
-                  defaultValue={
-                    application.admission !== undefined && application.admission
-                      ? 'O'
-                      : 'X'
-                  }
+                  defaultValue={application.admission}
                 >
-                  <option value={'X'}>No</option>
-                  <option value={'O'}>Yes</option>
+                  <option value={'-'}>-</option>
+                  <option value={'false'}>No</option>
+                  <option value={'true'}>Yes</option>
                 </Form.Control>
               </Form.Group>
             </td>

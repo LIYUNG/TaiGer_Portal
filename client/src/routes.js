@@ -51,6 +51,7 @@ const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
 const Statistics = React.lazy(() =>
   import("./Demo/Statistics/Nvd3Chart/index")
 );
+const Admissions = React.lazy(() => import('./Demo/Admissions/Admissions'));
 const StudentDatabase = React.lazy(() =>
   import("./Demo/StudentDatabase/index")
 );
@@ -88,6 +89,12 @@ const routes = [
     exact: true,
     name: 'Dashboard',
     component: DashboardDefault
+  },
+  {
+    path: '/admissions-overview',
+    exact: true,
+    name: 'Admissions',
+    component: Admissions
   },
   {
     path: '/archiv/students',

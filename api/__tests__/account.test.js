@@ -688,39 +688,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //       .populate('applications.programId')
 //       .lean()
 //       .exec();
-//     var editoroutput_idx = updatedStudent.generaldocs.editoroutputs.findIndex(
-//       ({ name }) => name.includes(fileCategory)
-//     );
-
-//     var version_number = 1;
-//     var same_file_name = true;
-//     while (same_file_name) {
-//       temp_name =
-//         student.lastname +
-//         '_' +
-//         student.firstname +
-//         '_' +
-//         fileCategory +
-//         '_v' +
-//         version_number +
-//         `${path.extname(
-//           updatedStudent.generaldocs.editoroutputs[editoroutput_idx].path
-//         )}`;
-//       temp_name = temp_name.replace(/ /g, '_');
-
-//     }
-
-//     // expect(
-//     //   updatedStudent.applications[appl_idx].documents[doc_idx].name
-//     // ).toMatchObject({
-//     //   // path: expect.not.stringMatching(/^$/),
-//     //   name: docName,
-//     //   // status: DocumentStatus.Uploaded,
-//     // });
-//     file_name_inDB = path.basename(
-//       updatedStudent.generaldocs.editoroutputs[editoroutput_idx].path
-//     );
-//     expect(file_name_inDB).toBe(temp_name);
 
 //     // Test Download:
 
@@ -737,12 +704,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //       .populate('applications.programId')
 //       .lean()
 //       .exec();
-//     var editoroutput2_idx = updatedStudent.generaldocs.editoroutputs.findIndex(
-//       ({ name }) => name.includes(fileCategory)
-//     );
-//     expect(
-//       updated2Student.generaldocs.editoroutputs[editoroutput2_idx].feedback
-//     ).toBe('My comments');
 
 //     // Mark as final documents
 //     const resp6 = await request(app).put(
@@ -812,50 +773,16 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //       .populate('applications.programId')
 //       .lean()
 //       .exec();
-//     var studentinput_idx = updatedStudent.generaldocs.studentinputs.findIndex(
-//       ({ name }) => name.includes(fileCategory)
-//     );
 
 //     var version_number = 1;
 //     var same_file_name = true;
-//     while (same_file_name) {
-//       // console.log(application.programId);
-//       temp_name =
-//         student.lastname +
-//         '_' +
-//         student.firstname +
-//         '_' +
-//         fileCategory +
-//         '_v' +
-//         version_number +
-//         `${path.extname(
-//           updatedStudent.generaldocs.studentinputs[studentinput_idx].path
-//         )}`;
-//       temp_name = temp_name.replace(/ /g, '_');
-//     }
 
-//     // expect(
-//     //   updatedStudent.applications[appl_idx].documents[doc_idx].name
-//     // ).toMatchObject({
-//     //   // path: expect.not.stringMatching(/^$/),
-//     //   name: docName,
-//     //   // status: DocumentStatus.Uploaded,
-//     // });
-//     file_name_inDB = path.basename(
-//       updatedStudent.generaldocs.studentinputs[studentinput_idx].path
-//     );
 //     expect(file_name_inDB).toBe(temp_name);
 
 //     var updated2Student = await Student.findById(studentId)
 //       .populate('applications.programId')
 //       .lean()
 //       .exec();
-//     var studentinput2_idx = updatedStudent.generaldocs.studentinputs.findIndex(
-//       ({ name }) => name.includes(fileCategory)
-//     );
-//     expect(
-//       updated2Student.generaldocs.studentinputs[studentinput2_idx].feedback
-//     ).toBe('My comments2');
 
 //     // Test Download:
 

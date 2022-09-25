@@ -5,13 +5,13 @@ import Aux from '../../hoc/_Aux';
 // import avatar1 from "../../assets/images/user/avatar-1.jpg";
 // import avatar2 from "../../assets/images/user/avatar-2.jpg";
 // import avatar3 from "../../assets/images/user/avatar-3.jpg";
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
+// import {
+//   AiFillCloseCircle,
+//   AiFillQuestionCircle,
+//   AiOutlineFieldTime
+// } from 'react-icons/ai';
+// import { IoCheckmarkCircle } from 'react-icons/io5';
+// import { BsDash } from 'react-icons/bs';
 import AdminMainView from './AdminDashboard/AdminMainView';
 import AgentMainView from './AgentDashboard/AgentMainView';
 import EditorMainView from './EditorDashboard/EditorMainView';
@@ -59,9 +59,9 @@ class Dashboard extends React.Component {
             success: success
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
           }
         }
@@ -87,9 +87,9 @@ class Dashboard extends React.Component {
               success: success
             });
           } else {
-            if (resp.status == 401) {
+            if (resp.status === 401) {
               this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status == 403) {
+            } else if (resp.status === 403) {
               this.setState({ isLoaded: true, unauthorizederror: true });
             }
           }
@@ -110,9 +110,9 @@ class Dashboard extends React.Component {
         const { success } = resp;
         if (success) {
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true
@@ -149,9 +149,9 @@ class Dashboard extends React.Component {
         const { success } = resp;
         if (success) {
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true
@@ -230,9 +230,9 @@ class Dashboard extends React.Component {
             updateAgentList: []
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true
@@ -264,9 +264,9 @@ class Dashboard extends React.Component {
             updateAgentList: []
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true
@@ -292,9 +292,9 @@ class Dashboard extends React.Component {
             success: success
           }));
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
+          } else if (resp.status === 403) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true
@@ -331,9 +331,9 @@ class Dashboard extends React.Component {
             isLoaded: true
           }));
         } else {
-          if (res.status == 401) {
+          if (res.status === 401) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (res.status == 403) {
+          } else if (res.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
           }
         }

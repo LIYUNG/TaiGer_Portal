@@ -88,7 +88,7 @@ class Settings extends React.Component {
     }
     updateCredentials(credentials, email, credentials.current_password).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { success } = resp.data;
         if (success) {
           this.setState((state) => ({
             ...state,

@@ -359,122 +359,6 @@ const upload_transcript_s3 = multer({
   }
 });
 
-// General docs: CV
-const storage_general_s3 = multerS3({
-  s3: s3,
-  bucket: function (req, file, cb) {
-    var { studentId } = req.params;
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId and applicationId exist
-    var directory = path.join(AWS_S3_BUCKET_NAME, studentId, some_str());
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
-  },
-  metadata: function (req, file, cb) {
-    var { studentId } = req.params;
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId and applicationId exist
-    var directory = path.join(studentId, some_str());
-    directory = directory.replace(/\\/g, '/'); // g>> replace all!
-    cb(null, { fieldName: file.fieldname, path: directory });
-  },
-  key: function (req, file, cb) {
-    var { studentId, applicationId, fileCategory } = req.params;
-    var { user } = req;
-
-    Student.findOne({ _id: studentId })
-      .then(function (student) {
-        if (student) {
-          var r = /\d+/; //number pattern
-          var version_number_max = 1;
-          if (user.role === Role.Student) {
-            student.generaldocs.studentinputs.forEach((studentinput) => {
-              if (studentinput.name.includes(fileCategory)) {
-                if (
-                  studentinput.name.match(r) !== null &&
-                  studentinput.name.match(r)[0] > version_number_max
-                ) {
-                  version_number_max = studentinput.name.match(r)[0]; // get the max version number
-                }
-              }
-            });
-          } else {
-            student.generaldocs.editoroutputs.forEach((editoroutput) => {
-              if (editoroutput.name.includes(fileCategory)) {
-                if (
-                  editoroutput.name.match(r) !== null &&
-                  editoroutput.name.match(r)[0] > version_number_max
-                ) {
-                  version_number_max = editoroutput.name.match(r)[0]; // get the max version number
-                }
-              }
-            });
-          }
-          var version_number = version_number_max;
-          var same_file_name = true;
-          while (same_file_name) {
-            var temp_name =
-              student.lastname +
-              '_' +
-              student.firstname +
-              '_' +
-              fileCategory +
-              '_v' +
-              version_number +
-              `${path.extname(file.originalname)}`;
-            temp_name = temp_name.replace(/ /g, '_');
-            const filePath = path.join(
-              UPLOAD_PATH,
-              studentId,
-              'GeneralDocsEdit',
-              temp_name
-            );
-
-            let student_input_doc = student.generaldocs.studentinputs.find(
-              ({ name }) => name === temp_name
-            );
-            let editor_output_doc = student.generaldocs.editoroutputs.find(
-              ({ name }) => name === temp_name
-            );
-            if (editor_output_doc || student_input_doc) {
-              version_number++;
-            } else {
-              same_file_name = false;
-            }
-          }
-          return {
-            fileName: temp_name
-          };
-        }
-      })
-      .then(function (resp) {
-        cb(null, resp.fileName);
-      });
-  }
-});
-
-//TODO: upload pdf/docx/image
-const editor_generaldoc_s3 = multer({
-  storage: storage_general_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          400,
-          'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
-    }
-    const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
-    }
-    cb(null, true);
-  }
-});
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -491,7 +375,6 @@ module.exports = {
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
   TranscriptExcelUpload: upload_transcript_s3.single('file'),
-  EditGeneralDocsUpload: editor_generaldoc_s3.single('file'),
   MessagesThreadUpload: upload_messagesthread_file_s3.single('file'),
   upload: upload.single('file')
 };

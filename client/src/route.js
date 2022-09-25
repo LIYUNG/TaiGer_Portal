@@ -36,8 +36,13 @@ const route = [
     name: 'ResetPassword 1',
     component: ResetPasswordRequest
   },
-  { path: '/auth/login', component: Signin1 },
-  { path: '/', component: Signin1 }
+  {
+    path: '/auth/login',
+    exact: true,
+    name: 'Login',
+    component: Signin1
+  },
+  { path: '/', exact: false, name: 'Default', component: Signin1 }
 ];
 
 export default route;

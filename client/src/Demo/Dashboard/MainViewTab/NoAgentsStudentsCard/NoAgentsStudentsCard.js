@@ -28,56 +28,56 @@ class NoAgentsStudentsCard extends React.Component {
   };
 
   render() {
-    return (
-      <>
-        {this.props.student.agents.length === 0 && (
-          <>
-            <tr>
-              {this.props.role === 'Admin' && !this.props.isArchivPage && (
-                <td>
-                  <DropdownButton
-                    className="my-0 mx-0"
-                    size="sm"
-                    title="Option"
-                    variant="primary"
-                    id={`dropdown-variants-${this.props.student._id}`}
-                    key={this.props.student._id}
-                  >
-                    <Dropdown.Item
-                      eventKey="1"
-                      onSelect={() =>
-                        this.startEditingAgent(this.props.student)
-                      }
-                    >
-                      Edit Agent
-                    </Dropdown.Item>
-                  </DropdownButton>
-                </td>
-              )}
-
+    if (
+      this.props.student.agents === undefined ||
+      this.props.student.agents.length === 0
+    ) {
+      return (
+        <>
+          <tr>
+            {this.props.role === 'Admin' && !this.props.isArchivPage && (
               <td>
-                {this.props.student.firstname}, {this.props.student.lastname}
+                <DropdownButton
+                  className="my-0 mx-0"
+                  size="sm"
+                  title="Option"
+                  variant="primary"
+                  id={`dropdown-variants-${this.props.student._id}`}
+                  key={this.props.student._id}
+                >
+                  <Dropdown.Item
+                    eventKey="1"
+                    onSelect={() => this.startEditingAgent(this.props.student)}
+                  >
+                    Edit Agent
+                  </Dropdown.Item>
+                </DropdownButton>
               </td>
-              <td>{this.props.student.email}</td>
-            </tr>
-            {this.props.role === 'Admin' && (
-              <>
-                <EditAgentsSubpage
-                  student={this.props.student}
-                  agent_list={this.props.agent_list}
-                  show={this.state.showAgentPage}
-                  onHide={this.setAgentModalhide}
-                  setmodalhide={this.setAgentModalhide}
-                  updateAgentList={this.props.updateAgentList}
-                  handleChangeAgentlist={this.props.handleChangeAgentlist}
-                  submitUpdateAgentlist={this.submitUpdateAgentlist}
-                />
-              </>
             )}
-          </>
-        )}
-      </>
-    );
+            <td>
+              {this.props.student.firstname}, {this.props.student.lastname}
+            </td>
+            <td>{this.props.student.email}</td>
+          </tr>
+          {this.props.role === 'Admin' && (
+            <>
+              <EditAgentsSubpage
+                student={this.props.student}
+                agent_list={this.props.agent_list}
+                show={this.state.showAgentPage}
+                onHide={this.setAgentModalhide}
+                setmodalhide={this.setAgentModalhide}
+                updateAgentList={this.props.updateAgentList}
+                handleChangeAgentlist={this.props.handleChangeAgentlist}
+                submitUpdateAgentlist={this.submitUpdateAgentlist}
+              />
+            </>
+          )}
+        </>
+      );
+    } else {
+      return <></>;
+    }
   }
 }
 

@@ -103,6 +103,13 @@ export default {
           icon: 'feather icon-eye'
         },
         {
+          id: 'admissions_overview',
+          title: 'Admissions',
+          type: 'item',
+          icon: 'feather icon-award',
+          url: '/admissions-overview'
+        },
+        {
           id: 'archiv-student',
           title: 'Archiv Students',
           type: 'item',

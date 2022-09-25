@@ -116,7 +116,7 @@ export default function Signin1({ setUserdata }) {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                {!loginsuccess && <p>Email or pass word is not correct.</p>}
+                {!loginsuccess && <p className="mb-2 text-danger">Email or password is not correct.</p>}
                 <button
                   disabled={!emailaddress || !password}
                   onClick={(e) => onButtonClick(e, true)}

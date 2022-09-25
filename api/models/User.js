@@ -231,54 +231,13 @@ const applicationSchema = new Schema({
       createdAt: Date
     }
   ],
-  documents: [
-    //editor output
-    {
-      name: {
-        type: String,
-        required: true
-      },
-      status: {
-        type: String,
-        enum: Object.values(DocumentStatus),
-        default: DocumentStatus.Missing
-      },
-      isFinalVersion: {
-        type: Boolean,
-        default: false
-      },
-      isReceivedFeedback: {
-        type: Boolean,
-        default: false
-      },
-      required: {
-        type: Boolean,
-        required: true
-      },
-      feedback: {
-        type: String,
-        default: ''
-      },
-      student_feedback: {
-        type: String,
-        default: ''
-      },
-      path: {
-        type: String,
-        default: ''
-      },
-      // TODO: updateBy
-      updatedAt: Date,
-      student_feedback_updatedAt: Date
-    }
-  ],
   reject_reason: {
     type: String,
     default: ''
   },
   decided: { type: Boolean, default: false },
   closed: { type: Boolean, default: false },
-  admission: { type: Boolean, default: false }
+  admission: { type: String, default: '-' }
 });
 
 const Student = User.discriminator(
@@ -391,84 +350,7 @@ const Student = User.discriminator(
           updatedAt: Date,
           createdAt: Date
         }
-      ],
-      generaldocs: {
-        editoroutputs: [
-          {
-            name: {
-              type: String,
-              required: true
-            },
-            status: {
-              type: String,
-              enum: Object.values(DocumentStatus),
-              default: DocumentStatus.Missing
-            },
-            isFinalVersion: {
-              type: Boolean,
-              default: false
-            },
-            isReceivedFeedback: {
-              type: Boolean,
-              default: false
-            },
-            required: {
-              type: Boolean,
-              required: true
-            },
-            feedback: {
-              type: String,
-              default: ''
-            },
-            student_feedback: {
-              type: String,
-              default: ''
-            },
-            path: {
-              type: String,
-              default: ''
-            },
-            // TODO: updateBy
-            updatedAt: Date,
-            student_feedback_updatedAt: Date
-          }
-        ],
-        studentinputs: [
-          {
-            name: {
-              type: String,
-              required: true
-            },
-            status: {
-              type: String,
-              enum: Object.values(DocumentStatus),
-              default: DocumentStatus.Missing
-            },
-            isFinalVersion: {
-              type: Boolean,
-              default: false
-            },
-            isReceivedFeedback: {
-              type: Boolean,
-              default: false
-            },
-            required: {
-              type: Boolean,
-              required: true
-            },
-            feedback: {
-              type: String,
-              default: ''
-            },
-            path: {
-              type: String,
-              default: ''
-            },
-            // TODO: updateBy
-            updatedAt: Date
-          }
-        ]
-      }
+      ]
     },
     options
   ),

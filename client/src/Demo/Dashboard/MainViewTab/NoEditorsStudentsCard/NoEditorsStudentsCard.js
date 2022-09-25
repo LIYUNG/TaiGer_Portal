@@ -28,54 +28,55 @@ class NoEditorsStudentsCard extends React.Component {
   };
 
   render() {
-    return (
-      <>
-        {this.props.student.editors.length === 0 && (
-          <>
-            <tr>
-              {this.props.role === 'Admin' && !this.props.isArchivPage && (
-                <td>
-                  <DropdownButton
-                    size="sm"
-                    title="Option"
-                    variant="primary"
-                    id={`dropdown-variants-${this.props.student._id}`}
-                    key={this.props.student._id}
-                  >
-                    <Dropdown.Item
-                      eventKey="2"
-                      onSelect={() =>
-                        this.startEditingEditor(this.props.student)
-                      }
-                    >
-                      Edit Editor
-                    </Dropdown.Item>
-                  </DropdownButton>
-                </td>
-              )}
+    if (
+      this.props.student.editors === undefined ||
+      this.props.student.editors.length === 0
+    ) {
+      return (
+        <>
+          <tr>
+            {this.props.role === 'Admin' && !this.props.isArchivPage && (
               <td>
-                {this.props.student.firstname}, {this.props.student.lastname}
+                <DropdownButton
+                  size="sm"
+                  title="Option"
+                  variant="primary"
+                  id={`dropdown-variants-${this.props.student._id}`}
+                  key={this.props.student._id}
+                >
+                  <Dropdown.Item
+                    eventKey="2"
+                    onSelect={() => this.startEditingEditor(this.props.student)}
+                  >
+                    Edit Editor
+                  </Dropdown.Item>
+                </DropdownButton>
               </td>
-              <td>{this.props.student.email}</td>
-            </tr>
-            {this.props.role === 'Admin' && (
-              <>
-                <EditEditorsSubpage
-                  student={this.props.student}
-                  editor_list={this.props.editor_list}
-                  show={this.state.showEditorPage}
-                  onHide={this.setEditorModalhide}
-                  setmodalhide={this.setEditorModalhide}
-                  updateEditorList={this.props.updateEditorList}
-                  handleChangeEditorlist={this.props.handleChangeEditorlist}
-                  submitUpdateEditorlist={this.submitUpdateEditorlist}
-                />
-              </>
             )}
-          </>
-        )}
-      </>
-    );
+            <td>
+              {this.props.student.firstname}, {this.props.student.lastname}
+            </td>
+            <td>{this.props.student.email}</td>
+          </tr>
+          {this.props.role === 'Admin' && (
+            <>
+              <EditEditorsSubpage
+                student={this.props.student}
+                editor_list={this.props.editor_list}
+                show={this.state.showEditorPage}
+                onHide={this.setEditorModalhide}
+                setmodalhide={this.setEditorModalhide}
+                updateEditorList={this.props.updateEditorList}
+                handleChangeEditorlist={this.props.handleChangeEditorlist}
+                submitUpdateEditorlist={this.submitUpdateEditorlist}
+              />
+            </>
+          )}
+        </>
+      );
+    } else {
+      return <></>;
+    }
   }
 }
 

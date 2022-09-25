@@ -126,7 +126,10 @@ function AdminLayout(props) {
       <Aux>
         <ScrollToTop>
           <Suspense fallback={<Loader />}>
-            <Switch>{menu2}</Switch>
+            <Switch>
+              {menu2}
+              <Redirect from="/" to="/" />
+            </Switch>
           </Suspense>
         </ScrollToTop>
       </Aux>

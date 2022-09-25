@@ -705,16 +705,24 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
 });
 
 // (O)  email : self notification
+// () TODO: agent update email
 const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   const {
     user,
     body: { university }
   } = req;
+  const { studentId } = req.params;
   // const { _id } = student;
+  let student_id;
+  if (user.role === Role.Student || user.role === Role.Guest) {
+    student_id = user._id;
+  } else {
+    student_id = studentId;
+  }
   try {
     university['updatedAt'] = new Date();
-    await User.findByIdAndUpdate(
-      user._id,
+    const updatedStudent = await User.findByIdAndUpdate(
+      student_id,
       {
         'academic_background.university': university
         // $addToSet: {
@@ -727,9 +735,9 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
 
     await updateAcademicBackgroundEmail(
       {
-        firstname: user.firstname,
-        lastname: user.lastname,
-        address: user.email
+        firstname: updatedStudent.firstname,
+        lastname: updatedStudent.lastname,
+        address: updatedStudent.email
       },
       {}
     );
@@ -743,13 +751,20 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
 // () TODO email: notify agents
 const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const {
-    user: student,
+    user,
     body: { language }
   } = req;
-  const { _id } = student;
+  const { studentId } = req.params;
+  // const { _id } = student;
+  let student_id;
+  if (user.role === Role.Student || user.role === Role.Guest) {
+    student_id = user._id;
+  } else {
+    student_id = studentId;
+  }
   language['updatedAt'] = new Date();
   const updatedStudent = await User.findByIdAndUpdate(
-    _id.toString(),
+    student_id,
     {
       'academic_background.language': language
       // $set: {
@@ -765,9 +780,9 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
 
   await updateLanguageSkillEmail(
     {
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email
+      firstname: updatedStudent.firstname,
+      lastname: updatedStudent.lastname,
+      address: updatedStudent.email
     },
     {}
   );

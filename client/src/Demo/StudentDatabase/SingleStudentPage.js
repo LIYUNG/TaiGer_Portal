@@ -508,8 +508,10 @@ class SingleStudentPage extends React.Component {
           </Tab> */}
           <Tab eventKey="background" title="Background">
             <SurveyComponent
+              role={this.props.user.role}
               academic_background={this.state.student.academic_background}
               isLoaded={this.state.isLoaded}
+              student_id={this.state.student._id}
             />
           </Tab>
           {/* <Tab eventKey="applied-schools" title="Applied Schools">

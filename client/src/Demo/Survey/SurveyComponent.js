@@ -2,11 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
-import {
-  getMyAcademicBackground,
-  updateAcademicBackground,
-  updateLanguageSkill
-} from '../../api';
+import { updateAcademicBackground, updateLanguageSkill } from '../../api';
 import { convertDate } from '../Utils/contants';
 
 class SurveyComponent extends React.Component {
@@ -14,13 +10,21 @@ class SurveyComponent extends React.Component {
     error: null,
     role: '',
     isLoaded: this.props.isLoaded,
+    student_id: this.props.student_id,
     success: false,
     academic_background: this.props.academic_background,
     updateconfirmed: false,
     changed_academic: false,
     changed_language: false
   };
-
+  componentDidMount() {
+    if (!this.props.student_id) {
+      this.setState((state) => ({
+        ...state,
+        student_id: this.props.user._id
+      }));
+    }
+  }
   componentDidUpdate(prevProps) {
     // 常見用法（別忘了比較 prop）：
     if (prevProps.academic_background !== this.props.academic_background) {
@@ -61,7 +65,7 @@ class SurveyComponent extends React.Component {
 
   handleSubmit_AcademicBackground = (e, university) => {
     e.preventDefault();
-    updateAcademicBackground(university).then(
+    updateAcademicBackground(university, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -91,7 +95,7 @@ class SurveyComponent extends React.Component {
 
   handleSubmit_Language = (e, language) => {
     e.preventDefault();
-    updateLanguageSkill(language).then(
+    updateLanguageSkill(language, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -400,27 +404,22 @@ class SurveyComponent extends React.Component {
                         )
                       : ''}
                   </Col>
-                  {this.props.role === 'Student' ||
-                  this.props.role === 'Guest' ? (
-                    <Col md={2}>
-                      <br />
-                      <Button
-                        variant="primary"
-                        disabled={!this.state.changed_academic}
-                        onClick={(e) =>
-                          this.handleSubmit_AcademicBackground(
-                            e,
-                            this.state.academic_background.university
-                          )
-                        }
-                      >
-                        Update
-                      </Button>
-                      <br />
-                    </Col>
-                  ) : (
-                    <></>
-                  )}
+                  <Col md={2}>
+                    <br />
+                    <Button
+                      variant="primary"
+                      disabled={!this.state.changed_academic}
+                      onClick={(e) =>
+                        this.handleSubmit_AcademicBackground(
+                          e,
+                          this.state.academic_background.university
+                        )
+                      }
+                    >
+                      Update
+                    </Button>
+                    <br />
+                  </Col>
                 </Row>
               </Card.Body>
             </Card>
@@ -599,32 +598,28 @@ class SurveyComponent extends React.Component {
                         )
                       : ''}
                   </Col>
-                  {this.props.role === 'Student' ||
-                  this.props.role === 'Guest' ? (
-                    <Col md={2}>
-                      <br />
-                      <Button
-                        variant="primary"
-                        disabled={!this.state.changed_language}
-                        onClick={(e) =>
-                          this.handleSubmit_Language(
-                            e,
-                            this.state.academic_background.language
-                          )
-                        }
-                      >
-                        Update
-                      </Button>
-                      <br />
-                    </Col>
-                  ) : (
-                    <></>
-                  )}
+                  <Col md={2}>
+                    <br />
+                    <Button
+                      variant="primary"
+                      disabled={!this.state.changed_language}
+                      onClick={(e) =>
+                        this.handleSubmit_Language(
+                          e,
+                          this.state.academic_background.language
+                        )
+                      }
+                    >
+                      Update
+                    </Button>
+                    <br />
+                  </Col>
                 </Row>
               </Card.Body>
             </Card>
           </Col>
         </Row>
+        {/* TODO () : frontend and backend not connected. */}
         <Row>
           <Col>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
@@ -668,15 +663,10 @@ class SurveyComponent extends React.Component {
                         </Form.Control>
                       </Form.Group>
                     </Form>
-                    {this.props.role === 'Student' ||
-                    this.props.role === 'Guest' ? (
-                      <Col md={6}>
-                        <br />
-                        <Button variant="primary">Update</Button>
-                      </Col>
-                    ) : (
-                      <></>
-                    )}
+                    <Col md={6}>
+                      <br />
+                      <Button variant="primary">Update</Button>
+                    </Col>
                   </Col>
                 </Row>
               </Card.Body>

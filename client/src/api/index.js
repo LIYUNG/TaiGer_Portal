@@ -208,10 +208,10 @@ export const getStudentTask = (student_id) =>
   request.get(`/api/tasks/${student_id}`);
 
 //Survey:
-export const updateAcademicBackground = (university) =>
-  request.post(`/api/account/survey/university`, { university });
-export const updateLanguageSkill = (language) =>
-  request.post(`/api/account/survey/language`, { language });
+export const updateAcademicBackground = (university, student_id) =>
+  request.post(`/api/account/survey/university/${student_id}`, { university });
+export const updateLanguageSkill = (language, student_id) =>
+  request.post(`/api/account/survey/language/${student_id}`, { language });
 
 export const getMyAcademicBackground = () => request.get('/api/account/survey');
 

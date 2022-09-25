@@ -22,12 +22,7 @@ import {
   Spinner,
   Card
 } from 'react-bootstrap';
-import {
-  getAdmissions,
-  // createProgram,
-  // deleteProgram,
-  assignProgramToStudent
-} from '../../api';
+import { getAdmissions } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
 
@@ -263,7 +258,7 @@ const IndeterminateCheckbox = React.forwardRef(
 );
 
 // Our table component
-function Table2({ columns, data, userId }) {
+function Table2({ header, data, userId }) {
   let [statedataTable2, setStatedataTable2] = useState({
     success: false,
     isloaded: false,
@@ -279,6 +274,52 @@ function Table2({ columns, data, userId }) {
   });
   // let [modalShowAssignWindow, setModalShow] = useState(false);
   let [studentId, setStudentId] = useState('');
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: header,
+        columns: [
+          {
+            Header: 'First Name',
+            accessor: 'firstname',
+            Filter: SelectColumnFilter,
+            filter: 'includes'
+          },
+          {
+            Header: 'Last Name',
+            accessor: 'lastname',
+            // Use our custom `fuzzyText` filter on this column
+            filter: 'fuzzyText'
+          },
+          {
+            Header: 'University',
+            accessor: 'school'
+            // Filter: NumberRangeColumnFilter,
+            // filter: 'equals'
+          },
+          {
+            Header: 'Program',
+            accessor: 'program_name'
+            // Filter: NumberRangeColumnFilter,
+            // filter: 'between'
+          },
+          {
+            Header: 'Application Year',
+            accessor: 'year'
+            // Filter: SelectColumnFilter,
+            // filter: 'includes'
+          },
+          {
+            Header: 'Semester',
+            accessor: 'semester'
+          }
+        ]
+      }
+    ],
+    []
+  );
+
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -327,125 +368,49 @@ function Table2({ columns, data, userId }) {
     setGlobalFilter,
     // selectedFlatRows,
     toggleAllRowsSelected,
-    state: { pageIndex, pageSize, selectedRowIds }
+    state: { pageIndex, pageSize }
   } = useTable(
     {
       columns,
       data,
       defaultColumn, // Be sure to pass the defaultColumn option
       filterTypes
-      // autoResetSelectedRows: false,
-      // autoResetSelectedCell: false,
-      // autoResetSelectedColumn: false
     },
     useFilters, // useFilters!
-
     useGlobalFilter, // useGlobalFilter!
-    usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        // Let's make a column for selection
-        {
-          id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          )
-        },
-        ...columns
-      ]);
-    }
+    usePagination
+    // useRowSelect,
+    // (hooks) => {
+    //   hooks.visibleColumns.push((columns) => [
+    //     // Let's make a column for selection
+    //     {
+    //       id: 'selection',
+    //       // The header can use the table's getToggleAllRowsSelectedProps method
+    //       // to render a checkbox
+    //       Header: ({ getToggleAllRowsSelectedProps }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+    //         </div>
+    //       ),
+    //       // The cell can use the individual row's getToggleRowSelectedProps method
+    //       // to the render a checkbox
+    //       Cell: ({ row }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    //         </div>
+    //       )
+    //     },
+    //     ...columns
+    //   ]);
+    // }
   );
 
   // We don't want to render all of the rows for this example, so cap
   // it for this use case
   // const firstPageRows = rows.slice(0, 12);
-  useEffect(() => {
-    const data_idxes = Object.keys(selectedRowIds);
-    // console.log(data_idxes);
-    // console.log(data_idxes.map((idx) => data[idx]._id));
-    setPrograms({
-      programIds: data_idxes.map((idx) => data[idx]._id),
-      schools: data_idxes.map((idx) => data[idx].school),
-      program_names: data_idxes.map((idx) => data[idx].program_name)
-    });
-  }, [selectedRowIds]);
-
-  const assignProgram = (assign_data) => {
-    const { student_id, program_ids } = assign_data;
-    assignProgramToStudent(student_id, program_ids).then(
-      (resp) => {
-        const { success } = resp.data;
-        if (success) {
-          toggleAllRowsSelected(false);
-          setStatedataTable2((state) => ({
-            ...state,
-            isLoaded: true,
-            modalShowAssignSuccessWindow: true,
-            modalShowAssignWindow: false,
-            success
-          }));
-        } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {}
-    );
-  };
-  const setModalHide = () => {
-    // setModalShow(false);
-    setStatedataTable2((state) => ({
-      ...state,
-      modalShowAssignWindow: false
-    }));
-  };
-  const onHideAssignSuccessWindow = () => {
-    // setModalShow(false);
-    setStatedataTable2((state) => ({
-      ...state,
-      modalShowAssignSuccessWindow: false
-    }));
-  };
-
-  const setModalShow2 = () => {
-    setStatedataTable2((state) => ({
-      ...state,
-      modalShowAssignWindow: true
-    }));
-  };
-  const onSubmitAddToStudentProgramList = (e) => {
-    e.preventDefault();
-    const student_id = studentId;
-    assignProgram({ student_id, program_ids: programs.programIds });
-  };
-
-  const handleSetStudentId = (e) => {
-    const { value } = e.target;
-    setStudentId(value);
-  };
 
   return (
     <>
-      {programs.programIds.length !== 0 && (
-        <>
-          <DropdownButton size="sm" title="Option" variant="primary">
-            <Dropdown.Item eventKey="2" onSelect={setModalShow2}>
-              Assign to student...
-            </Dropdown.Item>
-          </DropdownButton>
-        </>
-      )}
       <Table
         className="my-0 mx-2"
         variant="dark"
@@ -467,7 +432,7 @@ function Table2({ columns, data, userId }) {
               ))}
             </tr>
           ))}
-          <tr>
+          {/* <tr>
             <th
               colSpan={visibleColumns.length}
               style={{
@@ -480,7 +445,7 @@ function Table2({ columns, data, userId }) {
                 setGlobalFilter={setGlobalFilter}
               />
             </th>
-          </tr>
+          </tr> */}
         </thead>
         <tbody {...getTableBodyProps()}>
           {page.map((row, i) => {
@@ -577,26 +542,6 @@ function Table2({ columns, data, userId }) {
           </Col>
         </Row>
       </div>
-
-      <div>
-        {/* <pre>
-          <code>{JSON.stringify(state.filters, null, 2)}</code>
-        </pre>
-        <pre>
-          <code>
-            {JSON.stringify(
-              {
-                selectedRowIds: selectedRowIds,
-                'selectedFlatRows[].original': selectedFlatRows.map(
-                  (d) => d.original._id
-                )
-              },
-              null,
-              2
-            )}
-          </code>
-        </pre> */}
-      </div>
     </>
   );
 }
@@ -663,60 +608,6 @@ function AdmissionsTable(props) {
     );
   }, []);
   // useEffect(() => {}, []);
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'Admissions Overview',
-        columns: [
-          {
-            Header: 'First Name',
-            accessor: 'firstname',
-            Filter: SelectColumnFilter,
-            filter: 'includes'
-          },
-          {
-            Header: 'Last Name',
-            accessor: 'lastname',
-            // Use our custom `fuzzyText` filter on this column
-            filter: 'fuzzyText'
-          },
-          {
-            Header: 'University',
-            accessor: 'school'
-            // Filter: NumberRangeColumnFilter,
-            // filter: 'equals'
-          },
-          {
-            Header: 'Program',
-            accessor: 'program_name'
-            // Filter: NumberRangeColumnFilter,
-            // filter: 'between'
-          },
-          {
-            Header: 'Degree',
-            accessor: 'degree',
-            Filter: SelectColumnFilter,
-            filter: 'includes'
-          },
-          {
-            Header: 'GRE/GMAT',
-            accessor: 'gre'
-            // Filter: SliderColumnFilter,
-            // filter: filterGreaterThan
-          },
-          {
-            Header: 'Application Deadline',
-            accessor: 'application_deadline'
-          },
-          {
-            Header: 'Last Update',
-            accessor: 'updatedAt'
-          }
-        ]
-      }
-    ],
-    []
-  );
 
   // const data = React.useMemo(() => makeData(100000), []);
   const style = {
@@ -748,33 +639,91 @@ function AdmissionsTable(props) {
       </div>
     );
   }
-  const admissions_table = statedata.students.map((student) =>
-    student.applications.map((application) => ({
-      _id: student._id,
-      firstname: student.firstname,
-      lastname: student.lastname
-      //   school: application.programId.school,
-      //   program_name: application.programId.program_name
-    }))
+  let admissions_table = [];
+  let rejections_table = [];
+  let pending_table = [];
+  statedata.students.map((student) =>
+    student.applications.map((application) => {
+      if (application.decided) {
+        if (application.admission === 'true') {
+          admissions_table.push({
+            _id: student._id,
+            firstname: student.firstname,
+            lastname: student.lastname,
+            year: student.academic_background.university
+              .expected_application_date,
+            semester:
+              student.academic_background.university
+                .expected_application_semester,
+            school: application.programId.school,
+            program_name: application.programId.program_name,
+            semester: application.programId.semester
+          });
+        }
+        if (application.admission === 'false') {
+          rejections_table.push({
+            _id: student._id,
+            firstname: student.firstname,
+            lastname: student.lastname,
+            year: student.academic_background.university
+              .expected_application_date,
+            semester:
+              student.academic_background.university
+                .expected_application_semester,
+            school: application.programId.school,
+            program_name: application.programId.program_name,
+            semester: application.programId.semester
+          });
+        }
+        if (application.admission === '-') {
+          pending_table.push({
+            _id: student._id,
+            firstname: student.firstname,
+            lastname: student.lastname,
+            year: student.academic_background.university
+              .expected_application_date,
+            semester:
+              student.academic_background.university
+                .expected_application_semester,
+            school: application.programId.school,
+            program_name: application.programId.program_name,
+            semester: application.programId.semester
+          });
+        }
+      }
+    })
   );
-//   const admissions_table = statedata.students.map((student) => ({
-//     _id: student._id,
-//     firstname: student.firstname,
-//     lastname: student.lastname
-//     //   school: application.programId.school,
-//     //   program_name: application.programId.program_name
-//   }));
-  console.log(admissions_table);
+
   return (
-    // <Styles>
-    <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-      {/* <Card.Body> */}
-      {/* <Table responsive border hover> */}
-      <Table2 columns={columns} data={admissions_table} userId={props.userId} />
-      {/* </Table> */}
-      {/* </Card.Body> */}
-    </Card>
-    // </Styles>
+    <>
+      <Row>
+        <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+          <Table2
+            header={'Admissions'}
+            data={admissions_table}
+            userId={props.userId}
+          />
+        </Card>
+      </Row>
+      <Row>
+        <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+          <Table2
+            header={'Rejections '}
+            data={rejections_table}
+            userId={props.userId}
+          />
+        </Card>
+      </Row>
+      <Row>
+        <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+          <Table2
+            header={'Pending'}
+            data={pending_table}
+            userId={props.userId}
+          />
+        </Card>
+      </Row>
+    </>
   );
 }
 

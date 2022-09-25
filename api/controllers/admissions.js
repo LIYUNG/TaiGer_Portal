@@ -7,7 +7,7 @@ const async = require('async');
 
 const getAdmissions = asyncHandler(async (req, res) => {
   const { user } = req;
-
+  // Only not archiv students!
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   }).populate('applications.programId');
@@ -15,7 +15,6 @@ const getAdmissions = asyncHandler(async (req, res) => {
 });
 
 const getAdmissionsYear = asyncHandler(async (req, res) => {
-  const { user } = req;
   const { applications_year } = req.params;
   const tasks = await Task.find({ student_id: applications_year })
     .populate('student_id', 'firstname lastname')

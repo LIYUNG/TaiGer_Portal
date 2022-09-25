@@ -17,7 +17,6 @@ class NavItem extends Component {
         itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Charts' ||
-        itemTitle === 'Admissions' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'TaiGer AI' ||
@@ -34,7 +33,6 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
-        itemTitle === 'Admissions' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'TaiGer AI' ||
@@ -53,7 +51,6 @@ class NavItem extends Component {
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'My Applications' ||
         itemTitle === 'Interview Training' ||
-        itemTitle === 'Admissions' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'TaiGer AI' ||

@@ -1,34 +1,17 @@
 import React from 'react';
 import { Row, Col, Card, Spinner } from 'react-bootstrap';
-// import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
-// import DEMO from "../../store/constant";
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
 import AdmissionsTable from './AdmissionsTable';
-// import Card from "../../App/components/MainCard";
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 
-import {
-  getAdmissions,
-  getArchivStudents,
-  updateArchivStudents,
-  downloadProfile,
-  getAgents,
-  updateAgents,
-  getEditors,
-  updateEditors,
-  deleteFile
-} from '../../api';
+import { getAdmissions, getArchivStudents } from '../../api';
 
 class Admissions extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     modalShow: false,
     agent_list: [],
     editor_list: [],
@@ -47,187 +30,12 @@ class Admissions extends React.Component {
         if (success) {
           this.setState({ isLoaded: true, students: data, success: success });
         } else {
-          alert(resp.data.message);
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error: true
-        });
-      }
-    );
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      getArchivStudents().then(
-        (resp) => {
-          const { data, success } = resp.data;
-          if (success) {
-            this.setState({ isLoaded: true, students: data, success: success });
-          } else {
-            alert(resp.data.message);
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
           }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
         }
-      );
-    }
-  }
-
-  onDownloadFilefromstudent(e, category, id) {
-    e.preventDefault();
-    downloadProfile(category, id).then(
-      (resp) => {
-        const actualFileName =
-          resp.headers['content-disposition'].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-
-        var filetype = actualFileName.split('.'); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === 'pdf') {
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: 'application/pdf' })
-          );
-
-          //Open the URL on new Window
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert('The file is not available.');
-      }
-    );
-  }
-
-  onDeleteFilefromstudent = (e, category, id) => {
-    e.preventDefault();
-    deleteFile(category, id).then(
-      (resp) => {},
-      (error) => {}
-    );
-  };
-
-  editAgent = (student) => {
-    getAgents().then(
-      (resp) => {
-        const { data: agents } = resp.data; //get all agent
-        const { agents: student_agents } = student;
-        const updateAgentList = agents.reduce(
-          (prev, { _id }) => ({
-            ...prev,
-            [_id]: student_agents ? student_agents.indexOf(_id) > -1 : false
-          }),
-          {}
-        );
-
-        this.setState({ agent_list: agents, updateAgentList });
-      },
-      (error) => {}
-    );
-  };
-
-  editEditor = (student) => {
-    getEditors().then(
-      (resp) => {
-        const { data: editors } = resp.data;
-        const { editors: student_editors } = student;
-        const updateEditorList = editors.reduce(
-          (prev, { _id }) => ({
-            ...prev,
-            [_id]: student_editors ? student_editors.indexOf(_id) > -1 : false
-          }),
-          {}
-        );
-
-        this.setState({ editor_list: editors, updateEditorList });
-      },
-      (error) => {}
-    );
-  };
-
-  handleChangeAgentlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateAgentList: {
-        ...prevState.updateAgentList,
-        [value]: checked
-      }
-    }));
-  };
-
-  handleChangeEditorlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateEditorList: {
-        ...prevState.updateEditorList,
-        [value]: checked
-      }
-    }));
-  };
-
-  submitUpdateAgentlist = (updateAgentList, student_id) => {
-    this.UpdateAgentlist(updateAgentList, student_id);
-  };
-
-  submitUpdateEditorlist = (updateEditorList, student_id) => {
-    this.UpdateEditorlist(updateEditorList, student_id);
-  };
-
-  UpdateAgentlist = (updateAgentList, student_id) => {
-    updateAgents(updateAgentList, student_id).then(
-      (resp) => {
-        this.setState({
-          updateAgentList: [],
-          isLoaded: false
-        });
-      },
-      (error) => {
-        alert('UpdateAgentlist is failed.');
-      }
-    );
-  };
-
-  UpdateEditorlist = (updateEditorList, student_id) => {
-    updateEditors(updateEditorList, student_id).then(
-      (resp) => {
-        this.setState({
-          updateEditorList: [],
-          isLoaded: false
-        });
-      },
-      (error) => {
-        alert('UpdateEditorlist is failed.');
-      }
-    );
-  };
-
-  updateStudentArchivStatus = (studentId, isArchived) => {
-    updateArchivStudents(studentId, isArchived).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        this.setState({ isLoaded: true, students: data, success: success });
       },
       (error) => {
         this.setState({
@@ -236,18 +44,26 @@ class Admissions extends React.Component {
         });
       }
     );
-  };
+  }
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
         </div>
       );
     }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
     const style = {
       position: 'fixed',
       top: '40%',
@@ -268,35 +84,22 @@ class Admissions extends React.Component {
           <Aux>
             <Row>
               <Col>
-                <Card className="my-0 mx-0">
-                  {/* <Card.Body> */}
-                  {this.props.user.role === 'Admin' ||
-                  this.props.user.role === 'Agent' ||
-                  this.props.user.role === 'Editor' ? (
-                    // <TabStudDocsDashboard
-                    //   role={this.props.user.role}
-                    //   students={this.state.students}
-                    //   editAgent={this.state.editAgent}
-                    //   editEditor={this.state.editEditor}
-                    //   agent_list={this.state.agent_list}
-                    //   editor_list={this.state.editor_list}
-                    //   updateStudentArchivStatus={this.updateStudentArchivStatus}
-                    //   isArchivPage={this.state.isArchivPage}
-                    //   SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                    // />
-                    <AdmissionsTable students={this.state.students} />
-                  ) : (
-                    <></>
-                  )}
-                  {!isLoaded && (
-                    <div style={style}>
-                      <Spinner animation="border" role="status">
-                        <span className="visually-hidden"></span>
-                      </Spinner>
-                    </div>
-                  )}
-                  {/* </Card.Body> */}
-                </Card>
+                {/* <Card.Body> */}
+                {this.props.user.role === 'Admin' ||
+                this.props.user.role === 'Agent' ||
+                this.props.user.role === 'Editor' ? (
+                  <AdmissionsTable students={this.state.students} />
+                ) : (
+                  <></>
+                )}
+                {!isLoaded && (
+                  <div style={style}>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  </div>
+                )}
+                {/* </Card.Body> */}
               </Col>
             </Row>
           </Aux>

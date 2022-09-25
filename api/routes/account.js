@@ -72,14 +72,16 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     getMyAcademicBackground
   );
+
 router
-  .route('/survey/university')
+  .route('/survey/university/:studentId')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateAcademicBackground
   );
+
 router
-  .route('/survey/language')
+  .route('/survey/language/:studentId')
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateLanguageSkill

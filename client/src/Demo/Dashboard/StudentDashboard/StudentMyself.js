@@ -80,12 +80,13 @@ class StudentMyself extends React.Component {
         );
       } else if (object_init[key_doc_name] === 'notneeded') {
         return (
-          <tr key={i}>
-            <td>
-              <BsDash size={24} color="lightgray" title="Not needed" />
-            </td>
-            <td>{key_doc_name}</td>
-          </tr>
+          <></>
+          // <tr key={i}>
+          //   <td>
+          //     <BsDash size={24} color="lightgray" title="Not needed" />
+          //   </td>
+          //   <td>{key_doc_name}</td>
+          // </tr>
         );
       } else {
         return (

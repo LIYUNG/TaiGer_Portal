@@ -1,17 +1,17 @@
-import React from "react";
-import { Spinner, Button } from "react-bootstrap";
+import React from 'react';
+import { Spinner, Button } from 'react-bootstrap';
 // import { useParams } from "react-router-dom";
-import { getProgram } from "../../api";
-import SingleProgramView from "./SingleProgramView";
-import SingleProgramEdit from "./SingleProgramEdit";
-import { updateProgram } from "../../api";
+import { getProgram } from '../../api';
+import SingleProgramView from './SingleProgramView';
+import SingleProgramEdit from './SingleProgramEdit';
+import { updateProgram } from '../../api';
 class SingleProgram extends React.Component {
   state = {
     isLoaded: false,
     program: null,
     success: false,
     error: null,
-    isEdit: false,
+    isEdit: false
   };
   componentDidMount() {
     getProgram(this.props.match.params.programId).then(
@@ -21,7 +21,7 @@ class SingleProgram extends React.Component {
           this.setState({
             isLoaded: true,
             program: data,
-            success: success,
+            success: success
           });
         } else {
           alert(resp.data.message);
@@ -30,7 +30,7 @@ class SingleProgram extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -45,7 +45,7 @@ class SingleProgram extends React.Component {
             isLoaded: true,
             program: data,
             success: success,
-            isEdit: !this.state.isEdit,
+            isEdit: !this.state.isEdit
           });
         } else {
           alert(resp.data.message);
@@ -54,7 +54,7 @@ class SingleProgram extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          error: true,
+          error: true
         });
       }
     );
@@ -74,10 +74,10 @@ class SingleProgram extends React.Component {
       );
     }
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (!isLoaded && !program) {
       return (
@@ -107,10 +107,14 @@ class SingleProgram extends React.Component {
             program={program}
             error={error}
             isLoaded={isLoaded}
+            role={this.props.user.role}
           />
-          <Button size="sm" onClick={() => this.handleClick()}>
-            Edit
-          </Button>
+          {(this.props.user.role === 'Admin' ||
+            this.props.user.role === 'Agent') && (
+            <Button size="sm" onClick={() => this.handleClick()}>
+              Edit
+            </Button>
+          )}
         </>
       );
     }

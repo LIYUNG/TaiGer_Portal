@@ -1,5 +1,5 @@
-import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import React from 'react';
+import { Row, Col, Card } from 'react-bootstrap';
 import { convertDate } from '../Utils/contants';
 
 class SingleProgramView extends React.Component {
@@ -10,234 +10,236 @@ class SingleProgramView extends React.Component {
           <Card.Body>
             <Row>
               <Col md={4}>
-                <h5>University</h5>
+                <p className="my-0"><b>University</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.school}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>Program</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.program_name}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.school}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Degree</h5>
+                <p className="my-0"><b>Program</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.degree}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.program_name}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Semester</h5>
+                <p className="my-0"><b>Degree</b></p>
               </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.degree}</p>
+              </Col>
+            </Row>
+            <Row>
               <Col md={4}>
-                <h5>{this.props.program.semester}</h5>
+                <p className="my-0"><b>Semester</b></p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.semester}</p>
               </Col>
             </Row>
             <Row> </Row>
             <Row>
               <Col md={4}>
-                <h5>Teaching Language</h5>
+                <p className="my-0"><b>Teaching Language</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.language}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>Application Start (MM-DD)</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.application_start}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.language}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Application Deadline (MM-DD)</h5>
+                <p className="my-0"><b>Application Start (MM-DD)</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.application_deadline}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>Need Uni-Assist?</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.uni_assist}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.application_start}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>TOEFL Requirement</h5>
+                <p className="my-0"><b>Application Deadline (MM-DD)</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.toefl}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>IELTS Requirement</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.ielts}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.application_deadline}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>TestDaF Requirement</h5>
+                <p className="my-0"><b>Need Uni-Assist?</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.testdaf}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>GRE Requirement</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.gre}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.uni_assist}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>GMAT Requirement</h5>
+                <p className="my-0"><b>TOEFL Requirement</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.gmat}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>ML Required?</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.ml_required}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.toefl}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>ML Requirements</h5>
+                <p className="my-0"><b>IELTS Requirement</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.ml_requirements}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>RL Required?</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.rl_required}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.ielts}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>RL Requirements</h5>
+                <p className="my-0"><b>TestDaF Requirement</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.rl_requirements}</h5>
-              </Col>
-            </Row>
-            <Row>
-              {' '}
-              <Col md={4}>
-                <h5>Essay Required?</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.essay_required}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.testdaf}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Essay Requirements</h5>
+                <p className="my-0"><b>GRE Requirement</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.essay_requirements}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.gre}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Special Notes</h5>
+                <p className="my-0"><b>GMAT Requirement</b></p>
               </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.gmat}</p>
+              </Col>
+            </Row>
+            <Row>
               <Col md={4}>
-                <h5>{this.props.program.special_notes}</h5>
+                <p className="my-0"><b>ML Required?</b></p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.ml_required}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <p className="my-0"><b>ML Requirements</b></p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.ml_requirements}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <p className="my-0"><b>RL Required?</b></p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.rl_required}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <p className="my-0"><b>RL Requirements</b></p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.rl_requirements}</p>
               </Col>
             </Row>
             <Row>
               {' '}
               <Col md={4}>
-                <h5>Comments</h5>
+                <p className="my-0"><b>Essay Required?</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.comments}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>Portal Link 1</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.application_portal_a}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.essay_required}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal Link 2</h5>
+                <p className="my-0"><b>Essay Requirements</b></p>
               </Col>
-              <Col md={4}>
-                <h5>{this.props.program.application_portal_b}</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4}>
-                <h5>Website</h5>
-              </Col>
-              <Col md={4}>
-                <h5>{this.props.program.website}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.essay_requirements}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>FPSO</h5>
+                <p className="my-0"><b>Special Notes</b></p>
               </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.special_notes}</p>
+              </Col>
+            </Row>
+            <Row>
+              {' '}
               <Col md={4}>
-                <h5>{this.props.program.fpso}</h5>
+                <p className="my-0"><b>Comments</b></p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.comments}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Last Update</h5>
+                <p className="my-0"><b>Portal Link 1</b></p>
               </Col>
-              <Col md={4}>
-                <h5>
-                  {convertDate(this.props.program.updatedAt)}
-                
-                </h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.application_portal_a}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Updated by</h5>
+                <p className="my-0"><b>Portal Link 2</b></p>
               </Col>
-              <Col md={6}>
-                <h5>{this.props.program.whoupdated}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.application_portal_b}</p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Group</h5>
+                <p className="my-0"><b>Website</b></p>
               </Col>
-              <Col md={6}>
-                <h5>{this.props.program.study_group_flag}</h5>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.website}</p>
               </Col>
             </Row>
+            <Row>
+              <Col md={4}>
+                <p className="my-0"><b>FPSO</b></p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.fpso}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <p className="my-0"><b>Last Update</b></p>
+              </Col>
+              <Col md={4}>
+                <p className="my-0"><b>{convertDate(this.props.program.updatedAt)}</b></p>
+              </Col>
+            </Row>
+            {this.props.role === 'Admin' ||
+              (this.props.role === 'Agent' && (
+                <>
+                  <Row>
+                    <Col md={4}>
+                      <p className="my-0">Updated by</p>
+                    </Col>
+                    <Col md={6}>
+                      <p className="my-0">{this.props.program.whoupdated}</p>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={4}>
+                      <p className="my-0">Group</p>
+                    </Col>
+                    <Col md={6}>
+                      <p className="my-0">{this.props.program.study_group_flag}</p>
+                    </Col>
+                  </Row>
+                </>
+              ))}
           </Card.Body>
         </Card>
       </>

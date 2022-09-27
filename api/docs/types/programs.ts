@@ -9,7 +9,7 @@ export type Program = {
   degree: 'bachelor' | 'master' | 'doctoral'
   semester: String
   applicationAvailable?: Date
-  applicationDeadline: Date
+  application_deadline: Date
   requiredDocuments: String[]
   optionalDocuments: String[]
   createdAt: Date
@@ -31,7 +31,7 @@ export interface CreateProgramRequest {
   degree: 'bachelor' | 'master' | 'doctoral'
   semester: String
   applicationAvailable?: Date
-  applicationDeadline: Date
+  application_deadline: Date
   requiredDocuments: String[]
   optionalDocuments?: String[]
 }
@@ -47,7 +47,7 @@ export interface UpdateProgramRequest {
   degree?: 'bachelor' | 'master' | 'doctoral'
   semester?: String
   applicationAvailable?: Date
-  applicationDeadline?: Date
+  application_deadline?: Date
   requiredDocuments?: String[]
   optionalDocuments?: String[]
 }

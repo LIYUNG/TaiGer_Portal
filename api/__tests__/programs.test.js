@@ -51,7 +51,7 @@ describe('GET /api/programs', () => {
 //     expect({
 //       ...data,
 //       applicationAvailable: new Date(data.applicationAvailable),
-//       applicationDeadline: new Date(data.applicationDeadline),
+//       application_deadline: new Date(data.application_deadline),
 //     }).toMatchObject(fields);
 
 //     const createdProgram = await Program.findById(data._id).lean();
@@ -72,7 +72,7 @@ describe('GET /api/programs', () => {
 //     expect({
 //       ...data,
 //       applicationAvailable: new Date(data.applicationAvailable),
-//       applicationDeadline: new Date(data.applicationDeadline),
+//       application_deadline: new Date(data.application_deadline),
 //     }).toMatchObject(fields);
 
 //     const updatedProgram = await Program.findById(_id).lean();

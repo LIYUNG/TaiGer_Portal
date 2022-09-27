@@ -27,7 +27,9 @@ const navLogo = (props) => {
             src={taiger_logo_small}
             alt="Generic placeholder"
           />
-          <span className="b-title">TaiGer</span>
+          <Link to={'/dashboard/defualt'} style={{ textDecoration: 'none' }}>
+            <span className="b-title">TaiGer</span>
+          </Link>
         </a>
         <a
           // href={DEMO.BLANK_LINK}

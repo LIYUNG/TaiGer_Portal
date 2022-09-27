@@ -402,11 +402,31 @@ const createApplication = asyncHandler(async (req, res) => {
     params: { studentId },
     body: { program_id_set }
   } = req;
+  // Limit the number of assigning programs
+  const max_application = 20;
+  if (program_id_set.length > max_application) {
+    logger.error(
+      'createApplication: too much program assigned: ',
+      program_id_set.length
+    );
+    throw new ErrorResponse(
+      400,
+      `You assign too many programs to student. Please select max. ${max_application} programs.`
+    );
+  }
   const student = await Student.findById(studentId);
   const program = await Program.find({ _id: { $in: program_id_set } });
   if (program.length !== program_id_set.length) {
     logger.error('createApplication: some program ids invalid');
     throw new ErrorResponse(400, 'some program ids invalid');
+  }
+  // limit the number in students application.
+  if (student.applications.length + program_id_set.length > max_application) {
+    logger.error('createApplication: some program ids invalid');
+    throw new ErrorResponse(
+      400,
+      `${student.firstname} ${student.lastname} has more than ${max_application} programs!`
+    );
   }
   try {
     const programIds = student.applications.map(({ programId }) =>

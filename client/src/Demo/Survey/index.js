@@ -48,7 +48,7 @@ class Survey extends React.Component {
         });
       }
     );
-    this.setState({ isLoaded: true });
+    // this.setState({ isLoaded: true });
   }
 
   render() {

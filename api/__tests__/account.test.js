@@ -910,7 +910,7 @@ describe('POST /api/account/survey/language', () => {
 
   it('should update language status', async () => {
     const resp = await request(app)
-      .post('/api/account/survey/language')
+      .post(`/api/account/survey/language/${student._id}`)
       .send({ language });
     const { status, body } = resp;
     expect(status).toBe(200);
@@ -941,7 +941,7 @@ describe('POST /api/account/survey/university', () => {
   });
   it('should update university (academic background) ', async () => {
     const resp = await request(app)
-      .post('/api/account/survey/university')
+      .post(`/api/account/survey/university/${student._id}`)
       .send({ university });
     const { status, body } = resp;
     // expect(JSON.parse(resp.text)).toBe(200); // TODO: some reason that in API req.user not existed!?

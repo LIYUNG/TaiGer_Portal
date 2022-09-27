@@ -109,6 +109,7 @@ class StudentDashboard extends React.Component {
     });
     this.setState({ data: result });
   };
+
   check_survey_filled = (student) => {
     if (
       !student.academic_background ||
@@ -125,6 +126,7 @@ class StudentDashboard extends React.Component {
     }
     return true;
   };
+  
   render() {
     const stdlist = this.props.students.map((student, i) => (
       <StudentMyself

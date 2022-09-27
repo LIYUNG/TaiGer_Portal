@@ -93,18 +93,21 @@ window.programstatuslist = [
   }
 ];
 window.profile_list = {
-  Bachelor_Certificate: "B.Sc Certificate",
-  Bachelor_Transcript: "B.Sc. Transcript",
-  High_School_Diploma: "H. Sch. Diploma.",
-  High_School_Transcript: "H. Sch. Trans",
-  University_Entrance_Examination_GSAT: "GSAT/SAT",
-  Englisch_Certificate: "TOEFL/IELTS",
-  German_Certificate: "TestDaF/B2/C1",
-  ECTS_Conversion: "ECTS Conversion",
-  Course_Description: "Course Description",
-  Employment_Certificate: "Employment Certificate",
-  Passport: "Passport Copy",
-  Others: "Others",
+  High_School_Diploma: 'High School Diploma',
+  High_School_Transcript: 'High School Transcript',
+  University_Entrance_Examination_GSAT: 'GSAT/SAT (學測)',
+  Bachelor_Certificate: 'Bachelor Certificate',
+  Bachelor_Transcript: 'Bachelor Transcript',
+
+  Englisch_Certificate: 'TOEFL or IELTS',
+  German_Certificate: 'TestDaF or Goethe B2/C1',
+  GREGMAT: 'GRE or GMAT',
+  ECTS_Conversion: 'ECTS Conversion',
+  Course_Description: 'Course Description',
+  Internship: 'Internship Certificate',
+  Employment_Certificate: 'Employment Certificate',
+  Passport: 'Passport Copy',
+  Others: 'Others'
 };
 
 window.academic_background_header = {

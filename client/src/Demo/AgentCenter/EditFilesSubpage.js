@@ -126,24 +126,29 @@ class EditFilesSubpage extends React.Component {
           />
         );
       } else if (object_init[k] === 'notneeded') {
+        // TODO: render or hide?
         return (
-          <ButtonSetNotNeeded
-            key={i + 1}
-            role={this.props.role}
-            isLoaded={this.props.isLoaded}
-            docName={value2[i]}
-            date={object_date_init[k]}
-            time={object_time_init[k]}
-            k={k}
-            student_id={this.props.student._id}
-            onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-            onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.props.onUpdateProfileFilefromstudent
-            }
-            SubmitGeneralFile={this.props.SubmitGeneralFile}
-            deleteFileWarningModel={this.props.deleteFileWarningModel}
-          />
+          <>
+            {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
+              <ButtonSetNotNeeded
+                key={i + 1}
+                role={this.props.role}
+                isLoaded={this.props.isLoaded}
+                docName={value2[i]}
+                date={object_date_init[k]}
+                time={object_time_init[k]}
+                k={k}
+                student_id={this.props.student._id}
+                onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+                onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+                onUpdateProfileFilefromstudent={
+                  this.props.onUpdateProfileFilefromstudent
+                }
+                SubmitGeneralFile={this.props.SubmitGeneralFile}
+                deleteFileWarningModel={this.props.deleteFileWarningModel}
+              />
+            )}
+          </>
         );
       } else {
         return (
@@ -217,7 +222,7 @@ class EditFilesSubpage extends React.Component {
                 </Table>
               </Row>
               <Row>
-                <Col className='md-4'>{this.props.SYMBOL_EXPLANATION}</Col>
+                <Col className="md-4">{this.props.SYMBOL_EXPLANATION}</Col>
               </Row>
               <Row>
                 {/* <UploadAndGenerate

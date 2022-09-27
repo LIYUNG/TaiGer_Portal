@@ -6,10 +6,6 @@ import {
   AiFillQuestionCircle,
   AiOutlineUndo
 } from 'react-icons/ai';
-// import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
-// import { IoCheckmarkCircle } from "react-icons/io5";
-// import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
 
 class AgentReviewing_StudentView extends React.Component {
   render() {

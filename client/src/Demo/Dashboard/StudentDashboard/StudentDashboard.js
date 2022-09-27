@@ -10,7 +10,7 @@ import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationP
 import Generator from './Generator';
 import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
 import NewUpdatedThreadFromEditor from '../MainViewTab/NewUpdatedThreadFromEditor/NewUpdatedThreadFromEditor';
-
+import { BsExclamationTriangle } from 'react-icons/bs';
 // import format from 'date-fns/format';
 // import getDay from 'date-fns/getDay';
 // import parse from 'date-fns/parse';
@@ -145,6 +145,73 @@ class StudentDashboard extends React.Component {
     });
     return true;
   };
+
+  check_base_documents = (student) => {
+    let documentlist2_keys = Object.keys(window.profile_list);
+    let object_init = {};
+    for (let i = 0; i < documentlist2_keys.length; i++) {
+      object_init[documentlist2_keys[i]] = 'missing';
+    }
+    if (student.profile.length === 0) {
+      return false;
+    }
+    if (student.profile) {
+      for (let i = 0; i < student.profile.length; i++) {
+        if (student.profile[i].status === 'uploaded') {
+          object_init[student.profile[i].name] = 'uploaded';
+        } else if (student.profile[i].status === 'accepted') {
+          object_init[student.profile[i].name] = 'accepted';
+        } else if (student.profile[i].status === 'rejected') {
+          object_init[student.profile[i].name] = 'rejected';
+        } else if (student.profile[i].status === 'missing') {
+          object_init[student.profile[i].name] = 'missing';
+        } else if (student.profile[i].status === 'notneeded') {
+          object_init[student.profile[i].name] = 'notneeded';
+        }
+      }
+    } else {
+      return false;
+    }
+    for (let i = 0; i < documentlist2_keys.length; i++) {
+      if (object_init[documentlist2_keys[i]] === 'missing') {
+        return false;
+      }
+    }
+    return true;
+  };
+  check_base_documents_rejected = (student) => {
+    let documentlist2_keys = Object.keys(window.profile_list);
+    let object_init = {};
+    for (let i = 0; i < documentlist2_keys.length; i++) {
+      object_init[documentlist2_keys[i]] = 'missing';
+    }
+    if (student.profile.length === 0) {
+      return false;
+    }
+    if (student.profile) {
+      for (let i = 0; i < student.profile.length; i++) {
+        if (student.profile[i].status === 'uploaded') {
+          object_init[student.profile[i].name] = 'uploaded';
+        } else if (student.profile[i].status === 'accepted') {
+          object_init[student.profile[i].name] = 'accepted';
+        } else if (student.profile[i].status === 'rejected') {
+          object_init[student.profile[i].name] = 'rejected';
+        } else if (student.profile[i].status === 'missing') {
+          object_init[student.profile[i].name] = 'missing';
+        } else if (student.profile[i].status === 'notneeded') {
+          object_init[student.profile[i].name] = 'notneeded';
+        }
+      }
+    } else {
+      return false;
+    }
+    for (let i = 0; i < documentlist2_keys.length; i++) {
+      if (object_init[documentlist2_keys[i]] === 'rejected') {
+        return false;
+      }
+    }
+    return true;
+  };
   render() {
     const stdlist = this.props.students.map((student, i) => (
       <StudentMyself
@@ -221,7 +288,9 @@ class StudentDashboard extends React.Component {
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
-                  <b>Reminder:</b> It looks like you did not finish survey:{' '}
+                  <BsExclamationTriangle size={18} />
+                  <b className="mx-2">Reminder:</b> It looks like you did not
+                  finish survey:{' '}
                   <Link to={'/survey'} style={{ textDecoration: 'none' }}>
                     Survey
                   </Link>
@@ -235,8 +304,9 @@ class StudentDashboard extends React.Component {
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
-                  <b>Reminder:</b> It looks like you did not have decided
-                  programs:{' '}
+                  <BsExclamationTriangle size={18} />
+                  <b className="mx-2">Reminder:</b> It looks like you did not
+                  have decided programs:{' '}
                   <Link
                     to={'/student-applications'}
                     style={{ textDecoration: 'none' }}
@@ -254,6 +324,8 @@ class StudentDashboard extends React.Component {
               <Col>
                 <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                   <Card.Body>
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b>
                     It looks like you did not confirm the programs yet:{' '}
                     <Link
                       to={'/student-applications'}
@@ -266,6 +338,44 @@ class StudentDashboard extends React.Component {
               </Col>
             </Row>
           )}
+        {!this.check_base_documents(student) && (
+          <Row>
+            <Col>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  <BsExclamationTriangle size={18} />
+                  <b className="mx-2">Reminder:</b>Some of Base Documents are
+                  still missing :{' '}
+                  <Link
+                    to={'/base-documents'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    My Applications
+                  </Link>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
+        {!this.check_base_documents_rejected(student) && (
+          <Row>
+            <Col>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  <BsExclamationTriangle size={18} />
+                  <b className="mx-2">Reminder:</b>Some of Base Documents are
+                  rejected :{' '}
+                  <Link
+                    to={'/base-documents'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    My Applications
+                  </Link>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>

@@ -126,7 +126,25 @@ class StudentDashboard extends React.Component {
     }
     return true;
   };
-  
+
+  check_application_selection = (student) => {
+    if (!student.applications) {
+      return false;
+    }
+    if (student.applications.length === 0) {
+      return false;
+    }
+    return true;
+  };
+
+  check_application_selection_to_decided = (student) => {
+    student.applications.map((application) => {
+      if (!application.decided) {
+        return false;
+      }
+    });
+    return true;
+  };
   render() {
     const stdlist = this.props.students.map((student, i) => (
       <StudentMyself
@@ -212,7 +230,42 @@ class StudentDashboard extends React.Component {
             </Col>
           </Row>
         )}
-
+        {!this.check_application_selection(student) && (
+          <Row>
+            <Col>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  <b>Reminder:</b> It looks like you did not have decided
+                  programs:{' '}
+                  <Link
+                    to={'/student-applications'}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    My Applications
+                  </Link>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
+        {this.check_application_selection(student) &&
+          this.check_application_selection_to_decided(student) && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <Card.Body>
+                    It looks like you did not confirm the programs yet:{' '}
+                    <Link
+                      to={'/student-applications'}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      My Applications
+                    </Link>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          )}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>

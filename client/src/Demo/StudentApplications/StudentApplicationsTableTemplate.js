@@ -18,9 +18,13 @@ import {
   AiFillDelete
 } from 'react-icons/ai';
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
-
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
+    error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     student: this.props.student,
     applications: this.props.student.applications,
     isLoaded: false,
@@ -28,7 +32,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     program_id: null,
     success: false,
     application_status_changed: false,
-    error: null,
+
     modalDeleteApplication: false,
     modalUpdatedApplication: false
   };
@@ -77,11 +81,11 @@ class StudentApplicationsTableTemplate extends React.Component {
             modalDeleteApplication: false
           });
         } else {
-          alert(resp.data.message);
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
+          if (resp.status === 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -100,6 +104,7 @@ class StudentApplicationsTableTemplate extends React.Component {
       delete applications_temp[i].programId;
       delete applications_temp[i].doc_modification_thread;
     }
+
     UpdateStudentApplications(student_id, applications_temp).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -144,11 +149,19 @@ class StudentApplicationsTableTemplate extends React.Component {
     return diffInDays;
   }
   render() {
-    const { error, isLoaded } = this.state;
-    if (error) {
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }
@@ -258,12 +271,9 @@ class StudentApplicationsTableTemplate extends React.Component {
                 <Form.Control
                   as="select"
                   onChange={(e) => this.handleChange(e, application_idx)}
-                  defaultValue={
-                    application.decided !== undefined && application.decided
-                      ? 'O'
-                      : 'X'
-                  }
+                  defaultValue={application.decided}
                 >
+                  <option value={'-'}>-</option>
                   <option value={'X'}>No</option>
                   <option value={'O'}>Yes</option>
                 </Form.Control>
@@ -275,19 +285,13 @@ class StudentApplicationsTableTemplate extends React.Component {
                   as="select"
                   onChange={(e) => this.handleChange(e, application_idx)}
                   disabled={
-                    !(application.decided !== undefined && application.decided)
+                    !(
+                      application.decided !== '-' && application.decided !== 'X'
+                    )
                   }
-                  // readOnly={
-                  //   !(
-                  //     application.decided !== undefined && application.decided
-                  //   )
-                  // }
-                  defaultValue={
-                    application.closed !== undefined && application.closed
-                      ? 'O'
-                      : 'X'
-                  }
+                  defaultValue={application.closed}
                 >
+                  <option value={'-'}>-</option>
                   <option value={'X'}>No</option>
                   <option value={'O'}>Yes</option>
                 </Form.Control>
@@ -299,13 +303,13 @@ class StudentApplicationsTableTemplate extends React.Component {
                   as="select"
                   onChange={(e) => this.handleChange(e, application_idx)}
                   disabled={
-                    !(application.closed !== undefined && application.closed)
+                    !(application.closed !== '-' && application.closed !== 'X')
                   }
                   defaultValue={application.admission}
                 >
                   <option value={'-'}>-</option>
-                  <option value={'false'}>No</option>
-                  <option value={'true'}>Yes</option>
+                  <option value={'X'}>No</option>
+                  <option value={'O'}>Yes</option>
                 </Form.Control>
               </Form.Group>
             </td>

@@ -235,8 +235,8 @@ const applicationSchema = new Schema({
     type: String,
     default: ''
   },
-  decided: { type: Boolean, default: false },
-  closed: { type: Boolean, default: false },
+  decided: { type: String, default: '-' },
+  closed: { type: String, default: '-' },
   admission: { type: String, default: '-' }
 });
 

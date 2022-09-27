@@ -107,7 +107,7 @@ class SurveyComponent extends React.Component {
       }
     );
   };
-  
+
   onHide = () => {
     this.setState({
       updateconfirmed: false
@@ -149,22 +149,7 @@ class SurveyComponent extends React.Component {
         </div>
       );
     }
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
 
-    // if (!isLoaded) {
-    //   return (
-    //     <div style={style}>
-    //       <Spinner animation="border" role="status">
-    //         <span className="visually-hidden"></span>
-    //       </Spinner>
-    //     </div>
-    //   );
-    // }
     return (
       <Aux>
         <SurveyEditableComponent

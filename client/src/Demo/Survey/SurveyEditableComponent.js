@@ -121,7 +121,7 @@ class SurveyEditableComponent extends React.Component {
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
-                  <b>Reminder:</b> It looks like you did not finish survey:{' '}
+                  The followings information are still missing:{' '}
                   {/* <Link to={'/survey'} style={{ textDecoration: 'none' }}>
                   Survey
                 </Link> */}
@@ -369,10 +369,10 @@ class SurveyEditableComponent extends React.Component {
                     <br />
                     {/* <br /> */}
                     Last update at:{' '}
-                    {this.state.academic_background.university &&
-                    this.state.academic_background.university.updatedAt
+                    {this.props.academic_background.university &&
+                    this.props.academic_background.university.updatedAt
                       ? convertDate(
-                          this.state.academic_background.university.updatedAt
+                          this.props.academic_background.university.updatedAt
                         )
                       : ''}
                   </Col>
@@ -563,10 +563,10 @@ class SurveyEditableComponent extends React.Component {
                     <br />
                     {/* <br /> */}
                     Last update at:{' '}
-                    {this.state.academic_background.language &&
-                    this.state.academic_background.language.updatedAt
+                    {this.props.academic_background.language &&
+                    this.props.academic_background.language.updatedAt
                       ? convertDate(
-                          this.state.academic_background.language.updatedAt
+                          this.props.academic_background.language.updatedAt
                         )
                       : ''}
                   </Col>

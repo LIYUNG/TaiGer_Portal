@@ -26,7 +26,10 @@ const UIBasicBasicTypography = React.lazy(() =>
   import("./Demo/UIElements/Basic/Typography")
 );
 const FormsElements = React.lazy(() => import("./Demo/Forms/FormsElements"));
-const AgentCenter = React.lazy(() => import("./Demo/AgentCenter/AgentCenter"));
+const AgentCenter = React.lazy(() => import('./Demo/AgentCenter/AgentCenter'));
+const BaseDocuments = React.lazy(() =>
+  import('./Demo/AgentCenter/BaseDocuments')
+);
 const CVMLRLCenter = React.lazy(() =>
   import("./Demo/CVMLRLCenter/CVMLRLCenter")
 );
@@ -268,7 +271,7 @@ const routes = [
     path: '/base-documents',
     exact: true,
     name: 'Base Documents',
-    component: AgentCenter
+    component: BaseDocuments
   },
   {
     path: '/cv-ml-rl-center',

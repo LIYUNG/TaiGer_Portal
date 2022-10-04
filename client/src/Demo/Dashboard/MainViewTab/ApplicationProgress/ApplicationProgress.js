@@ -24,7 +24,7 @@ class ApplicationProgress extends React.Component {
     // Calculating the no. of days between two dates
     const diffInDays = Math.round(diffInTime / oneDay);
 
-    return diffInDays;
+    return diffInDays.toString();
   }
 
   render() {
@@ -146,88 +146,80 @@ class ApplicationProgress extends React.Component {
 
     return (
       <>
-        <tbody>
-          <tr>
-            <td>
-              <DropdownButton
-                size="sm"
-                title="Option"
-                variant="primary"
-                id={`dropdown-variants-${this.props.student._id}`}
-                key={this.props.student._id}
-              >
-                {this.props.role !== 'Editor' && !this.props.isArchivPage ? (
-                  <Dropdown.Item eventKey="3">
-                    <Link
-                      to={'/student-applications/' + this.props.student._id}
-                      style={{ textDecoration: 'none' }}
-                    >
-                      Edit Program
-                    </Link>
-                  </Dropdown.Item>
-                ) : (
-                  <></>
-                )}
-                {this.props.isDashboard ? (
-                  <Dropdown.Item
-                    eventKey="5"
-                    onSelect={() =>
-                      this.updateStudentArchivStatus(
-                        this.props.student._id,
-                        true
-                      )
-                    }
+        <tr>
+          <td>
+            <DropdownButton
+              size="sm"
+              title="Option"
+              variant="primary"
+              id={`dropdown-variants-${this.props.student._id}`}
+              key={this.props.student._id}
+            >
+              {this.props.role !== 'Editor' && !this.props.isArchivPage ? (
+                <Dropdown.Item eventKey="3">
+                  <Link
+                    to={'/student-applications/' + this.props.student._id}
+                    style={{ textDecoration: 'none' }}
                   >
-                    Move to Archiv
-                  </Dropdown.Item>
-                ) : (
-                  <></>
-                )}
-                {this.props.isArchivPage ? (
-                  <Dropdown.Item
-                    eventKey="6"
-                    onSelect={() =>
-                      this.updateStudentArchivStatus(
-                        this.props.student._id,
-                        false
-                      )
-                    }
-                  >
-                    Move to Active
-                  </Dropdown.Item>
-                ) : (
-                  <></>
-                )}
-              </DropdownButton>
-            </td>
-            {this.props.role !== 'Student' ? (
-              <td>
-                <Link
-                  to={
-                    '/student-database/' +
-                    this.props.student._id +
-                    '/background'
+                    Edit Program
+                  </Link>
+                </Dropdown.Item>
+              ) : (
+                <></>
+              )}
+              {this.props.isDashboard ? (
+                <Dropdown.Item
+                  eventKey="5"
+                  onSelect={() =>
+                    this.updateStudentArchivStatus(this.props.student._id, true)
                   }
-                  style={{ textDecoration: 'none' }}
                 >
-                  <p className="text-info">
-                    {this.props.student.firstname},{' '}
-                    {this.props.student.lastname}
-                  </p>
-                </Link>
-              </td>
-            ) : (
-              <></>
-            )}
-            <td>{applying_university}</td>
-            <td>{applying_program}</td>
-            <td>{application_deadline}</td>
-            <td>{application_decided}</td>
-            <td>{application_closed}</td>
-            <td>{application_admission}</td>
-            <td>{application_date_left}</td>
-          </tr>
-        </tbody>
+                  Move to Archiv
+                </Dropdown.Item>
+              ) : (
+                <></>
+              )}
+              {this.props.isArchivPage ? (
+                <Dropdown.Item
+                  eventKey="6"
+                  onSelect={() =>
+                    this.updateStudentArchivStatus(
+                      this.props.student._id,
+                      false
+                    )
+                  }
+                >
+                  Move to Active
+                </Dropdown.Item>
+              ) : (
+                <></>
+              )}
+            </DropdownButton>
+          </td>
+          {this.props.role !== 'Student' ? (
+            <td>
+              <Link
+                to={
+                  '/student-database/' + this.props.student._id + '/background'
+                }
+                style={{ textDecoration: 'none' }}
+              >
+                <p className="text-info">
+                  {this.props.student.firstname}, {this.props.student.lastname}
+                </p>
+              </Link>
+            </td>
+          ) : (
+            <></>
+          )}
+          <td>{applying_university}</td>
+          <td>{applying_program}</td>
+          <td>{application_deadline}</td>
+          <td>{application_decided}</td>
+          <td>{application_closed}</td>
+          <td>{application_admission}</td>
+          <td>{application_date_left}</td>
+        </tr>
       </>
     );
   }

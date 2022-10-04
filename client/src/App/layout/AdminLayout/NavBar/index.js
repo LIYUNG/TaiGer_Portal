@@ -36,19 +36,20 @@ class NavBar extends Component {
             >
               <span />
             </a>
-            <a className="b-brand">
+            <a className="b-brand mx-2">
               <img
                 className="img-radius"
                 src={taiger_logo_small}
                 alt="Generic placeholder"
               />
-              <Link
-                to={'/dashboard/defualt'}
-                style={{ textDecoration: 'none' }}
-              >
-                <span className="b-title">TaiGer</span>
-              </Link>
-            </a>
+            </a>{' '}
+            <Link
+              to={'/dashboard/defualt'}
+              style={{ textDecoration: 'none' }}
+              className="b-brand mx-2"
+            >
+              <span className="b-title">TaiGer</span>
+            </Link>
           </div>
           {/* <a
                 className="mobile-menu"

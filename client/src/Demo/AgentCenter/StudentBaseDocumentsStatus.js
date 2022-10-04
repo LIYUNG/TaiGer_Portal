@@ -89,7 +89,7 @@ class StudentBaseDocumentsStatus extends React.Component {
     file_information = profile_list_keys.map((k, i) => {
       if (object_init[k] === 'uploaded') {
         return (
-          <td>
+          <td key={i}>
             <AiOutlineFieldTime
               size={24}
               color="orange"
@@ -99,7 +99,7 @@ class StudentBaseDocumentsStatus extends React.Component {
         );
       } else if (object_init[k] === 'accepted') {
         return (
-          <td>
+          <td key={i}>
             <IoCheckmarkCircle
               size={24}
               color="limegreen"
@@ -109,20 +109,20 @@ class StudentBaseDocumentsStatus extends React.Component {
         );
       } else if (object_init[k] === 'rejected') {
         return (
-          <td>
+          <td key={i}>
             <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
           </td>
         );
       } else if (object_init[k] === 'notneeded') {
         // TODO: render or hide?
         return (
-          <td>
+          <td key={i}>
             <BsDash size={24} color="lightgray" title="Not needed" />
           </td>
         );
       } else {
         return (
-          <td>
+          <td key={i}>
             <AiFillQuestionCircle
               size={24}
               color="lightgray"

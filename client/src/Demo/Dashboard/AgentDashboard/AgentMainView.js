@@ -16,7 +16,6 @@ import {
   downloadProfile
 } from '../../../api';
 class AgentMainView extends React.Component {
- 
   render() {
     const agent_todo = this.props.students.map((student, i) => (
       <AgentTodoList key={i} student={student} />
@@ -41,11 +40,7 @@ class AgentMainView extends React.Component {
       />
     ));
     const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing
-        key={i}
-        role={this.props.role}
-        student={student}
-      />
+      <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
     const application_progress = this.props.students.map((student, i) => (
       <ApplicationProgress key={i} student={student} />
@@ -186,7 +181,7 @@ class AgentMainView extends React.Component {
                       ))}
                     </tr>
                   </thead>
-                  {application_progress}
+                  <tbody>{application_progress}</tbody>
                 </Table>
               </Tab>
               <Tab eventKey="zz" title="Program Conflicts">

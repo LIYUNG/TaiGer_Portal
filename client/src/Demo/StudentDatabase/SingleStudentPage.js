@@ -424,11 +424,13 @@ class SingleStudentPage extends React.Component {
                       ))}
                     </tr>
                   </thead>
-                  <ApplicationProgress
-                    role={this.props.user.role}
-                    student={this.state.student}
-                    isLoaded={this.state.isLoaded}
-                  />
+                  <tbody>
+                    <ApplicationProgress
+                      role={this.props.user.role}
+                      student={this.state.student}
+                      isLoaded={this.state.isLoaded}
+                    />
+                  </tbody>
                 </Table>
               </Card.Body>
             </Card>

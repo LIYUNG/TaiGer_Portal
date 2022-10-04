@@ -116,7 +116,11 @@ export default function Signin1({ setUserdata }) {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                {!loginsuccess && <p className="mb-2 text-danger">Email or password is not correct.</p>}
+                {!loginsuccess && (
+                  <p className="mb-2 text-danger">
+                    Email or password is not correct.
+                  </p>
+                )}
                 <button
                   disabled={!emailaddress || !password}
                   onClick={(e) => onButtonClick(e, true)}
@@ -125,18 +129,14 @@ export default function Signin1({ setUserdata }) {
                 >
                   Login
                 </button>
-                <p className="mb-2 text-light">
-                  Forgot password?
-                  <NavLink to="/account/forgot-password">
-                    <p className="text-muted">Reset</p>
-                  </NavLink>
-                </p>
-                <p className="mb-2 text-light">
-                  New in TaiGer Portal?
-                  <NavLink to="/auth/sign-up">
-                    <p className="text-muted">Sign up</p>
-                  </NavLink>
-                </p>
+                <p className="mb-2 text-light">Forgot password?</p>
+                <NavLink to="/account/forgot-password">
+                  <p className="text-muted">Reset</p>
+                </NavLink>
+                <p className="mb-2 text-light">New in TaiGer Portal?</p>
+                <NavLink to="/auth/sign-up">
+                  <p className="text-muted">Sign up</p>
+                </NavLink>
               </div>
             </form>
           </div>

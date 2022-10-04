@@ -211,7 +211,7 @@ class AdminMainView extends React.Component {
                       ))}
                     </tr>
                   </thead>
-                  {application_progress}
+                  <tbody>{application_progress}</tbody>
                 </Table>
               </Tab>
             </Tabs>

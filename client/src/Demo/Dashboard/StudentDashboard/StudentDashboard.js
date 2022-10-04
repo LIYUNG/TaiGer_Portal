@@ -405,7 +405,7 @@ class StudentDashboard extends React.Component {
                     ))}
                   </tr>
                 </thead>
-                {application_progress}
+                <tbody>{application_progress}</tbody>
               </Table>
             </Card>
           </Col>

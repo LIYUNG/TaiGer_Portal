@@ -15,7 +15,7 @@ const navLogo = (props) => {
       <div className="navbar-brand header-logo">
         <a
           href={DEMO.BLANK_LINK}
-          className="b-brand"
+          className="b-brand mx-2"
           style={{ textDecoration: 'none' }}
         >
           {/* <div>TODO:Put Logo</div>
@@ -27,10 +27,14 @@ const navLogo = (props) => {
             src={taiger_logo_small}
             alt="Generic placeholder"
           />
-          <Link to={'/dashboard/defualt'} style={{ textDecoration: 'none' }}>
-            <span className="b-title">TaiGer</span>
-          </Link>
-        </a>
+        </a>{' '}
+        <Link
+          to={'/dashboard/defualt'}
+          style={{ textDecoration: 'none' }}
+          className="b-brand mx-2"
+        >
+          <span className="b-title"> TaiGer</span>
+        </Link>
         <a
           // href={DEMO.BLANK_LINK}
           className={toggleClass.join(' ')}

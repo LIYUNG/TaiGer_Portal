@@ -63,20 +63,22 @@ class ManualFiles extends React.Component {
         {this.props.role === 'Student' || this.props.role === 'Guest' ? (
           <></>
         ) : (
-          <ToggleableUploadFileForm
-            role={this.props.role}
-            student={this.props.student}
-            handleSelect={this.handleSelect}
-            handleCreateGeneralMessageThread={
-              this.handleCreateGeneralMessageThread
-            }
-            handleCreateProgramSpecificMessageThread={
-              this.handleCreateProgramSpecificMessageThread
-            }
-            category={this.state.category}
-            filetype={this.props.filetype}
-            application={this.props.application}
-          />
+          this.props.application && this.props.application.closed !== 'O' && (
+            <ToggleableUploadFileForm
+              role={this.props.role}
+              student={this.props.student}
+              handleSelect={this.handleSelect}
+              handleCreateGeneralMessageThread={
+                this.handleCreateGeneralMessageThread
+              }
+              handleCreateProgramSpecificMessageThread={
+                this.handleCreateProgramSpecificMessageThread
+              }
+              category={this.state.category}
+              filetype={this.props.filetype}
+              application={this.props.application}
+            />
+          )
         )}
       </>
     );

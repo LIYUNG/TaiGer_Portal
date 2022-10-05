@@ -643,7 +643,7 @@ function AdmissionsTable(props) {
   statedata.students.map((student) =>
     student.applications.map((application) => {
       if (application.decided) {
-        if (application.admission === 'true') {
+        if (application.admission === 'O') {
           admissions_table.push({
             _id: student._id,
             firstname: student.firstname,
@@ -655,7 +655,7 @@ function AdmissionsTable(props) {
             semester: application.programId.semester
           });
         }
-        if (application.admission === 'false') {
+        if (application.admission === 'X') {
           rejections_table.push({
             _id: student._id,
             firstname: student.firstname,

@@ -39,6 +39,20 @@ class SurveyEditableComponent extends React.Component {
     e.preventDefault();
     var language_temp = { ...this.state.academic_background.language };
     language_temp[e.target.id] = e.target.value;
+    if (e.target.id === 'english_certificate') {
+      if (e.target.value === 'No') {
+        language_temp['english_score'] = '';
+      } else {
+        language_temp['english_test_date'] = '';
+      }
+    }
+    if (e.target.id === 'german_certificate') {
+      if (e.target.value === 'No') {
+        language_temp['german_score'] = '';
+      } else {
+        language_temp['german_test_date'] = '';
+      }
+    }
     this.setState((state) => ({
       ...state,
       changed_language: true,
@@ -428,7 +442,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         type="text"
                         placeholder="(i.e. TOEFL: 94, or IELTS: 6.5) "
-                        defaultValue={
+                        value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language.english_score
                             ? this.state.academic_background.language
@@ -452,7 +466,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Label>Expected Test Date</Form.Label>
                       <Form.Control
                         type="date"
-                        defaultValue={
+                        value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
                             .english_test_date
@@ -513,7 +527,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         type="text"
                         placeholder="(i.e. TestDaF: 4, or DSH: 2) "
-                        defaultValue={
+                        value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language.german_score
                             ? this.state.academic_background.language
@@ -537,7 +551,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Label>Expected Test Date</Form.Label>
                       <Form.Control
                         type="date"
-                        defaultValue={
+                        value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
                             .german_test_date
@@ -645,8 +659,8 @@ class SurveyEditableComponent extends React.Component {
             </Card>
           </Col>
         </Row>
-       
-{/* 
+
+        {/* 
         {!isLoaded && (
           <div style={style}>
             <Spinner animation="border" role="status">

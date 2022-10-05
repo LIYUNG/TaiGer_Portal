@@ -39,7 +39,7 @@ class EditorDocsProgress extends React.Component {
     student: this.props.student,
     deleteFileWarningModel: false,
     SetAsFinalFileModel: false,
-    ML_Requirements_Modal: false,
+    Requirements_Modal: false,
     studentId: '',
     student_id: '',
     doc_thread_id: '',
@@ -47,7 +47,7 @@ class EditorDocsProgress extends React.Component {
     docName: '',
     whoupdate: '',
     isLoaded: false,
-    ml_requirements: '',
+    requirements: '',
     file: '',
     isThreadExisted: false
   };
@@ -63,18 +63,18 @@ class EditorDocsProgress extends React.Component {
       SetAsFinalFileModel: false
     }));
   };
-  openML_Requirements_ModalWindow = (ml_requirements) => {
+  openRequirements_ModalWindow = (ml_requirements) => {
     this.setState((state) => ({
       ...state,
-      ML_Requirements_Modal: true,
-      ml_requirements
+      Requirements_Modal: true,
+      requirements: ml_requirements
     }));
   };
-  closeML_Requirements_ModalWindow = () => {
+  close_Requirements_ModalWindow = () => {
     this.setState((state) => ({
       ...state,
-      ML_Requirements_Modal: false,
-      ml_requirements: ''
+      Requirements_Modal: false,
+      requirements: ''
     }));
   };
   closeDocExistedWindow = () => {
@@ -373,35 +373,97 @@ class EditorDocsProgress extends React.Component {
                 application={null}
               />
               <hr></hr>
+
               {this.state.student.applications &&
                 this.state.student.applications.map((application, i) => (
                   <div key={i}>
+                    {((application.programId.ml_requirements !== undefined &&
+                      application.programId.ml_requirements !== '' &&
+                      application.doc_modification_thread.findIndex(
+                        (thread) => thread.doc_thread_id.file_type === 'ML'
+                      ) === -1) ||
+                      (application.programId.essay_requirements !== undefined &&
+                        application.programId.essay_requirements !== '' &&
+                        application.doc_modification_thread.findIndex(
+                          (thread) => thread.doc_thread_id.file_type === 'Essay'
+                        ) === -1)) && (
+                      <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                        <Card.Body>
+                          The followings documents are not started yet:{' '}
+                          {application.programId.ml_requirements !==
+                            undefined &&
+                            application.programId.ml_requirements !== '' &&
+                            application.doc_modification_thread.findIndex(
+                              (thread) =>
+                                thread.doc_thread_id.file_type === 'ML'
+                            ) === -1 &&
+                            application.programId.ml_requirements !== '' && (
+                              <li>
+                                <b>ML</b>
+                              </li>
+                            )}
+                          {application.programId.essay_requirements !==
+                            undefined &&
+                            application.programId.essay_requirements !== '' &&
+                            application.doc_modification_thread.findIndex(
+                              (thread) =>
+                                thread.doc_thread_id.file_type === 'Essay'
+                            ) === -1 && (
+                              <li>
+                                <b>Essay</b>
+                              </li>
+                            )}
+                        </Card.Body>
+                      </Card>
+                    )}
+
                     {application.decided !== undefined &&
-                    application.decided === true ? (
+                    application.decided === 'O' ? (
                       <>
                         <Row className="mb-2 mx-0">
-                          <Col>
+                          <Col md={4}>
                             {application.programId.school}
                             {' - '}
                             {application.programId.program_name}
                           </Col>
-                          <Col>
+                          <Col md={2}>
+                            {application.programId.ml_requirements !==
+                              undefined &&
+                            application.programId.ml_requirements !== '' ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="secondary"
+                                  onClick={() =>
+                                    this.openRequirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  ML
+                                  {/* <AiOutlineMore size={20} /> */}
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}{' '}
                             {application.programId.essay_requirements !==
                               undefined &&
                             application.programId.essay_requirements !== '' ? (
                               <>
-                                Essay Req.: {'           '}{' '}
                                 <Button
                                   size="sm"
                                   title="Comments"
                                   variant="light"
                                   onClick={() =>
-                                    this.openML_Requirements_ModalWindow(
-                                      application.programId.ml_requirements
+                                    this.openRequirements_ModalWindow(
+                                      application.programId.essay_requirements
                                     )
                                   }
                                 >
-                                  <AiOutlineMore size={20} />
+                                  Essay
+                                  {/* <AiOutlineMore size={20} /> */}
                                 </Button>
                               </>
                             ) : (
@@ -413,6 +475,10 @@ class EditorDocsProgress extends React.Component {
                             {application.programId.application_deadline
                               ? application.programId.application_deadline
                               : '-'}
+                          </Col>
+                          <Col>
+                            Status:{' '}
+                            {application.closed === 'O' ? 'Closed' : 'Open'}
                           </Col>
                         </Row>
                         <ManualFiles
@@ -427,6 +493,7 @@ class EditorDocsProgress extends React.Component {
                             this.initProgramSpecificFileThread
                           }
                         />
+                        <hr></hr>
                       </>
                     ) : (
                       <></>
@@ -508,21 +575,19 @@ class EditorDocsProgress extends React.Component {
           </Modal.Footer>
         </Modal>
         <Modal
-          show={this.state.ML_Requirements_Modal}
-          onHide={this.closeML_Requirements_ModalWindow}
+          show={this.state.Requirements_Modal}
+          onHide={this.close_Requirements_ModalWindow}
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
           <Modal.Header>
             <Modal.Title id="contained-modal-title-vcenter">
-              Special ML Requirements
+              Special Requirements
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>{this.state.ml_requirements}</Modal.Body>
+          <Modal.Body>{this.state.requirements}</Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeML_Requirements_ModalWindow}>
-              Close
-            </Button>
+            <Button onClick={this.close_Requirements_ModalWindow}>Close</Button>
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">

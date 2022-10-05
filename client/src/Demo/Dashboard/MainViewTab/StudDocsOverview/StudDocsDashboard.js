@@ -79,12 +79,14 @@ class StudDocsDashboard extends React.Component {
             {this.props.student.email}
           </td>
           <td>
-            {
-              this.props.student.academic_background.university
-                .attended_university
-            }
-          </td>
-          <td>
+            <b>
+              {
+                this.props.student.academic_background.university
+                  .attended_university
+              }
+            </b>
+            <br />
+
             {
               this.props.student.academic_background.university
                 .attended_university_program

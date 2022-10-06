@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Tabs, Tab, Table ,Card} from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Table, Card } from 'react-bootstrap';
 // import Card from '../../../App/components/MainCard';
 import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
@@ -151,19 +151,7 @@ class EditorMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row>
-          <Col sm={12}>
-            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header>
-                <Card.Title>Program Conflicts</Card.Title>
-              </Card.Header>
-              <TabProgramConflict
-                students={this.props.students}
-                startEditingProgram={this.props.startEditingProgram}
-              />
-            </Card>
-          </Col>
-        </Row>
+        <TabProgramConflict students={this.props.students} />
         <Row>
           <Col sm={12}>
             <Tabs defaultActiveKey="dz" id="uncontrolled-tab-example">

@@ -65,6 +65,7 @@ class NavItem extends Component {
     if (this.props.role === 'Student') {
       if (
         itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Applicants Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'My Tasks Overview' ||
@@ -84,6 +85,7 @@ class NavItem extends Component {
     if (this.props.role === 'Guest') {
       if (
         itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Applicants Overview' ||
         itemTitle === 'Base Documents' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'CV/ML/RL Center' ||

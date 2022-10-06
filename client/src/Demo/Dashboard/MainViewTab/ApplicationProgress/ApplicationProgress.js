@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import { Link } from 'react-router-dom';
-
+import {AiOutlineEdit} from 'react-icons/ai'
 class ApplicationProgress extends React.Component {
   getNumberOfDays(start, end) {
     const date1 = new Date(start);
@@ -26,6 +26,10 @@ class ApplicationProgress extends React.Component {
 
     return diffInDays.toString();
   }
+
+  updateStudentArchivStatus = (studentId, isArchived) => {
+    this.props.updateStudentArchivStatus(studentId, isArchived);
+  };
 
   render() {
     var applying_university;
@@ -89,7 +93,7 @@ class ApplicationProgress extends React.Component {
       application_date_left = this.props.student.applications.map(
         (application, i) => (
           <p className="mb-1 text-info" key={i}>
-            {application.closed
+            {application.closed === "O"
               ? '-'
               : application.programId.application_deadline
               ? this.props.student.academic_background.university
@@ -107,38 +111,52 @@ class ApplicationProgress extends React.Component {
       );
       application_decided = this.props.student.applications.map(
         (application, i) =>
-          application.decided !== undefined && application.decided === true ? (
+          application.decided !== undefined && application.decided === 'O' ? (
             <p className="mb-1 text-info" key={i}>
               O
             </p>
-          ) : (
+          ) : application.decided !== undefined &&
+            application.decided === 'X' ? (
             <p className="mb-1 text-info" key={application._id}>
               X
+            </p>
+          ) : (
+            <p className="mb-1 text-info" key={application._id}>
+              -
             </p>
           )
       );
       application_closed = this.props.student.applications.map(
         (application, i) =>
-          application.closed !== undefined && application.closed === true ? (
+          application.closed !== undefined && application.closed === 'O' ? (
             <p className="mb-1 text-info" key={i}>
               O
             </p>
-          ) : (
+          ) : application.closed !== undefined && application.closed === 'X' ? (
             <p className="mb-1 text-info" key={application._id}>
               X
+            </p>
+          ) : (
+            <p className="mb-1 text-info" key={application._id}>
+              -
             </p>
           )
       );
       application_admission = this.props.student.applications.map(
         (application, i) =>
           application.admission !== undefined &&
-          application.admission === true ? (
+          application.admission === 'O' ? (
             <p className="mb-1 text-info" key={i}>
               O
             </p>
-          ) : (
+          ) : application.admission !== undefined &&
+            application.admission === 'X' ? (
             <p className="mb-1 text-info" key={application._id}>
               X
+            </p>
+          ) : (
+            <p className="mb-1 text-info" key={application._id}>
+              -
             </p>
           )
       );
@@ -150,7 +168,12 @@ class ApplicationProgress extends React.Component {
           <td>
             <DropdownButton
               size="sm"
-              title="Option"
+              // title="Option"
+              title={
+                <span>
+                  <i className="fa fa-edit"></i>
+                </span>
+              }
               variant="primary"
               id={`dropdown-variants-${this.props.student._id}`}
               key={this.props.student._id}

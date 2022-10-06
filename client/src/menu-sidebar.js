@@ -71,6 +71,14 @@ export default {
           icon: 'feather icon-file-text'
         },
         {
+          id: 'applicants_overview',
+          title: 'Applicants Overview',
+          type: 'item',
+          url: '/applicants-overview',
+          classes: 'nav-item',
+          icon: 'feather icon-eye'
+        },
+        {
           id: 'agent_center',
           title: 'Base Documents',
           type: 'item',

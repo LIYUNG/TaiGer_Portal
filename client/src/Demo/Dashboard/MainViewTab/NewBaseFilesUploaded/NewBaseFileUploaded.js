@@ -151,7 +151,7 @@ class NewBaseFileUploaded extends React.Component {
             </Link>
           </td>
           <td>
-            <p>{this.props.Doc_key.replace(/_/g, ' ')}</p>
+            <p className="text-primary">{this.props.Doc_key.replace(/_/g, ' ')}</p>
           </td>
           <td>
             <Button

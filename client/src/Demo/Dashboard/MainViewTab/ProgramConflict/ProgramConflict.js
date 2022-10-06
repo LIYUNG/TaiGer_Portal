@@ -9,7 +9,7 @@ class ProgramConflict extends React.Component {
   render() {
     var studs_id = this.props.conflict_map[this.props.conf_program_id];
     var stds = studs_id.map((k, i) => (
-      <div className='text-info' key={i}>
+      <div className="text-info" key={i}>
         {this.props.students.find((stud) => stud._id === studs_id[i]).firstname}
         ,{' '}
         {this.props.students.find((stud) => stud._id === studs_id[i]).lastname}
@@ -33,9 +33,13 @@ class ProgramConflict extends React.Component {
         <tbody>
           <tr>
             <td className="text-danger">
-              {this.props.conflict_programs[this.props.conf_program_id].school}
-            </td>
-            <td className="text-danger">
+              <b>
+                {
+                  this.props.conflict_programs[this.props.conf_program_id]
+                    .school
+                }
+              </b>
+              <br></br>
               {this.props.conflict_programs[this.props.conf_program_id].program}
             </td>
             <td>{stds}</td>

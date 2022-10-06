@@ -90,10 +90,10 @@ class AgentReviewing_StudentView extends React.Component {
       this.props.student.applications.map((application, i) => {
         if (
           !application.decided ||
-          (application.decided !== undefined && application.decided === false)
+          (application.decided !== undefined && application.decided === '-')
         ) {
           return (
-            <h6 key={i}>
+            <h6 key={i} className="text-info">
               {application.programId.school}
               {' - '}
               {application.programId.program_name}

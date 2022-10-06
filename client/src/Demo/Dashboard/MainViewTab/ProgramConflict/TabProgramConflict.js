@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Col } from 'react-bootstrap';
+import { Row, Card, Table, Col } from 'react-bootstrap';
 import ProgramConflict from './ProgramConflict';
 
 class TabProgramConflict extends React.Component {
@@ -13,7 +13,7 @@ class TabProgramConflict extends React.Component {
           // on decided program counts!
           if (
             this.props.students[i].applications[j].decided !== undefined &&
-            this.props.students[i].applications[j].decided === true
+            this.props.students[i].applications[j].decided === 'O'
           ) {
             if (
               !Array.isArray(
@@ -63,28 +63,34 @@ class TabProgramConflict extends React.Component {
     return (
       <>
         {program_conflict.length !== 0 ? (
-          <Table
-            responsive
-            bordered
-            hover
-            className="my-0 mx-0"
-            variant="dark"
-            text="light"
-          >
-            <thead>
-              <tr>
-                <th>University</th>
-                <th>Programs</th>
-                <th>First-, Last Name</th>
-                <th>Deadline</th>
-              </tr>
-            </thead>
-            {program_conflict}
-          </Table>
+          <Row>
+            <Col sm={12}>
+              <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Header>
+                  <Card.Title>Program Conflicts</Card.Title>
+                </Card.Header>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr>
+                      <th>University / Programs</th>
+                      <th>First-, Last Name</th>
+                      <th>Deadline</th>
+                    </tr>
+                  </thead>
+                  {program_conflict}
+                </Table>
+              </Card>
+            </Col>
+          </Row>
         ) : (
-          <Col>
-            <p className="mt-2 text-center">No conflict programs!</p>
-          </Col>
+          <></>
         )}
       </>
     );

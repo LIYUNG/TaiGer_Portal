@@ -138,12 +138,12 @@ class StudentDashboard extends React.Component {
   };
 
   check_application_selection_to_decided = (student) => {
-    student.applications.map((application) => {
-      if (!application.decided) {
-        return false;
+    for (let i = 0; i < student.applications.length; i += 1) {
+      if (student.applications[i].decided === '-') {
+        return true;
       }
-    });
-    return true;
+    }
+    return false;
   };
 
   check_base_documents = (student) => {
@@ -350,7 +350,7 @@ class StudentDashboard extends React.Component {
                     to={'/base-documents'}
                     style={{ textDecoration: 'none' }}
                   >
-                    My Applications
+                    My Base Documents
                   </Link>
                 </Card.Body>
               </Card>
@@ -369,7 +369,7 @@ class StudentDashboard extends React.Component {
                     to={'/base-documents'}
                     style={{ textDecoration: 'none' }}
                   >
-                    My Applications
+                    My Base Documents
                   </Link>
                 </Card.Body>
               </Card>

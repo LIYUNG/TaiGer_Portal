@@ -1,13 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  AiFillCloseCircle,
-  AiOutlineLoading3Quarters,
-  AiFillQuestionCircle,
-  AiOutlineUndo
-} from 'react-icons/ai';
-// import { AiFillCloseCircle, AiFillQuestionCircle } from "react-icons/ai";
-// import { IoCheckmarkCircle } from "react-icons/io5";
+import { AiFillCheckCircle, AiFillQuestionCircle } from 'react-icons/ai';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 
@@ -35,46 +29,33 @@ class AgentReviewing extends React.Component {
       }
     } else {
     }
-    var to_be_checked_profiles = keys.map((key, i) => {
-      if (object_init[key] === 'uploaded') {
-        return (
-          <p key={i}>
-            {' '}
-            <AiOutlineLoading3Quarters
-              size={18}
-              color="lightred"
-              title="No Document uploaded"
-            />{' '}
-            {key.replace(/_/g, ' ')}
-          </p>
-        );
-      }
-    });
-    var missing_profiles = keys.map((key, i) => {
+    let isMissingBaseDocs = false;
+    for (let i = 0; i < keys.length; i += 1) {
       if (
-        object_init[key] !== 'accepted' &&
-        object_init[key] !== 'notneeded' &&
-        object_init[key] !== 'uploaded'
+        object_init[keys[i]] !== 'accepted' &&
+        object_init[keys[i]] !== 'notneeded' &&
+        object_init[keys[i]] !== 'uploaded'
       ) {
-        return (
-          <Link
-            to={'/student-database/' + this.props.student._id + '/profile'}
-            key={i}
-            style={{ textDecoration: 'none' }}
-          >
-            <p className="text-warning">
-              {' '}
-              <AiFillQuestionCircle
-                size={18}
-                color="lightgray"
-                title="No Document uploaded"
-              />{' '}
-              {key.replace(/_/g, ' ')}
-            </p>{' '}
-          </Link>
-        );
+        isMissingBaseDocs = true;
+        break;
       }
-    });
+    }
+
+    let isNo_decided_program = false;
+    for (let i = 0; i < keys.length; i += 1) {
+      if (this.props.student.applications) {
+      }
+      for (let j = 0; j < this.props.student.applications.length; j += 1)
+        if (
+          !this.props.student.applications[j].decided ||
+          (this.props.student.applications[j].decided !== undefined &&
+            this.props.student.applications[j].decided === 'X')
+        ) {
+          isNo_decided_program = true;
+          break;
+        }
+    }
+
     var no_decided_program =
       this.props.student.applications &&
       this.props.student.applications.map((application, i) => {
@@ -101,7 +82,7 @@ class AgentReviewing extends React.Component {
 
     return (
       <>
-        <tr>
+        <tr className="my-0">
           {this.props.role !== 'Student' ? (
             <>
               <td>
@@ -117,12 +98,68 @@ class AgentReviewing extends React.Component {
                   {this.props.student.lastname}
                 </Link>
               </td>
-              <td>{missing_profiles}</td>
+              <td>
+                <Link
+                  to={
+                    '/student-database/' + this.props.student._id + '/profile'
+                  }
+                  style={{ textDecoration: 'none' }}
+                >
+                  {isMissingBaseDocs ? (
+                    <p className="text-warning">
+                      <AiFillQuestionCircle
+                        size={24}
+                        color="lightgray"
+                        title="incomplete"
+                        className="mx-2"
+                      />
+                      incomplete
+                    </p>
+                  ) : (
+                    <p className="text-warning">
+                      <IoCheckmarkCircle
+                        size={24}
+                        color="limegreen"
+                        title="complete"
+                        className="mx-2"
+                      />
+                      complete
+                    </p>
+                  )}
+                </Link>
+              </td>
             </>
           ) : (
             <></>
           )}
-          <td>{no_decided_program}</td>
+          <td>
+            <Link
+              to={'/student-applications/' + this.props.student._id}
+              style={{ textDecoration: 'none' }}
+            >
+              {isNo_decided_program ? (
+                <p className="text-warning">
+                  <AiFillQuestionCircle
+                    size={24}
+                    color="lightgray"
+                    title="incomplete"
+                    className="mx-2"
+                  />
+                  incomplete
+                </p>
+              ) : (
+                <p className="text-warning">
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    title="complete"
+                    className="mx-2"
+                  />
+                  complete
+                </p>
+              )}
+            </Link>
+          </td>
         </tr>
       </>
     );

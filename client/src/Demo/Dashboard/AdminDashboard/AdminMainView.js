@@ -114,16 +114,7 @@ class AdminMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row className="mb-2">
-          <Col md={12}>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0">Program Conflicts</Card.Title>
-              </Card.Header>
-              <TabProgramConflict students={this.props.students} />
-            </Card>
-          </Col>
-        </Row>
+        <TabProgramConflict students={this.props.students} />
         <Row className="mb-2">
           <Col md={12}>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
@@ -141,8 +132,8 @@ class AdminMainView extends React.Component {
                 <thead>
                   <tr>
                     <th>First-/Lastname</th>
-                    <th>Missing</th>
-                    <th>ProgramTobeDecided</th>
+                    <th>Base Documents</th>
+                    <th>Program Selection</th>
                   </tr>
                 </thead>
                 <tbody>{agent_reviewing}</tbody>
@@ -186,32 +177,6 @@ class AdminMainView extends React.Component {
                     </tr>
                   </thead>
                   <tbody>{students_agent_editor}</tbody>
-                </Table>
-              </Tab>
-              <Tab eventKey="z" title="Application Overview">
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                >
-                  <thead>
-                    <tr>
-                      <>
-                        <th></th>
-                        <th>First-, Last Name</th>
-                        <th>University</th>
-                        <th>Programs</th>
-                        <th>Deadline</th>
-                      </>
-                      {window.programstatuslist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{application_progress}</tbody>
                 </Table>
               </Tab>
             </Tabs>

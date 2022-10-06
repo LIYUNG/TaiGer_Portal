@@ -26,7 +26,9 @@ const UIBasicBasicTypography = React.lazy(() =>
   import("./Demo/UIElements/Basic/Typography")
 );
 const FormsElements = React.lazy(() => import("./Demo/Forms/FormsElements"));
-const AgentCenter = React.lazy(() => import('./Demo/AgentCenter/AgentCenter'));
+const ApplicantsOverview = React.lazy(() =>
+  import('./Demo/ApplicantsOverview/index')
+);
 const BaseDocuments = React.lazy(() =>
   import('./Demo/AgentCenter/BaseDocuments')
 );
@@ -266,6 +268,12 @@ const routes = [
     exact: true,
     name: 'TaiGer AI',
     component: TaiGerAI
+  },
+  {
+    path: '/applicants-overview',
+    exact: true,
+    name: 'Applicants Overview',
+    component: ApplicantsOverview
   },
   {
     path: '/base-documents',

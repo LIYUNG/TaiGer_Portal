@@ -119,18 +119,6 @@ class SurveyComponent extends React.Component {
       updateconfirmed: false
     });
   };
-  check_survey_filled = (academic_background) => {
-    if (!academic_background || !academic_background.university) {
-      return false;
-    }
-    if (
-      !academic_background.university.expected_application_date ||
-      !academic_background.university.expected_application_semester
-    ) {
-      return false;
-    }
-    return true;
-  };
 
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;

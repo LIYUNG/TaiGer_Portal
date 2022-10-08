@@ -195,7 +195,7 @@ class NewProgramEdit extends React.Component {
                       value={this.state.program.uni_assist}
                     >
                       <option value="No">No</option>
-                      <option value="Yes - VPD">Yes - VPD</option>
+                      <option value="Yes-VPD">Yes-VPD</option>
                       <option value="Yes-Full">Yes-Full</option>
                     </Form.Control>
                   </Form.Group>

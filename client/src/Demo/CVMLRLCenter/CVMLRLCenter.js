@@ -6,6 +6,7 @@ import { getCVMLRLOverview } from '../../api';
 import EditorDocsProgress from './EditorDocsProgress';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { Link } from 'react-router-dom';
 
 class CVMLRLCenter extends React.Component {
   state = {
@@ -130,9 +131,15 @@ class CVMLRLCenter extends React.Component {
             aria-controls={'accordion' + i}
             aria-expanded={this.state.accordionKeys[i] === i}
           >
-            {student.firstname}
-            {' ,'}
-            {student.lastname}
+            <Link
+              to={'/student-database/' + student._id + '/CV_ML_RL'}
+              style={{ textDecoration: 'none' }}
+              className="text-info"
+            >
+              {student.firstname}
+              {' ,'}
+              {student.lastname}
+            </Link>
           </Card.Title>
         </Card.Header>
         <EditorDocsProgress

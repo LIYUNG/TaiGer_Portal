@@ -32,6 +32,12 @@ import {
   // AiOutlineUndo,
   // AiFillMessage
 } from 'react-icons/ai';
+import {
+  check_survey_filled,
+  check_application_selection,
+  check_generaldocs
+} from '../Utils/checking-functions';
+
 class EditorDocsProgress extends React.Component {
   state = {
     timeouterror: null,
@@ -350,6 +356,7 @@ class EditorDocsProgress extends React.Component {
         </div>
       );
     }
+    const create_generaldoc_reminder = check_generaldocs(this.state.student);
     return (
       <>
         <Collapse
@@ -360,6 +367,35 @@ class EditorDocsProgress extends React.Component {
               <Row className="mb-4 mx-0">
                 <Col md={8}>General Documents (CV, Recommendation Letters)</Col>
               </Row>
+              {create_generaldoc_reminder && (
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <Card.Body>
+                    The following general documents are not started yet:{' '}
+                    {this.state.student.generaldocs_threads.findIndex(
+                      (thread) => thread.doc_thread_id.file_type === 'CV'
+                    ) === -1 && (
+                      <li>
+                        <b>CV</b>
+                      </li>
+                    )}{' '}
+                    {this.state.student.generaldocs_threads.filter((thread) =>
+                      thread.doc_thread_id.file_type.includes('RL')
+                    ).length < 2 && (
+                      <li>
+                        <b>
+                          RL x{' '}
+                          {2 -
+                            this.state.student.generaldocs_threads.filter(
+                              (thread) =>
+                                thread.doc_thread_id.file_type.includes('RL')
+                            ).length}
+                        </b>
+                      </li>
+                    )}
+                  </Card.Body>
+                </Card>
+              )}
+
               <ManualFiles
                 onDeleteFileThread={this.onDeleteFileThread}
                 handleAsFinalFile={this.handleAsFinalFile}
@@ -377,19 +413,25 @@ class EditorDocsProgress extends React.Component {
               {this.state.student.applications &&
                 this.state.student.applications.map((application, i) => (
                   <div key={i}>
-                    {((application.programId.ml_requirements !== undefined &&
+                    {((application.decided !== undefined &&
+                      application.decided === 'O' &&
+                      application.programId.ml_requirements !== undefined &&
                       application.programId.ml_requirements !== '' &&
                       application.doc_modification_thread.findIndex(
                         (thread) => thread.doc_thread_id.file_type === 'ML'
                       ) === -1) ||
-                      (application.programId.essay_requirements !== undefined &&
+                      (application.decided !== undefined &&
+                        application.decided === 'O' &&
+                        application.programId.essay_requirements !==
+                          undefined &&
                         application.programId.essay_requirements !== '' &&
                         application.doc_modification_thread.findIndex(
                           (thread) => thread.doc_thread_id.file_type === 'Essay'
                         ) === -1)) && (
                       <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                         <Card.Body>
-                          The followings documents are not started yet:{' '}
+                          The followings application documents are not started
+                          yet:{' '}
                           {application.programId.ml_requirements !==
                             undefined &&
                             application.programId.ml_requirements !== '' &&

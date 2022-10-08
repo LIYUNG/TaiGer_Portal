@@ -6,6 +6,7 @@ import { updateLanguageSkill } from '../../api';
 import { convertDate } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { check_survey_filled } from '../Utils/checking-functions';
 
 class SurveyEditableComponent extends React.Component {
   state = {
@@ -82,18 +83,6 @@ class SurveyEditableComponent extends React.Component {
       updateconfirmed: false
     });
   };
-  check_survey_filled = (academic_background) => {
-    if (!academic_background || !academic_background.university) {
-      return false;
-    }
-    if (
-      !academic_background.university.expected_application_date ||
-      !academic_background.university.expected_application_semester
-    ) {
-      return false;
-    }
-    return true;
-  };
 
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
@@ -130,7 +119,7 @@ class SurveyEditableComponent extends React.Component {
     // }
     return (
       <Aux>
-        {!this.check_survey_filled(this.props.academic_background) && (
+        {!check_survey_filled(this.props.academic_background) && (
           <Row>
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>

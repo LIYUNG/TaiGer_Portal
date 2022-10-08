@@ -56,12 +56,11 @@ class AdminMainView extends React.Component {
         submitUpdateEditorlist={this.props.submitUpdateEditorlist}
       />
     ));
-    const application_progress = this.props.students.map((student, i) => (
-      <ApplicationProgress key={i} role={this.props.role} student={student} />
-    ));
+
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
+
     return (
       <>
         <Row className="mb-2">
@@ -132,8 +131,10 @@ class AdminMainView extends React.Component {
                 <thead>
                   <tr>
                     <th>First-/Lastname</th>
+                    <th>Survey</th>
                     <th>Base Documents</th>
                     <th>Program Selection</th>
+                    <th>Applications</th>
                   </tr>
                 </thead>
                 <tbody>{agent_reviewing}</tbody>

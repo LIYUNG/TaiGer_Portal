@@ -36,7 +36,7 @@ class NewUpdatedThreadFromEditor extends React.Component {
                           ? '/cv-ml-rl-center'
                           : '/student-database/' +
                             this.props.student._id +
-                            '/application-files'
+                            '/CV_ML_RL'
                       }
                       className="text-info"
                       style={{ textDecoration: 'none' }}
@@ -81,7 +81,7 @@ class NewUpdatedThreadFromEditor extends React.Component {
                               ? '/cv-ml-rl-center'
                               : '/student-database/' +
                                 this.props.student._id +
-                                '/application-files'
+                                '/CV_ML_RL'
                           }
                           className="text-info"
                           style={{ textDecoration: 'none' }}

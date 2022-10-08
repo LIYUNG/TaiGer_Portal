@@ -136,7 +136,7 @@ class EditorMainView extends React.Component {
           <Col md={12}>
             <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
-                <Card.Title>Editor Tasks:</Card.Title>
+                <Card.Title>Editor Open Tasks:</Card.Title>
               </Card.Header>
               <Table
                 responsive

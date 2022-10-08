@@ -4,6 +4,12 @@ import { AiFillCheckCircle, AiFillQuestionCircle } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
+import {
+  check_survey_filled,
+  check_all_applications_decided,
+  check_all_applications_submitted,
+  checkSurveyCompleted
+} from '../../../Utils/checking-functions';
 
 class AgentReviewing extends React.Component {
   render() {
@@ -41,20 +47,30 @@ class AgentReviewing extends React.Component {
       }
     }
 
-    let isNo_decided_program = false;
-    for (let i = 0; i < keys.length; i += 1) {
-      if (this.props.student.applications) {
-      }
-      for (let j = 0; j < this.props.student.applications.length; j += 1)
-        if (
-          !this.props.student.applications[j].decided ||
-          (this.props.student.applications[j].decided !== undefined &&
-            this.props.student.applications[j].decided === 'X')
-        ) {
-          isNo_decided_program = true;
-          break;
-        }
-    }
+    let isSurveyCompleted = check_survey_filled(
+      this.props.student.academic_background
+    );
+    // for (let i = 0; i < keys.length; i += 1) {
+    //   if (
+    //     object_init[keys[i]] !== 'accepted' &&
+    //     object_init[keys[i]] !== 'notneeded' &&
+    //     object_init[keys[i]] !== 'uploaded'
+    //   ) {
+    //     isSurveyCompleted = true;
+    //     break;
+    //   }
+    // }
+
+    let is_all_applications_decided = check_all_applications_decided(
+      keys,
+      this.props.student
+    );
+
+    // TODO: logic implementation
+    let is_All_Applications_Submitted = check_all_applications_submitted(
+      keys,
+      this.props.student
+    );
 
     var no_decided_program =
       this.props.student.applications &&
@@ -101,6 +117,38 @@ class AgentReviewing extends React.Component {
               <td>
                 <Link
                   to={
+                    '/student-database/' +
+                    this.props.student._id +
+                    '/background'
+                  }
+                  style={{ textDecoration: 'none' }}
+                >
+                  {isSurveyCompleted ? (
+                    <p className="text-warning">
+                      <IoCheckmarkCircle
+                        size={24}
+                        color="limegreen"
+                        title="complete"
+                        className="mx-2"
+                      />
+                      complete
+                    </p>
+                  ) : (
+                    <p className="text-warning">
+                      <AiFillQuestionCircle
+                        size={24}
+                        color="lightgray"
+                        title="incomplete"
+                        className="mx-2"
+                      />
+                      incomplete
+                    </p>
+                  )}
+                </Link>
+              </td>
+              <td>
+                <Link
+                  to={
                     '/student-database/' + this.props.student._id + '/profile'
                   }
                   style={{ textDecoration: 'none' }}
@@ -137,7 +185,17 @@ class AgentReviewing extends React.Component {
               to={'/student-applications/' + this.props.student._id}
               style={{ textDecoration: 'none' }}
             >
-              {isNo_decided_program ? (
+              {is_all_applications_decided ? (
+                <p className="text-warning">
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    title="complete"
+                    className="mx-2"
+                  />
+                  complete
+                </p>
+              ) : (
                 <p className="text-warning">
                   <AiFillQuestionCircle
                     size={24}
@@ -147,7 +205,15 @@ class AgentReviewing extends React.Component {
                   />
                   incomplete
                 </p>
-              ) : (
+              )}
+            </Link>
+          </td>
+          <td>
+            <Link
+              to={'/student-applications/' + this.props.student._id}
+              style={{ textDecoration: 'none' }}
+            >
+              {is_All_Applications_Submitted ? (
                 <p className="text-warning">
                   <IoCheckmarkCircle
                     size={24}
@@ -156,6 +222,16 @@ class AgentReviewing extends React.Component {
                     className="mx-2"
                   />
                   complete
+                </p>
+              ) : (
+                <p className="text-warning">
+                  <AiFillQuestionCircle
+                    size={24}
+                    color="lightgray"
+                    title="incomplete"
+                    className="mx-2"
+                  />
+                  incomplete
                 </p>
               )}
             </Link>

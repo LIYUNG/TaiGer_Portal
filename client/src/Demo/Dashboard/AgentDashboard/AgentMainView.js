@@ -131,8 +131,10 @@ class AgentMainView extends React.Component {
                 <thead>
                   <tr>
                     <th>First-/Lastname</th>
+                    <th>Survey</th>
                     <th>Base Documents</th>
                     <th>Program Selection</th>
+                    <th>Applications</th>
                   </tr>
                 </thead>
                 <tbody>{agent_reviewing}</tbody>
@@ -140,32 +142,6 @@ class AgentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        {/* <Row>
-          <Col sm={12}>
-            <Card title="Agent: To Do">
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-              >
-                <thead>
-                  <tr>
-                    <>
-                      <th>First-, Last Name</th>
-                    </>
-                    {window.agenttodolist.map((doc, index) => (
-                      <th key={index}>{doc.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>{agent_todo}</tbody>
-              </Table>
-            </Card>
-          </Col>
-        </Row> */}
         <TabProgramConflict students={this.props.students} />
         <Row>
           <Col sm={12}>

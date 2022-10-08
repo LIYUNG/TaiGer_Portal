@@ -11,6 +11,11 @@ import Generator from './Generator';
 import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
 import NewUpdatedThreadFromEditor from '../MainViewTab/NewUpdatedThreadFromEditor/NewUpdatedThreadFromEditor';
 import { BsExclamationTriangle } from 'react-icons/bs';
+import {
+  check_survey_filled,
+  check_application_selection
+} from '../../Utils/checking-functions';
+
 // import format from 'date-fns/format';
 // import getDay from 'date-fns/getDay';
 // import parse from 'date-fns/parse';
@@ -108,33 +113,6 @@ class StudentDashboard extends React.Component {
       );
     });
     this.setState({ data: result });
-  };
-
-  check_survey_filled = (student) => {
-    if (
-      !student.academic_background ||
-      !student.academic_background.university ||
-      !student.academic_background.language
-    ) {
-      return false;
-    }
-    if (
-      !student.academic_background.university.expected_application_date ||
-      !student.academic_background.university.expected_application_semester
-    ) {
-      return false;
-    }
-    return true;
-  };
-
-  check_application_selection = (student) => {
-    if (!student.applications) {
-      return false;
-    }
-    if (student.applications.length === 0) {
-      return false;
-    }
-    return true;
   };
 
   check_application_selection_to_decided = (student) => {
@@ -283,7 +261,7 @@ class StudentDashboard extends React.Component {
 
     return (
       <>
-        {!this.check_survey_filled(student) && (
+        {!check_survey_filled(student.academic_background) && (
           <Row>
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
@@ -299,14 +277,14 @@ class StudentDashboard extends React.Component {
             </Col>
           </Row>
         )}
-        {!this.check_application_selection(student) && (
+        {!check_application_selection(student) && (
           <Row>
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
                   <BsExclamationTriangle size={18} />
                   <b className="mx-2">Reminder:</b> It looks like you did not
-                  have decided programs:{' '}
+                  decide programs:{' '}
                   <Link
                     to={'/student-applications'}
                     style={{ textDecoration: 'none' }}
@@ -318,7 +296,7 @@ class StudentDashboard extends React.Component {
             </Col>
           </Row>
         )}
-        {this.check_application_selection(student) &&
+        {check_application_selection(student) &&
           this.check_application_selection_to_decided(student) && (
             <Row>
               <Col>

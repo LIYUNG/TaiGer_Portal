@@ -63,7 +63,9 @@ class ManualFiles extends React.Component {
         {this.props.role === 'Student' || this.props.role === 'Guest' ? (
           <></>
         ) : (
-          this.props.application && this.props.application.closed !== 'O' && (
+          (!this.props.application ||
+            (this.props.application &&
+              this.props.application.closed !== 'O')) && (
             <ToggleableUploadFileForm
               role={this.props.role}
               student={this.props.student}

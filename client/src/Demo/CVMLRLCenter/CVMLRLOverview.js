@@ -1,11 +1,11 @@
 import React from 'react';
-import { Row, Col, Spinner, Table, Card } from 'react-bootstrap';
+import { Row, Col, Spinner, Table, Card, Modal, Button } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
 
-import { updateArchivStudents, getStudents } from '../../api';
+import { updateArchivStudents, SetFileAsFinal, getStudents } from '../../api';
 
 class CVMLRLOverview extends React.Component {
   state = {
@@ -16,6 +16,10 @@ class CVMLRLOverview extends React.Component {
     data: null,
     success: false,
     students: null,
+    doc_thread_id: '',
+    student_id: '',
+    program_id: '',
+    SetAsFinalFileModel: false,
     status: '' //reject, accept... etc
   };
 
@@ -48,36 +52,65 @@ class CVMLRLOverview extends React.Component {
       }
     );
   }
-
-  updateStudentArchivStatus = (studentId, isArchived) => {
-    updateArchivStudents(studentId, isArchived).then(
+  closeSetAsFinalFileModelWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      SetAsFinalFileModel: false
+    }));
+  };
+  ConfirmSetAsFinalFileHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false // false to reload everything
+    }));
+    SetFileAsFinal(
+      this.state.doc_thread_id,
+      this.state.student_id,
+      this.state.program_id
+    ).then(
       (resp) => {
         const { data, success } = resp.data;
+        console.log(data)
+        let temp_students = [...this.state.students];
+        let student_idx = this.state.students.findIndex(
+          (student) => student._id.toString() === data._id.toString()
+        );
+        temp_students[student_idx] = data;
         if (success) {
           this.setState((state) => ({
             ...state,
+            docName: '',
             isLoaded: true,
-            students: data,
-            success: success
+            students: temp_students,
+            success: success,
+            SetAsFinalFileModel: false
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          alert(resp.data.message);
+          this.setState((state) => ({
+            ...state,
+            docName: '',
+            isLoaded: true,
+            success: success,
+            SetAsFinalFileModel: false
+          }));
         }
       },
       (error) => {
-        this.setState({
-          isLoaded: true,
-          error: true
-        });
+        this.setState({ error });
       }
     );
+  };
+
+  handleAsFinalFile = (doc_thread_id, student_id, program_id, docName) => {
+    this.setState((state) => ({
+      ...state,
+      doc_thread_id,
+      student_id,
+      program_id,
+      docName,
+      SetAsFinalFileModel: true
+    }));
   };
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
@@ -118,8 +151,8 @@ class CVMLRLOverview extends React.Component {
         key={i}
         role={this.props.user.role}
         student={student}
-        updateStudentArchivStatus={this.updateStudentArchivStatus}
         isDashboard={true}
+        handleAsFinalFile={this.handleAsFinalFile}
       />
     ));
 
@@ -163,6 +196,38 @@ class CVMLRLOverview extends React.Component {
             </Table>
           </Col>
         </Row>
+        <Modal
+          show={this.state.SetAsFinalFileModel}
+          onHide={this.closeSetAsFinalFileModelWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Do you want to set {this.state.docName} as final for student?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              disabled={!isLoaded}
+              onClick={this.ConfirmSetAsFinalFileHandler}
+            >
+              Yes
+            </Button>
+
+            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
+            {!isLoaded && (
+              <div style={style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
+          </Modal.Footer>
+        </Modal>
       </Aux>
     );
   }

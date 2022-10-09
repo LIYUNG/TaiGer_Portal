@@ -628,7 +628,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       (application) => application.programId._id == program_id
     );
     if (!student_application) {
-      logger.error('SetStatusMessagesThread: application not foun');
+      logger.error('SetStatusMessagesThread: application not found');
       throw new ErrorResponse(400, 'application not found');
     }
 
@@ -639,7 +639,10 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       logger.error('SetStatusMessagesThread: application thread not found');
       throw new ErrorResponse(400, 'thread not found');
     }
+
     application_thread.isFinalVersion = !application_thread.isFinalVersion;
+    document_thread.isFinalVersion = application_thread.isFinalVersion;
+    await document_thread.save();
     await student.save();
     const student2 = await Student.findById(studentId)
       .populate('applications.programId generaldocs_threads.doc_thread_id')
@@ -698,6 +701,8 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       throw new ErrorResponse(400, 'thread not found');
     }
     generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
+    document_thread.isFinalVersion = generaldocs_thread.isFinalVersion;
+    await document_thread.save();
     await student.save();
     const student2 = await Student.findById(studentId)
       .populate('applications.programId generaldocs_threads.doc_thread_id')

@@ -1,106 +1,78 @@
 import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Button } from 'react-bootstrap';
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import {
+  AiFillQuestionCircle,
+  AiOutlineCheck,
+  AiOutlineUndo
+} from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { getNumberOfDays } from '../../../Utils/contants';
+import { BiCommentDots } from 'react-icons/bi';
 class CVMLRLProgress extends React.Component {
-  updateStudentArchivStatus = (studentId, isArchived) => {
-    this.props.updateStudentArchivStatus(studentId, isArchived);
+  handleAsFinalFileThread = (
+    thread_id,
+    student_id,
+    program_id,
+    documenName
+  ) => {
+    this.props.handleAsFinalFile(
+      thread_id,
+      student_id,
+      program_id,
+      documenName
+    );
   };
-
   render() {
-    var applying_university;
-    var applying_program;
-    var application_deadline;
-    var application_date_left;
-    var application_closed;
     var today = new Date();
-    if (
-      this.props.student.applications === undefined ||
-      this.props.student.applications.length === 0
-    ) {
-      applying_university = <p className="mb-1  text-danger"> No University</p>;
-      applying_program = <p className="mb-1  text-danger"> No Program</p>;
-      application_deadline = <p className="mb-1  text-danger"> No Date</p>;
-      application_date_left = <p className="mb-1  text-danger"></p>;
-      application_closed = <p className="mb-1  text-danger"></p>;
-    } else {
-      applying_university = this.props.student.applications.map(
-        (application, i) => (
-          <Link
-            to={'/programs/' + application.programId._id}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            <p className="mb-1 text-info">{application.programId.school}</p>
-          </Link>
-        )
-      );
-      applying_program = this.props.student.applications.map(
-        (application, i) => (
-          <Link
-            to={'/programs/' + application.programId._id}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            <p className="mb-1 text-info">
-              {application.programId.program_name}
-            </p>
-          </Link>
-        )
-      );
-      application_deadline = this.props.student.applications.map(
-        (application, i) => (
-          <p className="mb-1 text-info" key={i}>
-            {application.programId.application_deadline
-              ? this.props.student.academic_background.university
-                  .expected_application_date
-                ? this.props.student.academic_background.university
-                    .expected_application_date + '-'
-                : ''
-              : '-'}
-            {application.programId.application_deadline}
-          </p>
-        )
-      );
-
-      application_date_left = this.props.student.applications.map(
-        (application, i) => (
-          <p className="mb-1 text-info" key={i}>
-            {application.closed === 'O'
-              ? '-'
-              : application.programId.application_deadline
-              ? this.props.student.academic_background.university
-                  .expected_application_date &&
-                getNumberOfDays(
-                  today,
-                  this.props.student.academic_background.university
-                    .expected_application_date +
-                    '-' +
-                    application.programId.application_deadline
-                )
-              : '-'}
-          </p>
-        )
-      );
-
-      application_closed = this.props.student.applications.map(
-        (application, i) =>
-          application.closed !== undefined && application.closed === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
-              O
-            </p>
-          ) : application.closed !== undefined && application.closed === 'X' ? (
-            <p className="mb-1 text-info" key={application._id}>
-              X
-            </p>
-          ) : (
-            <p className="mb-1 text-info" key={application._id}>
-              -
-            </p>
-          )
-      );
-    }
+    const return_thread_status = (role, thread) => {
+      if (thread.isFinalVersion) {
+        return (
+          <td className="mb-1 text-info">
+            <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />
+          </td>
+        );
+      }
+      if (role === 'Student') {
+        if (thread.isReceivedEditorFeedback) {
+          return (
+            <td className="mb-1 text-info">
+              <BiCommentDots size={24} color="red" title="New Message" />
+            </td>
+          );
+        } else if (thread.isReceivedStudentFeedback) {
+          return (
+            <td className="mb-1 text-info">
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="Waiting feedback"
+              />
+            </td>
+          );
+        }
+      }
+      if (role === 'Agent' || role === 'Editor' || role === 'Admin') {
+        if (thread.isReceivedStudentFeedback) {
+          return (
+            <td className="mb-1 text-info">
+              <BiCommentDots size={24} color="red" title="New Message" />
+            </td>
+          );
+        } else if (thread.isReceivedEditorFeedback) {
+          return (
+            <td className="mb-1 text-info">
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="Waiting feedback"
+              />
+            </td>
+          );
+        }
+      }
+    };
 
     let general_document_items = <></>;
     // TODO: implement:
@@ -124,20 +96,64 @@ class CVMLRLProgress extends React.Component {
               </p>
             </Link>
           </td>
-          {generaldocs_thread.isFinalVersion ? (
-            <td className="mb-1 text-info" key={i}>
-              O
-            </td>
-          ) : generaldocs_thread.isReceivedStudentFeedback ? (
-            <td className="mb-1 text-info" key={generaldocs_thread._id}>
-              react
-            </td>
-          ) : (
-            <td className="mb-1 text-info" key={generaldocs_thread._id}>
-              waiting
-            </td>
-          )}
-          <td>{generaldocs_thread.doc_thread_id.file_type}</td>
+          <td>
+            {' '}
+            {generaldocs_thread.isFinalVersion ? (
+              <AiOutlineUndo
+                size={24}
+                color="red"
+                title="Un do Final Version"
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  this.handleAsFinalFileThread(
+                    generaldocs_thread.doc_thread_id._id,
+                    this.props.student._id,
+                    null,
+                    generaldocs_thread.doc_thread_id.file_type
+                  )
+                }
+              />
+            ) : (
+              // <Button
+              //   size="sm"
+              //   title="As final version"
+              //   onClick={() =>
+              //     this.handleAsFinalFileThread(
+              //       generaldocs_thread.doc_thread_id._id,
+              //       this.props.student._id,
+              //       null,
+              //       generaldocs_thread.doc_thread_id.file_type
+              //     )
+              //   }
+              // >
+                <AiOutlineCheck
+                  size={24}
+                  style={{ cursor: 'pointer' }}
+                  title="Set as final version"
+                  // onClick={() =>
+                  //   this.handleAsFinalFileThread(
+                  //     generaldocs_thread.doc_thread_id._id,
+                  //     this.props.student._id,
+                  //     null,
+                  //     generaldocs_thread.doc_thread_id.file_type
+                  //   )
+                  // }
+                />
+              // </Button>
+            )}
+          </td>
+          {return_thread_status(this.props.role, generaldocs_thread)}
+          <td>
+            <Link
+              to={
+                '/document-modification/' + generaldocs_thread.doc_thread_id._id
+              }
+              style={{ textDecoration: 'none' }}
+              className="text-info"
+            >
+              {generaldocs_thread.doc_thread_id.file_type}
+            </Link>
+          </td>
           <td>
             {' '}
             {new Date(generaldocs_thread.updatedAt).toLocaleDateString()}
@@ -167,25 +183,58 @@ class CVMLRLProgress extends React.Component {
                 </p>
               </Link>
             </td>
-            {doc_thread.isFinalVersion ? (
-              <td className="mb-1 text-info" key={i}>
-                O
-              </td>
-            ) : doc_thread.isReceivedStudentFeedback ? (
-              <td className="mb-1 text-info" key={application._id}>
-                react
-              </td>
-            ) : (
-              <td className="mb-1 text-info" key={application._id}>
-                waiting
-              </td>
-            )}
             <td>
-              {doc_thread.doc_thread_id.file_type}
-              {' - '}
-              {application.programId.school}
-              {' - '}
-              {application.programId.program_name}
+              {doc_thread.isFinalVersion ? (
+                <AiOutlineUndo
+                  size={24}
+                  color="red"
+                  title="Un do Final Version"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    this.handleAsFinalFileThread(
+                      doc_thread.doc_thread_id._id,
+                      this.props.student._id,
+                      application.programId._id,
+                      doc_thread.doc_thread_id.file_type
+                    )
+                  }
+                />
+              ) : (
+                // <Button
+                //   size="sm"
+                //   title="As final version"
+                //   onClick={() => this.handleAsFinalFileThread(documenName)}
+                // >
+                // <>O</>
+                <AiOutlineCheck
+                  size={24}
+                  style={{ cursor: 'pointer' }}
+                  title="Set as final version"
+                  onClick={() =>
+                    this.handleAsFinalFileThread(
+                      doc_thread.doc_thread_id._id,
+                      this.props.student._id,
+                      application.programId._id,
+                      doc_thread.doc_thread_id.file_type
+                    )
+                  }
+                />
+                // </Button>
+              )}
+            </td>
+            {return_thread_status(this.props.role, doc_thread)}
+            <td>
+              <Link
+                to={'/document-modification/' + doc_thread.doc_thread_id._id}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                {doc_thread.doc_thread_id.file_type}
+                {' - '}
+                {application.programId.school}
+                {' - '}
+                {application.programId.program_name}
+              </Link>
             </td>
             <td>
               {' '}
@@ -193,7 +242,7 @@ class CVMLRLProgress extends React.Component {
               {', '}
               {new Date(doc_thread.updatedAt).toLocaleTimeString()}
             </td>
-            <td>{getNumberOfDays(today, doc_thread.updatedAt)}</td>
+            <td>{getNumberOfDays(doc_thread.updatedAt, today)}</td>
             <td>
               {
                 this.props.student.academic_background.university
@@ -226,81 +275,6 @@ class CVMLRLProgress extends React.Component {
         {no_started_application_document_items}
         {general_document_items}
         {application_document_items}
-        <tr>
-          {/* <td>
-            <DropdownButton
-              size="sm"
-              // title="Option"
-              title={
-                <span>
-                  <i className="fa fa-edit"></i>
-                </span>
-              }
-              variant="primary"
-              id={`dropdown-variants-${this.props.student._id}`}
-              key={this.props.student._id}
-            >
-              {this.props.role !== 'Editor' && !this.props.isArchivPage ? (
-                <Dropdown.Item eventKey="3">
-                  <Link
-                    to={'/student-applications/' + this.props.student._id}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    Edit Program
-                  </Link>
-                </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-              {this.props.isDashboard ? (
-                <Dropdown.Item
-                  eventKey="5"
-                  onSelect={() =>
-                    this.updateStudentArchivStatus(this.props.student._id, true)
-                  }
-                >
-                  Move to Archiv
-                </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-              {this.props.isArchivPage ? (
-                <Dropdown.Item
-                  eventKey="6"
-                  onSelect={() =>
-                    this.updateStudentArchivStatus(
-                      this.props.student._id,
-                      false
-                    )
-                  }
-                >
-                  Move to Active
-                </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-            </DropdownButton>
-          </td>
-          {this.props.role !== 'Student' ? (
-            <td>
-              <Link
-                to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
-                style={{ textDecoration: 'none' }}
-              >
-                <p className="text-info">
-                  {this.props.student.firstname}, {this.props.student.lastname}
-                </p>
-              </Link>
-            </td>
-          ) : (
-            <></>
-          )}
-          <td>{applying_university}</td>
-          <td>{applying_program}</td>
-          <td>{application_deadline}</td>
-          <td>{application_closed}</td>
-          <td>{application_date_left}</td> */}
-        </tr>
       </>
     );
   }

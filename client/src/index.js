@@ -75,6 +75,10 @@ window.documentsprogresslist = [
 ];
 window.cvmlrllist = [
   {
+    name: 'Action',
+    prop: 'action'
+  },
+  {
     name: 'Status',
     prop: 'status'
   },

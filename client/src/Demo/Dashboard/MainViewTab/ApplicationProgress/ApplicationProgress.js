@@ -204,7 +204,10 @@ class ApplicationProgress extends React.Component {
                 style={{ textDecoration: 'none' }}
               >
                 <p className="text-info">
-                  {this.props.student.firstname}, {this.props.student.lastname}
+                  <b>
+                    {this.props.student.firstname},{' '}
+                    {this.props.student.lastname}
+                  </b>
                 </p>
               </Link>
             </td>

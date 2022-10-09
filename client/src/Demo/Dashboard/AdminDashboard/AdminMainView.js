@@ -134,7 +134,7 @@ class AdminMainView extends React.Component {
                     <th>Survey</th>
                     <th>Base Documents</th>
                     <th>Program Selection</th>
-                    <th>Applications</th>
+                    <th>Submission</th>
                   </tr>
                 </thead>
                 <tbody>{agent_reviewing}</tbody>

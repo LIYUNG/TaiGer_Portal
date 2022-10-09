@@ -52,7 +52,7 @@ class ToggleableUploadFileForm extends Component {
     }
     return (
       // <div className="ui basic content center aligned segment">
-      <Row>
+      <Row className='my-2'>
         <Col md={6}>{drop_list}</Col>
         <Col md={1}>
           {this.props.filetype === 'General' ? (

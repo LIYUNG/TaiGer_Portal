@@ -113,7 +113,6 @@ class AgentMainView extends React.Component {
             </Col>
           </Row>
         )}
-
         <Row>
           <Col md={12}>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>

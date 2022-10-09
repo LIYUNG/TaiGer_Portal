@@ -35,6 +35,9 @@ const BaseDocuments = React.lazy(() =>
 const CVMLRLCenter = React.lazy(() =>
   import("./Demo/CVMLRLCenter/CVMLRLCenter")
 );
+const CVMLRLOverview = React.lazy(() =>
+  import('./Demo/CVMLRLCenter/CVMLRLOverview')
+);
 const ProgramTable = React.lazy(() => import('./Demo/Program/ProgramTable'));
 const MyApplications = React.lazy(() =>
   import('./Demo/StudentApplications/index')
@@ -285,7 +288,7 @@ const routes = [
     path: '/cv-ml-rl-center',
     exact: true,
     name: 'CV/ML/RL Center',
-    component: CVMLRLCenter
+    component: CVMLRLOverview
   },
   {
     path: '/interview-training',

@@ -12,14 +12,12 @@ import {
 import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import {
-  // AiFillCloseCircle,
-  // AiFillQuestionCircle,
-  // AiOutlineFieldTime,
   AiFillDelete
 } from 'react-icons/ai';
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { getNumberOfDays } from '../Utils/contants';
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
     error: null,
@@ -81,7 +79,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             modalDeleteApplication: false
           });
         } else {
-          if (resp.status === 401) {
+          if (resp.status === 401 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
@@ -133,21 +131,6 @@ class StudentApplicationsTableTemplate extends React.Component {
     );
   };
 
-  getNumberOfDays(start, end) {
-    const date1 = new Date(start);
-    const date2 = new Date(end);
-
-    // One day in milliseconds
-    const oneDay = 1000 * 60 * 60 * 24;
-
-    // Calculating the time difference between two dates
-    const diffInTime = date2.getTime() - date1.getTime();
-
-    // Calculating the no. of days between two dates
-    const diffInDays = Math.round(diffInTime / oneDay);
-
-    return diffInDays;
-  }
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
@@ -320,7 +303,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                   : application.programId.application_deadline
                   ? this.props.student.academic_background.university
                       .expected_application_date &&
-                    this.getNumberOfDays(
+                    getNumberOfDays(
                       today,
                       this.props.student.academic_background.university
                         .expected_application_date +

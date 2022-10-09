@@ -1,8 +1,9 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
+// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import { Link } from 'react-router-dom';
 import { getNumberOfDays } from '../../../Utils/contants';
-class ApplicationProgress extends React.Component {
+class CVMLRLProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);
   };
@@ -12,9 +13,7 @@ class ApplicationProgress extends React.Component {
     var applying_program;
     var application_deadline;
     var application_date_left;
-    var application_decided;
     var application_closed;
-    var application_admission;
     var today = new Date();
     if (
       this.props.student.applications === undefined ||
@@ -24,7 +23,6 @@ class ApplicationProgress extends React.Component {
       applying_program = <p className="mb-1  text-danger"> No Program</p>;
       application_deadline = <p className="mb-1  text-danger"> No Date</p>;
       application_date_left = <p className="mb-1  text-danger"></p>;
-      application_decided = <p className="mb-1  text-danger"></p>;
       application_closed = <p className="mb-1  text-danger"></p>;
     } else {
       applying_university = this.props.student.applications.map(
@@ -85,23 +83,7 @@ class ApplicationProgress extends React.Component {
           </p>
         )
       );
-      application_decided = this.props.student.applications.map(
-        (application, i) =>
-          application.decided !== undefined && application.decided === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
-              O
-            </p>
-          ) : application.decided !== undefined &&
-            application.decided === 'X' ? (
-            <p className="mb-1 text-info" key={application._id}>
-              X
-            </p>
-          ) : (
-            <p className="mb-1 text-info" key={application._id}>
-              -
-            </p>
-          )
-      );
+
       application_closed = this.props.student.applications.map(
         (application, i) =>
           application.closed !== undefined && application.closed === 'O' ? (
@@ -118,30 +100,112 @@ class ApplicationProgress extends React.Component {
             </p>
           )
       );
-      application_admission = this.props.student.applications.map(
-        (application, i) =>
-          application.admission !== undefined &&
-          application.admission === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
-              O
-            </p>
-          ) : application.admission !== undefined &&
-            application.admission === 'X' ? (
-            <p className="mb-1 text-info" key={application._id}>
-              X
-            </p>
-          ) : (
-            <p className="mb-1 text-info" key={application._id}>
-              -
-            </p>
-          )
-      );
     }
 
+    let general_document_items = <></>;
+    // TODO: implement:
+    let no_started_general_document_items = <></>;
+    let application_document_items = <></>;
+    // TODO: implement:
+    let no_started_application_document_items = <></>;
+    general_document_items = this.props.student.generaldocs_threads.map(
+      (generaldocs_thread, i) => (
+        <tr>
+          <td></td>
+          <td></td>
+          {generaldocs_thread.closed !== undefined &&
+          generaldocs_thread.closed === 'O' ? (
+            <td className="mb-1 text-info" key={i}>
+              O
+            </td>
+          ) : generaldocs_thread.closed !== undefined &&
+            generaldocs_thread.closed === 'X' ? (
+            <td className="mb-1 text-info" key={generaldocs_thread._id}>
+              X
+            </td>
+          ) : (
+            <td className="mb-1 text-info" key={generaldocs_thread._id}>
+              -
+            </td>
+          )}
+          <td>{generaldocs_thread.doc_thread_id.file_type}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      )
+    );
+    application_document_items = this.props.student.applications.map(
+      (application, i) =>
+        application.doc_modification_thread.map((doc_thread, j) => (
+          <tr key={j}>
+            <td></td>
+            <td>
+              <Link
+                to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
+                style={{ textDecoration: 'none' }}
+              >
+                <p className="text-light">
+                  <b>
+                    {this.props.student.firstname} {this.props.student.lastname}
+                  </b>
+                </p>
+              </Link>
+            </td>
+            {application.closed !== undefined && application.closed === 'O' ? (
+              <td className="mb-1 text-info" key={i}>
+                O
+              </td>
+            ) : application.closed !== undefined &&
+              application.closed === 'X' ? (
+              <td className="mb-1 text-info" key={application._id}>
+                X
+              </td>
+            ) : (
+              <td className="mb-1 text-info" key={application._id}>
+                -
+              </td>
+            )}
+            <td>
+              {doc_thread.doc_thread_id.file_type}
+              {' - '}
+              {application.programId.school}
+              {' - '}
+              {application.programId.program_name}
+            </td>
+            <td>
+              {
+                this.props.student.academic_background.university
+                  .expected_application_date
+              }
+              {'-'}
+              {application.programId.application_deadline}
+            </td>
+            <td>
+              {application.closed === 'O'
+                ? '-'
+                : application.programId.application_deadline
+                ? this.props.student.academic_background.university
+                    .expected_application_date &&
+                  getNumberOfDays(
+                    today,
+                    this.props.student.academic_background.university
+                      .expected_application_date +
+                      '-' +
+                      application.programId.application_deadline
+                  )
+                : '-'}
+            </td>
+          </tr>
+        ))
+    );
     return (
       <>
+        {no_started_general_document_items}
+        {no_started_application_document_items}
+        {general_document_items}
+        {application_document_items}
         <tr>
-          <td>
+          {/* <td>
             <DropdownButton
               size="sm"
               // title="Option"
@@ -198,9 +262,7 @@ class ApplicationProgress extends React.Component {
           {this.props.role !== 'Student' ? (
             <td>
               <Link
-                to={
-                  '/student-database/' + this.props.student._id + '/background'
-                }
+                to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="text-info">
@@ -214,14 +276,12 @@ class ApplicationProgress extends React.Component {
           <td>{applying_university}</td>
           <td>{applying_program}</td>
           <td>{application_deadline}</td>
-          <td>{application_decided}</td>
           <td>{application_closed}</td>
-          <td>{application_admission}</td>
-          <td>{application_date_left}</td>
+          <td>{application_date_left}</td> */}
         </tr>
       </>
     );
   }
 }
 
-export default ApplicationProgress;
+export default CVMLRLProgress;

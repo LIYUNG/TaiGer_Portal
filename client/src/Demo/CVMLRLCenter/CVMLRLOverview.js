@@ -3,11 +3,11 @@ import { Row, Col, Spinner, Table, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
+import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
 
 import { updateArchivStudents, getStudents } from '../../api';
 
-class ApplicantSOverview extends React.Component {
+class CVMLRLOverview extends React.Component {
   state = {
     error: null,
     timeouterror: null,
@@ -16,7 +16,6 @@ class ApplicantSOverview extends React.Component {
     data: null,
     success: false,
     students: null,
-    file: '',
     status: '' //reject, accept... etc
   };
 
@@ -114,8 +113,8 @@ class ApplicantSOverview extends React.Component {
         </div>
       );
     }
-    const application_progress = this.state.students.map((student, i) => (
-      <ApplicationProgress
+    const cvmlrl_progress = this.state.students.map((student, i) => (
+      <CVMLRLProgress
         key={i}
         role={this.props.user.role}
         student={student}
@@ -132,7 +131,7 @@ class ApplicantSOverview extends React.Component {
               <Card.Header>
                 <Card.Title>
                   <Row>
-                    <Col>Students Applications Overview</Col>
+                    <Col>CV ML RL Overview</Col>
                   </Row>
                 </Card.Title>
               </Card.Header>
@@ -154,16 +153,13 @@ class ApplicantSOverview extends React.Component {
                   <>
                     <th></th>
                     <th>First-, Last Name</th>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>Deadline</th>
                   </>
-                  {window.programstatuslist.map((doc, index) => (
+                  {window.cvmlrllist.map((doc, index) => (
                     <th key={index}>{doc.name}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody>{application_progress}</tbody>
+              <tbody>{cvmlrl_progress}</tbody>
             </Table>
           </Col>
         </Row>
@@ -172,4 +168,4 @@ class ApplicantSOverview extends React.Component {
   }
 }
 
-export default ApplicantSOverview;
+export default CVMLRLOverview;

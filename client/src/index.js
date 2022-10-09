@@ -73,7 +73,24 @@ window.documentsprogresslist = [
     prop: "closed",
   },
 ];
-
+window.cvmlrllist = [
+  {
+    name: 'Status',
+    prop: 'status'
+  },
+  {
+    name: 'Documents',
+    prop: 'documents'
+  },
+  {
+    name: 'Deadline',
+    prop: 'deadline'
+  },
+  {
+    name: 'Days left',
+    prop: 'days_left'
+  }
+];
 window.programstatuslist = [
   {
     name: 'Decided',

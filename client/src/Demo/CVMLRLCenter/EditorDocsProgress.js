@@ -4,6 +4,8 @@ import React from 'react';
 // import { IoCheckmarkCircle } from 'react-icons/io5';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { Link } from 'react-router-dom';
+
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
   Row,
@@ -365,33 +367,37 @@ class EditorDocsProgress extends React.Component {
           <div id="accordion1">
             <Card.Body>
               <Row className="mb-4 mx-0">
-                <Col md={8}>General Documents (CV, Recommendation Letters)</Col>
+                <Col md={8}>
+                  <b>General Documents (CV, Recommendation Letters)</b>
+                </Col>
               </Row>
               {create_generaldoc_reminder && (
                 <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                   <Card.Body>
-                    The following general documents are not started yet:{' '}
-                    {this.state.student.generaldocs_threads.findIndex(
-                      (thread) => thread.doc_thread_id.file_type === 'CV'
-                    ) === -1 && (
-                      <li>
-                        <b>CV</b>
-                      </li>
-                    )}{' '}
-                    {this.state.student.generaldocs_threads.filter((thread) =>
-                      thread.doc_thread_id.file_type.includes('RL')
-                    ).length < 2 && (
-                      <li>
-                        <b>
-                          RL x{' '}
-                          {2 -
-                            this.state.student.generaldocs_threads.filter(
-                              (thread) =>
-                                thread.doc_thread_id.file_type.includes('RL')
-                            ).length}
-                        </b>
-                      </li>
-                    )}
+                    <p className="text-light my-0">
+                      The following general documents are not started yet:{' '}
+                      {this.state.student.generaldocs_threads.findIndex(
+                        (thread) => thread.doc_thread_id.file_type === 'CV'
+                      ) === -1 && (
+                        <li>
+                          <b>CV</b>
+                        </li>
+                      )}{' '}
+                      {this.state.student.generaldocs_threads.filter((thread) =>
+                        thread.doc_thread_id.file_type.includes('RL')
+                      ).length < 2 && (
+                        <li>
+                          <b>
+                            RL x{' '}
+                            {2 -
+                              this.state.student.generaldocs_threads.filter(
+                                (thread) =>
+                                  thread.doc_thread_id.file_type.includes('RL')
+                              ).length}
+                          </b>
+                        </li>
+                      )}
+                    </p>
                   </Card.Body>
                 </Card>
               )}
@@ -415,16 +421,16 @@ class EditorDocsProgress extends React.Component {
                   <div key={i}>
                     {((application.decided !== undefined &&
                       application.decided === 'O' &&
-                      application.programId.ml_requirements !== undefined &&
-                      application.programId.ml_requirements !== '' &&
+                      application.programId.ml_required !== undefined &&
+                      application.programId.ml_required === 'yes' &&
                       application.doc_modification_thread.findIndex(
                         (thread) => thread.doc_thread_id.file_type === 'ML'
                       ) === -1) ||
                       (application.decided !== undefined &&
                         application.decided === 'O' &&
-                        application.programId.essay_requirements !==
+                        application.programId.essay_required !==
                           undefined &&
-                        application.programId.essay_requirements !== '' &&
+                        application.programId.essay_required === 'yes' &&
                         application.doc_modification_thread.findIndex(
                           (thread) => thread.doc_thread_id.file_type === 'Essay'
                         ) === -1)) && (
@@ -432,9 +438,9 @@ class EditorDocsProgress extends React.Component {
                         <Card.Body>
                           The followings application documents are not started
                           yet:{' '}
-                          {application.programId.ml_requirements !==
+                          {application.programId.ml_required !==
                             undefined &&
-                            application.programId.ml_requirements !== '' &&
+                            application.programId.ml_required === 'yes' &&
                             application.doc_modification_thread.findIndex(
                               (thread) =>
                                 thread.doc_thread_id.file_type === 'ML'
@@ -444,9 +450,9 @@ class EditorDocsProgress extends React.Component {
                                 <b>ML</b>
                               </li>
                             )}
-                          {application.programId.essay_requirements !==
+                          {application.programId.essay_required !==
                             undefined &&
-                            application.programId.essay_requirements !== '' &&
+                            application.programId.essay_required === 'yes' &&
                             application.doc_modification_thread.findIndex(
                               (thread) =>
                                 thread.doc_thread_id.file_type === 'Essay'
@@ -464,14 +470,22 @@ class EditorDocsProgress extends React.Component {
                       <>
                         <Row className="mb-2 mx-0">
                           <Col md={4}>
-                            {application.programId.school}
-                            {' - '}
-                            {application.programId.program_name}
+                            <Link
+                              to={'/programs/' + application.programId._id}
+                              style={{ textDecoration: 'none' }}
+                              className="text-info"
+                            >
+                              <b>
+                                {application.programId.school}
+                                {' - '}
+                                {application.programId.program_name}
+                              </b>
+                            </Link>
                           </Col>
                           <Col md={2}>
-                            {application.programId.ml_requirements !==
+                            {application.programId.ml_required !==
                               undefined &&
-                            application.programId.ml_requirements !== '' ? (
+                            application.programId.ml_required === 'yes' ? (
                               <>
                                 <Button
                                   size="sm"
@@ -490,9 +504,9 @@ class EditorDocsProgress extends React.Component {
                             ) : (
                               <></>
                             )}{' '}
-                            {application.programId.essay_requirements !==
+                            {application.programId.essay_required !==
                               undefined &&
-                            application.programId.essay_requirements !== '' ? (
+                            application.programId.essay_required !== '' ? (
                               <>
                                 <Button
                                   size="sm"
@@ -515,7 +529,10 @@ class EditorDocsProgress extends React.Component {
                           <Col>
                             Deadline:{' '}
                             {application.programId.application_deadline
-                              ? application.programId.application_deadline
+                              ? this.state.student.academic_background
+                                  .university.expected_application_date +
+                                '-' +
+                                application.programId.application_deadline
                               : '-'}
                           </Col>
                           <Col>

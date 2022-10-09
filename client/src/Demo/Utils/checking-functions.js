@@ -41,7 +41,8 @@ export const checkSurveyCompleted = (keys, object_init) => {
 
 export const check_all_applications_decided = (keys, student) => {
   for (let i = 0; i < keys.length; i += 1) {
-    if (student.applications) {
+    if (!student.applications || student.applications.length === 0) {
+      return false;
     }
     for (let j = 0; j < student.applications.length; j += 1)
       if (

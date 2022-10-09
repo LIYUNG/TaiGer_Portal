@@ -60,7 +60,7 @@ class DocModificationThreadPage extends Component {
             //   accordionKeys: new Array(-1, data.length), // to collapse all
           });
         } else {
-          if (resp.status === 401) {
+          if (resp.status === 401 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
@@ -110,7 +110,7 @@ class DocModificationThreadPage extends Component {
             isLoaded: true
           });
         } else {
-          if (resp.status === 401) {
+          if (resp.status === 401 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });

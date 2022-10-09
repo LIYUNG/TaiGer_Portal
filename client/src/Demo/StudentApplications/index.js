@@ -28,7 +28,7 @@ class StudentApplication extends React.Component {
             success: success
           });
         } else {
-          if (resp.status === 401) {
+          if (resp.status === 401 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status === 403) {
             if (this.props.user.role !== 'Guest') {

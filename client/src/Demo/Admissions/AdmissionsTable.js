@@ -580,7 +580,7 @@ function AdmissionsTable(props) {
             isloaded: true
           }));
         } else {
-          if (resp.status === 401) {
+          if (resp.status === 401 || resp.status === 500) {
             // this.setState({ isLoaded: true, error: true });
             setStatedata((state) => ({
               ...state,

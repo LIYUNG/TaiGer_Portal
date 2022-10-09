@@ -39,8 +39,7 @@ class AgentReviewing extends React.Component {
     for (let i = 0; i < keys.length; i += 1) {
       if (
         object_init[keys[i]] !== 'accepted' &&
-        object_init[keys[i]] !== 'notneeded' &&
-        object_init[keys[i]] !== 'uploaded'
+        object_init[keys[i]] !== 'notneeded'
       ) {
         isMissingBaseDocs = true;
         break;

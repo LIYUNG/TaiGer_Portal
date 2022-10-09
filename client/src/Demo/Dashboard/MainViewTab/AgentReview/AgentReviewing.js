@@ -45,27 +45,16 @@ class AgentReviewing extends React.Component {
         break;
       }
     }
-
+    // TODO: logic improvement (necessary field)
     let isSurveyCompleted = check_survey_filled(
       this.props.student.academic_background
     );
-    // for (let i = 0; i < keys.length; i += 1) {
-    //   if (
-    //     object_init[keys[i]] !== 'accepted' &&
-    //     object_init[keys[i]] !== 'notneeded' &&
-    //     object_init[keys[i]] !== 'uploaded'
-    //   ) {
-    //     isSurveyCompleted = true;
-    //     break;
-    //   }
-    // }
 
     let is_all_applications_decided = check_all_applications_decided(
       keys,
       this.props.student
     );
 
-    // TODO: logic implementation
     let is_All_Applications_Submitted = check_all_applications_submitted(
       keys,
       this.props.student

@@ -10,7 +10,9 @@ class SingleProgramView extends React.Component {
           <Card.Body>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>University</b></p>
+                <p className="my-0">
+                  <b>University</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.school}</p>
@@ -18,7 +20,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Program</b></p>
+                <p className="my-0">
+                  <b>Program</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.program_name}</p>
@@ -26,7 +30,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Degree</b></p>
+                <p className="my-0">
+                  <b>Degree</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.degree}</p>
@@ -34,7 +40,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Semester</b></p>
+                <p className="my-0">
+                  <b>Semester</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.semester}</p>
@@ -43,7 +51,9 @@ class SingleProgramView extends React.Component {
             <Row> </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Teaching Language</b></p>
+                <p className="my-0">
+                  <b>Teaching Language</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.language}</p>
@@ -51,7 +61,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Application Start (MM-DD)</b></p>
+                <p className="my-0">
+                  <b>Application Start (MM-DD)</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.application_start}</p>
@@ -59,15 +71,21 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Application Deadline (MM-DD)</b></p>
+                <p className="my-0">
+                  <b>Application Deadline (MM-DD)</b>
+                </p>
               </Col>
               <Col md={8}>
-                <p className="my-0">{this.props.program.application_deadline}</p>
+                <p className="my-0">
+                  {this.props.program.application_deadline}
+                </p>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Need Uni-Assist?</b></p>
+                <p className="my-0">
+                  <b>Need Uni-Assist?</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.uni_assist}</p>
@@ -75,7 +93,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>TOEFL Requirement</b></p>
+                <p className="my-0">
+                  <b>TOEFL Requirement</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.toefl}</p>
@@ -83,7 +103,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>IELTS Requirement</b></p>
+                <p className="my-0">
+                  <b>IELTS Requirement</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.ielts}</p>
@@ -91,7 +113,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>TestDaF Requirement</b></p>
+                <p className="my-0">
+                  <b>TestDaF Requirement</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.testdaf}</p>
@@ -99,7 +123,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>GRE Requirement</b></p>
+                <p className="my-0">
+                  <b>GRE Requirement</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.gre}</p>
@@ -107,7 +133,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>GMAT Requirement</b></p>
+                <p className="my-0">
+                  <b>GMAT Requirement</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.gmat}</p>
@@ -115,7 +143,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>ML Required?</b></p>
+                <p className="my-0">
+                  <b>ML Required?</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.ml_required}</p>
@@ -123,7 +153,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>ML Requirements</b></p>
+                <p className="my-0">
+                  <b>ML Requirements</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.ml_requirements}</p>
@@ -131,7 +163,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>RL Required?</b></p>
+                <p className="my-0">
+                  <b>RL Required?</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.rl_required}</p>
@@ -139,7 +173,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>RL Requirements</b></p>
+                <p className="my-0">
+                  <b>RL Requirements</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.rl_requirements}</p>
@@ -148,7 +184,9 @@ class SingleProgramView extends React.Component {
             <Row>
               {' '}
               <Col md={4}>
-                <p className="my-0"><b>Essay Required?</b></p>
+                <p className="my-0">
+                  <b>Essay Required?</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.essay_required}</p>
@@ -156,7 +194,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Essay Requirements</b></p>
+                <p className="my-0">
+                  <b>Essay Requirements</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.essay_requirements}</p>
@@ -164,7 +204,9 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Special Notes</b></p>
+                <p className="my-0">
+                  <b>Special Notes</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.special_notes}</p>
@@ -173,7 +215,9 @@ class SingleProgramView extends React.Component {
             <Row>
               {' '}
               <Col md={4}>
-                <p className="my-0"><b>Comments</b></p>
+                <p className="my-0">
+                  <b>Comments</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.comments}</p>
@@ -181,31 +225,58 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Portal Link 1</b></p>
+                <p className="my-0">
+                  <b>Portal Link 1</b>
+                </p>
               </Col>
               <Col md={8}>
-                <p className="my-0">{this.props.program.application_portal_a}</p>
+                <a
+                  className="my-0"
+                  href={this.props.program.application_portal_a}
+                  target="_blank"
+                >
+                  Portal Link 1
+                </a>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Portal Link 2</b></p>
+                <p className="my-0">
+                  <b>Portal Link 2</b>
+                </p>
               </Col>
               <Col md={8}>
-                <p className="my-0">{this.props.program.application_portal_b}</p>
+                <a
+                  className="my-0"
+                  href={this.props.program.application_portal_b}
+                  target="_blank"
+                >
+                  Portal Link 2
+                </a>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Website</b></p>
+                <p className="my-0">
+                  <b>Website</b>
+                </p>
               </Col>
               <Col md={8}>
-                <p className="my-0">{this.props.program.website}</p>
+                <p className="my-0"></p>
+                <a
+                  className="my-0"
+                  href={this.props.program.website}
+                  target="_blank"
+                >
+                  webiste
+                </a>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>FPSO</b></p>
+                <p className="my-0">
+                  <b>FPSO</b>
+                </p>
               </Col>
               <Col md={8}>
                 <p className="my-0">{this.props.program.fpso}</p>
@@ -213,10 +284,14 @@ class SingleProgramView extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <p className="my-0"><b>Last Update</b></p>
+                <p className="my-0">
+                  <b>Last Update</b>
+                </p>
               </Col>
               <Col md={4}>
-                <p className="my-0"><b>{convertDate(this.props.program.updatedAt)}</b></p>
+                <p className="my-0">
+                  <b>{convertDate(this.props.program.updatedAt)}</b>
+                </p>
               </Col>
             </Row>
             {this.props.role === 'Admin' ||
@@ -235,7 +310,9 @@ class SingleProgramView extends React.Component {
                       <p className="my-0">Group</p>
                     </Col>
                     <Col md={6}>
-                      <p className="my-0">{this.props.program.study_group_flag}</p>
+                      <p className="my-0">
+                        {this.props.program.study_group_flag}
+                      </p>
                     </Col>
                   </Row>
                 </>

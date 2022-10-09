@@ -186,9 +186,9 @@ class CVMLRLOverview extends React.Component {
                   <>
                     <th></th>
                     <th>First-, Last Name</th>
-                    {(this.props.role === 'Admin' ||
-                      this.props.role === 'Editor' ||
-                      this.props.role === 'Agent') && <th>Action</th>}
+                    {(this.props.user.role === 'Admin' ||
+                      this.props.user.role === 'Editor' ||
+                      this.props.user.role === 'Agent') && <th>Action</th>}
                   </>
                   {window.cvmlrllist.map((doc, index) => (
                     <th key={index}>{doc.name}</th>

@@ -83,6 +83,14 @@ window.cvmlrllist = [
     prop: 'documents'
   },
   {
+    name: 'Last Update',
+    prop: 'last_update'
+  },
+  {
+    name: 'Aged Days',
+    prop: 'aged_days'
+  },
+  {
     name: 'Deadline',
     prop: 'deadline'
   },

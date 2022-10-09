@@ -112,23 +112,39 @@ class CVMLRLProgress extends React.Component {
       (generaldocs_thread, i) => (
         <tr>
           <td></td>
-          <td></td>
-          {generaldocs_thread.closed !== undefined &&
-          generaldocs_thread.closed === 'O' ? (
+          <td>
+            <Link
+              to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
+              style={{ textDecoration: 'none' }}
+            >
+              <p className="text-light">
+                <b>
+                  {this.props.student.firstname} {this.props.student.lastname}
+                </b>
+              </p>
+            </Link>
+          </td>
+          {generaldocs_thread.isFinalVersion ? (
             <td className="mb-1 text-info" key={i}>
               O
             </td>
-          ) : generaldocs_thread.closed !== undefined &&
-            generaldocs_thread.closed === 'X' ? (
+          ) : generaldocs_thread.isReceivedStudentFeedback ? (
             <td className="mb-1 text-info" key={generaldocs_thread._id}>
-              X
+              react
             </td>
           ) : (
             <td className="mb-1 text-info" key={generaldocs_thread._id}>
-              -
+              waiting
             </td>
           )}
           <td>{generaldocs_thread.doc_thread_id.file_type}</td>
+          <td>
+            {' '}
+            {new Date(generaldocs_thread.updatedAt).toLocaleDateString()}
+            {', '}
+            {new Date(generaldocs_thread.updatedAt).toLocaleTimeString()}
+          </td>
+          <td>{getNumberOfDays(generaldocs_thread.updatedAt, today)}</td>
           <td></td>
           <td></td>
         </tr>
@@ -151,18 +167,17 @@ class CVMLRLProgress extends React.Component {
                 </p>
               </Link>
             </td>
-            {application.closed !== undefined && application.closed === 'O' ? (
+            {doc_thread.isFinalVersion ? (
               <td className="mb-1 text-info" key={i}>
                 O
               </td>
-            ) : application.closed !== undefined &&
-              application.closed === 'X' ? (
+            ) : doc_thread.isReceivedStudentFeedback ? (
               <td className="mb-1 text-info" key={application._id}>
-                X
+                react
               </td>
             ) : (
               <td className="mb-1 text-info" key={application._id}>
-                -
+                waiting
               </td>
             )}
             <td>
@@ -172,6 +187,13 @@ class CVMLRLProgress extends React.Component {
               {' - '}
               {application.programId.program_name}
             </td>
+            <td>
+              {' '}
+              {new Date(doc_thread.updatedAt).toLocaleDateString()}
+              {', '}
+              {new Date(doc_thread.updatedAt).toLocaleTimeString()}
+            </td>
+            <td>{getNumberOfDays(today, doc_thread.updatedAt)}</td>
             <td>
               {
                 this.props.student.academic_background.university

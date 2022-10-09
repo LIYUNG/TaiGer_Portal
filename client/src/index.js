@@ -1,15 +1,15 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { createStore } from "redux";
-import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
-import App from "./App/index";
-import * as serviceWorker from "./serviceWorker";
-import reducer from "./store/reducer";
-import config from "./config";
+import App from './App/index';
+import * as serviceWorker from './serviceWorker';
+import reducer from './store/reducer';
+import config from './config';
 // import "./style.css";
-import "./index.css";
+import './index.css';
 // import "mdb-react-ui-kit/dist/css/mdb.min.css";
 
 const store = createStore(
@@ -19,65 +19,61 @@ const store = createStore(
 
 window.editortodolist = [
   {
-    name: "Waiting ML_Template",
-    prop: "waitingrltemplate",
+    name: 'Waiting ML_Template',
+    prop: 'waitingrltemplate'
   },
   {
-    name: "Waiting ML Response",
-    prop: "waitingmltemplate",
+    name: 'Waiting ML Response',
+    prop: 'waitingmltemplate'
   },
   {
-    name: "Provide ML Status",
-    prop: "providemltemp",
-  },
+    name: 'Provide ML Status',
+    prop: 'providemltemp'
+  }
 ];
 
 window.agenttodolist = [
   {
-    name: "Course Analysis",
-    prop: "courseanalysis",
+    name: 'Course Analysis',
+    prop: 'courseanalysis'
   },
   {
-    name: "Instruction working with Editor",
-    prop: "instructionworkingwitheditor",
+    name: 'Instruction working with Editor',
+    prop: 'instructionworkingwitheditor'
   },
   {
-    name: "Uni-Assist Instruction",
-    prop: "uniassistinstruction",
+    name: 'Uni-Assist Instruction',
+    prop: 'uniassistinstruction'
   },
   {
-    name: "Visa Instruction",
-    prop: "visainstruction",
+    name: 'Visa Instruction',
+    prop: 'visainstruction'
   },
   {
-    name: "Assign Editor",
-    prop: "assigneditor",
-  },
+    name: 'Assign Editor',
+    prop: 'assigneditor'
+  }
 ];
 
 window.documentsprogresslist = [
   {
-    name: "Template filled?",
-    prop: "receive_template",
+    name: 'Template filled?',
+    prop: 'receive_template'
   },
   {
-    name: "Preparing",
-    prop: "preparing",
+    name: 'Preparing',
+    prop: 'preparing'
   },
   {
-    name: "Last Update",
-    prop: "lastupdate",
+    name: 'Last Update',
+    prop: 'lastupdate'
   },
   {
-    name: "Closed",
-    prop: "closed",
-  },
+    name: 'Closed',
+    prop: 'closed'
+  }
 ];
 window.cvmlrllist = [
-  {
-    name: 'Action',
-    prop: 'action'
-  },
   {
     name: 'Status',
     prop: 'status'
@@ -149,33 +145,33 @@ window.academic_background_header = {
 
 window.templatelist = [
   {
-    name: "CV",
-    prop: "Example_CV_english",
+    name: 'CV',
+    prop: 'Example_CV_english'
   },
   {
-    name: "ML",
-    prop: "ML_survey_lock_1",
+    name: 'ML',
+    prop: 'ML_survey_lock_1'
   },
   {
-    name: "RL",
-    prop: "RL_academic_survey_lock",
+    name: 'RL',
+    prop: 'RL_academic_survey_lock'
   },
   {
-    name: "Internship Certificate",
-    prop: "Internship_Certificate_Example",
+    name: 'Internship Certificate',
+    prop: 'Internship_Certificate_Example'
   },
   {
-    name: "Employment Certificate",
-    prop: "Employment_Template",
+    name: 'Employment Certificate',
+    prop: 'Employment_Template'
   },
   {
-    name: "Module Description",
-    prop: "Module_Catalog",
+    name: 'Module Description',
+    prop: 'Module_Catalog'
   },
   {
-    name: "ECTS Conv.",
-    prop: "ECTS_Conv_example",
-  },
+    name: 'ECTS Conv.',
+    prop: 'ECTS_Conv_example'
+  }
   // {
   //   name: "Essay",
   //   prop: "Essay_",
@@ -184,37 +180,37 @@ window.templatelist = [
 
 window.ProgramlistHeader = [
   {
-    name: "University",
-    prop: "school",
+    name: 'University',
+    prop: 'school'
   },
   {
-    name: "Program",
-    prop: "program_name",
+    name: 'Program',
+    prop: 'program_name'
   },
   {
-    name: "TOEFL",
-    prop: "toefl",
+    name: 'TOEFL',
+    prop: 'toefl'
   },
   {
-    name: "IELTS",
-    prop: "ielts",
+    name: 'IELTS',
+    prop: 'ielts'
   },
   {
-    name: "Degree",
-    prop: "degree",
+    name: 'Degree',
+    prop: 'degree'
   },
   {
-    name: "GRE/GMAT",
-    prop: "gre",
+    name: 'GRE/GMAT',
+    prop: 'gre'
   },
   {
-    name: "Application Deadline",
-    prop: "application_deadline",
+    name: 'Application Deadline',
+    prop: 'application_deadline'
   },
   {
-    name: "Last Update",
-    prop: "updatedAt",
-  },
+    name: 'Last Update',
+    prop: 'updatedAt'
+  }
 ];
 
 window.ProgramlistHeader22 = [
@@ -254,136 +250,136 @@ window.ProgramlistHeader22 = [
 
 window.NewProgramHeader = [
   {
-    name: "University",
-    prop: "school",
+    name: 'University',
+    prop: 'school'
   },
   {
-    name: "Program",
-    prop: "program",
+    name: 'Program',
+    prop: 'program'
   },
   {
-    name: "Degree",
-    prop: "degree",
+    name: 'Degree',
+    prop: 'degree'
   },
   {
-    name: "Semester",
-    prop: "semester",
+    name: 'Semester',
+    prop: 'semester'
   },
   {
-    name: "Language",
-    prop: "language",
+    name: 'Language',
+    prop: 'language'
   },
   {
-    name: "Application Start",
-    prop: "application_start",
+    name: 'Application Start',
+    prop: 'application_start'
   },
   {
-    name: "Application Deadline",
-    prop: "application_deadline",
+    name: 'Application Deadline',
+    prop: 'application_deadline'
   },
   {
-    name: "Uni Assist",
-    prop: "uni_assist",
+    name: 'Uni Assist',
+    prop: 'uni_assist'
   },
   {
-    name: "TOEFL",
-    prop: "toefl",
+    name: 'TOEFL',
+    prop: 'toefl'
   },
   {
-    name: "IELTS",
-    prop: "ielts",
+    name: 'IELTS',
+    prop: 'ielts'
   },
   {
-    name: "TestDaF",
-    prop: "testdaf",
+    name: 'TestDaF',
+    prop: 'testdaf'
   },
   {
-    name: "GRE",
-    prop: "gre",
+    name: 'GRE',
+    prop: 'gre'
   },
   {
-    name: "GMAT",
-    prop: "gmat",
+    name: 'GMAT',
+    prop: 'gmat'
   },
   {
-    name: "ML Needed?",
-    prop: "ml_required",
+    name: 'ML Needed?',
+    prop: 'ml_required'
   },
   {
-    name: "ML Requirements",
-    prop: "ml_requirements",
+    name: 'ML Requirements',
+    prop: 'ml_requirements'
   },
   {
-    name: "RL Needed?",
-    prop: "rl_required",
+    name: 'RL Needed?',
+    prop: 'rl_required'
   },
   {
-    name: "RL Requirements",
-    prop: "rl_requirements",
+    name: 'RL Requirements',
+    prop: 'rl_requirements'
   },
   {
-    name: "Essay Required",
-    prop: "essay_required",
+    name: 'Essay Required',
+    prop: 'essay_required'
   },
   {
-    name: "Essay Requirements",
-    prop: "essay_requirements",
+    name: 'Essay Requirements',
+    prop: 'essay_requirements'
   },
   {
-    name: "Special Notes",
-    prop: "special_notes",
+    name: 'Special Notes',
+    prop: 'special_notes'
   },
   {
-    name: "Comments",
-    prop: "comments",
+    name: 'Comments',
+    prop: 'comments'
   },
   {
-    name: "Application Portal A",
-    prop: "application_portal_a",
+    name: 'Application Portal A',
+    prop: 'application_portal_a'
   },
   {
-    name: "Application Portal B",
-    prop: "application_portal_b",
+    name: 'Application Portal B',
+    prop: 'application_portal_b'
   },
   {
-    name: "Website",
-    prop: "website",
+    name: 'Website',
+    prop: 'website'
   },
   {
-    name: "FPSO",
-    prop: "fpso",
+    name: 'FPSO',
+    prop: 'fpso'
   },
   {
-    name: "Last Update",
-    prop: "updatedAt",
+    name: 'Last Update',
+    prop: 'updatedAt'
   },
   {
-    name: "Modified by",
-    prop: "whoupdated",
+    name: 'Modified by',
+    prop: 'whoupdated'
   },
   {
-    name: "Group",
-    prop: "study_group_flag",
-  },
+    name: 'Group',
+    prop: 'study_group_flag'
+  }
 ];
 
 window.UserlistHeader = [
   {
-    name: "First Name",
-    prop: "firstname",
+    name: 'First Name',
+    prop: 'firstname'
   },
   {
-    name: "Last Name",
-    prop: "lastname",
+    name: 'Last Name',
+    prop: 'lastname'
   },
   {
-    name: "Email Address",
-    prop: "email",
+    name: 'Email Address',
+    prop: 'email'
   },
   {
-    name: "User Type",
-    prop: "role",
-  },
+    name: 'User Type',
+    prop: 'role'
+  }
 ];
 
 const app = (
@@ -395,7 +391,7 @@ const app = (
   </Provider>
 );
 
-ReactDOM.render(app, document.getElementById("root"));
+ReactDOM.render(app, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

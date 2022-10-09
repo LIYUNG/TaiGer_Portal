@@ -97,8 +97,10 @@ class CVMLRLProgress extends React.Component {
             </Link>
           </td>
           <td>
-            {' '}
-            {generaldocs_thread.isFinalVersion ? (
+            {(this.props.role === 'Admin' ||
+              this.props.role === 'Editor' ||
+              this.props.role === 'Agent') &&
+            generaldocs_thread.isFinalVersion ? (
               <AiOutlineUndo
                 size={24}
                 color="red"
@@ -126,19 +128,19 @@ class CVMLRLProgress extends React.Component {
               //     )
               //   }
               // >
-                <AiOutlineCheck
-                  size={24}
-                  style={{ cursor: 'pointer' }}
-                  title="Set as final version"
-                  // onClick={() =>
-                  //   this.handleAsFinalFileThread(
-                  //     generaldocs_thread.doc_thread_id._id,
-                  //     this.props.student._id,
-                  //     null,
-                  //     generaldocs_thread.doc_thread_id.file_type
-                  //   )
-                  // }
-                />
+              <AiOutlineCheck
+                size={24}
+                style={{ cursor: 'pointer' }}
+                title="Set as final version"
+                // onClick={() =>
+                //   this.handleAsFinalFileThread(
+                //     generaldocs_thread.doc_thread_id._id,
+                //     this.props.student._id,
+                //     null,
+                //     generaldocs_thread.doc_thread_id.file_type
+                //   )
+                // }
+              />
               // </Button>
             )}
           </td>
@@ -183,22 +185,27 @@ class CVMLRLProgress extends React.Component {
                 </p>
               </Link>
             </td>
-            <td>
-              {doc_thread.isFinalVersion ? (
-                <AiOutlineUndo
-                  size={24}
-                  color="red"
-                  title="Un do Final Version"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    this.handleAsFinalFileThread(
-                      doc_thread.doc_thread_id._id,
-                      this.props.student._id,
-                      application.programId._id,
-                      doc_thread.doc_thread_id.file_type
-                    )
-                  }
-                />
+
+            {(this.props.role === 'Admin' ||
+              this.props.role === 'Editor' ||
+              this.props.role === 'Agent') &&
+              (doc_thread.isFinalVersion ? (
+                <td>
+                  <AiOutlineUndo
+                    size={24}
+                    color="red"
+                    title="Un do Final Version"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() =>
+                      this.handleAsFinalFileThread(
+                        doc_thread.doc_thread_id._id,
+                        this.props.student._id,
+                        application.programId._id,
+                        doc_thread.doc_thread_id.file_type
+                      )
+                    }
+                  />
+                </td>
               ) : (
                 // <Button
                 //   size="sm"
@@ -206,22 +213,24 @@ class CVMLRLProgress extends React.Component {
                 //   onClick={() => this.handleAsFinalFileThread(documenName)}
                 // >
                 // <>O</>
-                <AiOutlineCheck
-                  size={24}
-                  style={{ cursor: 'pointer' }}
-                  title="Set as final version"
-                  onClick={() =>
-                    this.handleAsFinalFileThread(
-                      doc_thread.doc_thread_id._id,
-                      this.props.student._id,
-                      application.programId._id,
-                      doc_thread.doc_thread_id.file_type
-                    )
-                  }
-                />
+                <td>
+                  <AiOutlineCheck
+                    size={24}
+                    style={{ cursor: 'pointer' }}
+                    title="Set as final version"
+                    onClick={() =>
+                      this.handleAsFinalFileThread(
+                        doc_thread.doc_thread_id._id,
+                        this.props.student._id,
+                        application.programId._id,
+                        doc_thread.doc_thread_id.file_type
+                      )
+                    }
+                  />
+                </td>
                 // </Button>
-              )}
-            </td>
+              ))}
+
             {return_thread_status(this.props.role, doc_thread)}
             <td>
               <Link

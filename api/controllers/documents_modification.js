@@ -92,6 +92,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
   }
 });
 
+// (O) email inform student
+// (O) email inform editors.
 const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { studentId, document_category }
@@ -202,8 +204,8 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   );
 });
 
-// () TODO: email inform Editor
-// () TODO: email inform Student
+// (O) email inform Editor
+// (O) email inform Student
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { studentId, program_id, document_category }

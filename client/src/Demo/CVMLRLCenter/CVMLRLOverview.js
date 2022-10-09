@@ -70,7 +70,7 @@ class CVMLRLOverview extends React.Component {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
-        console.log(data)
+        console.log(data);
         let temp_students = [...this.state.students];
         let student_idx = this.state.students.findIndex(
           (student) => student._id.toString() === data._id.toString()
@@ -186,6 +186,9 @@ class CVMLRLOverview extends React.Component {
                   <>
                     <th></th>
                     <th>First-, Last Name</th>
+                    {(this.props.role === 'Admin' ||
+                      this.props.role === 'Editor' ||
+                      this.props.role === 'Agent') && <th>Action</th>}
                   </>
                   {window.cvmlrllist.map((doc, index) => (
                     <th key={index}>{doc.name}</th>

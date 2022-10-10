@@ -150,6 +150,7 @@ class CVMLRLOverview extends React.Component {
       <CVMLRLProgress
         key={i}
         role={this.props.user.role}
+        user={this.props.user}
         student={student}
         isDashboard={true}
         handleAsFinalFile={this.handleAsFinalFile}

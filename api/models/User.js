@@ -226,6 +226,10 @@ const applicationSchema = new Schema({
         type: Boolean,
         default: false
       },
+      latest_message_left_by_id: {
+        type: String,
+        default: ''
+      },
       doc_thread_id: { type: ObjectId, ref: 'Documentthread' },
       updatedAt: Date,
       createdAt: Date
@@ -357,6 +361,10 @@ const Student = User.discriminator(
           EditorRead: {
             type: Boolean,
             default: false
+          },
+          latest_message_left_by_id: {
+            type: String,
+            default: ''
           },
           doc_thread_id: { type: ObjectId, ref: 'Documentthread' },
           updatedAt: Date,

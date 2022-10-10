@@ -26,7 +26,7 @@ class CVMLRLProgress extends React.Component {
   };
   render() {
     var today = new Date();
-    const return_thread_status = (role, thread) => {
+    const return_thread_status = (user, thread) => {
       if (thread.isFinalVersion) {
         return (
           <td className="mb-1 text-info">
@@ -34,14 +34,11 @@ class CVMLRLProgress extends React.Component {
           </td>
         );
       }
-      if (role === 'Student') {
-        if (thread.isReceivedEditorFeedback) {
-          return (
-            <td className="mb-1 text-info">
-              <BiCommentDots size={24} color="red" title="New Message" />
-            </td>
-          );
-        } else if (thread.isReceivedStudentFeedback) {
+      if (
+        thread.latest_message_left_by_id === undefined ||
+        thread.latest_message_left_by_id === ''
+      ) {
+        if (user.role !== 'Student') {
           return (
             <td className="mb-1 text-info">
               <AiFillQuestionCircle
@@ -53,25 +50,61 @@ class CVMLRLProgress extends React.Component {
           );
         }
       }
-      if (role === 'Agent' || role === 'Editor' || role === 'Admin') {
-        if (thread.isReceivedStudentFeedback) {
-          return (
-            <td className="mb-1 text-info">
-              <BiCommentDots size={24} color="red" title="New Message" />
-            </td>
-          );
-        } else if (thread.isReceivedEditorFeedback) {
-          return (
-            <td className="mb-1 text-info">
-              <AiFillQuestionCircle
-                size={24}
-                color="lightgray"
-                title="Waiting feedback"
-              />
-            </td>
-          );
-        }
+      if (user._id.toString() === thread.latest_message_left_by_id) {
+        return (
+          <td className="mb-1 text-info">
+            <AiFillQuestionCircle
+              size={24}
+              color="lightgray"
+              title="Waiting feedback"
+            />
+          </td>
+        );
+      } else {
+        return (
+          <td className="mb-1 text-info">
+            <BiCommentDots size={24} color="red" title="New Message" />
+          </td>
+        );
       }
+      // if (role === 'Student') {
+      //   if (thread.isReceivedEditorFeedback) {
+      //     return (
+      //       <td className="mb-1 text-info">
+      //         <BiCommentDots size={24} color="red" title="New Message" />
+      //       </td>
+      //     );
+      //   } else if (thread.isReceivedStudentFeedback) {
+      //     return (
+      //       <td className="mb-1 text-info">
+      //         <AiFillQuestionCircle
+      //           size={24}
+      //           color="lightgray"
+      //           title="Waiting feedback"
+      //         />
+      //       </td>
+      //     );
+      //   }
+      // }
+      // if (role === 'Agent' || role === 'Editor' || role === 'Admin') {
+      //   if (thread.isReceivedStudentFeedback) {
+      //     return (
+      //       <td className="mb-1 text-info">
+      //         <BiCommentDots size={24} color="red" title="New Message" />
+      //       </td>
+      //     );
+      //   } else if (thread.isReceivedEditorFeedback) {
+      //     return (
+      //       <td className="mb-1 text-info">
+      //         <AiFillQuestionCircle
+      //           size={24}
+      //           color="lightgray"
+      //           title="Waiting feedback"
+      //         />
+      //       </td>
+      //     );
+      //   }
+      // }
     };
 
     let general_document_items = <></>;
@@ -144,7 +177,7 @@ class CVMLRLProgress extends React.Component {
               // </Button>
             )}
           </td>
-          {return_thread_status(this.props.role, generaldocs_thread)}
+          {return_thread_status(this.props.user, generaldocs_thread)}
           <td>
             <Link
               to={
@@ -234,7 +267,7 @@ class CVMLRLProgress extends React.Component {
                 // </Button>
               ))}
 
-            {return_thread_status(this.props.role, doc_thread)}
+            {return_thread_status(this.props.user, doc_thread)}
             <td>
               <Link
                 to={'/document-modification/' + doc_thread.doc_thread_id._id}

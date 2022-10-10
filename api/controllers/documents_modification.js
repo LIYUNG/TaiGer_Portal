@@ -407,7 +407,6 @@ const postMessages = asyncHandler(async (req, res) => {
   const document_thread2 = await Documentthread.findById(messagesThreadId)
     .populate('student_id program_id messages.user_id')
     .exec();
-  res.status(200).send({ success: true, data: document_thread2 });
   // update StudentRead, EditorRead, isReceivedEditorFeedback and isReceivedStudentFeedback
   // in student (User) collections.
   const student = await Student.findById(document_thread.student_id)
@@ -435,6 +434,7 @@ const postMessages = asyncHandler(async (req, res) => {
       doc_thread.StudentRead = false;
       doc_thread.EditorRead = true;
     }
+    doc_thread.latest_message_left_by_id = user._id.toString();
     doc_thread.updatedAt = new Date();
   } else {
     const general_thread = student.generaldocs_threads.find(
@@ -453,10 +453,12 @@ const postMessages = asyncHandler(async (req, res) => {
       general_thread.StudentRead = false;
       general_thread.EditorRead = true;
     }
+    general_thread.latest_message_left_by_id = user._id.toString();
     general_thread.updatedAt = new Date();
   }
 
   await student.save();
+  res.status(200).send({ success: true, data: document_thread2 });
 
   if (user.role === Role.Student) {
     // Inform Editor

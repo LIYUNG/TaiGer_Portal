@@ -35,6 +35,8 @@ export const getEditors = () => request.get('/api/editors');
 
 export const getStudents = () => request.get(`/api/students`);
 
+export const getChecklists = () => request.get(`/api/checklists`);
+
 export const getAllStudents = () => request.get(`/api/students/all`);
 
 export const getAdmissions = () => request.get(`/api/admissions`);

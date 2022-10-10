@@ -99,6 +99,7 @@ window.cvmlrllist = [
     prop: 'days_left'
   }
 ];
+
 window.programstatuslist = [
   {
     name: 'Decided',
@@ -117,6 +118,16 @@ window.programstatuslist = [
     prop: 'days_left'
   }
 ];
+
+window.checklist = {
+  course_analysis: 'Course Analysis',
+  uni_assist: 'Uni-Assist',
+  certification_instruction: 'Copy Certification',
+  blocked_account_instruction: 'Blocked Account',
+  health_insurance_instruction: 'Health Insurance',
+  visa_instruction: 'Visa Instruction'
+};
+
 window.profile_list = {
   High_School_Diploma: 'High School Diploma',
   High_School_Transcript: 'High School Transcript',

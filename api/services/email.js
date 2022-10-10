@@ -22,6 +22,7 @@ const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
 // const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
+const THREAD_URL = new URL('/document-modification', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
 const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
@@ -489,28 +490,23 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-const sendNewApplicationMessageInThreadToEditorEmail = async (
+const sendNewApplicationMessageInThreadEmail = async (
   recipient,
   msg
 ) => {
-  const subject = `${msg.student_firstname} ${msg.student_lastname} has new update for ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const subject = `${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-your student ${msg.student_firstname} ${msg.student_lastname} have a new update for 
+${msg.writer_firstname} ${msg.writer_lastname} has a new update for 
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}:
-
-===
-
-${msg.message}
-
-===
+${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}
 
 on ${msg.uploaded_updatedAt}.
 
 
-Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
+Please go to TaiGer Portal ${thread_url} and check the updates. 
 
 ${TAIGER_SIGNATURE}
 
@@ -519,92 +515,23 @@ ${TAIGER_SIGNATURE}
   sendEmail(recipient, subject, message);
 };
 
-const sendNewApplicationMessageInThreadToStudentEmail = async (
+const sendNewGeneraldocMessageInThreadEmail = async (
   recipient,
   msg
 ) => {
-  const subject = `You have new update for ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const subject = `${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.uploaded_documentname}!`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-your editor ${msg.editor_firstname} ${msg.editor_lastname} have a new update for 
+${msg.writer_firstname} ${msg.writer_lastname} has a new update for 
 
-${msg.school} ${msg.program_name} ${msg.uploaded_documentname}:
-
-===
-
-${msg.message}
-
-===
+${msg.uploaded_documentname}
 
 on ${msg.uploaded_updatedAt}.
 
 
-Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
-
-If you have any question, feel free to contact your editor.
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  sendEmail(recipient, subject, message);
-};
-
-const sendNewGeneraldocMessageInThreadToEditorEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = `${msg.student_firstname} ${msg.student_lastname} has new update for ${msg.uploaded_documentname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your student ${msg.student_firstname} ${msg.student_lastname} have a new update for 
-
-${msg.uploaded_documentname} :
-
-===
-
-${msg.message}
-
-===
-
-on ${msg.uploaded_updatedAt}.
-
-
-Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
-
-${TAIGER_SIGNATURE}
-
-`;
-
-  sendEmail(recipient, subject, message);
-};
-
-const sendNewGeneraldocMessageInThreadToStudentEmail = async (
-  recipient,
-  msg
-) => {
-  const subject = `You have new update for ${msg.uploaded_documentname}!`;
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your editor ${msg.editor_firstname} ${msg.editor_lastname} have a new update for 
-
-${msg.uploaded_documentname}:
-
-===
-
-${msg.message}
-
-===
-
-on ${msg.uploaded_updatedAt}.
-
-
-Please go to TaiGer Portal ${CVMLRL_CENTER_URL} and check the updates. 
-
-If you have any question, feel free to contact your editor.
+Please go to TaiGer Portal ${thread_url} and check the updates. 
 
 ${TAIGER_SIGNATURE}
 
@@ -861,10 +788,8 @@ module.exports = {
   informStudentTheirAgentEmail,
   sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
-  sendNewApplicationMessageInThreadToEditorEmail,
-  sendNewApplicationMessageInThreadToStudentEmail,
-  sendNewGeneraldocMessageInThreadToEditorEmail,
-  sendNewGeneraldocMessageInThreadToStudentEmail,
+  sendNewApplicationMessageInThreadEmail,
+  sendNewGeneraldocMessageInThreadEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   assignDocumentTaskToEditorEmail,

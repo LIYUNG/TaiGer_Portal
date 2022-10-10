@@ -276,6 +276,8 @@ const Student = User.discriminator(
       ],
       checklist: {
         course_analysis: {
+          name: { type: String, default: 'Course Analysis' },
+          isNeeded: { type: Boolean, default: true },
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
@@ -284,6 +286,8 @@ const Student = User.discriminator(
           updatedAt: Date
         },
         uni_assist: {
+          name: { type: String, default: 'Uni-Assist' },
+          isNeeded: { type: Boolean, default: true },
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
@@ -292,6 +296,8 @@ const Student = User.discriminator(
           updatedAt: Date
         },
         certification_instruction: {
+          name: { type: String, default: 'Copy Certification' },
+          isNeeded: { type: Boolean, default: true },
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
@@ -300,6 +306,8 @@ const Student = User.discriminator(
           updatedAt: Date
         },
         blocked_account_instruction: {
+          name: { type: String, default: 'Blocked Account' },
+          isNeeded: { type: Boolean, default: true },
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
@@ -308,6 +316,8 @@ const Student = User.discriminator(
           updatedAt: Date
         },
         health_insurance_instruction: {
+          name: { type: String, default: 'Health Insurance' },
+          isNeeded: { type: Boolean, default: true },
           status: {
             type: String,
             enum: Object.values(CheckListStatus),
@@ -316,6 +326,8 @@ const Student = User.discriminator(
           updatedAt: Date
         },
         visa_instruction: {
+          name: { type: String, default: 'Visa Instruction' },
+          isNeeded: { type: Boolean, default: true },
           status: {
             type: String,
             enum: Object.values(CheckListStatus),

@@ -3,11 +3,11 @@ import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import DEMO from '../../store/constant';
 import { getCVMLRLOverview } from '../../api';
-// import CheckListItems from './CheckListItems';
+import CheckListItems from './CheckListItems';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { Link } from 'react-router-dom';
-
+import { getStudents, getChecklists } from '../../api';
 class CheckList extends React.Component {
   state = {
     error: null,
@@ -18,34 +18,40 @@ class CheckList extends React.Component {
     success: false,
     // accordionKeys: new Array(-1, this.props.user.students.length),  // To collapse all
     students: [],
+    checklists: [],
     file: '',
     expand: true,
     accordionKeys:
-      this.props.user.students &&
+      Object.keys(this.props.user.checklist) &&
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-        ? new Array(this.props.user.students.length).fill().map((x, i) => i)
+        ? new Array(Object.keys(this.props.user.checklist).length)
+            .fill()
+            .map((x, i) => i)
         : [0] // to expand all]
   };
 
   componentDidMount() {
-    // console.log(this.props.user);
-    getCVMLRLOverview().then(
+    const checklist = Object.keys(this.props.user.checklist);
+    getChecklists().then(
       (resp) => {
-        // console.log(resp.data);
         const { data, success } = resp.data;
         if (success) {
           this.setState({
             isLoaded: true,
-            students: data,
+            checklists: data,
             success: success,
-            accordionKeys: new Array(data.length).fill().map((x, i) => i) // to expand all
-            //   accordionKeys: new Array(-1, data.length), // to collapse all
+            // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
+            accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
+            // accordionKeys: new Array(-1, data.length) // to collapse all
           });
         } else {
-          if (resp.status == 401) {
+          if (resp.status === 401 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
           }
         }
       },
@@ -56,6 +62,12 @@ class CheckList extends React.Component {
         });
       }
     );
+    // this.setState({
+    //   isLoaded: true,
+
+    //   accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
+    //   //   accordionKeys: new Array(-1, data.length), // to collapse all
+    // });
   }
 
   singleExpandtHandler = (idx) => {
@@ -67,25 +79,25 @@ class CheckList extends React.Component {
     }));
   };
   AllCollapsetHandler = () => {
+    const checklist = Object.keys(this.props.user.checklist);
     this.setState((state) => ({
       ...state,
       expand: false,
       accordionKeys:
-        this.props.user.students &&
+        checklist &&
         (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-          ? new Array(this.props.user.students.length).fill().map((x, i) => -1)
+          ? new Array(checklist.length).fill().map((x, i) => -1)
           : [-1] // to expand all]
     }));
   };
   AllExpandtHandler = () => {
+    const checklist = Object.keys(this.props.user.checklist);
     this.setState((state) => ({
       ...state,
       expand: true,
       accordionKeys:
-        this.props.user.students &&
-        (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-          ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-          : [0] // to expand all]
+        checklist && new Array(checklist.length).fill().map((x, i) => i)
+      // to expand all]
     }));
   };
 
@@ -122,31 +134,23 @@ class CheckList extends React.Component {
       );
     }
 
-    const student_editor = this.state.students.map((student, i) => (
+    const checklist = Object.keys(window.checklist);
+    const student_editor = checklist.map((item, i) => (
       <Card className="mb-2 mx-0" bg={'dark'} text={'light'} key={i}>
         <Card.Header onClick={() => this.singleExpandtHandler(i)}>
           <Card.Title
             aria-controls={'accordion' + i}
             aria-expanded={this.state.accordionKeys[i] === i}
           >
-            <Link
-              to={'/student-database/' + student._id + '/CV_ML_RL'}
-              style={{ textDecoration: 'none' }}
-              className="text-info"
-            >
-              {student.firstname}
-              {' ,'}
-              {student.lastname}
-            </Link>
+            {this.props.user.checklist[item].name}
           </Card.Title>
         </Card.Header>
-        {/* <CheckListItems
+        <CheckListItems
           idx={i}
-          student={student}
           accordionKeys={this.state.accordionKeys}
           singleExpandtHandler={this.singleExpandtHandler}
           role={this.props.user.role}
-        /> */}
+        />
       </Card>
     ));
 

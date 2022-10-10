@@ -16,7 +16,8 @@ class NavItem extends Component {
         itemTitle === 'Academic Survey' ||
         itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
-        // itemTitle === 'Charts' ||
+        itemTitle === 'Check List' ||
+        itemTitle === 'Charts' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'TaiGer AI' ||
@@ -32,6 +33,7 @@ class NavItem extends Component {
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'My Applications' ||
+        itemTitle === 'Check List' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
@@ -48,6 +50,7 @@ class NavItem extends Component {
       if (
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Check List' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'My Applications' ||
         itemTitle === 'Interview Training' ||

@@ -6,10 +6,8 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const {
-  sendNewApplicationMessageInThreadToEditorEmail,
-  sendNewApplicationMessageInThreadToStudentEmail,
-  sendNewGeneraldocMessageInThreadToEditorEmail,
-  sendNewGeneraldocMessageInThreadToStudentEmail,
+  sendNewApplicationMessageInThreadEmail,
+  sendNewGeneraldocMessageInThreadEmail,
   sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
@@ -414,6 +412,7 @@ const postMessages = asyncHandler(async (req, res) => {
   // in student (User) collections.
   const student = await Student.findById(document_thread.student_id)
     .populate('applications.programId')
+    .populate('editors', 'firstname lastname email')
     .exec();
   if (document_thread.program_id) {
     const application = student.applications.find(
@@ -461,72 +460,154 @@ const postMessages = asyncHandler(async (req, res) => {
 
   if (user.role === Role.Student) {
     // Inform Editor
-    const student = user;
+    // const student = user;
     for (let i = 0; i < student.editors.length; i++) {
       if (document_thread.program_id) {
-        sendNewApplicationMessageInThreadToEditorEmail(
+        sendNewApplicationMessageInThreadEmail(
           {
             firstname: student.editors[i].firstname,
             lastname: student.editors[i].lastname,
             address: student.editors[i].email
           },
           {
-            student_firstname: user.firstname,
-            student_lastname: user.lastname,
+            writer_firstname: user.firstname,
+            writer_lastname: user.lastname,
             uploaded_documentname: document_thread.file_type,
             school: document_thread.program_id.school,
             program_name: document_thread.program_id.program_name,
+            thread_id: document_thread._id.toString(),
             uploaded_updatedAt: new Date(),
             message
           }
         );
       } else {
-        sendNewGeneraldocMessageInThreadToEditorEmail(
+        sendNewGeneraldocMessageInThreadEmail(
           {
             firstname: student.editors[i].firstname,
             lastname: student.editors[i].lastname,
             address: student.editors[i].email
           },
           {
-            student_firstname: user.firstname,
-            student_lastname: user.lastname,
+            writer_firstname: user.firstname,
+            writer_lastname: user.lastname,
             uploaded_documentname: document_thread.file_type,
+            thread_id: document_thread._id.toString(),
             uploaded_updatedAt: new Date(),
             message
           }
         );
       }
     }
-  } else {
+  }
+  if (user.role === Role.Editor) {
     // Inform student
     if (document_thread.program_id) {
-      sendNewApplicationMessageInThreadToStudentEmail(
+      sendNewApplicationMessageInThreadEmail(
         {
           firstname: document_thread.student_id.firstname,
           lastname: document_thread.student_id.lastname,
           address: document_thread.student_id.email
         },
         {
-          editor_firstname: user.firstname,
-          editor_lastname: user.lastname,
+          writer_firstname: user.firstname,
+          writer_lastname: user.lastname,
           uploaded_documentname: document_thread.file_type,
           school: document_thread.program_id.school,
+          thread_id: document_thread._id.toString(),
           program_name: document_thread.program_id.program_name,
           uploaded_updatedAt: new Date(),
           message
         }
       );
     } else {
-      sendNewGeneraldocMessageInThreadToStudentEmail(
+      sendNewGeneraldocMessageInThreadEmail(
         {
           firstname: document_thread.student_id.firstname,
           lastname: document_thread.student_id.lastname,
           address: document_thread.student_id.email
         },
         {
-          editor_firstname: user.firstname,
-          editor_lastname: user.lastname,
+          writer_firstname: user.firstname,
+          writer_lastname: user.lastname,
           uploaded_documentname: document_thread.file_type,
+          thread_id: document_thread._id.toString(),
+          uploaded_updatedAt: new Date(),
+          message
+        }
+      );
+    }
+  }
+  if (user.role === Role.Agent || user.role === Role.Admin) {
+    // Inform Editor
+    // const student = user;
+    for (let i = 0; i < student.editors.length; i++) {
+      if (document_thread.program_id) {
+        sendNewApplicationMessageInThreadEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            writer_firstname: user.firstname,
+            writer_lastname: user.lastname,
+            uploaded_documentname: document_thread.file_type,
+            school: document_thread.program_id.school,
+            program_name: document_thread.program_id.program_name,
+            thread_id: document_thread._id.toString(),
+            uploaded_updatedAt: new Date(),
+            message
+          }
+        );
+      } else {
+        sendNewGeneraldocMessageInThreadEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            writer_firstname: user.firstname,
+            writer_lastname: user.lastname,
+            uploaded_documentname: document_thread.file_type,
+            thread_id: document_thread._id.toString(),
+            uploaded_updatedAt: new Date(),
+            message
+          }
+        );
+      }
+    }
+    // Inform student
+    if (document_thread.program_id) {
+      sendNewApplicationMessageInThreadEmail(
+        {
+          firstname: document_thread.student_id.firstname,
+          lastname: document_thread.student_id.lastname,
+          address: document_thread.student_id.email
+        },
+        {
+          writer_firstname: user.firstname,
+          writer_lastname: user.lastname,
+          uploaded_documentname: document_thread.file_type,
+          school: document_thread.program_id.school,
+          thread_id: document_thread._id.toString(),
+          program_name: document_thread.program_id.program_name,
+          uploaded_updatedAt: new Date(),
+          message
+        }
+      );
+    } else {
+      sendNewGeneraldocMessageInThreadEmail(
+        {
+          firstname: document_thread.student_id.firstname,
+          lastname: document_thread.student_id.lastname,
+          address: document_thread.student_id.email
+        },
+        {
+          writer_firstname: user.firstname,
+          writer_lastname: user.lastname,
+          uploaded_documentname: document_thread.file_type,
+          thread_id: document_thread._id.toString(),
           uploaded_updatedAt: new Date(),
           message
         }

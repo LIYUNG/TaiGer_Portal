@@ -90,44 +90,78 @@ class StudentBaseDocumentsStatus extends React.Component {
       if (object_init[k] === 'uploaded') {
         return (
           <td key={i}>
-            <AiOutlineFieldTime
-              size={24}
-              color="orange"
-              title="Uploaded successfully"
-            />
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              style={{ textDecoration: 'none' }}
+              className="text-info"
+            >
+              <AiOutlineFieldTime
+                size={24}
+                color="orange"
+                title="Uploaded successfully"
+              />
+            </Link>
           </td>
         );
       } else if (object_init[k] === 'accepted') {
         return (
           <td key={i}>
-            <IoCheckmarkCircle
-              size={24}
-              color="limegreen"
-              title="Valid Document"
-            />
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              style={{ textDecoration: 'none' }}
+              className="text-info"
+            >
+              <IoCheckmarkCircle
+                size={24}
+                color="limegreen"
+                title="Valid Document"
+              />
+            </Link>
           </td>
         );
       } else if (object_init[k] === 'rejected') {
         return (
           <td key={i}>
-            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              style={{ textDecoration: 'none' }}
+              className="text-info"
+            >
+              <AiFillCloseCircle
+                size={24}
+                color="red"
+                title="Invalid Document"
+              />
+            </Link>
           </td>
         );
       } else if (object_init[k] === 'notneeded') {
         // TODO: render or hide?
         return (
           <td key={i}>
-            <BsDash size={24} color="lightgray" title="Not needed" />
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              style={{ textDecoration: 'none' }}
+              className="text-info"
+            >
+              <BsDash size={24} color="lightgray" title="Not needed" />
+            </Link>
           </td>
         );
       } else {
         return (
           <td key={i}>
-            <AiFillQuestionCircle
-              size={24}
-              color="lightgray"
-              title="No Document uploaded"
-            />
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              style={{ textDecoration: 'none' }}
+              className="text-info"
+            >
+              <AiFillQuestionCircle
+                size={24}
+                color="lightgray"
+                title="No Document uploaded"
+              />
+            </Link>
           </td>
         );
       }

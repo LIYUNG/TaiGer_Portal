@@ -347,21 +347,29 @@ class SingleStudentPage extends React.Component {
         );
       } else if (object_init[k] === 'notneeded') {
         return (
-          <ButtonSetNotNeeded
-            key={i + 1}
-            role={this.props.user.role}
-            isLoaded={this.state.isLoaded}
-            docName={value2[i]}
-            date={object_date_init[k]}
-            time={object_time_init[k]}
-            k={k}
-            student_id={this.state.student._id}
-            onDownloadFilefromstudent={this.onDownloadFilefromstudent}
-            onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-            SubmitGeneralFile={this.props.SubmitGeneralFile}
-            deleteFileWarningModel={this.props.deleteFileWarningModel}
-          />
+          <>
+            {(this.props.user.role === 'Admin' ||
+              this.props.user.role === 'Agent' ||
+              this.props.user.role === 'Edior') && (
+              <ButtonSetNotNeeded
+                key={i + 1}
+                role={this.props.user.role}
+                isLoaded={this.state.isLoaded}
+                docName={value2[i]}
+                date={object_date_init[k]}
+                time={object_time_init[k]}
+                k={k}
+                student_id={this.state.student._id}
+                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+                onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+                onUpdateProfileFilefromstudent={
+                  this.onUpdateProfileFilefromstudent
+                }
+                SubmitGeneralFile={this.props.SubmitGeneralFile}
+                deleteFileWarningModel={this.props.deleteFileWarningModel}
+              />
+            )}
+          </>
         );
       } else {
         return (

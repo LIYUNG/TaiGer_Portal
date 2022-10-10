@@ -3,6 +3,7 @@ import { Row, Col, Spinner, Table, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import DEMO from '../../store/constant';
 import StudentBaseDocumentsStatus from './StudentBaseDocumentsStatus';
+import EditFilesSubpage from './EditFilesSubpage';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -14,7 +15,7 @@ import {
   getStudents,
   downloadProfile
 } from '../../api';
-class AgentCenter extends React.Component {
+class BaseDocuments extends React.Component {
   state = {
     error: null,
     timeouterror: null,
@@ -362,6 +363,32 @@ class AgentCenter extends React.Component {
         acceptProfileFileModel={this.state.acceptProfileFileModel}
       />
     ));
+
+    const student_profile_student_view = this.state.students.map(
+      (student, i) => (
+        <EditFilesSubpage
+          key={i}
+          idx={i}
+          student={student}
+          accordionKeys={this.state.accordionKeys}
+          singleExpandtHandler={this.singleExpandtHandler}
+          role={this.props.user.role}
+          user={this.props.user}
+          documentslist2={this.props.documentslist2}
+          documentslist={this.props.documentslist}
+          onDownloadFilefromstudent={this.onDownloadFilefromstudent}
+          SubmitGeneralFile={this.SubmitGeneralFile}
+          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
+          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+          isLoaded={isLoaded}
+          deleteFileWarningModel={this.state.deleteFileWarningModel}
+          CommentModel={this.state.CommentModel}
+          rejectProfileFileModel={this.state.rejectProfileFileModel}
+          acceptProfileFileModel={this.state.acceptProfileFileModel}
+        />
+      )
+    );
     return (
       <Aux>
         <Row className="sticky-top">
@@ -379,31 +406,38 @@ class AgentCenter extends React.Component {
         </Row>
         <Row>
           <Col sm={12}>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Body>
-                <Table
-                  responsive
-                  hover
-                  className="my-0 mx-0"
-                //   variant="dark"
-                  text="light"
-                >
-                  <thead>
-                    <tr className="my-0 mx-0 text-light">
-                      <>
-                        <th style={style2}>First-, Last Name</th>
-                      </>
-                      {profile_list_keys.map((doc_name, index) => (
-                        <th key={index} style={style2}>
-                          {doc_name}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{student_profile}</tbody>
-                </Table>
-              </Card.Body>
-            </Card>
+            {this.props.user.role === 'Admin' ||
+            this.props.user.role === 'Agent' ||
+            this.props.user.role === 'Editor' ? (
+              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+                <Card.Body>
+                  <Table
+                    responsive
+                    hover
+                    className="my-0 mx-0"
+                    //   variant="dark"
+                    text="light"
+                  >
+                    <thead>
+                      <tr className="my-0 mx-0 text-light">
+                        <>
+                          <th style={style2}>First-, Last Name</th>
+                        </>
+                        {profile_list_keys.map((doc_name, index) => (
+                          <th key={index} style={style2}>
+                            {doc_name}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>{student_profile}</tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+            ) : (
+              <>{student_profile_student_view}</>
+            )}
+
             {!isLoaded && (
               <div style={style}>
                 <Spinner animation="border" role="status">
@@ -418,4 +452,4 @@ class AgentCenter extends React.Component {
   }
 }
 
-export default AgentCenter;
+export default BaseDocuments;

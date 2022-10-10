@@ -238,7 +238,6 @@ class ButtonSetRejected extends React.Component {
                   </Button>
                 </td>
                 <td></td>
-                <td></td>
               </>
             ) : (
               <>

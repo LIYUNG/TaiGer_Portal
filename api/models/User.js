@@ -283,7 +283,7 @@ const Student = User.discriminator(
           },
           updatedAt: Date
         },
-        uni_assist_instruction: {
+        uni_assist: {
           status: {
             type: String,
             enum: Object.values(CheckListStatus),

@@ -426,7 +426,13 @@ class StudentDashboard extends React.Component {
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0">
-                  My Uploaded Documents
+                  <Link
+                    to={'/student-database/' + student._id + '/profile'}
+                    style={{ textDecoration: 'none' }}
+                    className="text-info"
+                  >
+                    My Uploaded Documents
+                  </Link>
                 </Card.Title>
               </Card.Header>
               <Table

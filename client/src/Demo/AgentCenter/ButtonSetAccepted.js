@@ -102,13 +102,13 @@ class ButtonSetAccepted extends React.Component {
     var ButttonRow_Accepted;
     ButttonRow_Accepted = (
       <tr>
-        <th>
+        <td>
           <IoCheckmarkCircle
             size={24}
             color="limegreen"
             title="Valid Document"
           />
-        </th>
+        </td>
         <td>
           {this.props.docName}
           {' - '}
@@ -179,30 +179,7 @@ class ButtonSetAccepted extends React.Component {
                   </Col>
                 </td>
                 <td></td>
-                <td>
-                  {/* <Col md>
-                    <Form
-                      onSubmit={(e) =>
-                        this.onUpdateProfileDocStatus(
-                          e,
-                          this.props.k,
-                          this.props.student_id,
-                          "accepted"
-                        )
-                      }
-                    >
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button
-                          size="sm"
-                          type="submit"
-                          disabled={!this.state.isLoaded}
-                        >
-                          Accept
-                        </Button>
-                      </Form.Group>
-                    </Form>
-                  </Col> */}
-                </td>
+                <td></td>
                 <td>
                   <Col>
                     <Form

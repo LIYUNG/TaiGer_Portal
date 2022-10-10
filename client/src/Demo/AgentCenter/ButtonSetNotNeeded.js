@@ -49,9 +49,9 @@ class ButtonSetNotNeeded extends React.Component {
     var ButttonRow_NotNeeded;
     ButttonRow_NotNeeded = (
       <tr>
-        <th>
+        <td>
           <BsDash size={24} color="lightgray" title="Not needed" />
-        </th>
+        </td>
         <td>
           {this.props.docName}
           {' - '}

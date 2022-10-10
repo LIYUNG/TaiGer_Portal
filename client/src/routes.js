@@ -32,6 +32,9 @@ const ApplicantsOverview = React.lazy(() =>
 const BaseDocuments = React.lazy(() =>
   import('./Demo/AgentCenter/BaseDocuments')
 );
+const Checklist = React.lazy(() =>
+  import('./Demo/CheckList/index')
+);
 const CVMLRLCenter = React.lazy(() =>
   import("./Demo/CVMLRLCenter/CVMLRLCenter")
 );
@@ -277,6 +280,12 @@ const routes = [
     exact: true,
     name: 'Applicants Overview',
     component: ApplicantsOverview
+  },
+  {
+    path: '/checklist',
+    exact: true,
+    name: 'Check List',
+    component: Checklist
   },
   {
     path: '/base-documents',

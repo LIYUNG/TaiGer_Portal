@@ -61,7 +61,7 @@ export const check_all_applications_submitted = (keys, student) => {
     return false;
   }
   for (let i = 0; i < keys.length; i += 1) {
-    for (let j = 0; j < student.applications.length; j += 1)
+    for (let j = 0; j < student.applications.length; j += 1) {
       if (
         !student.applications[j].closed ||
         (student.applications[j].closed !== undefined &&
@@ -69,8 +69,22 @@ export const check_all_applications_submitted = (keys, student) => {
       ) {
         return false;
       }
+    }
   }
   return true;
+};
+
+export const check_uni_assist_needed = (student) => {
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      student.applications[j].programId.uni_assist &&
+      (student.applications[j].programId.uni_assist.includes('VPD') ||
+        student.applications[j].programId.uni_assist.includes('Full'))
+    ) {
+      return true;
+    }
+  }
+  return false;
 };
 
 export const check_generaldocs = (student) => {

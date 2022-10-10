@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AiFillCheckCircle, AiFillQuestionCircle } from 'react-icons/ai';
+import { AiFillQuestionCircle } from 'react-icons/ai';
+import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
@@ -8,7 +9,7 @@ import {
   check_survey_filled,
   check_all_applications_decided,
   check_all_applications_submitted,
-  checkSurveyCompleted
+  check_uni_assist_needed
 } from '../../../Utils/checking-functions';
 
 class AgentReviewing extends React.Component {
@@ -60,29 +61,7 @@ class AgentReviewing extends React.Component {
       this.props.student
     );
 
-    var no_decided_program =
-      this.props.student.applications &&
-      this.props.student.applications.map((application, i) => {
-        if (
-          !application.decided ||
-          (application.decided !== undefined && application.decided === false)
-        ) {
-          return (
-            <Link
-              to={'/student-applications/' + this.props.student._id}
-              className="text-info"
-              key={i}
-              style={{ textDecoration: 'none' }}
-            >
-              <p className="text-danger">
-                {application.programId.school}
-                {' - '}
-                {application.programId.program_name}
-              </p>
-            </Link>
-          );
-        }
-      });
+    var is_uni_assist_needed = check_uni_assist_needed(this.props.student);
 
     return (
       <>
@@ -168,6 +147,29 @@ class AgentReviewing extends React.Component {
           ) : (
             <></>
           )}
+          <td>
+            {is_uni_assist_needed ? (
+              <p className="text-warning">
+                <BsFillExclamationCircleFill
+                  size={24}
+                  color="red"
+                  title="complete"
+                  className="mx-2"
+                />
+                needed
+              </p>
+            ) : (
+              <p className="text-warning">
+                <BsDash
+                  size={24}
+                  color="lightgray"
+                  title="incomplete"
+                  className="mx-2"
+                />
+                Not needed
+              </p>
+            )}
+          </td>
           <td>
             <Link
               to={'/student-applications/' + this.props.student._id}

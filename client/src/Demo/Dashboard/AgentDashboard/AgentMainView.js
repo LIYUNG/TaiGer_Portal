@@ -132,6 +132,7 @@ class AgentMainView extends React.Component {
                     <th>First-/Lastname</th>
                     <th>Survey</th>
                     <th>Base Documents</th>
+                    <th>Uni-Assist</th>
                     <th>Program Selection</th>
                     <th>Applications</th>
                   </tr>

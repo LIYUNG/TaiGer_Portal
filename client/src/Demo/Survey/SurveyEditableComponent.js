@@ -15,7 +15,6 @@ class SurveyEditableComponent extends React.Component {
     unauthorizederror: null,
     role: '',
     isLoaded: this.props.isLoaded,
-    success: false,
     academic_background: this.props.academic_background,
     updateconfirmed: false,
     changed_academic: false,

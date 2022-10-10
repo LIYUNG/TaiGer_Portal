@@ -13,7 +13,8 @@ import { BsDash } from 'react-icons/bs';
 import TabStudDocsDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard';
 // import Card from "../../App/components/MainCard";
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
-
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 import {
   getAllStudents,
   getArchivStudents,
@@ -29,6 +30,8 @@ import {
 class Dashboard extends React.Component {
   state = {
     error: null,
+    timeouterror: null,
+    unauthorizederror: null,
     modalShow: false,
     agent_list: [],
     editor_list: [],
@@ -47,7 +50,11 @@ class Dashboard extends React.Component {
         if (success) {
           this.setState({ isLoaded: true, students: data, success: success });
         } else {
-          alert(resp.data.message);
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -67,7 +74,11 @@ class Dashboard extends React.Component {
           if (success) {
             this.setState({ isLoaded: true, students: data, success: success });
           } else {
-            alert(resp.data.message);
+            if (resp.status == 401) {
+              this.setState({ isLoaded: true, timeouterror: true });
+            } else if (resp.status == 403) {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            }
           }
         },
         (error) => {
@@ -84,6 +95,7 @@ class Dashboard extends React.Component {
     e.preventDefault();
     downloadProfile(category, id).then(
       (resp) => {
+        // TODO: error? success?
         const actualFileName =
           resp.headers['content-disposition'].split('"')[1];
         const { data: blob } = resp;
@@ -121,113 +133,22 @@ class Dashboard extends React.Component {
     );
   }
 
-  onDeleteFilefromstudent = (e, category, id) => {
-    e.preventDefault();
-    deleteFile(category, id).then(
-      (resp) => {},
-      (error) => {}
-    );
-  };
-
-  editAgent = (student) => {
-    getAgents().then(
-      (resp) => {
-        const { data: agents } = resp.data; //get all agent
-        const { agents: student_agents } = student;
-        const updateAgentList = agents.reduce(
-          (prev, { _id }) => ({
-            ...prev,
-            [_id]: student_agents ? student_agents.indexOf(_id) > -1 : false
-          }),
-          {}
-        );
-
-        this.setState({ agent_list: agents, updateAgentList });
-      },
-      (error) => {}
-    );
-  };
-
-  editEditor = (student) => {
-    getEditors().then(
-      (resp) => {
-        const { data: editors } = resp.data;
-        const { editors: student_editors } = student;
-        const updateEditorList = editors.reduce(
-          (prev, { _id }) => ({
-            ...prev,
-            [_id]: student_editors ? student_editors.indexOf(_id) > -1 : false
-          }),
-          {}
-        );
-
-        this.setState({ editor_list: editors, updateEditorList });
-      },
-      (error) => {}
-    );
-  };
-
-  handleChangeAgentlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateAgentList: {
-        ...prevState.updateAgentList,
-        [value]: checked
-      }
-    }));
-  };
-
-  handleChangeEditorlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateEditorList: {
-        ...prevState.updateEditorList,
-        [value]: checked
-      }
-    }));
-  };
-
-  submitUpdateAgentlist = (updateAgentList, student_id) => {
-    this.UpdateAgentlist(updateAgentList, student_id);
-  };
-
-  submitUpdateEditorlist = (updateEditorList, student_id) => {
-    this.UpdateEditorlist(updateEditorList, student_id);
-  };
-
-  UpdateAgentlist = (updateAgentList, student_id) => {
-    updateAgents(updateAgentList, student_id).then(
-      (resp) => {
-        this.setState({
-          updateAgentList: [],
-          isLoaded: false
-        });
-      },
-      (error) => {
-        alert('UpdateAgentlist is failed.');
-      }
-    );
-  };
-
-  UpdateEditorlist = (updateEditorList, student_id) => {
-    updateEditors(updateEditorList, student_id).then(
-      (resp) => {
-        this.setState({
-          updateEditorList: [],
-          isLoaded: false
-        });
-      },
-      (error) => {
-        alert('UpdateEditorlist is failed.');
-      }
-    );
-  };
-
   updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
-        this.setState({ isLoaded: true, students: data, success: success });
+        if (success) {
+          this.setState({ isLoaded: true, students: data, success: success });
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
       },
       (error) => {
         this.setState({
@@ -239,15 +160,23 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { error, isLoaded } = this.state;
-   
-    if (error) {
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
         </div>
       );
     }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
     const style = {
       position: 'fixed',
       top: '40%',
@@ -276,8 +205,6 @@ class Dashboard extends React.Component {
                     <TabStudDocsDashboard
                       role={this.props.user.role}
                       students={this.state.students}
-                      editAgent={this.state.editAgent}
-                      editEditor={this.state.editEditor}
                       agent_list={this.state.agent_list}
                       editor_list={this.state.editor_list}
                       updateStudentArchivStatus={this.updateStudentArchivStatus}

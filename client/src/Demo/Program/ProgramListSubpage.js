@@ -1,22 +1,37 @@
 import React from 'react';
 import { Form, Modal } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
-
+import { Button, Spinner } from 'react-bootstrap';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getStudents } from '../../api';
 
 class ProgramListSubpage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      students: [],
+      isLoaded: false,
+      timeouterror: null,
+      unauthorizederror: null
     };
   }
 
   componentDidMount() {
     getStudents().then(
       (resp) => {
-        const { data: students, success } = resp.data;
-        this.setState({ data: students, success });
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({ isLoaded: true, students: data, success });
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
       },
       (error) => {
         this.setState({
@@ -28,7 +43,39 @@ class ProgramListSubpage extends React.Component {
   }
 
   render() {
-    // const school_program = this.props.uni_name ;
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
+    const style = {
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    };
+
+    if (!isLoaded && !this.state.students) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
     let program_names = [];
     for (let i = 0; i < this.props.uni_name.length; i++) {
       program_names.push(
@@ -57,7 +104,7 @@ class ProgramListSubpage extends React.Component {
           <h4>Student:</h4>
           <table>
             <tbody>
-              {this.state.data.map((student) => (
+              {this.state.students.map((student) => (
                 <tr key={student._id}>
                   <th>
                     <div>

@@ -4,6 +4,8 @@ import { Spinner, Button } from 'react-bootstrap';
 import { getProgram } from '../../api';
 import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 import { updateProgram } from '../../api';
 class SingleProgram extends React.Component {
   state = {
@@ -11,6 +13,8 @@ class SingleProgram extends React.Component {
     program: null,
     success: false,
     error: null,
+    unauthorizederror: null,
+    unauthorizederror: null,
     isEdit: false
   };
   componentDidMount() {
@@ -24,7 +28,14 @@ class SingleProgram extends React.Component {
             success: success
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -48,7 +59,14 @@ class SingleProgram extends React.Component {
             isEdit: !this.state.isEdit
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -64,12 +82,20 @@ class SingleProgram extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
   render() {
-    const { isEdit, error, isLoaded, program } = this.state;
+    const { unauthorizederror, timeouterror, error, program, isLoaded } =
+      this.state;
 
-    if (error) {
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }
@@ -93,7 +119,6 @@ class SingleProgram extends React.Component {
         <>
           <SingleProgramEdit
             program={program}
-            error={error}
             isLoaded={isLoaded}
             handleSubmit_Program={this.handleSubmit_Program}
             handleClick={this.handleClick}
@@ -105,7 +130,6 @@ class SingleProgram extends React.Component {
         <>
           <SingleProgramView
             program={program}
-            error={error}
             isLoaded={isLoaded}
             role={this.props.user.role}
           />

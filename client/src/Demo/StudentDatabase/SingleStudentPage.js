@@ -69,8 +69,8 @@ class SingleStudentPage extends React.Component {
 
   onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
-      (res) => {
-        const { data, success } = res.data;
+      (resp) => {
+        const { data, success } = resp.data;
         if (success) {
           //Start the timer
           this.setState((state) => ({
@@ -80,11 +80,11 @@ class SingleStudentPage extends React.Component {
             isLoaded: true
           }));
         } else {
-          alert(res.data.message);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true
-          }));
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -111,8 +111,8 @@ class SingleStudentPage extends React.Component {
     //   isLoaded: false,
     // }));
     uploadforstudent(category, student_id, formData).then(
-      (res) => {
-        const { data, success } = res.data;
+      (resp) => {
+        const { data, success } = resp.data;
         if (success) {
           //Start the timer
           this.setState((state) => ({
@@ -124,11 +124,11 @@ class SingleStudentPage extends React.Component {
             file: ''
           }));
         } else {
-          alert(res.data.message);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true
-          }));
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {
@@ -143,6 +143,7 @@ class SingleStudentPage extends React.Component {
     e.preventDefault();
     downloadProfile(category, id).then(
       (resp) => {
+        // TODO: timeout? success?
         const actualFileName =
           resp.headers['content-disposition'].split('"')[1];
         const { data: blob } = resp;
@@ -185,8 +186,8 @@ class SingleStudentPage extends React.Component {
     var student = { ...this.state.student };
     var idx = student.profile.findIndex((doc) => doc.name === category);
     deleteFile(category, student_id).then(
-      (res) => {
-        const { data, success } = res.data;
+      (resp) => {
+        const { data, success } = resp.data;
         student.profile[idx] = data;
         // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
         if (success) {
@@ -200,11 +201,11 @@ class SingleStudentPage extends React.Component {
             deleteFileWarningModel: false
           }));
         } else {
-          alert(res.data.message);
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true
-          }));
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
         }
       },
       (error) => {

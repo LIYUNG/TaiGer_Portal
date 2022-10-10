@@ -11,9 +11,7 @@ import {
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
-import {
-  AiFillDelete
-} from 'react-icons/ai';
+import { AiFillDelete } from 'react-icons/ai';
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -115,11 +113,14 @@ class StudentApplicationsTableTemplate extends React.Component {
             modalUpdatedApplication: true
           });
         } else {
-          alert(resp.data.message);
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {

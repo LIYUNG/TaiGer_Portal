@@ -4,10 +4,14 @@ import { Spinner } from 'react-bootstrap';
 import StudentApplicationsTableTemplate from './StudentApplicationsTableTemplate';
 // import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getStudent } from '../../api';
 
 class StudentApplicationsIndividual extends React.Component {
   state = {
+    timeouterror: null,
+    unauthorizederror: null,
     isLoaded: false,
     student: null,
     success: false,
@@ -24,7 +28,14 @@ class StudentApplicationsIndividual extends React.Component {
             success: success
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -37,11 +48,19 @@ class StudentApplicationsIndividual extends React.Component {
   }
 
   render() {
-    const { error, isLoaded } = this.state;
-    if (error) {
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
       return (
         <div>
-          Error: your session is timeout! Please refresh the page and Login
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
         </div>
       );
     }

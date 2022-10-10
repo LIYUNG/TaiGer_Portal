@@ -86,14 +86,14 @@ class CVMLRLOverview extends React.Component {
             SetAsFinalFileModel: false
           }));
         } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            docName: '',
-            isLoaded: true,
-            success: success,
-            SetAsFinalFileModel: false
-          }));
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {

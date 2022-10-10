@@ -1,13 +1,17 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import User from './User';
 import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
 import { deleteUser, updateUser, changeUserRole } from '../../api';
 
 class Userslist extends React.Component {
   state = {
     modalShow: false,
+    timeouterror: null,
+    unauthorizederror: null,
     firstname: '',
     lastname: '',
     selected_user_role: '',
@@ -73,7 +77,14 @@ class Userslist extends React.Component {
             data: array
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -105,7 +116,14 @@ class Userslist extends React.Component {
             data: updated_user
           });
         } else {
-          alert(resp.data.message);
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -129,6 +147,23 @@ class Userslist extends React.Component {
   };
 
   render() {
+    const { unauthorizederror, timeouterror } = this.state;
+
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
     if (this.state.success) {
       const headers = (
         <tr>

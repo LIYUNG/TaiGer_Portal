@@ -201,17 +201,14 @@ class EditorDocsProgress extends React.Component {
             SetAsFinalFileModel: false
           }));
         } else {
-          alert(resp.data.message);
-          this.setState((state) => ({
-            ...state,
-            studentId: '',
-            applicationId: '',
-            docName: '',
-            whoupdate: '',
-            isLoaded: true,
-            success: success,
-            SetAsFinalFileModel: false
-          }));
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
       },
       (error) => {
@@ -428,8 +425,7 @@ class EditorDocsProgress extends React.Component {
                       ) === -1) ||
                       (application.decided !== undefined &&
                         application.decided === 'O' &&
-                        application.programId.essay_required !==
-                          undefined &&
+                        application.programId.essay_required !== undefined &&
                         application.programId.essay_required === 'yes' &&
                         application.doc_modification_thread.findIndex(
                           (thread) => thread.doc_thread_id.file_type === 'Essay'
@@ -438,8 +434,7 @@ class EditorDocsProgress extends React.Component {
                         <Card.Body>
                           The followings application documents are not started
                           yet:{' '}
-                          {application.programId.ml_required !==
-                            undefined &&
+                          {application.programId.ml_required !== undefined &&
                             application.programId.ml_required === 'yes' &&
                             application.doc_modification_thread.findIndex(
                               (thread) =>
@@ -450,8 +445,7 @@ class EditorDocsProgress extends React.Component {
                                 <b>ML</b>
                               </li>
                             )}
-                          {application.programId.essay_required !==
-                            undefined &&
+                          {application.programId.essay_required !== undefined &&
                             application.programId.essay_required === 'yes' &&
                             application.doc_modification_thread.findIndex(
                               (thread) =>
@@ -483,8 +477,7 @@ class EditorDocsProgress extends React.Component {
                             </Link>
                           </Col>
                           <Col md={2}>
-                            {application.programId.ml_required !==
-                              undefined &&
+                            {application.programId.ml_required !== undefined &&
                             application.programId.ml_required === 'yes' ? (
                               <>
                                 <Button

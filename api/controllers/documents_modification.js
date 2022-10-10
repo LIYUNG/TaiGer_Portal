@@ -643,6 +643,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     }
 
     application_thread.isFinalVersion = !application_thread.isFinalVersion;
+    application_thread.updatedAt = new Date();
     document_thread.isFinalVersion = application_thread.isFinalVersion;
     await document_thread.save();
     await student.save();
@@ -703,6 +704,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       throw new ErrorResponse(400, 'thread not found');
     }
     generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
+    generaldocs_thread.updatedAt = new Date();
     document_thread.isFinalVersion = generaldocs_thread.isFinalVersion;
     await document_thread.save();
     await student.save();

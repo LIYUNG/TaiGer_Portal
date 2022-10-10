@@ -132,14 +132,14 @@ class CVMLRLProgress extends React.Component {
                 size={24}
                 style={{ cursor: 'pointer' }}
                 title="Set as final version"
-                // onClick={() =>
-                //   this.handleAsFinalFileThread(
-                //     generaldocs_thread.doc_thread_id._id,
-                //     this.props.student._id,
-                //     null,
-                //     generaldocs_thread.doc_thread_id.file_type
-                //   )
-                // }
+                onClick={() =>
+                  this.handleAsFinalFileThread(
+                    generaldocs_thread.doc_thread_id._id,
+                    this.props.student._id,
+                    null,
+                    generaldocs_thread.doc_thread_id.file_type
+                  )
+                }
               />
               // </Button>
             )}
@@ -162,7 +162,10 @@ class CVMLRLProgress extends React.Component {
             {', '}
             {new Date(generaldocs_thread.updatedAt).toLocaleTimeString()}
           </td>
-          <td>{getNumberOfDays(generaldocs_thread.updatedAt, today)}</td>
+          <td>
+            {!generaldocs_thread.isFinalVersion &&
+              getNumberOfDays(generaldocs_thread.updatedAt, today)}
+          </td>
           <td></td>
           <td></td>
         </tr>
@@ -251,7 +254,10 @@ class CVMLRLProgress extends React.Component {
               {', '}
               {new Date(doc_thread.updatedAt).toLocaleTimeString()}
             </td>
-            <td>{getNumberOfDays(doc_thread.updatedAt, today)}</td>
+            <td>
+              {!doc_thread.isFinalVersion &&
+                getNumberOfDays(doc_thread.updatedAt, today)}
+            </td>
             <td>
               {
                 this.props.student.academic_background.university

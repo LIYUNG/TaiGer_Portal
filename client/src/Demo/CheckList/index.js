@@ -146,6 +146,9 @@ class CheckList extends React.Component {
         </Card.Header>
         <CheckListItems
           idx={i}
+          name={this.state.checklists[item]} // TODO
+          item={item} // TODO
+          message={this.state.checklists[item]} // TODO
           accordionKeys={this.state.accordionKeys}
           singleExpandtHandler={this.singleExpandtHandler}
           role={this.props.user.role}

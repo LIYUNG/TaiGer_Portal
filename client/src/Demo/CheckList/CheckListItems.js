@@ -2,7 +2,7 @@ import React from 'react';
 
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { Link } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -18,14 +18,7 @@ import {
   Modal,
   Spinner
 } from 'react-bootstrap';
-import {
-  deleteGenralFileThread,
-  deleteProgramSpecificFileThread,
-  SetFileAsFinal,
-  initGeneralMessageThread,
-  initApplicationMessageThread
-  // SubmitMessageWithAttachment
-} from '../../api';
+import { updateChecklistDocument } from '../../api';
 import {
   // AiOutlineDownload,
   // AiOutlineDelete,
@@ -44,10 +37,12 @@ class CheckListItems extends React.Component {
     SetAsFinalFileModel: false,
     Requirements_Modal: false,
     studentId: '',
+    in_edit_mode: false,
     student_id: '',
     doc_thread_id: '',
     applicationId: '',
     editorState: null,
+    ConvertedContent: '',
     docName: '',
     whoupdate: '',
     isLoaded: false,
@@ -57,10 +52,66 @@ class CheckListItems extends React.Component {
   };
   componentDidMount() {
     // console.log(this.props.student);
+    var initialEditorState = null;
+    if (this.props.message) {
+      const rawContentFromStore = convertFromRaw(
+        JSON.parse(this.props.message.message)
+      );
+      initialEditorState = EditorState.createWithContent(rawContentFromStore);
+    } else {
+      initialEditorState = EditorState.createEmpty();
+    }
     this.setState((state) => ({
+      ...state,
+      editorState: initialEditorState,
+      ConvertedContent: initialEditorState,
       isLoaded: true
     }));
+
+    // this.setState((state) => ({
+    //   isLoaded: true
+    // }));
   }
+  handleClickEdit = (e) => {
+    e.preventDefault();
+    this.setState((state) => ({ ...state, in_edit_mode: true }));
+  };
+
+  handleClickSave = (e, editorState) => {
+    e.preventDefault();
+    const message = JSON.stringify(
+      convertToRaw(editorState.getCurrentContent())
+    );
+    // TODO: API to save in database
+    const msg = { prop: this.props.item, text: message };
+    updateChecklistDocument(msg).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        if (success) {
+          this.setState({
+            success,
+            file: null,
+            editorState: null,
+            thread: data,
+            isLoaded: true
+          });
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          } else if (resp.status === 400) {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({ error });
+      }
+    );
+    this.setState((state) => ({ ...state, in_edit_mode: false }));
+  };
+
   handleEditorChange = (newstate) => {
     this.setState((state) => ({ ...state, editorState: newstate }));
   };
@@ -91,142 +142,6 @@ class CheckListItems extends React.Component {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
   };
 
-  ConfirmDeleteDiscussionThreadHandler = () => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false //false to reload everything
-    }));
-    if (this.state.program_id == null) {
-      deleteGenralFileThread(
-        this.state.doc_thread_id,
-        this.state.student_id
-      ).then(
-        (resp) => {
-          console.log(resp.data.data);
-          const { data, success } = resp.data;
-          if (success) {
-            this.setState((state) => ({
-              ...state,
-              studentId: '',
-              program_id: '',
-              docName: '',
-              whoupdate: '',
-              isLoaded: true,
-              student: data,
-              success: success,
-              deleteFileWarningModel: false
-            }));
-          } else {
-            alert(resp.data.message);
-            this.setState((state) => ({
-              ...state,
-              studentId: '',
-              program_id: '',
-              docName: '',
-              whoupdate: '',
-              isLoaded: true,
-              success: success,
-              deleteFileWarningModel: false
-            }));
-          }
-        },
-        (error) => {
-          this.setState({ error });
-        }
-      );
-    } else {
-      deleteProgramSpecificFileThread(
-        this.state.doc_thread_id,
-        this.state.program_id,
-        this.state.student_id
-      ).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          if (success) {
-            this.setState((state) => ({
-              ...state,
-              studentId: '',
-              program_id: '',
-              docName: '',
-              whoupdate: '',
-              isLoaded: true,
-              student: data,
-              success: success,
-              deleteFileWarningModel: false
-            }));
-          } else {
-            alert(resp.data.message);
-            this.setState((state) => ({
-              ...state,
-              studentId: '',
-              program_id: '',
-              docName: '',
-              whoupdate: '',
-              isLoaded: true,
-              success: success,
-              deleteFileWarningModel: false
-            }));
-          }
-        },
-        (error) => {
-          this.setState({ error });
-        }
-      );
-    }
-  };
-
-  ConfirmSetAsFinalFileHandler = () => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false // false to reload everything
-    }));
-    SetFileAsFinal(
-      this.state.doc_thread_id,
-      this.state.student_id,
-      this.state.program_id
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            studentId: '',
-            applicationId: '',
-            docName: '',
-            whoupdate: '',
-            isLoaded: true,
-            student: data,
-            success: success,
-            SetAsFinalFileModel: false
-          }));
-        } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
-        }
-      },
-      (error) => {
-        this.setState({ error });
-      }
-    );
-  };
-
-  handleAsFinalFile = (doc_thread_id, student_id, program_id, docName) => {
-    this.setState((state) => ({
-      ...state,
-      doc_thread_id,
-      student_id,
-      program_id,
-      docName,
-      SetAsFinalFileModel: true
-    }));
-  };
-
   onDeleteFileThread = (doc_thread_id, application, studentId) => {
     this.setState((state) => ({
       ...state,
@@ -235,85 +150,6 @@ class CheckListItems extends React.Component {
       student_id: studentId,
       deleteFileWarningModel: true
     }));
-  };
-
-  initProgramSpecificFileThread = (
-    e,
-    studentId,
-    applicationId,
-    document_catgory,
-    thread_name
-  ) => {
-    if ('1' === '') {
-      e.preventDefault();
-      alert('Please select file group');
-    } else {
-      e.preventDefault();
-      initApplicationMessageThread(studentId, applicationId, document_catgory)
-        .then((res) => {
-          const { data, success } = res.data;
-          if (success) {
-            this.setState({
-              isLoaded: true, //false to reload everything
-              student: data,
-              success: success,
-              file: ''
-            });
-          } else {
-            if (res.status === 400) {
-              this.setState({
-                isLoaded: true,
-                docName: thread_name,
-                isThreadExisted: true
-              });
-            } else if (res.status === 401) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (res.status === 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  initGeneralFileThread = (e, studentId, document_catgory, thread_name) => {
-    if ('1' === '') {
-      e.preventDefault();
-      alert('Please select file group');
-    } else {
-      e.preventDefault();
-      initGeneralMessageThread(studentId, document_catgory)
-        .then((res) => {
-          const { data, success } = res.data;
-          if (success) {
-            this.setState({
-              isLoaded: true, //false to reload everything
-              student: data,
-              success: success,
-              file: ''
-            });
-          } else {
-            if (res.status === 400) {
-              this.setState({
-                isLoaded: true,
-                docName: thread_name,
-                isThreadExisted: true
-              });
-            } else if (res.status === 401) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (res.status === 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
-            // alert(res.data.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
   };
 
   render() {
@@ -356,59 +192,77 @@ class CheckListItems extends React.Component {
     }
     return (
       <>
-        {/* <Collapse
+        <Collapse
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}
         >
-          <div id="accordion1"> */}
-        {/* <Card.Body> */}
-        <Row style={{ textDecoration: 'none' }}>
-          <Col className="my-0 mx-0">
-            <Editor
-              // toolbarOnFocus
-              // toolbarHidden
-              spellCheck={true}
-              // onFocus={onClick={this.handle}}
-              placeholder={'Write comments'}
-              editorState={this.state.editorState}
-              onEditorStateChange={this.handleEditorChange}
-              wrapperClassName="wrapper-class"
-              editorClassName="editor-class"
-              toolbarClassName="toolbar-class"
-              toolbar={{
-                // options: [
-                //   'inline',
-                //   'fontSize',
-                //   'fontFamily',
-                //   'list',
-                //   'textAlign',
-                //   // "colorPicker",
-                //   'link',
-                //   'image'
-                //   // "file",
-                // ],
-                link: {
-                  defaultTargetOption: '_blank',
-                  popupClassName: 'mail-editor-link'
-                },
-                image: {
-                  urlEnabled: true,
-                  uploadEnabled: true,
-                  uploadCallback: this.uploadImageCallBack,
-                  alignmentEnabled: true,
-                  defaultSize: {
-                    height: 'auto',
-                    width: 'auto'
-                  },
-                  inputAccept:
-                    'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
-                }
-              }}
-            />
-          </Col>
-        </Row>
-        {/* </Card.Body> */}
-        {/* </div>
-        </Collapse>{' '} */}
+          <div id="accordion1">
+            {this.state.in_edit_mode ? (
+              <Row style={{ textDecoration: 'none' }}>
+                <Col className="my-0 mx-0">
+                  <Editor
+                    // toolbarOnFocus
+                    // toolbarHidden
+                    spellCheck={true}
+                    // onFocus={onClick={this.handle}}
+                    placeholder={'Write comments'}
+                    editorState={this.state.editorState}
+                    onEditorStateChange={this.handleEditorChange}
+                    wrapperClassName="wrapper-class"
+                    editorClassName="editor-class"
+                    toolbarClassName="toolbar-class"
+                    toolbar={{
+                      // options: [
+                      //   'inline',
+                      //   'fontSize',
+                      //   'fontFamily',
+                      //   'list',
+                      //   'textAlign',
+                      //   // "colorPicker",
+                      //   'link',
+                      //   'image'
+                      //   // "file",
+                      // ],
+                      link: {
+                        defaultTargetOption: '_blank',
+                        popupClassName: 'mail-editor-link'
+                      },
+                      image: {
+                        urlEnabled: true,
+                        uploadEnabled: true,
+                        uploadCallback: this.uploadImageCallBack,
+                        alignmentEnabled: true,
+                        defaultSize: {
+                          height: 'auto',
+                          width: 'auto'
+                        },
+                        inputAccept:
+                          'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
+                      }
+                    }}
+                  />
+                  <Button
+                    onClick={(e) =>
+                      this.handleClickSave(e, this.state.editorState)
+                    }
+                  >
+                    Save
+                  </Button>
+                </Col>
+              </Row>
+            ) : (
+              <Card.Body>
+                <Editor
+                  spellCheck={true}
+                  readOnly={true}
+                  toolbarHidden={true}
+                  editorState={this.state.editorState}
+                  onEditorStateChange={this.handleEditorChange}
+                />
+                <Button onClick={(e) => this.handleClickEdit(e)}>Edit</Button>
+              </Card.Body>
+            )}
+          </div>
+        </Collapse>{' '}
         {/* {!isLoaded && (
           <div style={style}>
             <Spinner animation="border" role="status">
@@ -416,70 +270,6 @@ class CheckListItems extends React.Component {
             </Spinner>
           </div>
         )}
-        <Modal
-          show={this.state.deleteFileWarningModel}
-          onHide={this.closeWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to delete {this.state.applicationId}?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded}
-              onClick={this.ConfirmDeleteDiscussionThreadHandler}
-            >
-              Yes
-            </Button>
-
-            <Button onClick={this.closeWarningWindow}>No</Button>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.SetAsFinalFileModel}
-          onHide={this.closeSetAsFinalFileModelWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to set {this.state.docName} as final for student?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded}
-              onClick={this.ConfirmSetAsFinalFileHandler}
-            >
-              Yes
-            </Button>
-
-            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Footer>
-        </Modal>
         <Modal
           show={this.state.Requirements_Modal}
           onHide={this.close_Requirements_ModalWindow}

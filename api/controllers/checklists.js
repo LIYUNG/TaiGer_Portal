@@ -18,11 +18,19 @@ const getChecklists = asyncHandler(async (req, res) => {
 });
 
 const createChecklists = asyncHandler(async (req, res) => {
-  const { checklist } = req.body;
-  const checklists = await Checklist.find({ name: checklist.props });
-  const fields = _.omit(req.body, '_id');
-  const newDoc = await Checklist.create(fields);
-  return res.send({ success: true, data: newDoc });
+  const { msg } = req.body;
+  const item = await Checklist.findOne({ prop: msg.prop });
+  if (!item) {
+    // TODO create
+    const fields = _.omit(req.body, '_id');
+    const newDoc = await Checklist.create(fields);
+    return res.send({ success: true, data: newDoc });
+  }
+
+  // TODO udpate
+  await Checklist.findOneAndUpdate({ prop: msg.prop }, msg, { new: true });
+  const updated_doc = await Checklist.findOne({ prop: msg.prop });
+  return res.send({ success: true, data: updated_doc });
 });
 
 const updateChecklist = asyncHandler(async (req, res) => {

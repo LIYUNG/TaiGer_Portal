@@ -113,6 +113,9 @@ export const UpdateStudentApplications = (studentId, applications) =>
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);
 
+export const updateChecklistDocument = (msg) =>
+  request.post(`/api/checklists`, { msg });
+
 export const deleteProgramSpecificFileThread = (
   documentsthreadId,
   programId,

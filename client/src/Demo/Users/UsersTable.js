@@ -122,9 +122,11 @@ class UsersTable extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card bg={'primary'} text='light'>
+            <Card bg={'primary'} text="light">
               <Card.Header>
-                <Card.Title>Users List</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Users List
+                </Card.Title>
               </Card.Header>
               <UsersList
                 success={this.state.success}

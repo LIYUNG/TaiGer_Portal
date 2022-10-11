@@ -130,10 +130,8 @@ class ApplicantSOverview extends React.Component {
           <Col>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title>
-                  <Row>
-                    <Col>Students Applications Overview</Col>
-                  </Row>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Students Applications Overview
                 </Card.Title>
               </Card.Header>
             </Card>

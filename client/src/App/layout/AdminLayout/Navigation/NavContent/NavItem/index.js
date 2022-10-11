@@ -16,7 +16,7 @@ class NavItem extends Component {
         itemTitle === 'Academic Survey' ||
         itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
-        itemTitle === 'Check List' ||
+        // itemTitle === 'Check List' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||

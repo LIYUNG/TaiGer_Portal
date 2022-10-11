@@ -213,7 +213,7 @@ class DownloadPage extends React.Component {
             <Col>
               <Card className="my-0 mx-0" bg={'primary'} text={'white'}>
                 <Card.Header>
-                  <Card.Title className="my-0 mx-0">
+                  <Card.Title className="my-0 mx-0 text-light">
                     Download TaiGer Document Templates
                   </Card.Title>
                 </Card.Header>

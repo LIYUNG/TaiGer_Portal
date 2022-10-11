@@ -150,13 +150,17 @@ class SurveyEditableComponent extends React.Component {
           <Col>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title>Academic Background Surney</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Academic Background Surney
+                </Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="attended_university">
-                      <Form.Label>University</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        University
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="National Taiwan University"
@@ -174,7 +178,7 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="attended_university_program">
-                      <Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
                         Program (Put together if double major)
                       </Form.Label>
                       <Form.Control
@@ -197,7 +201,9 @@ class SurveyEditableComponent extends React.Component {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="isGraduated">
-                      <Form.Label>Already graduated?</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Already graduated?
+                      </Form.Label>
                       <Form.Control
                         as="select"
                         defaultValue="No"
@@ -217,7 +223,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="expected_grad_date">
-                      <Form.Label>Expected Graduate Year</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Expected Graduate Year
+                      </Form.Label>
                       <Form.Control
                         as="select"
                         value={
@@ -243,7 +251,9 @@ class SurveyEditableComponent extends React.Component {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="expected_application_date">
-                      <Form.Label>Expected Application Year</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Expected Application Year
+                      </Form.Label>
                       <Form.Control
                         as="select"
                         value={
@@ -267,7 +277,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="expected_application_semester">
-                      <Form.Label>Expected Application Semester</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Expected Application Semester
+                      </Form.Label>
                       <Form.Control
                         as="select"
                         value={
@@ -292,7 +304,7 @@ class SurveyEditableComponent extends React.Component {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="Highest_GPA_Uni">
-                      <Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
                         Highest Score GPA of your university program
                       </Form.Label>
                       <Form.Control
@@ -309,7 +321,7 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="Passing_GPA_Uni">
-                      <Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
                         Passing Score GPA of your university program
                       </Form.Label>
                       <Form.Control
@@ -329,7 +341,9 @@ class SurveyEditableComponent extends React.Component {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="My_GPA_Uni">
-                      <Form.Label>My GPA</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        My GPA
+                      </Form.Label>
                       <Form.Control
                         type="number"
                         placeholder="3.8"
@@ -343,7 +357,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="bayerische_formel">
-                      <Form.Label>Corresponding German GPA System:</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Corresponding German GPA System:
+                      </Form.Label>
                       <p className="text-info">
                         {this.state.academic_background.university &&
                         this.state.academic_background.university.My_GPA_Uni &&
@@ -367,7 +383,7 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                 </Row>
                 <Row>
-                  <Col md={10}>
+                  <Col md={10} className="my-0 mx-0 text-light">
                     <br />
                     {/* <br /> */}
                     Last update at:{' '}
@@ -399,13 +415,17 @@ class SurveyEditableComponent extends React.Component {
             </Card>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title>Languages</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Languages
+                </Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
                   <Col md={4}>
                     <Form.Group controlId="english_certificate">
-                      <Form.Label>English Certificate</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        English Certificate
+                      </Form.Label>
                       <Form.Control
                         as="select"
                         value={
@@ -426,7 +446,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={4}>
                     <Form.Group controlId="english_score">
-                      <Form.Label>English Test Score</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        English Test Score
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="(i.e. TOEFL: 94, or IELTS: 6.5) "
@@ -451,7 +473,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={4}>
                     <Form.Group controlId="english_test_date">
-                      <Form.Label>Expected Test Date</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Expected Test Date
+                      </Form.Label>
                       <Form.Control
                         type="date"
                         value={
@@ -478,7 +502,9 @@ class SurveyEditableComponent extends React.Component {
                 <Row>
                   <Col md={4}>
                     <Form.Group controlId="german_certificate">
-                      <Form.Label>German Certificate</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        German Certificate
+                      </Form.Label>
                       <Form.Control
                         as="select"
                         value={
@@ -511,7 +537,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={4}>
                     <Form.Group controlId="german_score">
-                      <Form.Label>German Test Score</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        German Test Score
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="(i.e. TestDaF: 4, or DSH: 2) "
@@ -536,7 +564,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={4}>
                     <Form.Group controlId="german_test_date">
-                      <Form.Label>Expected Test Date</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Expected Test Date
+                      </Form.Label>
                       <Form.Control
                         type="date"
                         value={
@@ -561,7 +591,7 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                 </Row>
                 <Row>
-                  <Col md={10}>
+                  <Col md={10} className="my-0 mx-0 text-light">
                     <br />
                     {/* <br /> */}
                     Last update at:{' '}
@@ -598,7 +628,9 @@ class SurveyEditableComponent extends React.Component {
           <Col>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title>Application Preference</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Application Preference
+                </Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
@@ -608,7 +640,9 @@ class SurveyEditableComponent extends React.Component {
                         controlId="form.firstname"
                         className="my-0 mx-0"
                       >
-                        <Form.Label>Target Application Fields</Form.Label>
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Target Application Fields
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           placeholder="M.Sc. Data Science, MBA, etc."
@@ -618,7 +652,9 @@ class SurveyEditableComponent extends React.Component {
                         controlId="exampleForm.ControlSelect1"
                         className="my-4 mx-0"
                       >
-                        <Form.Label>Universities outsid Germany?</Form.Label>
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Universities outsid Germany?
+                        </Form.Label>
                         <Form.Control as="select" defaultValue="No">
                           <option>Yes</option>
                           <option>No</option>
@@ -628,7 +664,7 @@ class SurveyEditableComponent extends React.Component {
                         controlId="exampleForm.ControlSelect1"
                         className="my-0 mx-0"
                       >
-                        <Form.Label>
+                        <Form.Label className="my-0 mx-0 text-light">
                           Considering Private Universities? (Tuition Fee)
                         </Form.Label>
                         <Form.Control as="select" defaultValue="No">

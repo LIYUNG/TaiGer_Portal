@@ -201,13 +201,17 @@ class Settings extends React.Component {
           <Col>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title>Personal Data</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Personal Data
+                </Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row>
                   <Col>
                     <Form.Group controlId="firstname">
-                      <Form.Label>Firstname</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Firstname
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="First name"
@@ -218,7 +222,9 @@ class Settings extends React.Component {
                     </Form.Group>
                     <br />
                     <Form.Group className="mb-2">
-                      <Form.Label>Email</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Email
+                      </Form.Label>
                       {/* <Form.Control
                         plaintext
                         readOnly
@@ -228,13 +234,15 @@ class Settings extends React.Component {
                     </Form.Group>
                     {/* <p>{this.props.user.email}</p> */}
                     {/* <Form.Group controlId="birthday">
-                      <Form.Label>Birthday Date</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">Birthday Date</Form.Label>
                       <Form.Control type="date" placeholder="Date of Birth" />
                     </Form.Group> */}
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="lastname">
-                      <Form.Label>Lastname</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Lastname
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="Last name"
@@ -277,14 +285,16 @@ class Settings extends React.Component {
           <Col md={6}>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title>Login</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">Login</Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row className="my-0 mx-0">
                   <Col>
                     {/* <Form> */}
                     <Form.Group controlId="current_password">
-                      <Form.Label>Current Password</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Current Password
+                      </Form.Label>
                       <Form.Control
                         type="password"
                         // readOnly={true}
@@ -299,7 +309,9 @@ class Settings extends React.Component {
                 <Row className="my-4 mx-0">
                   <Col>
                     <Form.Group controlId="new_password">
-                      <Form.Label>New Password</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        New Password
+                      </Form.Label>
                       <Form.Control
                         type="password"
                         // readOnly={true}
@@ -314,7 +326,9 @@ class Settings extends React.Component {
                 <Row className="my-0 mx-0">
                   <Col>
                     <Form.Group controlId="new_password_again">
-                      <Form.Label>Enter New Password Again</Form.Label>
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Enter New Password Again
+                      </Form.Label>
                       <Form.Control
                         type="password"
                         // placeholder="Text"

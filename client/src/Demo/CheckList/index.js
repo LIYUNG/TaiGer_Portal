@@ -1,13 +1,10 @@
 import React from 'react';
 import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
-import DEMO from '../../store/constant';
-import { getCVMLRLOverview } from '../../api';
 import CheckListItems from './CheckListItems';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { Link } from 'react-router-dom';
-import { getStudents, getChecklists } from '../../api';
+import { getChecklists } from '../../api';
 class CheckList extends React.Component {
   state = {
     error: null,
@@ -22,16 +19,16 @@ class CheckList extends React.Component {
     file: '',
     expand: true,
     accordionKeys:
-      Object.keys(this.props.user.checklist) &&
+      Object.keys(window.checklist) &&
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-        ? new Array(Object.keys(this.props.user.checklist).length)
+        ? new Array(Object.keys(window.checklist).length)
             .fill()
             .map((x, i) => i)
         : [0] // to expand all]
   };
 
   componentDidMount() {
-    const checklist = Object.keys(this.props.user.checklist);
+    const checklist = Object.keys(window.checklist);
     getChecklists().then(
       (resp) => {
         const { data, success } = resp.data;
@@ -79,7 +76,7 @@ class CheckList extends React.Component {
     }));
   };
   AllCollapsetHandler = () => {
-    const checklist = Object.keys(this.props.user.checklist);
+    const checklist = Object.keys(window.checklist);
     this.setState((state) => ({
       ...state,
       expand: false,
@@ -91,7 +88,7 @@ class CheckList extends React.Component {
     }));
   };
   AllExpandtHandler = () => {
-    const checklist = Object.keys(this.props.user.checklist);
+    const checklist = Object.keys(window.checklist);
     this.setState((state) => ({
       ...state,
       expand: true,
@@ -136,13 +133,15 @@ class CheckList extends React.Component {
 
     const checklist = Object.keys(window.checklist);
     const student_editor = checklist.map((item, i) => (
-      <Card className="mb-2 mx-0" bg={'dark'} text={'light'} key={i}>
+      <Card className="mb-2 mx-0" key={i}>
         <Card.Header onClick={() => this.singleExpandtHandler(i)}>
           <Card.Title
             aria-controls={'accordion' + i}
             aria-expanded={this.state.accordionKeys[i] === i}
           >
-            {this.props.user.checklist[item].name}
+            {this.props.user.role === 'Student' &&
+              this.props.user.checklist[item].name}
+            {window.checklist[item]}
           </Card.Title>
         </Card.Header>
         <CheckListItems
@@ -162,7 +161,7 @@ class CheckList extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col>Check List</Col>
+                    <Col className="my-0 mx-0 text-light">Check List</Col>
                     <Col md={{ span: 2, offset: 0 }}>
                       {this.state.expand ? (
                         <Button

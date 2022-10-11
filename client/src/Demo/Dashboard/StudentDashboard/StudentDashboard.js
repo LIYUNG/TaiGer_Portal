@@ -358,7 +358,9 @@ class StudentDashboard extends React.Component {
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title>My Application Progress</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  My Application Progress
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive
@@ -400,7 +402,9 @@ class StudentDashboard extends React.Component {
           <Col md={6}>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0">Your TaiGer Team</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Your TaiGer Team
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive
@@ -425,7 +429,7 @@ class StudentDashboard extends React.Component {
             </Card>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0">
+                <Card.Title className="my-0 mx-0 text-light">
                   <Link
                     to={'/student-database/' + student._id + '/profile'}
                     style={{ textDecoration: 'none' }}
@@ -454,7 +458,9 @@ class StudentDashboard extends React.Component {
           <Col md={6}>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0">Unread messages:</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Unread messages:
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive
@@ -476,7 +482,9 @@ class StudentDashboard extends React.Component {
             </Card>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0">Pending</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Pending
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive
@@ -498,7 +506,9 @@ class StudentDashboard extends React.Component {
             </Card>
             <Card className="my-0 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0">Agent Reviewing:</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Agent Reviewing:
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive

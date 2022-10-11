@@ -1,10 +1,12 @@
 import React from 'react';
-// import DEMO from '../../store/constant';
-// import { AiFillCloseCircle, AiFillQuestionCircle } from 'react-icons/ai';
-// import { IoCheckmarkCircle } from 'react-icons/io5';
+
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 import { Link } from 'react-router-dom';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import '../../components/DraftEditor.css';
 
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
@@ -13,7 +15,6 @@ import {
   Button,
   Card,
   Collapse,
-  // Form,
   Modal,
   Spinner
 } from 'react-bootstrap';
@@ -33,11 +34,6 @@ import {
   // AiOutlineUndo,
   // AiFillMessage
 } from 'react-icons/ai';
-import {
-  check_survey_filled,
-  check_application_selection,
-  check_generaldocs
-} from '../Utils/checking-functions';
 
 class CheckListItems extends React.Component {
   state = {
@@ -51,6 +47,7 @@ class CheckListItems extends React.Component {
     student_id: '',
     doc_thread_id: '',
     applicationId: '',
+    editorState: null,
     docName: '',
     whoupdate: '',
     isLoaded: false,
@@ -64,6 +61,9 @@ class CheckListItems extends React.Component {
       isLoaded: true
     }));
   }
+  handleEditorChange = (newstate) => {
+    this.setState((state) => ({ ...state, editorState: newstate }));
+  };
   closeSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
@@ -356,19 +356,60 @@ class CheckListItems extends React.Component {
     }
     return (
       <>
-        <Collapse
+        {/* <Collapse
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}
         >
-          <div id="accordion1">
-            <Card.Body>
-              <Row className="mb-4 mx-0">
-              </Row>
-
-              <hr></hr>
-            </Card.Body>
-          </div>
-        </Collapse>{' '}
-        {!isLoaded && (
+          <div id="accordion1"> */}
+        {/* <Card.Body> */}
+        <Row style={{ textDecoration: 'none' }}>
+          <Col className="my-0 mx-0">
+            <Editor
+              // toolbarOnFocus
+              // toolbarHidden
+              spellCheck={true}
+              // onFocus={onClick={this.handle}}
+              placeholder={'Write comments'}
+              editorState={this.state.editorState}
+              onEditorStateChange={this.handleEditorChange}
+              wrapperClassName="wrapper-class"
+              editorClassName="editor-class"
+              toolbarClassName="toolbar-class"
+              toolbar={{
+                // options: [
+                //   'inline',
+                //   'fontSize',
+                //   'fontFamily',
+                //   'list',
+                //   'textAlign',
+                //   // "colorPicker",
+                //   'link',
+                //   'image'
+                //   // "file",
+                // ],
+                link: {
+                  defaultTargetOption: '_blank',
+                  popupClassName: 'mail-editor-link'
+                },
+                image: {
+                  urlEnabled: true,
+                  uploadEnabled: true,
+                  uploadCallback: this.uploadImageCallBack,
+                  alignmentEnabled: true,
+                  defaultSize: {
+                    height: 'auto',
+                    width: 'auto'
+                  },
+                  inputAccept:
+                    'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
+                }
+              }}
+            />
+          </Col>
+        </Row>
+        {/* </Card.Body> */}
+        {/* </div>
+        </Collapse>{' '} */}
+        {/* {!isLoaded && (
           <div style={style}>
             <Spinner animation="border" role="status">
               <span className="visually-hidden"></span>
@@ -477,7 +518,7 @@ class CheckListItems extends React.Component {
           <Modal.Footer>
             <Button onClick={this.closeDocExistedWindow}>Close</Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
       </>
     );
   }

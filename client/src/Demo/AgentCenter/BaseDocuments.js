@@ -395,10 +395,8 @@ class BaseDocuments extends React.Component {
           <Col>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title>
-                  <Row>
-                    <Col>Base Documents</Col>
-                  </Row>
+                <Card.Title className="my-0 mx-0 text-light">
+                 Base Documents
                 </Card.Title>
               </Card.Header>
             </Card>

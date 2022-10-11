@@ -65,9 +65,13 @@ class AdminMainView extends React.Component {
       <>
         <Row className="mb-2">
           <Col md={6} className="mx-0">
-            <Card className="my-0 mx-0" bg={'danger'} text={'white'}>
+            <Card
+              className="my-0 mx-0  text-light"
+              bg={'danger'}
+              text={'white'}
+            >
               <Card.Header>
-                <Card.Title className="my-0 mx-0">
+                <Card.Title className="my-0 mx-0 text-light">
                   No Agents Students
                 </Card.Title>
               </Card.Header>
@@ -91,7 +95,7 @@ class AdminMainView extends React.Component {
           <Col md={6} className="mx-0">
             <Card className="my-0 mx-0" bg={'danger'} text={'white'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0">
+                <Card.Title className="my-0 mx-0 text-light">
                   No Editors Students
                 </Card.Title>
               </Card.Header>
@@ -118,7 +122,9 @@ class AdminMainView extends React.Component {
           <Col md={12}>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0">Agent Reviewing:</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Agent Reviewing:
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive

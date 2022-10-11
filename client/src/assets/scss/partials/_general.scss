@@ -20,7 +20,8 @@ a {
     &:hover {
         outline: none;
         text-decoration: none;
-    }
+    };
+    text-decoration: none;
 }
 
 h1,
@@ -60,6 +61,10 @@ h6 {
 p {
     color: #000000;
     font-size: 14px;
+}
+
+div {
+    color: #000000;
 }
 
 strong {

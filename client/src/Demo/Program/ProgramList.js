@@ -539,7 +539,7 @@ function Table2({ columns, data, userId }) {
             </Button>
           </Col>{' '}
           <Col md={2}>
-            <span>
+            <span className="text-light">
               Page{' '}
               <strong>
                 {pageIndex + 1} of {pageOptions.length}
@@ -547,7 +547,7 @@ function Table2({ columns, data, userId }) {
             </span>
           </Col>
           <Col md={4}>
-            <span>
+            <span className="text-light">
               | Go to page:{' '}
               <input
                 type="number"

@@ -503,7 +503,7 @@ function Table2({ header, data, userId }) {
             </Button>
           </Col>{' '}
           <Col md={2}>
-            <span>
+            <span className="my-0 mx-0 text-light">
               Page{' '}
               <strong>
                 {pageIndex + 1} of {pageOptions.length}
@@ -511,7 +511,7 @@ function Table2({ header, data, userId }) {
             </span>
           </Col>
           <Col md={4}>
-            <span>
+            <span className="my-0 mx-0 text-light">
               | Go to page:{' '}
               <input
                 type="number"

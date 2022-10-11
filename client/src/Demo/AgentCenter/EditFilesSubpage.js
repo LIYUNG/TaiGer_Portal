@@ -190,6 +190,7 @@ class EditFilesSubpage extends React.Component {
               aria-expanded={
                 this.props.accordionKeys[this.props.idx] === this.props.idx
               }
+              className="my-0 mx-0 text-light"
             >
               {this.state.student.firstname}
               {' ,'}

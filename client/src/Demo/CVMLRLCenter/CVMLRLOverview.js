@@ -163,10 +163,8 @@ class CVMLRLOverview extends React.Component {
           <Col>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title>
-                  <Row>
-                    <Col>CV ML RL Overview</Col>
-                  </Row>
+                <Card.Title className="my-0 mx-0 text-light">
+                  CV ML RL Overview
                 </Card.Title>
               </Card.Header>
             </Card>

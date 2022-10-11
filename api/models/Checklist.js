@@ -5,9 +5,9 @@ const {
 } = require('mongoose');
 const mongoose = require('mongoose');
 const checklistsSchema = new mongoose.Schema({
-  student_id: { type: ObjectId, ref: 'User' },
-  file_type: { type: String, default: '' },
-  program_id: { type: ObjectId, ref: 'Program' },
+  name: { type: String, default: '' },
+  props: { type: String, default: '' },
+  text: { type: String, default: '' },
   isFinalVersion: {
     type: Boolean,
     default: false

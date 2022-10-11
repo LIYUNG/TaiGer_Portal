@@ -18,6 +18,8 @@ const getChecklists = asyncHandler(async (req, res) => {
 });
 
 const createChecklists = asyncHandler(async (req, res) => {
+  const { checklist } = req.body;
+  const checklists = await Checklist.find({ name: checklist.props });
   const fields = _.omit(req.body, '_id');
   const newDoc = await Checklist.create(fields);
   return res.send({ success: true, data: newDoc });

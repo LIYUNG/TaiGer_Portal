@@ -117,7 +117,9 @@ class AgentMainView extends React.Component {
           <Col md={12}>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
-                <Card.Title>Agent Reviewing</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Agent Reviewing
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive

@@ -5,7 +5,7 @@ const { Role } = require('../models/User');
 const {
   createChecklists,
   getChecklists,
-  updateChecklist,
+  updateChecklistStatus,
   deleteChecklist
 } = require('../controllers/checklists');
 
@@ -20,10 +20,10 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getChecklists
   );
-
 router
-  .route('/:id')
-  .post(permit(Role.Admin, Role.Agent), updateChecklist)
-  .delete(permit(Role.Admin, Role.Agent), deleteChecklist);
+  .route('/:student_id/:item')
+  .put(permit(Role.Admin, Role.Agent, Role.Student), updateChecklistStatus);
+
+router.route('/:id').delete(permit(Role.Admin, Role.Agent), deleteChecklist);
 
 module.exports = router;

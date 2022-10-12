@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { ErrorResponse } = require('../common/errors');
+const { CheckListStatus } = require('../constants');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
@@ -29,15 +30,24 @@ const createChecklists = asyncHandler(async (req, res) => {
   }
 
   // TODO udpate
-  await Checklist.findOneAndUpdate({ prop: msg.prop }, msg, { new: true });
-  const updated_doc = await Checklist.findOne({ prop: msg.prop });
+  const updated_doc = await Checklist.findOneAndUpdate(
+    { prop: msg.prop },
+    msg,
+    { new: true }
+  );
   return res.send({ success: true, data: updated_doc });
 });
 
-const updateChecklist = asyncHandler(async (req, res) => {
-  await Checklist.findByIdAndUpdate(req.params.id, req.body);
-  const updated_doc = await Checklist.findById(req.params.id);
-  return res.status(201).send({ success: true, data: updated_doc });
+const updateChecklistStatus = asyncHandler(async (req, res) => {
+  const { student_id, item } = req.params;
+  const student = await Student.findById(student_id);
+  if (student.checklist[item].status !== CheckListStatus.Finished) {
+    student.checklist[item].status = CheckListStatus.Finished;
+  } else {
+    student.checklist[item].status = CheckListStatus.NotStarted;
+  }
+  await student.save();
+  return res.status(201).send({ success: true, data: student });
 });
 
 const deleteChecklist = asyncHandler(async (req, res) => {
@@ -48,6 +58,6 @@ const deleteChecklist = asyncHandler(async (req, res) => {
 module.exports = {
   getChecklists,
   createChecklists,
-  updateChecklist,
+  updateChecklistStatus,
   deleteChecklist
 };

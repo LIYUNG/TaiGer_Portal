@@ -37,6 +37,9 @@ export const getStudents = () => request.get(`/api/students`);
 
 export const getChecklists = () => request.get(`/api/checklists`);
 
+export const updateChecklistStatus = (student_id, item) =>
+  request.put(`/api/checklists/${student_id}/${item}`);
+
 export const getAllStudents = () => request.get(`/api/students/all`);
 
 export const getAdmissions = () => request.get(`/api/admissions`);

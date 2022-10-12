@@ -399,7 +399,7 @@ class SingleStudentPage extends React.Component {
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title>
+                <Card.Title className="text-light">
                   {this.state.student.firstname}
                   {' ,'}
                   {this.state.student.lastname}

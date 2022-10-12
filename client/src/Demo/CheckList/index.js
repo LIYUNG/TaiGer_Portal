@@ -4,7 +4,7 @@ import Aux from '../../hoc/_Aux';
 import CheckListItems from './CheckListItems';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { getChecklists } from '../../api';
+import { getChecklists, updateChecklistStatus } from '../../api';
 class CheckList extends React.Component {
   state = {
     error: null,
@@ -13,8 +13,7 @@ class CheckList extends React.Component {
     isLoaded: false,
     data: null,
     success: false,
-    // accordionKeys: new Array(-1, this.props.user.students.length),  // To collapse all
-    students: [],
+    student: null,
     checklists: [],
     file: '',
     expand: true,
@@ -36,6 +35,7 @@ class CheckList extends React.Component {
           this.setState({
             isLoaded: true,
             checklists: data,
+            student: this.props.user,
             success: success,
             // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
             accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
@@ -96,6 +96,36 @@ class CheckList extends React.Component {
         checklist && new Array(checklist.length).fill().map((x, i) => i)
       // to expand all]
     }));
+  };
+
+  handleClickChangeStatus = (e, student_id, item) => {
+    e.preventDefault();
+    // this.setState({
+    //   isLoaded: false
+    // });
+    updateChecklistStatus(student_id, item).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        if (success) {
+          this.setState({
+            success,
+            student: data,
+            isLoaded: true
+          });
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          } else if (resp.status === 400) {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({ error });
+      }
+    );
   };
 
   render() {
@@ -164,7 +194,8 @@ class CheckList extends React.Component {
           accordionKeys={this.state.accordionKeys}
           singleExpandtHandler={this.singleExpandtHandler}
           role={this.props.user.role}
-          user={this.props.user}
+          student={this.state.student}
+          handleClickChangeStatus={this.handleClickChangeStatus}
         />
       </Card>
     ));

@@ -36,22 +36,18 @@ class CheckListItems extends React.Component {
     deleteFileWarningModel: false,
     SetAsFinalFileModel: false,
     Requirements_Modal: false,
-    studentId: '',
     in_edit_mode: false,
     student_id: '',
     doc_thread_id: '',
     applicationId: '',
     editorState: null,
     ConvertedContent: '',
-    docName: '',
-    whoupdate: '',
     isLoaded: false,
     requirements: '',
     file: '',
     isThreadExisted: false
   };
   componentDidMount() {
-    // console.log(this.props.student);
     var initialEditorState = null;
     if (this.props.message) {
       const rawContentFromStore = convertFromRaw(
@@ -76,7 +72,9 @@ class CheckListItems extends React.Component {
     e.preventDefault();
     this.setState((state) => ({ ...state, in_edit_mode: true }));
   };
-
+  handleClickCancel = (e) => {
+    this.setState((state) => ({ ...state, in_edit_mode: false }));
+  };
   handleClickSave = (e, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(
@@ -111,42 +109,6 @@ class CheckListItems extends React.Component {
 
   handleEditorChange = (newstate) => {
     this.setState((state) => ({ ...state, editorState: newstate }));
-  };
-  closeSetAsFinalFileModelWindow = () => {
-    this.setState((state) => ({
-      ...state,
-      SetAsFinalFileModel: false
-    }));
-  };
-  openRequirements_ModalWindow = (ml_requirements) => {
-    this.setState((state) => ({
-      ...state,
-      Requirements_Modal: true,
-      requirements: ml_requirements
-    }));
-  };
-  close_Requirements_ModalWindow = () => {
-    this.setState((state) => ({
-      ...state,
-      Requirements_Modal: false,
-      requirements: ''
-    }));
-  };
-  closeDocExistedWindow = () => {
-    this.setState((state) => ({ ...state, isThreadExisted: false }));
-  };
-  closeWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
-
-  onDeleteFileThread = (doc_thread_id, application, studentId) => {
-    this.setState((state) => ({
-      ...state,
-      doc_thread_id,
-      program_id: application ? application.programId._id : null,
-      student_id: studentId,
-      deleteFileWarningModel: true
-    }));
   };
 
   render() {
@@ -244,13 +206,22 @@ class CheckListItems extends React.Component {
                   <Col className="my-0 mx-4">
                     {(this.props.role === 'Admin' ||
                       this.props.role === 'Agent') && (
-                      <Button
-                        onClick={(e) =>
-                          this.handleClickSave(e, this.state.editorState)
-                        }
-                      >
-                        Save
-                      </Button>
+                      <>
+                        <Button
+                          onClick={(e) =>
+                            this.handleClickSave(e, this.state.editorState)
+                          }
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          onClick={(e) =>
+                            this.handleClickCancel(e, this.state.editorState)
+                          }
+                        >
+                          Cancel
+                        </Button>
+                      </>
                     )}
                   </Col>
                 </Row>
@@ -274,76 +245,43 @@ class CheckListItems extends React.Component {
                     )}{' '}
                   </Col>
                   <Col md={2}>
-                    {this.props.role === 'Student' && (
-                      <Button
-                      // onClick={(e) =>
-                      //   this.handleClickSave(e, this.state.editorState)
-                      // }
-                      >
-                        Mark as Complete
-                      </Button>
-                    )}{' '}
-                    {this.props.role === 'Student' && (
-                      <Button
-                      // onClick={(e) =>
-                      //   this.handleClickSave(e, this.state.editorState)
-                      // }
-                      >
-                        Mark as Incomplete
-                      </Button>
+                    {this.props.role === 'Student' ? (
+                      this.props.student.checklist &&
+                      this.props.student.checklist[this.props.item].status ===
+                        'finished' ? (
+                        <Button
+                          onClick={(e) =>
+                            this.props.handleClickChangeStatus(
+                              e,
+                              this.props.student._id,
+                              this.props.item
+                            )
+                          }
+                        >
+                          Mark as Incomplete
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={(e) =>
+                            this.props.handleClickChangeStatus(
+                              e,
+                              this.props.student._id,
+                              this.props.item
+                            )
+                          }
+                        >
+                          Mark as Complete
+                        </Button>
+                      )
+                    ) : (
+                      <></>
                     )}
                   </Col>
                 </Row>
               </Card.Body>
             )}
           </div>
-        </Collapse>{' '}
-        {/* {!isLoaded && (
-          <div style={style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )}
-        <Modal
-          show={this.state.Requirements_Modal}
-          onHide={this.close_Requirements_ModalWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Special Requirements
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{this.state.requirements}</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.close_Requirements_ModalWindow}>Close</Button>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.isThreadExisted}
-          onHide={this.closeDocExistedWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Attention
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{this.state.docName} is already existed</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.closeDocExistedWindow}>Close</Button>
-          </Modal.Footer>
-        </Modal> */}
+        </Collapse>
       </>
     );
   }

@@ -55,7 +55,7 @@ class CheckListItems extends React.Component {
     var initialEditorState = null;
     if (this.props.message) {
       const rawContentFromStore = convertFromRaw(
-        JSON.parse(this.props.message.message)
+        JSON.parse(this.props.message)
       );
       initialEditorState = EditorState.createWithContent(rawContentFromStore);
     } else {
@@ -90,9 +90,6 @@ class CheckListItems extends React.Component {
         if (success) {
           this.setState({
             success,
-            file: null,
-            editorState: null,
-            thread: data,
             isLoaded: true
           });
         } else {
@@ -197,68 +194,106 @@ class CheckListItems extends React.Component {
         >
           <div id="accordion1">
             {this.state.in_edit_mode ? (
-              <Row style={{ textDecoration: 'none' }}>
-                <Col className="my-0 mx-0">
-                  <Editor
-                    // toolbarOnFocus
-                    // toolbarHidden
-                    spellCheck={true}
-                    // onFocus={onClick={this.handle}}
-                    placeholder={'Write comments'}
-                    editorState={this.state.editorState}
-                    onEditorStateChange={this.handleEditorChange}
-                    wrapperClassName="wrapper-class"
-                    editorClassName="editor-class"
-                    toolbarClassName="toolbar-class"
-                    toolbar={{
-                      // options: [
-                      //   'inline',
-                      //   'fontSize',
-                      //   'fontFamily',
-                      //   'list',
-                      //   'textAlign',
-                      //   // "colorPicker",
-                      //   'link',
-                      //   'image'
-                      //   // "file",
-                      // ],
-                      link: {
-                        defaultTargetOption: '_blank',
-                        popupClassName: 'mail-editor-link'
-                      },
-                      image: {
-                        urlEnabled: true,
-                        uploadEnabled: true,
-                        uploadCallback: this.uploadImageCallBack,
-                        alignmentEnabled: true,
-                        defaultSize: {
-                          height: 'auto',
-                          width: 'auto'
+              <>
+                <Row style={{ textDecoration: 'none' }}>
+                  <Col className="my-0 mx-0">
+                    <Editor
+                      // toolbarOnFocus
+                      // toolbarHidden
+                      spellCheck={true}
+                      // onFocus={onClick={this.handle}}
+                      placeholder={'Write comments'}
+                      editorState={this.state.editorState}
+                      onEditorStateChange={this.handleEditorChange}
+                      wrapperClassName="wrapper-class"
+                      editorClassName="editor-class"
+                      toolbarClassName="toolbar-class"
+                      toolbar={{
+                        // options: [
+                        //   'inline',
+                        //   'fontSize',
+                        //   'fontFamily',
+                        //   'list',
+                        //   'textAlign',
+                        //   // "colorPicker",
+                        //   'link',
+                        //   'image'
+                        //   // "file",
+                        // ],
+                        link: {
+                          defaultTargetOption: '_blank',
+                          popupClassName: 'mail-editor-link'
                         },
-                        inputAccept:
-                          'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
-                      }
-                    }}
-                  />
-                  <Button
-                    onClick={(e) =>
-                      this.handleClickSave(e, this.state.editorState)
-                    }
-                  >
-                    Save
-                  </Button>
-                </Col>
-              </Row>
+                        image: {
+                          urlEnabled: true,
+                          uploadEnabled: true,
+                          uploadCallback: this.uploadImageCallBack,
+                          alignmentEnabled: true,
+                          defaultSize: {
+                            height: 'auto',
+                            width: 'auto'
+                          },
+                          inputAccept:
+                            'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="my-0 mx-4">
+                    {(this.props.role === 'Admin' ||
+                      this.props.role === 'Agent') && (
+                      <Button
+                        onClick={(e) =>
+                          this.handleClickSave(e, this.state.editorState)
+                        }
+                      >
+                        Save
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
+              </>
             ) : (
               <Card.Body>
-                <Editor
-                  spellCheck={true}
-                  readOnly={true}
-                  toolbarHidden={true}
-                  editorState={this.state.editorState}
-                  onEditorStateChange={this.handleEditorChange}
-                />
-                <Button onClick={(e) => this.handleClickEdit(e)}>Edit</Button>
+                <Row>
+                  <Col sm={10}>
+                    <Editor
+                      spellCheck={true}
+                      readOnly={true}
+                      toolbarHidden={true}
+                      editorState={this.state.editorState}
+                      onEditorStateChange={this.handleEditorChange}
+                    />
+                    {(this.props.role === 'Admin' ||
+                      this.props.role === 'Agent') && (
+                      <Button onClick={(e) => this.handleClickEdit(e)}>
+                        Edit
+                      </Button>
+                    )}{' '}
+                  </Col>
+                  <Col md={2}>
+                    {this.props.role === 'Student' && (
+                      <Button
+                      // onClick={(e) =>
+                      //   this.handleClickSave(e, this.state.editorState)
+                      // }
+                      >
+                        Mark as Complete
+                      </Button>
+                    )}{' '}
+                    {this.props.role === 'Student' && (
+                      <Button
+                      // onClick={(e) =>
+                      //   this.handleClickSave(e, this.state.editorState)
+                      // }
+                      >
+                        Mark as Incomplete
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
               </Card.Body>
             )}
           </div>

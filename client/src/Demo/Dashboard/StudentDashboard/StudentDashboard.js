@@ -269,7 +269,11 @@ class StudentDashboard extends React.Component {
                   <BsExclamationTriangle size={18} />
                   <b className="mx-2">Reminder:</b> It looks like you did not
                   finish survey:{' '}
-                  <Link to={'/survey'} style={{ textDecoration: 'none' }}>
+                  <Link
+                    to={'/survey'}
+                    style={{ textDecoration: 'none' }}
+                    className="text-light"
+                  >
                     Survey
                   </Link>
                 </Card.Body>
@@ -288,6 +292,7 @@ class StudentDashboard extends React.Component {
                   <Link
                     to={'/student-applications'}
                     style={{ textDecoration: 'none' }}
+                    className="text-light"
                   >
                     My Applications
                   </Link>
@@ -308,6 +313,7 @@ class StudentDashboard extends React.Component {
                     <Link
                       to={'/student-applications'}
                       style={{ textDecoration: 'none' }}
+                      className="text-light"
                     >
                       My Applications
                     </Link>
@@ -327,6 +333,7 @@ class StudentDashboard extends React.Component {
                   <Link
                     to={'/base-documents'}
                     style={{ textDecoration: 'none' }}
+                    className="text-light"
                   >
                     My Base Documents
                   </Link>
@@ -346,6 +353,7 @@ class StudentDashboard extends React.Component {
                   <Link
                     to={'/base-documents'}
                     style={{ textDecoration: 'none' }}
+                    className="text-light"
                   >
                     My Base Documents
                   </Link>

@@ -146,12 +146,25 @@ class CheckList extends React.Component {
         </Card.Header>
         <CheckListItems
           idx={i}
-          name={this.state.checklists[item]} // TODO
+          name={
+            this.state.checklists.find(
+              (checklist) => checklist.prop === item
+            ) &&
+            this.state.checklists.find((checklist) => checklist.prop === item)
+              .name
+          } // TODO
           item={item} // TODO
-          message={this.state.checklists[item]} // TODO
+          message={
+            this.state.checklists.find(
+              (checklist) => checklist.prop === item
+            ) &&
+            this.state.checklists.find((checklist) => checklist.prop === item)
+              .text
+          } // TODO
           accordionKeys={this.state.accordionKeys}
           singleExpandtHandler={this.singleExpandtHandler}
           role={this.props.user.role}
+          user={this.props.user}
         />
       </Card>
     ));

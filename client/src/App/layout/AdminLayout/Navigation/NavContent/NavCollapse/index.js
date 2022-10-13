@@ -24,8 +24,8 @@ class NavCollapse extends Component {
     if (collapse.children) {
       if (this.props.role === 'Admin') {
         if (
-          collapse.title === 'Component' ||
-          collapse.title === 'Documentation' ||
+          // collapse.title === 'Component' ||
+          // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
           return false;
@@ -144,8 +144,8 @@ class NavCollapse extends Component {
       const subContent = (
         <Aux>
           <a
-            href={DEMO.BLANK_LINK}
             className={navLinkClass.join(' ')}
+            style={{ cursor: 'pointer' }}
             onClick={() =>
               this.props.onCollapseToggle(
                 this.props.collapse.id,

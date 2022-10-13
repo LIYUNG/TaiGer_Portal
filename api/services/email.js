@@ -18,8 +18,8 @@ const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
 // const RESEND_ACTIVATION_URL = path.join(ORIGIN, 'account/resend-activation');
 const PASSWORD_RESET_URL = new URL('/account/reset-password', ORIGIN).href;
 // const PASSWORD_RESET_URL = path.join(ORIGIN, 'account/reset-password');
-const FORGOT_PASSWORD_URL = new URL('/account/forgot-password', ORIGIN).href;
-// const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'account/forgot-password');
+const FORGOT_PASSWORD_URL = new URL('/forgot-password', ORIGIN).href;
+// const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'forgot-password');
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
 const THREAD_URL = new URL('/document-modification', ORIGIN).href;

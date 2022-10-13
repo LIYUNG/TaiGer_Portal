@@ -5,7 +5,7 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { Link } from 'react-router-dom';
-import CheckListItemsEditor from './CheckListItemsEditor';
+import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
 
@@ -17,6 +17,7 @@ import {
   Card,
   Collapse,
   Modal,
+  Form,
   Spinner
 } from 'react-bootstrap';
 import { updateChecklistDocument } from '../../api';
@@ -29,7 +30,7 @@ import {
   // AiFillMessage
 } from 'react-icons/ai';
 
-class CheckListItems extends React.Component {
+class DocumentsListItems extends React.Component {
   state = {
     timeouterror: null,
     unauthorizederror: null,
@@ -158,7 +159,16 @@ class CheckListItems extends React.Component {
           <div id="accordion1">
             {this.state.in_edit_mode ? (
               <>
-                <CheckListItemsEditor
+                <Form.Group controlId="attended_university_program">
+                  <Form.Control
+                    type="text"
+                    defaultValue={
+                    ''
+                    }
+                    // onChange={(e) => this.handleChange_Academic(e)}
+                  />
+                </Form.Group>
+                <DocumentsListItemsEditor
                   editorState={this.state.editorState}
                   handleClickSave={this.handleClickSave}
                   handleClickCancel={this.handleClickCancel}
@@ -175,46 +185,9 @@ class CheckListItems extends React.Component {
                       toolbarHidden={true}
                       editorState={this.state.editorState}
                     />
-                    {(this.props.role === 'Admin' ||
-                      this.props.role === 'Agent') && (
-                      <Button onClick={(e) => this.handleClickEdit(e)}>
-                        Edit
-                      </Button>
-                    )}{' '}
+                    
                   </Col>
-                  <Col md={2}>
-                    {this.props.role === 'Student' ? (
-                      this.props.student.checklist &&
-                      this.props.student.checklist[this.props.item].status ===
-                        'finished' ? (
-                        <Button
-                          onClick={(e) =>
-                            this.props.handleClickChangeStatus(
-                              e,
-                              this.props.student._id,
-                              this.props.item
-                            )
-                          }
-                        >
-                          Mark as Incomplete
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={(e) =>
-                            this.props.handleClickChangeStatus(
-                              e,
-                              this.props.student._id,
-                              this.props.item
-                            )
-                          }
-                        >
-                          Mark as Complete
-                        </Button>
-                      )
-                    ) : (
-                      <></>
-                    )}
-                  </Col>
+                 
                 </Row>
               </Card.Body>
             )}
@@ -225,4 +198,4 @@ class CheckListItems extends React.Component {
   }
 }
 
-export default CheckListItems;
+export default DocumentsListItems;

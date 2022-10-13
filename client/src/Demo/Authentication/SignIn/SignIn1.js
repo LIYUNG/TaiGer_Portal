@@ -130,11 +130,11 @@ export default function Signin1({ setUserdata }) {
                   Login
                 </button>
                 <p className="mb-2 text-light">Forgot password?</p>
-                <NavLink to="/account/forgot-password">
+                <NavLink to="/forgot-password">
                   <p className="text-muted">Reset</p>
                 </NavLink>
                 <p className="mb-2 text-light">New in TaiGer Portal?</p>
-                <NavLink to="/auth/sign-up">
+                <NavLink to="/sign-up">
                   <p className="text-muted">Sign up</p>
                 </NavLink>
               </div>

@@ -22,9 +22,8 @@ const createChecklists = asyncHandler(async (req, res) => {
   const { msg } = req.body;
   console.log(msg);
   const item = await Checklist.findOne({ prop: msg.prop });
+  msg.updatedAt = new Date();
   if (!item) {
-    // TODO create
-    const fields = _.omit(req.body, '_id');
     const newDoc = await Checklist.create(msg);
     return res.send({ success: true, data: newDoc });
   }

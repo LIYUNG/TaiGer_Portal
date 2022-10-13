@@ -17,7 +17,7 @@ const AccountActivation = React.lazy(() =>
 );
 
 const route = [
-  { path: '/auth/sign-up', exact: true, name: 'Signup 1', component: SignUp1 },
+  { path: '/sign-up', exact: true, name: 'Signup 1', component: SignUp1 },
   {
     path: '/account/activation',
     exact: true,
@@ -31,7 +31,7 @@ const route = [
     component: ResetPassword
   },
   {
-    path: '/account/forgot-password',
+    path: '/forgot-password',
     exact: true,
     name: 'ResetPassword 1',
     component: ResetPasswordRequest

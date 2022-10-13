@@ -1,10 +1,16 @@
+const {
+  model,
+  Schema,
+  Types: { ObjectId }
+} = require('mongoose');
 const mongoose = require('mongoose');
-
-const documentations = new mongoose.Schema({
-  Titel_: String,
-  Category_: String,
-  Content_: String,
-  LastUpdate_: String
+const documentationsSchema = new mongoose.Schema({
+  name: { type: String, default: '' },
+  title: { type: String, default: '' },
+  category: { type: String, default: '' },
+  prop: { type: String, default: '' },
+  text: { type: String, default: '' },
+  updatedAt: Date
 });
-
-module.exports = mongoose.model('documentations', documentations);
+const Documentation = mongoose.model('Documentation', documentationsSchema);
+module.exports = Documentation;

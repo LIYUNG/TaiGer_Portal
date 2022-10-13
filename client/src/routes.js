@@ -79,9 +79,15 @@ const SingleStudentPage = React.lazy(() =>
   import('./Demo/StudentDatabase/SingleStudentPage')
 );
 const GoogleMap = React.lazy(() => import("./Demo/Maps/GoogleMap/index"));
+// const DocsApplication = React.lazy(() =>
+//   import("./Demo/Documentation/Application/Application")
+// );
 const DocsApplication = React.lazy(() =>
-  import("./Demo/Documentation/Application/Application")
+  import('./Demo/Documentation/index')
 );
+
+const DocsPage = React.lazy(() => import('./Demo/Documentation/SingleDoc'));
+
 const DocsCertification = React.lazy(() =>
   import("./Demo/Documentation/Certification/Certification")
 );
@@ -244,6 +250,12 @@ const routes = [
     exact: true,
     name: 'Documentation',
     component: DocsApplication
+  },
+  {
+    path: '/docs/:documentation_id',
+    exact: true,
+    name: 'DocumentationPage',
+    component: DocsPage
   },
   {
     path: '/docs/certification',

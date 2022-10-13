@@ -136,6 +136,15 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
     program_id
   });
 
+// Documentation APIs
+export const getCategorizedDocumentation = (category) =>
+  request.get(`/api/docs/${category}`);
+export const getDocumentation = (doc_id) =>
+  request.get(`/api/docs/search/${doc_id}`);
+export const updateDocumentation = (doc_id, doc) =>
+  request.put(`/api/docs/${doc_id}`, { doc });
+export const createDocumentation = (doc) => request.post(`/api/docs`, { doc });
+
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');
 export const getProgram = (programId) =>

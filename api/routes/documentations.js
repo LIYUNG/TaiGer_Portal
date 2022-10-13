@@ -4,11 +4,11 @@ const { protect, permit, prohibit } = require("../middlewares/auth");
 const { Role } = require('../models/User')
 
 const {
-  getDocumentations,
+  getCategoryDocumentations,
   createDocumentation,
   updateDocumentation,
-  deleteDocumentation,
-} = require("../controllers/documentations");
+  deleteDocumentation
+} = require('../controllers/documentations');
 
 const router = Router();
 
@@ -16,7 +16,10 @@ router.use(protect);
 
 router.route("/").post(permit(Role.Admin, Role.Agent), createDocumentation);
 
-router.route("/:category").get(prohibit(Role.Guest), getDocumentations);
+router.route('/:category').get(prohibit(Role.Guest), getCategoryDocumentations);
+router
+  .route('/search/:doc_id')
+  .get(prohibit(Role.Guest), getCategoryDocumentations);
 
 router
   .route("/:id")

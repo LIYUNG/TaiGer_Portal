@@ -10,8 +10,14 @@ const getCategoryDocumentations = asyncHandler(async (req, res) => {
   return res.send({ success: true, data: documents });
 });
 
+const getDocumentation = asyncHandler(async (req, res) => {
+  const document = await Documentation.findById(req.params.doc_id);
+  return res.send({ success: true, data: document });
+});
+
 const createDocumentation = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
+  console.log(fields);
   const newDoc = await Documentation.create(fields);
   return res.send({ success: true, data: newDoc });
 });
@@ -29,6 +35,7 @@ const deleteDocumentation = asyncHandler(async (req, res) => {
 
 module.exports = {
   getCategoryDocumentations,
+  getDocumentation,
   createDocumentation,
   updateDocumentation,
   deleteDocumentation

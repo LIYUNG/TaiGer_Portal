@@ -1,10 +1,14 @@
 import React from 'react';
-import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card, Form } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
+import DocumentsListItemsEditor from './DocumentsListItemsEditor';
+import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { getCategorizedDocumentation, updateChecklistStatus } from '../../api';
+import { Link } from 'react-router-dom';
+import { getCategorizedDocumentation, createDocumentation } from '../../api';
 class CheckList extends React.Component {
   state = {
     error: null,
@@ -15,8 +19,10 @@ class CheckList extends React.Component {
     success: false,
     student: null,
     documentlists: [],
+    doc_title: '',
     file: '',
     expand: true,
+    editorState: '',
     accordionKeys:
       Object.keys(window.checklist) &&
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
@@ -96,21 +102,43 @@ class CheckList extends React.Component {
       // to expand all]
     }));
   };
+
+  handleChange_doc_title = (e) => {
+    const { value } = e.target;
+    this.setState((state) => ({
+      ...state,
+      doc_title: value
+    }));
+  };
+  handleClick = () => {
+    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  };
   handleClickAdd = (e) => {
     e.preventDefault();
   };
-  handleClickChangeStatus = (e, student_id, item) => {
+
+  handleClickCancel = (e) => {
+    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  };
+  handleClickSave = (e, editorState) => {
     e.preventDefault();
-    // this.setState({
-    //   isLoaded: false
-    // });
-    updateChecklistStatus(student_id, item).then(
+    const message = JSON.stringify(
+      convertToRaw(editorState.getCurrentContent())
+    );
+    const msg = {
+      title: this.state.doc_title,
+      category: this.props.match.params.category,
+      prop: this.props.item,
+      text: message
+    };
+    createDocumentation(msg).then(
       (resp) => {
         const { success, data } = resp.data;
         if (success) {
           this.setState({
             success,
-            student: data,
+            editorState,
+            isEdit: !this.state.isEdit,
             isLoaded: true
           });
         } else {
@@ -127,6 +155,7 @@ class CheckList extends React.Component {
         this.setState({ error });
       }
     );
+    this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
   render() {
@@ -162,27 +191,11 @@ class CheckList extends React.Component {
       );
     }
 
-    const document_list = this.state.documentlists.map((item, i) => (
+    const document_list = this.state.documentlists.map((document, i) => (
       <DocumentsListItems
         idx={i}
         key={i}
-        name={
-          this.state.documentlists.find(
-            (checklist) => checklist.prop === item
-          ) &&
-          this.state.documentlists.find((checklist) => checklist.prop === item)
-            .name
-        } // TODO
-        item={item} // TODO
-        message={
-          this.state.documentlists.find(
-            (checklist) => checklist.prop === item
-          ) &&
-          this.state.documentlists.find((checklist) => checklist.prop === item)
-            .text
-        } // TODO
-        accordionKeys={this.state.accordionKeys}
-        singleExpandtHandler={this.singleExpandtHandler}
+        document={document}
         role={this.props.user.role}
       />
     ));
@@ -224,10 +237,41 @@ class CheckList extends React.Component {
         <Row>
           <Col sm={12}>
             <Card className="mb-2 mx-0">
-              {document_list}
-              {(this.props.user.role === 'Admin' ||
-                this.props.user.role === 'Agent') && (
-                <Button onClick={(e) => this.handleClickAdd(e)}>Add</Button>
+              {this.state.isEdit ? (
+                <>
+                  <Form.Group controlId="doc_title" className="mx-3 my-2">
+                    <Form.Control
+                      type="text"
+                      placeholder="title"
+                      defaultValue={''}
+                      onChange={(e) => this.handleChange_doc_title(e)}
+                    />
+                  </Form.Group>
+                  <DocumentsListItemsEditor
+                    editorState={this.state.editorState}
+                    handleClickSave={this.handleClickSave}
+                    handleClickCancel={this.handleClickCancel}
+                    role={this.props.role}
+                  />
+                </>
+              ) : (
+                <Card.Body>
+                  <Row>
+                    <Col sm={10}>
+                      {document_list}
+                      {/* <Editor
+                        spellCheck={true}
+                        readOnly={true}
+                        toolbarHidden={true}
+                        editorState={this.state.editorState}
+                      /> */}
+                    </Col>
+                  </Row>{' '}
+                  {(this.props.user.role === 'Admin' ||
+                    this.props.user.role === 'Agent') && (
+                    <Button onClick={this.handleClick}>Add</Button>
+                  )}
+                </Card.Body>
               )}
             </Card>
           </Col>

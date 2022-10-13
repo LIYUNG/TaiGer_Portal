@@ -246,13 +246,13 @@ const routes = [
     component: GoogleMap
   },
   {
-    path: '/docs/application',
+    path: '/docs/:category',
     exact: true,
     name: 'Documentation',
     component: DocsApplication
   },
   {
-    path: '/docs/:documentation_id',
+    path: '/docs/search/:documentation_id',
     exact: true,
     name: 'DocumentationPage',
     component: DocsPage

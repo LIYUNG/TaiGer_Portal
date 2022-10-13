@@ -34,7 +34,7 @@ class SingleProgramEdit extends React.Component {
                       type="text"
                       placeholder="Title"
                       onChange={(e) => this.handleChange(e)}
-                      defaultValue={''}
+                      defaultValue={this.props.document_title}
                     />
                   </Form.Group>
                 </h4>

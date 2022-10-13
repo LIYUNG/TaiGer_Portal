@@ -153,46 +153,19 @@ class DocumentsListItems extends React.Component {
     }
     return (
       <>
-        <Collapse
-          in={this.props.accordionKeys[this.props.idx] === this.props.idx}
-        >
-          <div id="accordion1">
-            {this.state.in_edit_mode ? (
-              <>
-                <Form.Group controlId="attended_university_program">
-                  <Form.Control
-                    type="text"
-                    defaultValue={
-                    ''
-                    }
-                    // onChange={(e) => this.handleChange_Academic(e)}
-                  />
-                </Form.Group>
-                <DocumentsListItemsEditor
-                  editorState={this.state.editorState}
-                  handleClickSave={this.handleClickSave}
-                  handleClickCancel={this.handleClickCancel}
-                  role={this.props.role}
-                />
-              </>
-            ) : (
-              <Card.Body>
-                <Row>
-                  <Col sm={10}>
-                    <Editor
-                      spellCheck={true}
-                      readOnly={true}
-                      toolbarHidden={true}
-                      editorState={this.state.editorState}
-                    />
-                    
-                  </Col>
-                 
-                </Row>
-              </Card.Body>
-            )}
-          </div>
-        </Collapse>
+        <Row>
+          <Col sm={10}>
+            <Link to={`/docs/search/${this.props.document._id}`}>
+              <h4>{this.props.document.title}</h4>
+            </Link>
+            {/* <Editor
+              spellCheck={true}
+              readOnly={true}
+              toolbarHidden={true}
+              editorState={this.state.editorState}
+            /> */}
+          </Col>
+        </Row>
       </>
     );
   }

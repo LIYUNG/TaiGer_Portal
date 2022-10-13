@@ -26,6 +26,7 @@ class SingleDoc extends React.Component {
         const { data, success } = resp.data;
         if (success) {
           var initialEditorState = null;
+          console.log(data)
           if (data.text) {
             const rawContentFromStore = convertFromRaw(JSON.parse(data.text));
             initialEditorState =
@@ -69,7 +70,7 @@ class SingleDoc extends React.Component {
     const message = JSON.stringify(
       convertToRaw(editorState.getCurrentContent())
     );
-    const msg = { prop: this.props.item, text: message };
+    const msg = { title: doc_title, prop: this.props.item, text: message };
     updateChecklistDocument(msg).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -138,6 +139,7 @@ class SingleDoc extends React.Component {
         <>
           <SingleDocEdit
             document={document}
+            document_title={this.state.document_title}
             editorState={this.state.editorState}
             isLoaded={isLoaded}
             handleClick={this.handleClick}
@@ -151,6 +153,7 @@ class SingleDoc extends React.Component {
         <>
           <SingleDocView
             document={document}
+            document_title={this.state.document_title}
             editorState={this.state.editorState}
             isLoaded={isLoaded}
             role={this.props.user.role}

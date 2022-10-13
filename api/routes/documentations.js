@@ -5,6 +5,7 @@ const { Role } = require('../models/User')
 
 const {
   getCategoryDocumentations,
+  getDocumentation,
   createDocumentation,
   updateDocumentation,
   deleteDocumentation
@@ -17,9 +18,7 @@ router.use(protect);
 router.route("/").post(permit(Role.Admin, Role.Agent), createDocumentation);
 
 router.route('/:category').get(prohibit(Role.Guest), getCategoryDocumentations);
-router
-  .route('/search/:doc_id')
-  .get(prohibit(Role.Guest), getCategoryDocumentations);
+router.route('/search/:doc_id').get(prohibit(Role.Guest), getDocumentation);
 
 router
   .route("/:id")

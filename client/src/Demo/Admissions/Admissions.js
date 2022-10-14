@@ -12,15 +12,9 @@ class Admissions extends React.Component {
     error: null,
     timeouterror: null,
     unauthorizederror: null,
-    modalShow: false,
-    agent_list: [],
-    editor_list: [],
     isLoaded: false,
     students: [],
-    updateAgentList: {},
-    updateEditorList: {},
-    success: false,
-    isArchivPage: true
+    success: false
   };
 
   componentDidMount() {

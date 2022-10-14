@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
-
+import { HiX } from 'react-icons/hi';
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
   Row,
@@ -21,14 +21,6 @@ import {
   Spinner
 } from 'react-bootstrap';
 import { updateChecklistDocument } from '../../api';
-import {
-  // AiOutlineDownload,
-  // AiOutlineDelete,
-  // AiOutlineCheck,
-  AiOutlineMore
-  // AiOutlineUndo,
-  // AiFillMessage
-} from 'react-icons/ai';
 
 class DocumentsListItems extends React.Component {
   state = {
@@ -155,6 +147,17 @@ class DocumentsListItems extends React.Component {
       <>
         <Row>
           <Col sm={10}>
+            <HiX
+              size={24}
+              color="red"
+              title="Un do Final Version"
+              style={{ cursor: 'pointer' }}
+              onClick={() =>
+                this.props.openDeleteDocModalWindow(this.props.document)
+              }
+            />
+            {this.props.idx}
+            {'. '}
             <Link to={`/docs/search/${this.props.document._id}`}>
               {this.props.document.title}
             </Link>

@@ -17,6 +17,13 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
+window.documentlist = {
+  application: 'Application Instruction',
+  'portal-instruction': 'Portal Instruction',
+  certification: 'Certification Instruction',
+  uniassist: 'Uni-Assist Instruction',
+  visa: 'Visa Instruction'
+};
 window.editortodolist = [
   {
     name: 'Waiting ML_Template',

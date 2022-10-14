@@ -139,6 +139,8 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
 // Documentation APIs
 export const getCategorizedDocumentation = (category) =>
   request.get(`/api/docs/${category}`);
+export const deleteDocumentation = (doc_id) =>
+  request.delete(`/api/docs/${doc_id}`);
 export const getDocumentation = (doc_id) =>
   request.get(`/api/docs/search/${doc_id}`);
 export const updateDocumentation = (doc_id, doc) =>

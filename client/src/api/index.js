@@ -142,7 +142,7 @@ export const getCategorizedDocumentation = (category) =>
 export const getDocumentation = (doc_id) =>
   request.get(`/api/docs/search/${doc_id}`);
 export const updateDocumentation = (doc_id, doc) =>
-  request.put(`/api/docs/${doc_id}`, { doc });
+  request.put(`/api/docs/${doc_id}`, doc);
 export const createDocumentation = (doc) => request.post(`/api/docs`, doc);
 
 // Program APIs

@@ -5,7 +5,7 @@ import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 class SingleProgramEdit extends React.Component {
   state = {
     editorState: this.props.editorState,
-    doc_title: ''
+    doc_title: this.props.document_title
   };
   handleChange = (e) => {
     e.preventDefault();
@@ -40,15 +40,13 @@ class SingleProgramEdit extends React.Component {
                 </h4>
               </Col>
             </Row>
-            <Row>
-              <DocumentsListItemsEditor
-                editorState={this.state.editorState}
-                handleClickSave={this.props.handleClickSave}
-                handleClickCancel={this.props.handleClickCancel}
-                role={this.props.role}
-              />
-            </Row>
           </Card.Body>
+          <DocumentsListItemsEditor
+            editorState={this.state.editorState}
+            handleClickSave={this.handleClickSave}
+            handleClickCancel={this.props.handleClickCancel}
+            role={this.props.role}
+          />
         </Card>
       </>
     );

@@ -9,7 +9,7 @@ import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { Link } from 'react-router-dom';
 import { getCategorizedDocumentation, createDocumentation } from '../../api';
-class CheckList extends React.Component {
+class ApplicationList extends React.Component {
   state = {
     error: null,
     timeouterror: null,
@@ -17,10 +17,8 @@ class CheckList extends React.Component {
     isLoaded: false,
     data: null,
     success: false,
-    student: null,
     documentlists: [],
     doc_title: '',
-    file: '',
     expand: true,
     editorState: '',
     accordionKeys:
@@ -40,7 +38,6 @@ class CheckList extends React.Component {
           this.setState({
             isLoaded: true,
             documentlists: data,
-            student: this.props.user,
             success: success
             // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
             // accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
@@ -71,7 +68,40 @@ class CheckList extends React.Component {
     //   //   accordionKeys: new Array(-1, data.length), // to collapse all
     // });
   }
-
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.match.params.category !== this.props.match.params.category) {
+      getCategorizedDocumentation(this.props.match.params.category).then(
+        (resp) => {
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              documentlists: data,
+              success: success
+              // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
+              // accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
+              // accordionKeys: new Array(-1, data.length) // to collapse all
+            });
+          } else {
+            if (resp.status === 401 || resp.status === 500) {
+              this.setState({ isLoaded: true, timeouterror: true });
+            } else if (resp.status === 403) {
+              this.setState({
+                isLoaded: true,
+                unauthorizederror: true
+              });
+            }
+          }
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error: true
+          });
+        }
+      );
+    }
+  }
   singleExpandtHandler = (idx) => {
     let accordionKeys = [...this.state.accordionKeys];
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
@@ -134,9 +164,12 @@ class CheckList extends React.Component {
     createDocumentation(msg).then(
       (resp) => {
         const { success, data } = resp.data;
+        let documentlists_temp = [...this.state.documentlists];
+        documentlists_temp.push(data);
         if (success) {
           this.setState({
             success,
+            documentlists: documentlists_temp,
             editorState,
             isEdit: !this.state.isEdit,
             isLoaded: true
@@ -259,12 +292,6 @@ class CheckList extends React.Component {
                   <Row>
                     <Col sm={10}>
                       {document_list}
-                      {/* <Editor
-                        spellCheck={true}
-                        readOnly={true}
-                        toolbarHidden={true}
-                        editorState={this.state.editorState}
-                      /> */}
                     </Col>
                   </Row>{' '}
                   {(this.props.user.role === 'Admin' ||
@@ -281,4 +308,4 @@ class CheckList extends React.Component {
   }
 }
 
-export default CheckList;
+export default ApplicationList;

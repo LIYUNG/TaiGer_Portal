@@ -156,7 +156,7 @@ class DocumentsListItems extends React.Component {
         <Row>
           <Col sm={10}>
             <Link to={`/docs/search/${this.props.document._id}`}>
-              <h4>{this.props.document.title}</h4>
+              {this.props.document.title}
             </Link>
             {/* <Editor
               spellCheck={true}

@@ -7,8 +7,7 @@ import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { updateChecklistDocument } from '../../api';
-import { createDocumentation } from '../../api';
+import { updateDocumentation } from '../../api';
 class SingleDoc extends React.Component {
   state = {
     isLoaded: false,
@@ -26,7 +25,7 @@ class SingleDoc extends React.Component {
         const { data, success } = resp.data;
         if (success) {
           var initialEditorState = null;
-          console.log(data)
+          console.log(data);
           if (data.text) {
             const rawContentFromStore = convertFromRaw(JSON.parse(data.text));
             initialEditorState =
@@ -71,7 +70,7 @@ class SingleDoc extends React.Component {
       convertToRaw(editorState.getCurrentContent())
     );
     const msg = { title: doc_title, prop: this.props.item, text: message };
-    updateChecklistDocument(msg).then(
+    updateDocumentation(this.props.match.params.documentation_id, msg).then(
       (resp) => {
         const { success, data } = resp.data;
         if (success) {

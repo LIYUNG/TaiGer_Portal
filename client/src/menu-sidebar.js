@@ -220,6 +220,14 @@ export default {
               breadcrumbs: false
             },
             {
+              id: 'portal-instruction',
+              title: 'Portal Instruction',
+              type: 'item',
+              url: '/docs/portal-instruction',
+              target: false,
+              breadcrumbs: false
+            },
+            {
               id: 'doc-uniassist',
               title: 'Uni-Assist',
               type: 'item',

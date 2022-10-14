@@ -88,13 +88,6 @@ const DocsApplication = React.lazy(() =>
 
 const DocsPage = React.lazy(() => import('./Demo/Documentation/SingleDoc'));
 
-const DocsCertification = React.lazy(() =>
-  import("./Demo/Documentation/Certification/Certification")
-);
-const DocsUniassist = React.lazy(() =>
-  import("./Demo/Documentation/Uniassist/Uniassist")
-);
-const DocsVisa = React.lazy(() => import("./Demo/Documentation/Visa/Visa"));
 const Download = React.lazy(() => import("./Demo/DownloadCenter/DownloadPage"));
 const TaiGerAI = React.lazy(() =>
   import("./Demo/TaiGerAI/Application/CoursesAnalyser")
@@ -256,24 +249,6 @@ const routes = [
     exact: true,
     name: 'DocumentationPage',
     component: DocsPage
-  },
-  {
-    path: '/docs/certification',
-    exact: true,
-    name: 'Documentation',
-    component: DocsCertification
-  },
-  {
-    path: '/docs/uniassist',
-    exact: true,
-    name: 'Documentation',
-    component: DocsUniassist
-  },
-  {
-    path: '/docs/visa',
-    exact: true,
-    name: 'Documentation',
-    component: DocsVisa
   },
   {
     path: '/download',

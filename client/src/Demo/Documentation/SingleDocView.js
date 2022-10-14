@@ -5,21 +5,17 @@ class SingleProgramView extends React.Component {
   render() {
     return (
       <>
-        <Card>
+        <Card className="mb-2 mx-0">
+          <Card.Header>
+            <Card.Title>{this.props.document_title}</Card.Title>
+          </Card.Header>
           <Card.Body>
-            <Row>
-              <Col>
-                <h4 className="my-0">{this.props.document_title}</h4>
-              </Col>
-            </Row>
-            <Row>
-              <Editor
-                spellCheck={true}
-                readOnly={true}
-                toolbarHidden={true}
-                editorState={this.props.editorState}
-              />
-            </Row>
+            <Editor
+              spellCheck={true}
+              readOnly={true}
+              toolbarHidden={true}
+              editorState={this.props.editorState}
+            />
             {this.props.role === 'Admin' ||
               (this.props.role === 'Agent' && (
                 <>

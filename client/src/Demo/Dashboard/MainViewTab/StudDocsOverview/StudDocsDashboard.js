@@ -33,6 +33,7 @@ class StudDocsDashboard extends React.Component {
           <td>
             <DropdownButton
               size="sm"
+              className='mx-0'
               title="Option"
               variant="primary"
               id={`dropdown-variants-${this.props.student._id}`}

@@ -28,8 +28,8 @@ class TabStudDocsDashboard extends React.Component {
       <>
         <Table
           responsive
-          // bordered
-          // hover
+          bordered
+          hover
           className="my-0 mx-0"
           variant="dark"
           text="light"

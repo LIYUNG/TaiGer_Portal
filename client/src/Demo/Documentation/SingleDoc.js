@@ -25,7 +25,6 @@ class SingleDoc extends React.Component {
         const { data, success } = resp.data;
         if (success) {
           var initialEditorState = null;
-          console.log(data);
           if (data.text) {
             const rawContentFromStore = convertFromRaw(JSON.parse(data.text));
             initialEditorState =

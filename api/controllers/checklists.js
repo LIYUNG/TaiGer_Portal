@@ -20,7 +20,6 @@ const getChecklists = asyncHandler(async (req, res) => {
 
 const createChecklists = asyncHandler(async (req, res) => {
   const { msg } = req.body;
-  console.log(msg);
   const item = await Checklist.findOne({ prop: msg.prop });
   msg.updatedAt = new Date();
   if (!item) {

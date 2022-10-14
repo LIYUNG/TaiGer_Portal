@@ -70,7 +70,6 @@ class CVMLRLOverview extends React.Component {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
-        console.log(data);
         let temp_students = [...this.state.students];
         let student_idx = this.state.students.findIndex(
           (student) => student._id.toString() === data._id.toString()

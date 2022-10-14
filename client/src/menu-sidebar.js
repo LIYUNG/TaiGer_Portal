@@ -71,6 +71,13 @@ export default {
           icon: 'feather icon-file-text'
         },
         {
+          id: 'my-courses',
+          title: 'My Courses',
+          type: 'item',
+          url: '/my-courses',
+          icon: 'feather icon-file-text'
+        },
+        {
           id: 'checklist',
           title: 'Check List',
           type: 'item',

@@ -35,7 +35,7 @@ class NavCollapse extends Component {
       if (this.props.role === 'Agent') {
         if (
           collapse.title === 'Component' ||
-          collapse.title === 'Documentation' ||
+          // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
           return false;
@@ -45,7 +45,7 @@ class NavCollapse extends Component {
       if (this.props.role === 'Editor') {
         if (
           collapse.title === 'Component' ||
-          collapse.title === 'Documentation' ||
+          // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
           return false;
@@ -55,7 +55,7 @@ class NavCollapse extends Component {
       if (this.props.role === 'Student') {
         if (
           collapse.title === 'Component' ||
-          collapse.title === 'Documentation' ||
+          // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
           return false;
@@ -114,7 +114,7 @@ class NavCollapse extends Component {
 
       let navLinkClass = ['nav-link'];
 
-      let navItemClass = ['nav-item', 'pcoded-hasmenu'];
+      let navItemClass = ['nav-item', 'pcoded-hasmenu','text-light'];
       const openIndex = isOpen.findIndex((id) => id === this.props.collapse.id);
       if (openIndex > -1) {
         navItemClass = [...navItemClass, 'active'];

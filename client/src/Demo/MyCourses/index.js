@@ -215,7 +215,7 @@ class CheckList extends React.Component {
                           size="sm"
                           onClick={() => this.AllCollapsetHandler()}
                         >
-                          Collaspse1
+                          Collaspse
                         </Button>
                       ) : (
                         <Button

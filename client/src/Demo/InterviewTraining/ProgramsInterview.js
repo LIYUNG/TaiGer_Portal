@@ -15,7 +15,7 @@ import { getCVMLRLOverview } from '../../api';
 
 class ProgramsInterview extends React.Component {
   render() {
-    console.log(this.props.interviews);
+    // console.log(this.props.interviews);
     const interviews = this.props.interviews.map((intervi, i) => (
       <>
         <tr>

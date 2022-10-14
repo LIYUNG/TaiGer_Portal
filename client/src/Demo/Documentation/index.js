@@ -160,7 +160,7 @@ class ApplicationList extends React.Component {
   handleDeleteDoc = (doc) => {
     deleteDocumentation(this.state.doc_id_toBeDelete).then(
       (resp) => {
-        const { success, data } = resp.data;
+        const { success } = resp.data;
         let documentlists_temp = [...this.state.documentlists];
         let to_be_delete_doc_idx = documentlists_temp.findIndex(
           (doc) => doc._id.toString() === this.state.doc_id_toBeDelete
@@ -229,7 +229,7 @@ class ApplicationList extends React.Component {
           this.setState({
             success,
             documentlists: documentlists_temp,
-            editorState,
+            editorState: '',
             isEdit: !this.state.isEdit,
             isLoaded: true
           });

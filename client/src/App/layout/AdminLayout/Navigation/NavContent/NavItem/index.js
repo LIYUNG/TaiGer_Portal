@@ -13,6 +13,7 @@ class NavItem extends Component {
   menuItemFilterByRole = (itemTitle) => {
     if (this.props.role === 'Admin') {
       if (
+        itemTitle === 'My Courses' ||
         itemTitle === 'Academic Survey' ||
         itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
@@ -30,6 +31,7 @@ class NavItem extends Component {
     }
     if (this.props.role === 'Agent') {
       if (
+        itemTitle === 'My Courses' ||
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'My Applications' ||
@@ -48,6 +50,7 @@ class NavItem extends Component {
     }
     if (this.props.role === 'Editor') {
       if (
+        itemTitle === 'My Courses' ||
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Check List' ||

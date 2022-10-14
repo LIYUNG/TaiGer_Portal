@@ -103,7 +103,6 @@ class EditorDocsProgress extends React.Component {
         this.state.student_id
       ).then(
         (resp) => {
-          console.log(resp.data.data);
           const { data, success } = resp.data;
           if (success) {
             this.setState((state) => ({
@@ -274,8 +273,8 @@ class EditorDocsProgress extends React.Component {
             }
           }
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          this.setState({ error });
         });
     }
   };
@@ -311,8 +310,8 @@ class EditorDocsProgress extends React.Component {
             // alert(res.data.message);
           }
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          this.setState({ error });
         });
     }
   };
@@ -365,7 +364,7 @@ class EditorDocsProgress extends React.Component {
             <Card.Body>
               <Row className="mb-4 mx-0">
                 <Col md={8}>
-                  <b>General Documents (CV, Recommendation Letters)</b>
+                  <b className='text-light'>General Documents (CV, Recommendation Letters)</b>
                 </Col>
               </Row>
               {create_generaldoc_reminder && (

@@ -24,6 +24,7 @@ window.documentlist = {
   uniassist: 'Uni-Assist Instruction',
   visa: 'Visa Instruction'
 };
+
 window.editortodolist = [
   {
     name: 'Waiting ML_Template',

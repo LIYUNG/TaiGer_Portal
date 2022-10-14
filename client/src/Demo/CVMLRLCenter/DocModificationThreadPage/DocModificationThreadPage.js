@@ -42,8 +42,6 @@ class DocModificationThreadPage extends Component {
     accordionKeys: [0] // to expand all]
   };
   componentDidMount() {
-    // console.log(this.props.match.params.documentsthreadId);
-
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
         const { success, data } = resp.data;

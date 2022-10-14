@@ -39,10 +39,6 @@ class EditableFile_Thread extends Component {
     );
   };
 
-  // MouseOver = () => {
-  //   console.log('Mouse Over');
-  // };
-
   render() {
     let fileStatus;
     let documenName;
@@ -101,6 +97,7 @@ class EditableFile_Thread extends Component {
               // >
               <AiOutlineCheck
                 size={24}
+                color="white"
                 style={{ cursor: 'pointer' }}
                 title="Set as final version"
                 onClick={() => this.handleAsFinalFileThread(documenName)}

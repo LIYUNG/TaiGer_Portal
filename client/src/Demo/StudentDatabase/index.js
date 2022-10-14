@@ -3,15 +3,7 @@ import { Row, Col, Card, Spinner } from 'react-bootstrap';
 // import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 // import DEMO from "../../store/constant";
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
 import TabStudDocsDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard';
-// import Card from "../../App/components/MainCard";
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -19,12 +11,7 @@ import {
   getAllStudents,
   getArchivStudents,
   updateArchivStudents,
-  downloadProfile,
-  getAgents,
-  updateAgents,
-  getEditors,
-  updateEditors,
-  deleteFile
+  downloadProfile
 } from '../../api';
 
 class Dashboard extends React.Component {

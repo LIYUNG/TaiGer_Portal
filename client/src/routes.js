@@ -35,6 +35,8 @@ const BaseDocuments = React.lazy(() =>
 const Checklist = React.lazy(() =>
   import('./Demo/CheckList/index')
 );
+
+const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const CVMLRLCenter = React.lazy(() =>
   import("./Demo/CVMLRLCenter/CVMLRLCenter")
 );
@@ -79,9 +81,7 @@ const SingleStudentPage = React.lazy(() =>
   import('./Demo/StudentDatabase/SingleStudentPage')
 );
 const GoogleMap = React.lazy(() => import("./Demo/Maps/GoogleMap/index"));
-// const DocsApplication = React.lazy(() =>
-//   import("./Demo/Documentation/Application/Application")
-// );
+
 const DocsApplication = React.lazy(() =>
   import('./Demo/Documentation/index')
 );
@@ -273,6 +273,12 @@ const routes = [
     exact: true,
     name: 'Check List',
     component: Checklist
+  },
+  {
+    path: '/my-courses',
+    exact: true,
+    name: 'My Courses',
+    component: MyCourses
   },
   {
     path: '/base-documents',

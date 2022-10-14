@@ -1,11 +1,17 @@
 import React from 'react';
 import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
-import CheckListItems from './CheckListItems';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getChecklists, updateChecklistStatus } from '../../api';
-class CheckList extends React.Component {
+import {
+  DataSheetGrid,
+  checkboxColumn,
+  textColumn,
+  keyColumn
+} from 'react-datasheet-grid';
+import 'react-datasheet-grid/dist/style.css';
+class MyCourses extends React.Component {
   state = {
     error: null,
     timeouterror: null,
@@ -16,18 +22,10 @@ class CheckList extends React.Component {
     student: null,
     checklists: [],
     file: '',
-    expand: true,
-    accordionKeys:
-      Object.keys(window.checklist) &&
-      (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-        ? new Array(Object.keys(window.checklist).length)
-            .fill()
-            .map((x, i) => i)
-        : [0] // to expand all]
+    expand: true
   };
 
   componentDidMount() {
-    const checklist = Object.keys(window.checklist);
     getChecklists().then(
       (resp) => {
         const { data, success } = resp.data;
@@ -36,10 +34,7 @@ class CheckList extends React.Component {
             isLoaded: true,
             checklists: data,
             student: this.props.user,
-            success: success,
-            // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
-            accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
-            // accordionKeys: new Array(-1, data.length) // to collapse all
+            success: success
           });
         } else {
           if (resp.status === 401 || resp.status === 500) {
@@ -59,44 +54,7 @@ class CheckList extends React.Component {
         });
       }
     );
-    // this.setState({
-    //   isLoaded: true,
-
-    //   accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
-    //   //   accordionKeys: new Array(-1, data.length), // to collapse all
-    // });
   }
-
-  singleExpandtHandler = (idx) => {
-    let accordionKeys = [...this.state.accordionKeys];
-    accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
-    this.setState((state) => ({
-      ...state,
-      accordionKeys: accordionKeys
-    }));
-  };
-  AllCollapsetHandler = () => {
-    const checklist = Object.keys(window.checklist);
-    this.setState((state) => ({
-      ...state,
-      expand: false,
-      accordionKeys:
-        checklist &&
-        (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-          ? new Array(checklist.length).fill().map((x, i) => -1)
-          : [-1] // to expand all]
-    }));
-  };
-  AllExpandtHandler = () => {
-    const checklist = Object.keys(window.checklist);
-    this.setState((state) => ({
-      ...state,
-      expand: true,
-      accordionKeys:
-        checklist && new Array(checklist.length).fill().map((x, i) => i)
-      // to expand all]
-    }));
-  };
 
   handleClickChangeStatus = (e, student_id, item) => {
     e.preventDefault();
@@ -129,6 +87,16 @@ class CheckList extends React.Component {
   };
 
   render() {
+    const data = [
+      { active: true, firstName: 'Elon', lastName: 'Musk' },
+      { active: false, firstName: 'Jeff', lastName: 'Bezos' }
+    ];
+
+    const columns = [
+      { ...keyColumn('active', checkboxColumn), title: 'Active' },
+      { ...keyColumn('firstName', textColumn), title: 'First name' },
+      { ...keyColumn('lastName', textColumn), title: 'Last name' }
+    ];
     const { unauthorizederror, timeouterror, isLoaded, accordionKeys } =
       this.state;
     const style = {
@@ -161,45 +129,6 @@ class CheckList extends React.Component {
       );
     }
 
-    const checklist = Object.keys(window.checklist);
-    const student_editor = checklist.map((item, i) => (
-      <Card className="mb-2 mx-0" key={i}>
-        <Card.Header onClick={() => this.singleExpandtHandler(i)}>
-          <Card.Title
-            aria-controls={'accordion' + i}
-            aria-expanded={this.state.accordionKeys[i] === i}
-          >
-            {this.props.user.role === 'Student' &&
-              this.props.user.checklist[item].name}
-            {window.checklist[item]}
-          </Card.Title>
-        </Card.Header>
-        <CheckListItems
-          idx={i}
-          name={
-            this.state.checklists.find(
-              (checklist) => checklist.prop === item
-            ) &&
-            this.state.checklists.find((checklist) => checklist.prop === item)
-              .name
-          } // TODO
-          item={item} // TODO
-          message={
-            this.state.checklists.find(
-              (checklist) => checklist.prop === item
-            ) &&
-            this.state.checklists.find((checklist) => checklist.prop === item)
-              .text
-          } // TODO
-          accordionKeys={this.state.accordionKeys}
-          singleExpandtHandler={this.singleExpandtHandler}
-          role={this.props.user.role}
-          student={this.state.student}
-          handleClickChangeStatus={this.handleClickChangeStatus}
-        />
-      </Card>
-    ));
-
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -208,24 +137,7 @@ class CheckList extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">Check List</Col>
-                    <Col md={{ span: 2, offset: 0 }}>
-                      {this.state.expand ? (
-                        <Button
-                          size="sm"
-                          onClick={() => this.AllCollapsetHandler()}
-                        >
-                          Collaspse
-                        </Button>
-                      ) : (
-                        <Button
-                          size={'sm'}
-                          onClick={() => this.AllExpandtHandler()}
-                        >
-                          Expand
-                        </Button>
-                      )}
-                    </Col>
+                    <Col className="my-0 mx-0 text-light">My Courses</Col>
                   </Row>
                 </Card.Title>
               </Card.Header>
@@ -233,11 +145,25 @@ class CheckList extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={12}>{student_editor}</Col>
+          <Col sm={12}>
+            <Card className="mb-2 mx-0">
+              {/* <Card.Header>
+                <Card.Title></Card.Title>
+              </Card.Header> */}
+              <Card.Body>
+                <Row>Please fill the courses</Row>
+                <DataSheetGrid
+                  value={data}
+                  // onChange={setData}
+                  columns={columns}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
       </Aux>
     );
   }
 }
 
-export default CheckList;
+export default MyCourses;

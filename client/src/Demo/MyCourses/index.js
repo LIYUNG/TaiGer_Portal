@@ -155,14 +155,28 @@ export default function MyCourses(props) {
               </Card.Header> */}
             <Card.Body>
               <Row>
-                <Col>Please fill the courses</Col>
+                <Col>
+                  Please fill the courses you have taken. (Ignore if you are
+                  high school student)
+                </Col>
               </Row>
               <br />
               <DataSheetGrid
+                height={6000}
+                disableContextMenu={true}
+                disableExpandSelection={false}
+                headerRowHeight={30}
+                rowHeight={25}
                 value={data}
+                autoAddRow={true}
                 onChange={setData}
                 columns={columns}
               />
+              <Row>
+                <Col>
+                  Last update at:
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         </Col>

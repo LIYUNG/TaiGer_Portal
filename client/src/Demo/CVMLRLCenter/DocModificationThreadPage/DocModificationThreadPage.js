@@ -262,6 +262,22 @@ class DocModificationThreadPage extends Component {
     }));
   };
 
+  getRequirement = (thread) => {
+    if (thread.file_type.includes('Essay')) {
+      if (thread.program_id.essay_required) {
+        return <p>{this.state.thread.program_id.essay_requirements}</p>;
+      } else {
+        return <p>No</p>;
+      }
+    } else if (thread.file_type.includes('ML')) {
+      if (thread.program_id.ml_required) {
+        return <p>{this.state.thread.program_id.ml_requirements}</p>;
+      } else {
+        return <p>No</p>;
+      }
+    }
+  };
+
   render() {
     const { pagenotfounderror, unauthorizederror, timeouterror, isLoaded } =
       this.state;
@@ -385,14 +401,10 @@ class DocModificationThreadPage extends Component {
                   <b>Requirements:</b>
                 </h6>
                 {this.state.thread.program_id ? (
-                  this.state.thread.program_id.ml_required ? (
-                    this.state.thread.program_id.ml_requirements
-                  ) : (
-                    <p>'No'</p>
-                  )
+                  <>{this.getRequirement(this.state.thread)}</>
                 ) : (
                   <>
-                    <p>CV/RL requirement</p>
+                    <p>No</p>
                   </>
                 )}
                 <h6>

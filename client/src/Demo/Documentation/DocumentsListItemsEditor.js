@@ -2,7 +2,20 @@ import React from 'react';
 
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
+import {
+  convertToRaw,
+  convertFromRaw,
+  ContentState,
+  EditorState,
+  convertFromHTML
+} from 'draft-js';
+// const { contentBlocks, entityMap } = convertFromHTML(
+//   this.getInputValue() || ''
+// );
+// const contentState = ContentState.createFromBlockArray(
+//   contentBlocks,
+//   entityMap
+// );
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
@@ -37,6 +50,7 @@ class DocumentsListItemsEditor extends React.Component {
               spellCheck={true}
               // onFocus={onClick={this.handle}}
               placeholder={'Write comments'}
+              editorState={this.state.editorState}
               editorState={this.state.editorState}
               onEditorStateChange={this.handleEditorChange}
               wrapperClassName="wrapper-class"

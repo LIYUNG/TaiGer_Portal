@@ -1,100 +1,220 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
+import {
+  convertToRaw,
+  convertFromRaw,
+  EditorState,
+  RichUtils,
+  CompositeDecorator,
+  AtomicBlockUtils,
+  Entity
+} from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
-
+import { uploadImageDraftEditorCallBack } from '../../api';
+// import S3 from 'react-aws-s3';
+import { uploadFile } from 'react-s3';
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import { Row, Col, Button, Spinner } from 'react-bootstrap';
-import { updateChecklistDocument } from '../../api';
+// import createImagePlugin from '@draft-js-plugins/image';
+// const imagePlugin = createImagePlugin();
+window.Buffer = window.Buffer || require('buffer').Buffer;
 
-class CheckListItemsEditor extends React.Component {
-  state = {
-    editorState: null
-  };
-  componentDidMount() {
-    this.setState((state) => ({
-      ...state,
-      editorState: this.props.editorState
-    }));
-  }
-
-  handleEditorChange = (newstate) => {
-    this.setState((state) => ({ ...state, editorState: newstate }));
-  };
-
+class MediaComponent extends React.Component {
   render() {
+    const { block, contentState } = this.props;
+    const { foo } = this.props.blockProps;
+    const data = contentState.getEntity(block.getEntityAt(0)).getData();
+
+    const emptyHtml = ' ';
     return (
-      <>
-        <Row style={{ textDecoration: 'none' }}>
-          <Col className="my-0 mx-0">
-            <Editor
-              // toolbarOnFocus
-              // toolbarHidden
-              spellCheck={true}
-              // onFocus={onClick={this.handle}}
-              placeholder={'Write comments'}
-              editorState={this.state.editorState}
-              onEditorStateChange={this.handleEditorChange}
-              wrapperClassName="wrapper-class"
-              editorClassName="editor-class"
-              toolbarClassName="toolbar-class"
-              toolbar={{
-                // options: [
-                //   'inline',
-                //   'fontSize',
-                //   'fontFamily',
-                //   'list',
-                //   'textAlign',
-                //   // "colorPicker",
-                //   'link',
-                //   'image'
-                //   // "file",
-                // ],
-                link: {
-                  defaultTargetOption: '_blank',
-                  popupClassName: 'mail-editor-link'
-                },
-                image: {
-                  urlEnabled: true,
-                  uploadEnabled: true,
-                  uploadCallback: this.uploadImageCallBack,
-                  alignmentEnabled: true,
-                  defaultSize: {
-                    height: 'auto',
-                    width: 'auto'
-                  },
-                  inputAccept:
-                    'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
-                }
-              }}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col className="my-0 mx-4">
-            <Button
-              onClick={(e) =>
-                this.props.handleClickSave(e, this.state.editorState)
-              }
-            >
-              Save
-            </Button>
-            <Button
-              onClick={(e) =>
-                this.props.handleClickCancel(e, this.state.editorState)
-              }
-            >
-              Cancel
-            </Button>
-          </Col>
-        </Row>
-      </>
+      <div>
+        {emptyHtml}
+        <img
+          src={data.src}
+          alt={data.alt || ''}
+          style={{
+            height: data.height || 'auto',
+            width: data.width || 'auto'
+          }}
+        />
+      </div>
     );
   }
+}
+
+function CheckListItemsEditor(props) {
+  let [statedata, setStatedata] = useState({
+    editorState: null
+  });
+
+  useEffect(() => {
+    setStatedata((state) => ({
+      ...state,
+      editorState: props.editorState
+    }));
+  }, []);
+
+  const handleEditorChange = (newstate) => {
+    const contentState = statedata.editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'image',
+      'IMMUTABLE',
+      {}
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    // const newEditorState = EditorState.set(this.state.editorState, {
+    //   currentContent: contentStateWithEntity
+    // });
+    // this.setState((state) => ({
+    //   ...state,
+    //   editorState: AtomicBlockUtils.insertAtomicBlock(
+    //     newEditorState,
+    //     entityKey,
+    //     ''
+    //   )
+    // }));
+    // this.setState((state) => ({ ...state, editorState: newstate }));
+    setStatedata((state) => ({
+      ...state,
+      editorState: newstate
+      // editorState: AtomicBlockUtils.insertAtomicBlock(newstate, entityKey, ' ')
+    }));
+  };
+  const config = {
+    bucketName: process.env.REACT_APP_BUCKET_NAME,
+    accessKeyId: process.env.REACT_APP_ACCESS,
+    secretAccessKey: process.env.REACT_APP_SECRET
+  };
+  const handlePastedFiles = (files) => {
+    const formData = new FormData();
+    formData.append('file', files[0]);
+    const ReactS3Client = new S3(config);
+    // the name of the file uploaded is used to upload it to S3
+    console.log(formData.name);
+    ReactS3Client.uploadFile(formData, '1234')
+      .then((data) => console.log(data.location))
+      .catch((err) => console.error(err));
+
+    // uploadImageDraftEditorCallBack(formData)
+    //   .then((resp) => {
+    //     const { success, data } = resp.data;
+    //     if (res) {
+    //       // setEditorState(insertImage(data.file)); //created below
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+  };
+  //DraftJ
+  const uploadImageCallBack = (file) => {
+    // const formData = new FormData();
+    // formData.append('file', file[0]);
+    const config = {
+      bucketName: process.env.REACT_APP_BUCKET_NAME,
+      // dirName: 'img',
+      region: 'us-east-1',
+      accessKeyId: process.env.REACT_APP_ACCESS,
+      secretAccessKey: process.env.REACT_APP_SECRET
+    };
+    console.log(config);
+    // const ReactS3Client = new S3(config);
+    // // the name of the file uploaded is used to upload it to S3
+    console.log(file);
+    console.log(file.name);
+    uploadFile(file, config)
+      .then((data) => console.log(data.location))
+      .catch((err) => console.error(err));
+    // return new Promise((resolve, reject) => {
+    //   resolve({ data: { link: data.location } });
+    // });
+  };
+  const myBlockRenderer = (contentBlock) => {
+    const type = contentBlock.getType();
+
+    // Convert image type to mediaComponent
+    if (type === 'atomic') {
+      return {
+        component: MediaComponent,
+        editable: false,
+        props: {
+          foo: 'bar'
+        }
+      };
+    }
+  };
+  return (
+    <>
+      <Row style={{ textDecoration: 'none' }}>
+        <Col className="my-0 mx-0">
+          <Editor
+            // toolbarOnFocus
+            // toolbarHidden
+            spellCheck={true}
+            // onFocus={onClick={this.handle}}
+            handlePastedFiles={handlePastedFiles}
+            // plugins={[imagePlugin]}
+            blockRendererFn={myBlockRenderer}
+            placeholder={'Write comments'}
+            editorState={statedata.editorState}
+            onEditorStateChange={handleEditorChange}
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            toolbarClassName="toolbar-class"
+            toolbar={{
+              // options: [
+              //   'inline',
+              //   'fontSize',
+              //   'fontFamily',
+              //   'list',
+              //   'textAlign',
+              //   // "colorPicker",
+              //   'link',
+              //   'image'
+              //   // "file",
+              // ],
+              link: {
+                defaultTargetOption: '_blank',
+                popupClassName: 'mail-editor-link'
+              },
+              image: {
+                urlEnabled: true,
+                uploadEnabled: true,
+                uploadCallback: uploadImageCallBack,
+                alignmentEnabled: true,
+                defaultSize: {
+                  height: 'auto',
+                  width: 'auto'
+                },
+                alt: { present: true.valueOf, mandatory: false },
+                inputAccept:
+                  'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
+              }
+            }}
+          />
+          {/* {JSON.stringify(statedata.editorState)} */}
+        </Col>
+      </Row>
+      <Row>
+        <Col className="my-0 mx-4">
+          <Button
+            onClick={(e) => props.handleClickSave(e, statedata.editorState)}
+          >
+            Save
+          </Button>
+          <Button
+            onClick={(e) => props.handleClickCancel(e, statedata.editorState)}
+          >
+            Cancel
+          </Button>
+        </Col>
+      </Row>
+    </>
+  );
 }
 
 export default CheckListItemsEditor;

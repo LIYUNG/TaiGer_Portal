@@ -119,6 +119,10 @@ export const deleteGenralFileThread = (documentsthreadId, studentId) =>
 export const updateChecklistDocument = (msg) =>
   request.post(`/api/checklists`, { msg });
 
+export const uploadImageDraftEditorCallBack = (msg) =>
+  request.post(`/api/upload`, { msg });
+
+
 export const deleteProgramSpecificFileThread = (
   documentsthreadId,
   programId,

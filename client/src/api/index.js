@@ -122,7 +122,6 @@ export const updateChecklistDocument = (msg) =>
 export const uploadImageDraftEditorCallBack = (msg) =>
   request.post(`/api/upload`, { msg });
 
-
 export const deleteProgramSpecificFileThread = (
   documentsthreadId,
   programId,
@@ -141,6 +140,8 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
   });
 
 // Documentation APIs
+export const uploadImage = (file) =>
+  request.post(`/api/docs/upload/image`, file);
 export const getCategorizedDocumentation = (category) =>
   request.get(`/api/docs/${category}`);
 export const deleteDocumentation = (doc_id) =>

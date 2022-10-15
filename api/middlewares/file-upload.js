@@ -5,7 +5,7 @@ const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const { Role, Student, User } = require('../models/User');
 const { asyncHandler } = require('../middlewares/error-handler');
-
+const uuid = require('uuid');
 const { ErrorResponse } = require('../common/errors');
 const {
   UPLOAD_PATH,
@@ -23,6 +23,8 @@ const ALLOWED_MIME_TYPES = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ];
+
+const ALLOWED_MIME_IMAGE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 
 var aws = require('aws-sdk');
 var multerS3 = require('multer-s3');
@@ -127,7 +129,37 @@ const storage_s3 = multerS3({
       });
   }
 });
+const doc_image_s3 = multerS3({
+  s3,
+  bucket: function (req, file, cb) {
+    var directory = AWS_S3_BUCKET_NAME;
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname, path: '' });
+  },
+  key: function (req, file, cb) {
+    var id = uuid.v4();
+    const fileName = id + path.extname(file.originalname);
+    cb(null, fileName);
+  }
+});
 
+const upload_doc_image_s3 = multer({
+  storage: doc_image_s3,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
+      );
+    const fileSize = parseInt(req.headers['content-length']);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    }
+    cb(null, true);
+  }
+});
 /**
  * currently used by route
  *   /account/files/:studentId/:docName (student upload)
@@ -359,7 +391,6 @@ const upload_transcript_s3 = multer({
   }
 });
 
-
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'upload/');
@@ -372,6 +403,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 module.exports = {
+  imageUpload: upload_doc_image_s3.single('file'),
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
   TranscriptExcelUpload: upload_transcript_s3.single('file'),

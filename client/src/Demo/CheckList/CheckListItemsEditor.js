@@ -14,7 +14,7 @@ import {
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
-import { uploadImageDraftEditorCallBack } from '../../api';
+import { uploadImageDraftEditorCallBack, uploadImage } from '../../api';
 // import S3 from 'react-aws-s3';
 import { uploadFile } from 'react-s3';
 // import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
@@ -84,54 +84,22 @@ function CheckListItemsEditor(props) {
       // editorState: AtomicBlockUtils.insertAtomicBlock(newstate, entityKey, ' ')
     }));
   };
-  const config = {
-    bucketName: process.env.REACT_APP_BUCKET_NAME,
-    accessKeyId: process.env.REACT_APP_ACCESS,
-    secretAccessKey: process.env.REACT_APP_SECRET
-  };
-  const handlePastedFiles = (files) => {
-    const formData = new FormData();
-    formData.append('file', files[0]);
-    const ReactS3Client = new S3(config);
-    // the name of the file uploaded is used to upload it to S3
-    console.log(formData.name);
-    ReactS3Client.uploadFile(formData, '1234')
-      .then((data) => console.log(data.location))
-      .catch((err) => console.error(err));
 
-    // uploadImageDraftEditorCallBack(formData)
-    //   .then((resp) => {
-    //     const { success, data } = resp.data;
-    //     if (res) {
-    //       // setEditorState(insertImage(data.file)); //created below
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  };
+  const handlePastedFiles = (files) => {};
   //DraftJ
   const uploadImageCallBack = (file) => {
-    // const formData = new FormData();
-    // formData.append('file', file[0]);
-    const config = {
-      bucketName: process.env.REACT_APP_BUCKET_NAME,
-      // dirName: 'img',
-      region: 'us-east-1',
-      accessKeyId: process.env.REACT_APP_ACCESS,
-      secretAccessKey: process.env.REACT_APP_SECRET
-    };
-    console.log(config);
-    // const ReactS3Client = new S3(config);
-    // // the name of the file uploaded is used to upload it to S3
-    console.log(file);
-    console.log(file.name);
-    uploadFile(file, config)
-      .then((data) => console.log(data.location))
-      .catch((err) => console.error(err));
-    // return new Promise((resolve, reject) => {
-    //   resolve({ data: { link: data.location } });
-    // });
+    const formData = new FormData();
+    formData.append('file', file);
+    return new Promise((resolve, reject) => {
+      console.log('Uploading image...');
+      uploadImage(formData)
+        .then((res) => {
+          resolve({ data: { link: res.data.data } });
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   };
   const myBlockRenderer = (contentBlock) => {
     const type = contentBlock.getType();

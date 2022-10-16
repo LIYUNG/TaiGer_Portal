@@ -16,14 +16,8 @@ class SingleProgramView extends React.Component {
               readOnly={true}
               handleClickSave={this.props.handleClickSave}
               handleClickCancel={this.props.handleClickCancel}
-              contentJson={this.props.editorState}
-            />
-            {/* <Editor
-              spellCheck={true}
-              readOnly={true}
-              toolbarHidden={true}
               editorState={this.props.editorState}
-            /> */}
+            />
             {this.props.role === 'Admin' ||
               (this.props.role === 'Agent' && (
                 <>
@@ -32,7 +26,7 @@ class SingleProgramView extends React.Component {
                       <p className="my-0">Updated by</p>
                     </Col>
                     <Col md={6}>
-                      <p className="my-0">{this.props.document}</p>
+                      <p className="my-0">{this.props.editorState.time}</p>
                     </Col>
                   </Row>
                   <Row>

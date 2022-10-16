@@ -45,6 +45,7 @@ const getDocumentation = asyncHandler(async (req, res) => {
 
 const createDocumentation = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
+  console.log(fields);
   const newDoc = await Documentation.create(fields);
   return res.send({ success: true, data: newDoc });
 });
@@ -59,6 +60,8 @@ const uploadDocImage = asyncHandler(async (req, res) => {
 });
 
 const updateDocumentation = asyncHandler(async (req, res) => {
+  console.log("updateDocumentation");
+  console.log(req.body);
   const updated_doc = await Documentation.findByIdAndUpdate(
     req.params.id,
     req.body,

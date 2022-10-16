@@ -4,7 +4,6 @@ import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 
 class SingleProgramEdit extends React.Component {
   state = {
-    editorState: this.props.editorState,
     doc_title: this.props.document_title
   };
   handleChange = (e) => {
@@ -42,7 +41,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
           </Card.Body>
           <DocumentsListItemsEditor
-            editorState={this.state.editorState}
+            editorState={this.props.editorState}
             handleClickSave={this.handleClickSave}
             handleClickCancel={this.props.handleClickCancel}
             role={this.props.role}

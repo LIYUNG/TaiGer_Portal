@@ -36,6 +36,7 @@ const EditorNew = (props) => {
   // TODO: input json format
   const [editorData, setEditorData] = React.useState(props.contentJson);
   // This will run only once
+  var editor;
   useEffect(() => {
     if (!ejInstance.current) {
       initEditor();
@@ -45,21 +46,22 @@ const EditorNew = (props) => {
       ejInstance.current = null;
     };
   }, []);
-
   const initEditor = () => {
-    var editor = new EditorJS({
+    editor = new EditorJS({
       holder: 'editorjs',
       logLevel: 'ERROR',
-      data: editorData,
+      data: props.editorState,
       onReady: () => {
         ejInstance.current = editor;
       },
-      onChange: props.handleEditorChange,
-      // onChange: async () => {
-      //   let content = await this.editorjs.saver.save();
-      //   // Put your logic here to save this data to your DB
-      //   setEditorData(content);
-      // },
+      // onChange: props.handleEditorChange,
+      onChange: async (api, event) => {
+        api.saver.save().then((outputData) => {
+          // console.log('outputData ', outputData);
+          props.handleEditorChange(outputData);
+        });
+
+      },
       readOnly: props.readOnly,
       autofocus: true,
       minHeight: 30,
@@ -136,10 +138,33 @@ const EditorNew = (props) => {
       }
     });
   };
+  const onSave = () => {
+    editor
+      .save()
+      .then((outputData) => {
+        console.log('Article data: ', outputData);
+        props.handleClickSave(e, outputData);
+      })
+      .catch((error) => {
+        console.log('Saving failed: ', error);
+      });
+  };
   return (
     <React.Fragment>
       <div id={'editorjs'}></div>
-      <div>{JSON.stringify(props.contentJson)}</div>
+      {/* <div>{JSON.stringify(props.editorState)}</div> */}
+      {props.readOnly ? (
+        <></>
+      ) : (
+        <Row>
+          <Col className="my-0 mx-4">
+            <Button onClick={(e) => props.handleClickSave(e, props.editorState)}>
+              Save
+            </Button>
+            <Button onClick={(e) => props.handleClickCancel(e)}>Cancel</Button>
+          </Col>
+        </Row>
+      )}
     </React.Fragment>
   );
 };

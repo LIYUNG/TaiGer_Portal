@@ -138,17 +138,7 @@ const EditorNew = (props) => {
       }
     });
   };
-  const onSave = () => {
-    editor
-      .save()
-      .then((outputData) => {
-        console.log('Article data: ', outputData);
-        props.handleClickSave(e, outputData);
-      })
-      .catch((error) => {
-        console.log('Saving failed: ', error);
-      });
-  };
+
   return (
     <React.Fragment>
       <div id={'editorjs'}></div>

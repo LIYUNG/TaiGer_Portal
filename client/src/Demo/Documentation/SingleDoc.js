@@ -30,7 +30,6 @@ class SingleDoc extends React.Component {
             initialEditorState = {};
           }
           initialEditorState = JSON.parse(data.text);
-          console.log(initialEditorState);
           this.setState({
             isLoaded: true,
             document_title: data.title,
@@ -71,6 +70,7 @@ class SingleDoc extends React.Component {
         if (success) {
           this.setState({
             success,
+            document_title: data.title,
             editorState,
             isEdit: !this.state.isEdit,
             isLoaded: true

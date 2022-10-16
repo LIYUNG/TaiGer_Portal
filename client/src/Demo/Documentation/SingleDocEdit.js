@@ -6,10 +6,13 @@ class SingleProgramEdit extends React.Component {
   state = {
     doc_title: this.props.document_title
   };
+  componentDidMount() {
+    this.setState({ doc_title: this.props.document_title });
+  }
   handleChange = (e) => {
     e.preventDefault();
     var doc_title_temp = { ...this.state.doc_title };
-    doc_title_temp[e.target.id] = e.target.value;
+    doc_title_temp = e.target.value;
     this.setState((state) => ({
       ...state,
       doc_title: doc_title_temp

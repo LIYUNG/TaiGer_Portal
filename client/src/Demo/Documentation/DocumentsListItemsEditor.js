@@ -17,6 +17,7 @@ import {
 //   entityMap
 // );
 import { Editor } from 'react-draft-wysiwyg';
+import EditorNew from '../../components/EditorJs/EditorNew';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
 
@@ -76,7 +77,8 @@ function DocumentsListItemsEditor(props) {
     <>
       <Row style={{ textDecoration: 'none' }}>
         <Col className="my-0 mx-0">
-          <Editor
+          <EditorNew />
+          {/* <Editor
             // toolbarOnFocus
             // toolbarHidden
             spellCheck={true}
@@ -142,7 +144,7 @@ function DocumentsListItemsEditor(props) {
                   'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
               }
             }}
-          />
+          /> */}
         </Col>
       </Row>
       <Row>

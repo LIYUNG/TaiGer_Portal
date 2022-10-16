@@ -107,13 +107,7 @@ class DocumentsListItems extends React.Component {
 
   render() {
     const { timeouterror, unauthorizederror, error, isLoaded } = this.state;
-    if (error) {
-      return (
-        <div>
-          Error: your session is timeout! Please refresh the page and Login
-        </div>
-      );
-    }
+
     if (timeouterror) {
       return (
         <div>

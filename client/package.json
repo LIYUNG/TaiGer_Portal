@@ -74,6 +74,12 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@editorjs/editorjs": "^2.25.0",
+    "@editorjs/embed": "^2.5.3",
+    "@editorjs/header": "^2.6.2",
+    "@editorjs/image": "^2.6.2",
+    "@editorjs/list": "^1.7.0",
+    "@editorjs/table": "^2.0.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.7",
     "jest": "^29.2.0",

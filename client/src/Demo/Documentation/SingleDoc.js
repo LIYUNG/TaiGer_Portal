@@ -25,19 +25,21 @@ class SingleDoc extends React.Component {
         const { data, success } = resp.data;
         if (success) {
           var initialEditorState = null;
-          if (data.text) {
-            const rawContentFromStore = convertFromRaw(JSON.parse(data.text));
-            initialEditorState =
-              EditorState.createWithContent(rawContentFromStore);
-          } else {
-            initialEditorState = EditorState.createEmpty();
-          }
+          // if (data.text) {
+          //   const rawContentFromStore = convertFromRaw(JSON.parse(data.text));
+          //   initialEditorState =
+          //     EditorState.createWithContent(rawContentFromStore);
+          // } else {
+          //   initialEditorState = EditorState.createEmpty();
+          // }
+          initialEditorState = JSON.parse(data.text);
+          // ConvertedContent = JSON.parse(data.text);
 
           this.setState({
             isLoaded: true,
             document_title: data.title,
             editorState: initialEditorState,
-            ConvertedContent: initialEditorState,
+            // ConvertedContent: initialEditorState,
             success: success
           });
         } else {
@@ -65,9 +67,10 @@ class SingleDoc extends React.Component {
   };
   handleClickSave = (e, doc_title, editorState) => {
     e.preventDefault();
-    const message = JSON.stringify(
-      convertToRaw(editorState.getCurrentContent())
-    );
+    // const message = JSON.stringify(
+    //   convertToRaw(editorState.getCurrentContent())
+    // );
+    const message = JSON.stringify(editorState);
     const msg = { title: doc_title, prop: this.props.item, text: message };
     updateDocumentation(this.props.match.params.documentation_id, msg).then(
       (resp) => {

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { Editor } from 'react-draft-wysiwyg';
+import EditorNew from '../../components/EditorJs/EditorNew';
+
 class SingleProgramView extends React.Component {
   render() {
     return (
@@ -10,12 +12,18 @@ class SingleProgramView extends React.Component {
             <Card.Title>{this.props.document_title}</Card.Title>
           </Card.Header>
           <Card.Body>
-            <Editor
+            <EditorNew
+              readOnly={true}
+              handleClickSave={this.props.handleClickSave}
+              handleClickCancel={this.props.handleClickCancel}
+              contentJson={this.props.editorState}
+            />
+            {/* <Editor
               spellCheck={true}
               readOnly={true}
               toolbarHidden={true}
               editorState={this.props.editorState}
-            />
+            /> */}
             {this.props.role === 'Admin' ||
               (this.props.role === 'Agent' && (
                 <>

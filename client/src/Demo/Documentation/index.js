@@ -69,13 +69,8 @@ class ApplicationList extends React.Component {
         });
       }
     );
-    // this.setState({
-    //   isLoaded: true,
-
-    //   accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
-    //   //   accordionKeys: new Array(-1, data.length), // to collapse all
-    // });
   }
+  
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.match.params.category !== this.props.match.params.category) {
       getCategorizedDocumentation(this.props.match.params.category).then(
@@ -112,6 +107,7 @@ class ApplicationList extends React.Component {
       );
     }
   }
+
   singleExpandtHandler = (idx) => {
     let accordionKeys = [...this.state.accordionKeys];
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
@@ -120,6 +116,7 @@ class ApplicationList extends React.Component {
       accordionKeys: accordionKeys
     }));
   };
+
   AllCollapsetHandler = () => {
     const checklist = Object.keys(window.checklist);
     this.setState((state) => ({
@@ -132,6 +129,7 @@ class ApplicationList extends React.Component {
           : [-1] // to expand all]
     }));
   };
+
   AllExpandtHandler = () => {
     const checklist = Object.keys(window.checklist);
     this.setState((state) => ({
@@ -150,9 +148,11 @@ class ApplicationList extends React.Component {
       doc_title: value
     }));
   };
+
   handleClick = () => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
+
   handleClickAdd = (e) => {
     e.preventDefault();
   };
@@ -200,20 +200,27 @@ class ApplicationList extends React.Component {
       SetDeleteDocModel: true
     }));
   };
+
   closeDeleteDocModalWindow = (e) => {
     this.setState((state) => ({
       ...state,
       SetDeleteDocModel: false
     }));
   };
+
   handleClickCancel = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
+
   handleClickSave = (e, editorState) => {
     e.preventDefault();
-    const message = JSON.stringify(
-      convertToRaw(editorState.getCurrentContent())
-    );
+    // react-draftjs-wysiwyg
+    // const message = JSON.stringify(
+    //   convertToRaw(editorState.getCurrentContent())
+    // );
+
+    // Editorjs. editorState is in JSON form
+    const message = JSON.stringify(editorState);
     const msg = {
       title: this.state.doc_title,
       category: this.props.match.params.category,
@@ -344,6 +351,7 @@ class ApplicationList extends React.Component {
                     editorState={this.state.editorState}
                     handleClickSave={this.handleClickSave}
                     handleClickCancel={this.handleClickCancel}
+                    // readOnlyMode={this.readOnlyMode}
                     role={this.props.role}
                   />
                 </>

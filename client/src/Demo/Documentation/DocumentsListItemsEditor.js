@@ -34,15 +34,36 @@ function DocumentsListItemsEditor(props) {
     setStatedata((state) => ({
       ...state,
       editorState: props.editorState
+      // editorState: {
+      //   time: new Date().getTime(),
+      //   blocks: [
+      //     {
+      //       type: 'header',
+      //       data: {
+      //         text: 'This is my awesome editor!',
+      //         level: 1
+      //       }
+      //     }
+      //   ]
+      // }
     }));
   }, []);
 
-  const handleEditorChange = (newstate) => {
+  const handleEditorChange = (editorjs) => {
+    let content = editorjs.saver.save();
+    // Put your logic here to save this data to your DB
+    console.log(JSON.stringify(content));
     setStatedata((state) => ({
       ...state,
-      editorState: newstate
+      editorState: content
       // editorState: AtomicBlockUtils.insertAtomicBlock(newstate, entityKey, ' ')
     }));
+
+    // setStatedata((state) => ({
+    //   ...state,
+    //   editorState: newstate
+    //   // editorState: AtomicBlockUtils.insertAtomicBlock(newstate, entityKey, ' ')
+    // }));
   };
 
   const uploadImageCallBack = (file) => {
@@ -77,7 +98,13 @@ function DocumentsListItemsEditor(props) {
     <>
       <Row style={{ textDecoration: 'none' }}>
         <Col className="my-0 mx-0">
-          <EditorNew />
+          <EditorNew
+            readOnly={false}
+            handleClickSave={props.handleClickSave}
+            handleEditorChange={handleEditorChange}
+            handleClickCancel={props.handleClickCancel}
+            contentJson={statedata.editorState}
+          />
           {/* <Editor
             // toolbarOnFocus
             // toolbarHidden
@@ -154,11 +181,7 @@ function DocumentsListItemsEditor(props) {
           >
             Save
           </Button>
-          <Button
-            onClick={(e) => props.handleClickCancel(e, statedata.editorState)}
-          >
-            Cancel
-          </Button>
+          <Button onClick={(e) => props.handleClickCancel(e)}>Cancel</Button>
         </Col>
       </Row>
     </>

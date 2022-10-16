@@ -1,11 +1,19 @@
 import React, { useEffect, useRef } from 'react';
-import { useCookies } from 'react-cookie';
+import { Row, Col, Spinner, Button, Card, Form, Modal } from 'react-bootstrap';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Embed from '@editorjs/embed';
 import ImageTool from '@editorjs/image';
 import Table from '@editorjs/table';
+import Marker from '@editorjs/marker';
+import InlineCode from '@editorjs/inline-code';
+import Link from '@editorjs/link';
+import Delimiter from '@editorjs/delimiter';
+import CodeTool from '@editorjs/code';
+import Quote from '@editorjs/quote';
+import Underline from '@editorjs/underline';
+
 import { uploadImage } from '../../api';
 
 const DEFAULT_INITIAL_DATA = () => {
@@ -25,8 +33,8 @@ const DEFAULT_INITIAL_DATA = () => {
 
 const EditorNew = (props) => {
   const ejInstance = useRef();
-  const [editorData, setEditorData] = React.useState(DEFAULT_INITIAL_DATA);
-  const [cookies, setCookie, removeCookie] = useCookies(['x-auth']);
+  // TODO: input json format
+  const [editorData, setEditorData] = React.useState(props.contentJson);
   // This will run only once
   useEffect(() => {
     if (!ejInstance.current) {
@@ -37,20 +45,7 @@ const EditorNew = (props) => {
       ejInstance.current = null;
     };
   }, []);
-  // const uploadImageCallBack = (file) => {
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-  //   return new Promise((resolve, reject) => {
-  //     console.log('Uploading image...');
-  //     uploadImage(formData)
-  //       .then((res) => {
-  //         resolve({ data: { link: res.data.data } });
-  //       })
-  //       .catch((error) => {
-  //         reject(error);
-  //       });
-  //   });
-  // };
+
   const initEditor = () => {
     var editor = new EditorJS({
       holder: 'editorjs',
@@ -59,36 +54,36 @@ const EditorNew = (props) => {
       onReady: () => {
         ejInstance.current = editor;
       },
-      onChange: async () => {
-        let content = await this.editorjs.saver.save();
-        // Put your logic here to save this data to your DB
-        setEditorData(content);
-      },
+      onChange: props.handleEditorChange,
+      // onChange: async () => {
+      //   let content = await this.editorjs.saver.save();
+      //   // Put your logic here to save this data to your DB
+      //   setEditorData(content);
+      // },
+      readOnly: props.readOnly,
       autofocus: true,
+      minHeight: 30,
       tools: {
         header: {
           class: Header,
           config: {
             placeholder: 'Enter a header',
-            levels: [2, 3, 4],
+            levels: [2, 3, 4, 5, 6],
             defaultLevel: 3
-          },
-          inlineToolbar: ['link']
+          }
+          // inlineToolbar: ['link']
         },
         list: {
           class: List,
           inlineToolbar: ['link', 'bold']
         },
-        embed: {
-          class: Embed,
-          inlineToolbar: false,
-          config: {
-            services: {
-              youtube: true,
-              coub: true
-            }
-          }
+        Marker: {
+          class: Marker
+          // shortcut: 'CMD+SHIFT+M'
         },
+        underline: Underline,
+        code: CodeTool,
+        quote: Quote,
         table: {
           class: Table,
           inlineToolbar: true,
@@ -97,12 +92,10 @@ const EditorNew = (props) => {
             cols: 3
           }
         },
+
         image: {
           class: ImageTool,
           config: {
-            // additionalRequestHeaders: {
-            //   Cookie: 'x-auth=' + `${cookies}`
-            // },
             // endpoints: {
             //   byFile: 'https://localhost:3000/api/docs/upload/image', // Your backend file uploader endpoint
             //   byUrl: 'https://localhost:3000/api/docs/upload/image' // Your endpoint that provides uploading by Url
@@ -113,9 +106,32 @@ const EditorNew = (props) => {
                 formData.append('file', file);
                 const res = await uploadImage(formData);
                 return { success: 1, file: { url: res.data.data } };
+              },
+              async uploadByUrl(url) {
+                return {
+                  success: 1,
+                  file: {
+                    url: url
+                  }
+                };
               }
             }
           }
+        },
+        elimiter: Delimiter,
+        embed: {
+          class: Embed,
+          inlineToolbar: false,
+          config: {
+            services: {
+              youtube: true,
+              coub: true
+            }
+          }
+        },
+        inlineCode: {
+          class: InlineCode
+          // shortcut: 'CMD+SHIFT+M'
         }
       }
     });
@@ -123,21 +139,9 @@ const EditorNew = (props) => {
   return (
     <React.Fragment>
       <div id={'editorjs'}></div>
+      <div>{JSON.stringify(props.contentJson)}</div>
     </React.Fragment>
   );
 };
-
-// let saveBtn = document.querySelector('button');
-
-// saveBtn.addEventListener('click', function () {
-//   editor
-//     .saver()
-//     .then((outputData) => {
-//       console.log('Article data: ', outputData);
-//     })
-//     .catch((error) => {
-//       console.log('Saving failed: ', error);
-//     });
-// });
 
 export default EditorNew;

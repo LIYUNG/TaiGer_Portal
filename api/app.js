@@ -9,7 +9,7 @@ require('./middlewares/passport');
 
 const router = require('./routes');
 const { errorHandler } = require('./middlewares/error-handler');
-const { isDev } = require('./config');
+const { isDev, isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
 
 const app = express();
@@ -22,9 +22,12 @@ app.use(
   })
 );
 // TODO: enable logger for production
-if (isDev()) {
-  // app.use(morgan('dev'));
+if (isProd()) {
   app.use(httpLogger);
+}
+if (isDev()) {
+  app.use(morgan('dev'));
+  // app.use(httpLogger);
 }
 
 app.use(methodOverride('_method')); // in order to make delete request

@@ -23,8 +23,8 @@ const getCourse = asyncHandler(async (req, res) => {
 const createCourse = asyncHandler(async (req, res) => {
   const fields = req.body;
   const courses = await Course.findOne({ student_id: req.params.student_id });
+  fields.updatedAt = new Date();
   if (!courses) {
-    fields.updatedAt = new Date();
     const newDoc = await Course.create(fields);
     return res.send({ success: true, data: newDoc });
   }

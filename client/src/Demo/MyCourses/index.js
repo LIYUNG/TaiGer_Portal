@@ -4,6 +4,7 @@ import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getMycourses, postMycourses } from '../../api';
+import { convertDate } from '../Utils/contants';
 import {
   DataSheetGrid,
   checkboxColumn,
@@ -51,6 +52,7 @@ export default function MyCourses(props) {
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
+            updatedAt: data.updatedAt,
             coursesdata: course_from_database,
             student: props.user,
             success: success
@@ -117,7 +119,8 @@ export default function MyCourses(props) {
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          checklists: course_from_database,
+          updatedAt: data.updatedAt,
+          coursesdata: course_from_database,
           confirmModalWindowOpen: true,
           student: props.user,
           success: success
@@ -230,7 +233,7 @@ export default function MyCourses(props) {
                 columns={columns}
               />
               <Row>
-                <Col>Last update at:</Col>
+                <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
               <Row>
                 <Button onClick={onSubmit}>Update</Button>

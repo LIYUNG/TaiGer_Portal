@@ -7,6 +7,7 @@ import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import PageNotFoundError from '../Utils/PageNotFoundError';
 import { updateDocumentation } from '../../api';
 class SingleDoc extends React.Component {
   state = {
@@ -22,6 +23,10 @@ class SingleDoc extends React.Component {
     getDocumentation(this.props.match.params.documentation_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        console.log(data);
+        if (!data) {
+          this.setState({ isLoaded: true, pagenotfounderror: true });
+        }
         if (success) {
           var initialEditorState = null;
           if (data.text) {
@@ -44,6 +49,8 @@ class SingleDoc extends React.Component {
               isLoaded: true,
               unauthorizederror: true
             });
+          } else {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
       },
@@ -82,6 +89,8 @@ class SingleDoc extends React.Component {
             this.setState({ isLoaded: true, unauthorizederror: true });
           } else if (resp.status === 400) {
             this.setState({ isLoaded: true, pagenotfounderror: true });
+          } else {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
       },
@@ -96,8 +105,14 @@ class SingleDoc extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
   render() {
-    const { unauthorizederror, timeouterror, error, editorState, isLoaded } =
-      this.state;
+    const {
+      unauthorizederror,
+      timeouterror,
+      pagenotfounderror,
+      error,
+      editorState,
+      isLoaded
+    } = this.state;
 
     if (timeouterror) {
       return (
@@ -113,6 +128,14 @@ class SingleDoc extends React.Component {
         </div>
       );
     }
+    if (pagenotfounderror) {
+      return (
+        <div>
+          <PageNotFoundError />
+        </div>
+      );
+    }
+
     const style = {
       position: 'fixed',
       top: '40%',

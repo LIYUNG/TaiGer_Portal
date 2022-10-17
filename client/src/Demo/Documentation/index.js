@@ -7,6 +7,7 @@ import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import PageNotFoundError from '../Utils/PageNotFoundError';
 import { Link } from 'react-router-dom';
 import {
   getCategorizedDocumentation,
@@ -59,6 +60,8 @@ class ApplicationList extends React.Component {
               isLoaded: true,
               unauthorizederror: true
             });
+          } else {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
       },
@@ -70,7 +73,7 @@ class ApplicationList extends React.Component {
       }
     );
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.match.params.category !== this.props.match.params.category) {
       getCategorizedDocumentation(this.props.match.params.category).then(
@@ -82,7 +85,8 @@ class ApplicationList extends React.Component {
               documentlists: data,
               editorState: '',
               isEdit: false,
-              success: success
+              success: success,
+              pagenotfounderror: null
               // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
               // accordionKeys: new Array(checklist.length).fill().map((x, i) => i) // to expand all
               // accordionKeys: new Array(-1, data.length) // to collapse all
@@ -245,7 +249,7 @@ class ApplicationList extends React.Component {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
+          } else {
             this.setState({ isLoaded: true, pagenotfounderror: true });
           }
         }
@@ -258,7 +262,7 @@ class ApplicationList extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded, accordionKeys } =
+    const { unauthorizederror, timeouterror, isLoaded, pagenotfounderror } =
       this.state;
     const style = {
       position: 'fixed',
@@ -277,6 +281,13 @@ class ApplicationList extends React.Component {
       return (
         <div>
           <UnauthorizedError />
+        </div>
+      );
+    }
+    if (pagenotfounderror) {
+      return (
+        <div>
+          <PageNotFoundError />
         </div>
       );
     }

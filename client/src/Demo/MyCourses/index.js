@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { getChecklists, updateChecklistStatus } from '../../api';
+import { getMycourses, postMycourses } from '../../api';
 import {
   DataSheetGrid,
   checkboxColumn,
@@ -17,10 +17,10 @@ export default function MyCourses(props) {
     timeouterror: null,
     unauthorizederror: null,
     isLoaded: false,
-    data: null,
+    coursesdata: {},
+    confirmModalWindowOpen: false,
     success: false,
     student: null,
-    checklists: [],
     file: '',
     expand: true
   });
@@ -37,14 +37,21 @@ export default function MyCourses(props) {
   //   expand: true
   // };
   useEffect(() => {
-    getChecklists().then(
+    const student_id = props.match.params.student_id
+      ? props.match.params.student_id
+      : props.user._id.toString();
+    getMycourses(student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        console.log(data);
+        const course_from_database = data.table_data_string
+          ? JSON.parse(data.table_data_string)
+          : {};
         if (success) {
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
-            checklists: data,
+            coursesdata: course_from_database,
             student: props.user,
             success: success
           }));
@@ -74,7 +81,7 @@ export default function MyCourses(props) {
     );
   }, []);
 
-  const [data, setData] = useState([
+  const [coursesdata, setSoursesdata] = useState([
     {
       course_chinese: '電子學',
       course_english: 'Electronics',
@@ -88,7 +95,57 @@ export default function MyCourses(props) {
       grades: 'A'
     }
   ]);
+  const onChange = (new_data) => {
+    console.log(new_data);
+    setStatedata((state) => ({
+      ...state,
+      coursesdata: new_data
+    }));
+  };
 
+  const onSubmit = () => {
+    console.log('onSubmit');
+    const coursesdata_string = JSON.stringify(statedata.coursesdata);
+    postMycourses(statedata.student._id.toString(), {
+      student_id: statedata.student._id.toString(),
+      name: statedata.student.firstname,
+      table_data_string: coursesdata_string
+    }).then((resp) => {
+      const { data, success } = resp.data;
+      const course_from_database = JSON.parse(data.table_data_string);
+      if (success) {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          checklists: course_from_database,
+          confirmModalWindowOpen: true,
+          student: props.user,
+          success: success
+        }));
+      } else {
+        if (resp.status === 401 || resp.status === 500) {
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            timeouterror: true
+          }));
+        } else if (resp.status === 403) {
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            unauthorizederror: true
+          }));
+        }
+      }
+    });
+  };
+
+  const closeModal = () => {
+    setStatedata((state) => ({
+      ...state,
+      confirmModalWindowOpen: false
+    }));
+  };
   const columns = [
     { ...keyColumn('course_chinese', textColumn), title: 'Courses Chinese' },
     {
@@ -167,20 +224,35 @@ export default function MyCourses(props) {
                 disableExpandSelection={false}
                 headerRowHeight={30}
                 rowHeight={25}
-                value={data}
+                value={statedata.coursesdata}
                 autoAddRow={true}
-                onChange={setData}
+                onChange={onChange}
                 columns={columns}
               />
               <Row>
-                <Col>
-                  Last update at:
-                </Col>
+                <Col>Last update at:</Col>
+              </Row>
+              <Row>
+                <Button onClick={onSubmit}>Update</Button>
               </Row>
             </Card.Body>
           </Card>
         </Col>
       </Row>
+      <Modal
+        show={statedata.confirmModalWindowOpen}
+        onHide={closeModal}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">Warning</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Update transcript successfully</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={closeModal}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     </Aux>
   );
 }

@@ -74,6 +74,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@editorjs/attaches": "^1.2.3",
     "@editorjs/code": "^2.7.0",
     "@editorjs/delimiter": "^1.2.0",
     "@editorjs/editorjs": "^2.25.0",

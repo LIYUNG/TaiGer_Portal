@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Row, Col, Spinner, Button, Card, Form, Modal } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react';
+import { Row, Col, Button} from 'react-bootstrap';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
@@ -13,6 +13,7 @@ import Delimiter from '@editorjs/delimiter';
 import CodeTool from '@editorjs/code';
 import Quote from '@editorjs/quote';
 import Underline from '@editorjs/underline';
+import AttachesTool from '@editorjs/attaches';
 
 import { uploadImage } from '../../api';
 
@@ -33,13 +34,13 @@ const DEFAULT_INITIAL_DATA = () => {
 
 const EditorNew = (props) => {
   const ejInstance = useRef();
-  // TODO: input json format
-  const [editorData, setEditorData] = React.useState(props.contentJson);
   // This will run only once
+  const [editorState, setEditorState] = useState();
   var editor;
   useEffect(() => {
     if (!ejInstance.current) {
       initEditor();
+      // setEditorState(props.editorState);
     }
     return () => {
       ejInstance.current.destroy();
@@ -60,7 +61,6 @@ const EditorNew = (props) => {
           // console.log('outputData ', outputData);
           props.handleEditorChange(outputData);
         });
-
       },
       readOnly: props.readOnly,
       autofocus: true,
@@ -83,6 +83,12 @@ const EditorNew = (props) => {
           class: Marker
           // shortcut: 'CMD+SHIFT+M'
         },
+        attaches: {
+          class: AttachesTool,
+          config: {
+            endpoint: 'https://localhost:3000/uploadFile' // TODO : to replace
+          }
+        },
         underline: Underline,
         code: CodeTool,
         quote: Quote,
@@ -102,9 +108,11 @@ const EditorNew = (props) => {
             //   byFile: 'https://localhost:3000/api/docs/upload/image', // Your backend file uploader endpoint
             //   byUrl: 'https://localhost:3000/api/docs/upload/image' // Your endpoint that provides uploading by Url
             // },
+            onRemove: (data) => console.log(data),
             uploader: {
               async uploadByFile(file) {
                 const formData = new FormData();
+                // TODO: collect uploaded files (to be deleted later if cancel editing)
                 formData.append('file', file);
                 const res = await uploadImage(formData);
                 return { success: 1, file: { url: res.data.data } };
@@ -148,7 +156,9 @@ const EditorNew = (props) => {
       ) : (
         <Row>
           <Col className="my-0 mx-4">
-            <Button onClick={(e) => props.handleClickSave(e, props.editorState)}>
+            <Button
+              onClick={(e) => props.handleClickSave(e, props.editorState)}
+            >
               Save
             </Button>
             <Button onClick={(e) => props.handleClickCancel(e)}>Cancel</Button>

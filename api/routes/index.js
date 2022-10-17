@@ -8,6 +8,7 @@ const agentsRouter = require('./agents');
 const editorsRouter = require('./editors');
 const studentsRouter = require('./students');
 const documentationsRouter = require('./documentations');
+const coursesRouter = require('./courses');
 const programsRouter = require('./programs');
 const docsModiRouter = require('./documents_modification');
 const tasksRouter = require('./tasks');
@@ -25,6 +26,7 @@ const router = (app) => {
   apiRouter.use('/editors', editorsRouter);
 
   apiRouter.use('/docs', documentationsRouter);
+  apiRouter.use('/courses', coursesRouter);
   apiRouter.use('/programs', programsRouter);
   apiRouter.use('/document-threads', docsModiRouter);
   apiRouter.use('/tasks', tasksRouter);

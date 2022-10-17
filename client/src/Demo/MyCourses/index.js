@@ -44,7 +44,7 @@ export default function MyCourses(props) {
     getMycourses(student_id).then(
       (resp) => {
         const { data, success } = resp.data;
-        console.log(data);
+        // console.log(data);
         const course_from_database = data.table_data_string
           ? JSON.parse(data.table_data_string)
           : {};
@@ -54,7 +54,7 @@ export default function MyCourses(props) {
             isLoaded: true,
             updatedAt: data.updatedAt,
             coursesdata: course_from_database,
-            student: props.user,
+            student: data.student_id, // populated
             success: success
           }));
         } else {
@@ -98,7 +98,7 @@ export default function MyCourses(props) {
     }
   ]);
   const onChange = (new_data) => {
-    console.log(new_data);
+    // console.log(new_data);
     setStatedata((state) => ({
       ...state,
       coursesdata: new_data
@@ -106,7 +106,6 @@ export default function MyCourses(props) {
   };
 
   const onSubmit = () => {
-    console.log('onSubmit');
     const coursesdata_string = JSON.stringify(statedata.coursesdata);
     postMycourses(statedata.student._id.toString(), {
       student_id: statedata.student._id.toString(),
@@ -200,7 +199,10 @@ export default function MyCourses(props) {
             <Card.Header text={'dark'}>
               <Card.Title>
                 <Row>
-                  <Col className="my-0 mx-0 text-light">My Courses</Col>
+                  <Col className="my-0 mx-0 text-light">
+                    {statedata.student.firstname} {statedata.student.lastname}{' '}
+                    Courses
+                  </Col>
                 </Row>
               </Card.Title>
             </Card.Header>
@@ -216,8 +218,13 @@ export default function MyCourses(props) {
             <Card.Body>
               <Row>
                 <Col>
-                  Please fill the courses you have taken. (Ignore if you are
-                  high school student)
+                  <p>
+                    Please fill the courses you have taken. (Ignore if you are
+                    high school student)
+                  </p>
+                  <p>
+                    <b>Only Bachelor's courses </b>are considered in this table.
+                  </p>
                 </Col>
               </Row>
               <br />
@@ -232,7 +239,7 @@ export default function MyCourses(props) {
                 onChange={onChange}
                 columns={columns}
               />
-              <Row>
+              <Row className="my-2">
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
               <Row>

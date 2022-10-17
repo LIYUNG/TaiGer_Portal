@@ -275,6 +275,12 @@ const routes = [
     component: Checklist
   },
   {
+    path: '/my-courses/:student_id',
+    exact: true,
+    name: 'My Courses',
+    component: MyCourses
+  },
+  {
     path: '/my-courses',
     exact: true,
     name: 'My Courses',

@@ -7,6 +7,7 @@ import {
   Table,
   Row,
   Col,
+  Button,
   Spinner
 } from 'react-bootstrap';
 import {
@@ -16,6 +17,7 @@ import {
   uploadforstudent,
   deleteFile
 } from '../../api';
+import { Link } from 'react-router-dom';
 import ButtonSetUploaded from '../AgentCenter/ButtonSetUploaded';
 import ButtonSetAccepted from '../AgentCenter/ButtonSetAccepted';
 import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
@@ -517,6 +519,17 @@ class SingleStudentPage extends React.Component {
               isLoaded={this.state.isLoaded}
               student_id={this.state.student._id}
             />
+          </Tab>
+          <Tab eventKey="Courses_Table" title="Courses Table">
+            <Card className="my-0 mx-0">
+              <Card.Body>
+                <Row>
+                  <Link to={`/my-courses/${this.state.student._id.toString()}`}>
+                    <Button>Go to Courses Table </Button>
+                  </Link>
+                </Row>
+              </Card.Body>
+            </Card>
           </Tab>
           {/* <Tab eventKey="applied-schools" title="Applied Schools">
             <Table responsive>

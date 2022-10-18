@@ -44,6 +44,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
           </Card.Body>
           <DocumentsListItemsEditor
+            doc_title={this.state.doc_title}
             editorState={this.props.editorState}
             handleClickSave={this.handleClickSave}
             handleClickCancel={this.props.handleClickCancel}

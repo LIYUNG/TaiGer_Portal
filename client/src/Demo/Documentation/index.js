@@ -359,6 +359,7 @@ class ApplicationList extends React.Component {
                     />
                   </Form.Group>
                   <DocumentsListItemsEditor
+                    doc_title={this.state.doc_title}
                     editorState={this.state.editorState}
                     handleClickSave={this.handleClickSave}
                     handleClickCancel={this.handleClickCancel}

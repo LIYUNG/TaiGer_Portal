@@ -42,6 +42,7 @@ function DocumentsListItemsEditor(props) {
       <Row style={{ textDecoration: 'none' }}>
         <Col className="my-0 mx-0">
           <EditorNew
+            doc_title={props.doc_title}
             readOnly={false}
             handleEditorChange={handleEditorChange}
             handleClickSave={props.handleClickSave}

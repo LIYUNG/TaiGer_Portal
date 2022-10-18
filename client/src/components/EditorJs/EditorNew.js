@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Row, Col, Button} from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
@@ -157,6 +157,7 @@ const EditorNew = (props) => {
         <Row>
           <Col className="my-0 mx-4">
             <Button
+              disabled={props.doc_title.replace(/ /g,'').length === 0}
               onClick={(e) => props.handleClickSave(e, props.editorState)}
             >
               Save

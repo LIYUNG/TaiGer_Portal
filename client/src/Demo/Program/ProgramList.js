@@ -516,22 +516,35 @@ function Table2({ columns, data, userId }) {
       <div className="pagination">
         <Row>
           <Col md={1}>
-            <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            <Button
+              size="sm"
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+            >
               {'<<'}
             </Button>
           </Col>{' '}
           <Col md={1}>
-            <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            <Button
+              size="sm"
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+            >
               {'<'}
             </Button>
           </Col>{' '}
           <Col md={1}>
-            <Button onClick={() => nextPage()} disabled={!canNextPage}>
+            <Button
+              size="sm"
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+            >
               {'>'}
             </Button>
           </Col>{' '}
           <Col md={1}>
             <Button
+              size="sm"
               onClick={() => gotoPage(pageCount - 1)}
               disabled={!canNextPage}
             >
@@ -661,7 +674,6 @@ function ProgramList(props) {
           }));
         } else {
           if (resp.status === 401 || resp.status === 500) {
-            // this.setState({ isLoaded: true, error: true });
             setStatedata((state) => ({
               ...state,
               error: true,
@@ -673,7 +685,6 @@ function ProgramList(props) {
               unauthorizederror: true,
               isloaded: true
             }));
-            // this.setState({ isLoaded: true, unauthorizederror: true });
           }
         }
       },
@@ -685,7 +696,7 @@ function ProgramList(props) {
         }))
     );
   }, []);
-  // useEffect(() => {}, []);
+
   const columns = React.useMemo(
     () => [
       {
@@ -779,19 +790,13 @@ function ProgramList(props) {
   }
 
   return (
-    // <Styles>
     <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-      {/* <Card.Body> */}
-      {/* <Table responsive border hover> */}
       <Table2
         columns={columns}
         data={statedata.programs}
         userId={props.userId}
       />
-      {/* </Table> */}
-      {/* </Card.Body> */}
     </Card>
-    // </Styles>
   );
 }
 

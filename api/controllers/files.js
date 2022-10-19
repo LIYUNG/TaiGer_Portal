@@ -5,6 +5,7 @@ const aws = require('aws-sdk');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Student, User } = require('../models/User');
 const { Template } = require('../models/Template');
+const Course = require('../models/Course');
 const { UPLOAD_PATH } = require('../config');
 const { ErrorResponse } = require('../common/errors');
 const { DocumentStatus } = require('../constants');
@@ -564,6 +565,85 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   }
 });
 
+const processTranscript_test = asyncHandler(async (req, res, next) => {
+  const {
+    params: { category, studentId }
+  } = req;
+  const courses = await Course.findOne({ student_id: studentId });
+  console.log('processTranscript_test');
+  if (!courses) {
+    console.log('no course for this student!');
+    return res.send({ success: true, data: {} });
+  }
+  const stringified_courses = JSON.stringify(courses.table_data_string);
+  // const filename = req.file.key; // key is updated file name
+  // const filePath = path.join(req.file.metadata.path, req.file.key);
+  // logger.info(
+  //   path.join(
+  //     __dirname,
+  //     '..',
+  //     'python',
+  //     'TaiGer_Transcript-Program_Comparer',
+  //     'main.py'
+  //   )
+  // );
+  // FIXME: better pass output filepath as argument to python script instead of hard code value
+  // const output = `analyzed_${filename}`;
+  // const output_filePath = path.join(req.file.metadata.path, 'output', output);
+  try {
+    const python = spawn(
+      'python',
+      [
+        path.join(
+          __dirname,
+          '..',
+          'python',
+          'TaiGerTranscriptAnalyzerJS',
+          'main.py'
+        ),
+        stringified_courses,
+        category
+      ],
+      { stdio: 'inherit' }
+    );
+    python.on('data', (data) => {
+      process.stdout.write('python script output', data);
+    });
+
+    python.on('close', (code) => {
+      if (code === 0) {
+        return res.status(200).send({ success: true, data: {} });
+      }
+
+      return new ErrorResponse(
+        500,
+        'Error occurs while trying to produce analyzed report'
+      );
+    });
+  } catch (err) {
+    console.log(err);
+    return new ErrorResponse(
+      500,
+      'Error occurs while trying to produce analyzed report'
+    );
+  }
+
+  // await User.findByIdAndUpdate(
+  //   studentId,
+  //   {
+  //     'taigerai.input.name': filename,
+  //     'taigerai.input.path': filePath,
+  //     'taigerai.input.status': 'uploaded',
+  //     'taigerai.output.name': output,
+  //     'taigerai.output.path': output_filePath,
+  //     'taigerai.output.status': 'uploaded'
+  //   },
+  //   { upsert: true, new: true, setDefaultsOnInsert: true }
+  // );
+  // const student = await User.findById(studentId);
+  // return res.status(200).send({ success: true, data: {} });
+});
+
 const processTranscript = asyncHandler(async (req, res, next) => {
   const {
     params: { category, studentId }
@@ -863,6 +943,7 @@ module.exports = {
   updateProfileDocumentStatus,
   UpdateStudentApplications,
   deleteProfileFile,
+  processTranscript_test,
   processTranscript,
   downloadXLSX,
   getMyAcademicBackground,

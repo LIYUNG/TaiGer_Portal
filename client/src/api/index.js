@@ -37,7 +37,6 @@ export const getStudents = () => request.get(`/api/students`);
 
 export const getChecklists = () => request.get(`/api/checklists`);
 
-
 export const updateChecklistStatus = (student_id, item) =>
   request.put(`/api/checklists/${student_id}/${item}`);
 
@@ -103,6 +102,9 @@ export const getTemplateDownload = (category) =>
     responseType: 'blob'
   });
 
+export const transcriptanalyser_test = (studentId, category) =>
+  request.post(`/api/account/transcript/${studentId}/${category}`);
+
 export const transcriptanalyser = (studentId, category, data) =>
   request.post(`/api/account/transcript/${studentId}/${category}`, data);
 
@@ -141,10 +143,10 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
   });
 
 // Course, Transcript APIs
-export const getMycourses = (student_id) => request.get(`/api/courses/${student_id}`);
+export const getMycourses = (student_id) =>
+  request.get(`/api/courses/${student_id}`);
 export const postMycourses = (student_id, file) =>
   request.post(`/api/courses/${student_id}`, file);
-
 
 // Documentation APIs
 export const uploadImage = (file) =>

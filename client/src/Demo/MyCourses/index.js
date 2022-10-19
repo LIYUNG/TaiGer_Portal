@@ -3,14 +3,13 @@ import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { getMycourses, postMycourses } from '../../api';
-import { convertDate } from '../Utils/contants';
 import {
-  DataSheetGrid,
-  checkboxColumn,
-  textColumn,
-  keyColumn
-} from 'react-datasheet-grid';
+  getMycourses,
+  postMycourses,
+  transcriptanalyser_test
+} from '../../api';
+import { convertDate } from '../Utils/contants';
+import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import 'react-datasheet-grid/dist/style.css';
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
@@ -23,6 +22,7 @@ export default function MyCourses(props) {
     success: false,
     student: null,
     file: '',
+    analyzed_course: '',
     expand: true
   });
   // state = {
@@ -45,10 +45,11 @@ export default function MyCourses(props) {
       (resp) => {
         const { data, success } = resp.data;
         // console.log(data);
-        const course_from_database = data.table_data_string
-          ? JSON.parse(data.table_data_string)
-          : {};
+
         if (success) {
+          const course_from_database = data.table_data_string
+            ? JSON.parse(data.table_data_string)
+            : {};
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
@@ -121,7 +122,6 @@ export default function MyCourses(props) {
           updatedAt: data.updatedAt,
           coursesdata: course_from_database,
           confirmModalWindowOpen: true,
-          student: props.user,
           success: success
         }));
       } else {
@@ -140,6 +140,40 @@ export default function MyCourses(props) {
         }
       }
     });
+  };
+
+  const onAnalyse = () => {
+    const coursesdata_string = JSON.stringify(statedata.coursesdata);
+    transcriptanalyser_test(statedata.student._id.toString(), 'ee').then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const course_from_database = JSON.parse(data.table_data_string);
+        if (success) {
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            // updatedAt: data.updatedAt,
+            analyzed_course: data,
+            confirmModalWindowOpen: true,
+            success: success
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            setStatedata((state) => ({
+              ...state,
+              isLoaded: true,
+              timeouterror: true
+            }));
+          } else if (resp.status === 403) {
+            setStatedata((state) => ({
+              ...state,
+              isLoaded: true,
+              unauthorizederror: true
+            }));
+          }
+        }
+      }
+    );
   };
 
   const closeModal = () => {
@@ -247,6 +281,40 @@ export default function MyCourses(props) {
               </Row>
             </Card.Body>
           </Card>
+          {props.user.role === 'Guest' && (
+            <Card className="mb-2 mx-0">
+              <Card.Body>
+                <Row>Do you want to see result? Contact our consultant!</Row>
+                <br />
+              </Card.Body>
+            </Card>
+          )}
+          {(props.user.role === 'Admin' || props.user.role === 'Agent') && (
+            <Card className="mb-2 mx-0">
+              <Card.Body>
+                <Row>
+                  <Col>
+                    <p>Analyser</p>
+                  </Col>
+                </Row>
+                <br />
+                <Row>
+                  <Col>
+                    <p>{statedata.analyzed_course}</p>
+                  </Col>
+                </Row>
+                <br />
+                <Row className="my-2">
+                  <Col>
+                    Last analysis at: {convertDate(statedata.updatedAt)}
+                  </Col>
+                </Row>
+                <Row>
+                  <Button onClick={onAnalyse}>Analyse</Button>
+                </Row>
+              </Card.Body>
+            </Card>
+          )}
         </Col>
       </Row>
       <Modal
@@ -256,7 +324,9 @@ export default function MyCourses(props) {
         centered
       >
         <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">Warning</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Confirmation
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>Update transcript successfully</Modal.Body>
         <Modal.Footer>

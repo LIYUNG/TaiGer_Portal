@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import styled from 'styled-components';
 import {
   useTable,
   useFilters,
@@ -12,48 +11,10 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import { Link } from 'react-router-dom';
 
-import {
-  Button,
-  Table,
-  Row,
-  Col,
-  Spinner,
-  Card
-} from 'react-bootstrap';
+import { Button, Table, Row, Col, Spinner, Card } from 'react-bootstrap';
 import { getAdmissions } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
-
-// import makeData from './makeData';
-
-// const Styles = styled.div`
-//   padding: 1rem;
-
-//   table {
-//     border-spacing: 0;
-//     border: 1px solid black;
-
-//     tr {
-//       :last-child {
-//         td {
-//           border-bottom: 0;
-//         }
-//       }
-//     }
-
-//     th,
-//     td {
-//       margin: 0;
-//       padding: 0.5rem;
-//       border-bottom: 1px solid black;
-//       border-right: 1px solid black;
-
-//       :last-child {
-//         border-right: 0;
-//       }
-//     }
-//   }
-// `;
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -480,22 +441,35 @@ function Table2({ header, data, userId }) {
       <div className="pagination">
         <Row>
           <Col md={1}>
-            <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            <Button
+              size="sm"
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+            >
               {'<<'}
             </Button>
           </Col>{' '}
           <Col md={1}>
-            <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            <Button
+              size="sm"
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+            >
               {'<'}
             </Button>
           </Col>{' '}
           <Col md={1}>
-            <Button onClick={() => nextPage()} disabled={!canNextPage}>
+            <Button
+              size="sm"
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+            >
               {'>'}
             </Button>
           </Col>{' '}
           <Col md={1}>
             <Button
+              size="sm"
               onClick={() => gotoPage(pageCount - 1)}
               disabled={!canNextPage}
             >

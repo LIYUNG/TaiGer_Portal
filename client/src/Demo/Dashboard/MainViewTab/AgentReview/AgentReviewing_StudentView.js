@@ -77,6 +77,7 @@ class AgentReviewing_StudentView extends React.Component {
             />{' '}
             <Link
               to={'/student-database/' + this.props.student._id + '/profile'}
+              className="text-info"
               style={{ textDecoration: 'none' }}
             >
               {key.replace(/_/g, ' ')}
@@ -115,9 +116,11 @@ class AgentReviewing_StudentView extends React.Component {
                   className="text-info"
                   style={{ textDecoration: 'none' }}
                 >
-                  {this.props.student.firstname}
-                  {' - '}
-                  {this.props.student.lastname}
+                  <p className="text-light">
+                    {this.props.student.firstname}
+                    {' - '}
+                    {this.props.student.lastname}
+                  </p>
                 </Link>
               </td>
               <td>{missing_profiles}</td>

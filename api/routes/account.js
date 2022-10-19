@@ -14,6 +14,7 @@ const {
   uploadTemplate,
   downloadTemplateFile,
   UpdateStudentApplications,
+  processTranscript_test,
   processTranscript,
   downloadXLSX,
   getMyAcademicBackground,
@@ -35,10 +36,7 @@ router
 
 router
   .route('/files/template')
-  .get(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    getTemplates
-  );
+  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getTemplates);
 
 router
   .route('/files/template/:category_name')
@@ -57,10 +55,17 @@ router
 router
   .route('/transcript/:studentId/:category')
   .post(
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    TranscriptExcelUpload,
-    processTranscript
+    permit(Role.Admin, Role.Agent, Role.Editor),
+    processTranscript_test
   );
+
+// router
+//   .route('/transcript/:studentId/:category')
+//   .post(
+//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+//     TranscriptExcelUpload,
+//     processTranscript
+//   );
 router
   .route('/transcript/:studentId/:filename')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);

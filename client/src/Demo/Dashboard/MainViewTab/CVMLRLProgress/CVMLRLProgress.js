@@ -149,18 +149,6 @@ class CVMLRLProgress extends React.Component {
                 }
               />
             ) : (
-              // <Button
-              //   size="sm"
-              //   title="As final version"
-              //   onClick={() =>
-              //     this.handleAsFinalFileThread(
-              //       generaldocs_thread.doc_thread_id._id,
-              //       this.props.student._id,
-              //       null,
-              //       generaldocs_thread.doc_thread_id.file_type
-              //     )
-              //   }
-              // >
               <AiOutlineCheck
                 size={24}
                 style={{ cursor: 'pointer' }}
@@ -174,7 +162,6 @@ class CVMLRLProgress extends React.Component {
                   )
                 }
               />
-              // </Button>
             )}
           </td>
           {return_thread_status(this.props.user, generaldocs_thread)}
@@ -243,12 +230,6 @@ class CVMLRLProgress extends React.Component {
                   />
                 </td>
               ) : (
-                // <Button
-                //   size="sm"
-                //   title="As final version"
-                //   onClick={() => this.handleAsFinalFileThread(documenName)}
-                // >
-                // <>O</>
                 <td>
                   <AiOutlineCheck
                     size={24}
@@ -264,7 +245,6 @@ class CVMLRLProgress extends React.Component {
                     }
                   />
                 </td>
-                // </Button>
               ))}
 
             {return_thread_status(this.props.user, doc_thread)}

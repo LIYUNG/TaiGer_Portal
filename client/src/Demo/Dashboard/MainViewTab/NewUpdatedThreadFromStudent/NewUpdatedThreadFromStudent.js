@@ -86,6 +86,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                                 this.props.student._id +
                                 '/CV_ML_RL'
                           }
+                          className="text-info"
                           style={{ textDecoration: 'none' }}
                         >
                           {this.props.student.firstname}
@@ -99,6 +100,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                             '/document-modification/' +
                             application_doc_thread.doc_thread_id._id
                           }
+                          className="text-info"
                           style={{ textDecoration: 'none' }}
                         >
                           {application_doc_thread.doc_thread_id.file_type}

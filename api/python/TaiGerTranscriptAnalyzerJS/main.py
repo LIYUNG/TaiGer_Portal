@@ -55,4 +55,3 @@ if __name__ == "__main__":
             program_idx.append(idx) 
 
     EE_sorter(program_idx, obj_arr, 'EE')
-    # print(sys.argv[2])

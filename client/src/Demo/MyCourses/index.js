@@ -183,10 +183,10 @@ export default function MyCourses(props) {
     }));
   };
   const columns = [
-    { ...keyColumn('course_chinese', textColumn), title: 'Courses Chinese' },
+    { ...keyColumn('course_chinese', textColumn), title: 'Courses Name Chinese' },
     {
       ...keyColumn('course_english', textColumn),
-      title: 'Courses English'
+      title: 'Courses Name English'
     },
     {
       ...keyColumn('credits', textColumn),

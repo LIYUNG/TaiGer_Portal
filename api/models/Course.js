@@ -11,6 +11,7 @@ const coursesSchema = new mongoose.Schema({
   updatedAt: Date,
   analysis: {
     path: { type: String, default: '' },
+    analyzed_course: [{ type: String, default: '' }],
     isAnalysed: { type: Boolean, default: false },
     updatedAt: Date
   }

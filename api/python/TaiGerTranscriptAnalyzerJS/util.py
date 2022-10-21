@@ -342,13 +342,16 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     df_category_courses_sugesstion_data = SuggestionCourseAlgorithm(
         df_category_data, transcript_sorted_group_map, df_category_courses_sugesstion_data)
 
-    print(df_category_data)
+    # print(df_category_data)
+    df_category_data_basic_classification = pd.DataFrame(df_category_data)
+    print(df_category_data_basic_classification)
+
     # print(df_category_courses_sugesstion_data)
     # output_file_name = 'analyzed_' + input_file_name
     # writer = pd.ExcelWriter(
     #     Output_Path+output_file_name, engine='xlsxwriter')
 
-    # sorted_courses = df_category_data
+    sorted_courses = df_category_data
 
     # start_row = 0
     # for idx, sortedcourses in enumerate(sorted_courses):

@@ -591,6 +591,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   // const output = `analyzed_${filename}`;
   // const output_filePath = path.join(req.file.metadata.path, 'output', output);
   try {
+    let test_var;
     const python = spawn(
       'python',
       [
@@ -607,9 +608,10 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       { stdio: 'inherit' }
     );
     python.on('data', (data) => {
+      test_var = data;
       process.stdout.write('python script output', data);
     });
-
+    // console.log(test_var);
     python.on('close', (code) => {
       if (code === 0) {
         return res.status(200).send({ success: true, data: {} });

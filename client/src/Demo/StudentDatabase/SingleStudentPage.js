@@ -426,6 +426,7 @@ class SingleStudentPage extends React.Component {
                       <>
                         <th></th>
                         <th>First-, Last Name</th>
+                        <th>#</th>
                         <th>University</th>
                         <th>Programs</th>
                         <th>Deadline</th>
@@ -504,6 +505,13 @@ class SingleStudentPage extends React.Component {
                 role={this.props.user.role}
               />
             </Card>
+          </Tab>
+          <Tab eventKey="program_portal" title="Portal">
+            <Row>
+              {/* <Table responsive>
+                <Task student_id={this.state.student._id} />
+              </Table> */}
+            </Row>
           </Tab>
           {/* <Tab eventKey="status" title="Status">
             <Row>

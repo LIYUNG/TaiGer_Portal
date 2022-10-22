@@ -251,6 +251,10 @@ const Student = User.discriminator(
       agents: [{ type: ObjectId, ref: 'Agent' }],
       editors: [{ type: ObjectId, ref: 'Editor' }],
       applications: [applicationSchema],
+      applying_program_count: {
+        type: Number,
+        default: 0
+      },
       profile: [
         {
           name: {

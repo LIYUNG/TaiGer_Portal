@@ -497,6 +497,7 @@ function Table2({ columns, data, userId }) {
                         <>{cell.render('Cell')}</>
                       ) : (
                         <Link
+                          target="_blank"
                           to={'/programs/' + row.original._id}
                           className="text-info"
                           style={{ textDecoration: 'none' }}

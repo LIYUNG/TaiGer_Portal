@@ -28,11 +28,20 @@ class StudentApplicationsTableTemplate extends React.Component {
     program_id: null,
     success: false,
     application_status_changed: false,
-
+    applying_program_count: 0,
     modalDeleteApplication: false,
     modalUpdatedApplication: false
   };
 
+  handleChangeProgramCount = (e) => {
+    e.preventDefault();
+    let applying_program_count = e.target.value;
+    this.setState((state) => ({
+      ...state,
+      application_status_changed: true,
+      applying_program_count
+    }));
+  };
   handleChange = (e, application_idx) => {
     e.preventDefault();
     let applications_temp = [...this.state.applications];
@@ -96,12 +105,17 @@ class StudentApplicationsTableTemplate extends React.Component {
   handleSubmit = (e, student_id, applications) => {
     e.preventDefault();
     let applications_temp = [...this.state.applications];
+    let applying_program_count = this.state.applying_program_count;
     for (let i = 0; i < applications_temp.length; i += 1) {
       delete applications_temp[i].programId;
       delete applications_temp[i].doc_modification_thread;
     }
 
-    UpdateStudentApplications(student_id, applications_temp).then(
+    UpdateStudentApplications(
+      student_id,
+      applications_temp,
+      applying_program_count
+    ).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -322,12 +336,37 @@ class StudentApplicationsTableTemplate extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card className="my-0 mx-0" bg={'info'} text={'white'}>
+            <Card className="my-0 mx-0" bg={'black'} text={'light'}>
               <Card.Header>
-                <Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
                   {this.props.student.firstname} {this.props.student.lastname}
                 </Card.Title>
               </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Card className="my-0 mx-0" bg={'info'} text={'white'}>
+              <Row bg={'info'}>
+                <Col md={3} className="mx-2 my-1">
+                  <h4>Applying Program Count: </h4>
+                </Col>
+                <Col md={2}>
+                  <Form.Group controlId="applying_program_count">
+                    <Form.Control
+                      as="select"
+                      defaultValue={this.state.student.applying_program_count}
+                      onChange={(e) => this.handleChangeProgramCount(e)}
+                    >
+                      <option value="0">Please Select</option>
+                      <option value="3">3</option>
+                      <option value="5">5</option>
+                      <option value="7">7</option>
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+              </Row>
               <Row>
                 <Col>
                   <Table
@@ -353,23 +392,24 @@ class StudentApplicationsTableTemplate extends React.Component {
                   </Table>
                 </Col>
               </Row>
-              <Row>
-                <Col md={12}>
-                  <Button
-                    disabled={!this.state.application_status_changed}
-                    onClick={(e) =>
-                      this.handleSubmit(
-                        e,
-                        this.state.student._id,
-                        this.state.applications
-                      )
-                    }
-                  >
-                    Update
-                  </Button>
-                </Col>
-              </Row>
             </Card>
+            <Row className="my-2">
+              <Col md={12}>
+                <Button
+                  size="sm"
+                  disabled={!this.state.application_status_changed}
+                  onClick={(e) =>
+                    this.handleSubmit(
+                      e,
+                      this.state.student._id,
+                      this.state.applications
+                    )
+                  }
+                >
+                  Update
+                </Button>
+              </Col>
+            </Row>
             <Modal
               show={this.state.modalDeleteApplication}
               onHide={this.onHideModalDeleteApplication}

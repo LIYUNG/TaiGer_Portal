@@ -113,8 +113,15 @@ export const generatedFileDownload = (studentId, filename) =>
     responseType: 'blob'
   });
 
-export const UpdateStudentApplications = (studentId, applications) =>
-  request.put(`/api/account/applications/${studentId}`, { applications });
+export const UpdateStudentApplications = (
+  studentId,
+  applications,
+  applying_program_count
+) =>
+  request.put(`/api/account/applications/${studentId}`, {
+    applications,
+    applying_program_count
+  });
 
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);

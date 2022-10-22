@@ -216,13 +216,20 @@ class ApplicationProgress extends React.Component {
           )}
           {this.props.role !== 'Student' ? (
             <td>
-              <p className="text-info">
-                <b>
-                  {this.props.student.applying_program_count
-                    ? this.props.student.applying_program_count
-                    : 0}
-                </b>
-              </p>
+              {this.props.student.applying_program_count ? (
+                this.props.student.applications.length <
+                this.props.student.applying_program_count ? (
+                  <b className="text-danger">
+                    {this.props.student.applying_program_count}
+                  </b>
+                ) : (
+                  <p className="text-info">
+                    {this.props.student.applying_program_count}
+                  </p>
+                )
+              ) : (
+                0
+              )}
             </td>
           ) : (
             <></>

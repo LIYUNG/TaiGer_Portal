@@ -449,7 +449,6 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: { applications, applying_program_count }
   } = req;
-  console.log(req.body);
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate('agents', 'firstname lastname email')
@@ -468,7 +467,9 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     application.closed = applications[i].closed;
     application.admission = applications[i].admission;
   }
-  student.applying_program_count = parseInt(applying_program_count);
+  if (user.role === Role.Admin) {
+    student.applying_program_count = parseInt(applying_program_count);
+  }
   await student.save();
 
   const student_updated = await Student.findById(studentId)

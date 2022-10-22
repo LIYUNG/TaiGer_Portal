@@ -349,23 +349,31 @@ class StudentApplicationsTableTemplate extends React.Component {
           <Col>
             <Card className="my-0 mx-0" bg={'info'} text={'white'}>
               <Row bg={'info'}>
-                <Col md={3} className="mx-2 my-1">
+                <Col md={4} className="mx-2 my-2">
                   <h4>Applying Program Count: </h4>
                 </Col>
-                <Col md={2}>
-                  <Form.Group controlId="applying_program_count">
-                    <Form.Control
-                      as="select"
-                      defaultValue={this.state.student.applying_program_count}
-                      onChange={(e) => this.handleChangeProgramCount(e)}
-                    >
-                      <option value="0">Please Select</option>
-                      <option value="3">3</option>
-                      <option value="5">5</option>
-                      <option value="7">7</option>
-                    </Form.Control>
-                  </Form.Group>
-                </Col>
+                {this.props.role === 'Admin' ? (
+                  <Col md={2} className="mx-2 my-1">
+                    <Form.Group controlId="applying_program_count">
+                      <Form.Control
+                        as="select"
+                        defaultValue={this.state.student.applying_program_count}
+                        onChange={(e) => this.handleChangeProgramCount(e)}
+                      >
+                        <option value="0">Please Select</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="7">7</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                ) : (
+                  <>
+                    <Col md={2} className="mx-2 my-3">
+                      <h4>{this.state.student.applying_program_count}</h4>
+                    </Col>
+                  </>
+                )}
               </Row>
               <Row>
                 <Col>

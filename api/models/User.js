@@ -204,6 +204,17 @@ const Guest = User.discriminator('Guest', new Schema({}, options), Role.Guest);
 
 const applicationSchema = new Schema({
   programId: { type: ObjectId, ref: 'Program' },
+  uni_assist: {
+    status: {
+      type: String,
+      default: 'notstarted'
+    },
+    vpd_file_path: {
+      type: String,
+      default: ''
+    },
+    updatedAt: Date
+  },
   doc_modification_thread: [
     {
       isFinalVersion: {

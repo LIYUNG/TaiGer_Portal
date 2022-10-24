@@ -228,7 +228,9 @@ class ApplicationProgress extends React.Component {
                   </p>
                 )
               ) : (
-                0
+                <b className="text-danger">
+                  0
+                </b>
               )}
             </td>
           ) : (

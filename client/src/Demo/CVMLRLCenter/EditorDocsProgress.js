@@ -364,7 +364,9 @@ class EditorDocsProgress extends React.Component {
             <Card.Body>
               <Row className="mb-4 mx-0">
                 <Col md={8}>
-                  <b className='text-light'>General Documents (CV, Recommendation Letters)</b>
+                  <b className="text-light">
+                    General Documents (CV, Recommendation Letters)
+                  </b>
                 </Col>
               </Row>
               {create_generaldoc_reminder && (
@@ -498,7 +500,7 @@ class EditorDocsProgress extends React.Component {
                             )}{' '}
                             {application.programId.essay_required !==
                               undefined &&
-                            application.programId.essay_required !== '' ? (
+                            application.programId.essay_required === 'yes' ? (
                               <>
                                 <Button
                                   size="sm"

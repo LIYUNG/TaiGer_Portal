@@ -152,7 +152,7 @@ class ApplicantSOverview extends React.Component {
                   <>
                     <th></th>
                     <th>First-, Last Name</th>
-                    <th>#</th>
+                    <th title={"Number of applications student should submit"}>#</th>
                     <th>University</th>
                     <th>Programs</th>
                     <th>Deadline</th>

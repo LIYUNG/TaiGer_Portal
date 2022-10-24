@@ -67,44 +67,6 @@ class CVMLRLProgress extends React.Component {
           </td>
         );
       }
-      // if (role === 'Student') {
-      //   if (thread.isReceivedEditorFeedback) {
-      //     return (
-      //       <td className="mb-1 text-info">
-      //         <BiCommentDots size={24} color="red" title="New Message" />
-      //       </td>
-      //     );
-      //   } else if (thread.isReceivedStudentFeedback) {
-      //     return (
-      //       <td className="mb-1 text-info">
-      //         <AiFillQuestionCircle
-      //           size={24}
-      //           color="lightgray"
-      //           title="Waiting feedback"
-      //         />
-      //       </td>
-      //     );
-      //   }
-      // }
-      // if (role === 'Agent' || role === 'Editor' || role === 'Admin') {
-      //   if (thread.isReceivedStudentFeedback) {
-      //     return (
-      //       <td className="mb-1 text-info">
-      //         <BiCommentDots size={24} color="red" title="New Message" />
-      //       </td>
-      //     );
-      //   } else if (thread.isReceivedEditorFeedback) {
-      //     return (
-      //       <td className="mb-1 text-info">
-      //         <AiFillQuestionCircle
-      //           size={24}
-      //           color="lightgray"
-      //           title="Waiting feedback"
-      //         />
-      //       </td>
-      //     );
-      //   }
-      // }
     };
 
     let general_document_items = <></>;

@@ -513,6 +513,13 @@ class SingleStudentPage extends React.Component {
               </Table> */}
             </Row>
           </Tab>
+          <Tab eventKey="uni-assist" title="Uni-Assist">
+            <Row>
+              {/* <Table responsive>
+                <Task student_id={this.state.student._id} />
+              </Table> */}
+            </Row>
+          </Tab>
           {/* <Tab eventKey="status" title="Status">
             <Row>
               <Table responsive>

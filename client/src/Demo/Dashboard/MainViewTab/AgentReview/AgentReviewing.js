@@ -148,27 +148,32 @@ class AgentReviewing extends React.Component {
             <></>
           )}
           <td>
-            {is_uni_assist_needed ? (
-              <p className="text-warning">
-                <BsFillExclamationCircleFill
-                  size={24}
-                  color="red"
-                  title="complete"
-                  className="mx-2"
-                />
-                needed
-              </p>
-            ) : (
-              <p className="text-warning">
-                <BsDash
-                  size={24}
-                  color="lightgray"
-                  title="incomplete"
-                  className="mx-2"
-                />
-                Not needed
-              </p>
-            )}
+            <Link
+              to={'/student-database/' + this.props.student._id + '/uni-assist'}
+              style={{ textDecoration: 'none' }}
+            >
+              {is_uni_assist_needed ? (
+                <p className="text-warning">
+                  <BsFillExclamationCircleFill
+                    size={24}
+                    color="red"
+                    title="complete"
+                    className="mx-2"
+                  />
+                  needed
+                </p>
+              ) : (
+                <p className="text-warning">
+                  <BsDash
+                    size={24}
+                    color="lightgray"
+                    title="incomplete"
+                    className="mx-2"
+                  />
+                  Not needed
+                </p>
+              )}
+            </Link>
           </td>
           <td>
             <Link

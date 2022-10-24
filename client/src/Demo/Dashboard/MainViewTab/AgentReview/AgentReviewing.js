@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-// import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
 import {
   check_survey_filled,
   check_all_applications_decided,

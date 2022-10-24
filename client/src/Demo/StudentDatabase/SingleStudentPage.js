@@ -24,6 +24,7 @@ import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
 import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
 import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
+import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import UploadAndGenerate from '../TaiGerAI/UploadAndGenerate';
@@ -515,9 +516,10 @@ class SingleStudentPage extends React.Component {
           </Tab>
           <Tab eventKey="uni-assist" title="Uni-Assist">
             <Row>
-              {/* <Table responsive>
-                <Task student_id={this.state.student._id} />
-              </Table> */}
+              <UniAssistListCard
+                student={this.state.student}
+                role={this.props.user.role}
+              />
             </Row>
           </Tab>
           {/* <Tab eventKey="status" title="Status">

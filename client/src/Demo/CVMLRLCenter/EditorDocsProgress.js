@@ -521,17 +521,21 @@ class EditorDocsProgress extends React.Component {
                             )}
                           </Col>
                           <Col>
-                            Deadline:{' '}
-                            {application.programId.application_deadline
-                              ? this.state.student.academic_background
-                                  .university.expected_application_date +
-                                '-' +
-                                application.programId.application_deadline
-                              : '-'}
+                            <p className="text-light">
+                              Deadline:{' '}
+                              {application.programId.application_deadline
+                                ? this.state.student.academic_background
+                                    .university.expected_application_date +
+                                  '-' +
+                                  application.programId.application_deadline
+                                : '-'}
+                            </p>
                           </Col>
                           <Col>
-                            Status:{' '}
-                            {application.closed === 'O' ? 'Closed' : 'Open'}
+                            <p className="text-light">
+                              Status:{' '}
+                              {application.closed === 'O' ? 'Closed' : 'Open'}
+                            </p>
                           </Col>
                         </Row>
                         <ManualFiles

@@ -136,7 +136,9 @@ class EditableFile_Thread extends Component {
             </Link>
           </Col>
           <Col md={2}>
-            {convertDate(this.props.thread.doc_thread_id.updatedAt)}
+            <p className="text-light">
+              {convertDate(this.props.thread.doc_thread_id.updatedAt)}
+            </p>
           </Col>
           {this.props.role === 'Student' || this.props.role === 'Guest' ? (
             <></>

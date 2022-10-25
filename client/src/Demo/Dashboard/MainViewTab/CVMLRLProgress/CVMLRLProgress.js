@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton, Button } from 'react-bootstrap';
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import { IoCheckmarkCircle } from 'react-icons/io5';
+import { convertDate } from '../../../Utils/contants';
 import {
   AiFillQuestionCircle,
   AiOutlineCheck,
@@ -91,41 +92,43 @@ class CVMLRLProgress extends React.Component {
               </p>
             </Link>
           </td>
-          <td>
-            {(this.props.role === 'Admin' ||
-              this.props.role === 'Editor' ||
-              this.props.role === 'Agent') &&
-            generaldocs_thread.isFinalVersion ? (
-              <AiOutlineUndo
-                size={24}
-                color="red"
-                title="Un do Final Version"
-                style={{ cursor: 'pointer' }}
-                onClick={() =>
-                  this.handleAsFinalFileThread(
-                    generaldocs_thread.doc_thread_id._id,
-                    this.props.student._id,
-                    null,
-                    generaldocs_thread.doc_thread_id.file_type
-                  )
-                }
-              />
+          {(this.props.role === 'Admin' ||
+            this.props.role === 'Editor' ||
+            this.props.role === 'Agent') &&
+            (generaldocs_thread.isFinalVersion ? (
+              <td>
+                <AiOutlineUndo
+                  size={24}
+                  color="red"
+                  title="Un do Final Version"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    this.handleAsFinalFileThread(
+                      generaldocs_thread.doc_thread_id._id,
+                      this.props.student._id,
+                      null,
+                      generaldocs_thread.doc_thread_id.file_type
+                    )
+                  }
+                />
+              </td>
             ) : (
-              <AiOutlineCheck
-                size={24}
-                style={{ cursor: 'pointer' }}
-                title="Set as final version"
-                onClick={() =>
-                  this.handleAsFinalFileThread(
-                    generaldocs_thread.doc_thread_id._id,
-                    this.props.student._id,
-                    null,
-                    generaldocs_thread.doc_thread_id.file_type
-                  )
-                }
-              />
-            )}
-          </td>
+              <td>
+                <AiOutlineCheck
+                  size={24}
+                  style={{ cursor: 'pointer' }}
+                  title="Set as final version"
+                  onClick={() =>
+                    this.handleAsFinalFileThread(
+                      generaldocs_thread.doc_thread_id._id,
+                      this.props.student._id,
+                      null,
+                      generaldocs_thread.doc_thread_id.file_type
+                    )
+                  }
+                />
+              </td>
+            ))}
           {return_thread_status(this.props.user, generaldocs_thread)}
           <td>
             <Link
@@ -139,10 +142,7 @@ class CVMLRLProgress extends React.Component {
             </Link>
           </td>
           <td>
-            {' '}
-            {new Date(generaldocs_thread.updatedAt).toLocaleDateString()}
-            {', '}
-            {new Date(generaldocs_thread.updatedAt).toLocaleTimeString()}
+            {convertDate(generaldocs_thread.updatedAt)}
           </td>
           <td>
             {!generaldocs_thread.isFinalVersion &&
@@ -224,10 +224,10 @@ class CVMLRLProgress extends React.Component {
               </Link>
             </td>
             <td>
-              {' '}
-              {new Date(doc_thread.updatedAt).toLocaleDateString()}
+              {convertDate(doc_thread.updatedAt)}
+              {/* {new Date(doc_thread.updatedAt).toLocaleDateString()}
               {', '}
-              {new Date(doc_thread.updatedAt).toLocaleTimeString()}
+              {new Date(doc_thread.updatedAt).toLocaleTimeString()} */}
             </td>
             <td>
               {!doc_thread.isFinalVersion &&

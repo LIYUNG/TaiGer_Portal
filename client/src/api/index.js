@@ -75,6 +75,16 @@ export const downloadProfile = (category, studentId) =>
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 
+export const downloadVPDProfile = (category, studentId) =>
+  request.get(`/api/students/${studentId}/files/${category}`, {
+    responseType: 'blob'
+  });
+export const uploadVPDforstudent = (category, studentId, data) =>
+  request.post(`/api/students/${studentId}/files/${category}`, data);
+
+export const deleteVPDFile = (category, studentId) =>
+  request.delete(`/api/students/${studentId}/files/${category}`);
+
 export const updateProfileDocumentStatus = (
   category,
   studentId,

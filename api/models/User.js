@@ -103,6 +103,14 @@ const UserSchema = new Schema(
     },
     academic_background: {
       university: {
+        attended_high_school: {
+          type: String,
+          default: ''
+        },
+        high_school_graduated_year: {
+          type: String,
+          default: ''
+        },
         attended_university: {
           type: String,
           default: ''

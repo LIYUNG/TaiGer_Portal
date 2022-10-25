@@ -156,10 +156,59 @@ class SurveyEditableComponent extends React.Component {
               </Card.Header>
               <Card.Body>
                 <Row>
+                  <h4 className="my-2 mx-0 text-light">High School</h4>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="attended_high_school">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        High School Name
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Taipei First Girls' High School"
+                        onChange={(e) => this.handleChange_Academic(e)}
+                        defaultValue={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university
+                            .attended_high_school
+                            ? this.state.academic_background.university
+                                .attended_high_school
+                            : ''
+                        }
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="high_school_graduated_year">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        High School Gradate Year
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="2022"
+                        defaultValue={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university
+                            .high_school_graduated_year
+                            ? this.state.academic_background.university
+                                .high_school_graduated_year
+                            : ''
+                        }
+                        onChange={(e) => this.handleChange_Academic(e)}
+                      />
+                    </Form.Group>
+                    <br />
+                  </Col>
+                </Row>
+                <Row>
+                  <h4 className="my-2 mx-0 text-light">University</h4>
+                </Row>
+                <Row>
                   <Col md={6}>
                     <Form.Group controlId="attended_university">
                       <Form.Label className="my-0 mx-0 text-light">
-                        University
+                        University Name
                       </Form.Label>
                       <Form.Control
                         type="text"

@@ -29,6 +29,9 @@ const FormsElements = React.lazy(() => import("./Demo/Forms/FormsElements"));
 const ApplicantsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/index')
 );
+const UniAssist = React.lazy(() =>
+  import('./Demo/UniAssist/index')
+);
 const BaseDocuments = React.lazy(() =>
   import('./Demo/AgentCenter/BaseDocuments')
 );
@@ -291,6 +294,12 @@ const routes = [
     exact: true,
     name: 'Base Documents',
     component: BaseDocuments
+  },
+  {
+    path: '/uni-assist',
+    exact: true,
+    name: 'Uni Assist Tasks',
+    component: UniAssist
   },
   {
     path: '/cv-ml-rl-center',

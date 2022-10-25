@@ -23,7 +23,6 @@ class SingleDoc extends React.Component {
     getDocumentation(this.props.match.params.documentation_id).then(
       (resp) => {
         const { data, success } = resp.data;
-        console.log(data);
         if (!data) {
           this.setState({ isLoaded: true, pagenotfounderror: true });
         }
@@ -69,7 +68,6 @@ class SingleDoc extends React.Component {
   handleClickSave = (e, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
-    // console.log(message);
     const msg = { title: doc_title, prop: this.props.item, text: message };
     updateDocumentation(this.props.match.params.documentation_id, msg).then(
       (resp) => {

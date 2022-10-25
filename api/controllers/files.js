@@ -327,10 +327,17 @@ const saveVPDFilePath = asyncHandler(async (req, res) => {
     params: { studentId, program_id }
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student =
-    user.role === Role.Student
-      ? user
-      : await Student.findById(studentId).populate('applications.programId');
+  let student;
+  if (user.role === Role.Student) {
+    student = await Student.findById(user._id.toString()).populate(
+      'applications.programId'
+    );
+  } else {
+    student = await Student.findById(studentId).populate(
+      'applications.programId'
+    );
+  }
+
   if (!student) {
     logger.error('saveVPDFilePath: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
@@ -793,7 +800,6 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
   }
 
   let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
-  console.log(document_split);
   document_split = document_split.split('/');
   const fileKey = document_split[2];
   let directory = path.join(

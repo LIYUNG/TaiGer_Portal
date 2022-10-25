@@ -376,8 +376,6 @@ function Table2({ columns, data, userId }) {
   // const firstPageRows = rows.slice(0, 12);
   useEffect(() => {
     const data_idxes = Object.keys(selectedRowIds);
-    // console.log(data_idxes);
-    // console.log(data_idxes.map((idx) => data[idx]._id));
     setPrograms({
       programIds: data_idxes.map((idx) => data[idx]._id),
       schools: data_idxes.map((idx) => data[idx].school),

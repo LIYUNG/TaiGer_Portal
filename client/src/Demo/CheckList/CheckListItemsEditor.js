@@ -91,7 +91,6 @@ function CheckListItemsEditor(props) {
     const formData = new FormData();
     formData.append('file', file);
     return new Promise((resolve, reject) => {
-      console.log('Uploading image...');
       uploadImage(formData)
         .then((res) => {
           resolve({ data: { link: res.data.data } });

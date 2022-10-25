@@ -28,10 +28,8 @@ class CVMLRLCenter extends React.Component {
   };
 
   componentDidMount() {
-    // console.log(this.props.user);
     getCVMLRLOverview().then(
       (resp) => {
-        // console.log(resp.data);
         const { data, success } = resp.data;
         if (success) {
           this.setState({

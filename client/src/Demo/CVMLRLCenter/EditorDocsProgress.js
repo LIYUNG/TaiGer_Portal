@@ -53,14 +53,12 @@ class EditorDocsProgress extends React.Component {
     doc_thread_id: '',
     applicationId: '',
     docName: '',
-    whoupdate: '',
     isLoaded: false,
     requirements: '',
     file: '',
     isThreadExisted: false
   };
   componentDidMount() {
-    // console.log(this.props.student);
     this.setState((state) => ({
       isLoaded: true
     }));
@@ -110,7 +108,6 @@ class EditorDocsProgress extends React.Component {
               studentId: '',
               program_id: '',
               docName: '',
-              whoupdate: '',
               isLoaded: true,
               student: data,
               success: success,
@@ -123,7 +120,6 @@ class EditorDocsProgress extends React.Component {
               studentId: '',
               program_id: '',
               docName: '',
-              whoupdate: '',
               isLoaded: true,
               success: success,
               deleteFileWarningModel: false
@@ -148,7 +144,6 @@ class EditorDocsProgress extends React.Component {
               studentId: '',
               program_id: '',
               docName: '',
-              whoupdate: '',
               isLoaded: true,
               student: data,
               success: success,
@@ -161,7 +156,6 @@ class EditorDocsProgress extends React.Component {
               studentId: '',
               program_id: '',
               docName: '',
-              whoupdate: '',
               isLoaded: true,
               success: success,
               deleteFileWarningModel: false
@@ -193,7 +187,6 @@ class EditorDocsProgress extends React.Component {
             studentId: '',
             applicationId: '',
             docName: '',
-            whoupdate: '',
             isLoaded: true,
             student: data,
             success: success,

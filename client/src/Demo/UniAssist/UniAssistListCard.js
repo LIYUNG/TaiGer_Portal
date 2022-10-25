@@ -14,16 +14,51 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import {
   uploadVPDforstudent,
   deleteVPDFile,
-  downloadVPDProfile
+  downloadVPDProfile,
+  getStudent
 } from '../../api';
+import TimeOutErrors from '../Utils/TimeOutErrors';
+import UnauthorizedError from '../Utils/UnauthorizedError';
+
 class UniAssistListCard extends React.Component {
   state = {
     student_id: '',
     program_id: '',
+    isLoaded: false,
     student: this.props.student,
+    timeouterror: null,
+    unauthorizederror: null,
     deleteVPDFileWarningModel: false
   };
-  componentDidMount() {}
+  componentDidMount() {
+    if (!this.props.student) {
+    console.log(this.props.student);
+      getStudent(this.props.user._id.toString()).then(
+        (resp) => {
+          const { data, success } = resp.data;
+          if (success) {
+            this.setState({ isLoaded: true, student: data, success: success });
+          } else {
+            if (resp.status === 401 || resp.status === 500) {
+              this.setState({ isLoaded: true, timeouterror: true });
+            } else if (resp.status === 403) {
+              this.setState({ isLoaded: true, unauthorizederror: true });
+            }
+          }
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error: true
+          });
+        }
+      );
+    } else {
+      this.setState({
+        isLoaded: true
+      });
+    }
+  }
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteVPDFileWarningModel: false }));
   };
@@ -74,56 +109,56 @@ class UniAssistListCard extends React.Component {
   };
 
   handleUniAssistDocDownload = (e, student_id, program_id) => {
-      e.preventDefault();
-      downloadVPDProfile(student_id, program_id).then(
-        (resp) => {
-          const { status } = resp;
-          if (status === 200) {
-            const actualFileName =
-              resp.headers['content-disposition'].split('"')[1];
-            const { data: blob } = resp;
-            if (blob.size === 0) return;
+    e.preventDefault();
+    downloadVPDProfile(student_id, program_id).then(
+      (resp) => {
+        const { status } = resp;
+        if (status === 200) {
+          const actualFileName =
+            resp.headers['content-disposition'].split('"')[1];
+          const { data: blob } = resp;
+          if (blob.size === 0) return;
 
-            var filetype = actualFileName.split('.'); //split file name
-            filetype = filetype.pop(); //get the file type
+          var filetype = actualFileName.split('.'); //split file name
+          filetype = filetype.pop(); //get the file type
 
-            if (filetype === 'pdf') {
-              const url = window.URL.createObjectURL(
-                new Blob([blob], { type: 'application/pdf' })
-              );
+          if (filetype === 'pdf') {
+            const url = window.URL.createObjectURL(
+              new Blob([blob], { type: 'application/pdf' })
+            );
 
-              //Open the URL on new Window
-              window.open(url); //TODO: having a reasonable file name, pdf viewer
-            } else {
-              //if not pdf, download instead.
-
-              const url = window.URL.createObjectURL(new Blob([blob]));
-
-              const link = document.createElement('a');
-              link.href = url;
-              link.setAttribute('download', actualFileName);
-              // Append to html link element page
-              document.body.appendChild(link);
-              // Start download
-              link.click();
-              // Clean up and remove the link
-              link.parentNode.removeChild(link);
-            }
+            //Open the URL on new Window
+            window.open(url); //TODO: having a reasonable file name, pdf viewer
           } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({
-                isLoaded: true,
-                unauthorizederror: true
-              });
-            }
+            //if not pdf, download instead.
+
+            const url = window.URL.createObjectURL(new Blob([blob]));
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', actualFileName);
+            // Append to html link element page
+            document.body.appendChild(link);
+            // Start download
+            link.click();
+            // Clean up and remove the link
+            link.parentNode.removeChild(link);
           }
-        },
-        (error) => {
-          alert('The file is not available.');
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
         }
-      );
+      },
+      (error) => {
+        alert('The file is not available.');
+      }
+    );
   };
   onSubmitGeneralFile = (e, NewFile, student_id, program_id) => {
     e.preventDefault();
@@ -133,9 +168,6 @@ class UniAssistListCard extends React.Component {
       ...state,
       isLoaded: false
     }));
-    console.log(student_id);
-    console.log(program_id);
-    console.log(formData);
     uploadVPDforstudent(student_id, program_id, formData).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -170,6 +202,39 @@ class UniAssistListCard extends React.Component {
   };
 
   render() {
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
+    const style = {
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    };
+
+    if (!isLoaded && !this.state.student) {
+      return (
+        <div style={style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
     const app_name = this.state.student.applications.map((application, i) => (
       <div key={i}>
         {application.programId.uni_assist === 'Yes-FULL' && (

@@ -101,6 +101,14 @@ export default {
           icon: 'feather icon-eye'
         },
         {
+          id: 'uni_assist_tasks',
+          title: 'Uni-Assist Tasks',
+          type: 'item',
+          url: '/uni-assist',
+          classes: 'nav-item',
+          icon: 'feather icon-navigation'
+        },
+        {
           id: 'editor_center',
           title: 'CV/ML/RL Center',
           type: 'item',

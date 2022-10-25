@@ -24,6 +24,8 @@ const ALLOWED_MIME_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ];
 
+const ALLOWED_PDF_MIME_TYPES = ['application/pdf'];
+
 const ALLOWED_MIME_IMAGE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 
 var aws = require('aws-sdk');
@@ -80,6 +82,53 @@ const upload_template_s3 = multer({
   }
 });
 
+// VPD file upload
+const storage_vpd_s3 = multerS3({
+  s3,
+  bucket: function (req, file, cb) {
+    var { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId exist
+    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'vpd');
+    // var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
+    directory = directory.replace(/\\/g, '/');
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    var { studentId } = req.params;
+    if (!studentId) studentId = String(req.user._id);
+
+    // TODO: check studentId exist
+    let directory = path.join(studentId, 'vpd');
+    directory = directory.replace(/\\/g, '/'); // g>> replace all!
+    // var directory = studentId;
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: function (req, file, cb) {
+    var { studentId, program_id } = req.params;
+
+    Student.findById(studentId).then(function (student) {
+      if (student) {
+        Program.findById(program_id).then((program) => {
+          let program_name = program.school + ' ' + program.program_name;
+          var temp_name =
+            student.lastname +
+            '_' +
+            student.firstname +
+            '_' +
+            program_name +
+            '_' +
+            'VPD' +
+            path.extname(file.originalname);
+          temp_name = temp_name.replace(/ /g, '_');
+          cb(null, temp_name);
+        });
+      }
+    });
+  }
+});
+
 // Profile file upload
 const storage_s3 = multerS3({
   s3,
@@ -129,6 +178,7 @@ const storage_s3 = multerS3({
       });
   }
 });
+
 const doc_image_s3 = multerS3({
   s3,
   bucket: function (req, file, cb) {
@@ -160,6 +210,21 @@ const upload_doc_image_s3 = multer({
     cb(null, true);
   }
 });
+
+const upload_vpd_s3 = multer({
+  storage: storage_vpd_s3,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_PDF_MIME_TYPES.includes(file.mimetype))
+      return cb(new ErrorResponse(400, 'Only .pdf format is allowed'));
+    const fileSize = parseInt(req.headers['content-length']);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    }
+    cb(null, true);
+  }
+});
+
 /**
  * currently used by route
  *   /account/files/:studentId/:docName (student upload)
@@ -210,13 +275,48 @@ const storage_messagesthread_file_s3 = multerS3({
     Documentthread.findById(messagesThreadId)
       .populate('student_id')
       .then(function (thread) {
-        if (thread) {
+        if (!thread) {
+          throw new ErrorResponse(400, 'Invalid message thread id');
+        }
+        let program_name = '';
+        if (thread.program_id) {
+          Program.findById(thread.program_id).then((program) => {
+            program_name = program.school + '_' + program.program_name;
+            console.log(program_name);
+            var r2 = /[^\d]/;
+            var version_number_max = 0;
+
+            thread.messages.forEach((message) => {
+              message.file.forEach((file) => {
+                var fileversion = 0;
+                fileversion = parseInt(file.name.replace(/[^\d]/g, ''));
+
+                if (fileversion > version_number_max) {
+                  version_number_max = fileversion; // get the max version number
+                }
+              });
+            });
+
+            var version_number = parseInt(version_number_max) + 1;
+            var same_file_name = true;
+            var temp_name =
+              thread.student_id.lastname +
+              '_' +
+              thread.student_id.firstname +
+              '_' +
+              program_name +
+              '_' +
+              thread.file_type +
+              '_v' +
+              version_number.toString() +
+              `${path.extname(file.originalname)}`;
+            temp_name = temp_name.replace(/ /g, '_');
+
+            cb(null, temp_name);
+          });
+        } else {
           var r2 = /[^\d]/;
           var version_number_max = 0;
-
-          if (!thread) {
-            throw new ErrorResponse(400, 'Invalid message thread id');
-          }
 
           thread.messages.forEach((message) => {
             message.file.forEach((file) => {
@@ -236,19 +336,15 @@ const storage_messagesthread_file_s3 = multerS3({
             '_' +
             thread.student_id.firstname +
             '_' +
+            program_name +
+            '_' +
             thread.file_type +
             '_v' +
             version_number.toString() +
             `${path.extname(file.originalname)}`;
           temp_name = temp_name.replace(/ /g, '_');
-
-          return {
-            fileName: temp_name
-          };
+          cb(null, temp_name);
         }
-      })
-      .then(function (resp) {
-        cb(null, resp.fileName);
       });
   }
 });
@@ -404,6 +500,7 @@ var upload = multer({ storage: storage });
 
 module.exports = {
   imageUpload: upload_doc_image_s3.single('file'),
+  VPDfileUpload: upload_vpd_s3.single('file'),
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
   TranscriptExcelUpload: upload_transcript_s3.single('file'),

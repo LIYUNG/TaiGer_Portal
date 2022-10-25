@@ -319,6 +319,197 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   }
 });
 
+// () email : student notification
+// () email : agent notification
+const saveVPDFilePath = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, program_id }
+  } = req;
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  const student =
+    user.role === Role.Student
+      ? user
+      : await Student.findById(studentId).populate('applications.programId');
+  if (!student) {
+    logger.error('saveVPDFilePath: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
+  let app = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+  if (!app) {
+    app.uni_assist.status = DocumentStatus.Uploaded;
+    app.uni_assist.updatedAt = new Date();
+    app.uni_assist.vpd_file_path = path.join(
+      req.file.metadata.path,
+      req.file.key
+    );
+    await student.save();
+    res.status(201).send({ success: true, data: student });
+    // if (user.role === Role.Student) {
+    //   await sendUploadedProfileFilesEmail(
+    //     {
+    //       firstname: student.firstname,
+    //       lastname: student.lastname,
+    //       address: student.email
+    //     },
+    //     {
+    //       uploaded_documentname: document.name.replace(/_/g, ' '),
+    //       uploaded_updatedAt: document.updatedAt
+    //     }
+    //   );
+
+    //   for (let i = 0; i < student.agents.length; i++) {
+    //     await sendUploadedProfileFilesRemindForAgentEmail(
+    //       {
+    //         firstname: student.agents[i].firstname,
+    //         lastname: student.agents[i].lastname,
+    //         address: student.agents[i].email
+    //       },
+    //       {
+    //         student_firstname: student.firstname,
+    //         student_lastname: student.lastname,
+    //         uploaded_documentname: document.name.replace(/_/g, ' '),
+    //         uploaded_updatedAt: document.updatedAt
+    //       }
+    //     );
+    //   }
+    // } else {
+    //   await sendAgentUploadedProfileFilesForStudentEmail(
+    //     {
+    //       firstname: student.firstname,
+    //       lastname: student.lastname,
+    //       address: student.email
+    //     },
+    //     {
+    //       agent_firstname: user.firstname,
+    //       agent_lastname: user.lastname,
+    //       uploaded_documentname: document.name.replace(/_/g, ' '),
+    //       uploaded_updatedAt: document.updatedAt
+    //     }
+    //   );
+    // }
+    return;
+  }
+  app.uni_assist.status = DocumentStatus.Uploaded;
+  app.uni_assist.updatedAt = new Date();
+  app.uni_assist.vpd_file_path = path.join(
+    req.file.metadata.path,
+    req.file.key
+  );
+  await student.save();
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  res.status(201).send({ success: true, data: student });
+  // if (user.role === Role.Student) {
+  //   await sendUploadedProfileFilesEmail(
+  //     {
+  //       firstname: student.firstname,
+  //       lastname: student.lastname,
+  //       address: student.email
+  //     },
+  //     {
+  //       uploaded_documentname: document.name.replace(/_/g, ' '),
+  //       uploaded_updatedAt: document.updatedAt
+  //     }
+  //   );
+  //   // Reminder for Agent:
+  //   for (let i = 0; i < student.agents.length; i++) {
+  //     await sendUploadedProfileFilesRemindForAgentEmail(
+  //       {
+  //         firstname: student.agents[i].firstname,
+  //         lastname: student.agents[i].lastname,
+  //         address: student.agents[i].email
+  //       },
+  //       {
+  //         student_firstname: student.firstname,
+  //         student_lastname: student.lastname,
+  //         uploaded_documentname: document.name.replace(/_/g, ' '),
+  //         uploaded_updatedAt: document.updatedAt
+  //       }
+  //     );
+  //   }
+  // } else {
+  //   await sendAgentUploadedProfileFilesForStudentEmail(
+  //     {
+  //       firstname: student.firstname,
+  //       lastname: student.lastname,
+  //       address: student.email
+  //     },
+  //     {
+  //       agent_firstname: user.firstname,
+  //       agent_lastname: user.lastname,
+  //       uploaded_documentname: document.name.replace(/_/g, ' '),
+  //       uploaded_updatedAt: document.updatedAt
+  //     }
+  //   );
+  // }
+});
+
+const downloadVPDFile = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, program_id }
+  } = req;
+
+  // AWS S3
+  // download the file via aws s3 here
+  const student =
+    user.role == Role.Student ? user : await Student.findById(studentId);
+  if (!student) {
+    logger.error('downloadVPDFile: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
+
+  const app = student.applications.find(
+    (application) => application.programId.toString() === program_id
+  );
+  if (!app) {
+    logger.error('downloadVPDFile: Invalid app name!');
+    throw new ErrorResponse(400, 'Invalid app name');
+  }
+  if (!app.uni_assist.vpd_file_path) {
+    logger.error('downloadVPDFile: File not uploaded yet!');
+    throw new ErrorResponse(400, 'File not uploaded yet');
+  }
+
+  // var fileKey = path.join(UPLOAD_PATH, document.path);
+  let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
+  document_split = document_split.split('/');
+  const fileKey = document_split[2];
+  let directory = path.join(
+    AWS_S3_BUCKET_NAME,
+    document_split[0],
+    document_split[1]
+  );
+  logger.info('Trying to download profile file', fileKey);
+
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(fileKey);
+      const fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        logger.error('downloadVPDFile: ', error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
+});
+
 const downloadProfileFile = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -563,6 +754,76 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   } catch (err) {
     if (err) {
       logger.error('deleteProfileFile: ', err);
+      throw new ErrorResponse(500, 'Error occurs while deleting');
+    }
+  }
+});
+
+const deleteVPDFile = asyncHandler(async (req, res, next) => {
+  const { studentId, program_id } = req.params;
+  const { user } = req;
+  if (user.role === Role.Student) {
+    if (studentId !== user._id.toString()) {
+      logger.error('deleteVPDFile: Invalid operation for student');
+      throw new ErrorResponse(403, 'Invalid operation for student');
+    }
+  }
+
+  const student = await Student.findOne({
+    _id: studentId
+  })
+    .populate('applications.programId')
+    .populate('agents editors', 'firstname lastname email');
+
+  if (!student) {
+    logger.error('deleteVPDFile: Invalid student Id or application Id');
+    throw new ErrorResponse(400, 'Invalid student Id or application Id');
+  }
+
+  const app = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+  if (!app) {
+    logger.error('deleteVPDFile: Invalid applications name');
+    throw new ErrorResponse(400, 'Invalid applications name');
+  }
+  if (!app.uni_assist.vpd_file_path) {
+    logger.error('deleteVPDFile: File not exist');
+    throw new ErrorResponse(400, 'File not exist');
+  }
+
+  let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
+  console.log(document_split);
+  document_split = document_split.split('/');
+  const fileKey = document_split[2];
+  let directory = path.join(
+    AWS_S3_BUCKET_NAME,
+    document_split[0],
+    document_split[1]
+  );
+  logger.info('Trying to delete file', fileKey);
+  directory = directory.replace(/\\/g, '/');
+
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+  try {
+    s3.deleteObject(options, (error, data) => {
+      if (error) {
+        logger.error(error);
+      } else {
+        app.uni_assist.status = DocumentStatus.Missing;
+        app.uni_assist.vpd_file_path = null;
+        app.uni_assist.updatedAt = new Date();
+
+        student.save();
+        res.status(200).send({ success: true, data: student });
+      }
+    });
+  } catch (err) {
+    if (err) {
+      logger.error('deleteVPDFile: ', err);
       throw new ErrorResponse(500, 'Error occurs while deleting');
     }
   }
@@ -943,11 +1204,14 @@ module.exports = {
   deleteTemplate,
   uploadTemplate,
   saveProfileFilePath,
+  saveVPDFilePath,
+  downloadVPDFile,
   downloadProfileFile,
   downloadTemplateFile,
   updateProfileDocumentStatus,
   UpdateStudentApplications,
   deleteProfileFile,
+  deleteVPDFile,
   processTranscript_test,
   processTranscript,
   downloadXLSX,

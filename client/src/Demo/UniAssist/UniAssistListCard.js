@@ -17,35 +17,133 @@ import {
   downloadVPDProfile
 } from '../../api';
 class UniAssistListCard extends React.Component {
-  SubmitGeneralFile = (e, studentId, fileCategory) => {
-    this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
+  state = {
+    student_id: '',
+    program_id: '',
+    student: this.props.student,
+    deleteVPDFileWarningModel: false
   };
-  handleUniAssistDocSubmit = (e, studentId, fileCategory) => {
+  componentDidMount() {}
+  closeWarningWindow = () => {
+    this.setState((state) => ({ ...state, deleteVPDFileWarningModel: false }));
+  };
+  handleUniAssistDocSubmit = (e, student_id, program_id) => {
     e.preventDefault();
-    this.SubmitGeneralFile(e, studentId, fileCategory);
+    this.onSubmitGeneralFile(e, e.target.files[0], student_id, program_id);
   };
 
-  onSubmitGeneralFile = (e, NewFile, category, student_id) => {
+  handleUniAssistDocDelete = (e) => {
+    deleteVPDFile(this.state.student_id, this.state.program_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            student: data,
+            success: success,
+            deleteVPDFileWarningModel: false
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
+      }
+    );
+  };
+  onDeleteVPDFileWarningPopUp = (e, student_id, program_id) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      student_id,
+      program_id,
+      deleteVPDFileWarningModel: true
+    }));
+  };
+
+  handleUniAssistDocDownload = (e, student_id, program_id) => {
+      e.preventDefault();
+      downloadVPDProfile(student_id, program_id).then(
+        (resp) => {
+          const { status } = resp;
+          if (status === 200) {
+            const actualFileName =
+              resp.headers['content-disposition'].split('"')[1];
+            const { data: blob } = resp;
+            if (blob.size === 0) return;
+
+            var filetype = actualFileName.split('.'); //split file name
+            filetype = filetype.pop(); //get the file type
+
+            if (filetype === 'pdf') {
+              const url = window.URL.createObjectURL(
+                new Blob([blob], { type: 'application/pdf' })
+              );
+
+              //Open the URL on new Window
+              window.open(url); //TODO: having a reasonable file name, pdf viewer
+            } else {
+              //if not pdf, download instead.
+
+              const url = window.URL.createObjectURL(new Blob([blob]));
+
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', actualFileName);
+              // Append to html link element page
+              document.body.appendChild(link);
+              // Start download
+              link.click();
+              // Clean up and remove the link
+              link.parentNode.removeChild(link);
+            }
+          } else {
+            if (resp.status === 401 || resp.status === 500) {
+              this.setState({ isLoaded: true, timeouterror: true });
+            } else if (resp.status === 403) {
+              this.setState({
+                isLoaded: true,
+                unauthorizederror: true
+              });
+            }
+          }
+        },
+        (error) => {
+          alert('The file is not available.');
+        }
+      );
+  };
+  onSubmitGeneralFile = (e, NewFile, student_id, program_id) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', NewFile);
-    let student_arrayidx = this.state.students.findIndex(
-      (student) => student._id === student_id
-    );
     this.setState((state) => ({
       ...state,
       isLoaded: false
     }));
-    uploadVPDforstudent(category, student_id, formData).then(
+    console.log(student_id);
+    console.log(program_id);
+    console.log(formData);
+    uploadVPDforstudent(student_id, program_id, formData).then(
       (resp) => {
-        let students = [...this.state.students];
         const { data, success } = resp.data;
-        students[student_arrayidx] = data;
 
         if (success) {
           this.setState((state) => ({
             ...state,
-            students: students, // resp.data = {success: true, data:{...}}
+            student: data, // resp.data = {success: true, data:{...}}
             success,
             category: '',
             isLoaded: true,
@@ -72,7 +170,7 @@ class UniAssistListCard extends React.Component {
   };
 
   render() {
-    const app_name = this.props.student.applications.map((application, i) => (
+    const app_name = this.state.student.applications.map((application, i) => (
       <div key={i}>
         {application.programId.uni_assist === 'Yes-FULL' && (
           <>
@@ -88,8 +186,8 @@ class UniAssistListCard extends React.Component {
                   onChange={(e) =>
                     this.handleUniAssistDocSubmit(
                       e,
-                      this.props.k,
-                      this.props.student._id.toString()
+                      this.state.student._id.toString(),
+                      application.programId._id.toString()
                     )
                   }
                   onClick={(e) => (e.target.value = null)}
@@ -99,7 +197,30 @@ class UniAssistListCard extends React.Component {
                 </Form.File.Label>
               </Form>
             ) : (
-              <Button>Download</Button>
+              <>
+                <Button
+                  onClick={(e) =>
+                    this.handleUniAssistDocDownload(
+                      e,
+                      this.state.student._id.toString(),
+                      application.programId._id.toString()
+                    )
+                  }
+                >
+                  Download
+                </Button>
+                <Button
+                  onClick={(e) =>
+                    this.onDeleteVPDFileWarningPopUp(
+                      e,
+                      this.state.student._id.toString(),
+                      application.programId._id.toString()
+                    )
+                  }
+                >
+                  Delete
+                </Button>
+              </>
             )}
           </>
         )}
@@ -111,14 +232,15 @@ class UniAssistListCard extends React.Component {
               {' Yes-VPD'}
             </p>
             {!application.uni_assist ||
+            application.uni_assist.status === 'missing' ||
             application.uni_assist.status === 'notstarted' ? (
               <Form>
                 <Form.File.Label
                   onChange={(e) =>
                     this.handleUniAssistDocSubmit(
                       e,
-                      this.props.k,
-                      this.props.student._id.toString()
+                      this.state.student._id.toString(),
+                      application.programId._id.toString()
                     )
                   }
                   onClick={(e) => (e.target.value = null)}
@@ -129,7 +251,28 @@ class UniAssistListCard extends React.Component {
               </Form>
             ) : (
               <>
-                <Button>Download</Button>
+                <Button
+                  onClick={(e) =>
+                    this.handleUniAssistDocDownload(
+                      e,
+                      this.state.student._id.toString(),
+                      application.programId._id.toString()
+                    )
+                  }
+                >
+                  Download
+                </Button>
+                <Button
+                  onClick={(e) =>
+                    this.onDeleteVPDFileWarningPopUp(
+                      e,
+                      this.state.student._id.toString(),
+                      application.programId._id.toString()
+                    )
+                  }
+                >
+                  Delete
+                </Button>
               </>
             )}
           </>
@@ -159,6 +302,28 @@ class UniAssistListCard extends React.Component {
         <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
           <Card.Body>{app_name}</Card.Body>
         </Card>
+        <Modal
+          show={this.state.deleteVPDFileWarningModel}
+          onHide={this.closeWarningWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Do you want to delete?</Modal.Body>
+          <Modal.Footer>
+            <Button
+              //   disabled={!this.state.isLoaded}
+              onClick={(e) => this.handleUniAssistDocDelete(e)}
+            >
+              Yes
+            </Button>
+            <Button onClick={this.closeWarningWindow}>No</Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
   }

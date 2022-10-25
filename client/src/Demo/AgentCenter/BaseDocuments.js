@@ -357,7 +357,6 @@ class BaseDocuments extends React.Component {
         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
         SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
         isLoaded={isLoaded}
-        deleteFileWarningModel={this.state.deleteFileWarningModel}
         CommentModel={this.state.CommentModel}
         rejectProfileFileModel={this.state.rejectProfileFileModel}
         acceptProfileFileModel={this.state.acceptProfileFileModel}

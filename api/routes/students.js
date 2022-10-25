@@ -2,7 +2,10 @@ const { Router } = require('express');
 
 const { ErrorResponse } = require('../common/errors');
 const { protect, permit } = require('../middlewares/auth');
-const { ProfilefileUpload } = require('../middlewares/file-upload');
+const {
+  ProfilefileUpload,
+  VPDfileUpload
+} = require('../middlewares/file-upload');
 const { Role, Student } = require('../models/User');
 
 const {
@@ -19,9 +22,12 @@ const {
 } = require('../controllers/students');
 const {
   saveProfileFilePath,
+  saveVPDFilePath,
+  downloadVPDFile,
   downloadProfileFile,
   updateProfileDocumentStatus,
-  deleteProfileFile
+  deleteProfileFile,
+  deleteVPDFile
 } = require('../controllers/files');
 
 const router = Router();
@@ -71,6 +77,20 @@ router
 router
   .route('/:studentId/applications')
   .post(permit(Role.Admin, Role.Agent, Role.Student), createApplication);
+
+router
+  .route('/:studentId/vpd/:program_id')
+  .get(
+    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    downloadVPDFile
+  )
+  .post(
+    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    VPDfileUpload,
+    saveVPDFilePath
+  )
+  .delete(permit(Role.Admin, Role.Agent, Role.Student), deleteVPDFile);
+
 
 router
   .route('/:studentId/applications/:program_id')

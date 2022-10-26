@@ -6,7 +6,7 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 
 import { updateArchivStudents, getStudents } from '../../api';
-
+import { isProgramNotSelected } from '../Utils/checking-functions';
 class ApplicantSOverview extends React.Component {
   state = {
     error: null,
@@ -114,6 +114,19 @@ class ApplicantSOverview extends React.Component {
         </div>
       );
     }
+
+    const listStudentProgramNotSelected = this.state.students.map(
+      (student, i) => (
+        <div key={i}>
+          {student.applications.length < student.applying_program_count && (
+            <li className="text-light">
+              {student.firstname} {student.lastname}
+            </li>
+          )}
+        </div>
+      )
+    );
+
     const application_progress = this.state.students.map((student, i) => (
       <ApplicationProgress
         key={i}
@@ -137,6 +150,21 @@ class ApplicantSOverview extends React.Component {
             </Card>
           </Col>
         </Row>
+        {isProgramNotSelected(this.state.students) && (
+          <Row>
+            <Col>
+              <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  <p className="text-light">
+                    The following students did not choose enough programs:
+                  </p>
+                  {listStudentProgramNotSelected}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
+
         <Row>
           <Col>
             <Table
@@ -152,7 +180,9 @@ class ApplicantSOverview extends React.Component {
                   <>
                     <th></th>
                     <th>First-, Last Name</th>
-                    <th title={"Number of applications student should submit"}>#</th>
+                    <th title={'Number of applications student should submit'}>
+                      #
+                    </th>
                     <th>University</th>
                     <th>Programs</th>
                     <th>Deadline</th>

@@ -16,6 +16,8 @@ import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getNumberOfDays } from '../Utils/contants';
+import { isProgramNotSelected } from '../Utils/checking-functions';
+
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
     error: null,
@@ -336,7 +338,7 @@ class StudentApplicationsTableTemplate extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card className="my-0 mx-0" bg={'black'} text={'light'}>
+            <Card className="my-2 mx-0" bg={'black'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   {this.props.student.firstname} {this.props.student.lastname}
@@ -345,6 +347,18 @@ class StudentApplicationsTableTemplate extends React.Component {
             </Card>
           </Col>
         </Row>
+        {isProgramNotSelected([this.state.student]) && (
+          <Row>
+            <Col>
+              <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  {this.props.student.firstname} {this.props.student.lastname}{' '}
+                  did not choose enough programs.
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col>
             <Card className="my-0 mx-0" bg={'info'} text={'white'}>

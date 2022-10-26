@@ -38,9 +38,20 @@ export const checkSurveyCompleted = (keys, object_init) => {
   }
   return false;
 };
+export const isProgramNotSelected = (students) => {
+  for (let i = 0; i < students.length; i += 1) {
+    if (students[i].applications.length < students[i].applying_program_count) {
+      return true;
+    }
+  }
+  return false;
+};
 
 export const check_all_applications_decided = (keys, student) => {
   for (let i = 0; i < keys.length; i += 1) {
+    if (student.applications.length < student.applying_program_count) {
+      return false;
+    }
     if (!student.applications || student.applications.length === 0) {
       return false;
     }

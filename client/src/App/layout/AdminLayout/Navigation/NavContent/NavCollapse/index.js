@@ -24,7 +24,7 @@ class NavCollapse extends Component {
     if (collapse.children) {
       if (this.props.role === 'Admin') {
         if (
-          // collapse.title === 'Component' ||
+          collapse.title === 'Component' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {

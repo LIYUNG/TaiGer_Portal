@@ -391,58 +391,54 @@ class BaseDocuments extends React.Component {
     return (
       <Aux>
         <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                 Base Documents
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
+          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+            <Card.Header>
+              <Card.Title className="my-0 mx-0 text-light">
+                Base Documents
+              </Card.Title>
+            </Card.Header>
+          </Card>
         </Row>
         <Row>
-          <Col sm={12}>
-            {this.props.user.role === 'Admin' ||
-            this.props.user.role === 'Agent' ||
-            this.props.user.role === 'Editor' ? (
-              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-                <Card.Body>
-                  <Table
-                    responsive
-                    hover
-                    className="my-0 mx-0"
-                    //   variant="dark"
-                    text="light"
-                  >
-                    <thead>
-                      <tr className="my-0 mx-0 text-light">
-                        <>
-                          <th style={style2}>First-, Last Name</th>
-                        </>
-                        {profile_list_keys.map((doc_name, index) => (
-                          <th key={index} style={style2}>
-                            {doc_name}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>{student_profile}</tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            ) : (
-              <>{student_profile_student_view}</>
-            )}
+          {this.props.user.role === 'Admin' ||
+          this.props.user.role === 'Agent' ||
+          this.props.user.role === 'Editor' ? (
+            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Body>
+                <Table
+                  responsive
+                  hover
+                  className="my-0 mx-0"
+                  //   variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr className="my-0 mx-0 text-light">
+                      <>
+                        <th style={style2}>First-, Last Name</th>
+                      </>
+                      {profile_list_keys.map((doc_name, index) => (
+                        <th key={index} style={style2}>
+                          {doc_name}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{student_profile}</tbody>
+                </Table>
+              </Card.Body>
+            </Card>
+          ) : (
+            <>{student_profile_student_view}</>
+          )}
 
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Col>
+          {!isLoaded && (
+            <div style={style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
         </Row>
       </Aux>
     );

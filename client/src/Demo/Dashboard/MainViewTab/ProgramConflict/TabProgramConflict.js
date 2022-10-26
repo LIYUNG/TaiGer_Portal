@@ -64,30 +64,30 @@ class TabProgramConflict extends React.Component {
       <>
         {program_conflict.length !== 0 ? (
           <Row>
-            <Col sm={12}>
-              <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header>
-                  <Card.Title>Program Conflicts</Card.Title>
-                </Card.Header>
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                >
-                  <thead>
-                    <tr>
-                      <th>University / Programs</th>
-                      <th>First-, Last Name</th>
-                      <th>Deadline</th>
-                    </tr>
-                  </thead>
-                  {program_conflict}
-                </Table>
-              </Card>
-            </Col>
+            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-danger">
+                  Program Conflicts
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
+                <thead>
+                  <tr>
+                    <th>University / Programs</th>
+                    <th>First-, Last Name</th>
+                    <th>Deadline</th>
+                  </tr>
+                </thead>
+                {program_conflict}
+              </Table>
+            </Card>
           </Row>
         ) : (
           <></>

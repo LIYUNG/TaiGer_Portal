@@ -63,8 +63,8 @@ class AdminMainView extends React.Component {
 
     return (
       <>
-        <Row className="mb-2">
-          <Col md={6} className="mx-0">
+        <Row>
+          <Col mx={0} my={0}>
             <Card
               className="my-0 mx-0  text-light"
               bg={'danger'}
@@ -92,7 +92,7 @@ class AdminMainView extends React.Component {
               </Table>
             </Card>
           </Col>
-          <Col md={6} className="mx-0">
+          <Col>
             <Card className="my-0 mx-0" bg={'danger'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
@@ -119,13 +119,50 @@ class AdminMainView extends React.Component {
         </Row>
         <TabProgramConflict students={this.props.students} />
         <Row className="mb-2">
-          <Col md={12}>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Agent Reviewing:
-                </Card.Title>
-              </Card.Header>
+          <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+            <Card.Header>
+              <Card.Title className="my-0 mx-0 text-light">
+                Agent Reviewing:
+              </Card.Title>
+            </Card.Header>
+            <Table
+              responsive
+              bordered
+              hover
+              className="my-0 mx-0"
+              variant="dark"
+              text="light"
+            >
+              <thead>
+                <tr>
+                  <th>First-/Lastname</th>
+                  <th>Survey</th>
+                  <th>Base Documents</th>
+                  <th>Uni-Assist</th>
+                  <th>Program Selection</th>
+                  <th>Submission</th>
+                </tr>
+              </thead>
+              <tbody>{agent_reviewing}</tbody>
+            </Table>
+          </Card>
+        </Row>
+        <Row>
+          <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
+            <Tab
+              eventKey="w"
+              title="Student Background Overview"
+              className="my-0 mx-0"
+            >
+              <TabStudDocsDashboard
+                role={this.props.role}
+                students={this.props.students}
+                SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
+                updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+                isDashboard={this.props.isDashboard}
+              />
+            </Tab>
+            <Tab eventKey="dz" title="Agents and Editors">
               <Table
                 responsive
                 bordered
@@ -136,59 +173,16 @@ class AdminMainView extends React.Component {
               >
                 <thead>
                   <tr>
-                    <th>First-/Lastname</th>
-                    <th>Survey</th>
-                    <th>Base Documents</th>
-                    <th>Uni-Assist</th>
-                    <th>Program Selection</th>
-                    <th>Submission</th>
+                    <th></th>
+                    <th>First-, Last Name</th>
+                    <th>Agents</th>
+                    <th>Editors</th>
                   </tr>
                 </thead>
-                <tbody>{agent_reviewing}</tbody>
+                <tbody>{students_agent_editor}</tbody>
               </Table>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
-              <Tab
-                eventKey="w"
-                title="Student Background Overview"
-                className="my-0 mx-0"
-              >
-                <TabStudDocsDashboard
-                  role={this.props.role}
-                  students={this.props.students}
-                  SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
-                  updateStudentArchivStatus={
-                    this.props.updateStudentArchivStatus
-                  }
-                  isDashboard={this.props.isDashboard}
-                />
-              </Tab>
-              <Tab eventKey="dz" title="Agents and Editors">
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                >
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th>First-, Last Name</th>
-                      <th>Agents</th>
-                      <th>Editors</th>
-                    </tr>
-                  </thead>
-                  <tbody>{students_agent_editor}</tbody>
-                </Table>
-              </Tab>
-            </Tabs>
-          </Col>
+            </Tab>
+          </Tabs>
         </Row>
       </>
     );

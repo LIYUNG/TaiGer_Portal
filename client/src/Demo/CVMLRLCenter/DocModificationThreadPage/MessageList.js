@@ -17,7 +17,7 @@ class MessageList extends Component {
         isLoaded={this.props.isLoaded}
       />
     ));
-    return <div>{thread}</div>;
+    return <>{thread}</>;
   }
 }
 

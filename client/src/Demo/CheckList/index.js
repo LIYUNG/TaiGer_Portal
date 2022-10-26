@@ -203,38 +203,36 @@ class CheckList extends React.Component {
     return (
       <Aux>
         <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">Check List</Col>
-                    <Col md={{ span: 2, offset: 0 }}>
-                      {this.state.expand ? (
-                        <Button
-                          size="sm"
-                          onClick={() => this.AllCollapsetHandler()}
-                        >
-                          Collaspse1
-                        </Button>
-                      ) : (
-                        <Button
-                          size={'sm'}
-                          onClick={() => this.AllExpandtHandler()}
-                        >
-                          Expand
-                        </Button>
-                      )}
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
+          <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+            <Card.Header text={'dark'}>
+              <Card.Title>
+                <Row>
+                  <Col className="my-0 mx-0 text-light">Check List</Col>
+                  <Col md={{ span: 2, offset: 0 }}>
+                    {this.state.expand ? (
+                      <Button
+                        className="my-0 mx-0"
+                        size="sm"
+                        onClick={() => this.AllCollapsetHandler()}
+                      >
+                        Collaspse1
+                      </Button>
+                    ) : (
+                      <Button
+                        className="my-0 mx-0"
+                        size={'sm'}
+                        onClick={() => this.AllExpandtHandler()}
+                      >
+                        Expand
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
+              </Card.Title>
+            </Card.Header>
+          </Card>
         </Row>
-        <Row>
-          <Col sm={12}>{student_editor}</Col>
-        </Row>
+        <Row>{student_editor}</Row>
       </Aux>
     );
   }

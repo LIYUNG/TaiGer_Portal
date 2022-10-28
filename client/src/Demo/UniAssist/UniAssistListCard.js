@@ -348,7 +348,7 @@ class UniAssistListCard extends React.Component {
               {application.programId.school}{' '}
               {application.programId.program_name}
             </p>
-            <p className="text-light"> 'Not uni-assist needed'</p>
+            <p className="text-light"> 'No uni-assist needed'</p>
           </>
         )}
         {application.programId.uni_assist === undefined && (
@@ -357,7 +357,7 @@ class UniAssistListCard extends React.Component {
               {application.programId.school}{' '}
               {application.programId.program_name}{' '}
             </p>
-            <p className="text-light"> 'Not uni-assist needed'</p>
+            <p className="text-light"> 'No uni-assist needed'</p>
           </>
         )}
       </div>

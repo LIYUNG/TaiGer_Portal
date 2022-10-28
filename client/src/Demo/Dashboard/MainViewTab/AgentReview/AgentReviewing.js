@@ -7,7 +7,8 @@ import {
   check_survey_filled,
   check_all_applications_decided,
   check_all_applications_submitted,
-  check_uni_assist_needed
+  check_uni_assist_needed,
+  is_all_uni_assist_vpd_uploaded
 } from '../../../Utils/checking-functions';
 
 class AgentReviewing extends React.Component {
@@ -60,7 +61,9 @@ class AgentReviewing extends React.Component {
     );
 
     var is_uni_assist_needed = check_uni_assist_needed(this.props.student);
-
+    let isall_uni_assist_vpd_uploaded = is_all_uni_assist_vpd_uploaded(
+      this.props.student
+    );
     return (
       <>
         <tr className="my-0">
@@ -151,15 +154,27 @@ class AgentReviewing extends React.Component {
               style={{ textDecoration: 'none' }}
             >
               {is_uni_assist_needed ? (
-                <p className="text-warning">
-                  <BsFillExclamationCircleFill
-                    size={24}
-                    color="red"
-                    title="complete"
-                    className="mx-2"
-                  />
-                  needed
-                </p>
+                isall_uni_assist_vpd_uploaded ? (
+                  <p className="text-warning">
+                    <IoCheckmarkCircle
+                      size={24}
+                      color="limegreen"
+                      title="complete"
+                      className="mx-2"
+                    />
+                    complete
+                  </p>
+                ) : (
+                  <p className="text-warning">
+                    <AiFillQuestionCircle
+                      size={24}
+                      color="lightgray"
+                      title="incomplete"
+                      className="mx-2"
+                    />
+                    VPD missing
+                  </p>
+                )
               ) : (
                 <p className="text-warning">
                   <BsDash

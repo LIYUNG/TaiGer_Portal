@@ -319,6 +319,51 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   }
 });
 
+// () email:
+
+const updateVPDFileNecessity = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, program_id }
+  } = req;
+  let student;
+  if (user.role === Role.Student) {
+    student = await Student.findById(user._id.toString()).populate(
+      'applications.programId'
+    );
+  } else {
+    student = await Student.findById(studentId).populate(
+      'applications.programId'
+    );
+  }
+
+  if (!student) {
+    logger.error('updateVPDFileNecessity: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
+  let app = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+  if (!app) {
+    logger.error('updateVPDFileNecessity: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid program_id id');
+  }
+  // TODO: set bot notneeded and resume needed
+  if(app.uni_assist.status !== DocumentStatus.NotNeeded)
+  {
+    app.uni_assist.status = DocumentStatus.NotNeeded;
+  }
+  else{
+    app.uni_assist.status = DocumentStatus.Missing;
+  }
+  app.uni_assist.updatedAt = new Date();
+  app.uni_assist.vpd_file_path = '';
+  await student.save();
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  res.status(201).send({ success: true, data: student });
+});
+
 // () email : student notification
 // () email : agent notification
 const saveVPDFilePath = asyncHandler(async (req, res) => {
@@ -1217,6 +1262,7 @@ module.exports = {
   updateProfileDocumentStatus,
   UpdateStudentApplications,
   deleteProfileFile,
+  updateVPDFileNecessity,
   deleteVPDFile,
   processTranscript_test,
   processTranscript,

@@ -22,6 +22,7 @@ const {
 } = require('../controllers/students');
 const {
   saveProfileFilePath,
+  updateVPDFileNecessity,
   saveVPDFilePath,
   downloadVPDFile,
   downloadProfileFile,
@@ -80,6 +81,10 @@ router
 
 router
   .route('/:studentId/vpd/:program_id')
+  .put(
+    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    updateVPDFileNecessity
+  )
   .get(
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     downloadVPDFile

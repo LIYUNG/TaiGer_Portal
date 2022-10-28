@@ -85,6 +85,9 @@ export const uploadVPDforstudent = (studentId, program_id, data) =>
 export const deleteVPDFile = (studentId, program_id) =>
   request.delete(`/api/students/${studentId}/vpd/${program_id}`);
 
+export const SetAsNotNeeded = (studentId, program_id) =>
+  request.put(`/api/students/${studentId}/vpd/${program_id}`);
+
 export const updateProfileDocumentStatus = (
   category,
   studentId,

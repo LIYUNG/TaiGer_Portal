@@ -15,7 +15,8 @@ import {
   uploadVPDforstudent,
   deleteVPDFile,
   downloadVPDProfile,
-  getStudent
+  getStudent,
+  SetAsNotNeeded
 } from '../../api';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -28,11 +29,12 @@ class UniAssistListCard extends React.Component {
     student: this.props.student,
     timeouterror: null,
     unauthorizederror: null,
-    deleteVPDFileWarningModel: false
+    deleteVPDFileWarningModel: false,
+    setAsNotNeededModel: false
   };
   componentDidMount() {
     if (!this.props.student) {
-    console.log(this.props.student);
+      console.log(this.props.student);
       getStudent(this.props.user._id.toString()).then(
         (resp) => {
           const { data, success } = resp.data;
@@ -65,6 +67,51 @@ class UniAssistListCard extends React.Component {
   handleUniAssistDocSubmit = (e, student_id, program_id) => {
     e.preventDefault();
     this.onSubmitGeneralFile(e, e.target.files[0], student_id, program_id);
+  };
+  closesetAsNotNeededWindow = () => {
+    this.setState((state) => ({ ...state, setAsNotNeededModel: false }));
+  };
+
+  opensetAsNotNeededWindow = (e, student_id, program_id) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      setAsNotNeededModel: true,
+      student_id,
+      program_id
+    }));
+  };
+
+  handleSetAsNotNeeded = (e) => {
+    e.preventDefault();
+    console.log('handleSetAsNotNeeded');
+    SetAsNotNeeded(this.state.student_id, this.state.program_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            student: data,
+            success: success,
+            setAsNotNeededModel: false,
+            student_id: '',
+            program_id: ''
+          });
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
+      }
+    );
   };
 
   handleUniAssistDocDelete = (e) => {
@@ -246,21 +293,32 @@ class UniAssistListCard extends React.Component {
             </p>{' '}
             {!application.uni_assist ||
             application.uni_assist.status === 'notstarted' ? (
-              <Form>
-                <Form.File.Label
-                  onChange={(e) =>
-                    this.handleUniAssistDocSubmit(
-                      e,
-                      this.state.student._id.toString(),
-                      application.programId._id.toString()
-                    )
-                  }
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File.Input hidden />
-                  <IoMdCloudUpload color={'lightgray'} size={32} />
-                </Form.File.Label>
-              </Form>
+              <>
+                <Row>
+                  <Col>
+                    <Form>
+                      <Form.File.Label
+                        onChange={(e) =>
+                          this.handleUniAssistDocSubmit(
+                            e,
+                            this.state.student._id.toString(),
+                            application.programId._id.toString()
+                          )
+                        }
+                        onClick={(e) => (e.target.value = null)}
+                      >
+                        <Form.File.Input hidden />
+                        <IoMdCloudUpload color={'lightgray'} size={32} />
+                      </Form.File.Label>
+                    </Form>
+                  </Col>
+                  <Col>
+                    <Button size={'sm'} color={'lightgray'}>
+                      Set Not Needed
+                    </Button>
+                  </Col>
+                </Row>
+              </>
             ) : (
               <>
                 <Button
@@ -271,6 +329,7 @@ class UniAssistListCard extends React.Component {
                       application.programId._id.toString()
                     )
                   }
+                  size={'sm'}
                 >
                   Download
                 </Button>
@@ -282,6 +341,7 @@ class UniAssistListCard extends React.Component {
                       application.programId._id.toString()
                     )
                   }
+                  size={'sm'}
                 >
                   Delete
                 </Button>
@@ -299,21 +359,66 @@ class UniAssistListCard extends React.Component {
             {!application.uni_assist ||
             application.uni_assist.status === 'missing' ||
             application.uni_assist.status === 'notstarted' ? (
-              <Form>
-                <Form.File.Label
-                  onChange={(e) =>
-                    this.handleUniAssistDocSubmit(
-                      e,
-                      this.state.student._id.toString(),
-                      application.programId._id.toString()
-                    )
-                  }
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File.Input hidden />
-                  <IoMdCloudUpload color={'lightgray'} size={32} />
-                </Form.File.Label>
-              </Form>
+              <>
+                <Row>
+                  <Col md={1}>
+                    <Form>
+                      <Form.File.Label
+                        onChange={(e) =>
+                          this.handleUniAssistDocSubmit(
+                            e,
+                            this.state.student._id.toString(),
+                            application.programId._id.toString()
+                          )
+                        }
+                        onClick={(e) => (e.target.value = null)}
+                      >
+                        <Form.File.Input hidden />
+                        <IoMdCloudUpload color={'lightgray'} size={32} />
+                      </Form.File.Label>
+                    </Form>
+                  </Col>
+                  <Col>
+                    <Button
+                      size={'sm'}
+                      color={'lightgray'}
+                      onClick={(e) =>
+                        this.opensetAsNotNeededWindow(
+                          e,
+                          this.state.student._id.toString(),
+                          application.programId._id.toString()
+                        )
+                      }
+                    >
+                      Set Not Needed
+                    </Button>
+                  </Col>
+                </Row>
+              </>
+            ) : application.uni_assist &&
+              application.uni_assist.status === 'notneeded' ? (
+              <>
+                <Row>
+                  <Col>
+                    <p className="text-light"> 'No uni-assist needed'</p>
+                  </Col>
+                  <Col>
+                    <Button
+                      size={'sm'}
+                      color={'lightgray'}
+                      onClick={(e) =>
+                        this.opensetAsNotNeededWindow(
+                          e,
+                          this.state.student._id.toString(),
+                          application.programId._id.toString()
+                        )
+                      }
+                    >
+                      Set Needed
+                    </Button>
+                  </Col>
+                </Row>
+              </>
             ) : (
               <>
                 <Button
@@ -324,6 +429,7 @@ class UniAssistListCard extends React.Component {
                       application.programId._id.toString()
                     )
                   }
+                  size={'sm'}
                 >
                   Download
                 </Button>
@@ -335,6 +441,7 @@ class UniAssistListCard extends React.Component {
                       application.programId._id.toString()
                     )
                   }
+                  size={'sm'}
                 >
                   Delete
                 </Button>
@@ -382,11 +489,36 @@ class UniAssistListCard extends React.Component {
           <Modal.Footer>
             <Button
               //   disabled={!this.state.isLoaded}
-              onClick={(e) => this.handleUniAssistDocDelete(e)}
+              onClick={(e) => this.handleSetAsNotNeeded(e)}
             >
               Yes
             </Button>
             <Button onClick={this.closeWarningWindow}>No</Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.setAsNotNeededModel}
+          onHide={this.closesetAsNotNeededWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Is VPD not necessary for this program (because other programs have
+            already VPD and it can be reused for this)?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              //   disabled={!this.state.isLoaded}
+              onClick={(e) => this.handleSetAsNotNeeded(e)}
+            >
+              Yes
+            </Button>
+            <Button onClick={this.closesetAsNotNeededWindow}>No</Button>
           </Modal.Footer>
         </Modal>
       </>

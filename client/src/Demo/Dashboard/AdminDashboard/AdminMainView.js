@@ -118,7 +118,7 @@ class AdminMainView extends React.Component {
           </Col>
         </Row>
         <TabProgramConflict students={this.props.students} />
-        <Row className="mb-2">
+        <Row className="mb-2 my-2">
           <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">

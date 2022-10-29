@@ -18,6 +18,7 @@ import {
   getStudent,
   SetAsNotNeeded
 } from '../../api';
+import { Link } from 'react-router-dom';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 
@@ -84,7 +85,6 @@ class UniAssistListCard extends React.Component {
 
   handleSetAsNotNeeded = (e) => {
     e.preventDefault();
-    console.log('handleSetAsNotNeeded');
     SetAsNotNeeded(this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -286,81 +286,95 @@ class UniAssistListCard extends React.Component {
       <div key={i}>
         {application.programId.uni_assist === 'Yes-FULL' && (
           <>
-            <p className="text-info">
-              {application.programId.school}{' '}
-              {application.programId.program_name}
-              {' Yes-FULL'}
-            </p>{' '}
-            {!application.uni_assist ||
-            application.uni_assist.status === 'notstarted' ? (
-              <>
-                <Row>
-                  <Col>
-                    <Form>
-                      <Form.File.Label
-                        onChange={(e) =>
-                          this.handleUniAssistDocSubmit(
-                            e,
-                            this.state.student._id.toString(),
-                            application.programId._id.toString()
-                          )
-                        }
-                        onClick={(e) => (e.target.value = null)}
-                      >
-                        <Form.File.Input hidden />
-                        <IoMdCloudUpload color={'lightgray'} size={32} />
-                      </Form.File.Label>
-                    </Form>
-                  </Col>
-                  <Col>
-                    <Button size={'sm'} color={'lightgray'}>
-                      Set Not Needed
-                    </Button>
-                  </Col>
-                </Row>
-              </>
-            ) : (
-              <>
-                <Button
-                  onClick={(e) =>
-                    this.handleUniAssistDocDownload(
-                      e,
-                      this.state.student._id.toString(),
-                      application.programId._id.toString()
-                    )
-                  }
-                  size={'sm'}
-                >
-                  Download
-                </Button>
-                <Button
-                  onClick={(e) =>
-                    this.onDeleteVPDFileWarningPopUp(
-                      e,
-                      this.state.student._id.toString(),
-                      application.programId._id.toString()
-                    )
-                  }
-                  size={'sm'}
-                >
-                  Delete
-                </Button>
-              </>
-            )}
+            <Row>
+              <Link
+                to={'/programs/' + application.programId._id.toString()}
+                className="text-info"
+                style={{ textDecoration: 'none' }}
+              >
+                {application.programId.school}{' '}
+                {application.programId.program_name}
+                {' Yes-FULL'}
+              </Link>
+            </Row>
+            <Row>
+              {!application.uni_assist ||
+              application.uni_assist.status === 'notstarted' ? (
+                <>
+                  <Row>
+                    <Col>
+                      <Form>
+                        <Form.File.Label
+                          onChange={(e) =>
+                            this.handleUniAssistDocSubmit(
+                              e,
+                              this.state.student._id.toString(),
+                              application.programId._id.toString()
+                            )
+                          }
+                          onClick={(e) => (e.target.value = null)}
+                        >
+                          <Form.File.Input hidden />
+                          <IoMdCloudUpload color={'lightgray'} size={32} />
+                        </Form.File.Label>
+                      </Form>
+                    </Col>
+                    <Col>
+                      <Button size={'sm'} color={'lightgray'}>
+                        Set Not Needed
+                      </Button>
+                    </Col>
+                  </Row>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={(e) =>
+                      this.handleUniAssistDocDownload(
+                        e,
+                        this.state.student._id.toString(),
+                        application.programId._id.toString()
+                      )
+                    }
+                    size={'sm'}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    onClick={(e) =>
+                      this.onDeleteVPDFileWarningPopUp(
+                        e,
+                        this.state.student._id.toString(),
+                        application.programId._id.toString()
+                      )
+                    }
+                    size={'sm'}
+                  >
+                    Delete
+                  </Button>
+                </>
+              )}
+            </Row>
           </>
         )}
         {application.programId.uni_assist === 'Yes-VPD' && (
           <>
-            <p className="text-info">
-              {application.programId.school}{' '}
-              {application.programId.program_name}
-              {' Yes-VPD'}
-            </p>
-            {!application.uni_assist ||
-            application.uni_assist.status === 'missing' ||
-            application.uni_assist.status === 'notstarted' ? (
-              <>
-                <Row>
+            <Row>
+              <Link
+                to={'/programs/' + application.programId._id.toString()}
+                className="text-info"
+                style={{ textDecoration: 'none' }}
+              >
+                {application.programId.school}{' '}
+                {application.programId.program_name}
+                {' Yes-VPD'}
+              </Link>
+            </Row>
+            <Row>
+              {!application.uni_assist ||
+              application.uni_assist.status === 'missing' ||
+              application.uni_assist.status === 'notstarted' ? (
+                <>
                   <Col md={1}>
                     <Form>
                       <Form.File.Label
@@ -393,14 +407,15 @@ class UniAssistListCard extends React.Component {
                       Set Not Needed
                     </Button>
                   </Col>
-                </Row>
-              </>
-            ) : application.uni_assist &&
-              application.uni_assist.status === 'notneeded' ? (
-              <>
-                <Row>
+                </>
+              ) : application.uni_assist &&
+                application.uni_assist.status === 'notneeded' ? (
+                <>
                   <Col>
-                    <p className="text-light"> 'No uni-assist needed'</p>
+                    <p className="text-light">
+                      Uni-assist is not necessary as it can be reused from
+                      another program.
+                    </p>
                   </Col>
                   <Col>
                     <Button
@@ -417,36 +432,36 @@ class UniAssistListCard extends React.Component {
                       Set Needed
                     </Button>
                   </Col>
-                </Row>
-              </>
-            ) : (
-              <>
-                <Button
-                  onClick={(e) =>
-                    this.handleUniAssistDocDownload(
-                      e,
-                      this.state.student._id.toString(),
-                      application.programId._id.toString()
-                    )
-                  }
-                  size={'sm'}
-                >
-                  Download
-                </Button>
-                <Button
-                  onClick={(e) =>
-                    this.onDeleteVPDFileWarningPopUp(
-                      e,
-                      this.state.student._id.toString(),
-                      application.programId._id.toString()
-                    )
-                  }
-                  size={'sm'}
-                >
-                  Delete
-                </Button>
-              </>
-            )}
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={(e) =>
+                      this.handleUniAssistDocDownload(
+                        e,
+                        this.state.student._id.toString(),
+                        application.programId._id.toString()
+                      )
+                    }
+                    size={'sm'}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    onClick={(e) =>
+                      this.onDeleteVPDFileWarningPopUp(
+                        e,
+                        this.state.student._id.toString(),
+                        application.programId._id.toString()
+                      )
+                    }
+                    size={'sm'}
+                  >
+                    Delete
+                  </Button>
+                </>
+              )}
+            </Row>
           </>
         )}
         {application.programId.uni_assist === 'No' && (
@@ -455,7 +470,9 @@ class UniAssistListCard extends React.Component {
               {application.programId.school}{' '}
               {application.programId.program_name}
             </p>
-            <p className="text-light"> 'No uni-assist needed'</p>
+            <p className="text-light">
+              This program does NOT require Uni-Assist.
+            </p>
           </>
         )}
         {application.programId.uni_assist === undefined && (
@@ -464,7 +481,9 @@ class UniAssistListCard extends React.Component {
               {application.programId.school}{' '}
               {application.programId.program_name}{' '}
             </p>
-            <p className="text-light"> 'No uni-assist needed'</p>
+            <p className="text-light">
+              This program does NOT require Uni-Assist.
+            </p>
           </>
         )}
       </div>

@@ -30,7 +30,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     program_id: null,
     success: false,
     application_status_changed: false,
-    applying_program_count: 0,
+    applying_program_count: this.props.student.applying_program_count,
     modalDeleteApplication: false,
     modalUpdatedApplication: false
   };

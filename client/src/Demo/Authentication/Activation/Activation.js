@@ -94,8 +94,8 @@ export default function Activation(props) {
                     src={taiger_logo}
                     alt="Generic placeholder"
                   />
-                  <p className="mb-4"></p>
-                  <p className="mb-2">Confirmation Email sent</p>
+                  <p className="mb-4 mb-2 text-light"></p>
+                  <p className="mb-2 text-light">Confirmation Email sent</p>
                   <div className="input-group mb-2">
                     <p className="mb-0 text-success">
                       The new activation link is sent to the following address:

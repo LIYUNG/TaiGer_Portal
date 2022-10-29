@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
-import "./../../../assets/scss/style.scss";
-import Aux from "../../../hoc/_Aux";
-import Breadcrumb from "../../../App/layout/AdminLayout/Breadcrumb";
+import './../../../assets/scss/style.scss';
+import Aux from '../../../hoc/_Aux';
+import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 // import DEMO from "../../../store/constant";
-import { resetPassword } from "../../../api/auth";
+import { resetPassword } from '../../../api/auth';
 
 export default function ResetPassword(props) {
   const query = new URLSearchParams(props.location.search);
@@ -96,9 +96,9 @@ export default function ResetPassword(props) {
                 <div className="mb-4">
                   <i className="feather icon-user-plus auth-icon" />
                 </div>
-                <h3 className="mb-3">Reset Password</h3>
-                <h5 className="mb-3">Enter New Password</h5>
-                <p>
+                <h3 className="mb-3 text-light">Reset Password</h3>
+                <h5 className="mb-3 text-light">Enter New Password</h5>
+                <p className="text-light">
                   Password must contain at least:
                   <br />- 1 Uppercase
                   <br />- 1 Lowercase
@@ -106,7 +106,7 @@ export default function ResetPassword(props) {
                   <br />- 1 special character
                   <br />- length of 8 - 20 characters
                 </p>
-                <div className="input-group mb-4">
+                <div className="input-group mb-4 text-light">
                   <input
                     type="password"
                     className="form-control"
@@ -114,8 +114,8 @@ export default function ResetPassword(props) {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <h5 className="mb-3">Enter New Password Again</h5>
-                <div className="input-group mb-4">
+                <h5 className="mb-3 text-light">Enter New Password Again</h5>
+                <div className="input-group mb-4 text-light">
                   <input
                     type="password"
                     className="form-control"
@@ -128,7 +128,9 @@ export default function ResetPassword(props) {
                 </button>
                 <p className="mb-0 text-muted">
                   Allready have an account?{' '}
-                  <NavLink to="/login">Login</NavLink>
+                  <NavLink to="/login" className="mb-0 text-muted">
+                    Login
+                  </NavLink>
                 </p>
               </div>
             </form>

@@ -47,6 +47,20 @@ export const isProgramNotSelected = (students) => {
   return false;
 };
 
+export const num_applications_decided = (student) => {
+  const num_apps_decided = student.applications.filter(
+    (app) => app.decided === 'O'
+  ).length;
+  return num_apps_decided;
+};
+
+export const num_applications_submitted = (student) => {
+  const num_apps_closed = student.applications.filter(
+    (app) => app.closed === 'O'
+  ).length;
+  return num_apps_closed;
+};
+
 export const check_all_applications_decided = (keys, student) => {
   for (let i = 0; i < keys.length; i += 1) {
     if (student.applications.length < student.applying_program_count) {
@@ -110,7 +124,7 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
       }
       if (
         student.applications[j].uni_assist &&
-        (student.applications[j].uni_assist.status === 'notneeded')
+        student.applications[j].uni_assist.status === 'notneeded'
       ) {
         continue;
       }

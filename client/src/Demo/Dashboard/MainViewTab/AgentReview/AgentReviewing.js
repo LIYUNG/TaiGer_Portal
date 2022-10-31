@@ -5,6 +5,8 @@ import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
   check_survey_filled,
+  num_applications_decided,
+  num_applications_submitted,
   check_all_applications_decided,
   check_all_applications_submitted,
   check_uni_assist_needed,
@@ -50,6 +52,8 @@ class AgentReviewing extends React.Component {
       this.props.student.academic_background
     );
 
+    let num_apps_decided = num_applications_decided(this.props.student);
+    let num_apps_closed = num_applications_submitted(this.props.student);
     let is_all_applications_decided = check_all_applications_decided(
       keys,
       this.props.student
@@ -211,7 +215,12 @@ class AgentReviewing extends React.Component {
                     title="incomplete"
                     className="mx-2"
                   />
-                  incomplete
+                  incomplete (
+                  {num_apps_decided >
+                  this.props.student.applying_program_count
+                    ? this.props.student.applying_program_count
+                    : num_apps_decided}
+                  /{this.props.student.applying_program_count})
                 </p>
               )}
             </Link>
@@ -239,7 +248,12 @@ class AgentReviewing extends React.Component {
                     title="incomplete"
                     className="mx-2"
                   />
-                  incomplete
+                  incomplete(
+                  {num_apps_closed >
+                  this.props.student.applying_program_count
+                    ? this.props.student.applying_program_count
+                    : num_apps_closed}
+                  /{this.props.student.applying_program_count})
                 </p>
               )}
             </Link>

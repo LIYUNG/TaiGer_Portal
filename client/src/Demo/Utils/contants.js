@@ -33,7 +33,7 @@ export const SYMBOL_EXPLANATION = (
       application.
     </p>
     <p className="text-info">
-      {FILE_NOT_OK_SYMBOL}: The document is invalud and cannot be used in the
+      {FILE_NOT_OK_SYMBOL}: The document is invalid and cannot be used in the
       application. Please properly scan a new one.
     </p>
     <p className="text-info">

@@ -18,6 +18,9 @@ import {
   getStudent,
   SetAsNotNeeded
 } from '../../api';
+
+import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
+
 import { Link } from 'react-router-dom';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -338,7 +341,7 @@ class UniAssistListCard extends React.Component {
                     }
                     size={'sm'}
                   >
-                    Download
+                    <AiOutlineDownload size={16} />
                   </Button>
                   <Button
                     onClick={(e) =>
@@ -350,7 +353,7 @@ class UniAssistListCard extends React.Component {
                     }
                     size={'sm'}
                   >
-                    Delete
+                    <AiOutlineDelete size={16} />
                   </Button>
                 </>
               )}
@@ -435,30 +438,35 @@ class UniAssistListCard extends React.Component {
                 </>
               ) : (
                 <>
-                  <Button
-                    onClick={(e) =>
-                      this.handleUniAssistDocDownload(
-                        e,
-                        this.state.student._id.toString(),
-                        application.programId._id.toString()
-                      )
-                    }
-                    size={'sm'}
-                  >
-                    Download
-                  </Button>
-                  <Button
-                    onClick={(e) =>
-                      this.onDeleteVPDFileWarningPopUp(
-                        e,
-                        this.state.student._id.toString(),
-                        application.programId._id.toString()
-                      )
-                    }
-                    size={'sm'}
-                  >
-                    Delete
-                  </Button>
+                  <Col md={2}>
+                    <Button
+                      onClick={(e) =>
+                        this.handleUniAssistDocDownload(
+                          e,
+                          this.state.student._id.toString(),
+                          application.programId._id.toString()
+                        )
+                      }
+                      size={'sm'}
+                    >
+                      <AiOutlineDownload size={16} />
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      onClick={(e) =>
+                        this.onDeleteVPDFileWarningPopUp(
+                          e,
+                          this.state.student._id.toString(),
+                          application.programId._id.toString()
+                        )
+                      }
+                      variant={'danger'}
+                      size={'sm'}
+                    >
+                      <AiOutlineDelete size={16} />
+                    </Button>
+                  </Col>
                 </>
               )}
             </Row>

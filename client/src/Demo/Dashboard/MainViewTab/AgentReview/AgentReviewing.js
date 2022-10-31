@@ -10,7 +10,9 @@ import {
   check_all_applications_decided,
   check_all_applications_submitted,
   check_uni_assist_needed,
-  is_all_uni_assist_vpd_uploaded
+  is_all_uni_assist_vpd_uploaded,
+  num_uni_assist_vpd_needed,
+  num_uni_assist_vpd_uploaded
 } from '../../../Utils/checking-functions';
 
 class AgentReviewing extends React.Component {
@@ -68,6 +70,14 @@ class AgentReviewing extends React.Component {
     let isall_uni_assist_vpd_uploaded = is_all_uni_assist_vpd_uploaded(
       this.props.student
     );
+
+    let numb_uni_assist_vpd_needed = num_uni_assist_vpd_needed(
+      this.props.student
+    );
+    let numb_uni_assist_vpd_uploaded = num_uni_assist_vpd_uploaded(
+      this.props.student
+    );
+
     return (
       <>
         <tr className="my-0">
@@ -176,7 +186,7 @@ class AgentReviewing extends React.Component {
                       title="incomplete"
                       className="mx-2"
                     />
-                    VPD missing
+                    VPD missing({numb_uni_assist_vpd_uploaded}/{numb_uni_assist_vpd_needed})
                   </p>
                 )
               ) : (
@@ -216,8 +226,7 @@ class AgentReviewing extends React.Component {
                     className="mx-2"
                   />
                   incomplete (
-                  {num_apps_decided >
-                  this.props.student.applying_program_count
+                  {num_apps_decided > this.props.student.applying_program_count
                     ? this.props.student.applying_program_count
                     : num_apps_decided}
                   /{this.props.student.applying_program_count})
@@ -249,8 +258,7 @@ class AgentReviewing extends React.Component {
                     className="mx-2"
                   />
                   incomplete(
-                  {num_apps_closed >
-                  this.props.student.applying_program_count
+                  {num_apps_closed > this.props.student.applying_program_count
                     ? this.props.student.applying_program_count
                     : num_apps_closed}
                   /{this.props.student.applying_program_count})

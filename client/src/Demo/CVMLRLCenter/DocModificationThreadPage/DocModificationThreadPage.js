@@ -264,14 +264,38 @@ class DocModificationThreadPage extends Component {
 
   getRequirement = (thread) => {
     if (thread.file_type.includes('Essay')) {
-      if (thread.program_id.essay_required) {
-        return <p>{this.state.thread.program_id.essay_requirements}</p>;
+      if (thread.program_id.essay_required === 'yes') {
+        return (
+          <p>
+            {this.state.thread.program_id.essay_requirements
+              ? this.state.thread.program_id.essay_requirements
+              : 'No'}
+          </p>
+        );
       } else {
         return <p>No</p>;
       }
     } else if (thread.file_type.includes('ML')) {
-      if (thread.program_id.ml_required) {
-        return <p>{this.state.thread.program_id.ml_requirements}</p>;
+      if (thread.program_id.ml_required === 'yes') {
+        return (
+          <p>
+            {this.state.thread.program_id.ml_requirements
+              ? this.state.thread.program_id.ml_requirements
+              : 'No'}
+          </p>
+        );
+      } else {
+        return <p>No</p>;
+      }
+    } else if (thread.file_type.includes('RL')) {
+      if (thread.program_id.rl_required === 'yes') {
+        return (
+          <p>
+            {this.state.thread.program_id.rl_requirements
+              ? this.state.thread.program_id.rl_requirements
+              : 'No'}
+          </p>
+        );
       } else {
         return <p>No</p>;
       }

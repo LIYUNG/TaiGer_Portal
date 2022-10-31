@@ -112,6 +112,58 @@ export const check_uni_assist_needed = (student) => {
   return false;
 };
 
+export const num_uni_assist_vpd_uploaded = (student) => {
+  let counter = 0;
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      student.applications[j].programId.uni_assist &&
+      (student.applications[j].programId.uni_assist.includes('VPD') ||
+        student.applications[j].programId.uni_assist.includes('Full'))
+    ) {
+      if (!student.applications[j].uni_assist) {
+        continue;
+      }
+      if (
+        student.applications[j].uni_assist &&
+        student.applications[j].uni_assist.status === 'notneeded'
+      ) {
+        continue;
+      }
+      if (
+        student.applications[j].uni_assist &&
+        (student.applications[j].uni_assist.status === 'uploaded' ||
+          student.applications[j].uni_assist.vpd_file_path !== '')
+      ) {
+        counter += 1;
+      }
+    }
+  }
+  return counter;
+};
+
+export const num_uni_assist_vpd_needed = (student) => {
+  let counter = 0;
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      student.applications[j].programId.uni_assist &&
+      (student.applications[j].programId.uni_assist.includes('VPD') ||
+        student.applications[j].programId.uni_assist.includes('Full'))
+    ) {
+      if (!student.applications[j].uni_assist) {
+        continue;
+      }
+      if (
+        student.applications[j].uni_assist &&
+        student.applications[j].uni_assist.status === 'notneeded'
+      ) {
+        continue;
+      }
+      counter += 1;
+    }
+  }
+  return counter;
+};
+
 export const is_all_uni_assist_vpd_uploaded = (student) => {
   for (let j = 0; j < student.applications.length; j += 1) {
     if (

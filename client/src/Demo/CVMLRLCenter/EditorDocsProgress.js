@@ -491,6 +491,26 @@ class EditorDocsProgress extends React.Component {
                             ) : (
                               <></>
                             )}{' '}
+                            {application.programId.rl_required !== undefined &&
+                            application.programId.rl_required === 'yes' ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="secondary"
+                                  onClick={() =>
+                                    this.openRequirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  RL
+                                  {/* <AiOutlineMore size={20} /> */}
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}{' '}
                             {application.programId.essay_required !==
                               undefined &&
                             application.programId.essay_required === 'yes' ? (
@@ -518,9 +538,12 @@ class EditorDocsProgress extends React.Component {
                               Deadline:{' '}
                               {application.programId.application_deadline
                                 ? this.state.student.academic_background
-                                    .university.expected_application_date +
-                                  '-' +
-                                  application.programId.application_deadline
+                                    .university.expected_application_date
+                                  ? this.state.student.academic_background
+                                      .university.expected_application_date +
+                                    '-' +
+                                    application.programId.application_deadline
+                                  : application.programId.application_deadline
                                 : '-'}
                             </p>
                           </Col>

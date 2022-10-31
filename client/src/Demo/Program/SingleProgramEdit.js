@@ -350,7 +350,9 @@ class SingleProgramEdit extends React.Component {
                       }
                     >
                       <option value="no">no</option>
-                      <option value="yes">yes</option>
+                      <option value="1">yes - 1</option>
+                      <option value="2">yes - 2</option>
+                      <option value="3">yes - 3</option>
                     </Form.Control>
                   </Form.Group>
                 </h5>

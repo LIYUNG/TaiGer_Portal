@@ -303,7 +303,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       'file_type updatedAt'
     );
   res.status(200).send({ success: true, data: student2 });
-  // TODO: email
+
   let documentname =
     document_category +
     ' - ' +

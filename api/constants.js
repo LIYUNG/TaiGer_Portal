@@ -20,9 +20,11 @@ const TaskStatus = {
   Pending: "pending",
   NotNeeded: "notneeded",
 };
+const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
 
 module.exports = {
   DocumentStatus,
   CheckListStatus,
   TaskStatus,
+  RLs_CONSTANT
 };

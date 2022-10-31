@@ -18,6 +18,7 @@ const {
   createApplicationToStudentEmail
 } = require('../services/email');
 
+const { RLs_CONSTANT } = require('../constants');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
@@ -448,7 +449,9 @@ const createApplication = asyncHandler(async (req, res) => {
       const application = student.applications.create({
         programId: new_programIds[i]
       });
-      let program = program_ids.find(({ _id }) => _id.toString() === new_programIds[i]);
+      let program = program_ids.find(
+        ({ _id }) => _id.toString() === new_programIds[i]
+      );
       if (program.ml_required === 'yes') {
         const new_doc_thread = new Documentthread({
           student_id: studentId,
@@ -471,7 +474,31 @@ const createApplication = asyncHandler(async (req, res) => {
         await new_doc_thread.save();
       }
       // TODO: check if RL required, if yes, create new thread
-      if (program.rl_required === 'yes') {
+      if (
+        program.rl_required !== undefined &&
+        Number.isInteger(parseInt(program.rl_required)) >= 0
+      ) {
+        for (let i = 0; i < parseInt(program.rl_required); i += 1) {
+          const new_doc_thread = new Documentthread({
+            student_id: studentId,
+            file_type: RLs_CONSTANT[i],
+            program_id: new_programIds[i],
+            updatedAt: new Date()
+          });
+          const temp = application.doc_modification_thread.create({
+            doc_thread_id: new_doc_thread._id,
+            isReceivedEditorFeedback: true,
+            isReceivedStudentFeedback: false,
+            EditorRead: true,
+            StudentRead: false,
+            updatedAt: new Date(),
+            createdAt: new Date()
+          });
+
+          temp.student_id = studentId;
+          application.doc_modification_thread.push(temp);
+          await new_doc_thread.save();
+        }
       }
       if (program.essay_required === 'yes') {
         const new_doc_thread = new Documentthread({

@@ -357,11 +357,13 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.rl_required
                           ? this.state.program.rl_required
-                          : ""
+                          : "no"
                       }
                     >
                       <option value="no">no</option>
-                      <option value="yes">yes</option>
+                      <option value="1">yes - 1</option>
+                      <option value="2">yes - 2</option>
+                      <option value="3">yes - 3</option>
                     </Form.Control>
                   </Form.Group>
                 </h5>

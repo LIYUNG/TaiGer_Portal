@@ -20,7 +20,9 @@ const {
   updateLanguageSkillEmail,
   updatePersonalDataEmail,
   updateCredentialsEmail,
-  UpdateStudentApplicationsEmail
+  UpdateStudentApplicationsEmail,
+  assignDocumentTaskToEditorEmail,
+  assignDocumentTaskToStudentEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
 const {
@@ -349,11 +351,9 @@ const updateVPDFileNecessity = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid program_id id');
   }
   // TODO: set bot notneeded and resume needed
-  if(app.uni_assist.status !== DocumentStatus.NotNeeded)
-  {
+  if (app.uni_assist.status !== DocumentStatus.NotNeeded) {
     app.uni_assist.status = DocumentStatus.NotNeeded;
-  }
-  else{
+  } else {
     app.uni_assist.status = DocumentStatus.Missing;
   }
   app.uni_assist.updatedAt = new Date();
@@ -684,8 +684,9 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   );
 });
 
-// (O) notification student email works
+// () TODO: notification student email works includding tasks if decided
 // (O) notification agent email works
+// () TODO: notification editor email works includding tasks if decided
 const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -701,13 +702,23 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     logger.error('UpdateStudentApplications: Invalid student id');
     throw new ErrorResponse(400, 'Invalid student id');
   }
-
+  const new_app_decided_idx = [];
   for (let i = 0; i < applications.length; i += 1) {
+    const application_idx = student.applications.findIndex(
+      (app) => app._id == applications[i]._id
+    );
     const application = student.applications.find(
       (app) => app._id == applications[i]._id
     );
+    if (
+      applications[i].decided === 'O' &&
+      application.decided !== applications[i].decided
+    ) {
+      // if applications[i].decided === 'yes', send ML/RL/Essay Tasks link in Email for eidtor, student
+      // Add new tasks and send to email
+      new_app_decided_idx.push(application_idx);
+    }
     application.decided = applications[i].decided;
-    // TODO: if applications[i].decided === 'yes', send ML/RL/Essay Tasks link in Email for eidtor, student
     application.closed = applications[i].closed;
     application.admission = applications[i].admission;
   }
@@ -731,10 +742,35 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
         },
         {
           sender_firstname: student.firstname,
-          sender_lastname: student.lastname
+          sender_lastname: student.lastname,
+          student_applications: student_updated.applications,
+          new_app_decided_idx: new_app_decided_idx
         }
       );
     }
+    // TODO: modify here:
+    // let documentname =
+    //   document_category +
+    //   ' - ' +
+    //   application.programId.school +
+    //   ' - ' +
+    //   application.programId.program_name;
+    // for (let i = 0; i < student.editors.length; i += 1) {
+    //   await assignDocumentTaskToEditorEmail(
+    //     {
+    //       firstname: student.editors[i].firstname,
+    //       lastname: student.editors[i].lastname,
+    //       address: student.editors[i].email
+    //     },
+    //     {
+    //       student_firstname: student.firstname,
+    //       student_lastname: student.lastname,
+    //       thread_id: new_doc_thread._id,
+    //       documentname,
+    //       updatedAt: new Date()
+    //     }
+    //   );
+    // }
   } else {
     await UpdateStudentApplicationsEmail(
       {
@@ -744,9 +780,20 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       },
       {
         sender_firstname: user.firstname,
-        sender_lastname: user.lastname
+        sender_lastname: user.lastname,
+        student_applications: student_updated.applications,
+        new_app_decided_idx: new_app_decided_idx
       }
     );
+    // TODO: modify here:
+    // await assignDocumentTaskToStudentEmail(
+    //   {
+    //     firstname: student.firstname,
+    //     lastname: student.lastname,
+    //     address: student.email
+    //   },
+    //   { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
+    // );
   }
 });
 

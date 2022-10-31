@@ -395,7 +395,7 @@ ${msg.agent_firstname} ${msg.agent_lastname} has assigned programs for you:
 ${programList}
 
 
-Please go to ${STUDENT_APPLICATION_URL} and see the details.
+Please go to ${STUDENT_APPLICATION_URL} and mark it as decided if these programs look good to you.
 
 ${TAIGER_SIGNATURE}
 
@@ -461,13 +461,35 @@ ${TAIGER_SIGNATURE}
 };
 
 const UpdateStudentApplicationsEmail = async (recipient, msg) => {
-  const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status`;
+  const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
+  let applications_name = '';
+  for (let i = 0; i < msg.student_applications.length; i++) {
+    if (msg.new_app_decided_idx.includes(i)) {
+      if (i === 0) {
+        applications_name =
+          msg.student_applications[i].programId.school +
+          ' ' +
+          msg.student_applications[i].programId.program_name;
+      } else {
+        applications_name += `\
+        
+        ${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}`;
+      }
+    }
+  }
+
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-${msg.sender_firstname} ${msg.sender_lastname} has updated application status.
+${msg.sender_firstname} ${msg.sender_lastname} has updated applications 
+
+${applications_name}
+
+status.
 
 Please go to ${STUDENT_APPLICATION_URL} and see details.
+
+Also go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
 
 ${TAIGER_SIGNATURE}
 
@@ -490,10 +512,7 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-const sendNewApplicationMessageInThreadEmail = async (
-  recipient,
-  msg
-) => {
+const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const subject = `${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
   const message = `\
@@ -515,10 +534,7 @@ ${TAIGER_SIGNATURE}
   sendEmail(recipient, subject, message);
 };
 
-const sendNewGeneraldocMessageInThreadEmail = async (
-  recipient,
-  msg
-) => {
+const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const subject = `${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.uploaded_documentname}!`;
   const message = `\

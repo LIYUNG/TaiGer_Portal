@@ -71,3 +71,4 @@ export const getNumberOfDays = (start, end) => {
 
   return diffInDays.toString();
 };
+

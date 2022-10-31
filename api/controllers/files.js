@@ -707,6 +707,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       (app) => app._id == applications[i]._id
     );
     application.decided = applications[i].decided;
+    // TODO: if applications[i].decided === 'yes', send ML/RL/Essay Tasks link in Email for eidtor, student
     application.closed = applications[i].closed;
     application.admission = applications[i].admission;
   }

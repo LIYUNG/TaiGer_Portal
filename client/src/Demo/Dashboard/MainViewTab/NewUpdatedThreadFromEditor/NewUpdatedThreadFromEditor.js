@@ -71,7 +71,8 @@ class NewUpdatedThreadFromEditor extends React.Component {
             (application_doc_thread, idx) => (
               <tr key={idx}>
                 {!application_doc_thread.isFinalVersion &&
-                  !application_doc_thread.StudentRead && (
+                  !application_doc_thread.StudentRead &&
+                  application.decided === 'O' && (
                     <>
                       <td>
                         <Link

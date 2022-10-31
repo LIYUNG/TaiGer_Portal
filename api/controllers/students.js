@@ -396,6 +396,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
 });
 
 // (O) email : student notification
+// () TODO: auto-create document thread for student: ML,RL,Essay (if applicable, depending on program list)
 const createApplication = asyncHandler(async (req, res) => {
   const {
     user,
@@ -415,10 +416,10 @@ const createApplication = asyncHandler(async (req, res) => {
     );
   }
   const student = await Student.findById(studentId);
-  const program = await Program.find({ _id: { $in: program_id_set } });
-  if (program.length !== program_id_set.length) {
-    logger.error('createApplication: some program ids invalid');
-    throw new ErrorResponse(400, 'some program ids invalid');
+  const program_ids = await Program.find({ _id: { $in: program_id_set } });
+  if (program_ids.length !== program_id_set.length) {
+    logger.error('createApplication: some program_ids invalid');
+    throw new ErrorResponse(400, 'some program_ids invalid');
   }
   // limit the number in students application.
   if (student.applications.length + program_id_set.length > max_application) {
@@ -447,6 +448,53 @@ const createApplication = asyncHandler(async (req, res) => {
       const application = student.applications.create({
         programId: new_programIds[i]
       });
+      let program = program_ids.find(({ _id }) => _id.toString() === new_programIds[i]);
+      if (program.ml_required === 'yes') {
+        const new_doc_thread = new Documentthread({
+          student_id: studentId,
+          file_type: 'ML',
+          program_id: new_programIds[i],
+          updatedAt: new Date()
+        });
+        const temp = application.doc_modification_thread.create({
+          doc_thread_id: new_doc_thread._id,
+          isReceivedEditorFeedback: true,
+          isReceivedStudentFeedback: false,
+          EditorRead: true,
+          StudentRead: false,
+          updatedAt: new Date(),
+          createdAt: new Date()
+        });
+
+        temp.student_id = studentId;
+        application.doc_modification_thread.push(temp);
+        await new_doc_thread.save();
+      }
+      // TODO: check if RL required, if yes, create new thread
+      if (program.rl_required === 'yes') {
+      }
+      if (program.essay_required === 'yes') {
+        const new_doc_thread = new Documentthread({
+          student_id: studentId,
+          file_type: 'Essay',
+          program_id: new_programIds[i],
+          updatedAt: new Date()
+        });
+        const temp = application.doc_modification_thread.create({
+          doc_thread_id: new_doc_thread._id,
+          isReceivedEditorFeedback: true,
+          isReceivedStudentFeedback: false,
+          EditorRead: true,
+          StudentRead: false,
+          updatedAt: new Date(),
+          createdAt: new Date()
+        });
+
+        temp.student_id = studentId;
+        application.doc_modification_thread.push(temp);
+        await new_doc_thread.save();
+      }
+
       student.applications.push(application);
     }
     await student.save();
@@ -488,7 +536,7 @@ const createApplication = asyncHandler(async (req, res) => {
     {
       agent_firstname: user.firstname,
       agent_lastname: user.lastname,
-      programs: program
+      programs: program_ids
     }
   );
 });

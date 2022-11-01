@@ -313,7 +313,7 @@ class StudentDashboard extends React.Component {
                     <Link
                       to={'/student-applications'}
                       style={{ textDecoration: 'none' }}
-                      className="text-light"
+                      className="text-info"
                     >
                       My Applications
                     </Link>
@@ -333,7 +333,7 @@ class StudentDashboard extends React.Component {
                   <Link
                     to={'/base-documents'}
                     style={{ textDecoration: 'none' }}
-                    className="text-light"
+                    className="text-info"
                   >
                     My Base Documents
                   </Link>
@@ -353,7 +353,7 @@ class StudentDashboard extends React.Component {
                   <Link
                     to={'/base-documents'}
                     style={{ textDecoration: 'none' }}
-                    className="text-light"
+                    className="text-info"
                   >
                     My Base Documents
                   </Link>

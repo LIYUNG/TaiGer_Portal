@@ -1,6 +1,7 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Program } = require('../models/Program');
+const { User, Role } = require('../models/User');
 const logger = require('../services/logger');
 
 const getPrograms = asyncHandler(async (req, res) => {
@@ -9,10 +10,21 @@ const getPrograms = asyncHandler(async (req, res) => {
 });
 
 const getProgram = asyncHandler(async (req, res) => {
+  const { user } = req;
   const program = await Program.findById(req.params.programId);
   if (!program) {
     logger.error('getProgram: Invalid program id');
     throw new ErrorResponse(400, 'Invalid program id');
+  }
+  if (user.role === Role.Student) {
+    if (
+      user.applications.findIndex(
+        (app) => app.programId.toString() === req.params.programId
+      ) === -1
+    ) {
+      logger.error('getProgram: Invalid program id in your applications');
+      throw new ErrorResponse(400, 'Invalid program id in your applications');
+    }
   }
 
   res.send({ success: true, data: program });

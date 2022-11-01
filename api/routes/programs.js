@@ -17,7 +17,7 @@ router.use(protect);
 
 router
   .route('/')
-  .get(permit(Role.Admin, Role.Agent, Role.Student), getPrograms)
+  .get(permit(Role.Admin, Role.Agent), getPrograms)
   .post(permit(Role.Admin, Role.Agent), createProgram);
 
 router

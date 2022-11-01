@@ -30,7 +30,7 @@ class SingleProgram extends React.Component {
         } else {
           if (resp.status === 401 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
+          } else if (resp.status === 403 || resp.status === 400) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true

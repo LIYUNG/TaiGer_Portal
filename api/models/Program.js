@@ -124,6 +124,10 @@ const programSchema = new mongoose.Schema(
       type: String
       // required: true,
     },
+    country: {
+      type: String
+      // required: true,
+    },
     requiredDocuments: [String],
     optionalDocuments: [String],
     url: String

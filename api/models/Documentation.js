@@ -10,6 +10,7 @@ const documentationsSchema = new mongoose.Schema({
   category: { type: String, default: '' },
   prop: { type: String, default: '' },
   text: { type: String, default: '' },
+  country: { type: String, default: '' },
   updatedAt: Date
 });
 const Documentation = mongoose.model('Documentation', documentationsSchema);

@@ -748,6 +748,20 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
         }
       );
     }
+
+    await UpdateStudentApplicationsEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        sender_firstname: user.firstname,
+        sender_lastname: user.lastname,
+        student_applications: student_updated.applications,
+        new_app_decided_idx: new_app_decided_idx
+      }
+    );
     // TODO: modify here:
     // let documentname =
     //   document_category +

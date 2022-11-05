@@ -76,9 +76,10 @@ class CVMLRLProgress extends React.Component {
     let application_document_items = <></>;
     // TODO: implement:
     let no_started_application_document_items = <></>;
-    general_document_items = this.props.student.generaldocs_threads.map(
-      (generaldocs_thread, i) => (
-        <tr>
+    general_document_items =
+      this.props.student.generaldocs_threads &&
+      this.props.student.generaldocs_threads.map((generaldocs_thread, i) => (
+        <tr key={i}>
           <td></td>
           <td>
             <Link
@@ -149,10 +150,10 @@ class CVMLRLProgress extends React.Component {
           <td></td>
           <td></td>
         </tr>
-      )
-    );
-    application_document_items = this.props.student.applications.map(
-      (application, i) =>
+      ));
+    application_document_items =
+      this.props.student.applications &&
+      this.props.student.applications.map((application, i) =>
         application.doc_modification_thread.map((doc_thread, j) => (
           <tr key={j}>
             {application.decided === 'O' && (
@@ -267,7 +268,7 @@ class CVMLRLProgress extends React.Component {
             )}
           </tr>
         ))
-    );
+      );
     return (
       <>
         {no_started_general_document_items}

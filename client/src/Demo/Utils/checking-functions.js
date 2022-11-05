@@ -48,6 +48,9 @@ export const isProgramNotSelected = (students) => {
 };
 
 export const num_applications_decided = (student) => {
+  if (student.applications === undefined) {
+    return 0;
+  }
   const num_apps_decided = student.applications.filter(
     (app) => app.decided === 'O'
   ).length;
@@ -55,6 +58,9 @@ export const num_applications_decided = (student) => {
 };
 
 export const num_applications_submitted = (student) => {
+  if (student.applications === undefined) {
+    return 0;
+  }
   const num_apps_closed = student.applications.filter(
     (app) => app.closed === 'O'
   ).length;
@@ -62,6 +68,9 @@ export const num_applications_submitted = (student) => {
 };
 
 export const check_all_applications_decided = (keys, student) => {
+  if (student.applications === undefined) {
+    return false;
+  }
   for (let i = 0; i < keys.length; i += 1) {
     if (student.applications.length < student.applying_program_count) {
       return false;
@@ -82,6 +91,9 @@ export const check_all_applications_decided = (keys, student) => {
 };
 
 export const check_all_applications_submitted = (keys, student) => {
+  if (student.applications === undefined) {
+    return false;
+  }
   if (student.applications.length === 0) {
     return false;
   }
@@ -100,6 +112,9 @@ export const check_all_applications_submitted = (keys, student) => {
 };
 
 export const check_uni_assist_needed = (student) => {
+  if (student.applications === undefined) {
+    return false;
+  }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
       student.applications[j].programId.uni_assist &&
@@ -114,6 +129,9 @@ export const check_uni_assist_needed = (student) => {
 
 export const num_uni_assist_vpd_uploaded = (student) => {
   let counter = 0;
+  if (student.applications === undefined) {
+    return counter;
+  }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
       student.applications[j].programId.uni_assist &&
@@ -143,6 +161,9 @@ export const num_uni_assist_vpd_uploaded = (student) => {
 
 export const num_uni_assist_vpd_needed = (student) => {
   let counter = 0;
+  if (student.applications === undefined) {
+    return counter;
+  }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
       student.applications[j].programId.uni_assist &&
@@ -165,6 +186,9 @@ export const num_uni_assist_vpd_needed = (student) => {
 };
 
 export const is_all_uni_assist_vpd_uploaded = (student) => {
+  if (student.applications === undefined) {
+    return false;
+  }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
       student.applications[j].programId.uni_assist &&

@@ -54,7 +54,7 @@ class StudentMyself extends React.Component {
         );
       } else if (object_init[key_doc_name] === 'accepted') {
         return (
-          <tr key={i+10}>
+          <tr key={i + 50}>
             <td>
               <IoCheckmarkCircle
                 size={24}
@@ -67,7 +67,7 @@ class StudentMyself extends React.Component {
         );
       } else if (object_init[key_doc_name] === 'rejected') {
         return (
-          <tr key={i+100}>
+          <tr key={i + 100}>
             <td>
               <AiFillCloseCircle
                 size={24}
@@ -79,18 +79,18 @@ class StudentMyself extends React.Component {
           </tr>
         );
       } else if (object_init[key_doc_name] === 'notneeded') {
-        return (
-          <></>
-          // <tr key={i}>
-          //   <td>
-          //     <BsDash size={24} color="lightgray" title="Not needed" />
-          //   </td>
-          //   <td>{key_doc_name}</td>
-          // </tr>
-        );
+        // return (
+        //   // <></>
+        //   // <tr key={i}>
+        //   //   <td>
+        //   //     <BsDash size={24} color="lightgray" title="Not needed" />
+        //   //   </td>
+        //   //   <td>{key_doc_name}</td>
+        //   // </tr>
+        // );
       } else {
         return (
-          <tr key={i+200}>
+          <tr key={i + 200}>
             <td>
               <AiFillQuestionCircle
                 size={24}

@@ -72,7 +72,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
         (application, i) =>
           application.doc_modification_thread.map(
             (application_doc_thread, idx) => (
-              <tr key={i}>
+              <tr key={i * 20 + idx}>
                 {!application_doc_thread.isFinalVersion &&
                   !application_doc_thread.EditorRead && (
                     <>

@@ -234,10 +234,9 @@ class StudentDashboard extends React.Component {
               </Col>
             </Row>
           )}
-        {/* TODO: check function : new cv ml rl task is asigned to you */}
+        {/* new CV ML RL Essay message */}
         {student.notification &&
-          !student.notification.isRead_new_cvmlrl_messsage &&
-          !check_academic_background_filled(student.academic_background) && (
+          !student.notification.isRead_new_cvmlrl_messsage && (
             <Row>
               <Col>
                 <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
@@ -246,7 +245,7 @@ class StudentDashboard extends React.Component {
                     style={{ textAlign: 'left' }}
                   >
                     <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> New tasks are assigned to you:{' '}
+                    <b className="mx-2">Reminder:</b> New feedback from your Editor. See{' '}
                     <Link
                       to={'/cv-ml-rl-center'}
                       style={{ textDecoration: 'none' }}
@@ -259,6 +258,42 @@ class StudentDashboard extends React.Component {
                         size={18}
                         onClick={(e) =>
                           this.removeBanner(e, 'isRead_new_cvmlrl_messsage')
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
+        {/* TODO: check function : new cv ml rl tasks are asigned to you */}
+        {student.notification &&
+          !student.notification.isRead_new_cvmlrl_tasks_created && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b> New tasks are assigned to
+                    you:{' '}
+                    <Link
+                      to={'/cv-ml-rl-center'}
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
+                      CV/ML/RL Center
+                    </Link>{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(
+                            e,
+                            'isRead_new_cvmlrl_tasks_created'
+                          )
                         }
                       />
                     </span>

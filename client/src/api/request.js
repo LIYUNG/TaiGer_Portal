@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // TODO: use dotenv
-const BASE_URL = process.env.BASE_URL || "https://localhost:3000";
+export const BASE_URL = process.env.BASE_URL || "https://localhost:3000";
 // const BASE_URL = "https://54.187.7.192:3000";
 // const BASE_URL = "https://taigerconsultancy-portal.com";
 // const BASE_URL = "https://ec2-54-214-118-145.us-west-2.compute.amazonaws.com";

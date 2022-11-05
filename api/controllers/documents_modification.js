@@ -132,6 +132,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
         createdAt: new Date()
       });
       student.generaldocs_threads.push(app);
+      student.notification.isRead_new_cvmlrl_tasks_created = false;
       await student.save();
       const student_updated = await Student.findById(studentId)
         .populate('applications.programId generaldocs_threads.doc_thread_id')
@@ -163,6 +164,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   temp.student_id = studentId;
   student.generaldocs_threads.push(temp);
+  student.notification.isRead_new_cvmlrl_tasks_created = false;
   await student.save();
   await new_doc_thread.save();
 
@@ -253,6 +255,8 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
         createdAt: new Date()
       });
       application.doc_modification_thread.push(app);
+      student.notification.isRead_new_cvmlrl_tasks_created = false;
+
       await student.save();
       const student_updated = await Student.findById(studentId)
         .populate('applications.programId generaldocs_threads.doc_thread_id')
@@ -293,6 +297,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
 
   temp.student_id = studentId;
   student.applications[idx].doc_modification_thread.push(temp);
+  student.notification.isRead_new_cvmlrl_tasks_created = false;
   await student.save();
   await new_doc_thread.save();
 

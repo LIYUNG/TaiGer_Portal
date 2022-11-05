@@ -24,7 +24,7 @@ const ALLOWED_MIME_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ];
 
-const ALLOWED_PDF_MIME_TYPES = ['application/pdf'];
+const ALLOWED_MIME_PDF_TYPES = ['application/pdf'];
 
 const ALLOWED_MIME_IMAGE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 
@@ -182,7 +182,8 @@ const storage_s3 = multerS3({
 const doc_image_s3 = multerS3({
   s3,
   bucket: function (req, file, cb) {
-    var directory = AWS_S3_BUCKET_NAME;
+    var directory = path.join(AWS_S3_BUCKET_NAME, 'Documentations');
+    directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
@@ -199,7 +200,7 @@ const upload_doc_image_s3 = multer({
   storage: doc_image_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
       return cb(
         new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
       );
@@ -215,7 +216,7 @@ const upload_vpd_s3 = multer({
   storage: storage_vpd_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_PDF_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_PDF_TYPES.includes(file.mimetype))
       return cb(new ErrorResponse(400, 'Only .pdf format is allowed'));
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE) {

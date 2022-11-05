@@ -47,14 +47,14 @@ const getDocumentation = asyncHandler(async (req, res) => {
 
 const createDocumentation = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
-  console.log(fields);
+  // console.log(fields);
   const newDoc = await Documentation.create(fields);
   return res.send({ success: true, data: newDoc });
 });
 
 const uploadDocImage = asyncHandler(async (req, res) => {
-  console.log(req);
-  let imageurl = new URL(`/${req.file.key}`, UPLOAD_PATH).href;
+  // console.log(req);
+  let imageurl = new URL(`/Documentations/${req.file.key}`, UPLOAD_PATH).href;
   imageurl = imageurl.replace(/\\/g, '/');
   console.log(imageurl);
 
@@ -62,8 +62,8 @@ const uploadDocImage = asyncHandler(async (req, res) => {
 });
 
 const updateDocumentation = asyncHandler(async (req, res) => {
-  console.log("updateDocumentation");
-  console.log(req.body);
+  // console.log("updateDocumentation");
+  // console.log(req.body);
   const updated_doc = await Documentation.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -74,6 +74,7 @@ const updateDocumentation = asyncHandler(async (req, res) => {
 
 const deleteDocumentation = asyncHandler(async (req, res) => {
   await Documentation.findByIdAndDelete(req.params.id);
+  // TODO: delete documents images
   return res.send({ success: true });
 });
 

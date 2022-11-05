@@ -717,6 +717,8 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       // if applications[i].decided === 'yes', send ML/RL/Essay Tasks link in Email for eidtor, student
       // Add new tasks and send to email
       new_app_decided_idx.push(application_idx);
+      // add reminder banner
+      student.notification.isRead_new_cvmlrl_tasks_created = false;
     }
     application.decided = applications[i].decided;
     application.closed = applications[i].closed;

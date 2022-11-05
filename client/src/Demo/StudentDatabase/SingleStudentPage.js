@@ -532,6 +532,7 @@ class SingleStudentPage extends React.Component {
             <SurveyComponent
               role={this.props.user.role}
               academic_background={this.state.student.academic_background}
+              application_preference={this.state.student.application_preference}
               isLoaded={this.state.isLoaded}
               student_id={this.state.student._id}
             />

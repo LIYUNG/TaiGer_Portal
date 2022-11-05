@@ -62,6 +62,10 @@ const UserSchema = new Schema(
         type: Boolean,
         default: false
       },
+      isRead_new_cvmlrl_tasks_created: {
+        type: Boolean,
+        default: true
+      },
       isRead_new_cvmlrl_messsage: {
         type: Boolean,
         default: false

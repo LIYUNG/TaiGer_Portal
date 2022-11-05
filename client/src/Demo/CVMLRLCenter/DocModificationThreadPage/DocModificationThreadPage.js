@@ -399,7 +399,7 @@ class DocModificationThreadPage extends Component {
                   in this discussion.
                 </p>
                 <p>
-                  Donwload template:{' '}
+                  Download template:{' '}
                   {template_obj ? (
                     <b
                       style={{ cursor: 'pointer' }}
@@ -429,7 +429,15 @@ class DocModificationThreadPage extends Component {
                   <b>Deadline</b>
                 </h6>
                 {this.state.thread.program_id && (
-                  <h6>{this.state.thread.program_id.application_deadline}</h6>
+                  <h6>
+                    {this.state.thread.student_id.academic_background &&
+                    this.state.thread.student_id.academic_background.university
+                      .expected_application_date
+                      ? this.state.thread.student_id.academic_background
+                          .university.expected_application_date + '-'
+                      : ''}
+                    {this.state.thread.program_id.application_deadline}
+                  </h6>
                 )}
               </Col>
             </Card.Body>

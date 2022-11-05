@@ -130,6 +130,9 @@ class StudentDashboard extends React.Component {
     for (let i = 0; i < documentlist2_keys.length; i++) {
       object_init[documentlist2_keys[i]] = 'missing';
     }
+    if (student.profile === undefined) {
+      return false;
+    }
     if (student.profile.length === 0) {
       return false;
     }
@@ -162,6 +165,9 @@ class StudentDashboard extends React.Component {
     let object_init = {};
     for (let i = 0; i < documentlist2_keys.length; i++) {
       object_init[documentlist2_keys[i]] = 'missing';
+    }
+    if (student.profile === undefined) {
+      return false;
     }
     if (student.profile.length === 0) {
       return false;

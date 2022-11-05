@@ -118,11 +118,12 @@ class ApplicantSOverview extends React.Component {
     const listStudentProgramNotSelected = this.state.students.map(
       (student, i) => (
         <div key={i}>
-          {student.applications.length < student.applying_program_count && (
-            <li className="text-light">
-              {student.firstname} {student.lastname}
-            </li>
-          )}
+          {student.applications &&
+            student.applications.length < student.applying_program_count && (
+              <li className="text-light">
+                {student.firstname} {student.lastname}
+              </li>
+            )}
         </div>
       )
     );

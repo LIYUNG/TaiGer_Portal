@@ -242,22 +242,23 @@ class CVMLRLProgress extends React.Component {
                     getNumberOfDays(doc_thread.updatedAt, today)}
                 </td>
                 <td>
-                  {
-                    this.props.student.academic_background.university
-                      .expected_application_date
-                  }
-                  {'-'}
+                  {this.props.student.application_preference &&
+                    this.props.student.application_preference
+                      .expected_application_date &&
+                    this.props.student.application_preference
+                      .expected_application_date + '-'}
                   {application.programId.application_deadline}
                 </td>
                 <td>
                   {application.closed === 'O'
                     ? '-'
                     : application.programId.application_deadline
-                    ? this.props.student.academic_background.university
+                    ? this.props.student.application_preference &&
+                      this.props.student.application_preference
                         .expected_application_date &&
                       getNumberOfDays(
                         today,
-                        this.props.student.academic_background.university
+                        this.props.student.application_preference
                           .expected_application_date +
                           '-' +
                           application.programId.application_deadline

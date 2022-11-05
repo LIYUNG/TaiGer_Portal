@@ -622,8 +622,9 @@ function AdmissionsTable(props) {
             _id: student._id,
             firstname: student.firstname,
             lastname: student.lastname,
-            year: student.academic_background.university
-              .expected_application_date,
+            year:
+              student.aapplication_preference &&
+              student.aapplication_preference.expected_application_date,
             school: application.programId.school,
             program_name: application.programId.program_name,
             semester: application.programId.semester
@@ -634,8 +635,9 @@ function AdmissionsTable(props) {
             _id: student._id,
             firstname: student.firstname,
             lastname: student.lastname,
-            year: student.academic_background.university
-              .expected_application_date,
+            year:
+              student.aapplication_preference &&
+              student.aapplication_preference.expected_application_date,
             school: application.programId.school,
             program_name: application.programId.program_name,
             semester: application.programId.semester
@@ -646,8 +648,9 @@ function AdmissionsTable(props) {
             _id: student._id,
             firstname: student.firstname,
             lastname: student.lastname,
-            year: student.academic_background.university
-              .expected_application_date,
+            year:
+              student.aapplication_preference &&
+              student.application_preference.expected_application_date,
             school: application.programId.school,
             program_name: application.programId.program_name,
             semester: application.programId.semester

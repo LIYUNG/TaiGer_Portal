@@ -1,18 +1,51 @@
-export const check_survey_filled = (academic_background) => {
-  if (
-    !academic_background ||
-    !academic_background.university ||
-    !academic_background.language
-  ) {
+export const check_academic_background_filled = (academic_background) => {
+  if (!academic_background || !academic_background.university) {
     return false;
   }
   // TODO: can add more mandatory field
   if (
-    !academic_background.university.expected_application_date ||
-    !academic_background.university.expected_application_semester
+    !academic_background.university.attended_high_school ||
+    !academic_background.university.attended_university
+    // ||
+    // !academic_background.university.isGraduated
   ) {
     return false;
   }
+
+  return true;
+};
+
+export const check_application_preference_filled = (application_preference) => {
+  if (!application_preference) {
+    return false;
+  }
+  // TODO: can add more mandatory field
+  if (
+    !application_preference.expected_application_date ||
+    !application_preference.expected_application_semester
+  ) {
+    return false;
+  }
+  return true;
+};
+
+export const check_applications_to_decided = (student) => {
+  if (!student.applications) {
+    return true;
+  }
+  if (student.applications.length === 0) {
+    return true;
+  }
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      !student.applications[j].decided ||
+      (student.applications[j].decided !== undefined &&
+        student.applications[j].decided === '-')
+    ) {
+      return false;
+    }
+  }
+
   return true;
 };
 
@@ -72,6 +105,9 @@ export const check_all_applications_decided = (keys, student) => {
     return false;
   }
   for (let i = 0; i < keys.length; i += 1) {
+    if (student.applying_program_count === 0) {
+      return false;
+    }
     if (student.applications.length < student.applying_program_count) {
       return false;
     }

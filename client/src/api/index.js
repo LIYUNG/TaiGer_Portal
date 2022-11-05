@@ -260,11 +260,21 @@ export const getMyTask = () => request.get('/api/tasks/mytask');
 export const getStudentTask = (student_id) =>
   request.get(`/api/tasks/${student_id}`);
 
+// remove Banner/notification
+export const updateBanner = (notification_key) =>
+  request.post(`/api/account/notifications`, {
+    notification_key
+  });
+
 //Survey:
 export const updateAcademicBackground = (university, student_id) =>
   request.post(`/api/account/survey/university/${student_id}`, { university });
 export const updateLanguageSkill = (language, student_id) =>
   request.post(`/api/account/survey/language/${student_id}`, { language });
+export const updateApplicationPreference = (application_preference, student_id) =>
+  request.post(`/api/account/survey/preferences/${student_id}`, {
+    application_preference
+  });
 
 export const getMyAcademicBackground = () => request.get('/api/account/survey');
 

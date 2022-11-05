@@ -9,7 +9,7 @@ class unauthorizederror extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card>This is an unauthorized opertaion!</Card>
+            <Card>請跟您的TaiGer顧問聯繫</Card>
           </Col>
         </Row>
       </Aux>

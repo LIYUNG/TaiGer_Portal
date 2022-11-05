@@ -18,6 +18,8 @@ const store = createStore(
 );
 
 window.documentlist = {
+  'base-documents': 'Base Documents',
+  'cv-ml-rl': 'CV/ML/RL',
   application: 'Application Instruction',
   'portal-instruction': 'Portal Instruction',
   certification: 'Certification Instruction',

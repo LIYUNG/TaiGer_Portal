@@ -4,7 +4,7 @@ import { AiFillQuestionCircle } from 'react-icons/ai';
 import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
-  check_survey_filled,
+  check_academic_background_filled,
   num_applications_decided,
   num_applications_submitted,
   check_all_applications_decided,
@@ -50,7 +50,7 @@ class AgentReviewing extends React.Component {
       }
     }
     // TODO: logic improvement (necessary field)
-    let isSurveyCompleted = check_survey_filled(
+    let isSurveyCompleted = check_academic_background_filled(
       this.props.student.academic_background
     );
 

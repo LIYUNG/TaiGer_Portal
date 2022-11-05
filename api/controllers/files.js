@@ -1154,13 +1154,35 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     });
 });
 
+const removeNotification = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  const { notification_key } = req.body;
+  const me = await User.findById(user._id.toString())
+    .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+    );
+  me.notification[`${notification_key}`] = true;
+  await me.save();
+  res.status(200).send({
+    success: true,
+    data: me
+  });
+});
+
 const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   const { user: student } = req;
   const { _id } = student;
   const me = await User.findById(_id);
   if (me.academic_background === undefined) me.academic_background = {};
   await me.save();
-  res.status(200).send({ success: true, data: me.academic_background });
+  res.status(200).send({
+    success: true,
+    data: {
+      academic_background: me.academic_background,
+      application_preference: me.application_preference
+    }
+  });
 });
 
 // (O)  email : self notification
@@ -1247,6 +1269,47 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   );
 });
 
+// () email : self notification
+// () TODO email: notify agents
+const updateApplicationPreferenceSkill = asyncHandler(
+  async (req, res, next) => {
+    const {
+      user,
+      body: { application_preference }
+    } = req;
+    const { studentId } = req.params;
+    // const { _id } = student;
+    let student_id;
+    if (user.role === Role.Student || user.role === Role.Guest) {
+      student_id = user._id;
+    } else {
+      student_id = studentId;
+    }
+    application_preference['updatedAt'] = new Date();
+    const updatedStudent = await User.findByIdAndUpdate(
+      student_id,
+      {
+        application_preference
+      },
+      { upsert: true, new: true }
+    );
+    // const updatedStudent = await User.findById(_id);
+    res.status(200).send({
+      success: true,
+      data: updatedStudent.application_preference
+    });
+
+    await updateLanguageSkillEmail(
+      {
+        firstname: updatedStudent.firstname,
+        lastname: updatedStudent.lastname,
+        address: updatedStudent.email
+      },
+      {}
+    );
+  }
+);
+
 // (O) email : self notification
 const updatePersonalData = asyncHandler(async (req, res, next) => {
   const {
@@ -1329,9 +1392,11 @@ module.exports = {
   processTranscript_test,
   processTranscript,
   downloadXLSX,
+  removeNotification,
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,
+  updateApplicationPreferenceSkill,
   updatePersonalData,
   updateCredentials
 };

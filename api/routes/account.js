@@ -17,9 +17,11 @@ const {
   processTranscript_test,
   processTranscript,
   downloadXLSX,
+  removeNotification,
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,
+  updateApplicationPreferenceSkill,
   updatePersonalData,
   updateCredentials
 } = require('../controllers/files');
@@ -72,6 +74,14 @@ router
 
 // Academic Survey for Students
 router
+  .route('/notifications')
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    removeNotification
+  );
+
+// Academic Survey for Students
+router
   .route('/survey')
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
@@ -91,6 +101,14 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateLanguageSkill
   );
+
+router
+  .route('/survey/preferences/:studentId')
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    updateApplicationPreferenceSkill
+  );
+
 router
   .route('/profile')
   .post(

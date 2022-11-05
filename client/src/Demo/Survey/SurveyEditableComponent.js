@@ -6,8 +6,14 @@ import { updateLanguageSkill } from '../../api';
 import { convertDate } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import { check_survey_filled } from '../Utils/checking-functions';
-
+import {
+  check_academic_background_filled,
+  check_application_preference_filled
+} from '../Utils/checking-functions';
+import {
+  APPLICATION_YEARS_FUTURE,
+  EXPECTATION_APPLICATION_YEARS
+} from '../Utils/contants';
 class SurveyEditableComponent extends React.Component {
   state = {
     error: null,
@@ -16,9 +22,22 @@ class SurveyEditableComponent extends React.Component {
     role: '',
     isLoaded: this.props.isLoaded,
     academic_background: this.props.academic_background,
+    application_preference: this.props.application_preference,
     updateconfirmed: false,
     changed_academic: false,
-    changed_language: false
+    changed_language: false,
+    changed_application_preference: false
+  };
+
+  handleChange_ApplicationPreference = (e) => {
+    e.preventDefault();
+    var application_preference_temp = { ...this.state.application_preference };
+    application_preference_temp[e.target.id] = e.target.value;
+    this.setState((state) => ({
+      ...state,
+      changed_application_preference: true,
+      application_preference: application_preference_temp
+    }));
   };
 
   handleChange_Academic = (e) => {
@@ -118,24 +137,31 @@ class SurveyEditableComponent extends React.Component {
     // }
     return (
       <Aux>
-        {!check_survey_filled(this.props.academic_background) && (
+        {(!check_academic_background_filled(this.props.academic_background) ||
+          !check_application_preference_filled(
+            this.props.application_preference
+          )) && (
           <Row>
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
                   The followings information are still missing:{' '}
-                  {/* <Link to={'/survey'} style={{ textDecoration: 'none' }}>
-                  Survey
-                </Link> */}
                   {this.props.academic_background &&
                     !this.props.academic_background.university
+                      .attended_high_school && (
+                      <li>
+                        <b>High School Name</b>
+                      </li>
+                    )}
+                  {this.props.application_preference &&
+                    !this.props.application_preference
                       .expected_application_date && (
                       <li>
                         <b>Expected Application Year</b>
                       </li>
                     )}
-                  {this.props.academic_background &&
-                    !this.props.academic_background.university
+                  {this.props.application_preference &&
+                    !this.props.application_preference
                       .expected_application_semester && (
                       <li>
                         <b>Expected Application Semester</b>
@@ -255,100 +281,51 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         as="select"
-                        defaultValue="No"
                         defaultValue={
                           this.state.academic_background.university &&
                           this.state.academic_background.university.isGraduated
                             ? this.state.academic_background.university
                                 .isGraduated
-                            : ''
+                            : '-'
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       >
+                        <option>-</option>
                         <option>Yes</option>
                         <option>No</option>
                       </Form.Control>
                     </Form.Group>
+                    <br />
                   </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="expected_grad_date">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Expected Graduate Year
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .expected_grad_date
-                            ? this.state.academic_background.university
+                  {this.state.academic_background.university &&
+                    this.state.academic_background.university.isGraduated !==
+                      '-' && (
+                      <Col md={6}>
+                        <Form.Group controlId="expected_grad_date">
+                          <Form.Label className="my-0 mx-0 text-light">
+                            {this.state.academic_background.university
+                              .isGraduated === 'No' && 'Expected Graduate Year'}
+                            {this.state.academic_background.university
+                              .isGraduated === 'Yes' && 'Graduated Year'}
+                          </Form.Label>
+                          <Form.Control
+                            as="select"
+                            value={
+                              this.state.academic_background.university &&
+                              this.state.academic_background.university
                                 .expected_grad_date
-                            : ''
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <option value="">Please Select</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="expected_application_date">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Expected Application Year
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .expected_application_date
-                            ? this.state.academic_background.university
-                                .expected_application_date
-                            : ''
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <option value="">Please Select</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <br />
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="expected_application_semester">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Expected Application Semester
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .expected_application_semester
-                            ? this.state.academic_background.university
-                                .expected_application_semester
-                            : ''
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <option value="">Please Select</option>
-                        <option value="WS">Winter Semester</option>
-                        <option value="SS">Summer Semester</option>
-                        <option value="WSSS">Winter + Summer Semester</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <br />
-                  </Col>
+                                ? this.state.academic_background.university
+                                    .expected_grad_date
+                                : ''
+                            }
+                            onChange={(e) => this.handleChange_Academic(e)}
+                          >
+                            <option value="">Please Select</option>
+                            <>{APPLICATION_YEARS_FUTURE()}</>
+                          </Form.Control>
+                        </Form.Group>
+                      </Col>
+                    )}
                 </Row>
                 <Row>
                   <Col md={6}>
@@ -452,6 +429,182 @@ class SurveyEditableComponent extends React.Component {
                         this.props.handleSubmit_AcademicBackground(
                           e,
                           this.state.academic_background.university
+                        )
+                      }
+                    >
+                      Update
+                    </Button>
+                    <br />
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+            {/* TODO () : frontend and backend not connected. */}
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Application Preference
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="expected_application_date">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Expected Application Year
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        defaultValue={
+                          this.state.application_preference &&
+                          this.state.application_preference
+                            .expected_application_date
+                            ? this.state.application_preference
+                                .expected_application_date
+                            : ''
+                        }
+                        onChange={(e) =>
+                          this.handleChange_ApplicationPreference(e)
+                        }
+                      >
+                        <option value="">Please Select</option>
+                        <>{EXPECTATION_APPLICATION_YEARS()}</>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="expected_application_semester">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Expected Application Semester
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        defaultValue={
+                          this.state.application_preference &&
+                          this.state.application_preference
+                            .expected_application_semester
+                            ? this.state.application_preference
+                                .expected_application_semester
+                            : ''
+                        }
+                        onChange={(e) =>
+                          this.handleChange_ApplicationPreference(e)
+                        }
+                      >
+                        <option value="">Please Select</option>
+                        <option value="WS">
+                          Winter Semester (Semester begins on October)
+                        </option>
+                        <option value="SS">
+                          Summer Semester (Semester begins on April)
+                        </option>
+                        <option value="WSSS">Winter + Summer Semester</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form>
+                      <Form.Group
+                        controlId="target_application_field"
+                        className="my-0 mx-0"
+                      >
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Target Application Fields
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="M.Sc. Data Science, MBA, etc."
+                          defaultValue={
+                            this.state.application_preference &&
+                            this.state.application_preference
+                              .target_application_field
+                              ? this.state.application_preference
+                                  .target_application_field
+                              : ''
+                          }
+                          onChange={(e) =>
+                            this.handleChange_ApplicationPreference(e)
+                          }
+                        />
+                      </Form.Group>
+                      <Form.Group
+                        controlId="application_outside_germany"
+                        className="my-4 mx-0"
+                      >
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Universities outsid Germany?
+                        </Form.Label>
+                        <Form.Control
+                          as="select"
+                          defaultValue={
+                            this.state.application_preference &&
+                            this.state.application_preference
+                              .application_outside_germany
+                              ? this.state.application_preference
+                                  .application_outside_germany
+                              : 'No'
+                          }
+                          onChange={(e) =>
+                            this.handleChange_ApplicationPreference(e)
+                          }
+                        >
+                          <option value="-">Please Select</option>
+                          <option>Yes</option>
+                          <option>No</option>
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group
+                        controlId="considered_privat_universities"
+                        className="my-0 mx-0"
+                      >
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Considering Private Universities? (Tuition Fee)
+                        </Form.Label>
+                        <Form.Control
+                          as="select"
+                          defaultValue={
+                            this.state.application_preference &&
+                            this.state.application_preference
+                              .considered_privat_universities
+                              ? this.state.application_preference
+                                  .considered_privat_universities
+                              : '-'
+                          }
+                          onChange={(e) =>
+                            this.handleChange_ApplicationPreference(e)
+                          }
+                        >
+                          <option value="-">Please Select</option>
+                          <option>Yes</option>
+                          <option>No</option>
+                        </Form.Control>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </Row>{' '}
+                <Row>
+                  <Col md={10} className="my-0 mx-0 text-light">
+                    <br />
+                    {/* <br /> */}
+                    Last update at:{' '}
+                    {this.props.application_preference &&
+                    this.props.application_preference.updatedAt
+                      ? convertDate(this.props.application_preference.updatedAt)
+                      : ''}
+                  </Col>
+                  <Col md={2}>
+                    <br />
+                    <Button
+                      variant="primary"
+                      disabled={!this.state.changed_application_preference}
+                      onClick={(e) =>
+                        this.props.handleSubmit_ApplicationPreference(
+                          e,
+                          this.state.application_preference
                         )
                       }
                     >
@@ -672,67 +825,6 @@ class SurveyEditableComponent extends React.Component {
             </Card>
           </Col>
         </Row>
-        {/* TODO () : frontend and backend not connected. */}
-        <Row>
-          <Col>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Application Preference
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col md={6}>
-                    <Form>
-                      <Form.Group
-                        controlId="form.firstname"
-                        className="my-0 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Target Application Fields
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="M.Sc. Data Science, MBA, etc."
-                        />
-                      </Form.Group>
-                      <Form.Group
-                        controlId="exampleForm.ControlSelect1"
-                        className="my-4 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Universities outsid Germany?
-                        </Form.Label>
-                        <Form.Control as="select" defaultValue="No">
-                          <option>Yes</option>
-                          <option>No</option>
-                        </Form.Control>
-                      </Form.Group>
-                      <Form.Group
-                        controlId="exampleForm.ControlSelect1"
-                        className="my-0 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Considering Private Universities? (Tuition Fee)
-                        </Form.Label>
-                        <Form.Control as="select" defaultValue="No">
-                          <option>Yes</option>
-                          <option>No</option>
-                        </Form.Control>
-                      </Form.Group>
-                    </Form>
-                    <Col md={6}>
-                      <br />
-                      <Button variant="primary">Update</Button>
-                    </Col>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
         {/* 
         {!isLoaded && (
           <div style={style}>

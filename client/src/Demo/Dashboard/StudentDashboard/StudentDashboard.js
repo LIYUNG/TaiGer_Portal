@@ -1,127 +1,56 @@
 import React from 'react';
 import { Row, Col, Table, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-// import Card from '../../../App/components/MainCard';
 import StudentMyself from './StudentMyself';
 import AgentReviewing_StudentView from '../MainViewTab/AgentReview/AgentReviewing_StudentView';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
-// import { addHours, addDays, addWeeks, startOfWeek } from 'date-fns';
-// import TimeLine from "react-gantt-timeline";
 import Generator from './Generator';
 import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
-import NewUpdatedThreadFromEditor from '../MainViewTab/NewUpdatedThreadFromEditor/NewUpdatedThreadFromEditor';
-import { BsExclamationTriangle } from 'react-icons/bs';
+import StudentTasks from '../MainViewTab/StudentTasks/index';
+import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import {
-  check_survey_filled,
-  check_application_selection
+  check_academic_background_filled,
+  check_applications_to_decided
 } from '../../Utils/checking-functions';
-
-// import format from 'date-fns/format';
-// import getDay from 'date-fns/getDay';
-// import parse from 'date-fns/parse';
-// import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
-import 'react-datepicker/dist/react-datepicker.css';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-// const config = {
-//   header: {
-//     top: {
-//       style: {
-//         background: 'linear-gradient( grey, black)',
-//         textShadow: '0.5px 0.5px black',
-//         fontSize: 12
-//       }
-//     },
-//     middle: {
-//       style: {
-//         background: 'linear-gradient( orange, grey)',
-//         fontSize: 9
-//       }
-//     },
-//     bottom: {
-//       style: {
-//         background: 'linear-gradient( grey, black)',
-//         fontSize: 9,
-//         color: 'orange'
-//       },
-//       selectedStyle: {
-//         background: 'linear-gradient( #d011dd ,#d011dd)',
-//         fontWeight: 'bold',
-//         color: 'white'
-//       }
-//     }
-//   },
-//   taskList: {
-//     title: {
-//       label: 'Task Todo',
-//       style: {
-//         background: 'linear-gradient( grey, black)'
-//       }
-//     },
-//     task: {
-//       style: {
-//         backgroundColor: 'grey',
-//         color: 'white'
-//       }
-//     },
-//     verticalSeparator: {
-//       style: {
-//         backgroundColor: '#fbf9f9'
-//       },
-//       grip: {
-//         style: {
-//           backgroundColor: 'red'
-//         }
-//       }
-//     }
-//   },
-//   dataViewPort: {
-//     rows: {
-//       style: {
-//         backgroundColor: 'white',
-//         borderBottom: 'solid 0.5px silver'
-//       }
-//     },
-//     task: {
-//       showLabel: true,
-//       style: {
-//         borderRadius: 1,
-//         boxShadow: '2px 2px 8px #888888'
-//       }
-//     }
-//   }
-// };
-
+import { updateBanner } from '../../../api';
+import TimeOutErrors from '../../Utils/TimeOutErrors';
+import UnauthorizedError from '../../Utils/UnauthorizedError';
 class StudentDashboard extends React.Component {
-  constructor(props) {
-    super(props);
-    let result = Generator.generateData();
-    this.data = result.data;
-    this.state = {
-      itemheight: 20,
-      data: [],
-      links: result.links
-    };
-  }
-
-  onHorizonChange = (start, end) => {
-    //Return data the is in the range
-    let result = this.data.filter((item) => {
-      return (
-        (item.start < start && item.end > end) ||
-        (item.start > start && item.start < end) ||
-        (item.end > start && item.end < end)
-      );
-    });
-    this.setState({ data: result });
+  state = {
+    student: this.props.student,
+    itemheight: 20,
+    data: [],
+    timeouterror: null,
+    unauthorizederror: null
   };
 
-  check_application_selection_to_decided = (student) => {
-    for (let i = 0; i < student.applications.length; i += 1) {
-      if (student.applications[i].decided === '-') {
-        return true;
+  removeBanner = (e, notification_key) => {
+    e.preventDefault();
+    console.log('removeBanner');
+    updateBanner(notification_key).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            success: success,
+            student: data
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
       }
-    }
-    return false;
+    );
   };
 
   check_base_documents = (student) => {
@@ -172,202 +101,271 @@ class StudentDashboard extends React.Component {
     if (student.profile.length === 0) {
       return false;
     }
-    if (student.profile) {
-      for (let i = 0; i < student.profile.length; i++) {
-        if (student.profile[i].status === 'uploaded') {
-          object_init[student.profile[i].name] = 'uploaded';
-        } else if (student.profile[i].status === 'accepted') {
-          object_init[student.profile[i].name] = 'accepted';
-        } else if (student.profile[i].status === 'rejected') {
-          object_init[student.profile[i].name] = 'rejected';
-        } else if (student.profile[i].status === 'missing') {
-          object_init[student.profile[i].name] = 'missing';
-        } else if (student.profile[i].status === 'notneeded') {
-          object_init[student.profile[i].name] = 'notneeded';
-        }
+    for (let i = 0; i < student.profile.length; i++) {
+      if (student.profile[i].status === 'uploaded') {
+        object_init[student.profile[i].name] = 'uploaded';
+      } else if (student.profile[i].status === 'accepted') {
+        object_init[student.profile[i].name] = 'accepted';
+      } else if (student.profile[i].status === 'rejected') {
+        object_init[student.profile[i].name] = 'rejected';
+      } else if (student.profile[i].status === 'missing') {
+        object_init[student.profile[i].name] = 'missing';
+      } else if (student.profile[i].status === 'notneeded') {
+        object_init[student.profile[i].name] = 'notneeded';
       }
-    } else {
-      return false;
     }
+
     for (let i = 0; i < documentlist2_keys.length; i++) {
       if (object_init[documentlist2_keys[i]] === 'rejected') {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
   };
   render() {
-    const stdlist = this.props.students.map((student, i) => (
+    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+
+    if (timeouterror) {
+      return (
+        <div>
+          <TimeOutErrors />
+        </div>
+      );
+    }
+    if (unauthorizederror) {
+      return (
+        <div>
+          <UnauthorizedError />
+        </div>
+      );
+    }
+
+    const stdlist = (
       <StudentMyself
-        key={i}
         role={this.props.role}
-        student={student}
+        student={this.state.student}
         profile_list={window.profile_list}
       />
-    ));
-
-    const application_progress = this.props.students.map((student, i) => (
-      <ApplicationProgress key={i} role={this.props.role} student={student} />
-    ));
-
-    const your_editors = this.props.students.map((student, i) =>
-      student.editors ? (
-        student.editors.map((editor, i) => (
-          <tr key={i}>
-            <td>Editor</td>
-            <td>
-              {editor.firstname} - {editor.lastname}
-            </td>
-            <td>{editor.email}</td>
-          </tr>
-        ))
-      ) : (
-        <></>
-      )
     );
 
-    const your_agents = this.props.students.map((student, i) =>
-      student.agents ? (
-        student.agents.map((agent, i) => (
-          <tr key={i}>
-            <td>Agent</td>
-            <td>
-              {agent.firstname} - {agent.lastname}
-            </td>
-            <td>{agent.email}</td>
-          </tr>
-        ))
-      ) : (
-        <></>
-      )
+    const application_progress = (
+      <ApplicationProgress
+        role={this.props.role}
+        student={this.state.student}
+      />
     );
 
-    const agent_reviewing = this.props.students.map((student, i) => (
+    const your_editors = this.state.student.editors ? (
+      this.state.student.editors.map((editor, i) => (
+        <tr key={i}>
+          <td>Editor</td>
+          <td>
+            {editor.firstname} - {editor.lastname}
+          </td>
+          <td>{editor.email}</td>
+        </tr>
+      ))
+    ) : (
+      <></>
+    );
+    const your_agents = this.state.student.agents ? (
+      this.state.student.agents.map((agent, i) => (
+        <tr key={i}>
+          <td>Agent</td>
+          <td>
+            {agent.firstname} - {agent.lastname}
+          </td>
+          <td>{agent.email}</td>
+        </tr>
+      ))
+    ) : (
+      <></>
+    );
+    const agent_reviewing = (
       <AgentReviewing_StudentView
-        key={i}
         role={this.props.role}
-        student={student}
+        student={this.state.student}
       />
-    ));
-    const read_thread = this.props.students.map((student, i) => (
+    );
+    const read_thread = (
       <NewUpdatedThreadFromStudent
-        key={student._id}
         role={this.props.role}
-        student={student}
+        student={this.state.student}
       />
-    ));
-    const unread_thread = this.props.students.map((student, i) => (
-      <NewUpdatedThreadFromEditor
-        key={student._id}
-        role={this.props.role}
-        student={student}
-      />
-    ));
-    const student = this.props.students[0];
+    );
+
+    const student_tasks = (
+      <StudentTasks role={this.props.role} student={this.state.student} />
+    );
+    const student = this.state.student;
 
     return (
       <>
-        {!check_survey_filled(student.academic_background) && (
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <BsExclamationTriangle size={18} />
-                  <b className="mx-2">Reminder:</b> It looks like you did not
-                  finish survey:{' '}
-                  <Link
-                    to={'/survey'}
-                    style={{ textDecoration: 'none' }}
-                    className="text-light"
-                  >
-                    Survey
-                  </Link>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
-        {!check_application_selection(student) && (
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <BsExclamationTriangle size={18} />
-                  <b className="mx-2">Reminder:</b> It looks like you did not
-                  decide programs:{' '}
-                  <Link
-                    to={'/student-applications'}
-                    style={{ textDecoration: 'none' }}
-                    className="text-light"
-                  >
-                    My Applications
-                  </Link>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
-        {check_application_selection(student) &&
-          this.check_application_selection_to_decided(student) && (
+        {student.notification &&
+          !student.notification.isRead_survey_not_complete &&
+          !check_academic_background_filled(student.academic_background) && (
             <Row>
               <Col>
                 <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                  <Card.Body>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
                     <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b>
-                    It looks like you did not confirm the programs yet:{' '}
+                    <b className="mx-2">Reminder:</b> It looks like you did not
+                    finish survey:{' '}
+                    <Link
+                      to={'/survey'}
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
+                      Survey
+                    </Link>{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(e, 'isRead_survey_not_complete')
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
+        {/* TODO: check function : new cv ml rl task is asigned to you */}
+        {student.notification &&
+          !student.notification.isRead_new_cvmlrl_messsage &&
+          !check_academic_background_filled(student.academic_background) && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b> New tasks are assigned to you:{' '}
+                    <Link
+                      to={'/cv-ml-rl-center'}
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
+                      CV/ML/RL Center
+                    </Link>{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(e, 'isRead_new_cvmlrl_messsage')
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
+        {student.notification &&
+          !student.notification.isRead_new_programs_assigned &&
+          !check_applications_to_decided(student) && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b> It looks like you did not
+                    decide programs:{' '}
                     <Link
                       to={'/student-applications'}
                       style={{ textDecoration: 'none' }}
                       className="text-info"
                     >
                       My Applications
-                    </Link>
-                  </Card.Body>
+                    </Link>{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(e, 'isRead_new_programs_assigned')
+                        }
+                      />
+                    </span>
+                  </p>
                 </Card>
               </Col>
             </Row>
           )}
-        {!this.check_base_documents(student) && (
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <BsExclamationTriangle size={18} />
-                  <b className="mx-2">Reminder:</b>Some of Base Documents are
-                  still missing :{' '}
-                  <Link
-                    to={'/base-documents'}
-                    style={{ textDecoration: 'none' }}
-                    className="text-info"
+        {student.notification &&
+          !student.notification.isRead_base_documents_missing &&
+          !this.check_base_documents(student) && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
                   >
-                    My Base Documents
-                  </Link>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
-        {!this.check_base_documents_rejected(student) && (
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <BsExclamationTriangle size={18} />
-                  <b className="mx-2">Reminder:</b>Some of Base Documents are
-                  rejected :{' '}
-                  <Link
-                    to={'/base-documents'}
-                    style={{ textDecoration: 'none' }}
-                    className="text-info"
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b>Some of Base Documents are
+                    still missing :{' '}
+                    <Link
+                      to={'/base-documents'}
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
+                      My Base Documents
+                    </Link>
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(e, 'isRead_base_documents_missing')
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
+        {student.notification &&
+          !student.notification.isRead_base_documents_rejected &&
+          this.check_base_documents_rejected(student) && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
                   >
-                    My Base Documents
-                  </Link>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b>Some of Base Documents are
+                    rejected :{' '}
+                    <Link
+                      to={'/base-documents'}
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
+                      My Base Documents
+                    </Link>
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(e, 'isRead_base_documents_rejected')
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
@@ -405,14 +403,6 @@ class StudentDashboard extends React.Component {
           </Col>
         </Row>
         <Row>
-          {/* <Card title={"Schedule"}> */}
-          {/* <TimeLine
-              data={this.state.data}
-              links={this.state.links}
-              config={config}
-              onHorizonChange={this.onHorizonChange}
-            /> */}
-          {/* </Card> */}
           <Col md={6}>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
@@ -470,10 +460,10 @@ class StudentDashboard extends React.Component {
             </Card>
           </Col>
           <Col md={6}>
-            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Unread messages:
+                  <BsExclamationTriangle size={18} /> To Do Tasks:
                 </Card.Title>
               </Card.Header>
               <Table
@@ -486,12 +476,12 @@ class StudentDashboard extends React.Component {
               >
                 <thead>
                   <tr>
-                    <th>First-, Last Name</th>
-                    <th>Documents</th>
+                    <th>Tasks</th>
+                    <th>Description</th>
                     <th>Last Update</th>
                   </tr>
                 </thead>
-                <tbody>{unread_thread}</tbody>
+                <tbody>{student_tasks}</tbody>
               </Table>
             </Card>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>

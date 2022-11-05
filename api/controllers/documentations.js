@@ -16,6 +16,8 @@ const getCategoryDocumentations = asyncHandler(async (req, res) => {
   // TODO: validate req.params.category
   const valid_categories = [
     'application',
+    'base-documents',
+    'cv-ml-rl',
     'portal-instruction',
     'certification',
     'uniassist',

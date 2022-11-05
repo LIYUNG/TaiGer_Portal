@@ -258,9 +258,10 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             <td>
               <p className="mb-1 text-info" key={application_idx}>
-                {this.props.student.academic_background.university
+                {this.props.student.application_preference &&
+                this.props.student.application_preference
                   .expected_application_date
-                  ? this.props.student.academic_background.university
+                  ? this.props.student.application_preference
                       .expected_application_date + '-'
                   : ''}
                 {application.programId.application_deadline}
@@ -279,50 +280,63 @@ class StudentApplicationsTableTemplate extends React.Component {
                 </Form.Control>
               </Form.Group>
             </td>
-            <td>
-              <Form.Group controlId="closed">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => this.handleChange(e, application_idx)}
-                  disabled={
-                    !(
-                      application.decided !== '-' && application.decided !== 'X'
-                    )
-                  }
-                  defaultValue={application.closed}
-                >
-                  <option value={'-'}>-</option>
-                  <option value={'X'}>No</option>
-                  <option value={'O'}>Yes</option>
-                </Form.Control>
-              </Form.Group>
-            </td>
-            <td>
-              <Form.Group controlId="admission">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => this.handleChange(e, application_idx)}
-                  disabled={
-                    !(application.closed !== '-' && application.closed !== 'X')
-                  }
-                  defaultValue={application.admission}
-                >
-                  <option value={'-'}>-</option>
-                  <option value={'X'}>No</option>
-                  <option value={'O'}>Yes</option>
-                </Form.Control>
-              </Form.Group>
-            </td>
+            {application.decided === 'O' ? (
+              <td>
+                <Form.Group controlId="closed">
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => this.handleChange(e, application_idx)}
+                    disabled={
+                      !(
+                        application.decided !== '-' &&
+                        application.decided !== 'X'
+                      )
+                    }
+                    defaultValue={application.closed}
+                  >
+                    <option value={'-'}>-</option>
+                    <option value={'X'}>No</option>
+                    <option value={'O'}>Yes</option>
+                  </Form.Control>
+                </Form.Group>
+              </td>
+            ) : (
+              <td></td>
+            )}
+            {application.closed === 'O' ? (
+              <td>
+                <Form.Group controlId="admission">
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => this.handleChange(e, application_idx)}
+                    disabled={
+                      !(
+                        application.closed !== '-' && application.closed !== 'X'
+                      )
+                    }
+                    defaultValue={application.admission}
+                  >
+                    <option value={'-'}>-</option>
+                    <option value={'X'}>No</option>
+                    <option value={'O'}>Yes</option>
+                  </Form.Control>
+                </Form.Group>
+              </td>
+            ) : (
+              <td></td>
+            )}
+
             <td>
               <p className="mb-1 text-info" key={application_idx}>
                 {application.closed
                   ? '-'
                   : application.programId.application_deadline
-                  ? this.props.student.academic_background.university
+                  ? this.props.student.application_preference &&
+                    this.props.student.application_preference
                       .expected_application_date &&
                     getNumberOfDays(
                       today,
-                      this.props.student.academic_background.university
+                      this.props.student.application_preference
                         .expected_application_date +
                         '-' +
                         application.programId.application_deadline
@@ -415,22 +429,20 @@ class StudentApplicationsTableTemplate extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Row className="my-2">
-              <Col md={12}>
-                <Button
-                  size="sm"
-                  disabled={!this.state.application_status_changed}
-                  onClick={(e) =>
-                    this.handleSubmit(
-                      e,
-                      this.state.student._id,
-                      this.state.applications
-                    )
-                  }
-                >
-                  Update
-                </Button>
-              </Col>
+            <Row className="my-2 mx-0">
+              <Button
+                size="sm"
+                disabled={!this.state.application_status_changed}
+                onClick={(e) =>
+                  this.handleSubmit(
+                    e,
+                    this.state.student._id,
+                    this.state.applications
+                  )
+                }
+              >
+                Update
+              </Button>
             </Row>
             <Modal
               show={this.state.modalDeleteApplication}

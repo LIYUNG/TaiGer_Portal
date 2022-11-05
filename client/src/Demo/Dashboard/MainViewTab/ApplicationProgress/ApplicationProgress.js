@@ -55,9 +55,10 @@ class ApplicationProgress extends React.Component {
         (application, i) => (
           <p className="mb-1 text-info" key={i}>
             {application.programId.application_deadline
-              ? this.props.student.academic_background.university
+              ? this.props.student.application_preference &&
+                this.props.student.application_preference
                   .expected_application_date
-                ? this.props.student.academic_background.university
+                ? this.props.student.application_preference
                     .expected_application_date + '-'
                 : ''
               : '-'}
@@ -72,11 +73,12 @@ class ApplicationProgress extends React.Component {
             {application.closed === 'O'
               ? '-'
               : application.programId.application_deadline
-              ? this.props.student.academic_background.university
+              ? this.props.student.application_preference &&
+                this.props.student.application_preference
                   .expected_application_date &&
                 getNumberOfDays(
                   today,
-                  this.props.student.academic_background.university
+                  this.props.student.application_preference
                     .expected_application_date +
                     '-' +
                     application.programId.application_deadline
@@ -228,9 +230,7 @@ class ApplicationProgress extends React.Component {
                   </p>
                 )
               ) : (
-                <b className="text-danger">
-                  0
-                </b>
+                <b className="text-danger">0</b>
               )}
             </td>
           ) : (

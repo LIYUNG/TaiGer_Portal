@@ -219,29 +219,45 @@ export default {
           icon: 'feather icon-help-circle',
           children: [
             {
-              id: 'doc-application',
-              title: 'Application',
+              id: 'base-documents',
+              title: 'Base Documents',
               type: 'item',
-              url: '/docs/application',
+              url: '/docs/base-documents',
               target: false,
               breadcrumbs: false
             },
             {
-              id: 'doc-certification',
-              title: 'Certification',
+              id: 'cv-ml-rl',
+              title: 'CV/ML/RL',
               type: 'item',
-              url: '/docs/certification',
+              url: '/docs/cv-ml-rl',
               target: false,
               breadcrumbs: false
             },
-            {
-              id: 'portal-instruction',
-              title: 'Portal Instruction',
-              type: 'item',
-              url: '/docs/portal-instruction',
-              target: false,
-              breadcrumbs: false
-            },
+            // {
+            //   id: 'doc-application',
+            //   title: 'Application',
+            //   type: 'item',
+            //   url: '/docs/application',
+            //   target: false,
+            //   breadcrumbs: false
+            // },
+            // {
+            //   id: 'doc-certification',
+            //   title: 'Certification',
+            //   type: 'item',
+            //   url: '/docs/certification',
+            //   target: false,
+            //   breadcrumbs: false
+            // },
+            // {
+            //   id: 'portal-instruction',
+            //   title: 'Portal Instruction',
+            //   type: 'item',
+            //   url: '/docs/portal-instruction',
+            //   target: false,
+            //   breadcrumbs: false
+            // },
             {
               id: 'doc-uniassist',
               title: 'Uni-Assist',
@@ -249,15 +265,15 @@ export default {
               url: '/docs/uniassist',
               target: false,
               breadcrumbs: false
-            },
-            {
-              id: 'doc-visa',
-              title: 'Visa',
-              type: 'item',
-              url: '/docs/visa',
-              target: false,
-              breadcrumbs: false
             }
+            // {
+            //   id: 'doc-visa',
+            //   title: 'Visa',
+            //   type: 'item',
+            //   url: '/docs/visa',
+            //   target: false,
+            //   breadcrumbs: false
+            // }
           ]
         },
         {

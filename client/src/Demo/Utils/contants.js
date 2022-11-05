@@ -72,3 +72,32 @@ export const getNumberOfDays = (start, end) => {
   return diffInDays.toString();
 };
 
+const create_years = (start_year, end_year) => {
+  const num = end_year - start_year;
+  const year_array = Array.from({ length: num }, (_, i) => i + start_year);
+  // console.log(new Date().getFullYear());
+  return year_array;
+};
+export const APPLICATION_YEARS_FUTURE = () => {
+  return (
+    <>
+      {create_years(1950, 2050).map((year, idx) => (
+        <option key={idx} value={year}>
+          {year}
+        </option>
+      ))}
+    </>
+  );
+};
+
+export const EXPECTATION_APPLICATION_YEARS = () => {
+  return (
+    <>
+      {create_years(2022, 2050).map((year, idx) => (
+        <option key={idx} value={year}>
+          {year}
+        </option>
+      ))}
+    </>
+  );
+};

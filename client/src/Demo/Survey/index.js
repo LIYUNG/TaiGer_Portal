@@ -19,6 +19,7 @@ class Survey extends React.Component {
     data: null,
     success: false,
     academic_background: {},
+    application_preference: {},
     unauthorizederror: null,
     updateconfirmed: false
   };
@@ -30,7 +31,8 @@ class Survey extends React.Component {
         if (success) {
           this.setState({
             isLoaded: true,
-            academic_background: data,
+            academic_background: data.academic_background,
+            application_preference: data.application_preference,
             success: success
           });
         } else {
@@ -90,6 +92,7 @@ class Survey extends React.Component {
         <SurveyComponent
           role={this.props.user.role}
           academic_background={this.state.academic_background}
+          application_preference={this.state.application_preference}
           isLoaded={this.state.isLoaded}
           user={this.props.user}
         />

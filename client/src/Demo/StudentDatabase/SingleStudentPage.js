@@ -496,7 +496,6 @@ class SingleStudentPage extends React.Component {
             </Row> */}
           </Tab>
           <Tab eventKey="CV_ML_RL" title="CV ML RL">
-            {' '}
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <EditorDocsProgress
                 student={this.state.student}

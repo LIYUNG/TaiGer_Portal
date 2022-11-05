@@ -49,6 +49,36 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false
     },
+    notification: {
+      isRead_survey_not_complete: {
+        type: Boolean,
+        default: false
+      },
+      isRead_new_agent_assigned: {
+        type: Boolean,
+        default: false
+      },
+      isRead_new_editor_assigned: {
+        type: Boolean,
+        default: false
+      },
+      isRead_new_cvmlrl_messsage: {
+        type: Boolean,
+        default: false
+      },
+      isRead_base_documents_missing: {
+        type: Boolean,
+        default: false
+      },
+      isRead_base_documents_rejected: {
+        type: Boolean,
+        default: false
+      },
+      isRead_new_programs_assigned: {
+        type: Boolean,
+        default: false
+      }
+    },
     taigerai: {
       input: {
         name: {
@@ -101,6 +131,30 @@ const UserSchema = new Schema(
         updatedAt: Date
       }
     },
+    application_preference: {
+      expected_application_date: {
+        type: String,
+        default: ''
+      },
+
+      expected_application_semester: {
+        type: String,
+        default: ''
+      },
+      target_application_field: {
+        type: String,
+        default: ''
+      },
+      considered_privat_universities: {
+        type: String,
+        default: '-'
+      },
+      application_outside_germany: {
+        type: String,
+        default: '-'
+      },
+      updatedAt: Date
+    },
     academic_background: {
       university: {
         attended_high_school: {
@@ -121,31 +175,20 @@ const UserSchema = new Schema(
         },
         isGraduated: {
           type: String,
-          default: 'No'
+          default: '-'
         },
         expected_grad_date: {
           type: String,
           default: ''
         },
-        expected_application_date: {
-          type: String,
-          default: ''
-        },
-        expected_application_semester: {
-          type: String,
-          default: ''
-        },
         Highest_GPA_Uni: {
-          type: Number,
-          default: 0
+          type: Number
         },
         Passing_GPA_Uni: {
-          type: Number,
-          default: 0
+          type: Number
         },
         My_GPA_Uni: {
-          type: Number,
-          default: 0
+          type: Number
         },
         updatedAt: Date
       },

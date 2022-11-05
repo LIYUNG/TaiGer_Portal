@@ -2,7 +2,11 @@ import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
-import { updateAcademicBackground, updateLanguageSkill } from '../../api';
+import {
+  updateAcademicBackground,
+  updateLanguageSkill,
+  updateApplicationPreference
+} from '../../api';
 import { convertDate } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -17,8 +21,10 @@ class SurveyComponent extends React.Component {
     student_id: this.props.student_id,
     success: false,
     academic_background: this.props.academic_background,
+    application_preference: this.props.application_preference,
     updateconfirmed: false,
     changed_academic: false,
+    changed_application_preference: false,
     changed_language: false
   };
   componentDidMount() {
@@ -76,7 +82,7 @@ class SurveyComponent extends React.Component {
 
   handleSubmit_Language = (e, language) => {
     e.preventDefault();
-    updateLanguageSkill(language, this.props.student_id).then(
+    updateLanguageSkill(language, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -88,6 +94,40 @@ class SurveyComponent extends React.Component {
               ...state.academic_background,
               language: data
             },
+            success: success,
+            updateconfirmed: true
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
+      }
+    );
+  };
+
+  handleSubmit_ApplicationPreference = (e, application_preference) => {
+    e.preventDefault();
+    updateApplicationPreference(
+      application_preference,
+      this.state.student_id
+    ).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            changed_application_preference: true,
+            application_preference: data,
             success: success,
             updateconfirmed: true
           }));
@@ -142,10 +182,14 @@ class SurveyComponent extends React.Component {
       <Aux>
         <SurveyEditableComponent
           academic_background={this.state.academic_background}
+          application_preference={this.state.application_preference}
           user={this.props.user}
           student_id={this.state.student_id}
           handleSubmit_AcademicBackground={this.handleSubmit_AcademicBackground}
           handleSubmit_Language={this.handleSubmit_Language}
+          handleSubmit_ApplicationPreference={
+            this.handleSubmit_ApplicationPreference
+          }
         />{' '}
         <Modal
           show={this.state.updateconfirmed}

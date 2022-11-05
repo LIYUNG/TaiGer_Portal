@@ -35,8 +35,6 @@ import {
   // AiFillMessage
 } from 'react-icons/ai';
 import {
-  check_survey_filled,
-  check_application_selection,
   check_generaldocs
 } from '../Utils/checking-functions';
 
@@ -537,10 +535,11 @@ class EditorDocsProgress extends React.Component {
                             <p className="text-light">
                               Deadline:{' '}
                               {application.programId.application_deadline
-                                ? this.state.student.academic_background
-                                    .university.expected_application_date
-                                  ? this.state.student.academic_background
-                                      .university.expected_application_date +
+                                ? this.state.student.application_preference &&
+                                  this.state.student.application_preference
+                                    .expected_application_date
+                                  ? this.state.student.application_preference
+                                      .expected_application_date +
                                     '-' +
                                     application.programId.application_deadline
                                   : application.programId.application_deadline

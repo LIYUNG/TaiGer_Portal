@@ -469,7 +469,7 @@ class Dashboard extends React.Component {
             )}
             <StudentDashboard
               role={this.props.user.role}
-              students={this.state.students}
+              student={this.state.students[0]}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
           </Aux>

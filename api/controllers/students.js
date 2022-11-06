@@ -405,6 +405,7 @@ const createApplication = asyncHandler(async (req, res) => {
     body: { program_id_set }
   } = req;
   // Limit the number of assigning programs
+
   const max_application = 20;
   if (program_id_set.length > max_application) {
     logger.error(
@@ -521,7 +522,7 @@ const createApplication = asyncHandler(async (req, res) => {
         application.doc_modification_thread.push(temp);
         await new_doc_thread.save();
       }
-
+      student.notification.isRead_new_programs_assigned = false;
       student.applications.push(application);
     }
     await student.save();

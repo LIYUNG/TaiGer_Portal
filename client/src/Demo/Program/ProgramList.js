@@ -389,6 +389,7 @@ function Table2({ columns, data, userId }) {
       (resp) => {
         const { success } = resp.data;
         if (success) {
+          setGlobalFilter([]);
           toggleAllRowsSelected(false);
           setStatedataTable2((state) => ({
             ...state,

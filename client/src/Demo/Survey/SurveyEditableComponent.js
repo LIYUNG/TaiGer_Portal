@@ -331,7 +331,8 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="Highest_GPA_Uni">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Highest Score GPA of your university program
+                        Highest Score GPA of your university program (TODO: add
+                        instruction)
                       </Form.Label>
                       <Form.Control
                         type="number"
@@ -348,7 +349,8 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="Passing_GPA_Uni">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Passing Score GPA of your university program
+                        Passing Score GPA of your university program (TODO: add
+                        instruction)
                       </Form.Label>
                       <Form.Control
                         type="number"
@@ -368,7 +370,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="My_GPA_Uni">
                       <Form.Label className="my-0 mx-0 text-light">
-                        My GPA
+                        My GPA (TODO: add instruction)
                       </Form.Label>
                       <Form.Control
                         type="number"
@@ -536,7 +538,7 @@ class SurveyEditableComponent extends React.Component {
                         className="my-4 mx-0"
                       >
                         <Form.Label className="my-0 mx-0 text-light">
-                          Universities outsid Germany?
+                          Considering universities outsid Germany?
                         </Form.Label>
                         <Form.Control
                           as="select"
@@ -546,7 +548,7 @@ class SurveyEditableComponent extends React.Component {
                               .application_outside_germany
                               ? this.state.application_preference
                                   .application_outside_germany
-                              : 'No'
+                              : '-'
                           }
                           onChange={(e) =>
                             this.handleChange_ApplicationPreference(e)
@@ -562,7 +564,8 @@ class SurveyEditableComponent extends React.Component {
                         className="my-0 mx-0"
                       >
                         <Form.Label className="my-0 mx-0 text-light">
-                          Considering Private Universities? (Tuition Fee)
+                          Considering private universities? (Tuition Fee: ~15000
+                          EURO/year)
                         </Form.Label>
                         <Form.Control
                           as="select"

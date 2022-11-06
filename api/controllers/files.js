@@ -695,6 +695,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
+    .populate('applications.programId')
     .populate('agents', 'firstname lastname email')
     .exec();
 
@@ -717,6 +718,12 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       // if applications[i].decided === 'yes', send ML/RL/Essay Tasks link in Email for eidtor, student
       // Add new tasks and send to email
       new_app_decided_idx.push(application_idx);
+      if (
+        application.programId.uni_assist &&
+        application.programId.uni_assist.includes('Yes')
+      ) {
+        student.notification.isRead_uni_assist_task_assigned = false;
+      }
       // add reminder banner
       student.notification.isRead_new_cvmlrl_tasks_created = false;
     }

@@ -54,6 +54,10 @@ const UserSchema = new Schema(
         type: Boolean,
         default: false
       },
+      isRead_uni_assist_task_assigned: {
+        type: Boolean,
+        default: false
+      },
       isRead_new_agent_assigned: {
         type: Boolean,
         default: false

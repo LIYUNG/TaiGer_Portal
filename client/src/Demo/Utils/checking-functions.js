@@ -153,6 +153,7 @@ export const check_uni_assist_needed = (student) => {
   }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
+      student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
         student.applications[j].programId.uni_assist.includes('Full'))
@@ -170,6 +171,7 @@ export const num_uni_assist_vpd_uploaded = (student) => {
   }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
+      student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
         student.applications[j].programId.uni_assist.includes('Full'))
@@ -202,6 +204,7 @@ export const num_uni_assist_vpd_needed = (student) => {
   }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
+      student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
         student.applications[j].programId.uni_assist.includes('Full'))
@@ -227,6 +230,7 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
   }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
+      student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
         student.applications[j].programId.uni_assist.includes('Full'))

@@ -12,7 +12,8 @@ import { convertDate } from '../../../Utils/contants';
 import {
   check_academic_background_filled,
   check_application_preference_filled,
-  check_applications_to_decided
+  check_applications_to_decided,
+  is_all_uni_assist_vpd_uploaded
 } from '../../../Utils/checking-functions';
 class StudentTasks extends React.Component {
   check_base_documents = (student) => {
@@ -52,15 +53,10 @@ class StudentTasks extends React.Component {
     return true;
   };
   render() {
-    var unread_general_generaldocs;
-    var unread_applications_docthread;
-
-    if (
-      this.props.student.applications === undefined ||
-      this.props.student.applications.length === 0
-    ) {
+    let unread_general_generaldocs = <></>;
+    let unread_applications_docthread = <></>;
+    if (this.props.student.generaldocs_threads === undefined) {
       unread_general_generaldocs = <></>;
-      unread_applications_docthread = <></>;
     } else {
       unread_general_generaldocs = this.props.student.generaldocs_threads.map(
         (generaldocs_threads, i) => (
@@ -98,7 +94,14 @@ class StudentTasks extends React.Component {
           </tr>
         )
       );
+    }
 
+    if (
+      this.props.student.applications === undefined ||
+      this.props.student.applications.length === 0
+    ) {
+      unread_applications_docthread = <></>;
+    } else {
       unread_applications_docthread = this.props.student.applications.map(
         (application, i) =>
           application.doc_modification_thread.map(
@@ -186,6 +189,22 @@ class StudentTasks extends React.Component {
               </Link>
             </td>
             <td>Please decide YES or NO</td>
+            <td></td>
+          </tr>
+        )}
+        {/* check uni-assist */}
+        {!is_all_uni_assist_vpd_uploaded(this.props.student) && (
+          <tr>
+            <td>
+              <Link
+                to={'/uni-assist'}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                Uni-Assist
+              </Link>
+            </td>
+            <td>Please Uni-Assist to apply and get VPD</td>
             <td></td>
           </tr>
         )}

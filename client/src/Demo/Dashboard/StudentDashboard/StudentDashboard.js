@@ -10,7 +10,8 @@ import StudentTasks from '../MainViewTab/StudentTasks/index';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import {
   check_academic_background_filled,
-  check_applications_to_decided
+  check_applications_to_decided,
+  is_all_uni_assist_vpd_uploaded
 } from '../../Utils/checking-functions';
 import { updateBanner } from '../../../api';
 import TimeOutErrors from '../../Utils/TimeOutErrors';
@@ -234,6 +235,43 @@ class StudentDashboard extends React.Component {
               </Col>
             </Row>
           )}
+
+        {student.notification &&
+          !student.notification.isRead_uni_assist_task_assigned &&
+          !is_all_uni_assist_vpd_uploaded(student) && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b> Please go to Uni-Assist to
+                    apply or to get VPD:{' '}
+                    <Link
+                      to={'/uni-assist'}
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
+                      Uni-Assist
+                    </Link>{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(
+                            e,
+                            'isRead_uni_assist_task_assigned'
+                          )
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
         {/* new CV ML RL Essay message */}
         {student.notification &&
           !student.notification.isRead_new_cvmlrl_messsage && (
@@ -245,7 +283,8 @@ class StudentDashboard extends React.Component {
                     style={{ textAlign: 'left' }}
                   >
                     <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> New feedback from your Editor. See{' '}
+                    <b className="mx-2">Reminder:</b> New feedback from your
+                    Editor. See{' '}
                     <Link
                       to={'/cv-ml-rl-center'}
                       style={{ textDecoration: 'none' }}

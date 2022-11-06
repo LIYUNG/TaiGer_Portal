@@ -25,7 +25,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     unauthorizederror: null,
     student: this.props.student,
     applications: this.props.student.applications,
-    isLoaded: false,
+    isLoaded: this.props.isLoaded,
     student_id: null,
     program_id: null,
     success: false,
@@ -77,6 +77,7 @@ class StudentApplicationsTableTemplate extends React.Component {
 
   handleDeleteConfirm = (e) => {
     e.preventDefault();
+    this.setState({ isLoaded: false });
     removeProgramFromStudent(this.state.program_id, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -461,7 +462,12 @@ class StudentApplicationsTableTemplate extends React.Component {
                 Are you sure?
               </Modal.Body>
               <Modal.Footer>
-                <Button onClick={this.handleDeleteConfirm}>Yes</Button>
+                <Button
+                  disabled={!this.state.isLoaded}
+                  onClick={this.handleDeleteConfirm}
+                >
+                  Yes
+                </Button>
                 <Button onClick={this.onHideModalDeleteApplication}>
                   Close
                 </Button>

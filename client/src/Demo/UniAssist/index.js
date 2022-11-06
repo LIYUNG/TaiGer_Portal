@@ -102,7 +102,7 @@ class UniAssistList extends React.Component {
             </Card>
           </Col>
         </Row>
-        <UniAssistListCard student={this.state.student} />
+        <UniAssistListCard student={this.state.student} role={this.props.user.role}/>
       </>
     );
   }

@@ -118,6 +118,7 @@ class UniAssistListCard extends React.Component {
   };
 
   handleUniAssistDocDelete = (e) => {
+    this.setState({ isLoaded: false });
     deleteVPDFile(this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -214,10 +215,8 @@ class UniAssistListCard extends React.Component {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', NewFile);
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false
-    }));
+    this.setState({ isLoaded: false });
+
     uploadVPDforstudent(student_id, program_id, formData).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -306,28 +305,64 @@ class UniAssistListCard extends React.Component {
                 application.uni_assist.status === 'notstarted' ? (
                   <>
                     <Row>
-                      <Col>
-                        <Form>
-                          <Form.File.Label
-                            onChange={(e) =>
-                              this.handleUniAssistDocSubmit(
-                                e,
-                                this.state.student._id.toString(),
-                                application.programId._id.toString()
-                              )
-                            }
-                            onClick={(e) => (e.target.value = null)}
-                          >
-                            <Form.File.Input hidden />
-                            <IoMdCloudUpload color={'lightgray'} size={32} />
-                          </Form.File.Label>
-                        </Form>
-                      </Col>
-                      <Col>
-                        <Button size={'sm'} color={'lightgray'}>
-                          Set Not Needed
-                        </Button>
-                      </Col>
+                      {this.state.isLoaded ? (
+                        <>
+                          <Col>
+                            <Form>
+                              <Form.File.Label
+                                onChange={(e) =>
+                                  this.handleUniAssistDocSubmit(
+                                    e,
+                                    this.state.student._id.toString(),
+                                    application.programId._id.toString()
+                                  )
+                                }
+                                onClick={(e) => (e.target.value = null)}
+                              >
+                                <Form.File.Input hidden />
+                                <IoMdCloudUpload
+                                  color={'lightgray'}
+                                  size={32}
+                                />
+                              </Form.File.Label>
+                            </Form>
+                          </Col>
+                          {this.props.role === 'Agent' ||
+                            (this.props.role === 'Admin' && (
+                              <Col>
+                                {this.props.role === 'Agent' ||
+                                  (this.props.role === 'Admin' && (
+                                    <Button
+                                      size={'sm'}
+                                      color={'lightgray'}
+                                      onClick={(e) =>
+                                        this.opensetAsNotNeededWindow(
+                                          e,
+                                          this.state.student._id.toString(),
+                                          application.programId._id.toString()
+                                        )
+                                      }
+                                    >
+                                      Set Not Needed
+                                    </Button>
+                                  ))}
+                              </Col>
+                            ))}
+                        </>
+                      ) : (
+                        <>
+                          <div style={style}>
+                            <Spinner
+                              className="mx-2 my-2"
+                              animation="border"
+                              role="status"
+                              variant="light"
+                            >
+                              <span className="visually-hidden"></span>
+                            </Spinner>
+                          </div>
+                        </>
+                      )}
                     </Row>
                   </>
                 ) : (
@@ -380,38 +415,57 @@ class UniAssistListCard extends React.Component {
                 application.uni_assist.status === 'missing' ||
                 application.uni_assist.status === 'notstarted' ? (
                   <>
-                    <Col md={1}>
-                      <Form>
-                        <Form.File.Label
-                          onChange={(e) =>
-                            this.handleUniAssistDocSubmit(
-                              e,
-                              this.state.student._id.toString(),
-                              application.programId._id.toString()
-                            )
-                          }
-                          onClick={(e) => (e.target.value = null)}
-                        >
-                          <Form.File.Input hidden />
-                          <IoMdCloudUpload color={'lightgray'} size={32} />
-                        </Form.File.Label>
-                      </Form>
-                    </Col>
-                    <Col>
-                      <Button
-                        size={'sm'}
-                        color={'lightgray'}
-                        onClick={(e) =>
-                          this.opensetAsNotNeededWindow(
-                            e,
-                            this.state.student._id.toString(),
-                            application.programId._id.toString()
-                          )
-                        }
-                      >
-                        Set Not Needed
-                      </Button>
-                    </Col>
+                    {this.state.isLoaded ? (
+                      <>
+                        <Col md={1}>
+                          <Form>
+                            <Form.File.Label
+                              onChange={(e) =>
+                                this.handleUniAssistDocSubmit(
+                                  e,
+                                  this.state.student._id.toString(),
+                                  application.programId._id.toString()
+                                )
+                              }
+                              onClick={(e) => (e.target.value = null)}
+                            >
+                              <Form.File.Input hidden />
+                              <IoMdCloudUpload color={'lightgray'} size={32} />
+                            </Form.File.Label>
+                          </Form>
+                        </Col>
+                        <Col>
+                          {this.props.role === 'Agent' ||
+                            (this.props.role === 'Admin' && (
+                              <Button
+                                size={'sm'}
+                                color={'lightgray'}
+                                onClick={(e) =>
+                                  this.opensetAsNotNeededWindow(
+                                    e,
+                                    this.state.student._id.toString(),
+                                    application.programId._id.toString()
+                                  )
+                                }
+                              >
+                                Set Not Needed
+                              </Button>
+                            ))}
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <Spinner
+                            animation="border"
+                            role="status"
+                            variant="light"
+                          >
+                            <span className="visually-hidden"></span>
+                          </Spinner>
+                        </div>
+                      </>
+                    )}
                   </>
                 ) : application.uni_assist &&
                   application.uni_assist.status === 'notneeded' ? (
@@ -519,8 +573,8 @@ class UniAssistListCard extends React.Component {
           <Modal.Body>Do you want to delete?</Modal.Body>
           <Modal.Footer>
             <Button
-              //   disabled={!this.state.isLoaded}
-              onClick={(e) => this.handleSetAsNotNeeded(e)}
+              disabled={!this.state.isLoaded}
+              onClick={(e) => this.handleUniAssistDocDelete(e)}
             >
               Yes
             </Button>

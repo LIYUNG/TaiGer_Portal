@@ -11,8 +11,10 @@ import { Link } from 'react-router-dom';
 import { convertDate } from '../../../Utils/contants';
 import {
   check_academic_background_filled,
-  check_application_preference_filled,
-  check_applications_to_decided,
+  check_all_applications_decided,
+  is_num_Program_Not_specified,
+  isProgramNotSelectedEnough,
+  check_applications_decision_from_student,
   is_all_uni_assist_vpd_uploaded
 } from '../../../Utils/checking-functions';
 class AgentTasks extends React.Component {
@@ -53,127 +55,138 @@ class AgentTasks extends React.Component {
     return true;
   };
   render() {
-    let unread_general_generaldocs = <></>;
-    let unread_applications_docthread = <></>;
-    if (this.props.student.generaldocs_threads === undefined) {
-      unread_general_generaldocs = <></>;
-    } else {
-      unread_general_generaldocs = this.props.student.generaldocs_threads.map(
-        (generaldocs_threads, i) => (
-          <tr key={i}>
-            {!generaldocs_threads.isFinalVersion &&
-              generaldocs_threads.latest_message_left_by_id !==
-                this.props.student._id.toString() && (
-                <>
-                  <td>
-                    <Link
-                      to={
-                        '/document-modification/' +
-                        generaldocs_threads.doc_thread_id._id
-                      }
-                      className="text-info"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      {generaldocs_threads.doc_thread_id.file_type}
-                    </Link>
-                  </td>
-                  <td>
-                    <Link
-                      to={
-                        '/document-modification/' +
-                        generaldocs_threads.doc_thread_id._id
-                      }
-                      className="text-info"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      My {generaldocs_threads.doc_thread_id.file_type}
-                    </Link>
-                  </td>
-                  <td> {convertDate(generaldocs_threads.updatedAt)}</td>
-                </>
-              )}
-          </tr>
-        )
-      );
-    }
-
-    if (
-      this.props.student.applications === undefined ||
-      this.props.student.applications.length === 0
-    ) {
-      unread_applications_docthread = <></>;
-    } else {
-      unread_applications_docthread = this.props.student.applications.map(
-        (application, i) =>
-          application.doc_modification_thread.map(
-            (application_doc_thread, idx) => (
-              <tr key={idx}>
-                {!application_doc_thread.isFinalVersion &&
-                  application_doc_thread.latest_message_left_by_id !==
-                    this.props.student._id.toString() &&
-                  application.decided === 'O' && (
-                    <>
-                      <td>
-                        <Link
-                          to={
-                            '/document-modification/' +
-                            application_doc_thread.doc_thread_id._id
-                          }
-                          className="text-info"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          {application_doc_thread.doc_thread_id.file_type}
-                        </Link>
-                      </td>
-                      <td>
-                        <Link
-                          to={
-                            '/document-modification/' +
-                            application_doc_thread.doc_thread_id._id
-                          }
-                          className="text-info"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          {application.programId.school}
-                          {' - '}
-                          {application.programId.program_name}
-                        </Link>
-                      </td>
-                      <td>
-                        {' '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleDateString()}
-                        {', '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleTimeString()}
-                      </td>
-                    </>
-                  )}
-              </tr>
-            )
-          )
-      );
-    }
-
     return (
       <>
-        {!check_applications_to_decided(this.props.student) && (
+        {/*  */}
+        {is_num_Program_Not_specified(this.props.student) ? (
           <tr>
             <td>
               <Link
-                to={'/student-applications'}
+                to={
+                  '/student-applications/' + this.props.student._id.toString()
+                }
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
-                My Applications
+                <b>
+                  {' '}
+                  {this.props.student.firstname} {this.props.student.lastname}{' '}
+                </b>
+                Applications
               </Link>
             </td>
-            <td>Please decide YES or NO</td>
+            <td>
+              Contact Sales or Admin for the number of program of
+              <b>
+                {this.props.student.firstname} {this.props.student.lastname}
+              </b>
+            </td>
             <td></td>
           </tr>
+        ) : (
+          <>
+            {/* get programs feedback from student */}
+            {check_applications_decision_from_student(this.props.student) ? (
+              <>
+                {!check_all_applications_decided(this.props.student) && (
+                  <tr>
+                    <td>
+                      <Link
+                        to={
+                          '/student-applications/' +
+                          this.props.student._id.toString()
+                        }
+                        style={{ textDecoration: 'none' }}
+                        className="text-info"
+                      >
+                        <b>
+                          {' '}
+                          {this.props.student.firstname}{' '}
+                          {this.props.student.lastname}{' '}
+                        </b>
+                        Applications
+                      </Link>
+                    </td>
+                    <td>
+                      Please check the feedback from{' '}
+                      <b>
+                        {this.props.student.firstname}{' '}
+                        {this.props.student.lastname}
+                      </b>
+                    </td>
+                    <td></td>
+                  </tr>
+                )}
+              </>
+            ) : (
+              <>
+                {/* select enough program task */}
+                {!is_num_Program_Not_specified(this.props.student) &&
+                isProgramNotSelectedEnough([this.props.student]) ? (
+                  <>
+                    {' '}
+                    <tr>
+                      <td>
+                        <Link
+                          to={
+                            '/student-applications/' +
+                            this.props.student._id.toString()
+                          }
+                          style={{ textDecoration: 'none' }}
+                          className="text-info"
+                        >
+                          <b>
+                            {' '}
+                            {this.props.student.firstname}{' '}
+                            {this.props.student.lastname}{' '}
+                          </b>
+                          Applications
+                        </Link>
+                      </td>
+                      <td>
+                        Please select enough programs for{' '}
+                        <b>
+                          {this.props.student.firstname}{' '}
+                          {this.props.student.lastname}
+                        </b>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </>
+                ) : (
+                  <tr>
+                    <td>
+                      <Link
+                        to={
+                          '/student-applications/' +
+                          this.props.student._id.toString()
+                        }
+                        style={{ textDecoration: 'none' }}
+                        className="text-info"
+                      >
+                        <b>
+                          {' '}
+                          {this.props.student.firstname}{' '}
+                          {this.props.student.lastname}{' '}
+                        </b>
+                        Applications
+                      </Link>
+                    </td>
+                    <td>
+                     Waiting Feedback from{' '}
+                      <b>
+                        {this.props.student.firstname}{' '}
+                        {this.props.student.lastname}
+                      </b>
+                    </td>
+                    <td></td>
+                  </tr>
+                )}
+              </>
+            )}
+          </>
         )}
+
         {/* check uni-assist */}
         {!is_all_uni_assist_vpd_uploaded(this.props.student) && (
           <tr>
@@ -206,13 +219,12 @@ class AgentTasks extends React.Component {
               </Link>
             </td>
             <td>
-              {this.props.student.firstname}  {this.props.student.lastname} uploaded new files
+              {this.props.student.firstname} {this.props.student.lastname}{' '}
+              uploaded new files
             </td>
             <td></td>
           </tr>
         )}
-        {unread_general_generaldocs}
-        {unread_applications_docthread}
       </>
     );
   }

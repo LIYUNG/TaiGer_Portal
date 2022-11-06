@@ -46,6 +46,25 @@ export const does_student_have_editors = (students) => {
   return true;
 };
 
+export const check_applications_decision_from_student = (student) => {
+  if (!student.applications) {
+    return false;
+  }
+  if (student.applications.length === 0) {
+    return false;
+  }
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      !student.applications[j].decided ||
+      (student.applications[j].decided !== undefined &&
+        student.applications[j].decided === '-')
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 export const check_applications_to_decided = (student) => {
   if (!student.applications) {
@@ -89,7 +108,18 @@ export const checkSurveyCompleted = (keys, object_init) => {
   }
   return false;
 };
-export const isProgramNotSelected = (students) => {
+
+export const is_num_Program_Not_specified = (student) => {
+  if (
+    student.applying_program_count === 0 ||
+    student.applying_program_count === undefined
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const isProgramNotSelectedEnough = (students) => {
   for (let i = 0; i < students.length; i += 1) {
     if (students[i].applications.length < students[i].applying_program_count) {
       return true;
@@ -118,29 +148,28 @@ export const num_applications_submitted = (student) => {
   return num_apps_closed;
 };
 
-export const check_all_applications_decided = (keys, student) => {
+export const check_all_applications_decided = (student) => {
   if (student.applications === undefined) {
     return false;
   }
-  for (let i = 0; i < keys.length; i += 1) {
-    if (student.applying_program_count === 0) {
-      return false;
-    }
-    if (student.applications.length < student.applying_program_count) {
-      return false;
-    }
-    if (!student.applications || student.applications.length === 0) {
-      return false;
-    }
-    for (let j = 0; j < student.applications.length; j += 1)
-      if (
-        !student.applications[j].decided ||
-        (student.applications[j].decided !== undefined &&
-          student.applications[j].decided !== 'O')
-      ) {
-        return false;
-      }
+  if (student.applying_program_count === 0) {
+    return false;
   }
+  if (student.applications.length < student.applying_program_count) {
+    return false;
+  }
+  if (!student.applications || student.applications.length === 0) {
+    return false;
+  }
+  for (let j = 0; j < student.applications.length; j += 1)
+    if (
+      !student.applications[j].decided ||
+      (student.applications[j].decided !== undefined &&
+        student.applications[j].decided !== 'O')
+    ) {
+      return false;
+    }
+
   return true;
 };
 

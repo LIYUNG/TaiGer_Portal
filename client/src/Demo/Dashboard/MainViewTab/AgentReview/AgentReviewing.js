@@ -57,7 +57,6 @@ class AgentReviewing extends React.Component {
     let num_apps_decided = num_applications_decided(this.props.student);
     let num_apps_closed = num_applications_submitted(this.props.student);
     let is_all_applications_decided = check_all_applications_decided(
-      keys,
       this.props.student
     );
 
@@ -186,7 +185,8 @@ class AgentReviewing extends React.Component {
                       title="incomplete"
                       className="mx-2"
                     />
-                    VPD missing({numb_uni_assist_vpd_uploaded}/{numb_uni_assist_vpd_needed})
+                    VPD missing({numb_uni_assist_vpd_uploaded}/
+                    {numb_uni_assist_vpd_needed})
                   </p>
                 )
               ) : (
@@ -258,9 +258,12 @@ class AgentReviewing extends React.Component {
                     className="mx-2"
                   />
                   incomplete(
-                  {num_apps_closed > this.props.student.applying_program_count
-                    ? this.props.student.applying_program_count
-                    : num_apps_closed}
+                  {num_apps_closed >
+                  this.props.student.applying_program_count ? (
+                    <b>num_apps_closed</b>
+                  ) : (
+                    num_apps_closed
+                  )}
                   /{this.props.student.applying_program_count})
                 </p>
               )}

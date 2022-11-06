@@ -6,7 +6,7 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 
 import { updateArchivStudents, getStudents } from '../../api';
-import { isProgramNotSelected } from '../Utils/checking-functions';
+import { isProgramNotSelectedEnough } from '../Utils/checking-functions';
 class ApplicantSOverview extends React.Component {
   state = {
     error: null,
@@ -151,7 +151,7 @@ class ApplicantSOverview extends React.Component {
             </Card>
           </Col>
         </Row>
-        {isProgramNotSelected(this.state.students) && (
+        {isProgramNotSelectedEnough(this.state.students) && (
           <Row>
             <Col>
               <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>

@@ -16,7 +16,10 @@ import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getNumberOfDays } from '../Utils/contants';
-import { isProgramNotSelected } from '../Utils/checking-functions';
+import {
+  isProgramNotSelectedEnough,
+  is_num_Program_Not_specified
+} from '../Utils/checking-functions';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
@@ -362,7 +365,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             </Card>
           </Col>
         </Row>
-        {isProgramNotSelected([this.state.student]) && (
+        {isProgramNotSelectedEnough([this.state.student]) && (
           <Row>
             <Col>
               <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
@@ -374,6 +377,20 @@ class StudentApplicationsTableTemplate extends React.Component {
             </Col>
           </Row>
         )}
+        {this.props.role === 'Admin' &&
+          is_num_Program_Not_specified(this.state.student) && (
+            <Row>
+              <Col>
+                <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+                  <Card.Body>
+                    The number of student's applications is not specified!
+                    Please determine the number of the programs according to the
+                    contract
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          )}
         <Row>
           <Col>
             <Card className="my-0 mx-0" bg={'info'} text={'white'}>

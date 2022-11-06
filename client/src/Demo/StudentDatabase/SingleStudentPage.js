@@ -508,6 +508,7 @@ class SingleStudentPage extends React.Component {
           </Tab>
           <Tab eventKey="program_portal" title="Portal">
             <Row>
+              Coming Soon!
               {/* <Table responsive>
                 <Task student_id={this.state.student._id} />
               </Table> */}

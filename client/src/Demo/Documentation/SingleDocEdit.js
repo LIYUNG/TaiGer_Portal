@@ -41,15 +41,15 @@ class SingleProgramEdit extends React.Component {
                   </Form.Group>
                 </h4>
               </Col>
-            </Row>
+            </Row>{' '}
+            <DocumentsListItemsEditor
+              doc_title={this.state.doc_title}
+              editorState={this.props.editorState}
+              handleClickSave={this.handleClickSave}
+              handleClickCancel={this.props.handleClickCancel}
+              role={this.props.role}
+            />
           </Card.Body>
-          <DocumentsListItemsEditor
-            doc_title={this.state.doc_title}
-            editorState={this.props.editorState}
-            handleClickSave={this.handleClickSave}
-            handleClickCancel={this.props.handleClickCancel}
-            role={this.props.role}
-          />
         </Card>
       </>
     );

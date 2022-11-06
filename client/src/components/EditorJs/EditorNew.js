@@ -174,7 +174,7 @@ const EditorNew = (props) => {
         <></>
       ) : (
         <Row>
-          <Col className="my-0 mx-4">
+          <Col className="my-0 mx-0">
             <Button
               disabled={props.doc_title.replace(/ /g, '').length === 0}
               onClick={(e) => props.handleClickSave(e, props.editorState)}

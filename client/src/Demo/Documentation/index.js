@@ -350,22 +350,28 @@ class ApplicationList extends React.Component {
             <Card className="mb-2 mx-0">
               {this.state.isEdit ? (
                 <>
-                  <Form.Group controlId="doc_title" className="mx-3 my-2">
-                    <Form.Control
-                      type="text"
-                      placeholder="title"
-                      defaultValue={''}
-                      onChange={(e) => this.handleChange_doc_title(e)}
+                  <Card.Body>
+                    <Row>
+                      <Col>
+                        <Form.Group controlId="doc_title" className='mb-4'>
+                          <Form.Control
+                            type="text"
+                            placeholder="title"
+                            defaultValue={''}
+                            onChange={(e) => this.handleChange_doc_title(e)}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <DocumentsListItemsEditor
+                      doc_title={this.state.doc_title}
+                      editorState={this.state.editorState}
+                      handleClickSave={this.handleClickSave}
+                      handleClickCancel={this.handleClickCancel}
+                      // readOnlyMode={this.readOnlyMode}
+                      role={this.props.role}
                     />
-                  </Form.Group>
-                  <DocumentsListItemsEditor
-                    doc_title={this.state.doc_title}
-                    editorState={this.state.editorState}
-                    handleClickSave={this.handleClickSave}
-                    handleClickCancel={this.handleClickCancel}
-                    // readOnlyMode={this.readOnlyMode}
-                    role={this.props.role}
-                  />
+                  </Card.Body>
                 </>
               ) : (
                 <Card.Body>

@@ -96,7 +96,26 @@ const TaiGerAI = React.lazy(() =>
   import("./Demo/TaiGerAI/Application/CoursesAnalyser")
 );
 
+const AgentsAssignment = React.lazy(() =>
+  import('./Demo/AssignmentAgentsEditors/AssignAgents/index')
+);
+
+const EditorsAssignment = React.lazy(() =>
+  import('./Demo/AssignmentAgentsEditors/AssignEditors/index')
+);
 const routes = [
+  {
+    path: '/assignment/agents',
+    exact: true,
+    name: 'AssignAgents',
+    component: AgentsAssignment
+  },
+  {
+    path: '/assignment/editors',
+    exact: true,
+    name: 'AssignEditors',
+    component: EditorsAssignment
+  },
   {
     path: '/dashboard/default',
     exact: true,

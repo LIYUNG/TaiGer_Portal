@@ -9,6 +9,8 @@ import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationP
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import NoEditorsStudentsCard from '../MainViewTab/NoEditorsStudentsCard/NoEditorsStudentsCard';
 import NoAgentsStudentsCard from '../MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
+import AdminTasks from '../MainViewTab/AdminTasks/index';
+import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 class AdminMainView extends React.Component {
   render() {
@@ -60,7 +62,9 @@ class AdminMainView extends React.Component {
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
-
+    const admin_tasks = this.props.students.map((student, i) => (
+      <AdminTasks key={i} role={this.props.role} student={student} />
+    ));
     return (
       <>
         <Row>
@@ -113,6 +117,34 @@ class AdminMainView extends React.Component {
                   </tr>
                 </thead>
                 <tbody>{no_editor_students}</tbody>
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  <BsExclamationTriangle size={18} /> To Do Tasks:
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+              >
+                <thead>
+                  <tr>
+                    <th>Tasks</th>
+                    <th>Description</th>
+                    <th>Last Update</th>
+                  </tr>
+                </thead>
+                <tbody>{admin_tasks}</tbody>
               </Table>
             </Card>
           </Col>

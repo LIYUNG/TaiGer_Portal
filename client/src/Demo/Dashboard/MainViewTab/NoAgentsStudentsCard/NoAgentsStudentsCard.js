@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 // import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
+import { Link } from 'react-router-dom';
 class NoAgentsStudentsCard extends React.Component {
   state = {
     showAgentPage: false
@@ -55,7 +56,16 @@ class NoAgentsStudentsCard extends React.Component {
               </td>
             )}
             <td>
-              {this.props.student.firstname}, {this.props.student.lastname}
+              <Link
+                to={'/student-database/' + this.props.student._id + '/profile'}
+                className="text-info"
+                style={{ textDecoration: 'none' }}
+              >
+                {this.props.student.firstname}
+                {', '}
+                {this.props.student.lastname}
+              </Link>
+              {/* {this.props.student.firstname}, {this.props.student.lastname} */}
             </td>
             <td>{this.props.student.email}</td>
           </tr>

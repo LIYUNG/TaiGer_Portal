@@ -45,6 +45,7 @@ class NewBaseFilesUploaded extends React.Component {
       if (object_init[Doc_key] === 'uploaded') {
         return (
           <NewBaseFileUploaded
+            key={i}
             onUpdateProfileFilefromstudent={
               this.props.onUpdateProfileFilefromstudent
             }

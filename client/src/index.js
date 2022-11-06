@@ -144,7 +144,6 @@ window.profile_list = {
   University_Entrance_Examination_GSAT: 'GSAT/SAT (學測)',
   Bachelor_Certificate: 'Bachelor Certificate',
   Bachelor_Transcript: 'Bachelor Transcript',
-
   Englisch_Certificate: 'TOEFL or IELTS',
   German_Certificate: 'TestDaF or Goethe B2/C1',
   GREGMAT: 'GRE or GMAT',

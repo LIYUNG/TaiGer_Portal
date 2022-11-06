@@ -188,7 +188,8 @@ export const num_uni_assist_vpd_uploaded = (student) => {
       if (
         student.applications[j].uni_assist &&
         (student.applications[j].uni_assist.status === 'uploaded' ||
-          student.applications[j].uni_assist.vpd_file_path !== '')
+          student.applications[j].uni_assist.vpd_file_path !== '' ||
+          student.applications[j].uni_assist.vpd_file_path === null)
       ) {
         counter += 1;
       }

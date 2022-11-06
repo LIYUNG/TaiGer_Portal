@@ -936,7 +936,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
         logger.error(error);
       } else {
         app.uni_assist.status = DocumentStatus.Missing;
-        app.uni_assist.vpd_file_path = null;
+        app.uni_assist.vpd_file_path = '';
         app.uni_assist.updatedAt = new Date();
 
         student.save();

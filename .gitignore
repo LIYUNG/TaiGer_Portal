@@ -17,7 +17,7 @@ node_modules
 
 # production
 /api/build
-/client/build
+# /client/build
 /client/server_logs
 # misc
 .DS_Store

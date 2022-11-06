@@ -62,65 +62,11 @@ class AdminMainView extends React.Component {
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
-    const admin_tasks = this.props.students.map((student, i) => (
-      <AdminTasks key={i} role={this.props.role} student={student} />
-    ));
+    const admin_tasks = (
+      <AdminTasks role={this.props.role} students={this.props.students} />
+    );
     return (
       <>
-        <Row>
-          <Col mx={0} my={0}>
-            <Card
-              className="my-0 mx-0  text-light"
-              bg={'danger'}
-              text={'white'}
-            >
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  No Agents Students
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                variant="dark"
-                text="light"
-                className="my-0 mx-0"
-              >
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>{no_agent_students}</tbody>
-              </Table>
-            </Card>
-          </Col>
-          <Col>
-            <Card className="my-0 mx-0" bg={'danger'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  No Editors Students
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-              >
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>{no_editor_students}</tbody>
-              </Table>
-            </Card>
-          </Col>
-        </Row>
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>

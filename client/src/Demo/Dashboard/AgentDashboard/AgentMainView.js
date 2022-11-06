@@ -87,10 +87,9 @@ class AgentMainView extends React.Component {
     const agent_tasks = this.props.students.map((student, i) => (
       <AgentTasks key={i} role={this.props.role} student={student} />
     ));
-    console.log(new_uploaded_files);
     return (
       <>
-        {new_uploaded_files && (
+        {/* {new_uploaded_files && (
           <Row>
             <Col md={12}>
               <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
@@ -119,7 +118,7 @@ class AgentMainView extends React.Component {
               </Card>
             </Col>
           </Row>
-        )}
+        )} */}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>

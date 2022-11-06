@@ -28,6 +28,24 @@ export const check_application_preference_filled = (application_preference) => {
   }
   return true;
 };
+export const does_student_have_agents = (students) => {
+  for (let i = 0; i < students.length; i += 1) {
+    if (students[i].agents === undefined || students[i].agents.length === 0) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const does_student_have_editors = (students) => {
+  for (let i = 0; i < students.length; i += 1) {
+    if (students[i].editors === undefined || students[i].editors.length === 0) {
+      return false;
+    }
+  }
+  return true;
+};
+
 
 export const check_applications_to_decided = (student) => {
   if (!student.applications) {

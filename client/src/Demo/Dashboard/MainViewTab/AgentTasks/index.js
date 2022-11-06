@@ -159,26 +159,6 @@ class AgentTasks extends React.Component {
 
     return (
       <>
-        {(!check_academic_background_filled(
-          this.props.student.academic_background
-        ) ||
-          !check_application_preference_filled(
-            this.props.student.application_preference
-          )) && (
-          <tr>
-            <td>
-              <Link
-                to={'/survey'}
-                style={{ textDecoration: 'none' }}
-                className="text-info"
-              >
-                Survey
-              </Link>
-            </td>
-            <td>It looks like you did not finish survey</td>
-            <td></td>
-          </tr>
-        )}
         {!check_applications_to_decided(this.props.student) && (
           <tr>
             <td>

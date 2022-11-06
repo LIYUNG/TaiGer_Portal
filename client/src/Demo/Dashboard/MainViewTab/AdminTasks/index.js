@@ -13,6 +13,8 @@ import {
   check_academic_background_filled,
   check_application_preference_filled,
   check_applications_to_decided,
+  does_student_have_agents,
+  does_student_have_editors,
   is_all_uni_assist_vpd_uploaded
 } from '../../../Utils/checking-functions';
 class AdminTasks extends React.Component {
@@ -55,18 +57,33 @@ class AdminTasks extends React.Component {
   render() {
     return (
       <>
-        {!check_applications_to_decided(this.props.student) && (
+        {!does_student_have_agents(this.props.students) && (
           <tr>
             <td>
               <Link
-                to={'/student-applications'}
+                to={'/assignment/agents'}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
-                My Applications
+                Assign Agents
               </Link>
             </td>
-            <td>Please decide YES or NO</td>
+            <td>Please assign agents</td>
+            <td></td>
+          </tr>
+        )}
+        {!does_student_have_editors(this.props.students) && (
+          <tr>
+            <td>
+              <Link
+                to={'/assignment/editors'}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                Assign Editors
+              </Link>
+            </td>
+            <td>Please assign editors</td>
             <td></td>
           </tr>
         )}

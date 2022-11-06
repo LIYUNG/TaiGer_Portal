@@ -280,22 +280,6 @@ const applicationSchema = new Schema({
         type: Boolean,
         default: false
       },
-      isReceivedEditorFeedback: {
-        type: Boolean,
-        default: false
-      },
-      isReceivedStudentFeedback: {
-        type: Boolean,
-        default: false
-      },
-      StudentRead: {
-        type: Boolean,
-        default: false
-      },
-      EditorRead: {
-        type: Boolean,
-        default: false
-      },
       latest_message_left_by_id: {
         type: String,
         default: ''
@@ -417,22 +401,6 @@ const Student = User.discriminator(
       generaldocs_threads: [
         {
           isFinalVersion: {
-            type: Boolean,
-            default: false
-          },
-          isReceivedEditorFeedback: {
-            type: Boolean,
-            default: false
-          },
-          isReceivedStudentFeedback: {
-            type: Boolean,
-            default: false
-          },
-          StudentRead: {
-            type: Boolean,
-            default: false
-          },
-          EditorRead: {
             type: Boolean,
             default: false
           },

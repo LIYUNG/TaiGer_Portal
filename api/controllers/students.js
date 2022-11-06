@@ -462,10 +462,6 @@ const createApplication = asyncHandler(async (req, res) => {
         });
         const temp = application.doc_modification_thread.create({
           doc_thread_id: new_doc_thread._id,
-          isReceivedEditorFeedback: true,
-          isReceivedStudentFeedback: false,
-          EditorRead: true,
-          StudentRead: false,
           updatedAt: new Date(),
           createdAt: new Date()
         });
@@ -488,10 +484,6 @@ const createApplication = asyncHandler(async (req, res) => {
           });
           const temp = application.doc_modification_thread.create({
             doc_thread_id: new_doc_thread._id,
-            isReceivedEditorFeedback: true,
-            isReceivedStudentFeedback: false,
-            EditorRead: true,
-            StudentRead: false,
             updatedAt: new Date(),
             createdAt: new Date()
           });
@@ -510,10 +502,6 @@ const createApplication = asyncHandler(async (req, res) => {
         });
         const temp = application.doc_modification_thread.create({
           doc_thread_id: new_doc_thread._id,
-          isReceivedEditorFeedback: true,
-          isReceivedStudentFeedback: false,
-          EditorRead: true,
-          StudentRead: false,
           updatedAt: new Date(),
           createdAt: new Date()
         });

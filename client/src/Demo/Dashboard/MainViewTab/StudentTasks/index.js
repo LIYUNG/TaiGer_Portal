@@ -62,7 +62,8 @@ class StudentTasks extends React.Component {
         (generaldocs_threads, i) => (
           <tr key={i}>
             {!generaldocs_threads.isFinalVersion &&
-              !generaldocs_threads.StudentRead && (
+              generaldocs_threads.latest_message_left_by_id !==
+                this.props.student._id.toString() && (
                 <>
                   <td>
                     <Link
@@ -108,7 +109,8 @@ class StudentTasks extends React.Component {
             (application_doc_thread, idx) => (
               <tr key={idx}>
                 {!application_doc_thread.isFinalVersion &&
-                  !application_doc_thread.StudentRead &&
+                  application_doc_thread.latest_message_left_by_id !==
+                    this.props.student._id.toString() &&
                   application.decided === 'O' && (
                     <>
                       <td>

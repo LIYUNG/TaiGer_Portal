@@ -26,7 +26,8 @@ class NewUpdatedThreadFromStudent extends React.Component {
         (generaldocs_threads, i) => (
           <tr key={i}>
             {!generaldocs_threads.isFinalVersion &&
-              !generaldocs_threads.EditorRead && (
+              generaldocs_threads.latest_message_left_by_id ===
+                this.props.student._id.toString() && (
                 <>
                   <td>
                     <Link
@@ -58,10 +59,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                       {generaldocs_threads.doc_thread_id.file_type}
                     </Link>
                   </td>
-                  <td>
-                    {' '}
-                    <td> {convertDate(generaldocs_threads.updatedAt)}</td>
-                  </td>
+                  <td> {convertDate(generaldocs_threads.updatedAt)}</td>
                 </>
               )}
           </tr>
@@ -74,7 +72,8 @@ class NewUpdatedThreadFromStudent extends React.Component {
             (application_doc_thread, idx) => (
               <tr key={i * 20 + idx}>
                 {!application_doc_thread.isFinalVersion &&
-                  !application_doc_thread.EditorRead && (
+                  application_doc_thread.latest_message_left_by_id ===
+                    this.props.student._id.toString() && (
                     <>
                       <td>
                         <Link
@@ -110,16 +109,7 @@ class NewUpdatedThreadFromStudent extends React.Component {
                           {application.programId.program_name}
                         </Link>
                       </td>
-                      <td>
-                        {' '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleDateString()}
-                        {', '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleTimeString()}
-                      </td>
+                      <td> {convertDate(application_doc_thread.updatedAt)}</td>
                     </>
                   )}
               </tr>

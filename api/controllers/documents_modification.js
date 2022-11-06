@@ -124,10 +124,6 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
       // console.log('Pass 1.1');
       const app = student.generaldocs_threads.create({
         doc_thread_id: doc_thread_existed._id,
-        isReceivedEditorFeedback: true,
-        isReceivedStudentFeedback: false,
-        EditorRead: true,
-        StudentRead: false,
         updatedAt: new Date(),
         createdAt: new Date()
       });
@@ -154,10 +150,6 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   const temp = student.generaldocs_threads.create({
     doc_thread_id: new_doc_thread._id,
-    isReceivedEditorFeedback: true,
-    isReceivedStudentFeedback: false,
-    EditorRead: true,
-    StudentRead: false,
     updatedAt: new Date(),
     createdAt: new Date()
   });
@@ -247,10 +239,6 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       // console.log('Pass 1.1');
       const app = application.doc_modification_thread.create({
         doc_thread_id: doc_thread_existed._id,
-        isReceivedEditorFeedback: true,
-        isReceivedStudentFeedback: false,
-        EditorRead: true,
-        StudentRead: false,
         updatedAt: new Date(),
         createdAt: new Date()
       });
@@ -287,10 +275,6 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   );
   const temp = student.applications[idx].doc_modification_thread.create({
     doc_thread_id: new_doc_thread._id,
-    isReceivedEditorFeedback: true,
-    isReceivedStudentFeedback: false,
-    EditorRead: true,
-    StudentRead: false,
     updatedAt: new Date(),
     createdAt: new Date()
   });
@@ -412,7 +396,6 @@ const postMessages = asyncHandler(async (req, res) => {
   const document_thread2 = await Documentthread.findById(messagesThreadId)
     .populate('student_id program_id messages.user_id')
     .exec();
-  // update StudentRead, EditorRead, isReceivedEditorFeedback and isReceivedStudentFeedback
   // in student (User) collections.
   const student = await Student.findById(document_thread.student_id)
     .populate('applications.programId')
@@ -428,16 +411,9 @@ const postMessages = asyncHandler(async (req, res) => {
         doc_thread_id._id.toString() === document_thread._id.toString()
     );
     if (user.role === Role.Student) {
-      doc_thread.isReceivedEditorFeedback = false;
-      doc_thread.isReceivedStudentFeedback = true;
-      doc_thread.StudentRead = true;
-      doc_thread.EditorRead = false;
     }
-    if (user.role === Role.Editor) {
-      doc_thread.isReceivedEditorFeedback = true;
-      doc_thread.isReceivedStudentFeedback = false;
-      doc_thread.StudentRead = false;
-      doc_thread.EditorRead = true;
+    if (user.role !== Role.Student) {
+      student.notification.isRead_new_cvmlrl_messsage = false;
     }
     doc_thread.latest_message_left_by_id = user._id.toString();
     doc_thread.updatedAt = new Date();
@@ -447,16 +423,9 @@ const postMessages = asyncHandler(async (req, res) => {
         doc_thread_id.toString() == document_thread._id.toString()
     );
     if (user.role === Role.Student) {
-      general_thread.isReceivedStudentFeedback = true;
-      general_thread.isReceivedEditorFeedback = false;
-      general_thread.StudentRead = true;
-      general_thread.EditorRead = false;
     }
-    if (user.role === Role.Editor) {
-      general_thread.isReceivedStudentFeedback = false;
-      general_thread.isReceivedEditorFeedback = true;
-      general_thread.StudentRead = false;
-      general_thread.EditorRead = true;
+    if (user.role !== Role.Student) {
+      student.notification.isRead_new_cvmlrl_messsage = false;
     }
     general_thread.latest_message_left_by_id = user._id.toString();
     general_thread.updatedAt = new Date();

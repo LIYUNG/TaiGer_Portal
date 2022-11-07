@@ -1,19 +1,13 @@
 import React from 'react';
-// import DEMO from '../../store/constant';
-// import { AiFillCloseCircle, AiFillQuestionCircle } from 'react-icons/ai';
-// import { IoCheckmarkCircle } from 'react-icons/io5';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { Link } from 'react-router-dom';
-
-// import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
 import {
   Row,
   Col,
   Button,
   Card,
   Collapse,
-  // Form,
   Modal,
   Spinner
 } from 'react-bootstrap';
@@ -21,31 +15,36 @@ import {
   deleteGenralFileThread,
   deleteProgramSpecificFileThread,
   SetFileAsFinal,
+  ToggleProgramStatus,
   initGeneralMessageThread,
   initApplicationMessageThread
-  // SubmitMessageWithAttachment
 } from '../../api';
 import ManualFiles from './ManualFiles';
 import {
   // AiOutlineDownload,
   // AiOutlineDelete,
-  // AiOutlineCheck,
-  AiOutlineMore
-  // AiOutlineUndo,
+  AiOutlineCheck,
+  AiOutlineMore,
+  AiOutlineUndo
   // AiFillMessage
 } from 'react-icons/ai';
+import { ImCheckmark } from 'react-icons/im';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { check_generaldocs } from '../Utils/checking-functions';
 import {
-  check_generaldocs
+  is_program_ml_rl_essay_finished,
+  is_program_closed
 } from '../Utils/checking-functions';
-
 class EditorDocsProgress extends React.Component {
   state = {
     timeouterror: null,
     unauthorizederror: null,
     student: this.props.student,
     deleteFileWarningModel: false,
+    SetProgramStatusModel: false,
     SetAsFinalFileModel: false,
     Requirements_Modal: false,
+    isFinal: false,
     studentId: '',
     student_id: '',
     doc_thread_id: '',
@@ -61,6 +60,12 @@ class EditorDocsProgress extends React.Component {
       isLoaded: true
     }));
   }
+  closeSetProgramStatusModel = () => {
+    this.setState((state) => ({
+      ...state,
+      SetProgramStatusModel: false
+    }));
+  };
   closeSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
@@ -103,9 +108,8 @@ class EditorDocsProgress extends React.Component {
           if (success) {
             this.setState((state) => ({
               ...state,
-              studentId: '',
-              program_id: '',
-              docName: '',
+              student_id: '',
+              doc_thread_id: '',
               isLoaded: true,
               student: data,
               success: success,
@@ -115,9 +119,8 @@ class EditorDocsProgress extends React.Component {
             alert(resp.data.message);
             this.setState((state) => ({
               ...state,
-              studentId: '',
-              program_id: '',
-              docName: '',
+              student_id: '',
+              doc_thread_id: '',
               isLoaded: true,
               success: success,
               deleteFileWarningModel: false
@@ -139,9 +142,9 @@ class EditorDocsProgress extends React.Component {
           if (success) {
             this.setState((state) => ({
               ...state,
-              studentId: '',
+              student_id: '',
               program_id: '',
-              docName: '',
+              doc_thread_id: '',
               isLoaded: true,
               student: data,
               success: success,
@@ -207,13 +210,63 @@ class EditorDocsProgress extends React.Component {
     );
   };
 
-  handleAsFinalFile = (doc_thread_id, student_id, program_id, docName) => {
+  handleProgramStatus = (student_id, program_id) => {
+    this.setState((state) => ({
+      ...state,
+      student_id,
+      program_id,
+      SetProgramStatusModel: true
+    }));
+  };
+
+  SubmitProgramStatusHandler = () => {
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false // false to reload everything
+    }));
+    ToggleProgramStatus(this.state.student_id, this.state.program_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            studentId: '',
+            applicationId: '',
+            isLoaded: true,
+            student: data,
+            success: success,
+            SetProgramStatusModel: false
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
+      },
+      (error) => {
+        this.setState({ error });
+      }
+    );
+  };
+  handleAsFinalFile = (
+    doc_thread_id,
+    student_id,
+    program_id,
+    isFinal,
+    docName
+  ) => {
     this.setState((state) => ({
       ...state,
       doc_thread_id,
       student_id,
       program_id,
       docName,
+      isFinal,
       SetAsFinalFileModel: true
     }));
   };
@@ -455,6 +508,59 @@ class EditorDocsProgress extends React.Component {
                     application.decided === 'O' ? (
                       <>
                         <Row className="mb-2 mx-0">
+                          {is_program_ml_rl_essay_finished(application) ? (
+                            <>
+                              {is_program_closed(application) ? (
+                                <>
+                                  <Col md={1}>
+                                    <ImCheckmark
+                                      size={24}
+                                      color="limegreen"
+                                      title="This program is closed"
+                                    />
+                                  </Col>
+                                  <Col md={1}>
+                                    <AiOutlineUndo
+                                      size={24}
+                                      color="red"
+                                      title="Re-open this program as it was not submitted"
+                                      style={{ cursor: 'pointer' }}
+                                      onClick={() =>
+                                        this.handleProgramStatus(
+                                          this.state.student._id.toString(),
+                                          application.programId._id.toString()
+                                        )
+                                      }
+                                    />
+                                  </Col>
+                                </>
+                              ) : (
+                                <>
+                                  <Col md={1}>
+                                    <AiOutlineCheck
+                                      size={24}
+                                      color="white"
+                                      style={{ cursor: 'pointer' }}
+                                      title="Close this program - marked as finished."
+                                      onClick={() =>
+                                        this.handleProgramStatus(
+                                          this.state.student._id.toString(),
+                                          application.programId._id.toString()
+                                        )
+                                      }
+                                    />
+                                  </Col>
+                                  <Col md={1}></Col>
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <Col md={1}></Col>
+                              <Col md={1}></Col>
+                            </>
+                          )}
+
                           <Col md={4}>
                             <Link
                               to={'/programs/' + application.programId._id}
@@ -546,11 +652,17 @@ class EditorDocsProgress extends React.Component {
                                 : '-'}
                             </p>
                           </Col>
-                          <Col>
-                            <p className="text-light">
-                              Status:{' '}
-                              {application.closed === 'O' ? 'Closed' : 'Open'}
-                            </p>
+                          <Col md={1}>
+                            <p className="text-light">Status: </p>
+                          </Col>
+                          <Col md={1}>
+                            {application.closed === 'O' ? (
+                              <p className="text-warning">Close</p>
+                            ) : (
+                              <p className="text-danger">
+                                <b>Open</b>
+                              </p>
+                            )}
                           </Col>
                         </Row>
                         <ManualFiles
@@ -626,7 +738,8 @@ class EditorDocsProgress extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Do you want to set {this.state.docName} as final for student?
+            Do you want to set {this.state.docName} as{' '}
+            {this.state.isFinal ? 'final' : 'open'}?
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -683,6 +796,31 @@ class EditorDocsProgress extends React.Component {
           <Modal.Body>{this.state.docName} is already existed</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeDocExistedWindow}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.SetProgramStatusModel}
+          onHide={this.closeSetProgramStatusModel}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Attention
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Do you want to {this.state.isFinal ? 'close' : 're-open'} this
+            program for {this.state.student.firstname}?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              disabled={!isLoaded}
+              onClick={this.SubmitProgramStatusHandler}
+            >
+              Yes
+            </Button>
+            <Button onClick={this.closeSetProgramStatusModel}>Close</Button>
           </Modal.Footer>
         </Modal>
       </>

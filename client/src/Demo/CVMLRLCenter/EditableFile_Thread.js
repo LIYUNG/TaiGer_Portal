@@ -14,11 +14,12 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 import { convertDate } from '../Utils/contants';
 
 class EditableFile_Thread extends Component {
-  handleAsFinalFileThread = (documenName) => {
+  handleAsFinalFileThread = (documenName, isFinal) => {
     this.props.handleAsFinalFile(
       this.props.thread.doc_thread_id._id,
       this.props.student._id,
       this.props.program_id,
+      isFinal,
       documenName
     );
   };
@@ -100,7 +101,7 @@ class EditableFile_Thread extends Component {
                 color="white"
                 style={{ cursor: 'pointer' }}
                 title="Set as final version"
-                onClick={() => this.handleAsFinalFileThread(documenName)}
+                onClick={() => this.handleAsFinalFileThread(documenName,true)}
               />
               // </Button>
             )}
@@ -109,14 +110,14 @@ class EditableFile_Thread extends Component {
           <Col md={1}>
             {this.props.thread.isFinalVersion ? (
               this.props.role === 'Student' || this.props.role === 'Guest' ? (
-                <p>Closed</p>
+                <p className='text-warning'>Closed</p>
               ) : (
                 <AiOutlineUndo
                   size={24}
                   color="red"
                   title="Un do Final Version"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => this.handleAsFinalFileThread(documenName)}
+                  onClick={() => this.handleAsFinalFileThread(documenName,false)}
                 />
               )
             ) : (

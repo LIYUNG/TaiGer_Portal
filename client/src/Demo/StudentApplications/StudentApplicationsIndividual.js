@@ -7,6 +7,7 @@ import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getStudent } from '../../api';
+import { Redirect } from 'react-router-dom';
 
 class StudentApplicationsIndividual extends React.Component {
   state = {
@@ -70,7 +71,9 @@ class StudentApplicationsIndividual extends React.Component {
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-
+    // if (this.props.user.role === 'Student') {
+    //   return <Redirect to="/student-applications" />;
+    // }
     if (!isLoaded && !this.state.student) {
       return (
         <div style={style}>

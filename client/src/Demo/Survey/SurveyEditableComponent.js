@@ -153,6 +153,20 @@ class SurveyEditableComponent extends React.Component {
                         <b>High School Name</b>
                       </li>
                     )}
+                  {this.props.academic_background &&
+                    !this.props.academic_background.university
+                      .attended_university && (
+                      <li>
+                        <b>University Name</b>
+                      </li>
+                    )}{' '}
+                  {this.props.academic_background &&
+                    !this.props.academic_background.university
+                      .program_name && (
+                      <li>
+                        <b>University Program</b>
+                      </li>
+                    )}
                   {this.props.application_preference &&
                     !this.props.application_preference
                       .expected_application_date && (
@@ -238,7 +252,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="National Taiwan University"
+                        placeholder="National Taiwan University / Not study yet"
                         onChange={(e) => this.handleChange_Academic(e)}
                         defaultValue={
                           this.state.academic_background.university &&
@@ -254,11 +268,11 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="attended_university_program">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Program (Put together if double major)
+                        University Program (Put together if double major)
                       </Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="B.Sc, Mechanical Engineering"
+                        placeholder="B.Sc, Mechanical Engineering / Not study yet"
                         defaultValue={
                           this.state.academic_background.university &&
                           this.state.academic_background.university

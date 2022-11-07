@@ -16,7 +16,6 @@ class NavItem extends Component {
         itemTitle === 'My Courses' ||
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Uni-Assist Tasks' ||
-        itemTitle === 'My Applications' ||
         itemTitle === 'My Tasks Overview' ||
         // itemTitle === 'Check List' ||
         itemTitle === 'Charts' ||
@@ -36,7 +35,6 @@ class NavItem extends Component {
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Uni-Assist Tasks' ||
-        itemTitle === 'My Applications' ||
         itemTitle === 'Check List' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Interview Training' ||
@@ -58,7 +56,6 @@ class NavItem extends Component {
         itemTitle === 'Check List' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
-        itemTitle === 'My Applications' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Statistics' ||
@@ -74,7 +71,6 @@ class NavItem extends Component {
     if (this.props.role === 'Student') {
       if (
         itemTitle === 'Tasks Overview' ||
-        itemTitle === 'Applicants Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'My Tasks Overview' ||
@@ -94,7 +90,6 @@ class NavItem extends Component {
     if (this.props.role === 'Guest') {
       if (
         itemTitle === 'Tasks Overview' ||
-        itemTitle === 'Applicants Overview' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'Base Documents' ||
         itemTitle === 'My Tasks Overview' ||

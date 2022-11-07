@@ -168,7 +168,9 @@ class ApplicationProgress extends React.Component {
               ) : (
                 <></>
               )}
-              {this.props.isDashboard ? (
+              {this.props.isDashboard &&
+              this.props.role !== 'Student' &&
+              this.props.role !== 'Guest' ? (
                 <Dropdown.Item
                   eventKey="5"
                   onSelect={() =>
@@ -180,7 +182,9 @@ class ApplicationProgress extends React.Component {
               ) : (
                 <></>
               )}
-              {this.props.isArchivPage ? (
+              {this.props.isArchivPage &&
+              this.props.role !== 'Student' &&
+              this.props.role !== 'Guest' ? (
                 <Dropdown.Item
                   eventKey="6"
                   onSelect={() =>

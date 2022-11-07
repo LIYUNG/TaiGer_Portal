@@ -15,7 +15,9 @@ import {
   is_num_Program_Not_specified,
   isProgramNotSelectedEnough,
   check_applications_decision_from_student,
-  is_all_uni_assist_vpd_uploaded
+  is_all_uni_assist_vpd_uploaded,
+  is_program_ready_to_submit,
+  is_program_closed
 } from '../../../Utils/checking-functions';
 class AgentTasks extends React.Component {
   check_base_documents = (student) => {
@@ -173,7 +175,7 @@ class AgentTasks extends React.Component {
                       </Link>
                     </td>
                     <td>
-                     Waiting Feedback from{' '}
+                      Waiting Feedback from{' '}
                       <b>
                         {this.props.student.firstname}{' '}
                         {this.props.student.lastname}
@@ -186,20 +188,65 @@ class AgentTasks extends React.Component {
             )}
           </>
         )}
-
+        {/* check program reday to be submitted */}
+        {this.props.student.applications.map((application, i) => (
+          <>
+            {is_program_ready_to_submit(application) &&
+              !is_program_closed(application) && (
+                <tr>
+                  <td>
+                    <Link
+                      to={
+                        '/student-database/' +
+                        this.props.student._id.toString() +
+                        '/CV_ML_RL'
+                      }
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
+                      Submission check
+                    </Link>
+                  </td>
+                  <td>
+                    <b>
+                      {this.props.student.firstname}{' '}
+                      {this.props.student.lastname}
+                    </b>
+                    {' - '}
+                    <b className="text-warning">
+                      {application.programId.school}{' '}
+                      {application.programId.program_name}
+                    </b>
+                    <br /> ML/ RL/ Essay are finished. Please submit application
+                    asap.
+                  </td>
+                  <td></td>
+                </tr>
+              )}
+          </>
+        ))}
         {/* check uni-assist */}
         {!is_all_uni_assist_vpd_uploaded(this.props.student) && (
           <tr>
             <td>
               <Link
-                to={'/uni-assist'}
+                to={
+                  '/student-database/' +
+                  this.props.student._id.toString() +
+                  '/uni-assist'
+                }
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
                 Uni-Assist
               </Link>
             </td>
-            <td>Please Uni-Assist to apply and get VPD</td>
+            <td>
+              <b>
+                {this.props.student.firstname} {this.props.student.lastname}
+              </b>{' '}
+              Uni-Assist VPD not done
+            </td>
             <td></td>
           </tr>
         )}

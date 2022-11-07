@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
-import TabStudDocsDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard';
+import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import {
   getArchivStudents,
@@ -226,7 +226,7 @@ class Dashboard extends React.Component {
                     {this.props.user.role === 'Admin' ||
                     this.props.user.role === 'Agent' ||
                     this.props.user.role === 'Editor' ? (
-                      <TabStudDocsDashboard
+                      <TabStudBackgroundDashboard
                         role={this.props.user.role}
                         students={this.state.students}
                         editAgent={this.state.editAgent}

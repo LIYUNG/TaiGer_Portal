@@ -411,10 +411,9 @@ class SingleStudentPage extends React.Component {
             </Card>
           </Col>
         </Row>
-
         <Row>
           <Col>
-            <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+            <Card className="my-1 mx-0" bg={'dark'} text={'white'}>
               <Card.Body>
                 <Table
                   responsive
@@ -426,8 +425,16 @@ class SingleStudentPage extends React.Component {
                     <tr>
                       <>
                         <th></th>
-                        <th>First-, Last Name</th>
-                        <th>#</th>
+                        {this.props.user.role === 'Student' ||
+                        this.props.user.role === 'Guest' ? (
+                          <></>
+                        ) : (
+                          <>
+                            <th>First-, Last Name</th>
+                            <th>#</th>
+                          </>
+                        )}
+
                         <th>University</th>
                         <th>Programs</th>
                         <th>Deadline</th>

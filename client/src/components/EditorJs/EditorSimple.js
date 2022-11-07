@@ -83,30 +83,7 @@ const EditorSimple = (props) => {
           class: Marker
           // shortcut: 'CMD+SHIFT+M'
         },
-        attaches: {
-          class: AttachesTool,
-          config: {
-            // endpoint: BASE_URL + '/api/docs/upload/image' // TODO : to replace, no cookie attach if only place URL
-            onRemove: (data) => console.log(data),
-            uploader: {
-              async uploadByFile(file) {
-                const formData = new FormData();
-                // TODO: collect uploaded files (to be deleted later if cancel editing)
-                formData.append('file', file);
-                const res = await uploadImage(formData);
-                return { success: 1, file: { url: res.data.data } };
-              }
-              // async uploadByUrl(url) {
-              //   return {
-              //     success: 1,
-              //     file: {
-              //       url: url
-              //     }
-              //   };
-              // }
-            }
-          }
-        },
+      
         underline: Underline,
         code: CodeTool,
         quote: Quote,

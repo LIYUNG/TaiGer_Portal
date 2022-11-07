@@ -3,7 +3,7 @@ import { Row, Col, Card, Spinner } from 'react-bootstrap';
 // import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 // import DEMO from "../../store/constant";
-import TabStudDocsDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudDocsDashboard';
+import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -189,7 +189,7 @@ class Dashboard extends React.Component {
                   {this.props.user.role === 'Admin' ||
                   this.props.user.role === 'Agent' ||
                   this.props.user.role === 'Editor' ? (
-                    <TabStudDocsDashboard
+                    <TabStudBackgroundDashboard
                       role={this.props.user.role}
                       students={this.state.students}
                       agent_list={this.state.agent_list}

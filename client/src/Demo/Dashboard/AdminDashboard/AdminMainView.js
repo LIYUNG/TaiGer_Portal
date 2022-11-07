@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Card, Col, Table, Tabs, Tab } from 'react-bootstrap';
 // import Card from '../../../App/components/MainCard';
-import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
+import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 // import AdminTodoList from './AdminTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
@@ -132,7 +132,7 @@ class AdminMainView extends React.Component {
               title="Student Background Overview"
               className="my-0 mx-0"
             >
-              <TabStudDocsDashboard
+              <TabStudBackgroundDashboard
                 role={this.props.role}
                 students={this.props.students}
                 SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}

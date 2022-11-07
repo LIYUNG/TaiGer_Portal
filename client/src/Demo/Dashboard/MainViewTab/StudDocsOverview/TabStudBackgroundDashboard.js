@@ -7,7 +7,7 @@ import {
   useGlobalFilter,
   useAsyncDebounce
 } from 'react-table';
-class TabStudDocsDashboard extends React.Component {
+class TabStudBackgroundDashboard extends React.Component {
   render() {
     const stdlist = (
       <tbody>
@@ -55,4 +55,4 @@ class TabStudDocsDashboard extends React.Component {
   }
 }
 
-export default TabStudDocsDashboard;
+export default TabStudBackgroundDashboard;

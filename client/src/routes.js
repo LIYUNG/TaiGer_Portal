@@ -26,9 +26,7 @@ const UIBasicBasicTypography = React.lazy(() =>
   import("./Demo/UIElements/Basic/Typography")
 );
 const FormsElements = React.lazy(() => import("./Demo/Forms/FormsElements"));
-const ApplicantsOverview = React.lazy(() =>
-  import('./Demo/ApplicantsOverview/index')
-);
+
 const UniAssist = React.lazy(() =>
   import('./Demo/UniAssist/index')
 );
@@ -47,8 +45,8 @@ const CVMLRLOverview = React.lazy(() =>
   import('./Demo/CVMLRLCenter/CVMLRLOverview')
 );
 const ProgramTable = React.lazy(() => import('./Demo/Program/ProgramTable'));
-const MyApplications = React.lazy(() =>
-  import('./Demo/StudentApplications/index')
+const ApplicationsOverview = React.lazy(() =>
+  import('./Demo/ApplicantsOverview/index')
 );
 const StudentApplications = React.lazy(() =>
   import('./Demo/StudentApplications/StudentApplicationsIndividual')
@@ -215,8 +213,8 @@ const routes = [
   {
     path: '/student-applications',
     exact: true,
-    name: 'My Applications',
-    component: MyApplications
+    name: 'Applications Overview',
+    component: ApplicationsOverview
   },
   {
     path: '/student-applications/:student_id',
@@ -283,12 +281,6 @@ const routes = [
     exact: true,
     name: 'TaiGer AI',
     component: TaiGerAI
-  },
-  {
-    path: '/applicants-overview',
-    exact: true,
-    name: 'Applicants Overview',
-    component: ApplicantsOverview
   },
   {
     path: '/checklist',

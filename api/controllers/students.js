@@ -35,7 +35,7 @@ const getStudent = asyncHandler(async (req, res) => {
     user,
     params: { studentId }
   } = req;
-  if (user.Role === Role.Student || user.Role === Role.Guest) {
+  if (user.role === Role.Student || user.role === Role.Guest) {
     const student = await Student.findById(user._id)
       .populate('applications.programId agents editors')
       .populate(
@@ -54,10 +54,6 @@ const getStudent = asyncHandler(async (req, res) => {
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
-  // const {
-  //   user
-  //   // params: { userId },
-  // } = req;
   const students = await Student.find().lean();
   // .populate("applications.programId agents editors");
   // .lean();
@@ -396,6 +392,37 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   // TODO: email inform Student for(assigned editor) and inform editor for (your new student)
 });
 
+const ToggleProgramStatus = asyncHandler(async (req, res) => {
+  const {
+    params: { studentId, program_id }
+  } = req;
+
+  const student = await Student.findById(studentId)
+    .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+    );
+  if (!student) {
+    logger.error('ToggleProgramStatus: Invalid student id');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
+
+  const application = student.applications.find(
+    ({ programId }) => programId._id.toString() === program_id
+  );
+  if (!application) {
+    logger.error('ToggleProgramStatus: Invalid application id');
+    throw new ErrorResponse(400, 'Invalid application id');
+  }
+  if (application.closed === 'O') {
+    application.closed = 'X';
+  } else {
+    application.closed = 'O';
+  }
+  await student.save();
+
+  res.status(201).send({ success: true, data: student });
+});
 // (O) email : student notification
 // () TODO: auto-create document thread for student: ML,RL,Essay (if applicable, depending on program list)
 const createApplication = asyncHandler(async (req, res) => {
@@ -654,6 +681,7 @@ module.exports = {
   updateStudentsArchivStatus,
   assignAgentToStudent,
   assignEditorToStudent,
+  ToggleProgramStatus,
   createApplication,
   deleteApplication
 };

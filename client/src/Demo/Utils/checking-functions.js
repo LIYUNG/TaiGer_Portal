@@ -5,7 +5,8 @@ export const check_academic_background_filled = (academic_background) => {
   // TODO: can add more mandatory field
   if (
     !academic_background.university.attended_high_school ||
-    !academic_background.university.attended_university
+    !academic_background.university.attended_university ||
+    !academic_background.university.program_name
     // ||
     // !academic_background.university.isGraduated
   ) {
@@ -270,6 +271,66 @@ export const num_uni_assist_vpd_needed = (student) => {
     }
   }
   return counter;
+};
+
+export const is_program_ml_rl_essay_finished = (application) => {
+  // check ML, RL, Essay
+  for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
+    if (!application.doc_modification_thread[i].isFinalVersion) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const is_cv_finished = (student) => {
+  // check CV
+  if (!student.generaldocs_threads) {
+    return false;
+  }
+  if (
+    student.generaldocs_threads.findIndex(
+      (thread) => thread.doc_thread_id.file_type === 'CV'
+    ) === -1
+  ) {
+    return false;
+  }
+  const cv_thread = student.generaldocs_threads.find(
+    (thread) => thread.doc_thread_id.file_type === 'CV'
+  );
+
+  if (!cv_thread.isFinalVersion) {
+    return false;
+  }
+  return true;
+};
+
+export const is_program_ready_to_submit = (application) => {
+  // check ML, RL, Essay
+  for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
+    if (!application.doc_modification_thread[i].isFinalVersion) {
+      return false;
+    }
+  }
+  // check uni-assist?
+  if (
+    application.programId.uni_assist &&
+    application.programId.uni_assist.includes('Yes') &&
+    (!application.uni_assist || application.uni_assist.status !== 'uploaded')
+  ) {
+    return false;
+  }
+  // check basedocuments
+
+  // Check CV
+  return true;
+};
+
+export const is_program_closed = (application) => {
+  if (application.closed === 'O') {
+    return true;
+  }
+  return false;
 };
 
 export const is_all_uni_assist_vpd_uploaded = (student) => {

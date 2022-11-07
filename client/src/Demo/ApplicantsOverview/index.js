@@ -1,9 +1,11 @@
 import React from 'react';
-import { Row, Col, Spinner, Table, Card } from 'react-bootstrap';
+import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
+import ApplicationFilesProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationFilesProgress';
+import { Redirect } from 'react-router-dom';
 
 import { updateArchivStudents, getStudents } from '../../api';
 import { isProgramNotSelectedEnough } from '../Utils/checking-functions';
@@ -138,6 +140,18 @@ class ApplicantSOverview extends React.Component {
       />
     ));
 
+    const application_documents_overview = this.state.students.map(
+      (student, i) => (
+        <ApplicationFilesProgress
+          key={i}
+          role={this.props.user.role}
+          student={student}
+          updateStudentArchivStatus={this.updateStudentArchivStatus}
+          isDashboard={true}
+        />
+      )
+    );
+
     return (
       <Aux>
         <Row className="sticky-top">
@@ -151,52 +165,110 @@ class ApplicantSOverview extends React.Component {
             </Card>
           </Col>
         </Row>
-        {isProgramNotSelectedEnough(this.state.students) && (
-          <Row>
-            <Col>
-              <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <p className="text-light">
-                    The following students did not choose enough programs:
-                  </p>
-                  {listStudentProgramNotSelected}
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
+        <Tabs>
+          <Tab
+            eventKey="application_status"
+            title="Application Progress Overview"
+          >
+            {' '}
+            {isProgramNotSelectedEnough(this.state.students) && (
+              <Row>
+                <Col>
+                  <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+                    <Card.Body>
+                      <p className="text-light">
+                        The following students did not choose enough programs:
+                      </p>
+                      {listStudentProgramNotSelected}
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            )}
+            <Row>
+              <Col>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr>
+                      <>
+                        <th></th>
+                        {this.props.user.role === 'Student' ||
+                        this.props.user.role === 'Guest' ? (
+                          <></>
+                        ) : (
+                          <>
+                            <th>First-, Last Name</th>
+                            <th
+                              title={
+                                'Number of applications student should submit'
+                              }
+                            >
+                              #
+                            </th>
+                          </>
+                        )}
 
-        <Row>
-          <Col>
-            <Table
-              responsive
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-            >
-              <thead>
-                <tr>
-                  <>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th title={'Number of applications student should submit'}>
-                      #
-                    </th>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>Deadline</th>
-                  </>
-                  {window.programstatuslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>{application_progress}</tbody>
-            </Table>
-          </Col>
-        </Row>
+                        <th>University</th>
+                        <th>Programs</th>
+                        <th>Deadline</th>
+                      </>
+                      {window.programstatuslist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{application_progress}</tbody>
+                </Table>
+              </Col>
+            </Row>
+          </Tab>
+          <Tab
+            eventKey="application_documents_overview"
+            title="Application Document Overview"
+          >
+            {' '}
+            <Row>
+              <Col>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr>
+                      <>
+                        {this.props.user.role === 'Student' ||
+                        this.props.user.role === 'Guest' ? (
+                          <></>
+                        ) : (
+                          <th>First-, Last Name</th>
+                        )}
+
+                        <th>University</th>
+                        <th>Programs</th>
+                        <th>Deadline</th>
+                      </>
+                      {window.programs_files_checklist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{application_documents_overview}</tbody>
+                </Table>
+              </Col>
+            </Row>
+          </Tab>
+        </Tabs>
       </Aux>
     );
   }

@@ -18,6 +18,7 @@ const {
   assignAgentToStudent,
   assignEditorToStudent,
   createApplication,
+  ToggleProgramStatus,
   deleteApplication
 } = require('../controllers/students');
 const {
@@ -78,6 +79,10 @@ router
 router
   .route('/:studentId/applications')
   .post(permit(Role.Admin, Role.Agent, Role.Student), createApplication);
+
+router
+  .route('/:studentId/:program_id')
+  .put(permit(Role.Admin, Role.Agent, Role.Student), ToggleProgramStatus);
 
 router
   .route('/:studentId/vpd/:program_id')

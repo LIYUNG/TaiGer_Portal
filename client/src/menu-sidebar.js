@@ -85,14 +85,6 @@ export default {
           icon: 'feather icon-check'
         },
         {
-          id: 'applicants_overview',
-          title: 'Applicants Overview',
-          type: 'item',
-          url: '/applicants-overview',
-          classes: 'nav-item',
-          icon: 'feather icon-eye'
-        },
-        {
           id: 'agent_center',
           title: 'Base Documents',
           type: 'item',
@@ -161,8 +153,8 @@ export default {
           url: '/programs'
         },
         {
-          id: 'my-applications',
-          title: 'My Applications',
+          id: 'applications-overview',
+          title: 'Applications Overview',
           type: 'item',
           icon: 'feather icon-list',
           url: '/student-applications'

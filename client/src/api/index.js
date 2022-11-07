@@ -67,6 +67,9 @@ export const assignProgramToStudent = (studentId, program_ids) =>
 export const removeProgramFromStudent = (programId, studentId) =>
   request.delete(`/api/students/${studentId}/applications/${programId}`);
 
+export const ToggleProgramStatus = (studentId, program_id) =>
+  request.put(`/api/students/${studentId}/${program_id}`);
+
 export const downloadProfile = (category, studentId) =>
   request.get(`/api/students/${studentId}/files/${category}`, {
     responseType: 'blob'
@@ -74,6 +77,9 @@ export const downloadProfile = (category, studentId) =>
 
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
+
+export const deleteFile = (category, studentId) =>
+  request.delete(`/api/students/${studentId}/files/${category}`);
 
 export const downloadVPDProfile = (studentId, program_id) =>
   request.get(`/api/students/${studentId}/vpd/${program_id}`, {
@@ -98,9 +104,6 @@ export const updateProfileDocumentStatus = (
     status: status,
     feedback: message
   });
-
-export const deleteFile = (category, studentId) =>
-  request.delete(`/api/students/${studentId}/files/${category}`);
 
 // Account APIs
 export const getMyfiles = () => request.get(`/api/account/files`);
@@ -271,7 +274,10 @@ export const updateAcademicBackground = (university, student_id) =>
   request.post(`/api/account/survey/university/${student_id}`, { university });
 export const updateLanguageSkill = (language, student_id) =>
   request.post(`/api/account/survey/language/${student_id}`, { language });
-export const updateApplicationPreference = (application_preference, student_id) =>
+export const updateApplicationPreference = (
+  application_preference,
+  student_id
+) =>
   request.post(`/api/account/survey/preferences/${student_id}`, {
     application_preference
   });

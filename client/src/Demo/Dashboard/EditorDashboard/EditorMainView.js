@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Tabs, Tab, Table, Card } from 'react-bootstrap';
 // import Card from '../../../App/components/MainCard';
-import TabStudDocsDashboard from '../MainViewTab/StudDocsOverview/TabStudDocsDashboard';
+import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
@@ -166,7 +166,7 @@ class EditorMainView extends React.Component {
                 </Table>
               </Tab>
               <Tab eventKey="y" title="Student Profile Overview">
-                <TabStudDocsDashboard
+                <TabStudBackgroundDashboard
                   role={this.props.role}
                   students={this.props.students}
                   documentslist={this.props.documentslist}

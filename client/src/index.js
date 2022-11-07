@@ -129,6 +129,30 @@ window.programstatuslist = [
   }
 ];
 
+window.programs_files_checklist = [
+  {
+    name: 'Base Docs',
+    prop: 'base_documents'
+  },
+  {
+    name: 'Uni-Assist',
+    prop: 'uni_assist'
+  },
+  {
+    name: 'CV',
+    prop: 'cv'
+  },
+  {
+    name: 'ML/RL',
+    prop: 'ml_rl'
+  },
+
+  {
+    name: 'Ready',
+    prop: 'readiness'
+  }
+];
+
 window.checklist = {
   course_analysis: 'Course Analysis',
   uni_assist: 'Uni-Assist',

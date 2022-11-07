@@ -1,46 +1,39 @@
-import React, { Component } from "react";
-import {
-  Card,
-  Spinner,
-  Collapse,
-  Button,
-} from "react-bootstrap";
-import { RiMoreFill } from "react-icons/ri";
-import { convertFromRaw, EditorState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import "./../../../components/DraftEditor.css";
+import React, { Component } from 'react';
+import { Card, Spinner, Collapse, Button } from 'react-bootstrap';
+import { RiMoreFill } from 'react-icons/ri';
+import { convertFromRaw, EditorState } from 'draft-js';
+import EditorSimple from '../../../components/EditorJs/EditorSimple';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import './../../../components/DraftEditor.css';
 
 class Message extends Component {
   state = {
     editorState: null,
-    ConvertedContent: "",
-    isLoaded: false,
+    ConvertedContent: '',
+    isLoaded: false
   };
   componentDidMount() {
     var initialEditorState = null;
+    var initialEditorState = null;
     if (this.props.message.message) {
-      const rawContentFromStore = convertFromRaw(
-        JSON.parse(this.props.message.message)
-      );
-      initialEditorState = EditorState.createWithContent(rawContentFromStore);
+      initialEditorState = JSON.parse(this.props.message.message);
     } else {
-      initialEditorState = EditorState.createEmpty();
+      initialEditorState = {};
     }
     this.setState((state) => ({
       ...state,
       editorState: initialEditorState,
       ConvertedContent: initialEditorState,
-      isLoaded: this.props.isLoaded,
+      isLoaded: this.props.isLoaded
     }));
   }
 
   render() {
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (!this.state.isLoaded) {
       return (
@@ -67,7 +60,6 @@ class Message extends Component {
         ></Button>
       </>
     ));
-
 
     return (
       <Card border="primary" className="mb-2 mx-0">
@@ -107,13 +99,21 @@ class Message extends Component {
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}
         >
           <Card.Body>
-            <Editor
+            {/* {JSON.stringify(this.state.editorState)} */}
+            <EditorSimple
+              holder={`${this.props.message._id.toString()}`}
+              readOnly={true}
+              handleClickSave={this.props.handleClickSave}
+              handleClickCancel={this.props.handleClickCancel}
+              editorState={this.state.editorState}
+            />
+            {/* <Editor
               spellCheck={true}
               readOnly={true}
               toolbarHidden={true}
               editorState={this.state.editorState}
               onEditorStateChange={this.handleEditorChange}
-            />
+            /> */}
             {files_info}
           </Card.Body>
         </Collapse>

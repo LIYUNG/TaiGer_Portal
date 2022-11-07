@@ -4,6 +4,7 @@ import Aux from '../../../hoc/_Aux';
 import MessageList from './MessageList';
 import { convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
+import DocThreadEditor from './DocThreadEditor';
 import TimeOutErrors from '../../Utils/TimeOutErrors';
 import UnauthorizedError from '../../Utils/UnauthorizedError';
 import PageNotFoundError from '../../Utils/PageNotFoundError';
@@ -13,6 +14,7 @@ import PageNotFoundError from '../../Utils/PageNotFoundError';
 import {
   getTemplateDownload,
   deleteDoc,
+  createDocumentation,
   SubmitMessageWithAttachment,
   getMessageFileDownload,
   getMessagThread
@@ -34,10 +36,11 @@ class DocModificationThreadPage extends Component {
     file: null,
     isLoaded: false,
     articles: [],
+    isEdit: false,
     thread: [],
     editFormOpen: false,
     defaultStep: 1,
-    editorState: null,
+    editorState: {},
     expand: true,
     accordionKeys: [0] // to expand all]
   };
@@ -52,10 +55,12 @@ class DocModificationThreadPage extends Component {
             isLoaded: true,
             documentsthreadId: this.props.match.params.documentsthreadId,
             file: null,
+            // accordionKeys: new Array(data.messages.length)
+            //   .fill()
+            //   .map((x, i) => i) // to expand all
             accordionKeys: new Array(data.messages.length)
               .fill()
-              .map((x, i) => i) // to expand all
-            //   accordionKeys: new Array(-1, data.length), // to collapse all
+              .map((x, i) => (i === data.messages.length - 1 ? i : -1)) // to collapse all
           });
         } else {
           if (resp.status === 401 || resp.status === 500) {
@@ -103,7 +108,7 @@ class DocModificationThreadPage extends Component {
           this.setState({
             success,
             file: null,
-            editorState: null,
+            editorState: {},
             thread: data,
             isLoaded: true
           });
@@ -302,6 +307,50 @@ class DocModificationThreadPage extends Component {
     }
   };
 
+  handleClickSave = (e, editorState) => {
+    e.preventDefault();
+
+    var message = JSON.stringify(editorState);
+    const formData = new FormData();
+    formData.append('file', this.state.file);
+    formData.append('message', message);
+
+    SubmitMessageWithAttachment(
+      this.state.documentsthreadId,
+      this.state.thread.student_id._id,
+      formData
+    ).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        if (success) {
+          this.setState({
+            success,
+            file: null,
+            editorState: {},
+            thread: data,
+            isLoaded: true,
+            accordionKeys: [
+              ...this.state.accordionKeys,
+              data.messages.length - 1
+            ]
+          });
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          } else {
+            this.setState({ isLoaded: true, pagenotfounderror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({ error });
+      }
+    );
+    this.setState((state) => ({ ...state, in_edit_mode: false }));
+  };
+
   render() {
     const { pagenotfounderror, unauthorizederror, timeouterror, isLoaded } =
       this.state;
@@ -461,80 +510,21 @@ class DocModificationThreadPage extends Component {
                 {this.props.user.firstname} {this.props.user.lastname}
               </Card.Title>
             </Card.Header>
-            <Row style={{ textDecoration: 'none' }}>
-              <Col className="my-0 mx-0">
-                <Editor
-                  // toolbarOnFocus
-                  // toolbarHidden
-                  spellCheck={true}
-                  // onFocus={onClick={this.handle}}
-                  placeholder={'Write comments'}
-                  editorState={this.state.editorState}
-                  onEditorStateChange={this.handleEditorChange}
-                  wrapperClassName="wrapper-class"
-                  editorClassName="editor-class"
-                  toolbarClassName="toolbar-class"
-                  toolbar={{
-                    // options: [
-                    //   'inline',
-                    //   'fontSize',
-                    //   'fontFamily',
-                    //   'list',
-                    //   'textAlign',
-                    //   // "colorPicker",
-                    //   'link',
-                    //   'image'
-                    //   // "file",
-                    // ],
-                    link: {
-                      defaultTargetOption: '_blank',
-                      popupClassName: 'mail-editor-link'
-                    },
-                    image: {
-                      urlEnabled: true,
-                      uploadEnabled: true,
-                      uploadCallback: this.uploadImageCallBack,
-                      alignmentEnabled: true,
-                      defaultSize: {
-                        height: 'auto',
-                        width: 'auto'
-                      },
-                      inputAccept:
-                        'application/pdf,text/plain,application/vnd.openxmlformatsofficedocument.wordprocessingml.document,application/msword,application/vnd.ms-excel'
-                    }
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form className="my-2 mx-2">
-                  <Form.File.Label
-                    // key={this.state.file || ""}
-                    onClick={(e) => (e.target.value = this.state.file || '')}
-                  >
-                    <Form.File.Input onChange={(e) => this.onFileChange(e)} />
-                    {/* <IoMdCloudUpload size={32} /> */}
-                  </Form.File.Label>
-                </Form>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Button
-                  disabled={
-                    !this.state.editorState ||
-                    !this.state.editorState.getCurrentContent().hasText()
-                  }
-                  className="my-2 mx-2 float-right"
-                  onClick={(e) =>
-                    this.ConfirmSubmitMessageHandler(e, this.state.editorState)
-                  }
-                >
-                  Submit
-                </Button>
-              </Col>
-            </Row>
+            <Card.Body>
+              <Row style={{ textDecoration: 'none' }}>
+                <Col className="my-0 mx-0">
+                  <DocThreadEditor
+                    doc_title={'this.state.doc_title'}
+                    editorState={this.state.editorState}
+                    handleClickSave={this.handleClickSave}
+                    handleClickCancel={this.handleClickCancel}
+                    // readOnlyMode={this.readOnlyMode}
+                    role={this.props.role}
+                    onFileChange={this.onFileChange}
+                  />
+                </Col>
+              </Row>
+            </Card.Body>
           </Card>
         </Row>
       </Aux>

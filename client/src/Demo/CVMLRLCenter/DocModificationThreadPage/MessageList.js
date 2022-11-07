@@ -10,7 +10,7 @@ class MessageList extends Component {
         singleExpandtHandler={this.props.singleExpandtHandler}
         id={message._id}
         idx={i}
-        key={message._id}
+        key={i}
         message={message}
         onTrashClick={this.props.onTrashClick}
         lastupdate={this.props.lastupdate}

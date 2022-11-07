@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
-import { BASE_URL } from '../../api/request';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
@@ -33,7 +32,7 @@ const DEFAULT_INITIAL_DATA = () => {
   };
 };
 
-const EditorNew = (props) => {
+const EditorSimple = (props) => {
   const ejInstance = useRef();
   // This will run only once
   const [editorState, setEditorState] = useState();
@@ -50,7 +49,7 @@ const EditorNew = (props) => {
   }, []);
   const initEditor = () => {
     editor = new EditorJS({
-      holder: 'editorjs',
+      holder: `${props.holder}`,
       logLevel: 'ERROR',
       data: props.editorState,
       onReady: () => {
@@ -96,7 +95,7 @@ const EditorNew = (props) => {
                 formData.append('file', file);
                 const res = await uploadImage(formData);
                 return { success: 1, file: { url: res.data.data } };
-              },
+              }
               // async uploadByUrl(url) {
               //   return {
               //     success: 1,
@@ -168,25 +167,9 @@ const EditorNew = (props) => {
 
   return (
     <React.Fragment>
-      <div id={'editorjs'}></div>
-      {/* <div>{JSON.stringify(props.editorState)}</div> */}
-      {props.readOnly ? (
-        <></>
-      ) : (
-        <Row>
-          <Col className="my-0 mx-0">
-            <Button
-              disabled={props.doc_title.replace(/ /g, '').length === 0}
-              onClick={(e) => props.handleClickSave(e, props.editorState)}
-            >
-              Save
-            </Button>
-            <Button onClick={(e) => props.handleClickCancel(e)}>Cancel</Button>
-          </Col>
-        </Row>
-      )}
+      <div id={`${props.holder}`}></div>
     </React.Fragment>
   );
 };
 
-export default EditorNew;
+export default EditorSimple;

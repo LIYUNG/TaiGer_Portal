@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Card, Spinner, Collapse, Button } from 'react-bootstrap';
+import { Card, Spinner, Collapse, Button, Row, Col } from 'react-bootstrap';
 import { RiMoreFill } from 'react-icons/ri';
-import { convertFromRaw, EditorState } from 'draft-js';
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import './../../../components/DraftEditor.css';
+import { FileIcon, defaultStyles } from 'react-file-icon';
 
 class Message extends Component {
   state = {
@@ -14,9 +12,12 @@ class Message extends Component {
   };
   componentDidMount() {
     var initialEditorState = null;
-    var initialEditorState = null;
     if (this.props.message.message) {
-      initialEditorState = JSON.parse(this.props.message.message);
+      try {
+        initialEditorState = JSON.parse(this.props.message.message);
+      } catch (e) {
+        initialEditorState = {};
+      }
     } else {
       initialEditorState = {};
     }
@@ -44,12 +45,13 @@ class Message extends Component {
         </div>
       );
     }
-    const files_info = this.props.message.file.map((file) => (
-      <>
-        <div>{file._id}</div>
-        <div>{file.name}</div>
-        <Button
-          size="sm"
+    const files_info = this.props.message.file.map((file, i) => (
+      <Row key={i}>
+        {/* <div>{file._id}</div>
+         */}
+        <Col
+          md={1}
+          style={{ cursor: 'pointer' }}
           onClick={(e) =>
             this.props.onDownloadFileInMessage(
               e,
@@ -57,8 +59,29 @@ class Message extends Component {
               file._id
             )
           }
-        ></Button>
-      </>
+        >
+          <FileIcon
+            radius={4}
+            extension={file.name.split('.').pop()}
+            {...defaultStyles[file.name.split('.').pop()]}
+          />
+        </Col>
+        <Col md={11} className="my-3">
+          {' '}
+          <p
+            style={{ cursor: 'pointer' }}
+            onClick={(e) =>
+              this.props.onDownloadFileInMessage(
+                e,
+                this.props.message._id,
+                file._id
+              )
+            }
+          >
+            {file.name}
+          </p>
+        </Col>
+      </Row>
     ));
 
     return (
@@ -107,13 +130,7 @@ class Message extends Component {
               handleClickCancel={this.props.handleClickCancel}
               editorState={this.state.editorState}
             />
-            {/* <Editor
-              spellCheck={true}
-              readOnly={true}
-              toolbarHidden={true}
-              editorState={this.state.editorState}
-              onEditorStateChange={this.handleEditorChange}
-            /> */}
+
             {files_info}
           </Card.Body>
         </Collapse>

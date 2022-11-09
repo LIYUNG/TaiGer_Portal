@@ -368,6 +368,11 @@ const postMessages = asyncHandler(async (req, res) => {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
+  try {
+    JSON.parse(message);
+  } catch (e) {
+    throw new ErrorResponse(400, 'message collapse');
+  }
   // Check student can only access their own thread!!!!
   if (user.role === Role.Student) {
     if (document_thread.student_id._id.toString() !== user._id.toString()) {
@@ -375,6 +380,7 @@ const postMessages = asyncHandler(async (req, res) => {
       throw new ErrorResponse(403, 'Unauthorized request');
     }
   }
+  console.log(req.file);
   let newfile = [];
   if (req.file) {
     newfile = [

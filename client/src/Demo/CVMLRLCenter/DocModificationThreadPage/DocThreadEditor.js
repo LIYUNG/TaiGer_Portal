@@ -40,9 +40,9 @@ function DocThreadEditor(props) {
           <Form className="my-2 mx-2">
             <Form.File.Label
               // key={this.state.file || ""}
-              onClick={(e) => (e.target.value = this.state.file || '')}
+              onClick={(e) => (e.target.value = props.file || '')}
             >
-              <Form.File.Input onChange={(e) => this.props.onFileChange(e)} />
+              <Form.File.Input onChange={(e) => props.onFileChange(e)} />
               {/* <IoMdCloudUpload size={32} /> */}
             </Form.File.Label>
           </Form>
@@ -51,6 +51,7 @@ function DocThreadEditor(props) {
       <Row>
         <Col className="my-0 mx-0">
           <Button
+            // disabled={props.isLoaded} TODO: design, disable when sending data
             onClick={(e) => props.handleClickSave(e, statedata.editorState)}
           >
             Save

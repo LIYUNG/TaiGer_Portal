@@ -64,7 +64,7 @@ const EditorSimple = (props) => {
       },
       readOnly: props.readOnly,
       autofocus: true,
-      minHeight: 30,
+      minHeight: 100,
       tools: {
         header: {
           class: Header,
@@ -72,18 +72,18 @@ const EditorSimple = (props) => {
             placeholder: 'Enter a header',
             levels: [2, 3, 4, 5, 6],
             defaultLevel: 3
-          }
-          // inlineToolbar: ['link']
+          },
+          inlineToolbar: true
         },
         list: {
           class: List,
-          inlineToolbar: ['link', 'bold']
+          inlineToolbar: true
         },
         Marker: {
           class: Marker
           // shortcut: 'CMD+SHIFT+M'
         },
-      
+
         underline: Underline,
         code: CodeTool,
         quote: Quote,

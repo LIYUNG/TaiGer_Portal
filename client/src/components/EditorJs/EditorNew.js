@@ -15,6 +15,7 @@ import CodeTool from '@editorjs/code';
 import Quote from '@editorjs/quote';
 import Underline from '@editorjs/underline';
 import AttachesTool from '@editorjs/attaches';
+import LinkTool from '@editorjs/link';
 
 import { uploadImage } from '../../api';
 
@@ -65,7 +66,7 @@ const EditorNew = (props) => {
       },
       readOnly: props.readOnly,
       autofocus: true,
-      minHeight: 30,
+      minHeight: 300,
       tools: {
         header: {
           class: Header,
@@ -73,12 +74,12 @@ const EditorNew = (props) => {
             placeholder: 'Enter a header',
             levels: [2, 3, 4, 5, 6],
             defaultLevel: 3
-          }
-          // inlineToolbar: ['link']
+          },
+          inlineToolbar: true
         },
         list: {
           class: List,
-          inlineToolbar: ['link', 'bold']
+          inlineToolbar: true
         },
         Marker: {
           class: Marker
@@ -96,7 +97,7 @@ const EditorNew = (props) => {
                 formData.append('file', file);
                 const res = await uploadImage(formData);
                 return { success: 1, file: { url: res.data.data } };
-              },
+              }
               // async uploadByUrl(url) {
               //   return {
               //     success: 1,
@@ -119,7 +120,29 @@ const EditorNew = (props) => {
             cols: 3
           }
         },
-
+        // linkTool: {
+        //   class: LinkTool,
+        //   config: {
+        //     // endpoint: 'https://localhost:3000/fetchUrl', // Your backend endpoint for url data fetching,
+        //     uploader: {
+        //       async uploadByFile() {
+        //         return {
+        //           success: 1,
+        //           link: 'https://codex.so',
+        //           meta: {
+        //             title: 'CodeX Team',
+        //             site_name: 'CodeX',
+        //             description:
+        //               'Club of web-development, design and marketing. We build team learning how to build full-valued projects on the world market.',
+        //             image: {
+        //               url: 'https://codex.so/public/app/img/meta_img.png'
+        //             }
+        //           }
+        //         };
+        //       }
+        //     }
+        //   }
+        // },
         image: {
           class: ImageTool,
           config: {

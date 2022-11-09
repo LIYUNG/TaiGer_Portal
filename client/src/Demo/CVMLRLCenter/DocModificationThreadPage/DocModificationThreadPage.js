@@ -14,7 +14,6 @@ import PageNotFoundError from '../../Utils/PageNotFoundError';
 import {
   getTemplateDownload,
   deleteDoc,
-  createDocumentation,
   SubmitMessageWithAttachment,
   getMessageFileDownload,
   getMessagThread
@@ -82,6 +81,8 @@ class DocModificationThreadPage extends Component {
   }
 
   onFileChange = (e) => {
+    // console.log(e.target.files[0]);
+    e.preventDefault();
     this.setState({ file: e.target.files[0] });
   };
 
@@ -96,7 +97,7 @@ class DocModificationThreadPage extends Component {
     const formData = new FormData();
     formData.append('file', this.state.file);
     formData.append('message', message);
-
+    // console.log(this.state.file);
     SubmitMessageWithAttachment(
       this.state.documentsthreadId,
       this.state.thread.student_id._id,
@@ -520,6 +521,7 @@ class DocModificationThreadPage extends Component {
                     handleClickCancel={this.handleClickCancel}
                     // readOnlyMode={this.readOnlyMode}
                     role={this.props.role}
+                    file={this.state.file}
                     onFileChange={this.onFileChange}
                   />
                 </Col>

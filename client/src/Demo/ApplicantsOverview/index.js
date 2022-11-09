@@ -197,28 +197,22 @@ class ApplicantSOverview extends React.Component {
                 >
                   <thead>
                     <tr>
-                      <>
-                        <th></th>
-                        {this.props.user.role === 'Student' ||
-                        this.props.user.role === 'Guest' ? (
-                          <></>
-                        ) : (
-                          <>
-                            <th>First-, Last Name</th>
-                            <th
-                              title={
-                                'Number of applications student should submit'
-                              }
-                            >
-                              #
-                            </th>
-                          </>
-                        )}
-
-                        <th>University</th>
-                        <th>Programs</th>
-                        <th>Deadline</th>
-                      </>
+                      <th></th>
+                      {this.props.user.role === 'Student' ||
+                      this.props.user.role === 'Guest' ? (
+                        <></>
+                      ) : (
+                        <>
+                          <th>First-, Last Name</th>
+                          <th
+                            title={
+                              'Number of applications student should submit'
+                            }
+                          >
+                            #
+                          </th>
+                        </>
+                      )}
                       {window.programstatuslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
@@ -246,18 +240,16 @@ class ApplicantSOverview extends React.Component {
                 >
                   <thead>
                     <tr>
-                      <>
-                        {this.props.user.role === 'Student' ||
-                        this.props.user.role === 'Guest' ? (
-                          <></>
-                        ) : (
-                          <th>First-, Last Name</th>
-                        )}
+                      {this.props.user.role === 'Student' ||
+                      this.props.user.role === 'Guest' ? (
+                        <></>
+                      ) : (
+                        <th>First-, Last Name</th>
+                      )}
 
-                        <th>University</th>
-                        <th>Programs</th>
-                        <th>Deadline</th>
-                      </>
+                      <th>University</th>
+                      <th>Programs</th>
+                      <th>Deadline</th>
                       {window.programs_files_checklist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}

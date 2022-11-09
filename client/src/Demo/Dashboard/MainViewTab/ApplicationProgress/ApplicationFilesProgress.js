@@ -6,7 +6,8 @@ import {
   is_cv_finished,
   is_program_ml_rl_essay_finished,
   check_uni_assist_needed,
-  is_all_uni_assist_vpd_uploaded
+  check_program_uni_assist_needed,
+  application_deadline_calculator
 } from '../../../Utils/checking-functions';
 class ApplicationFilesProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
@@ -70,151 +71,270 @@ class ApplicationFilesProgress extends React.Component {
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
-          <Link
-            to={'/programs/' + application.programId._id}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            <p className="mb-1 text-info">{application.programId.school}</p>
-          </Link>
+          <>
+            {application.decided === 'O' ? (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-info">{application.programId.school}</p>
+              </Link>
+            ) : (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-secondary" title="Not decided yet">
+                  {application.programId.school}
+                </p>
+              </Link>
+            )}
+          </>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
-          <Link
-            to={'/programs/' + application.programId._id}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            <p className="mb-1 text-info">
-              {application.programId.program_name}
-            </p>
-          </Link>
+          <>
+            {application.decided === 'O' ? (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-info">
+                  {application.programId.program_name}
+                </p>
+              </Link>
+            ) : (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-secondary" title="Not decided yet">
+                  {application.programId.program_name}
+                </p>
+              </Link>
+            )}
+          </>
         )
       );
       application_deadline = this.props.student.applications.map(
         (application, i) => (
-          <p className="mb-1 text-info" key={i}>
-            {application.programId.application_deadline
-              ? this.props.student.application_preference &&
-                this.props.student.application_preference
-                  .expected_application_date
-                ? this.props.student.application_preference
-                    .expected_application_date + '-'
-                : ''
-              : '-'}
-            {application.programId.application_deadline}
-          </p>
+          <>
+            {application.decided === 'O' ? (
+              application.closed === 'O' ? (
+                <p className="mb-1 text-warning" key={i}>
+                  Close
+                </p>
+              ) : (
+                <p className="mb-1 text-info" key={i}>
+                  {application_deadline_calculator(
+                    this.props.student,
+                    application
+                  )}
+                </p>
+              )
+            ) : (
+              <p
+                className="mb-1 text-secondary"
+                key={i}
+                title="Not decided yet"
+              >
+                {application_deadline_calculator(
+                  this.props.student,
+                  application
+                )}
+              </p>
+            )}
+          </>
         )
       );
       application_base_documents = this.props.student.applications.map(
         (application, i) => (
-          <Link
-            to={'/student-database/' + this.props.student._id + '/profile'}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            {isMissingBaseDocs ? (
-              <p className="mb-1 text-info" key={i}>
-                X
-              </p>
+          <>
+            {application.closed === 'O' ? (
+              <Link
+                to={'/student-database/' + this.props.student._id + '/profile'}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-info" key={application._id}>
+                  -
+                </p>
+              </Link>
             ) : (
-              <p className="mb-1 text-info" key={application._id}>
-                O
-              </p>
+              <Link
+                to={'/student-database/' + this.props.student._id + '/profile'}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                {isMissingBaseDocs ? (
+                  <p className="mb-1 text-danger" key={i}>
+                    X
+                  </p>
+                ) : (
+                  <p className="mb-1 text-info" key={application._id}>
+                    O
+                  </p>
+                )}
+              </Link>
             )}
-          </Link>
+          </>
         )
       );
 
       application_uni_assist = this.props.student.applications.map(
         (application, i) => (
           <>
-            {check_uni_assist_needed(this.props.student) ? (
-              <Link
-                to={
-                  '/student-database/' + this.props.student._id + '/uni-assist'
-                }
-                style={{ textDecoration: 'none' }}
-                key={i}
-              >
-                {application.uni_assist &&
-                application.uni_assist.status === 'uploaded' ? (
-                  <p className="mb-1 text-info" key={i}>
-                    O
-                  </p>
-                ) : (
-                  <p className="mb-1 text-info" key={application._id}>
-                    X
-                  </p>
-                )}
-              </Link>
-            ) : (
-              <p className="mb-1 text-info" key={application._id}>
-                Not needed
-              </p>
-            )}
+            <Link
+              to={'/student-database/' + this.props.student._id + '/uni-assist'}
+              style={{ textDecoration: 'none' }}
+              key={i}
+            >
+              {application.closed === 'O' ? (
+                <p className="mb-1 text-info" key={application._id}>
+                  -
+                </p>
+              ) : (
+                <>
+                  {check_program_uni_assist_needed(application) ? (
+                    <>
+                      {application.uni_assist &&
+                      application.uni_assist.status === 'uploaded' ? (
+                        <p className="mb-1 text-info" key={i}>
+                          O
+                        </p>
+                      ) : (
+                        <p className="mb-1 text-danger" key={application._id}>
+                          X
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="mb-1 text-info" key={application._id}>
+                      Not needed
+                    </p>
+                  )}
+                </>
+              )}
+            </Link>
           </>
         )
       );
       application_cv = this.props.student.applications.map((application, i) => (
-        <Link
-          to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
-          style={{ textDecoration: 'none' }}
-          key={i}
-        >
-          {is_cv_done ? (
-            <p className="mb-1 text-info" key={i}>
-              O
-            </p>
-          ) : application.closed !== undefined && application.closed === 'X' ? (
-            <p className="mb-1 text-info" key={application._id}>
-              X
-            </p>
-          ) : (
+        <>
+          {application.closed === 'O' ? (
             <p className="mb-1 text-info" key={application._id}>
               -
             </p>
+          ) : (
+            <>
+              <Link
+                to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                {is_cv_done ? (
+                  <p className="mb-1 text-info" key={i}>
+                    O
+                  </p>
+                ) : application.closed !== undefined &&
+                  application.closed === 'X' ? (
+                  <p className="mb-1 text-danger" key={application._id}>
+                    X
+                  </p>
+                ) : (
+                  <p className="mb-1 text-info" key={application._id}>
+                    -
+                  </p>
+                )}
+              </Link>
+            </>
           )}
-        </Link>
+        </>
       ));
       application_mlrlessay = this.props.student.applications.map(
         (application, i) => (
-          <Link
-            to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            {is_program_ml_rl_essay_finished(application) ? (
-              <p className="mb-1 text-info" key={i}>
-                O
-              </p>
+          <>
+            {application.decided === 'O' ? (
+              application.closed === 'O' ? (
+                <>
+                  <p className="mb-1 text-info" key={application._id}>
+                    -
+                  </p>
+                </>
+              ) : (
+                <Link
+                  to={
+                    '/student-database/' + this.props.student._id + '/CV_ML_RL'
+                  }
+                  style={{ textDecoration: 'none' }}
+                  key={i}
+                >
+                  {is_program_ml_rl_essay_finished(application) ? (
+                    <p className="mb-1 text-info" key={i}>
+                      O
+                    </p>
+                  ) : (
+                    <p className="mb-1 text-danger" key={application._id}>
+                      X
+                    </p>
+                  )}
+                </Link>
+              )
             ) : (
-              <p className="mb-1 text-info" key={application._id}>
-                X
-              </p>
+              <>
+                <p className="mb-1 text-secondary" key={application._id} title="Not decided yet">
+                  X
+                </p>
+              </>
             )}
-          </Link>
+          </>
         )
       );
     }
     application_program_readiniess = this.props.student.applications.map(
       (application, i) => (
         <>
-          {!isMissingBaseDocs &&
-          (!check_uni_assist_needed(this.props.student) ||
-            (check_uni_assist_needed(this.props.student) &&
-              application.uni_assist &&
-              application.uni_assist.status === 'uploaded')) &&
-          is_cv_done &&
-          is_program_ml_rl_essay_finished(application) ? (
-            <p className="mb-1 text-info" key={i}>
-              Ready!
-            </p>
+          {application.decided === 'O' ? (
+            application.closed === 'O' ? (
+              <>
+                <p className="mb-1 text-info" key={i}>
+                  -
+                </p>
+              </>
+            ) : (
+              <>
+                {!isMissingBaseDocs &&
+                (!check_program_uni_assist_needed(application) ||
+                  (check_program_uni_assist_needed(application) &&
+                    application.uni_assist &&
+                    application.uni_assist.status === 'uploaded')) &&
+                is_cv_done &&
+                is_program_ml_rl_essay_finished(application) ? (
+                  <p className="mb-1 text-light" key={i}>
+                    <b>Ready!</b>
+                  </p>
+                ) : (
+                  <p className="mb-1 text-info" key={i}>
+                    Not Ready :(
+                  </p>
+                )}
+              </>
+            )
           ) : (
-            <p className="mb-1 text-info" key={i}>
-              Not Ready :(
-            </p>
+            <>
+              <p
+                className="mb-1 text-secondary"
+                key={i}
+                title="Not decided yet"
+              >
+                Undecided
+              </p>
+            </>
           )}
         </>
       )

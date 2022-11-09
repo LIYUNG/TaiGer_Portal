@@ -425,20 +425,6 @@ class EditorDocsProgress extends React.Component {
                           <b>CV</b>
                         </li>
                       )}{' '}
-                      {this.state.student.generaldocs_threads.filter((thread) =>
-                        thread.doc_thread_id.file_type.includes('RL')
-                      ).length < 2 && (
-                        <li>
-                          <b>
-                            RL x{' '}
-                            {2 -
-                              this.state.student.generaldocs_threads.filter(
-                                (thread) =>
-                                  thread.doc_thread_id.file_type.includes('RL')
-                              ).length}
-                          </b>
-                        </li>
-                      )}
                     </p>
                   </Card.Body>
                 </Card>
@@ -478,7 +464,7 @@ class EditorDocsProgress extends React.Component {
                       <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                         <Card.Body>
                           The followings application documents are not started
-                          yet:{' '}
+                          or finished yet:{' '}
                           {application.programId.ml_required !== undefined &&
                             application.programId.ml_required === 'yes' &&
                             application.doc_modification_thread.findIndex(
@@ -507,7 +493,7 @@ class EditorDocsProgress extends React.Component {
                     {application.decided !== undefined &&
                     application.decided === 'O' ? (
                       <>
-                        <Row className="mb-2 mx-0">
+                        <Row className="my-2 mx-0">
                           {is_program_ml_rl_essay_finished(application) ? (
                             <>
                               {is_program_closed(application) ? (
@@ -567,11 +553,13 @@ class EditorDocsProgress extends React.Component {
                               style={{ textDecoration: 'none' }}
                               className="text-info"
                             >
-                              <b>
-                                {application.programId.school}
-                                {' - '}
-                                {application.programId.program_name}
-                              </b>
+                              <h5 className="text-light">
+                                <b>
+                                  {application.programId.school}
+                                  {' - '}
+                                  {application.programId.program_name}
+                                </b>
+                              </h5>
                             </Link>
                           </Col>
                           <Col md={2}>
@@ -594,14 +582,14 @@ class EditorDocsProgress extends React.Component {
                               </>
                             ) : (
                               <></>
-                            )}{' '}
+                            )}
                             {application.programId.rl_required !== undefined &&
-                            application.programId.rl_required === 'yes' ? (
+                            application.programId.rl_required > 0 ? (
                               <>
                                 <Button
                                   size="sm"
                                   title="Comments"
-                                  variant="secondary"
+                                  variant="info"
                                   onClick={() =>
                                     this.openRequirements_ModalWindow(
                                       application.programId.ml_requirements
@@ -614,7 +602,7 @@ class EditorDocsProgress extends React.Component {
                               </>
                             ) : (
                               <></>
-                            )}{' '}
+                            )}
                             {application.programId.essay_required !==
                               undefined &&
                             application.programId.essay_required === 'yes' ? (
@@ -680,7 +668,134 @@ class EditorDocsProgress extends React.Component {
                         <hr></hr>
                       </>
                     ) : (
-                      <></>
+                      <>
+                        <Row className="my-2 mx-0">
+                          <Col md={2}></Col>
+                          <Col md={4}>
+                            <Link
+                              to={
+                                '/programs/' +
+                                application.programId._id.toString()
+                              }
+                              style={{ textDecoration: 'none' }}
+                              className="text-info"
+                            >
+                              <h5 className="text-secondary">
+                                <b>
+                                  {application.programId.school}
+                                  {' - '}
+                                  {application.programId.program_name}
+                                </b>
+                              </h5>
+                            </Link>
+                          </Col>
+                          <Col md={2}>
+                            {application.programId.ml_required !== undefined &&
+                            application.programId.ml_required === 'yes' ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="secondary"
+                                  onClick={() =>
+                                    this.openRequirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  ML
+                                  {/* <AiOutlineMore size={20} /> */}
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                            {application.programId.rl_required !== undefined &&
+                            application.programId.rl_required > 0 ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="info"
+                                  onClick={() =>
+                                    this.openRequirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  RL
+                                  {/* <AiOutlineMore size={20} /> */}
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                            {application.programId.essay_required !==
+                              undefined &&
+                            application.programId.essay_required === 'yes' ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  title="Comments"
+                                  variant="light"
+                                  onClick={() =>
+                                    this.openRequirements_ModalWindow(
+                                      application.programId.essay_requirements
+                                    )
+                                  }
+                                >
+                                  Essay
+                                  {/* <AiOutlineMore size={20} /> */}
+                                </Button>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                          </Col>
+                          <Col>
+                            <p className="text-light">
+                              Deadline:{' '}
+                              {application.programId.application_deadline
+                                ? this.state.student.application_preference &&
+                                  this.state.student.application_preference
+                                    .expected_application_date
+                                  ? this.state.student.application_preference
+                                      .expected_application_date +
+                                    '-' +
+                                    application.programId.application_deadline
+                                  : application.programId.application_deadline
+                                : '-'}
+                            </p>
+                          </Col>
+                          <Col md={1}>
+                            <p className="text-light">Status: </p>
+                          </Col>
+                          <Col md={1}>
+                            <p className="text-danger">
+                              <b>Undecided</b>
+                            </p>
+                          </Col>
+                        </Row>
+                        <Row className="my-2 mx-0">
+                          <Col md={2}></Col>
+                          <Col md={4}>
+                            <p className="text-light">
+                              Please make sure the program should be proceeded.
+                              <Link
+                                to={
+                                  '/student-applications/' +
+                                  this.state.student._id.toString()
+                                }
+                                style={{ textDecoration: 'none' }}
+                                className="text-info"
+                              >
+                                {' '}
+                                click here
+                              </Link>
+                            </p>
+                          </Col>
+                        </Row>
+                      </>
                     )}
                   </div>
                 ))}

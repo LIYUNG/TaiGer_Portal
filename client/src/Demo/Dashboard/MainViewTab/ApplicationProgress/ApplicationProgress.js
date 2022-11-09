@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getNumberOfDays } from '../../../Utils/contants';
+import { application_deadline_calculator } from '../../../Utils/checking-functions';
 class ApplicationProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);
@@ -10,11 +11,12 @@ class ApplicationProgress extends React.Component {
   render() {
     var applying_university;
     var applying_program;
+    var program_semester;
     var application_deadline;
-    var application_date_left;
     var application_decided;
     var application_closed;
     var application_admission;
+    var application_date_left;
     var today = new Date();
     if (
       this.props.student.applications === undefined ||
@@ -22,6 +24,7 @@ class ApplicationProgress extends React.Component {
     ) {
       applying_university = <p className="mb-1  text-danger"> No University</p>;
       applying_program = <p className="mb-1  text-danger"> No Program</p>;
+      program_semester = <p className="mb-1  text-danger"> No Program</p>;
       application_deadline = <p className="mb-1  text-danger"> No Date</p>;
       application_date_left = <p className="mb-1  text-danger"></p>;
       application_decided = <p className="mb-1  text-danger"></p>;
@@ -29,42 +32,162 @@ class ApplicationProgress extends React.Component {
     } else {
       applying_university = this.props.student.applications.map(
         (application, i) => (
-          <Link
-            to={'/programs/' + application.programId._id}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            <p className="mb-1 text-info">{application.programId.school}</p>
-          </Link>
+          <>
+            {application.decided === 'O' ? (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-info">{application.programId.school}</p>
+              </Link>
+            ) : (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-secondary" title="Not decided yet">
+                  {application.programId.school}
+                </p>
+              </Link>
+            )}
+          </>
         )
       );
       applying_program = this.props.student.applications.map(
         (application, i) => (
-          <Link
-            to={'/programs/' + application.programId._id}
-            style={{ textDecoration: 'none' }}
-            key={i}
-          >
-            <p className="mb-1 text-info">
-              {application.programId.program_name}
-            </p>
-          </Link>
+          <>
+            {application.decided === 'O' ? (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-info">
+                  {application.programId.program_name}
+                </p>
+              </Link>
+            ) : (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-secondary" title="Not decided yet">
+                  {application.programId.program_name}
+                </p>
+              </Link>
+            )}
+          </>
+        )
+      );
+      program_semester = this.props.student.applications.map(
+        (application, i) => (
+          <>
+            {application.decided === 'O' ? (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-info">
+                  {application.programId.semester}
+                </p>
+              </Link>
+            ) : (
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+                key={i}
+              >
+                <p className="mb-1 text-secondary" title="Not decided yet">
+                  {application.programId.semester}
+                </p>
+              </Link>
+            )}
+          </>
         )
       );
       application_deadline = this.props.student.applications.map(
         (application, i) => (
-          <p className="mb-1 text-info" key={i}>
-            {application.programId.application_deadline
-              ? this.props.student.application_preference &&
-                this.props.student.application_preference
-                  .expected_application_date
-                ? this.props.student.application_preference
-                    .expected_application_date + '-'
-                : ''
-              : '-'}
-            {application.programId.application_deadline}
-          </p>
+          <>
+            {application.decided === 'O' ? (
+              application.closed === 'O' ? (
+                <p className="mb-1 text-warning" key={i}>
+                  Close
+                </p>
+              ) : (
+                <p className="mb-1 text-info" key={i}>
+                  {application_deadline_calculator(
+                    this.props.student,
+                    application
+                  )}
+                </p>
+              )
+            ) : (
+              <p className="mb-1 text-secondary" key={i} title="Not decided yet">
+                {application_deadline_calculator(
+                  this.props.student,
+                  application
+                )}
+              </p>
+            )}
+          </>
         )
+      );
+
+      application_decided = this.props.student.applications.map(
+        (application, i) =>
+          application.decided !== undefined && application.decided === 'O' ? (
+            <p className="mb-1 text-info" key={i}>
+              O
+            </p>
+          ) : application.decided !== undefined &&
+            application.decided === 'X' ? (
+            <p className="mb-1 text-info" key={application._id}>
+              X
+            </p>
+          ) : (
+            <p className="mb-1 text-danger" key={application._id}>
+              ?
+            </p>
+          )
+      );
+      application_closed = this.props.student.applications.map(
+        (application, i) =>
+          application.closed !== undefined && application.closed === 'O' ? (
+            <p className="mb-1 text-info" key={i}>
+              O
+            </p>
+          ) : application.closed !== undefined && application.closed === 'X' ? (
+            <p className="mb-1 text-danger" key={application._id}>
+              ?
+            </p>
+          ) : (
+            <p className="mb-1 text-danger" key={application._id}>
+              ?
+            </p>
+          )
+      );
+
+      application_admission = this.props.student.applications.map(
+        (application, i) =>
+          application.admission !== undefined &&
+          application.admission === 'O' ? (
+            <p className="mb-1 text-info" key={i}>
+              O
+            </p>
+          ) : application.admission !== undefined &&
+            application.admission === 'X' ? (
+            <p className="mb-1 text-info" key={application._id}>
+              X
+            </p>
+          ) : (
+            <p className="mb-1 text-danger" key={application._id}>
+              ?
+            </p>
+          )
       );
 
       application_date_left = this.props.student.applications.map(
@@ -86,57 +209,6 @@ class ApplicationProgress extends React.Component {
               : '-'}
           </p>
         )
-      );
-      application_decided = this.props.student.applications.map(
-        (application, i) =>
-          application.decided !== undefined && application.decided === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
-              O
-            </p>
-          ) : application.decided !== undefined &&
-            application.decided === 'X' ? (
-            <p className="mb-1 text-info" key={application._id}>
-              X
-            </p>
-          ) : (
-            <p className="mb-1 text-info" key={application._id}>
-              -
-            </p>
-          )
-      );
-      application_closed = this.props.student.applications.map(
-        (application, i) =>
-          application.closed !== undefined && application.closed === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
-              O
-            </p>
-          ) : application.closed !== undefined && application.closed === 'X' ? (
-            <p className="mb-1 text-info" key={application._id}>
-              X
-            </p>
-          ) : (
-            <p className="mb-1 text-info" key={application._id}>
-              -
-            </p>
-          )
-      );
-      application_admission = this.props.student.applications.map(
-        (application, i) =>
-          application.admission !== undefined &&
-          application.admission === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
-              O
-            </p>
-          ) : application.admission !== undefined &&
-            application.admission === 'X' ? (
-            <p className="mb-1 text-info" key={application._id}>
-              X
-            </p>
-          ) : (
-            <p className="mb-1 text-info" key={application._id}>
-              -
-            </p>
-          )
       );
     }
 
@@ -242,6 +314,7 @@ class ApplicationProgress extends React.Component {
           )}
           <td>{applying_university}</td>
           <td>{applying_program}</td>
+          <td>{program_semester}</td>
           <td>{application_deadline}</td>
           <td>{application_decided}</td>
           <td>{application_closed}</td>

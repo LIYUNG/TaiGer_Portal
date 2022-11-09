@@ -18,7 +18,8 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import { getNumberOfDays } from '../Utils/contants';
 import {
   isProgramNotSelectedEnough,
-  is_num_Program_Not_specified
+  is_num_Program_Not_specified,
+  application_deadline_calculator
 } from '../Utils/checking-functions';
 
 class StudentApplicationsTableTemplate extends React.Component {
@@ -217,6 +218,9 @@ class StudentApplicationsTableTemplate extends React.Component {
             <td>
               <p className="mb-1"> </p>
             </td>
+            <td>
+              <p className="mb-1"> </p>
+            </td>
           </tr>
         </>
       );
@@ -261,15 +265,28 @@ class StudentApplicationsTableTemplate extends React.Component {
               </Link>
             </td>
             <td>
-              <p className="mb-1 text-info" key={application_idx}>
-                {this.props.student.application_preference &&
-                this.props.student.application_preference
-                  .expected_application_date
-                  ? this.props.student.application_preference
-                      .expected_application_date + '-'
-                  : ''}
-                {application.programId.application_deadline}
-              </p>
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+              >
+                <p className="mb-1 text-info" key={application_idx}>
+                  {application.programId.semester}
+                </p>
+              </Link>
+            </td>
+            <td>
+              {application.closed === 'O' ? (
+                <p className="mb-1 text-warning" key={application_idx}>
+                  Close
+                </p>
+              ) : (
+                <p className="mb-1 text-info" key={application_idx}>
+                  {application_deadline_calculator(
+                    this.props.student,
+                    application
+                  )}
+                </p>
+              )}
             </td>
             <td>
               <Form.Group controlId="decided">
@@ -438,12 +455,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                   >
                     <thead>
                       <tr>
-                        <>
-                          {this.props.role !== 'Student' && <th></th>}
-                          <th>University</th>
-                          <th>Programs</th>
-                          <th>Deadline</th>
-                        </>
+                        {this.props.role !== 'Student' && <th></th>}
                         {window.programstatuslist.map((doc, index) => (
                           <th key={index}>{doc.name}</th>
                         ))}

@@ -423,22 +423,16 @@ class SingleStudentPage extends React.Component {
                 >
                   <thead>
                     <tr>
-                      <>
-                        <th></th>
-                        {this.props.user.role === 'Student' ||
-                        this.props.user.role === 'Guest' ? (
-                          <></>
-                        ) : (
-                          <>
-                            <th>First-, Last Name</th>
-                            <th>#</th>
-                          </>
-                        )}
-
-                        <th>University</th>
-                        <th>Programs</th>
-                        <th>Deadline</th>
-                      </>
+                      <th></th>
+                      {this.props.user.role === 'Student' ||
+                      this.props.user.role === 'Guest' ? (
+                        <></>
+                      ) : (
+                        <>
+                          <th>First-, Last Name</th>
+                          <th>#</th>
+                        </>
+                      )}
                       {window.programstatuslist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}

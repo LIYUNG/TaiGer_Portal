@@ -112,6 +112,22 @@ window.cvmlrllist = [
 
 window.programstatuslist = [
   {
+    name: 'University',
+    prop: 'university'
+  },
+  {
+    name: 'Programs',
+    prop: 'programs'
+  },
+  {
+    name: 'Semester',
+    prop: 'semester'
+  },
+  {
+    name: 'Deadline',
+    prop: 'deadline'
+  },
+  {
     name: 'Decided',
     prop: 'decided'
   },

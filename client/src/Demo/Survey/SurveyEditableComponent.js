@@ -515,7 +515,7 @@ class SurveyEditableComponent extends React.Component {
                         <option value="SS">
                           Summer Semester (Semester begins on April)
                         </option>
-                        <option value="WSSS">Winter + Summer Semester</option>
+                        {/* <option value="WSSS">Winter + Summer Semester</option> */}
                       </Form.Control>
                     </Form.Group>
                     <br />

@@ -16,6 +16,51 @@ export const check_academic_background_filled = (academic_background) => {
   return true;
 };
 
+export const application_deadline_calculator = (student, application) => {
+  if (application.closed === 'O') {
+    return 'CLOSE';
+  }
+  if (application.programId.application_deadline.includes('olling')) {
+    // include Rolling
+    return 'Rolling';
+  }
+  // let year_now = new Date().getFullYear();
+  let application_year = '<TBD>';
+  if (
+    student.application_preference &&
+    student.application_preference.expected_application_date !== ''
+  ) {
+    application_year = parseInt(
+      student.application_preference.expected_application_date
+    );
+  }
+  if (!application.programId.application_deadline) {
+    return `${application_year}-<TBD>`;
+  }
+  let application_semester = application.programId.semester;
+  let deadline_month = parseInt(
+    application.programId.application_deadline.split('-')[0]
+  );
+  let deadline_day = parseInt(
+    application.programId.application_deadline.split('-')[1]
+  );
+  if (application_semester === undefined) {
+    return 'Err';
+  }
+  if (application_semester === 'WS') {
+    if (deadline_month > 9) {
+      application_year = application_year - 1;
+    }
+  }
+  if (application_semester === 'SS') {
+    if (deadline_month > 3) {
+      application_year = application_year - 1;
+    }
+  }
+
+  return `${application_year}-${deadline_month}-${deadline_day}`;
+};
+
 export const check_application_preference_filled = (application_preference) => {
   if (!application_preference) {
     return false;
@@ -195,6 +240,17 @@ export const check_all_applications_submitted = (keys, student) => {
   return true;
 };
 
+export const check_program_uni_assist_needed = (application) => {
+  if (!application.programId.uni_assist) {
+    return false;
+  }
+  if (application.programId.uni_assist.includes('Yes')) {
+    return true;
+  }
+
+  return false;
+};
+
 export const check_uni_assist_needed = (student) => {
   if (student.applications === undefined) {
     return false;
@@ -369,10 +425,7 @@ export const check_generaldocs = (student) => {
   if (
     student.generaldocs_threads.findIndex(
       (thread) => thread.doc_thread_id.file_type === 'CV'
-    ) === -1 ||
-    student.generaldocs_threads.filter((thread) =>
-      thread.doc_thread_id.file_type.includes('RL')
-    ).length < 2
+    ) === -1
   ) {
     return true;
   } else {

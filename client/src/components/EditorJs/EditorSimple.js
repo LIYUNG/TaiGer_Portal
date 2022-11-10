@@ -13,24 +13,11 @@ import Delimiter from '@editorjs/delimiter';
 import CodeTool from '@editorjs/code';
 import Quote from '@editorjs/quote';
 import Underline from '@editorjs/underline';
+import ColorPlugin from 'editorjs-text-color-plugin';
 import AttachesTool from '@editorjs/attaches';
+import TextAlign from '@canburaks/text-align-editorjs';
 
 import { uploadImage } from '../../api';
-
-const DEFAULT_INITIAL_DATA = () => {
-  return {
-    time: new Date().getTime(),
-    blocks: [
-      {
-        type: 'header',
-        data: {
-          text: 'This is my awesome editor!',
-          level: 1
-        }
-      }
-    ]
-  };
-};
 
 const EditorSimple = (props) => {
   const ejInstance = useRef();
@@ -79,9 +66,27 @@ const EditorSimple = (props) => {
           class: List,
           inlineToolbar: true
         },
+        // Marker: {
+        //   class: Marker
+        //   // shortcut: 'CMD+SHIFT+M'
+        // },
         Marker: {
-          class: Marker
-          // shortcut: 'CMD+SHIFT+M'
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            defaultColor: '#FFF',
+            type: 'marker'
+          }
         },
 
         underline: Underline,
@@ -95,6 +100,24 @@ const EditorSimple = (props) => {
             cols: 3
           }
         },
+        Color: {
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            type: 'text'
+          }
+        },
+        textAlign: TextAlign,
 
         image: {
           class: ImageTool,

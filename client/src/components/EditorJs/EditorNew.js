@@ -16,23 +16,10 @@ import Quote from '@editorjs/quote';
 import Underline from '@editorjs/underline';
 import AttachesTool from '@editorjs/attaches';
 import LinkTool from '@editorjs/link';
+import ColorPlugin from 'editorjs-text-color-plugin';
+import TextAlign from '@canburaks/text-align-editorjs';
 
 import { uploadImage } from '../../api';
-
-const DEFAULT_INITIAL_DATA = () => {
-  return {
-    time: new Date().getTime(),
-    blocks: [
-      {
-        type: 'header',
-        data: {
-          text: 'This is my awesome editor!',
-          level: 1
-        }
-      }
-    ]
-  };
-};
 
 const EditorNew = (props) => {
   const ejInstance = useRef();
@@ -81,10 +68,48 @@ const EditorNew = (props) => {
           class: List,
           inlineToolbar: true
         },
-        Marker: {
-          class: Marker
-          // shortcut: 'CMD+SHIFT+M'
+        underline: Underline,
+        code: CodeTool,
+        Color: {
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            type: 'text'
+          }
         },
+        // Marker: {
+        //   class: Marker
+        //   // shortcut: 'CMD+SHIFT+M'
+        // },
+        Marker: {
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            defaultColor: '#FFF',
+            type: 'marker'
+          }
+        },
+        textAlign: TextAlign,
         attaches: {
           class: AttachesTool,
           config: {
@@ -109,8 +134,7 @@ const EditorNew = (props) => {
             }
           }
         },
-        underline: Underline,
-        code: CodeTool,
+
         quote: Quote,
         table: {
           class: Table,

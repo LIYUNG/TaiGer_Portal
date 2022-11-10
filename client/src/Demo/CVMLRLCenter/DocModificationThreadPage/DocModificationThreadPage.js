@@ -39,6 +39,7 @@ class DocModificationThreadPage extends Component {
     thread: [],
     editFormOpen: false,
     defaultStep: 1,
+    buttonDisabled: false,
     editorState: {},
     expand: true,
     accordionKeys: [0] // to expand all]
@@ -88,45 +89,6 @@ class DocModificationThreadPage extends Component {
 
   handleEditorChange = (newstate) => {
     this.setState((state) => ({ ...state, editorState: newstate }));
-  };
-
-  ConfirmSubmitMessageHandler = (e, editorState) => {
-    // e.preventDefault();
-
-    var message = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-    const formData = new FormData();
-    formData.append('file', this.state.file);
-    formData.append('message', message);
-    // console.log(this.state.file);
-    SubmitMessageWithAttachment(
-      this.state.documentsthreadId,
-      this.state.thread.student_id._id,
-      formData
-    ).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        if (success) {
-          this.setState({
-            success,
-            file: null,
-            editorState: {},
-            thread: data,
-            isLoaded: true
-          });
-        } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
-        }
-      },
-      (error) => {
-        this.setState({ error });
-      }
-    );
   };
 
   onDownloadTemplate = (e, category) => {
@@ -310,7 +272,7 @@ class DocModificationThreadPage extends Component {
 
   handleClickSave = (e, editorState) => {
     e.preventDefault();
-
+    this.setState({ buttonDisabled: true });
     var message = JSON.stringify(editorState);
     const formData = new FormData();
     formData.append('file', this.state.file);
@@ -330,6 +292,7 @@ class DocModificationThreadPage extends Component {
             editorState: {},
             thread: data,
             isLoaded: true,
+            buttonDisabled: false,
             accordionKeys: [
               ...this.state.accordionKeys,
               data.messages.length - 1
@@ -515,6 +478,7 @@ class DocModificationThreadPage extends Component {
               <Row style={{ textDecoration: 'none' }}>
                 <Col className="my-0 mx-0">
                   <DocThreadEditor
+                    buttonDisabled={this.state.buttonDisabled}
                     doc_title={'this.state.doc_title'}
                     editorState={this.state.editorState}
                     handleClickSave={this.handleClickSave}

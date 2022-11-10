@@ -6,13 +6,12 @@ function DocThreadEditor(props) {
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
-
-  //   useEffect(() => {
-  //     setStatedata({
-  //       editorState: props.editorState
-  //     });
-  //   }, [props.editorState]);
-
+  useEffect(() => {
+    setStatedata((state) => ({
+      ...state,
+      editorState: props.editorState
+    }));
+  }, [props.editorState]);
   const handleEditorChange = (content) => {
     setStatedata((state) => ({
       ...state,
@@ -51,7 +50,11 @@ function DocThreadEditor(props) {
       <Row>
         <Col className="my-0 mx-0">
           <Button
-            // disabled={props.isLoaded} TODO: design, disable when sending data
+            disabled={
+              !statedata.editorState.blocks ||
+              statedata.editorState.blocks.length === 0 ||
+              props.buttonDisabled
+            } // TODO: design
             onClick={(e) => props.handleClickSave(e, statedata.editorState)}
           >
             Save

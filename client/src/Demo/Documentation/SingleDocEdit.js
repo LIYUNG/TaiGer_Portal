@@ -1,14 +1,25 @@
 import React from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-
+import { valid_categories } from '../Utils/contants';
 class SingleDocEdit extends React.Component {
   state = {
-    doc_title: this.props.document_title
+    doc_title: this.props.document_title,
+    category: this.props.category
   };
   componentDidMount() {
     this.setState({ doc_title: this.props.document_title });
   }
+  handleChange_category = (e) => {
+    e.preventDefault();
+    var category_temp = { ...this.state.category };
+    category_temp = e.target.value;
+    this.setState((state) => ({
+      ...state,
+      category: category_temp
+    }));
+  };
+
   handleChange = (e) => {
     e.preventDefault();
     var doc_title_temp = { ...this.state.doc_title };
@@ -21,13 +32,40 @@ class SingleDocEdit extends React.Component {
 
   handleClickSave = (e, editorState) => {
     e.preventDefault();
-    this.props.handleClickSave(e, this.state.doc_title, editorState);
+    this.props.handleClickSave(
+      e,
+      this.state.category,
+      this.state.doc_title,
+      editorState
+    );
   };
+
   render() {
     return (
       <>
         <Card>
           <Card.Body>
+            {' '}
+            <Row>
+              <Col>
+                <h4>
+                  <Form.Group controlId="category">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange_category(e)}
+                      defaultValue={this.props.category}
+                    >
+                      <option value={''}>Select Document Category</option>
+                      {valid_categories.map((cat, i) => (
+                        <option value={cat.key}>{cat.value}</option>
+                      ))}
+                      {/* <option value={'X'}>No</option>
+                            <option value={'O'}>Yes</option> */}
+                    </Form.Control>
+                  </Form.Group>
+                </h4>
+              </Col>
+            </Row>{' '}
             <Row>
               <Col>
                 <h4>

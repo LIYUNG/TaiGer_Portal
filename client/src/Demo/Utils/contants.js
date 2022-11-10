@@ -49,6 +49,16 @@ export const SYMBOL_EXPLANATION = (
   </>
 );
 
+export const valid_categories = [
+  { key: 'application', value: 'Application' },
+  { key: 'base-documents', value: 'Base-documents' },
+  { key: 'cv-ml-rl', value: 'CV/ML/RL' },
+  { key: 'portal-instruction', value: 'Portal-Instruction' },
+  { key: 'certification', value: 'Certification' },
+  { key: 'uniassist', value: 'Uni-Assist' },
+  { key: 'visa', value: 'Visa' }
+];
+
 export const convertDate = (date) => {
   let date_str = '';
   let dat = new Date(date).toLocaleDateString();

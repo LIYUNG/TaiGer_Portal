@@ -29,6 +29,7 @@ class DocPageEdit extends React.Component {
         <Card>
           <Card.Body>
             <DocumentsListItemsEditor
+              category={this.props.category}
               doc_title={'not_used'}
               editorState={this.props.editorState}
               handleClickSave={this.handleClickSave}

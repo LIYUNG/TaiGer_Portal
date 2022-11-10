@@ -37,6 +37,7 @@ class SingleDoc extends React.Component {
           this.setState({
             isLoaded: true,
             document_title: data.title,
+            category: data.category,
             editorState: initialEditorState,
             success: success
           });
@@ -65,10 +66,15 @@ class SingleDoc extends React.Component {
   handleClickCancel = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
-  handleClickSave = (e, doc_title, editorState) => {
+  handleClickSave = (e, category, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
-    const msg = { title: doc_title, prop: this.props.item, text: message };
+    const msg = {
+      title: doc_title,
+      category,
+      prop: this.props.item,
+      text: message
+    };
     updateDocumentation(this.props.match.params.documentation_id, msg).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -153,6 +159,7 @@ class SingleDoc extends React.Component {
       return (
         <>
           <SingleDocEdit
+            category={this.state.category}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}
@@ -167,6 +174,7 @@ class SingleDoc extends React.Component {
       return (
         <>
           <SingleDocView
+            category={this.state.category}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}

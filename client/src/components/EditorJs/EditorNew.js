@@ -229,7 +229,11 @@ const EditorNew = (props) => {
         <Row>
           <Col className="my-0 mx-0">
             <Button
-              disabled={props.doc_title.replace(/ /g, '').length === 0}
+              disabled={
+                props.doc_title.replace(/ /g, '').length === 0 ||
+                props.category === '' ||
+                (!editorState.blocks || editorState.blocks.length === 0)
+              }
               onClick={(e) => props.handleClickSave(e, editorState)}
             >
               Save

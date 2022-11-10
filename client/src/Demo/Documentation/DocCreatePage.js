@@ -6,6 +6,7 @@ import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import PageNotFoundError from '../Utils/PageNotFoundError';
+import { valid_categories } from '../Utils/contants';
 import { Link } from 'react-router-dom';
 import {
   getAllDocumentations,
@@ -324,13 +325,15 @@ class DocCreatePage extends React.Component {
                           <Form.Control
                             as="select"
                             onChange={(e) => this.handleChange_category(e)}
-                            // defaultValue={application.decided}
                           >
-                            <option value={'-'}>
+                            <option value={''}>
                               Select Document Category
                             </option>
-                            <option value={'X'}>No</option>
-                            <option value={'O'}>Yes</option>
+                            {valid_categories.map((cat, i) => (
+                              <option value={cat.key}>{cat.value}</option>
+                            ))}
+                            {/* <option value={'X'}>No</option>
+                            <option value={'O'}>Yes</option> */}
                           </Form.Control>
                         </Form.Group>
                       </Col>
@@ -344,11 +347,11 @@ class DocCreatePage extends React.Component {
                             defaultValue={''}
                             onChange={(e) => this.handleChange_doc_title(e)}
                           />
-                          <Form.Label>SSS</Form.Label>
                         </Form.Group>
                       </Col>
                     </Row>
                     <DocumentsListItemsEditor
+                      category={this.state.category}
                       doc_title={this.state.doc_title}
                       editorState={this.state.editorState}
                       handleClickSave={this.handleClickSave}

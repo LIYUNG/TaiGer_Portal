@@ -212,6 +212,7 @@ class ApplicationList extends React.Component {
       return (
         <>
           <DocPageEdit
+            category={"category"}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}

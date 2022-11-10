@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 
-class SingleDocEdit extends React.Component {
+class DocPageEdit extends React.Component {
   state = {
     doc_title: this.props.document_title
   };
@@ -28,22 +28,8 @@ class SingleDocEdit extends React.Component {
       <>
         <Card>
           <Card.Body>
-            <Row>
-              <Col>
-                <h4>
-                  <Form.Group controlId="document_title">
-                    <Form.Control
-                      type="text"
-                      placeholder="Title"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={this.props.document_title}
-                    />
-                  </Form.Group>
-                </h4>
-              </Col>
-            </Row>{' '}
             <DocumentsListItemsEditor
-              doc_title={this.state.doc_title}
+              doc_title={'not_used'}
               editorState={this.props.editorState}
               handleClickSave={this.handleClickSave}
               handleClickCancel={this.props.handleClickCancel}
@@ -55,4 +41,4 @@ class SingleDocEdit extends React.Component {
     );
   }
 }
-export default SingleDocEdit;
+export default DocPageEdit;

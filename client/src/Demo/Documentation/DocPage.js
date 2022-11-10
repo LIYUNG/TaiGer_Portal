@@ -8,15 +8,8 @@ import DocPageEdit from './DocPageEdit';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import PageNotFoundError from '../Utils/PageNotFoundError';
-import { updateDocumentationPage } from '../../api';
-
-import {
-  getCategorizedDocumentationPage,
-  createDocumentation,
-  deleteDocumentation
-} from '../../api';
-
-class ApplicationList extends React.Component {
+import { updateDocumentation } from '../../api';
+class DocPage extends React.Component {
   state = {
     isLoaded: false,
     success: false,
@@ -26,22 +19,24 @@ class ApplicationList extends React.Component {
     unauthorizederror: null,
     isEdit: false
   };
-
   componentDidMount() {
-    getCategorizedDocumentationPage(this.props.match.params.category).then(
+    getDocumentation(this.props.match.params.category).then(
       (resp) => {
         const { data, success } = resp.data;
+        if (!data) {
+          this.setState({ isLoaded: true, pagenotfounderror: true });
+        }
         if (success) {
           var initialEditorState = null;
           if (data.text) {
             initialEditorState = JSON.parse(data.text);
           } else {
-            initialEditorState = { time: new Date(), blocks: [] };
+            initialEditorState = {};
           }
           // initialEditorState = JSON.parse(data.text);
-
           this.setState({
             isLoaded: true,
+            document_title: data.title,
             editorState: initialEditorState,
             success: success
           });
@@ -66,54 +61,6 @@ class ApplicationList extends React.Component {
       }
     );
   }
-  // when changing category URL
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.match.params.category !== this.props.match.params.category) {
-      // this.setState({
-      //   isLoaded: false
-      // });
-      // window.location.reload(true);
-      console.log('DDD');
-      getCategorizedDocumentationPage(this.props.match.params.category).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          if (success) {
-            var initialEditorState = null;
-            if (data.text) {
-              initialEditorState = JSON.parse(data.text);
-            } else {
-              initialEditorState = {
-                time: new Date(),
-                blocks: []
-              };
-            }
-            this.setState({
-              isLoaded: true,
-              editorState: initialEditorState,
-              success: success
-            });
-          } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({
-                isLoaded: true,
-                unauthorizederror: true
-              });
-            } else {
-              this.setState({ isLoaded: true, pagenotfounderror: true });
-            }
-          }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
-        }
-      );
-    }
-  }
 
   handleClickCancel = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
@@ -121,14 +68,8 @@ class ApplicationList extends React.Component {
   handleClickSave = (e, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
-    const msg = {
-      category: this.props.match.params.category,
-      title: doc_title,
-      prop: this.props.item,
-      text: message
-    };
-    console.log(msg);
-    updateDocumentationPage(this.props.match.params.category, msg).then(
+    const msg = { title: doc_title, prop: this.props.item, text: message };
+    updateDocumentation(this.props.match.params.category, msg).then(
       (resp) => {
         const { success, data } = resp.data;
         if (success) {
@@ -238,5 +179,4 @@ class ApplicationList extends React.Component {
     }
   }
 }
-
-export default ApplicationList;
+export default DocPage;

@@ -24,18 +24,24 @@ import { uploadImage } from '../../api';
 const EditorNew = (props) => {
   const ejInstance = useRef();
   // This will run only once
-  const [editorState, setEditorState] = useState();
+  const [editorState, setEditorState] = useState(props.editorState);
   var editor;
+  const handleEditorChange = (content) => {
+    setEditorState(content);
+  };
+  useEffect(() => {
+    setEditorState(props.editorState);
+  }, [props.editorState]);
+
   useEffect(() => {
     if (!ejInstance.current) {
       initEditor();
-      // setEditorState(props.editorState);
     }
     return () => {
       ejInstance.current.destroy();
       ejInstance.current = null;
     };
-  }, []);
+  }, [props.editorState]);
   const initEditor = () => {
     editor = new EditorJS({
       holder: 'editorjs',
@@ -48,12 +54,12 @@ const EditorNew = (props) => {
       onChange: async (api, event) => {
         api.saver.save().then((outputData) => {
           // console.log('outputData ', outputData);
-          props.handleEditorChange(outputData);
+          setEditorState(outputData);
         });
       },
       readOnly: props.readOnly,
       autofocus: true,
-      minHeight: 300,
+      minHeight: 30,
       tools: {
         header: {
           class: Header,
@@ -224,7 +230,7 @@ const EditorNew = (props) => {
           <Col className="my-0 mx-0">
             <Button
               disabled={props.doc_title.replace(/ /g, '').length === 0}
-              onClick={(e) => props.handleClickSave(e, props.editorState)}
+              onClick={(e) => props.handleClickSave(e, editorState)}
             >
               Save
             </Button>

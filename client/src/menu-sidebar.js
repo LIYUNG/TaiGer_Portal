@@ -269,6 +269,23 @@ export default {
           ]
         },
         {
+          id: 'docs_backend',
+          title: 'Docs Creator',
+          type: 'collapse',
+          classes: 'nav-item',
+          icon: 'feather icon-codepen',
+          children: [
+            {
+              id: 'documents-creation',
+              title: 'Creat New Docs',
+              type: 'item',
+              url: '/docs/admin/create',
+              target: false,
+              breadcrumbs: false
+            }
+          ]
+        },
+        {
           id: 'prev_students_database',
           title: 'Student Database',
           type: 'item',
@@ -276,14 +293,6 @@ export default {
           classes: 'nav-item',
           icon: 'feather icon-cloud'
         },
-        // {
-        //   id: 'personaldata',
-        //   title: 'Personal Data',
-        //   type: 'item',
-        //   url: '/profile',
-        //   classes: 'nav-item',
-        //   icon: 'feather icon-user'
-        // },
         {
           id: 'settings',
           title: 'Settings',

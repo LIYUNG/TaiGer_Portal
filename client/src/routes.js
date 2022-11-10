@@ -88,6 +88,9 @@ const DocsApplication = React.lazy(() =>
 );
 
 const DocsPage = React.lazy(() => import('./Demo/Documentation/SingleDoc'));
+const DocCreatePage = React.lazy(() =>
+  import('./Demo/Documentation/DocCreatePage')
+);
 
 const Download = React.lazy(() => import("./Demo/DownloadCenter/DownloadPage"));
 const TaiGerAI = React.lazy(() =>
@@ -269,6 +272,12 @@ const routes = [
     exact: true,
     name: 'DocumentationPage',
     component: DocsPage
+  },
+  {
+    path: '/docs/admin/create',
+    exact: true,
+    name: 'DocCreatePage',
+    component: DocCreatePage
   },
   {
     path: '/download',

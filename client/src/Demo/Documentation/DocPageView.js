@@ -3,14 +3,11 @@ import { Row, Col, Card, Button } from 'react-bootstrap';
 import { Editor } from 'react-draft-wysiwyg';
 import EditorNew from '../../components/EditorJs/EditorNew';
 import { convertDate } from '../Utils/contants';
-class SingleDocView extends React.Component {
+class DocPageView extends React.Component {
   render() {
     return (
       <>
         <Card className="mb-2 mx-0">
-          <Card.Header>
-            <Card.Title>{this.props.document_title}</Card.Title>
-          </Card.Header>
           <Card.Body>
             <EditorNew
               readOnly={true}
@@ -43,4 +40,4 @@ class SingleDocView extends React.Component {
     );
   }
 }
-export default SingleDocView;
+export default DocPageView;

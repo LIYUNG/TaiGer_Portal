@@ -4,6 +4,7 @@ const path = require('path');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const Documentation = require('../models/Documentation');
+const Docspage = require('../models/Docspage');
 const logger = require('../services/logger');
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -11,18 +12,53 @@ const {
   AWS_S3_ACCESS_KEY,
   AWS_S3_BUCKET_NAME
 } = require('../config');
+const valid_categories = [
+  'application',
+  'base-documents',
+  'cv-ml-rl',
+  'portal-instruction',
+  'certification',
+  'uniassist',
+  'visa'
+];
 
+const updateDocumentationPage = asyncHandler(async (req, res) => {
+  // console.log("updateDocumentation");
+  const fields = _.omit(req.body, '_id');
+  console.log(req.params.category);
+  const doc_page_existed = await Docspage.findOneAndUpdate(
+    { category: req.params.category },
+    req.body,
+    { new: true }
+  );
+  let newDocPage;
+  if (!doc_page_existed) {
+    newDocPage = await Docspage.create(fields);
+    console.log(req.body);
+
+    return res.status(201).send({ success: true, data: newDocPage });
+  }
+  console.log(req.body);
+  return res.status(201).send({ success: true, data: doc_page_existed });
+});
+
+const getCategoryDocumentationsPage = asyncHandler(async (req, res) => {
+  // TODO: validate req.params.category
+  if (
+    valid_categories.findIndex(
+      (category) => category === req.params.category
+    ) === -1
+  ) {
+    logger.error('getCategoryDocumentationsPage : invalid category');
+    throw new ErrorResponse(400, 'invalid category');
+  }
+  const docspage = await Docspage.findOne({
+    category: req.params.category
+  });
+  return res.send({ success: true, data: !docspage ? {} : docspage });
+});
 const getCategoryDocumentations = asyncHandler(async (req, res) => {
   // TODO: validate req.params.category
-  const valid_categories = [
-    'application',
-    'base-documents',
-    'cv-ml-rl',
-    'portal-instruction',
-    'certification',
-    'uniassist',
-    'visa'
-  ];
   if (
     valid_categories.findIndex(
       (category) => category === req.params.category
@@ -38,6 +74,11 @@ const getCategoryDocumentations = asyncHandler(async (req, res) => {
     { text: 0 } // exclude text field
   );
   return res.send({ success: true, data: documents });
+});
+
+const getAllDocumentations = asyncHandler(async (req, res) => {
+  const document = await Documentation.find();
+  return res.send({ success: true, data: document });
 });
 
 const getDocumentation = asyncHandler(async (req, res) => {
@@ -79,7 +120,10 @@ const deleteDocumentation = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  updateDocumentationPage,
+  getCategoryDocumentationsPage,
   getCategoryDocumentations,
+  getAllDocumentations,
   getDocumentation,
   createDocumentation,
   uploadDocImage,

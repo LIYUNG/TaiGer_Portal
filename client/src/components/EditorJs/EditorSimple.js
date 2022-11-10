@@ -33,7 +33,7 @@ const EditorSimple = (props) => {
       ejInstance.current.destroy();
       ejInstance.current = null;
     };
-  }, []);
+  }, [props.editorState]);
   const initEditor = () => {
     editor = new EditorJS({
       holder: `${props.holder}`,

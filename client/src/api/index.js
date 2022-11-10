@@ -174,12 +174,17 @@ export const postMycourses = (student_id, file) =>
 // Documentation APIs
 export const uploadImage = (file) =>
   request.post(`/api/docs/upload/image`, file);
+export const getCategorizedDocumentationPage = (category) =>
+  request.get(`/api/docs/pages/${category}`);
+export const updateDocumentationPage = (category, doc) =>
+  request.put(`/api/docs/pages/${category}`, doc);
 export const getCategorizedDocumentation = (category) =>
   request.get(`/api/docs/${category}`);
 export const deleteDocumentation = (doc_id) =>
   request.delete(`/api/docs/${doc_id}`);
 export const getDocumentation = (doc_id) =>
   request.get(`/api/docs/search/${doc_id}`);
+export const getAllDocumentations = () => request.get(`/api/docs/all`);
 export const updateDocumentation = (doc_id, doc) =>
   request.put(`/api/docs/${doc_id}`, doc);
 export const createDocumentation = (doc) => request.post(`/api/docs`, doc);

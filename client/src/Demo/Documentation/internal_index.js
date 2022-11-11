@@ -8,15 +8,13 @@ import DocPageEdit from './DocPageEdit';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import PageNotFoundError from '../Utils/PageNotFoundError';
-import { updateDocumentationPage } from '../../api';
-
+import { Redirect } from 'react-router-dom';
 import {
-  getCategorizedDocumentationPage,
-  createDocumentation,
-  deleteDocumentation
+  getInternalDocumentationPage,
+  updateInternalDocumentationPage
 } from '../../api';
 
-class ApplicationList extends React.Component {
+class InternaldocsPage extends React.Component {
   state = {
     isLoaded: false,
     success: false,
@@ -28,7 +26,14 @@ class ApplicationList extends React.Component {
   };
 
   componentDidMount() {
-    getCategorizedDocumentationPage(this.props.match.params.category).then(
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Editor' &&
+      this.props.user.role !== 'Agent'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
+    getInternalDocumentationPage().then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -66,52 +71,6 @@ class ApplicationList extends React.Component {
       }
     );
   }
-  // when changing category URL
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.match.params.category !== this.props.match.params.category) {
-      // this.setState({
-      //   isLoaded: false
-      // });
-      getCategorizedDocumentationPage(this.props.match.params.category).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          if (success) {
-            var initialEditorState = null;
-            if (data.text) {
-              initialEditorState = JSON.parse(data.text);
-            } else {
-              initialEditorState = {
-                time: new Date(),
-                blocks: []
-              };
-            }
-            this.setState({
-              isLoaded: true,
-              editorState: initialEditorState,
-              success: success
-            });
-          } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({
-                isLoaded: true,
-                unauthorizederror: true
-              });
-            } else {
-              this.setState({ isLoaded: true, pagenotfounderror: true });
-            }
-          }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
-        }
-      );
-    }
-  }
 
   handleClickCancel = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
@@ -120,12 +79,12 @@ class ApplicationList extends React.Component {
     e.preventDefault();
     const message = JSON.stringify(editorState);
     const msg = {
-      category: this.props.match.params.category,
+      category: 'internal',
       title: doc_title,
       prop: this.props.item,
       text: message
     };
-    updateDocumentationPage(this.props.match.params.category, msg).then(
+    updateInternalDocumentationPage(msg).then(
       (resp) => {
         const { success, data } = resp.data;
         if (success) {
@@ -209,7 +168,7 @@ class ApplicationList extends React.Component {
       return (
         <>
           <DocPageEdit
-            category={"category"}
+            category={'category'}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}
@@ -237,4 +196,4 @@ class ApplicationList extends React.Component {
   }
 }
 
-export default ApplicationList;
+export default InternaldocsPage;

@@ -44,8 +44,6 @@ export default function MyCourses(props) {
     getMycourses(student_id).then(
       (resp) => {
         const { data, success } = resp.data;
-        // console.log(data);
-
         if (success) {
           const course_from_database = data.table_data_string
             ? JSON.parse(data.table_data_string)
@@ -99,7 +97,6 @@ export default function MyCourses(props) {
     }
   ]);
   const onChange = (new_data) => {
-    // console.log(new_data);
     setStatedata((state) => ({
       ...state,
       coursesdata: new_data

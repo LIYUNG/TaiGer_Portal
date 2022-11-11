@@ -172,6 +172,12 @@ export const postMycourses = (student_id, file) =>
   request.post(`/api/courses/${student_id}`, file);
 
 // Documentation APIs
+// Internal docs
+export const getInternalDocumentationPage = () =>
+  request.get(`/api/docs/taiger/internal/confidential`);
+export const updateInternalDocumentationPage = (doc) =>
+  request.put(`/api/docs/taiger/internal/confidential`, doc);
+// External docs
 export const uploadImage = (file) =>
   request.post(`/api/docs/upload/image`, file);
 export const getCategorizedDocumentationPage = (category) =>
@@ -185,9 +191,22 @@ export const deleteDocumentation = (doc_id) =>
 export const getDocumentation = (doc_id) =>
   request.get(`/api/docs/search/${doc_id}`);
 export const getAllDocumentations = () => request.get(`/api/docs/all`);
+
 export const updateDocumentation = (doc_id, doc) =>
   request.put(`/api/docs/${doc_id}`, doc);
 export const createDocumentation = (doc) => request.post(`/api/docs`, doc);
+
+export const getInternalDocumentation = (doc_id) =>
+  request.get(`/api/docs/internal/search/${doc_id}`);
+export const getAllInternalDocumentations = () =>
+  request.get(`/api/docs/internal/all`);
+export const updateInternalDocumentation = (doc_id, doc) =>
+  request.put(`/api/docs/internal/${doc_id}`, doc);
+export const createInternalDocumentation = (doc) =>
+  request.post(`/api/docs/internal`, doc);
+export const deleteInternalDocumentation = (doc_id) =>
+  request.delete(`/api/docs/internal/${doc_id}`);
+
 
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');

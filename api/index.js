@@ -15,7 +15,7 @@ var fs = require('fs');
 
 process.on('SIGINT', () => {
   disconnectFromDatabase(() => {
-    console.log('Database disconnected through app termination');
+    logger.error('Database disconnected through app termination');
     process.exit(0);
   });
 });

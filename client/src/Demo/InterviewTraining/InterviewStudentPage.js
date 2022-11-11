@@ -28,7 +28,6 @@ class InterviewStudentPage extends React.Component {
     getMyInterviews().then(
       (resp) => {
         const { data, success } = resp.data;
-        // console.log(data);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -55,7 +54,6 @@ class InterviewStudentPage extends React.Component {
 
   handleSelect = (e) => {
     e.preventDefault();
-    // console.log(e.target.value);
     this.setState({ program_id: e.target.value });
   };
 
@@ -64,7 +62,6 @@ class InterviewStudentPage extends React.Component {
     createInterview(this.state.program_id, this.props.user._id).then(
       (resp) => {
         const { data, success } = resp.data;
-        // console.log(data);
         if (success) {
           this.setState({
             isLoaded: true,

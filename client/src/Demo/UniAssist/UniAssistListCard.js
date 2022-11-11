@@ -38,7 +38,6 @@ class UniAssistListCard extends React.Component {
   };
   componentDidMount() {
     if (!this.props.student) {
-      console.log(this.props.student);
       getStudent(this.props.user._id.toString()).then(
         (resp) => {
           const { data, success } = resp.data;

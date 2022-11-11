@@ -1,45 +1,41 @@
-import React from "react";
-import $ from "jquery";
+import React from 'react';
+import $ from 'jquery';
 
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 
-const DashboardDefault = React.lazy(() => import("./Demo/Dashboard/Dashboard"));
-const ArchivStudent = React.lazy(() => import("./Demo/ArchivStudent/index"));
+const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
+const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
 const UIBasicButton = React.lazy(() =>
-  import("./Demo/UIElements/Basic/Button")
+  import('./Demo/UIElements/Basic/Button')
 );
 const UIBasicBadges = React.lazy(() =>
-  import("./Demo/UIElements/Basic/Badges")
+  import('./Demo/UIElements/Basic/Badges')
 );
 const UIBasicBreadcrumbPagination = React.lazy(() =>
-  import("./Demo/UIElements/Basic/BreadcrumbPagination")
+  import('./Demo/UIElements/Basic/BreadcrumbPagination')
 );
 const UIBasicCollapse = React.lazy(() =>
-  import("./Demo/UIElements/Basic/Collapse")
+  import('./Demo/UIElements/Basic/Collapse')
 );
 const UIBasicTabsPills = React.lazy(() =>
-  import("./Demo/UIElements/Basic/TabsPills")
+  import('./Demo/UIElements/Basic/TabsPills')
 );
 const UIBasicBasicTypography = React.lazy(() =>
-  import("./Demo/UIElements/Basic/Typography")
+  import('./Demo/UIElements/Basic/Typography')
 );
-const FormsElements = React.lazy(() => import("./Demo/Forms/FormsElements"));
+const FormsElements = React.lazy(() => import('./Demo/Forms/FormsElements'));
 
-const UniAssist = React.lazy(() =>
-  import('./Demo/UniAssist/index')
-);
+const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
 const BaseDocuments = React.lazy(() =>
   import('./Demo/AgentCenter/BaseDocuments')
 );
-const Checklist = React.lazy(() =>
-  import('./Demo/CheckList/index')
-);
+const Checklist = React.lazy(() => import('./Demo/CheckList/index'));
 
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const CVMLRLCenter = React.lazy(() =>
-  import("./Demo/CVMLRLCenter/CVMLRLCenter")
+  import('./Demo/CVMLRLCenter/CVMLRLCenter')
 );
 const CVMLRLOverview = React.lazy(() =>
   import('./Demo/CVMLRLCenter/CVMLRLOverview')
@@ -51,50 +47,55 @@ const ApplicationsOverview = React.lazy(() =>
 const StudentApplications = React.lazy(() =>
   import('./Demo/StudentApplications/StudentApplicationsIndividual')
 );
-const SingleProgram = React.lazy(() => import("./Demo/Program/SingleProgram"));
-const UsersTable = React.lazy(() => import("./Demo/Users/UsersTable"));
-const Survey = React.lazy(() => import("./Demo/Survey/index"));
+const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
+const UsersTable = React.lazy(() => import('./Demo/Users/UsersTable'));
+const Survey = React.lazy(() => import('./Demo/Survey/index'));
 const InterviewTraining = React.lazy(() =>
   import('./Demo/InterviewTraining/index')
 );
 const SingleInterviewTraining = React.lazy(() =>
   import('./Demo/InterviewTraining/SingleInterviewTraining')
 );
-const Settings = React.lazy(() => import("./Demo/Settings/index"));
-const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
+const Settings = React.lazy(() => import('./Demo/Settings/index'));
+const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
 const Statistics = React.lazy(() =>
-  import("./Demo/Statistics/Nvd3Chart/index")
+  import('./Demo/Statistics/Nvd3Chart/index')
 );
 const Admissions = React.lazy(() => import('./Demo/Admissions/Admissions'));
 const StudentDatabase = React.lazy(() =>
-  import("./Demo/StudentDatabase/index")
+  import('./Demo/StudentDatabase/index')
 );
 const CVMLRL_Modification_Thread = React.lazy(() =>
   import(
-    "./Demo/CVMLRLCenter/DocModificationThreadPage/DocModificationThreadPage"
+    './Demo/CVMLRLCenter/DocModificationThreadPage/DocModificationThreadPage'
   )
 );
 const TasksOverview = React.lazy(() => import('./Demo/Task/TasksOverview'));
 const Task = React.lazy(() => import('./Demo/Task/Task'));
-const MyTask = React.lazy(() => import("./Demo/Task/MyTask"));
+const MyTask = React.lazy(() => import('./Demo/Task/MyTask'));
 
 const SingleStudentPage = React.lazy(() =>
   import('./Demo/StudentDatabase/SingleStudentPage')
 );
-const GoogleMap = React.lazy(() => import("./Demo/Maps/GoogleMap/index"));
+const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 
-const DocsApplication = React.lazy(() =>
-  import('./Demo/Documentation/index')
+const DocsApplication = React.lazy(() => import('./Demo/Documentation/index'));
+const InternaldocsPage = React.lazy(() =>
+  import('./Demo/Documentation/internal_index')
 );
-
 const DocsPage = React.lazy(() => import('./Demo/Documentation/SingleDoc'));
+const DocsInternalPage = React.lazy(() => import('./Demo/Documentation/SingleInternalDoc'));
 const DocCreatePage = React.lazy(() =>
   import('./Demo/Documentation/DocCreatePage')
 );
 
-const Download = React.lazy(() => import("./Demo/DownloadCenter/DownloadPage"));
+const InternalDocCreatePage = React.lazy(() =>
+  import('./Demo/Documentation/InternalDocCreatePage')
+);
+
+const Download = React.lazy(() => import('./Demo/DownloadCenter/DownloadPage'));
 const TaiGerAI = React.lazy(() =>
-  import("./Demo/TaiGerAI/Application/CoursesAnalyser")
+  import('./Demo/TaiGerAI/Application/CoursesAnalyser')
 );
 
 const AgentsAssignment = React.lazy(() =>
@@ -262,10 +263,22 @@ const routes = [
     component: GoogleMap
   },
   {
+    path: '/docs/taiger/internal',
+    exact: true,
+    name: 'Documentation',
+    component: InternaldocsPage
+  },
+  {
     path: '/docs/:category',
     exact: true,
     name: 'Documentation',
     component: DocsApplication
+  },
+  {
+    path: '/docs/internal/search/:documentation_id',
+    exact: true,
+    name: 'DocumentationPage',
+    component: DocsInternalPage
   },
   {
     path: '/docs/search/:documentation_id',
@@ -274,10 +287,16 @@ const routes = [
     component: DocsPage
   },
   {
-    path: '/docs/admin/create',
+    path: '/internal/database/public-docs',
     exact: true,
     name: 'DocCreatePage',
     component: DocCreatePage
+  },
+  {
+    path: '/internal/database/internal-docs',
+    exact: true,
+    name: 'InternalDocCreatePage',
+    component: InternalDocCreatePage
   },
   {
     path: '/download',

@@ -82,7 +82,6 @@ class DocModificationThreadPage extends Component {
   }
 
   onFileChange = (e) => {
-    // console.log(e.target.files[0]);
     e.preventDefault();
     this.setState({ file: e.target.files[0] });
   };

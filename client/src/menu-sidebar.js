@@ -226,6 +226,7 @@ export default {
               target: false,
               breadcrumbs: false
             },
+
             // {
             //   id: 'doc-application',
             //   title: 'Application',
@@ -257,29 +258,37 @@ export default {
               url: '/docs/uniassist',
               target: false,
               breadcrumbs: false
+            },
+            {
+              id: 'internal-docs',
+              title: 'Internal Docs',
+              type: 'item',
+              url: '/docs/taiger/internal',
+              target: false,
+              breadcrumbs: false
             }
-            // {
-            //   id: 'doc-visa',
-            //   title: 'Visa',
-            //   type: 'item',
-            //   url: '/docs/visa',
-            //   target: false,
-            //   breadcrumbs: false
-            // }
           ]
         },
         {
-          id: 'docs_backend',
-          title: 'Docs Creator',
+          id: 'internal_backend',
+          title: 'Docs Database',
           type: 'collapse',
           classes: 'nav-item',
           icon: 'feather icon-codepen',
           children: [
             {
               id: 'documents-creation',
-              title: 'Creat New Docs',
+              title: 'Docs Database',
               type: 'item',
-              url: '/docs/admin/create',
+              url: '/internal/database/public-docs',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'internal-documents-creation',
+              title: 'Internal Docs Database',
+              type: 'item',
+              url: '/internal/database/internal-docs',
               target: false,
               breadcrumbs: false
             }

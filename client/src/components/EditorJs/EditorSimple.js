@@ -126,7 +126,7 @@ const EditorSimple = (props) => {
             //   byFile: 'https://localhost:3000/api/docs/upload/image', // Your backend file uploader endpoint
             //   byUrl: 'https://localhost:3000/api/docs/upload/image' // Your endpoint that provides uploading by Url
             // },
-            onRemove: (data) => console.log(data),
+            // onRemove: (data) => console.log(data),
             uploader: {
               async uploadByFile(file) {
                 const formData = new FormData();

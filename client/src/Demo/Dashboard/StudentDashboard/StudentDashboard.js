@@ -27,7 +27,6 @@ class StudentDashboard extends React.Component {
 
   removeBanner = (e, notification_key) => {
     e.preventDefault();
-    console.log('removeBanner');
     updateBanner(notification_key).then(
       (resp) => {
         const { success, data } = resp.data;

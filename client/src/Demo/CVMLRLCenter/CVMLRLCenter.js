@@ -48,8 +48,6 @@ class CVMLRLCenter extends React.Component {
         }
       },
       (error) => {
-        // console.log(error);
-        // console.log(': ' + error);
         this.setState({
           isLoaded: true,
           error: true

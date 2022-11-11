@@ -2,21 +2,16 @@ import React from 'react';
 import { Spinner, Button } from 'react-bootstrap';
 // import { useParams } from "react-router-dom";
 import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
-import { getDocumentation } from '../../api';
-import DocPageView from './DocPageView';
-import DocPageEdit from './DocPageEdit';
+import { getInternalDocumentation } from '../../api';
+import SingleDocView from './SingleDocView';
+import SingleDocEdit from './SingleDocEdit';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import PageNotFoundError from '../Utils/PageNotFoundError';
-import { updateDocumentationPage } from '../../api';
+import { updateInternalDocumentation } from '../../api';
+import { Redirect } from 'react-router-dom';
 
-import {
-  getCategorizedDocumentationPage,
-  createDocumentation,
-  deleteDocumentation
-} from '../../api';
-
-class ApplicationList extends React.Component {
+class SingleDoc extends React.Component {
   state = {
     isLoaded: false,
     success: false,
@@ -26,22 +21,32 @@ class ApplicationList extends React.Component {
     unauthorizederror: null,
     isEdit: false
   };
-
   componentDidMount() {
-    getCategorizedDocumentationPage(this.props.match.params.category).then(
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Editor' &&
+      this.props.user.role !== 'Agent'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
+    getInternalDocumentation(this.props.match.params.documentation_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        if (!data) {
+          this.setState({ isLoaded: true, pagenotfounderror: true });
+        }
         if (success) {
           var initialEditorState = null;
           if (data.text) {
             initialEditorState = JSON.parse(data.text);
           } else {
-            initialEditorState = { time: new Date(), blocks: [] };
+            initialEditorState = {};
           }
-          // initialEditorState = JSON.parse(data.text);
-
+          initialEditorState = JSON.parse(data.text);
           this.setState({
             isLoaded: true,
+            document_title: data.title,
+            category: data.category,
             editorState: initialEditorState,
             success: success
           });
@@ -66,66 +71,23 @@ class ApplicationList extends React.Component {
       }
     );
   }
-  // when changing category URL
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.match.params.category !== this.props.match.params.category) {
-      // this.setState({
-      //   isLoaded: false
-      // });
-      getCategorizedDocumentationPage(this.props.match.params.category).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          if (success) {
-            var initialEditorState = null;
-            if (data.text) {
-              initialEditorState = JSON.parse(data.text);
-            } else {
-              initialEditorState = {
-                time: new Date(),
-                blocks: []
-              };
-            }
-            this.setState({
-              isLoaded: true,
-              editorState: initialEditorState,
-              success: success
-            });
-          } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({
-                isLoaded: true,
-                unauthorizederror: true
-              });
-            } else {
-              this.setState({ isLoaded: true, pagenotfounderror: true });
-            }
-          }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
-        }
-      );
-    }
-  }
 
   handleClickCancel = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
-  handleClickSave = (e, doc_title, editorState) => {
+  handleClickSave = (e, category, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
     const msg = {
-      category: this.props.match.params.category,
       title: doc_title,
+      category,
       prop: this.props.item,
       text: message
     };
-    updateDocumentationPage(this.props.match.params.category, msg).then(
+    updateInternalDocumentation(
+      this.props.match.params.documentation_id,
+      msg
+    ).then(
       (resp) => {
         const { success, data } = resp.data;
         if (success) {
@@ -208,8 +170,8 @@ class ApplicationList extends React.Component {
     if (this.state.isEdit) {
       return (
         <>
-          <DocPageEdit
-            category={"category"}
+          <SingleDocEdit
+            category={this.state.category}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}
@@ -223,7 +185,8 @@ class ApplicationList extends React.Component {
     } else {
       return (
         <>
-          <DocPageView
+          <SingleDocView
+            category={this.state.category}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}
@@ -236,5 +199,4 @@ class ApplicationList extends React.Component {
     }
   }
 }
-
-export default ApplicationList;
+export default SingleDoc;

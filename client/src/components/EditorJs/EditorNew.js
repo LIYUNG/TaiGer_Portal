@@ -57,6 +57,9 @@ const EditorNew = (props) => {
           setEditorState(outputData);
         });
       },
+      // onReady: () => {
+      //   console.log('Editor.js is ready to work!');
+      // },
       readOnly: props.readOnly,
       autofocus: true,
       minHeight: 30,
@@ -120,7 +123,7 @@ const EditorNew = (props) => {
           class: AttachesTool,
           config: {
             // endpoint: BASE_URL + '/api/docs/upload/image' // TODO : to replace, no cookie attach if only place URL
-            onRemove: (data) => console.log(data),
+            // onRemove: (data) => console.log(data),
             uploader: {
               async uploadByFile(file) {
                 const formData = new FormData();
@@ -180,7 +183,7 @@ const EditorNew = (props) => {
             //   byFile: 'https://localhost:3000/api/docs/upload/image', // Your backend file uploader endpoint
             //   byUrl: 'https://localhost:3000/api/docs/upload/image' // Your endpoint that provides uploading by Url
             // },
-            onRemove: (data) => console.log(data),
+            // onRemove: (data) => console.log(data),
             uploader: {
               async uploadByFile(file) {
                 const formData = new FormData();
@@ -232,7 +235,8 @@ const EditorNew = (props) => {
               disabled={
                 props.doc_title.replace(/ /g, '').length === 0 ||
                 props.category === '' ||
-                (!editorState.blocks || editorState.blocks.length === 0)
+                !editorState.blocks ||
+                editorState.blocks.length === 0
               }
               onClick={(e) => props.handleClickSave(e, editorState)}
             >

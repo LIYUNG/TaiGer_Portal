@@ -152,7 +152,7 @@ class DocumentsListItems extends React.Component {
             />
             {this.props.idx}
             {'. '}
-            <Link to={`/docs/search/${this.props.document._id}`}>
+            <Link to={`${this.props.path}/${this.props.document._id}`}>
               {this.props.document.title}
             </Link>
             {/* <Editor

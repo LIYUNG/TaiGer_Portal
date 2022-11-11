@@ -5,15 +5,22 @@ const { protect, permit, prohibit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
 
 const {
+  getInternalDocumentationsPage,
+  updateInternalDocumentationPage,
   updateDocumentationPage,
   getCategoryDocumentationsPage,
   getCategoryDocumentations,
   getAllDocumentations,
+  getAllInternalDocumentations,
   getDocumentation,
+  getInternalDocumentation,
   createDocumentation,
+  createInternalDocumentation,
   uploadDocImage,
   updateDocumentation,
-  deleteDocumentation
+  updateInternalDocumentation,
+  deleteDocumentation,
+  deleteInternalDocumentation
 } = require('../controllers/documentations');
 
 const router = Router();
@@ -21,6 +28,42 @@ const router = Router();
 router.use(protect);
 
 router.route('/').post(permit(Role.Admin, Role.Agent), createDocumentation);
+
+// Internal Docs
+router
+  .route('/internal')
+  .post(
+    permit(Role.Admin, Role.Editor, Role.Agent),
+    createInternalDocumentation
+  );
+router
+  .route('/internal/all')
+  .get(
+    permit(Role.Admin, Role.Editor, Role.Agent),
+    getAllInternalDocumentations
+  );
+router
+  .route('/internal/search/:doc_id')
+  .get(permit(Role.Admin, Role.Editor, Role.Agent), getInternalDocumentation);
+router
+  .route('/internal/:id')
+  .put(permit(Role.Admin, Role.Editor, Role.Agent), updateInternalDocumentation)
+  .delete(
+    permit(Role.Admin, Role.Editor, Role.Agent),
+    deleteInternalDocumentation
+  );
+
+router
+  .route('/taiger/internal/confidential')
+  .get(
+    permit(Role.Admin, Role.Editor, Role.Agent),
+    getInternalDocumentationsPage
+  )
+  .put(
+    permit(Role.Admin, Role.Editor, Role.Agent),
+    updateInternalDocumentationPage
+  );
+
 router
   .route('/upload/image')
   .post(permit(Role.Admin, Role.Agent), imageUpload, uploadDocImage);

@@ -55,6 +55,7 @@ class NavCollapse extends Component {
       if (this.props.role === 'Student') {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'Docs Database' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
@@ -65,6 +66,7 @@ class NavCollapse extends Component {
       if (this.props.role === 'Guest') {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'Docs Database' ||
           collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {

@@ -85,7 +85,6 @@ export const getNumberOfDays = (start, end) => {
 const create_years = (start_year, end_year) => {
   const num = end_year - start_year;
   const year_array = Array.from({ length: num }, (_, i) => i + start_year);
-  // console.log(new Date().getFullYear());
   return year_array;
 };
 export const APPLICATION_YEARS_FUTURE = () => {

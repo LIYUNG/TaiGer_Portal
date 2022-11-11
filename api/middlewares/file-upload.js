@@ -283,7 +283,6 @@ const storage_messagesthread_file_s3 = multerS3({
         if (thread.program_id) {
           Program.findById(thread.program_id).then((program) => {
             program_name = program.school + '_' + program.program_name;
-            console.log(program_name);
             var r2 = /[^\d]/;
             var version_number_max = 0;
 

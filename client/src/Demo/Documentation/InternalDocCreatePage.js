@@ -9,9 +9,9 @@ import PageNotFoundError from '../Utils/PageNotFoundError';
 import { valid_categories } from '../Utils/contants';
 import { Redirect } from 'react-router-dom';
 import {
-  getAllDocumentations,
-  createDocumentation,
-  deleteDocumentation
+  getAllInternalDocumentations,
+  createInternalDocumentation,
+  deleteInternalDocumentation
 } from '../../api';
 
 class DocCreatePage extends React.Component {
@@ -26,7 +26,7 @@ class DocCreatePage extends React.Component {
     doc_id_toBeDelete: '',
     doc_title_toBeDelete: '',
     doc_title: '',
-    category: '',
+    category: 'internal',
     SetDeleteDocModel: false,
     isEdit: false,
     expand: true,
@@ -41,7 +41,7 @@ class DocCreatePage extends React.Component {
   };
 
   componentDidMount() {
-    getAllDocumentations().then(
+    getAllInternalDocumentations().then(
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
@@ -121,16 +121,8 @@ class DocCreatePage extends React.Component {
     e.preventDefault();
   };
 
-  handleChange_category = (e) => {
-    e.preventDefault();
-    const { value } = e.target;
-    this.setState({
-      category: value
-    });
-  };
-
   handleDeleteDoc = (doc) => {
-    deleteDocumentation(this.state.doc_id_toBeDelete).then(
+    deleteInternalDocumentation(this.state.doc_id_toBeDelete).then(
       (resp) => {
         const { success } = resp.data;
         let documentlists_temp = [...this.state.documentlists];
@@ -186,11 +178,6 @@ class DocCreatePage extends React.Component {
 
   handleClickSave = (e, editorState) => {
     e.preventDefault();
-    // react-draftjs-wysiwyg
-    // const message = JSON.stringify(
-    //   convertToRaw(editorState.getCurrentContent())
-    // );
-
     // Editorjs. editorState is in JSON form
     const message = JSON.stringify(editorState);
     const msg = {
@@ -199,7 +186,7 @@ class DocCreatePage extends React.Component {
       prop: this.props.item,
       text: message
     };
-    createDocumentation(msg).then(
+    createInternalDocumentation(msg).then(
       (resp) => {
         const { success, data } = resp.data;
         let documentlists_temp = [...this.state.documentlists];
@@ -280,6 +267,7 @@ class DocCreatePage extends React.Component {
       <DocumentsListItems
         idx={i}
         key={i}
+        path={'/docs/internal/search'}
         document={document}
         role={this.props.user.role}
         openDeleteDocModalWindow={this.openDeleteDocModalWindow}
@@ -295,7 +283,7 @@ class DocCreatePage extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0 text-light">
-                      All Documentations
+                      All Internal Documentations
                     </Col>
                     <Col md={{ span: 2, offset: 0 }}>
                       {this.state.expand ? (
@@ -328,19 +316,10 @@ class DocCreatePage extends React.Component {
                   <Card.Body>
                     <Row>
                       <Col>
-                        <Form.Group controlId="decided">
-                          <Form.Control
-                            as="select"
-                            onChange={(e) => this.handleChange_category(e)}
-                          >
-                            <option value={''}>Select Document Category</option>
-                            {valid_categories.map((cat, i) => (
-                              <option value={cat.key}>{cat.value}</option>
-                            ))}
-                            {/* <option value={'X'}>No</option>
-                            <option value={'O'}>Yes</option> */}
-                          </Form.Control>
-                        </Form.Group>
+                        <h4>
+                          Category:{' '}
+                          <b className="text-danger">{this.state.category}</b>
+                        </h4>
                       </Col>
                     </Row>{' '}
                     <Row>
@@ -348,7 +327,7 @@ class DocCreatePage extends React.Component {
                         <Form.Group controlId="doc_title" className="mb-4">
                           <Form.Control
                             type="text"
-                            placeholder="title"
+                            placeholder="Title"
                             defaultValue={''}
                             onChange={(e) => this.handleChange_doc_title(e)}
                           />

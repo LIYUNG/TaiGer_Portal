@@ -64,7 +64,6 @@ const createCourse = asyncHandler(async (req, res) => {
     const courses3 = await Course.findOne({
       student_id: req.params.student_id
     }).populate('student_id', 'firstname lastname');
-    console.log('create one');
     return res.send({ success: true, data: courses3 });
   }
   const courses2 = await Course.findOneAndUpdate(
@@ -72,7 +71,6 @@ const createCourse = asyncHandler(async (req, res) => {
     fields,
     { new: true }
   ).populate('student_id', 'firstname lastname');
-  console.log('update current');
   return res.send({ success: true, data: courses2 });
 });
 

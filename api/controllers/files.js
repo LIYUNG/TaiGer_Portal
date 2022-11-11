@@ -956,9 +956,8 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     params: { category, studentId }
   } = req;
   const courses = await Course.findOne({ student_id: studentId });
-  console.log('processTranscript_test');
   if (!courses) {
-    console.log('no course for this student!');
+    logger.error('no course for this student!');
     return res.send({ success: true, data: {} });
   }
   const stringified_courses = JSON.stringify(courses.table_data_string);
@@ -997,11 +996,11 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       test_var = data;
       process.stdout.write('python script output', data);
     });
-    // console.log(test_var);
     python.on('close', (code) => {
       if (code === 0) {
         return res.status(200).send({ success: true, data: {} });
       }
+      logger.error('Error occurs while trying to produce analyzed report');
 
       return new ErrorResponse(
         500,
@@ -1009,7 +1008,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       );
     });
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return new ErrorResponse(
       500,
       'Error occurs while trying to produce analyzed report'

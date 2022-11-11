@@ -57,9 +57,6 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .lean()
       .exec();
-    // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
-    // console.log(students[0].applications[0].programId); // looks ok!
-    // console.log(students[0].applications[0].programId.school);
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Editor) {
@@ -380,7 +377,6 @@ const postMessages = asyncHandler(async (req, res) => {
       throw new ErrorResponse(403, 'Unauthorized request');
     }
   }
-  console.log(req.file);
   let newfile = [];
   if (req.file) {
     newfile = [

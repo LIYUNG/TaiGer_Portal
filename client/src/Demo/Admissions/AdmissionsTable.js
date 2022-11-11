@@ -11,7 +11,16 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import { Link } from 'react-router-dom';
 
-import { Button, Table, Row, Col, Spinner, Card } from 'react-bootstrap';
+import {
+  Button,
+  Table,
+  Row,
+  Col,
+  Spinner,
+  Card,
+  Tabs,
+  Tab
+} from 'react-bootstrap';
 import { getAdmissions } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
@@ -241,15 +250,15 @@ function Table2({ header, data, userId }) {
         columns: [
           {
             Header: 'First Name',
-            accessor: 'firstname',
-            Filter: SelectColumnFilter,
-            filter: 'includes'
+            accessor: 'firstname'
+            // Filter: SelectColumnFilter,
+            // filter: 'fuzzyText'
           },
           {
             Header: 'Last Name',
-            accessor: 'lastname',
+            accessor: 'lastname'
             // Use our custom `fuzzyText` filter on this column
-            filter: 'fuzzyText'
+            // filter: 'fuzzyText'
           },
           {
             Header: 'University',
@@ -265,7 +274,7 @@ function Table2({ header, data, userId }) {
           },
           {
             Header: 'Application Year',
-            accessor: 'year'
+            accessor: 'application_year'
             // Filter: SelectColumnFilter,
             // filter: 'includes'
           },
@@ -614,37 +623,61 @@ function AdmissionsTable(props) {
   let admissions_table = [];
   let rejections_table = [];
   let pending_table = [];
+  let not_yet_closed_table = [];
   statedata.students.map((student) =>
     student.applications.map((application) => {
-      if (application.decided) {
-        if (application.admission === 'O') {
-          admissions_table.push({
-            _id: student._id,
-            firstname: student.firstname,
-            lastname: student.lastname,
-            year:
-              student.aapplication_preference &&
-              student.aapplication_preference.expected_application_date,
-            school: application.programId.school,
-            program_name: application.programId.program_name,
-            semester: application.programId.semester
-          });
-        }
-        if (application.admission === 'X') {
-          rejections_table.push({
-            _id: student._id,
-            firstname: student.firstname,
-            lastname: student.lastname,
-            year:
-              student.aapplication_preference &&
-              student.aapplication_preference.expected_application_date,
-            school: application.programId.school,
-            program_name: application.programId.program_name,
-            semester: application.programId.semester
-          });
-        }
-        if (application.admission === '-') {
-          pending_table.push({
+      if (application.decided === 'O') {
+        if (application.closed === 'O') {
+          if (application.admission === 'O') {
+            admissions_table.push({
+              _id: student._id,
+              firstname: student.firstname,
+              lastname: student.lastname,
+              year:
+                student.aapplication_preference &&
+                student.aapplication_preference.expected_application_date,
+              school: application.programId.school,
+              program_name: application.programId.program_name,
+              application_year:
+                student.application_preference &&
+                student.application_preference.expected_application_date,
+              semester: application.programId.semester
+            });
+          }
+          if (application.admission === 'X') {
+            rejections_table.push({
+              _id: student._id,
+              firstname: student.firstname,
+              lastname: student.lastname,
+              year:
+                student.aapplication_preference &&
+                student.aapplication_preference.expected_application_date,
+              school: application.programId.school,
+              program_name: application.programId.program_name,
+              application_year:
+                student.application_preference &&
+                student.application_preference.expected_application_date,
+              semester: application.programId.semester
+            });
+          }
+          if (application.admission === '-') {
+            pending_table.push({
+              _id: student._id,
+              firstname: student.firstname,
+              lastname: student.lastname,
+              year:
+                student.aapplication_preference &&
+                student.application_preference.expected_application_date,
+              school: application.programId.school,
+              program_name: application.programId.program_name,
+              application_year:
+                student.application_preference &&
+                student.application_preference.expected_application_date,
+              semester: application.programId.semester
+            });
+          }
+        } else {
+          not_yet_closed_table.push({
             _id: student._id,
             firstname: student.firstname,
             lastname: student.lastname,
@@ -653,6 +686,9 @@ function AdmissionsTable(props) {
               student.application_preference.expected_application_date,
             school: application.programId.school,
             program_name: application.programId.program_name,
+            application_year:
+              student.application_preference &&
+              student.application_preference.expected_application_date,
             semester: application.programId.semester
           });
         }
@@ -662,33 +698,57 @@ function AdmissionsTable(props) {
 
   return (
     <>
-      <Row>
-        <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-          <Table2
-            header={'Admissions'}
-            data={admissions_table}
-            userId={props.userId}
-          />
-        </Card>
-      </Row>
-      <Row>
-        <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-          <Table2
-            header={'Rejections '}
-            data={rejections_table}
-            userId={props.userId}
-          />
-        </Card>
-      </Row>
-      <Row>
-        <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-          <Table2
-            header={'Pending'}
-            data={pending_table}
-            userId={props.userId}
-          />
-        </Card>
-      </Row>
+      <Tabs
+        defaultActiveKey="Admissions"
+        id="fill-tab-example"
+        // className="mb-3"
+        // fill
+      >
+        <Tab eventKey="Admissions" title="Admissions" className="my-0 mx-0">
+          <Row>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+              <Table2
+                header={'Admissions'}
+                data={admissions_table}
+                userId={props.userId}
+              />
+            </Card>
+          </Row>
+        </Tab>
+        <Tab eventKey="Rejections" title="Rejections">
+          <Row>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+              <Table2
+                header={'Rejections '}
+                data={rejections_table}
+                userId={props.userId}
+              />
+            </Card>
+          </Row>
+        </Tab>
+        <Tab eventKey="Pending" title="Pending">
+          <Row>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+              <Table2
+                header={'Pending'}
+                data={pending_table}
+                userId={props.userId}
+              />
+            </Card>
+          </Row>
+        </Tab>
+        <Tab eventKey="NotClosedYet" title="Not Closed Yet">
+          <Row>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+              <Table2
+                header={'Not Closed Yet'}
+                data={not_yet_closed_table}
+                userId={props.userId}
+              />
+            </Card>
+          </Row>
+        </Tab>
+      </Tabs>
     </>
   );
 }

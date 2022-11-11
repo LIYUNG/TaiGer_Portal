@@ -25,6 +25,7 @@ const EditorNew = (props) => {
   const ejInstance = useRef();
   // This will run only once
   const [editorState, setEditorState] = useState(props.editorState);
+  const [contentReady, setContentready] = useState(true);
   var editor;
   const handleEditorChange = (content) => {
     setEditorState(content);
@@ -52,9 +53,11 @@ const EditorNew = (props) => {
       },
       // onChange: props.handleEditorChange,
       onChange: async (api, event) => {
+        setContentready(false);
         api.saver.save().then((outputData) => {
           // console.log('outputData ', outputData);
           setEditorState(outputData);
+          setContentready(true);
         });
       },
       // onReady: () => {
@@ -233,6 +236,7 @@ const EditorNew = (props) => {
           <Col className="my-0 mx-0">
             <Button
               disabled={
+                !contentReady ||
                 props.doc_title.replace(/ /g, '').length === 0 ||
                 props.category === '' ||
                 !editorState.blocks ||

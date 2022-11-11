@@ -280,6 +280,7 @@ class DocCreatePage extends React.Component {
       <DocumentsListItems
         idx={i}
         key={i}
+        path={'/docs/search'}
         document={document}
         role={this.props.user.role}
         openDeleteDocModalWindow={this.openDeleteDocModalWindow}

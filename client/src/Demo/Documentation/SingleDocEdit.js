@@ -48,22 +48,26 @@ class SingleDocEdit extends React.Component {
             {' '}
             <Row>
               <Col>
-                <h4>
-                  <Form.Group controlId="category">
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => this.handleChange_category(e)}
-                      defaultValue={this.props.category}
-                    >
-                      <option value={''}>Select Document Category</option>
-                      {valid_categories.map((cat, i) => (
-                        <option value={cat.key}>{cat.value}</option>
-                      ))}
-                      {/* <option value={'X'}>No</option>
-                            <option value={'O'}>Yes</option> */}
-                    </Form.Control>
-                  </Form.Group>
-                </h4>
+                {this.props.category === 'internal' ? (
+                  <h4>
+                    Category:<b className='text-danger'>Internal</b>
+                  </h4>
+                ) : (
+                  <h4>
+                    <Form.Group controlId="category">
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => this.handleChange_category(e)}
+                        defaultValue={this.props.category}
+                      >
+                        <option value={''}>Select Document Category</option>
+                        {valid_categories.map((cat, i) => (
+                          <option value={cat.key}>{cat.value}</option>
+                        ))}
+                      </Form.Control>
+                    </Form.Group>
+                  </h4>
+                )}
               </Col>
             </Row>{' '}
             <Row>

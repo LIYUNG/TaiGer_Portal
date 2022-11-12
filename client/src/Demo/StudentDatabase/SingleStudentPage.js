@@ -32,6 +32,7 @@ import SurveyComponent from '../Survey/SurveyComponent';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import Task from '../Task/Task';
+import { Redirect } from 'react-router-dom';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 
 class SingleStudentPage extends React.Component {
@@ -220,6 +221,13 @@ class SingleStudentPage extends React.Component {
     );
   };
   render() {
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Agent' &&
+      this.props.user.role !== 'Editor'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
     if (timeouterror) {

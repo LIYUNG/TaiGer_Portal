@@ -5,6 +5,7 @@ import Aux from '../../hoc/_Aux';
 import UsersList from './UsersList';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { Redirect } from 'react-router-dom';
 
 import { getUsers } from '../../api';
 
@@ -87,6 +88,9 @@ class UsersTable extends React.Component {
   };
 
   render() {
+    if (this.props.user.role !== 'Admin') {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
     const style = {
       position: 'fixed',

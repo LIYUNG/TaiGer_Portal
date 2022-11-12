@@ -7,6 +7,7 @@ import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOvervie
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { Redirect } from 'react-router-dom';
 import {
   getAllStudents,
   getArchivStudents,
@@ -147,6 +148,13 @@ class Dashboard extends React.Component {
   };
 
   render() {
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Agent' &&
+      this.props.user.role !== 'Editor'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
     if (timeouterror) {

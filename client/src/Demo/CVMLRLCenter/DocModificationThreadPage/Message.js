@@ -3,6 +3,7 @@ import { Card, Spinner, Collapse, Button, Row, Col } from 'react-bootstrap';
 import { RiMoreFill } from 'react-icons/ri';
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
 import { FileIcon, defaultStyles } from 'react-file-icon';
+import Output from 'editorjs-react-renderer';
 
 class Message extends Component {
   state = {
@@ -12,14 +13,14 @@ class Message extends Component {
   };
   componentDidMount() {
     var initialEditorState = null;
-    if (this.props.message.message) {
+    if (this.props.message.message && this.props.message.message !== '{}') {
       try {
         initialEditorState = JSON.parse(this.props.message.message);
       } catch (e) {
-        initialEditorState = {};
+        initialEditorState = { time: new Date(), blocks: [] };
       }
     } else {
-      initialEditorState = {};
+      initialEditorState = { time: new Date(), blocks: [] };
     }
     this.setState((state) => ({
       ...state,
@@ -123,13 +124,16 @@ class Message extends Component {
         >
           <Card.Body>
             {/* {JSON.stringify(this.state.editorState)} */}
-            <EditorSimple
+            <section>
+              <Output data={this.state.editorState} />
+            </section>
+            {/* <EditorSimple
               holder={`${this.props.message._id.toString()}`}
               readOnly={true}
               handleClickSave={this.props.handleClickSave}
               handleClickCancel={this.props.handleClickCancel}
               editorState={this.state.editorState}
-            />
+            /> */}
 
             {files_info}
           </Card.Body>

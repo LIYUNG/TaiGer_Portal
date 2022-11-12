@@ -14,6 +14,7 @@ import { getStudent } from '../../api';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import UniAssistListCard from './UniAssistListCard';
+import { Redirect } from 'react-router-dom';
 class UniAssistList extends React.Component {
   state = {
     isLoaded: false,
@@ -46,6 +47,9 @@ class UniAssistList extends React.Component {
   }
 
   render() {
+    if (this.props.user.role !== 'Student') {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
     if (timeouterror) {
@@ -102,7 +106,10 @@ class UniAssistList extends React.Component {
             </Card>
           </Col>
         </Row>
-        <UniAssistListCard student={this.state.student} role={this.props.user.role}/>
+        <UniAssistListCard
+          student={this.state.student}
+          role={this.props.user.role}
+        />
       </>
     );
   }

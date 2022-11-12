@@ -11,6 +11,7 @@ import {
 import { convertDate } from '../Utils/contants';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import 'react-datasheet-grid/dist/style.css';
+import { Redirect } from 'react-router-dom';
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
     error: null,
@@ -25,18 +26,9 @@ export default function MyCourses(props) {
     analyzed_course: '',
     expand: true
   });
-  // state = {
-  //   error: null,
-  //   timeouterror: null,
-  //   unauthorizederror: null,
-  //   isLoaded: false,
-  //   data: null,
-  //   success: false,
-  //   student: null,
-  //   checklists: [],
-  //   file: '',
-  //   expand: true
-  // };
+  if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
+    return <Redirect to="/dashboard/default" />;
+  }
   useEffect(() => {
     const student_id = props.match.params.student_id
       ? props.match.params.student_id
@@ -180,7 +172,10 @@ export default function MyCourses(props) {
     }));
   };
   const columns = [
-    { ...keyColumn('course_chinese', textColumn), title: 'Courses Name Chinese' },
+    {
+      ...keyColumn('course_chinese', textColumn),
+      title: 'Courses Name Chinese'
+    },
     {
       ...keyColumn('course_english', textColumn),
       title: 'Courses Name English'

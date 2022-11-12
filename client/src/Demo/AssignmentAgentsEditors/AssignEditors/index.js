@@ -6,6 +6,7 @@ import AssignEditorsPage from './AssignEditorsPage';
 import TimeOutErrors from '../../Utils/TimeOutErrors';
 import UnauthorizedError from '../../Utils/UnauthorizedError';
 import { SYMBOL_EXPLANATION } from '../../Utils/contants';
+import { Redirect } from 'react-router-dom';
 
 import {
   getStudents,
@@ -265,6 +266,9 @@ class AssignEditors extends React.Component {
   };
 
   render() {
+    if (this.props.user.role !== 'Admin') {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
     if (timeouterror) {

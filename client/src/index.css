@@ -5,3 +5,14 @@ body {
 .ce-toolbar__content {
   max-width: unset;
 }
+
+.image-tool__caption {
+  display: none;
+}
+
+.ce-block--stretched {
+  width: 100%;
+}
+.image-tool--withBackground {
+  width: 100%;
+}

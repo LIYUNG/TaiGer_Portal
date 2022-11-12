@@ -1,15 +1,12 @@
 import React from 'react';
-import { Spinner, Button } from 'react-bootstrap';
-// import { useParams } from "react-router-dom";
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
-import { getDocumentation } from '../../api';
+import { Spinner, Button, Row, Col, Card } from 'react-bootstrap';
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import PageNotFoundError from '../Utils/PageNotFoundError';
 import { updateDocumentationPage } from '../../api';
-
+import { valid_categories } from '../Utils/contants';
 import {
   getCategorizedDocumentationPage,
   createDocumentation,
@@ -43,6 +40,8 @@ class ApplicationList extends React.Component {
           this.setState({
             isLoaded: true,
             editorState: initialEditorState,
+            timeouterror: false,
+            pagenotfounderror: false,
             success: success
           });
         } else {
@@ -88,6 +87,8 @@ class ApplicationList extends React.Component {
             this.setState({
               isLoaded: true,
               editorState: initialEditorState,
+              timeouterror: false,
+              pagenotfounderror: false,
               success: success
             });
           } else {
@@ -131,6 +132,8 @@ class ApplicationList extends React.Component {
         if (success) {
           this.setState({
             success,
+            timeouterror: false,
+            pagenotfounderror: false,
             document_title: data.title,
             editorState,
             isEdit: !this.state.isEdit,
@@ -208,8 +211,28 @@ class ApplicationList extends React.Component {
     if (this.state.isEdit) {
       return (
         <>
+          <Row className="sticky-top ">
+            <Col>
+              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+                <Card.Header text={'dark'}>
+                  <Card.Title>
+                    <Row>
+                      <Col className="my-0 mx-0 text-light">
+                        {
+                          valid_categories.find(
+                            (categorie) =>
+                              categorie.key === this.props.match.params.category
+                          ).value
+                        }
+                      </Col>
+                    </Row>
+                  </Card.Title>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
           <DocPageEdit
-            category={"category"}
+            category={'category'}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}
@@ -223,6 +246,26 @@ class ApplicationList extends React.Component {
     } else {
       return (
         <>
+          <Row className="sticky-top ">
+            <Col>
+              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+                <Card.Header text={'dark'}>
+                  <Card.Title>
+                    <Row>
+                      <Col className="my-0 mx-0 text-light">
+                        {
+                          valid_categories.find(
+                            (categorie) =>
+                              categorie.key === this.props.match.params.category
+                          ).value
+                        }
+                      </Col>
+                    </Row>
+                  </Card.Title>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
           <DocPageView
             document={document}
             document_title={this.state.document_title}

@@ -10,6 +10,7 @@ import {
 import SurveyComponent from './SurveyComponent';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { Redirect } from 'react-router-dom';
 
 class Survey extends React.Component {
   state = {
@@ -54,6 +55,12 @@ class Survey extends React.Component {
   }
 
   render() {
+    if (
+      this.props.user.role !== 'Student' &&
+      this.props.user.role !== 'Guest'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { timeouterror, unauthorizederror, isLoaded } = this.state;
 
     if (timeouterror) {

@@ -1,9 +1,20 @@
 import React from 'react';
-import { Row, Col, Spinner, Table, Card, Modal, Button } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Spinner,
+  Table,
+  Card,
+  Modal,
+  Button,
+  Tab,
+  Tabs
+} from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
+import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 
 import { updateArchivStudents, SetFileAsFinal, getStudents } from '../../api';
 
@@ -155,7 +166,16 @@ class CVMLRLOverview extends React.Component {
         handleAsFinalFile={this.handleAsFinalFile}
       />
     ));
-
+    const cvmlrl_progress_closed = this.state.students.map((student, i) => (
+      <CVMLRLProgressClosed
+        key={i}
+        role={this.props.user.role}
+        user={this.props.user}
+        student={student}
+        isDashboard={true}
+        handleAsFinalFile={this.handleAsFinalFile}
+      />
+    ));
     return (
       <Aux>
         <Row className="sticky-top">
@@ -171,30 +191,60 @@ class CVMLRLOverview extends React.Component {
         </Row>
         <Row>
           <Col>
-            <Table
-              responsive
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-            >
-              <thead>
-                <tr>
-                  <>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    {(this.props.user.role === 'Admin' ||
-                      this.props.user.role === 'Editor' ||
-                      this.props.user.role === 'Agent') && <th>Action</th>}
-                  </>
-                  {window.cvmlrllist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>{cvmlrl_progress}</tbody>
-            </Table>
+            <Tabs defaultActiveKey="open">
+              <Tab eventKey="open" title="Open">
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr>
+                      <>
+                        <th></th>
+                        <th>First-, Last Name</th>
+                        {(this.props.user.role === 'Admin' ||
+                          this.props.user.role === 'Editor' ||
+                          this.props.user.role === 'Agent') && <th>Action</th>}
+                      </>
+                      {window.cvmlrllist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{cvmlrl_progress}</tbody>
+                </Table>
+              </Tab>
+              <Tab eventKey="closed" title="Closed">
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                >
+                  <thead>
+                    <tr>
+                      <>
+                        <th></th>
+                        <th>First-, Last Name</th>
+                        {(this.props.user.role === 'Admin' ||
+                          this.props.user.role === 'Editor' ||
+                          this.props.user.role === 'Agent') && <th>Action</th>}
+                      </>
+                      {window.cvmlrllist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{cvmlrl_progress_closed}</tbody>
+                </Table>
+              </Tab>
+            </Tabs>
           </Col>
         </Row>
         <Modal

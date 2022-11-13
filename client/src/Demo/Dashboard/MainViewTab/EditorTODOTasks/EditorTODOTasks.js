@@ -71,43 +71,44 @@ class EditorTODOTasks extends React.Component {
           application.doc_modification_thread.map(
             (application_doc_thread, idx) => (
               <>
-                {!application_doc_thread.isFinalVersion && (
-                  <tr key={idx}>
-                    <td>
-                      <Link
-                        to={
-                          '/student-database/' +
-                          this.props.student._id +
-                          '/CV_ML_RL'
-                        }
-                        className="text-info"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        {this.props.student.firstname}
-                        {' - '}
-                        {this.props.student.lastname}
-                      </Link>
-                    </td>
-                    <td>
-                      <Link
-                        to={
-                          '/document-modification/' +
-                          application_doc_thread.doc_thread_id._id
-                        }
-                        className="text-info"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        {application_doc_thread.doc_thread_id.file_type}
-                        {' - '}
-                        {application.programId.school}
-                        {' - '}
-                        {application.programId.program_name}
-                      </Link>
-                    </td>
-                    <td>{application.programId.application_deadline}</td>
-                    <td>{convertDate(application_doc_thread.updatedAt)}</td>
-                  </tr>
-                )}
+                {!application_doc_thread.isFinalVersion &&
+                  application.decided === 'O' && (
+                    <tr key={idx}>
+                      <td>
+                        <Link
+                          to={
+                            '/student-database/' +
+                            this.props.student._id +
+                            '/CV_ML_RL'
+                          }
+                          className="text-info"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          {this.props.student.firstname}
+                          {' - '}
+                          {this.props.student.lastname}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link
+                          to={
+                            '/document-modification/' +
+                            application_doc_thread.doc_thread_id._id
+                          }
+                          className="text-info"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          {application_doc_thread.doc_thread_id.file_type}
+                          {' - '}
+                          {application.programId.school}
+                          {' - '}
+                          {application.programId.program_name}
+                        </Link>
+                      </td>
+                      <td>{application.programId.application_deadline}</td>
+                      <td>{convertDate(application_doc_thread.updatedAt)}</td>
+                    </tr>
+                  )}
               </>
             )
           )

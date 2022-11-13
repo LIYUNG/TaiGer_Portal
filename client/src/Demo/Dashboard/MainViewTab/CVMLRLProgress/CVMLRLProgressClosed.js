@@ -11,7 +11,7 @@ import {
 import { Link } from 'react-router-dom';
 import { getNumberOfDays } from '../../../Utils/contants';
 import { BiCommentDots } from 'react-icons/bi';
-class CVMLRLProgress extends React.Component {
+class CVMLRLProgressClosed extends React.Component {
   handleAsFinalFileThread = (
     thread_id,
     student_id,
@@ -80,7 +80,7 @@ class CVMLRLProgress extends React.Component {
       this.props.student.generaldocs_threads &&
       this.props.student.generaldocs_threads.map((generaldocs_thread, i) => (
         <tr key={i}>
-          {!generaldocs_thread.isFinalVersion && (
+          {generaldocs_thread.isFinalVersion && (
             <>
               <td></td>
               <td>
@@ -164,7 +164,7 @@ class CVMLRLProgress extends React.Component {
       this.props.student.applications.map((application, i) =>
         application.doc_modification_thread.map((doc_thread, j) => (
           <tr key={j}>
-            {application.decided === 'O' && !doc_thread.isFinalVersion && (
+            {application.decided === 'O' && doc_thread.isFinalVersion && (
               <>
                 <td></td>
                 <td>
@@ -239,9 +239,7 @@ class CVMLRLProgress extends React.Component {
                     {application.programId.program_name}
                   </Link>
                 </td>
-                <td>
-                  {convertDate(doc_thread.updatedAt)}
-                </td>
+                <td>{convertDate(doc_thread.updatedAt)}</td>
                 <td>
                   {!doc_thread.isFinalVersion &&
                     getNumberOfDays(doc_thread.updatedAt, today)}
@@ -286,4 +284,4 @@ class CVMLRLProgress extends React.Component {
   }
 }
 
-export default CVMLRLProgress;
+export default CVMLRLProgressClosed;

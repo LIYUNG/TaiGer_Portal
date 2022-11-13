@@ -271,7 +271,6 @@ function Table2({ columns, data, userId }) {
     success: false,
     isloaded: false,
     error: null,
-    everlogin: false,
     modalShowAssignWindow: false,
     modalShowAssignSuccessWindow: false
   });
@@ -657,8 +656,7 @@ function ProgramList(props) {
     programs: null,
     isloaded: false,
     error: null,
-    unauthorizederror: null,
-    everlogin: false
+    unauthorizederror: null
   });
 
   useEffect(() => {

@@ -20,6 +20,9 @@ import { verify } from '../../../api';
 
 // import "./app.scss";
 import { logout } from '../../../api';
+const Component = React.lazy(() =>
+  import('../../../Demo/LoadingPage/LoadingPage')
+);
 
 function AdminLayout(props) {
   let [userdata, setUserdata] = useState({
@@ -121,7 +124,29 @@ function AdminLayout(props) {
     left: '50%',
     transform: 'translate(-50%, -50%)'
   };
-  if (!userdata.data && !userdata.everlogin) {
+
+  // if (!userdata.isloaded) {
+  //   return (
+  //     <Aux>
+  //       <ScrollToTop>
+  //         <Suspense fallback={<Loader />}>
+  //           <Switch>
+  //             <Route
+  //               path={'/'}
+  //               exact={false}
+  //               name={'Loading'}
+  //               render={(props) => (
+  //                 <Component {...props} setUserdata={setUserdata} />
+  //               )}
+  //             />
+  //             <Redirect from="/" to="/" />
+  //           </Switch>
+  //         </Suspense>
+  //       </ScrollToTop>
+  //     </Aux>
+  //   );
+  // }
+  if (!userdata.data) {
     return (
       <Aux>
         <ScrollToTop>

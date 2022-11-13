@@ -228,10 +228,6 @@ const IndeterminateCheckbox = React.forwardRef(
 // Our table component
 function Table2({ header, data, userId }) {
   let [statedataTable2, setStatedataTable2] = useState({
-    success: false,
-    isloaded: false,
-    error: null,
-    everlogin: false,
     modalShowAssignWindow: false,
     modalShowAssignSuccessWindow: false
   });
@@ -543,83 +539,9 @@ filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
 function AdmissionsTable(props) {
   let [statedata, setStatedata] = useState({
-    success: false,
-    students: null,
-    isloaded: false,
-    error: null,
-    unauthorizederror: null,
-    everlogin: false
+    students: props.students
   });
 
-  useEffect(() => {
-    getAdmissions().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        if (success) {
-          setStatedata((state) => ({
-            ...state,
-            success: success,
-            students: data,
-            isloaded: true
-          }));
-        } else {
-          if (resp.status === 401 || resp.status === 500) {
-            // this.setState({ isLoaded: true, error: true });
-            setStatedata((state) => ({
-              ...state,
-              error: true,
-              isloaded: true
-            }));
-          } else if (resp.status === 403) {
-            setStatedata((state) => ({
-              ...state,
-              unauthorizederror: true,
-              isloaded: true
-            }));
-            // this.setState({ isLoaded: true, unauthorizederror: true });
-          }
-        }
-      },
-      (error) =>
-        setStatedata((state) => ({
-          ...state,
-          error,
-          isloaded: true
-        }))
-    );
-  }, []);
-  // useEffect(() => {}, []);
-
-  // const data = React.useMemo(() => makeData(100000), []);
-  const style = {
-    position: 'fixed',
-    top: '40%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)'
-  };
-  if (statedata.error) {
-    return (
-      <div>
-        <TimeOutErrors />
-      </div>
-    );
-  }
-  if (statedata.unauthorizederror) {
-    return (
-      <div>
-        <UnauthorizedError />
-      </div>
-    );
-  }
-  if (!statedata.isloaded && !statedata.students) {
-    return (
-      <div style={style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
-  }
   let admissions_table = [];
   let rejections_table = [];
   let pending_table = [];

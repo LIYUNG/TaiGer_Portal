@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import DEMO from './../../../../store/constant';
 
 import NavLeft from './NavLeft';
 import NavRight from './NavRight';
@@ -36,7 +37,11 @@ class NavBar extends Component {
             >
               <span />
             </a>
-            <a className="b-brand mx-2">
+            <a
+              href={DEMO.BLANK_LINK}
+              className="b-brand mx-2"
+              style={{ textDecoration: 'none' }}
+            >
               <img
                 className="img-radius"
                 src={taiger_logo_small}
@@ -44,7 +49,7 @@ class NavBar extends Component {
               />
             </a>{' '}
             <Link
-              to={'/dashboard/defualt'}
+              to={'/dashboard/default'}
               style={{ textDecoration: 'none' }}
               className="b-brand mx-2"
             >

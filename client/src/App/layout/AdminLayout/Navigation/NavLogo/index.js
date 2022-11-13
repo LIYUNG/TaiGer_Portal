@@ -18,10 +18,6 @@ const navLogo = (props) => {
           className="b-brand mx-2"
           style={{ textDecoration: 'none' }}
         >
-          {/* <div>TODO:Put Logo</div>
-          <div className="b-bg">
-            <i className="feather icon-trending-up" />
-          </div> */}
           <img
             className="img-radius"
             src={taiger_logo_small}
@@ -29,7 +25,7 @@ const navLogo = (props) => {
           />
         </a>{' '}
         <Link
-          to={'/dashboard/defualt'}
+          to={'/dashboard/default'}
           style={{ textDecoration: 'none' }}
           className="b-brand mx-2"
         >

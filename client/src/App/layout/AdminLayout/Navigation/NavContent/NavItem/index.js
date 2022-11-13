@@ -77,7 +77,7 @@ class NavItem extends Component {
         itemTitle === 'Program List' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Map' ||
-        itemTitle === 'Admissions' ||
+        itemTitle === 'TaiGer Admissions' ||
         itemTitle === 'TaiGer AI' ||
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Archiv Students' ||
@@ -99,7 +99,7 @@ class NavItem extends Component {
         itemTitle === 'Charts' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Interview Training' ||
-        itemTitle === 'Admissions' ||
+        itemTitle === 'TaiGer Admissions' ||
         itemTitle === 'Map' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'TaiGer AI' ||

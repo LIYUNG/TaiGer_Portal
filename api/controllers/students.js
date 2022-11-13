@@ -280,19 +280,15 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     }
   }
 
-  const student = await Student.findByIdAndUpdate(
-    studentId,
-    {
-      agents: updated_agent_id
-    },
-    { new: true }
-  )
+  const student = await Student.findById(studentId);
+  student.notification.isRead_new_agent_assigned = false;
+  student.agents = updated_agent_id;
+  await student.save();
+
+  const student_upated = await Student.findById(studentId)
     .populate('applications.programId agents editors')
     .exec();
-  // const student = await Student.findById(studentId)
-  //   .populate('applications.programId agents editors')
-  //   .exec();
-  res.status(200).send({ success: true, data: student });
+  res.status(200).send({ success: true, data: student_upated });
 
   for (let i = 0; i < updated_agent.length; i++) {
     await informAgentNewStudentEmail(
@@ -354,17 +350,16 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     }
   }
 
-  const student = await Student.findByIdAndUpdate(
-    studentId,
-    {
-      editors: updated_editor_id
-    },
-    { new: true }
-  )
+  const student = await Student.findById(studentId);
+  student.notification.isRead_new_editor_assigned = false;
+  student.editors = updated_editor_id;
+  await student.save();
+
+  const student_upated = await Student.findById(studentId)
     .populate('applications.programId agents editors')
     .exec();
 
-  res.status(200).send({ success: true, data: student });
+  res.status(200).send({ success: true, data: student_upated });
 
   for (let i = 0; i < updated_editor.length; i += 1) {
     await informEditorNewStudentEmail(

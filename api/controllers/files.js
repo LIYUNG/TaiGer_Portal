@@ -571,7 +571,7 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
   // AWS S3
   // download the file via aws s3 here
   const student =
-    user.role == Role.Student ? user : await Student.findById(studentId);
+    user.role === Role.Student ? user : await Student.findById(studentId);
   if (!student) {
     logger.error('downloadProfileFile: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
@@ -1204,7 +1204,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   // const { _id } = student;
   let student_id;
   if (user.role === Role.Student || user.role === Role.Guest) {
-    student_id = user._id;
+    student_id = user._id.toString();
   } else {
     student_id = studentId;
   }
@@ -1247,7 +1247,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   // const { _id } = student;
   let student_id;
   if (user.role === Role.Student || user.role === Role.Guest) {
-    student_id = user._id;
+    student_id = user._id.toString();
   } else {
     student_id = studentId;
   }

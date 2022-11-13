@@ -5,9 +5,10 @@ import StudentMyself from './StudentMyself';
 import AgentReviewing_StudentView from '../MainViewTab/AgentReview/AgentReviewing_StudentView';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 import Generator from './Generator';
-import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
+import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
 import StudentTasks from '../MainViewTab/StudentTasks/index';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import { RiInformationLine } from 'react-icons/ri';
 import {
   check_academic_background_filled,
   check_applications_to_decided,
@@ -188,7 +189,8 @@ class StudentDashboard extends React.Component {
       />
     );
     const read_thread = (
-      <NewUpdatedThreadFromStudent
+      <RespondedThreads
+        user={this.props.user}
         role={this.props.role}
         student={this.state.student}
       />
@@ -263,6 +265,57 @@ class StudentDashboard extends React.Component {
                             e,
                             'isRead_uni_assist_task_assigned'
                           )
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
+        {/* new agents assigned banner */}
+        {student.notification &&
+          !student.notification.isRead_new_agent_assigned && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'primary'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <RiInformationLine size={18} />
+                    <b className="mx-2">Info:</b> New agent are assigned to you.{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(e, 'isRead_new_agent_assigned')
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )}
+        {/* new editors assigned banner */}
+        {student.notification &&
+          !student.notification.isRead_new_editor_assigned && (
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'primary'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <RiInformationLine size={18} />
+                    <b className="mx-2">Info:</b> New editor are assigned to
+                    you.{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeBanner(e, 'isRead_new_editor_assigned')
                         }
                       />
                     </span>

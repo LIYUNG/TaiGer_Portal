@@ -12,6 +12,7 @@ import {
   createDocumentation,
   deleteDocumentation
 } from '../../api';
+import { Redirect } from 'react-router-dom';
 
 class ApplicationList extends React.Component {
   state = {
@@ -162,6 +163,14 @@ class ApplicationList extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
   render() {
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Editor' &&
+      this.props.user.role !== 'Agent' &&
+      this.props.user.role !== 'Student'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
     const {
       unauthorizederror,
       timeouterror,

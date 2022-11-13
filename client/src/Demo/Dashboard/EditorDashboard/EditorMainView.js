@@ -4,9 +4,10 @@ import { Row, Col, Tabs, Tab, Table, Card } from 'react-bootstrap';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
-import NewUpdatedThreadFromStudent from '../MainViewTab/NewUpdatedThreadFromStudent/NewUpdatedThreadFromStudent';
-import NewUpdatedThreadFromEditor from '../MainViewTab/NewUpdatedThreadFromEditor/NewUpdatedThreadFromEditor';
+import UnrespondedThreads from '../MainViewTab/NewUpdatedThreadFromStudent/UnrespondedThreads';
+import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
 import EditorTODOTasks from '../MainViewTab/EditorTODOTasks/EditorTODOTasks';
+import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 class EditorMainView extends React.Component {
   render() {
@@ -43,7 +44,8 @@ class EditorMainView extends React.Component {
         </thead>
         <tbody>
           {this.props.students.map((student, i) => (
-            <NewUpdatedThreadFromStudent
+            <UnrespondedThreads
+              user={this.props.user}
               key={student._id}
               role={this.props.role}
               student={student}
@@ -63,7 +65,8 @@ class EditorMainView extends React.Component {
         </thead>
         <tbody>
           {this.props.students.map((student, i) => (
-            <NewUpdatedThreadFromEditor
+            <RespondedThreads
+              user={this.props.user}
               key={student._id}
               role={this.props.role}
               student={student}
@@ -97,7 +100,7 @@ class EditorMainView extends React.Component {
     return (
       <>
         <Row>
-          <Col md={6}>
+          <Col md={12}>
             <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title>Unread messages:</Card.Title>
@@ -114,7 +117,7 @@ class EditorMainView extends React.Component {
               </Table>
             </Card>
           </Col>
-          <Col md={6}>
+          {/* <Col md={6}>
             <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title>Waiting responses:</Card.Title>
@@ -130,13 +133,16 @@ class EditorMainView extends React.Component {
                 {read_thread}
               </Table>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
         <Row>
           <Col md={12}>
             <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
-                <Card.Title>Editor Open Tasks:</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  <BsExclamationTriangle size={18} />{' '}
+                  Editor Open Tasks:
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive

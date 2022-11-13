@@ -391,6 +391,7 @@ class Dashboard extends React.Component {
               </div>
             )}
             <AdminMainView
+              user={this.props.user}
               role={this.props.user.role}
               editAgent={this.editAgent}
               editEditor={this.editEditor}
@@ -421,6 +422,7 @@ class Dashboard extends React.Component {
               </div>
             )}
             <AgentMainView
+              user={this.props.user}
               role={this.props.user.role}
               isLoaded={isLoaded}
               students={this.state.students}
@@ -444,6 +446,7 @@ class Dashboard extends React.Component {
               </div>
             )}
             <EditorMainView
+              user={this.props.user}
               role={this.props.user.role}
               editAgent={this.editAgent}
               editEditor={this.editEditor}
@@ -468,6 +471,7 @@ class Dashboard extends React.Component {
               </div>
             )}
             <StudentDashboard
+              user={this.props.user}
               role={this.props.user.role}
               student={this.state.students[0]}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}

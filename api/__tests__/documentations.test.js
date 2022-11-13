@@ -72,16 +72,18 @@ describe('POST /api/docs/:category', () => {
   const category_certification = 'certification';
   const category_application = 'application';
   const article = {
-    Titel_: 'article.Titel_',
-    Content_: 'article.Content_',
-    Category_: 'uniassist',
-    LastUpdate_: 'article.LastUpdate_'
+    name: 'article.name',
+    title: 'article.title',
+    text: 'article.text',
+    updatedAt: new Date().toString(),
+    country: 'article.updatedAt'
   };
   const Newarticle = {
-    Titel_: 'Newarticle.Titel_',
-    Content_: 'Newarticle.Content_',
-    Category_: 'uniassist',
-    LastUpdate_: 'article.LastUpdate_'
+    name: 'article.name',
+    title: 'Newarticle.title',
+    text: 'Newarticle.text',
+    updatedAt: new Date().toString(),
+    country: 'article.updatedAt'
   };
   var article_id;
 
@@ -102,8 +104,9 @@ describe('POST /api/docs/:category', () => {
     expect(status).toBe(200);
     expect(body.success).toBe(true);
     var new_article = body.data;
-    expect(new_article).toMatchObject(article);
-    article_id = new_article._id;
+    expect(new_article.title).toBe(article.title);
+    expect(new_article.text).toBe(article.text);
+    article_id = new_article._id.toString();
 
     // Test Get Article:
     const resp2 = await request(app)
@@ -123,16 +126,17 @@ describe('POST /api/docs/:category', () => {
       .buffer();
     expect(resp2_visa.status).toBe(200);
 
-    // test update profile status
-    const feedback_str = 'too blurred';
+    // test update doc status
     const resp5 = await request(app)
-      .post(`/api/docs/${article_id}`)
+      .put(`/api/docs/${article_id}`)
       .send(Newarticle);
     expect(resp5.status).toBe(201);
+
     var new_article = resp5.body.data;
 
     expect(resp5.body.success).toBe(true);
-    expect(new_article).toMatchObject(Newarticle);
+    expect(new_article.title).toBe(Newarticle.title);
+    expect(new_article.text).toBe(Newarticle.text);
 
     // test delete
     const resp4 = await request(app).delete(`/api/docs/${article_id}`);

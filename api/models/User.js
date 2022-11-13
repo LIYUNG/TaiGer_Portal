@@ -60,11 +60,11 @@ const UserSchema = new Schema(
       },
       isRead_new_agent_assigned: {
         type: Boolean,
-        default: false
+        default: true
       },
       isRead_new_editor_assigned: {
         type: Boolean,
-        default: false
+        default: true
       },
       isRead_new_cvmlrl_tasks_created: {
         type: Boolean,
@@ -72,7 +72,7 @@ const UserSchema = new Schema(
       },
       isRead_new_cvmlrl_messsage: {
         type: Boolean,
-        default: false
+        default: true
       },
       isRead_base_documents_missing: {
         type: Boolean,

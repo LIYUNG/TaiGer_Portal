@@ -291,11 +291,12 @@ class UniAssistListCard extends React.Component {
               <Row>
                 <Link
                   to={'/programs/' + application.programId._id.toString()}
-                  className="text-info"
                   style={{ textDecoration: 'none' }}
                 >
-                  {application.programId.school}{' '}
-                  {application.programId.program_name}
+                  <h4 className="text-info">
+                    {application.programId.school}{' '}
+                    {application.programId.program_name}
+                  </h4>
                   {' Yes-FULL'}
                 </Link>
               </Row>
@@ -401,11 +402,12 @@ class UniAssistListCard extends React.Component {
               <Row>
                 <Link
                   to={'/programs/' + application.programId._id.toString()}
-                  className="text-info"
                   style={{ textDecoration: 'none' }}
                 >
-                  {application.programId.school}{' '}
-                  {application.programId.program_name}
+                  <h4 className="text-info">
+                    {application.programId.school}{' '}
+                    {application.programId.program_name}
+                  </h4>
                   {' Yes-VPD'}
                 </Link>
               </Row>
@@ -530,10 +532,15 @@ class UniAssistListCard extends React.Component {
         {application.programId.uni_assist === 'No' &&
           application.decided === 'O' && (
             <>
-              <p className="text-info">
-                {application.programId.school}{' '}
-                {application.programId.program_name}
-              </p>
+              <Link
+                to={'/programs/' + application.programId._id.toString()}
+                style={{ textDecoration: 'none' }}
+              >
+                <h4 className="text-info">
+                  {application.programId.school}{' '}
+                  {application.programId.program_name}
+                </h4>
+              </Link>
               <p className="text-light">
                 This program does NOT require Uni-Assist.
               </p>

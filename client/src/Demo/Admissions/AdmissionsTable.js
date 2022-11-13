@@ -47,7 +47,7 @@ function GlobalFilter({
           onChange(e.target.value);
         }}
         // placeholder={`${count} records...`}
-        placeholder={` TU Munich, Management ...`}
+        placeholder={` TUM, Management ...`}
         style={{
           fontSize: '0.9rem',
           border: '0'

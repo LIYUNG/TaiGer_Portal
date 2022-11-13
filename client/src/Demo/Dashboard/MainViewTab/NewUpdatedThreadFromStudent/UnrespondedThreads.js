@@ -10,10 +10,10 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import { convertDate } from '../../../Utils/contants';
 
-class NewUpdatedThreadFromStudent extends React.Component {
+class UnrespondedThreads extends React.Component {
   render() {
-    var unread_general_generaldocs;
-    var unread_applications_docthread;
+    var unread_general_generaldocs = 0;
+    var unread_applications_docthread = 0;
 
     if (
       this.props.student.applications === undefined ||
@@ -26,8 +26,8 @@ class NewUpdatedThreadFromStudent extends React.Component {
         (generaldocs_threads, i) => (
           <tr key={i}>
             {!generaldocs_threads.isFinalVersion &&
-              generaldocs_threads.latest_message_left_by_id ===
-                this.props.student._id.toString() && (
+              generaldocs_threads.latest_message_left_by_id !==
+                this.props.user._id.toString() && (
                 <>
                   <td>
                     <Link
@@ -72,8 +72,9 @@ class NewUpdatedThreadFromStudent extends React.Component {
             (application_doc_thread, idx) => (
               <tr key={i * 20 + idx}>
                 {!application_doc_thread.isFinalVersion &&
-                  application_doc_thread.latest_message_left_by_id ===
-                    this.props.student._id.toString() && (
+                  application_doc_thread.latest_message_left_by_id !==
+                    this.props.user._id.toString() &&
+                  application_doc_thread.latest_message_left_by_id !== '' && (
                     <>
                       <td>
                         <Link
@@ -117,7 +118,8 @@ class NewUpdatedThreadFromStudent extends React.Component {
           )
       );
     }
-
+    console.log(unread_general_generaldocs);
+    console.log(unread_applications_docthread);
     return (
       <>
         {unread_general_generaldocs}
@@ -127,4 +129,4 @@ class NewUpdatedThreadFromStudent extends React.Component {
   }
 }
 
-export default NewUpdatedThreadFromStudent;
+export default UnrespondedThreads;

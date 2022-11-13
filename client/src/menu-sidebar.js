@@ -125,20 +125,6 @@ export default {
           icon: 'feather icon-eye'
         },
         {
-          id: 'admissions_overview',
-          title: 'Admissions',
-          type: 'item',
-          icon: 'feather icon-award',
-          url: '/admissions-overview'
-        },
-        {
-          id: 'archiv-student',
-          title: 'Archiv Students',
-          type: 'item',
-          icon: 'feather icon-users',
-          url: '/archiv/students'
-        },
-        {
           id: 'user-table',
           title: 'User List',
           type: 'item',
@@ -202,6 +188,20 @@ export default {
           url: '/taigerai',
           classes: 'nav-item',
           icon: 'feather icon-box'
+        },
+        {
+          id: 'admissions_overview',
+          title: 'TaiGer Admissions',
+          type: 'item',
+          icon: 'feather icon-award',
+          url: '/admissions-overview'
+        },
+        {
+          id: 'archiv-student',
+          title: 'Archiv Students',
+          type: 'item',
+          icon: 'feather icon-users',
+          url: '/archiv/students'
         },
         {
           id: 'docs',

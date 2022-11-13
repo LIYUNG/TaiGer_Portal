@@ -1,16 +1,8 @@
 import React from 'react';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineUndo
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-// import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import { convertDate } from '../../../Utils/contants';
 
-class NewUpdatedThreadFromEditor extends React.Component {
+class RespondedThreads extends React.Component {
   render() {
     var unread_general_generaldocs;
     var unread_applications_docthread;
@@ -26,8 +18,8 @@ class NewUpdatedThreadFromEditor extends React.Component {
         (generaldocs_threads, i) => (
           <tr key={i}>
             {!generaldocs_threads.isFinalVersion &&
-              generaldocs_threads.latest_message_left_by_id !==
-                this.props.student._id.toString() && (
+              generaldocs_threads.latest_message_left_by_id ===
+                this.props.user._id.toString() && (
                 <>
                   <td>
                     <Link
@@ -72,8 +64,8 @@ class NewUpdatedThreadFromEditor extends React.Component {
             (application_doc_thread, idx) => (
               <tr key={idx}>
                 {!application_doc_thread.isFinalVersion &&
-                  application_doc_thread.latest_message_left_by_id !==
-                    this.props.student._id.toString() &&
+                  application_doc_thread.latest_message_left_by_id ===
+                    this.props.user._id.toString() &&
                   application.decided === 'O' && (
                     <>
                       <td>
@@ -137,4 +129,4 @@ class NewUpdatedThreadFromEditor extends React.Component {
   }
 }
 
-export default NewUpdatedThreadFromEditor;
+export default RespondedThreads;

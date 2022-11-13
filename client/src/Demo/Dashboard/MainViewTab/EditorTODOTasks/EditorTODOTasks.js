@@ -9,6 +9,7 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import { convertDate } from '../../../Utils/contants';
+import { application_deadline_calculator } from '../../../Utils/checking-functions';
 
 class EditorTODOTasks extends React.Component {
   render() {
@@ -24,9 +25,9 @@ class EditorTODOTasks extends React.Component {
     } else {
       unread_general_generaldocs = this.props.student.generaldocs_threads.map(
         (generaldocs_threads, i) => (
-          <>
+          <tr key={i}>
             {!generaldocs_threads.isFinalVersion && (
-              <tr key={i}>
+              <>
                 <td>
                   <Link
                     to={
@@ -60,9 +61,9 @@ class EditorTODOTasks extends React.Component {
                   {', '}
                   {new Date(generaldocs_threads.updatedAt).toLocaleTimeString()}
                 </td>
-              </tr>
+              </>
             )}
-          </>
+          </tr>
         )
       );
 
@@ -70,10 +71,10 @@ class EditorTODOTasks extends React.Component {
         (application, i) =>
           application.doc_modification_thread.map(
             (application_doc_thread, idx) => (
-              <>
+              <tr key={idx}>
                 {!application_doc_thread.isFinalVersion &&
                   application.decided === 'O' && (
-                    <tr key={idx}>
+                    <>
                       <td>
                         <Link
                           to={
@@ -105,11 +106,16 @@ class EditorTODOTasks extends React.Component {
                           {application.programId.program_name}
                         </Link>
                       </td>
-                      <td>{application.programId.application_deadline}</td>
+                      <td>
+                        {application_deadline_calculator(
+                          this.props.student,
+                          application
+                        )}
+                      </td>
                       <td>{convertDate(application_doc_thread.updatedAt)}</td>
-                    </tr>
+                    </>
                   )}
-              </>
+              </tr>
             )
           )
       );

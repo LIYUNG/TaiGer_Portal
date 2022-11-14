@@ -428,7 +428,7 @@ program_sort_function = [TUM_MMT, TUM_CONSUMER_SCIENCE,
                          UNI_KOELN_BA, UNI_MANNHEIM_MGM, UNI_MAGDEBURG_FIN_ECO, TU_DRESDEN_TRANSPORT_ECONOM]
 
 
-def MGM_sorter(program_idx, file_path, abbrev):
+def MGM_sorter(program_idx, file_path, abbrev, studentId):
     basic_classification_en = {
         '微積分': [MGM_CALCULUS_KEY_WORDS_EN, MGM_CALCULUS_ANTI_KEY_WORDS_EN],
         '數學': [MGM_MATH_KEY_WORDS_EN, MGM_MATH_ANTI_KEY_WORDS_EN],
@@ -466,4 +466,4 @@ def MGM_sorter(program_idx, file_path, abbrev):
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, file_path, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId)

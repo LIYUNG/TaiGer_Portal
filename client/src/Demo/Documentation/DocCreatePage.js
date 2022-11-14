@@ -336,7 +336,9 @@ class DocCreatePage extends React.Component {
                           >
                             <option value={''}>Select Document Category</option>
                             {valid_categories.map((cat, i) => (
-                              <option value={cat.key}>{cat.value}</option>
+                              <option value={cat.key} key={i}>
+                                {cat.value}
+                              </option>
                             ))}
                             {/* <option value={'X'}>No</option>
                             <option value={'O'}>Yes</option> */}

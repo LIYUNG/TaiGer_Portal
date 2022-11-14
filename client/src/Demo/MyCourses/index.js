@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -8,10 +8,10 @@ import {
   postMycourses,
   transcriptanalyser_test
 } from '../../api';
-import { convertDate } from '../Utils/contants';
+import { convertDate, study_group } from '../Utils/contants';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import 'react-datasheet-grid/dist/style.css';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
     error: null,
@@ -23,12 +23,13 @@ export default function MyCourses(props) {
     success: false,
     student: null,
     file: '',
+    study_group: '',
     analyzed_course: '',
     expand: true
   });
-  if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
-    return <Redirect to="/dashboard/default" />;
-  }
+  // if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
+  //   return <Redirect to="/dashboard/default" />;
+  // }
   useEffect(() => {
     const student_id = props.match.params.student_id
       ? props.match.params.student_id
@@ -95,6 +96,15 @@ export default function MyCourses(props) {
     }));
   };
 
+  const handleChange_study_group = (e) => {
+    e.preventDefault();
+    const { value } = e.target;
+    setStatedata((state) => ({
+      ...state,
+      study_group: value
+    }));
+  };
+
   const onSubmit = () => {
     const coursesdata_string = JSON.stringify(statedata.coursesdata);
     postMycourses(statedata.student._id.toString(), {
@@ -132,37 +142,41 @@ export default function MyCourses(props) {
   };
 
   const onAnalyse = () => {
-    const coursesdata_string = JSON.stringify(statedata.coursesdata);
-    transcriptanalyser_test(statedata.student._id.toString(), 'ee').then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const course_from_database = JSON.parse(data.table_data_string);
-        if (success) {
+    if (statedata.study_group === '') {
+      alert("Select study group.")
+      return;
+    }
+    transcriptanalyser_test(
+      statedata.student._id.toString(),
+      statedata.study_group
+    ).then((resp) => {
+      const { data, success } = resp.data;
+      const course_from_database = JSON.parse(data.table_data_string);
+      if (success) {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          // updatedAt: data.updatedAt,
+          analyzed_course: data,
+          confirmModalWindowOpen: true,
+          success: success
+        }));
+      } else {
+        if (resp.status === 401 || resp.status === 500) {
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
-            // updatedAt: data.updatedAt,
-            analyzed_course: data,
-            confirmModalWindowOpen: true,
-            success: success
+            timeouterror: true
           }));
-        } else {
-          if (resp.status === 401 || resp.status === 500) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              timeouterror: true
-            }));
-          } else if (resp.status === 403) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              unauthorizederror: true
-            }));
-          }
+        } else if (resp.status === 403) {
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            unauthorizederror: true
+          }));
         }
       }
-    );
+    });
   };
 
   const closeModal = () => {
@@ -286,7 +300,28 @@ export default function MyCourses(props) {
               <Card.Body>
                 <Row>
                   <Col>
-                    <p>Analyser</p>
+                    <h4>Analyser</h4>
+                  </Col>
+                </Row>
+                <br />
+                <Row>
+                  <Col>
+                    <Form.Group controlId="study_group">
+                      <Form.Label>Select target group</Form.Label>
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => handleChange_study_group(e)}
+                      >
+                        <option value={''}>Select Study Group</option>
+                        {study_group.map((cat, i) => (
+                          <option value={cat.key} key={i}>
+                            {cat.value}
+                          </option>
+                        ))}
+                        {/* <option value={'X'}>No</option>
+                            <option value={'O'}>Yes</option> */}
+                      </Form.Control>
+                    </Form.Group>
                   </Col>
                 </Row>
                 <br />

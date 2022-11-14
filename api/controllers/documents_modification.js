@@ -114,7 +114,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     const thread_in_student_generaldoc_existed =
       student.generaldocs_threads.find(
         ({ doc_thread_id }) =>
-          doc_thread_id._id.toString() == doc_thread_existed._id.toString()
+          doc_thread_id._id.toString() === doc_thread_existed._id.toString()
       );
     // if thread existed but not in student application thread, then add it.
     if (!thread_in_student_generaldoc_existed) {

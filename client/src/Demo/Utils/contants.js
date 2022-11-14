@@ -49,6 +49,16 @@ export const SYMBOL_EXPLANATION = (
   </>
 );
 
+export const study_group = [
+  { key: 'ee', value: 'Eletrical/Electronics Engineering' },
+  { key: 'cs', value: 'Computer Science' },
+  { key: 'mgm', value: 'Business/Management' },
+  { key: 'dsbi', value: 'Data Science/Business Intelligence' },
+  { key: 'me', value: 'Mechanical Engineering' },
+  { key: 'mtl', value: 'Materials Science' }
+  // { key: 'visa', value: 'Visa' }
+];
+
 export const valid_categories = [
   { key: 'application', value: 'Application' },
   { key: 'base-documents', value: 'Base-documents' },

@@ -114,7 +114,7 @@ program_sort_function = [TUM_TransportEngineering,
                          RWTH_TransportationENgineering]
 
 
-def TE_sorter(program_idx, file_path, abbrev):
+def TE_sorter(program_idx, file_path, abbrev, studentId):
 
     basic_classification_en = {
         '微積分': [EE_CALCULUS_KEY_WORDS_EN, EE_CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -161,4 +161,4 @@ def TE_sorter(program_idx, file_path, abbrev):
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, file_path, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId)

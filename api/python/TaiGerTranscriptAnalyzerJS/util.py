@@ -4,6 +4,10 @@ from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import gc
 import sys
 import os
+import io
+import boto3
+from dotenv import load_dotenv
+
 
 KEY_WORDS = 0
 ANTI_KEY_WORDS = 1
@@ -130,7 +134,6 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
         idx_temp = -1
         for idx2, cat in enumerate(df_PROG_SPEC_CATES):
             if categ == cat.columns[0]:
-                # print(cat.columns[0])
                 idx_temp = idx2
                 break
         # remove the redundant suggestion courses mapping to "Others" because those categories in Others are not advanced courses.
@@ -197,11 +200,13 @@ def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, tran
 
 def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
     for idx, trans_cat in enumerate(df_PROG_SPEC_CATES):
-        credit_sum = df_PROG_SPEC_CATES[idx]['credits'].sum()
+        credit_sum = df_PROG_SPEC_CATES[idx]['credits'].astype(float).sum()
         category_credits_sum = {
             trans_cat.columns[0]: "sum", 'credits': credit_sum}
         df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(
             category_credits_sum, ignore_index=True)
+        # print(df_PROG_SPEC_CATES[idx]['credits'])
+        # print(credit_sum)
         category_credits_sum = {trans_cat.columns[0]: "ECTS轉換", 'credits': 1.5 *
                                 credit_sum, 'Required_ECTS': program_category[idx]['Required_ECTS']}
         df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(
@@ -263,7 +268,7 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
     print("Save to " + program_name)
 
 
-def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function):
+def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId):
 
     # program_idx, file_path, abbrev
     Database_Path = env_file_path + '/'
@@ -344,48 +349,119 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
 
     # print(df_category_data)
     df_category_data_basic_classification = pd.DataFrame(df_category_data)
-    print(df_category_data_basic_classification)
+    # print(df_category_data_basic_classification)
 
     # print(df_category_courses_sugesstion_data)
     # output_file_name = 'analyzed_' + input_file_name
-    # writer = pd.ExcelWriter(
-    #     Output_Path+output_file_name, engine='xlsxwriter')
-
     sorted_courses = df_category_data
+    # if isinstance(df_category_data_basic_classification, pd.DataFrame):
+    #     print("YES")
+    # with io.BytesIO() as output:
+    #     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    #         df_category_data_basic_classification.to_excel(writer)
+    #     data = output.getvalue()
 
-    # start_row = 0
-    # for idx, sortedcourses in enumerate(sorted_courses):
-    #     sortedcourses.to_excel(
-    #         writer, sheet_name='General', startrow=start_row, index=False)
-    #     start_row += len(sortedcourses.index) + 2
-    # workbook = writer.book
-    # worksheet = writer.sheets['General']
+    # print(data)
 
-    # red_out_failed_subject(workbook, worksheet, 1, start_row)
+    
+    # with io.BytesIO() as output:
+    #     writer = pd.ExcelWriter(
+    #         output, engine='xlsxwriter')
 
-    # for i, col in enumerate(df_transcript.columns):
-    #     # find length of column i
+    #     sorted_courses = df_category_data
 
-    #     column_len = df_transcript[col].astype(str).str.len().max()
-    #     # Setting the length if the column header is larger
-    #     # than the max column value length
-    #     if i == 1:
-    #         column_len_array.append(len(col))
-    #     else:
-    #         column_len_array.append(max(column_len, len(col)))
+    #     start_row = 0
+    #     for idx, sortedcourses in enumerate(sorted_courses):
+    #         sortedcourses.to_excel(
+    #             writer, sheet_name='General', startrow=start_row, index=False)
+    #         start_row += len(sortedcourses.index) + 2
+    #     workbook = writer.book
+    #     worksheet = writer.sheets['General']
 
-    #     # set the column length
-    #     worksheet.set_column(i, i, column_len_array[i] * 2)
+    #     red_out_failed_subject(workbook, worksheet, 1, start_row)
 
-    # # Modify to column width for "Required_ECTS"
-    # column_len_array.append(6)
+    #     for i, col in enumerate(df_transcript.columns):
+    #         # find length of column i
 
-    # for idx in program_idx:
-    #     program_sort_function[idx](
-    #         transcript_sorted_group_map,
-    #         sorted_courses,
-    #         df_category_courses_sugesstion_data,
-    #         writer)
+    #         column_len = df_transcript[col].astype(str).str.len().max()
+    #         # Setting the length if the column header is larger
+    #         # than the max column value length
+    #         if i == 1:
+    #             column_len_array.append(len(col))
+    #         else:
+    #             column_len_array.append(max(column_len, len(col)))
+
+    #         # set the column length
+    #         worksheet.set_column(i, i, column_len_array[i] * 2)
+
+    #     # Modify to column width for "Required_ECTS"
+    #     column_len_array.append(6)
+
+    #     for idx in program_idx:
+    #         program_sort_function[idx](
+    #             transcript_sorted_group_map,
+    #             sorted_courses,
+    #             df_category_courses_sugesstion_data,
+    #             writer)
+    #     data = output.getvalue()
+
+    
+
+    with io.BytesIO() as output:
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            start_row = 0
+            for idx, sortedcourses in enumerate(sorted_courses):
+                sortedcourses.to_excel(
+                    writer, sheet_name='General', startrow=start_row, index=False)
+                start_row += len(sortedcourses.index) + 2
+            workbook = writer.book
+            worksheet = writer.sheets['General']
+
+            red_out_failed_subject(workbook, worksheet, 1, start_row)
+
+            for i, col in enumerate(df_transcript.columns):
+                # find length of column i
+
+                column_len = df_transcript[col].astype(str).str.len().max()
+                # Setting the length if the column header is larger
+                # than the max column value length
+                if i == 1:
+                    column_len_array.append(len(col))
+                else:
+                    column_len_array.append(max(column_len, len(col)))
+
+                # set the column length
+                worksheet.set_column(i, i, column_len_array[i] * 2)
+                # Modify to column width for "Required_ECTS"
+                column_len_array.append(6)
+
+            for idx in program_idx:
+                program_sort_function[idx](
+                    transcript_sorted_group_map,
+                    sorted_courses,
+                    df_category_courses_sugesstion_data,
+                    writer)
+
+        data = output.getvalue()
+
+    BASEDIR = os.path.abspath(os.path.dirname(__file__))
+    full_path = os.path.join(BASEDIR, '..\..\.env.development') # TODO: change in production
+    load_dotenv(full_path)
+
+    AWS_S3_BUCKET_NAME= os.environ.get("AWS_S3_BUCKET_NAME")
+    AWS_S3_ACCESS_KEY_ID= os.environ.get("AWS_S3_ACCESS_KEY_ID")
+    AWS_S3_ACCESS_KEY= os.environ.get("AWS_S3_ACCESS_KEY")
+    session = boto3.Session(
+    aws_access_key_id=AWS_S3_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_S3_ACCESS_KEY,
+    )
+    s3 = session.resource('s3')
+    transcript_path = studentId + '/analysed_transcript.xlsx'
+    s3.Bucket(AWS_S3_BUCKET_NAME).put_object(Key=transcript_path, Body=data)
+
+
+
+
 
     # writer.save()
     # print("output data at: " + Output_Path + output_file_name)

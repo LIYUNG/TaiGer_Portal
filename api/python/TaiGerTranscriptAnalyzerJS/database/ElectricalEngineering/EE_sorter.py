@@ -559,7 +559,7 @@ program_sort_function = [TUM_EI,
                          TUHH_MICROELECTRONICS]
 
 
-def EE_sorter(program_idx, obj_arr, abbrev):
+def EE_sorter(program_idx, obj_arr, abbrev, studentId):
 
     basic_classification_en = {
         '微積分': [EE_CALCULUS_KEY_WORDS_EN, EE_CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -610,4 +610,4 @@ def EE_sorter(program_idx, obj_arr, abbrev):
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, obj_arr, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId)

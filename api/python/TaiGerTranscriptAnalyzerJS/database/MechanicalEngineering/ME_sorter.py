@@ -1091,7 +1091,7 @@ program_sort_function = [RWTH_AUTO, TUM_MW, TUHH_MECHATRONICS,
                          ]
 
 
-def ME_sorter(program_idx, file_path, abbrev):
+def ME_sorter(program_idx, file_path, abbrev, studentId):
 
     basic_classification_en = {
             '微積分': [ME_CALCULUS_KEY_WORDS_EN, ME_CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -1136,4 +1136,4 @@ def ME_sorter(program_idx, file_path, abbrev):
             '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, file_path, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId)

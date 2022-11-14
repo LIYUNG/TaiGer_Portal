@@ -961,6 +961,9 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     return res.send({ success: true, data: {} });
   }
   const stringified_courses = JSON.stringify(courses.table_data_string);
+
+  // TODO: multitenancy studentId?
+
   // const filename = req.file.key; // key is updated file name
   // const filePath = path.join(req.file.metadata.path, req.file.key);
   // logger.info(
@@ -988,7 +991,8 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
           'main.py'
         ),
         stringified_courses,
-        category
+        category,
+        studentId
       ],
       { stdio: 'inherit' }
     );

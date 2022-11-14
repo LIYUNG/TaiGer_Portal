@@ -11,6 +11,18 @@ def red_out_failed_subject(workbook, worksheet, row_begin, row_end):
                                                 'minimum': 4.5,
                                                 'maximum': 59,
                                                 'format': fmt1})
+    worksheet.conditional_format(column_range, {'type': 'text',
+                                                'criteria': 'containing',
+                                                'value': 'W',
+                                                'format': fmt1})
+    worksheet.conditional_format(column_range, {'type': 'text',
+                                                'criteria': 'containing',
+                                                'value': 'F',
+                                                'format': fmt1})
+    worksheet.conditional_format(column_range, {'type': 'text',
+                                                'criteria': 'containing',
+                                                'value': 'fail',
+                                                'format': fmt1})
 
 
 def red_out_insufficient_credit(workbook, worksheet):

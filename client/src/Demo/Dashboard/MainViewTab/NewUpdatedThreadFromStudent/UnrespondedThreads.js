@@ -118,8 +118,6 @@ class UnrespondedThreads extends React.Component {
           )
       );
     }
-    console.log(unread_general_generaldocs);
-    console.log(unread_applications_docthread);
     return (
       <>
         {unread_general_generaldocs}

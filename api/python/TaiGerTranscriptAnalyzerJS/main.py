@@ -4,6 +4,12 @@ import json
 import os
 import pandas as pd
 from database.ElectricalEngineering.EE_sorter import *
+from database.ComputerScience.CS_sorter import *
+from database.MechanicalEngineering.ME_sorter import *
+from database.MaterialsScience.MTL_sorter import *
+from database.Management.MGM_sorter import *
+from database.DataScience_BusinessIntelligence.DSBI_sorter import *
+from database.TransportationEngineering.TE_sorter import *
 
 file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)
@@ -15,7 +21,8 @@ if __name__ == "__main__":
     obj_arr = json.loads(obj)
     # for obj in obj_arr:
     #     print(obj['course_chinese'])
-        
+    studentId = sys.argv[3]
+
     program_idx = []
     program_selection_path = ''
     if sys.argv[2] == 'cs':
@@ -54,4 +61,18 @@ if __name__ == "__main__":
         if(choose == 'Yes'):
             program_idx.append(idx) 
 
-    EE_sorter(program_idx, obj_arr, 'EE')
+    # EE_sorter(program_idx, obj_arr, 'EE', studentId)
+    if sys.argv[2] == 'cs':
+        CS_sorter(program_idx, obj_arr, 'CS', studentId)
+    elif sys.argv[2] == 'ee':
+        EE_sorter(program_idx, obj_arr, 'EE', studentId)
+    elif sys.argv[2] == 'me':
+        ME_sorter(program_idx, obj_arr, 'ME', studentId)
+    elif sys.argv[2] == 'mgm':
+        MGM_sorter(program_idx, obj_arr, 'MGM', studentId)
+    elif sys.argv[2] == 'dsbi':
+        DSBI_sorter(program_idx, obj_arr, 'DSBI', studentId)
+    elif sys.argv[2] == 'mtl':
+        MTL_sorter(program_idx, obj_arr, 'MTL', studentId)
+    elif sys.argv[2] == 'te':
+        TE_sorter(program_idx, obj_arr, 'TE', studentId)

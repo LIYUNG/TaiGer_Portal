@@ -74,6 +74,9 @@ def DataPreparation(df_database, df_transcript):
     # unify course naming convention
     df_transcript = Naming_Convention_ZH(df_transcript)
     df_transcript = Naming_Convention_EN(df_transcript)
+    
+    df_transcript['credits'] = df_transcript['credits'].astype(float, errors='ignore')
+    df_transcript['grades'] = df_transcript['grades'].astype(float, errors='ignore')
     print("Prepared data successfully.")
     return df_database, df_transcript
 
@@ -150,27 +153,34 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
 def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, column_name_en_zh):
     # print(df_transcript[column_name_en_zh])
     # df_transcript = df_transcript.dropna()
+    df_transcript['grades'] = df_transcript['grades'].astype(float, errors='ignore')
     for idx, subj in enumerate(df_transcript[column_name_en_zh]):
         if subj == '-':
             continue
         for idx2, cat in enumerate(transcript_sorted_group_map):
             # Put the rest of courses to Others
             if(idx2 == len(transcript_sorted_group_map) - 1):
-                temp = {cat: subj, 'credits': df_transcript['credits'][idx],
+                temp_string = df_transcript['grades'][idx]
+                temp0 = 0;
+                if isfloat(temp_string):
+                    temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
+                        'grades': float(df_transcript['grades'][idx])}
+                else:
+                    temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
                         'grades': df_transcript['grades'][idx]}
                 df_category_data[idx2] = df_category_data[idx2].append(
-                    temp, ignore_index=True)
+                    temp0, ignore_index=True)
                 continue
 
             # filter subject by keywords. and exclude subject by anti_keywords
             if any(keywords in subj for keywords in transcript_sorted_group_map[cat][KEY_WORDS] if not any(anti_keywords in subj for anti_keywords in transcript_sorted_group_map[cat][ANTI_KEY_WORDS])):
-                temp_string = str(df_transcript['grades'][idx])
+                temp_string = df_transcript['grades'][idx]
                 # failed subject not count
                 if((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
                    or "Fail" in temp_string or "W" in temp_string or "F" in temp_string or "fail" in temp_string or "退選" in temp_string or "withdraw" in temp_string):
                     continue
-                temp = {cat: subj, 'credits': df_transcript['credits'][idx],
-                        'grades': df_transcript['grades'][idx]}
+                temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
+                        'grades': float(df_transcript['grades'][idx])}
                 df_category_data[idx2] = df_category_data[idx2].append(
                     temp, ignore_index=True)
                 break
@@ -200,7 +210,8 @@ def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, tran
 
 def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
     for idx, trans_cat in enumerate(df_PROG_SPEC_CATES):
-        credit_sum = df_PROG_SPEC_CATES[idx]['credits'].astype(float).sum()
+        df_PROG_SPEC_CATES[idx]['credits'] = df_PROG_SPEC_CATES[idx]['credits'].astype(float, errors='ignore')
+        credit_sum = df_PROG_SPEC_CATES[idx]['credits'].sum()
         category_credits_sum = {
             trans_cat.columns[0]: "sum", 'credits': credit_sum}
         df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(

@@ -177,12 +177,14 @@ export default function MyCourses(props) {
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
+            isAnalysing: false,
             timeouterror: true
           }));
         } else if (resp.status === 403) {
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
+            isAnalysing: false,
             unauthorizederror: true
           }));
         }

@@ -436,7 +436,9 @@ export default function MyCourses(props) {
                 <Row className="my-2">
                   <Col>
                     Last analysis at:{' '}
-                    {convertDate(statedata.analysis.updatedAt)}
+                    {statedata.analysis
+                      ? convertDate(statedata.analysis.updatedAt)
+                      : ''}
                   </Col>
                 </Row>
                 <Row>

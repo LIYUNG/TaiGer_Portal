@@ -69,7 +69,7 @@ router
 //     processTranscript
 //   );
 router
-  .route('/transcript/:studentId/:filename')
+  .route('/transcript/:studentId')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);
 
 // Academic Survey for Students

@@ -254,10 +254,6 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
     red_out_failed_subject(workbook, worksheet, 1, start_row)
     # red_out_insufficient_credit(workbook, worksheet)
 
-    # print("writer")
-    # print(writer['A1'])
-    # print("worksheet")
-    # print(worksheet)
     for df in df_PROG_SPEC_CATES:
         # print(df)
         for i, col in enumerate(df.columns):
@@ -361,51 +357,46 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     #         df_category_data_basic_classification.to_excel(writer)
     #     data = output.getvalue()
 
-    # print(data)
 
-    
     # with io.BytesIO() as output:
-    #     writer = pd.ExcelWriter(
-    #         output, engine='xlsxwriter')
+    # output = io.BytesIO()
+    # writer = pd.ExcelWriter(
+    #     output, engine='xlsxwriter')
+    # start_row = 0
+    # for idx, sortedcourses in enumerate(sorted_courses):
+    #     sortedcourses.to_excel(
+    #         writer, sheet_name='General', startrow=start_row, index=False)
+    #     start_row += len(sortedcourses.index) + 2
+    # workbook = writer.book
+    # worksheet = writer.sheets['General']
 
-    #     sorted_courses = df_category_data
+    # red_out_failed_subject(workbook, worksheet, 1, start_row)
 
-    #     start_row = 0
-    #     for idx, sortedcourses in enumerate(sorted_courses):
-    #         sortedcourses.to_excel(
-    #             writer, sheet_name='General', startrow=start_row, index=False)
-    #         start_row += len(sortedcourses.index) + 2
-    #     workbook = writer.book
-    #     worksheet = writer.sheets['General']
+    # for i, col in enumerate(df_transcript.columns):
+    #     # find length of column i
 
-    #     red_out_failed_subject(workbook, worksheet, 1, start_row)
+    #     column_len = df_transcript[col].astype(str).str.len().max()
+    #     # Setting the length if the column header is larger
+    #     # than the max column value length
+    #     if i == 1:
+    #         column_len_array.append(len(col))
+    #     else:
+    #         column_len_array.append(max(column_len, len(col)))
 
-    #     for i, col in enumerate(df_transcript.columns):
-    #         # find length of column i
+    #     # set the column length
+    #     worksheet.set_column(i, i, column_len_array[i] * 2)
 
-    #         column_len = df_transcript[col].astype(str).str.len().max()
-    #         # Setting the length if the column header is larger
-    #         # than the max column value length
-    #         if i == 1:
-    #             column_len_array.append(len(col))
-    #         else:
-    #             column_len_array.append(max(column_len, len(col)))
+    # # Modify to column width for "Required_ECTS"
+    # column_len_array.append(6)
 
-    #         # set the column length
-    #         worksheet.set_column(i, i, column_len_array[i] * 2)
-
-    #     # Modify to column width for "Required_ECTS"
-    #     column_len_array.append(6)
-
-    #     for idx in program_idx:
-    #         program_sort_function[idx](
-    #             transcript_sorted_group_map,
-    #             sorted_courses,
-    #             df_category_courses_sugesstion_data,
-    #             writer)
-    #     data = output.getvalue()
-
-    
+    # for idx in program_idx:
+    #     program_sort_function[idx](
+    #         transcript_sorted_group_map,
+    #         sorted_courses,
+    #         df_category_courses_sugesstion_data,
+    #         writer)
+    # writer.save()
+    # data = output.getvalue()
 
     with io.BytesIO() as output:
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:

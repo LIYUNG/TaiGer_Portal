@@ -120,7 +120,10 @@ export const getTemplateDownload = (category) =>
 
 export const transcriptanalyser_test = (studentId, category) =>
   request.post(`/api/account/transcript/${studentId}/${category}`);
-
+export const analyzedFileDownload_test = (studentId, filename) =>
+  request.get(`/api/account/transcript/${studentId}`, {
+    responseType: 'blob'
+  });
 export const transcriptanalyser = (studentId, category, data) =>
   request.post(`/api/account/transcript/${studentId}/${category}`, data);
 

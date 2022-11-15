@@ -6,6 +6,7 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import {
   getMycourses,
   postMycourses,
+  analyzedFileDownload_test,
   transcriptanalyser_test
 } from '../../api';
 import { convertDate, study_group } from '../Utils/contants';
@@ -19,13 +20,17 @@ export default function MyCourses(props) {
     unauthorizederror: null,
     isLoaded: false,
     coursesdata: {},
+    analysis: {},
     confirmModalWindowOpen: false,
+    analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
     file: '',
     study_group: '',
     analyzed_course: '',
-    expand: true
+    expand: true,
+    isAnalysing: false,
+    isDownloading: false
   });
   // if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
   //   return <Redirect to="/dashboard/default" />;
@@ -46,6 +51,7 @@ export default function MyCourses(props) {
             isLoaded: true,
             updatedAt: data.updatedAt,
             coursesdata: course_from_database,
+            analysis: data.analysis,
             student: data.student_id, // populated
             success: success
           }));
@@ -143,9 +149,13 @@ export default function MyCourses(props) {
 
   const onAnalyse = () => {
     if (statedata.study_group === '') {
-      alert("Select study group.")
+      alert('Please select study group');
       return;
     }
+    setStatedata((state) => ({
+      ...state,
+      isAnalysing: true
+    }));
     transcriptanalyser_test(
       statedata.student._id.toString(),
       statedata.study_group
@@ -157,9 +167,10 @@ export default function MyCourses(props) {
           ...state,
           isLoaded: true,
           // updatedAt: data.updatedAt,
-          analyzed_course: data,
-          confirmModalWindowOpen: true,
-          success: success
+          analysis: data.analysis,
+          analysisSuccessModalWindowOpen: true,
+          success: success,
+          isAnalysing: false
         }));
       } else {
         if (resp.status === 401 || resp.status === 500) {
@@ -179,10 +190,88 @@ export default function MyCourses(props) {
     });
   };
 
+  const onDownload = () => {
+    setStatedata((state) => ({
+      ...state,
+      isDownloading: true
+    }));
+    analyzedFileDownload_test(statedata.student._id.toString()).then((resp) => {
+      // TODO: timeout? success?
+      const actualFileName = resp.headers['content-disposition'].split('"')[1];
+      const { data: blob } = resp;
+      if (blob.size === 0) return;
+
+      var filetype = actualFileName.split('.'); //split file name
+      filetype = filetype.pop(); //get the file type
+
+      if (filetype === 'pdf') {
+        const url = window.URL.createObjectURL(
+          new Blob([blob], { type: 'application/pdf' })
+        );
+
+        //Open the URL on new Window
+        window.open(url); //TODO: having a reasonable file name, pdf viewer
+      } else {
+        //if not pdf, download instead.
+
+        const url = window.URL.createObjectURL(new Blob([blob]));
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', actualFileName);
+        // Append to html link element page
+        document.body.appendChild(link);
+        // Start download
+        link.click();
+        // Clean up and remove the link
+        link.parentNode.removeChild(link);
+        setStatedata((state) => ({
+          ...state,
+          isDownloading: false
+        }));
+      }
+
+      // const { data, success } = resp.data;
+      // const course_from_database = JSON.parse(data.table_data_string);
+      // if (success) {
+      //   setStatedata((state) => ({
+      //     ...state,
+      //     isLoaded: true,
+      //     // updatedAt: data.updatedAt,
+      //     analysis: data.analysis,
+      //     analysisSuccessModalWindowOpen: true,
+      //     success: success,
+      //     isDownloading: false
+      //   }));
+      // } else {
+      //   if (resp.status === 401 || resp.status === 500) {
+      //     setStatedata((state) => ({
+      //       ...state,
+      //       isLoaded: true,
+      //       timeouterror: true
+      //     }));
+      //   } else if (resp.status === 403) {
+      //     setStatedata((state) => ({
+      //       ...state,
+      //       isLoaded: true,
+      //       unauthorizederror: true
+      //     }));
+      //   }
+      // }
+    });
+  };
+
   const closeModal = () => {
     setStatedata((state) => ({
       ...state,
       confirmModalWindowOpen: false
+    }));
+  };
+
+  const closeanalysisSuccessModal = () => {
+    setStatedata((state) => ({
+      ...state,
+      analysisSuccessModalWindowOpen: false
     }));
   };
   const columns = [
@@ -327,17 +416,31 @@ export default function MyCourses(props) {
                 <br />
                 <Row>
                   <Col>
-                    <p>{statedata.analyzed_course}</p>
+                    <p>
+                      {statedata.analysis && statedata.analysis.isAnalysed ? (
+                        <Button
+                          onClick={onDownload}
+                          disabled={statedata.isDownloading}
+                        >
+                          Download
+                        </Button>
+                      ) : (
+                        0
+                      )}
+                    </p>
                   </Col>
                 </Row>
                 <br />
                 <Row className="my-2">
                   <Col>
-                    Last analysis at: {convertDate(statedata.updatedAt)}
+                    Last analysis at:{' '}
+                    {convertDate(statedata.analysis.updatedAt)}
                   </Col>
                 </Row>
                 <Row>
-                  <Button onClick={onAnalyse}>Analyse</Button>
+                  <Button onClick={onAnalyse} disabled={statedata.isAnalysing}>
+                    Analyse
+                  </Button>
                 </Row>
               </Card.Body>
             </Card>
@@ -358,6 +461,20 @@ export default function MyCourses(props) {
         <Modal.Body>Update transcript successfully</Modal.Body>
         <Modal.Footer>
           <Button onClick={closeModal}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={statedata.analysisSuccessModalWindowOpen}
+        onHide={closeanalysisSuccessModal}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Transcript analysed successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={closeanalysisSuccessModal}>Close</Button>
         </Modal.Footer>
       </Modal>
     </Aux>

@@ -1002,7 +1002,14 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     });
     python.on('close', (code) => {
       if (code === 0) {
-        return res.status(200).send({ success: true, data: {} });
+        courses.analysis.isAnalysed = true;
+        courses.analysis.path = path.join(
+          studentId,
+          'analysed_transcript.xlsx'
+        );
+        courses.analysis.updatedAt = new Date();
+        courses.save();
+        return res.status(200).send({ success: true, data: courses });
       }
       logger.error('Error occurs while trying to produce analyzed report');
 
@@ -1111,34 +1118,29 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
 
-  let student;
+  let course;
   if (user.role === Role.Student || user.role === 'Guest') {
-    student = await Student.findById(user._id);
+    course = await Course.findOne({ student_id: user._id.toString() });
   } else {
-    student = await Student.findById(studentId);
+    course = await Course.findOne({ student_id: studentId });
   }
-  if (!student) {
+  if (!course) {
     logger.error('downloadXLSX: Invalid student id');
     throw new ErrorResponse(400, 'Invalid student id');
   }
 
-  const input_transcript_excel = student.taigerai.input;
-  if (!input_transcript_excel) {
-    logger.error('downloadXLSX: Invalid input_transcript_excel name');
-    throw new ErrorResponse(400, 'Invalid input_transcript_excel name');
-  }
-  if (!input_transcript_excel.path) {
-    logger.error('downloadXLSX: File not uploaded yet');
-    throw new ErrorResponse(400, 'File not uploaded yet');
+  if (course.analysis.path === '' || !course.analysis.isAnalysed) {
+    logger.error('downloadXLSX: not analysed yet');
+    throw new ErrorResponse(400, 'Transcript not analysed  yet');
   }
 
-  let input_transcript_excel_split = input_transcript_excel.path.replace(
+  let analysed_transcript_excel_split = course.analysis.path.replace(
     /\\/g,
     '/'
   );
-  input_transcript_excel_split = input_transcript_excel_split.split('/');
-  const fileKey = input_transcript_excel_split[1];
-  let directory = input_transcript_excel_split[0];
+  analysed_transcript_excel_split = analysed_transcript_excel_split.split('/');
+  const fileKey = analysed_transcript_excel_split[1];
+  let directory = analysed_transcript_excel_split[0];
   logger.info('Trying to download transcript excel file', fileKey);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');

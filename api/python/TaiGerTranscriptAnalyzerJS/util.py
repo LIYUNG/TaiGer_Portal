@@ -179,8 +179,12 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
                 if((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
                    or "Fail" in temp_string or "W" in temp_string or "F" in temp_string or "fail" in temp_string or "退選" in temp_string or "withdraw" in temp_string):
                     continue
-                temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
+                if isfloat(temp_string):
+                    temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
                         'grades': float(df_transcript['grades'][idx])}
+                else:
+                    temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
+                        'grades': df_transcript['grades'][idx]}
                 df_category_data[idx2] = df_category_data[idx2].append(
                     temp, ignore_index=True)
                 break

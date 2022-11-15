@@ -117,34 +117,44 @@ export default function MyCourses(props) {
       student_id: statedata.student._id.toString(),
       name: statedata.student.firstname,
       table_data_string: coursesdata_string
-    }).then((resp) => {
-      const { data, success } = resp.data;
-      const course_from_database = JSON.parse(data.table_data_string);
-      if (success) {
+    }).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const course_from_database = JSON.parse(data.table_data_string);
+        if (success) {
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            updatedAt: data.updatedAt,
+            coursesdata: course_from_database,
+            confirmModalWindowOpen: true,
+            success: success
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            setStatedata((state) => ({
+              ...state,
+              isLoaded: true,
+              timeouterror: true
+            }));
+          } else if (resp.status === 403) {
+            setStatedata((state) => ({
+              ...state,
+              isLoaded: true,
+              unauthorizederror: true
+            }));
+          }
+        }
+      },
+      (error) => {
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          updatedAt: data.updatedAt,
-          coursesdata: course_from_database,
-          confirmModalWindowOpen: true,
-          success: success
+          timeouterror: true
         }));
-      } else {
-        if (resp.status === 401 || resp.status === 500) {
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            timeouterror: true
-          }));
-        } else if (resp.status === 403) {
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            unauthorizederror: true
-          }));
-        }
+        alert('The file is not available.');
       }
-    });
+    );
   };
 
   const onAnalyse = () => {
@@ -159,37 +169,48 @@ export default function MyCourses(props) {
     transcriptanalyser_test(
       statedata.student._id.toString(),
       statedata.study_group
-    ).then((resp) => {
-      const { data, success } = resp.data;
-      const course_from_database = JSON.parse(data.table_data_string);
-      if (success) {
+    ).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          console.log('here');
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            // updatedAt: data.updatedAt,
+            analysis: data.analysis,
+            analysisSuccessModalWindowOpen: true,
+            success: success,
+            isAnalysing: false
+          }));
+        } else {
+          console.log('here2');
+          if (resp.status === 401 || resp.status === 500) {
+            setStatedata((state) => ({
+              ...state,
+              isLoaded: true,
+              isAnalysing: false,
+              timeouterror: true
+            }));
+          } else if (resp.status === 403) {
+            setStatedata((state) => ({
+              ...state,
+              isLoaded: true,
+              isAnalysing: false,
+              unauthorizederror: true
+            }));
+          }
+        }
+      },
+      (error) => {
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          // updatedAt: data.updatedAt,
-          analysis: data.analysis,
-          analysisSuccessModalWindowOpen: true,
-          success: success,
           isAnalysing: false
         }));
-      } else {
-        if (resp.status === 401 || resp.status === 500) {
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            isAnalysing: false,
-            timeouterror: true
-          }));
-        } else if (resp.status === 403) {
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            isAnalysing: false,
-            unauthorizederror: true
-          }));
-        }
+        alert('Make sure that you updated your courses and your credits are number!');
       }
-    });
+    );
   };
 
   const onDownload = () => {
@@ -373,7 +394,7 @@ export default function MyCourses(props) {
               <Row className="my-2">
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
-              <Row>
+              <Row className="mx-1">
                 <Button onClick={onSubmit}>Update</Button>
               </Row>
             </Card.Body>
@@ -416,8 +437,14 @@ export default function MyCourses(props) {
                   </Col>
                 </Row>
                 <br />
+                <Row className="mx-1">
+                  <Button onClick={onAnalyse} disabled={statedata.isAnalysing}>
+                    {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
+                  </Button>
+                </Row>
+                <Row className="my-2"></Row>
                 <Row>
-                  <Col>
+                  <Col md={2}>
                     <p>
                       {statedata.analysis && statedata.analysis.isAnalysed ? (
                         <Button
@@ -427,25 +454,20 @@ export default function MyCourses(props) {
                           Download
                         </Button>
                       ) : (
-                        0
+                        'No analysis yet'
                       )}
+                    </p>
+                  </Col>{' '}
+                  <Col>
+                    <p className="my-2">
+                      Last analysis at:{' '}
+                      {statedata.analysis
+                        ? convertDate(statedata.analysis.updatedAt)
+                        : ''}
                     </p>
                   </Col>
                 </Row>
                 <br />
-                <Row className="my-2">
-                  <Col>
-                    Last analysis at:{' '}
-                    {statedata.analysis
-                      ? convertDate(statedata.analysis.updatedAt)
-                      : ''}
-                  </Col>
-                </Row>
-                <Row>
-                  <Button onClick={onAnalyse} disabled={statedata.isAnalysing}>
-                    Analyse
-                  </Button>
-                </Row>
               </Card.Body>
             </Card>
           )}

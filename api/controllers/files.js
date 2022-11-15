@@ -1010,36 +1010,18 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
         courses.analysis.updatedAt = new Date();
         courses.save();
         return res.status(200).send({ success: true, data: courses });
+      } else {
+        logger.error('Error occurs while trying to produce analyzed report');
+        return res.status(500).send({ success: false });
       }
-      logger.error('Error occurs while trying to produce analyzed report');
-
-      return new ErrorResponse(
-        500,
-        'Error occurs while trying to produce analyzed report'
-      );
     });
   } catch (err) {
     logger.error(err);
-    return new ErrorResponse(
+    throw new ErrorResponse(
       500,
-      'Error occurs while trying to produce analyzed report'
+      'Error occurs while trying to produce analyzed report2'
     );
   }
-
-  // await User.findByIdAndUpdate(
-  //   studentId,
-  //   {
-  //     'taigerai.input.name': filename,
-  //     'taigerai.input.path': filePath,
-  //     'taigerai.input.status': 'uploaded',
-  //     'taigerai.output.name': output,
-  //     'taigerai.output.path': output_filePath,
-  //     'taigerai.output.status': 'uploaded'
-  //   },
-  //   { upsert: true, new: true, setDefaultsOnInsert: true }
-  // );
-  // const student = await User.findById(studentId);
-  // return res.status(200).send({ success: true, data: {} });
 });
 
 const processTranscript = asyncHandler(async (req, res, next) => {

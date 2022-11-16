@@ -173,12 +173,11 @@ export default function MyCourses(props) {
       (resp) => {
         const { data, success } = resp.data;
         if (success) {
-          console.log('here');
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             // updatedAt: data.updatedAt,
-            analysis: data.analysis,
+            analysis: data,
             analysisSuccessModalWindowOpen: true,
             success: success,
             isAnalysing: false

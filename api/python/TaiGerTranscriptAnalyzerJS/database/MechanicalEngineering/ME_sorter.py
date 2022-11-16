@@ -66,6 +66,8 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -76,7 +78,9 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
         PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
-        PROG_SPEC_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANIK_PARAM,  # 靜力學
+        PROG_SPEC_MECHANIK_PARAM,  # 動力學
+        PROG_SPEC_MECHANIK_PARAM,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
@@ -143,6 +147,8 @@ def TUM_MW(transcript_sorted_group_map, df_transcript_array, df_category_courses
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -153,7 +159,9 @@ def TUM_MW(transcript_sorted_group_map, df_transcript_array, df_category_courses
         PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_OTHERS,  # 控制工程
         PROG_SPEC_OTHERS,  # 流體
-        PROG_SPEC_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANIK_PARAM,  # 靜力學
+        PROG_SPEC_MECHANIK_PARAM,  # 動力學
+        PROG_SPEC_MECHANIK_PARAM,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
@@ -240,6 +248,8 @@ def TUHH_MECHATRONICS(transcript_sorted_group_map, df_transcript_array, df_categ
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_CALCULUS_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -250,7 +260,9 @@ def TUHH_MECHATRONICS(transcript_sorted_group_map, df_transcript_array, df_categ
         PROG_SPEC_MATERIAL_PROPERTIES_TESTING_PARAM,  # 材料
         PROG_SPEC_CONTROL_THEORY_PARAM,  # 控制工程
         PROG_SPEC_OTHERS,  # 流體
-        PROG_SPEC_MECHANICS_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANICS_PARAM,  # 靜力學
+        PROG_SPEC_MECHANICS_PARAM,  # 動力學
+        PROG_SPEC_MECHANICS_PARAM,  # 材料力學,機械
         PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機電子
         PROG_SPEC_MANUFACTURING_PARAM,  # 製造
         PROG_SPEC_COMPUTER_SCIENCE_PARAM,  # 計算機概論
@@ -313,6 +325,8 @@ def UNI_HANNOVER_INTER_MECHATRONICS(transcript_sorted_group_map, df_transcript_a
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -323,7 +337,9 @@ def UNI_HANNOVER_INTER_MECHATRONICS(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_OTHERS,  # 材料
         PROG_SPEC_CONTROL_MEASUREMENT_PARAM,  # 控制工程
         PROG_SPEC_OTHERS,  # 流體
-        PROG_SPEC_MECHANICS_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANICS_PARAM,  # 靜力學
+        PROG_SPEC_MECHANICS_PARAM,  # 動力學
+        PROG_SPEC_MECHANICS_PARAM,  # 材料力學機械
         PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
@@ -383,6 +399,8 @@ def TU_DORTMUND_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_array, d
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -393,7 +411,9 @@ def TU_DORTMUND_MANUFAC_TECH(transcript_sorted_group_map, df_transcript_array, d
         PROG_SPEC_MANUFACTURE_PARAM,  # 材料
         PROG_SPEC_MANUFACTURE_PARAM,  # 控制工程
         PROG_SPEC_OTHERS,  # 流體
-        PROG_SPEC_OTHERS,  # 力學,機械
+        PROG_SPEC_OTHERS,  # 靜力學,機械
+        PROG_SPEC_OTHERS,  # 動力學,機械
+        PROG_SPEC_OTHERS,  # 材料力學,機械
         PROG_SPEC_ELECTRICAL_ENG_PARAM,  # 基礎電機電子
         PROG_SPEC_MANUFACTURE_PARAM,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
@@ -467,6 +487,8 @@ def TU_CHEMNITZ_AD_MANUFAC(transcript_sorted_group_map, df_transcript_array, df_
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -477,7 +499,9 @@ def TU_CHEMNITZ_AD_MANUFAC(transcript_sorted_group_map, df_transcript_array, df_
         PROG_SPEC_MATERIALS_PARAM,  # 材料
         PROG_SPEC_METROL_CONTROL_PARAM,  # 控制工程
         PROG_SPEC_MECH_MANU_PARAM,  # 流體
-        PROG_SPEC_MECH_MANU_PARAM,  # 力學,機械
+        PROG_SPEC_MECH_MANU_PARAM,  # 靜力學
+        PROG_SPEC_MECH_MANU_PARAM,  # 動力學
+        PROG_SPEC_MECH_MANU_PARAM,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_MANU_CONCE_PARAM,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
@@ -536,6 +560,8 @@ def TUM_COMP_MECH(transcript_sorted_group_map, df_transcript_array, df_category_
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_MECHANICS_PARAM,  # 物理
         PROG_SPEC_MECHANICS_PARAM,  # 物理實驗
@@ -546,7 +572,9 @@ def TUM_COMP_MECH(transcript_sorted_group_map, df_transcript_array, df_category_
         PROG_SPEC_OTHERS,  # 材料
         PROG_SPEC_OTHERS,  # 控制工程
         PROG_SPEC_MECHANICS_PARAM,  # 流體
-        PROG_SPEC_MECHANICS_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANICS_PARAM,  # 靜力學
+        PROG_SPEC_MECHANICS_PARAM,  # 動力學
+        PROG_SPEC_MECHANICS_PARAM,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_INFO_PARAM,  # 計算機概論
@@ -623,6 +651,8 @@ def TUBerlin_ME(transcript_sorted_group_map, df_transcript_array, df_category_co
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -633,7 +663,9 @@ def TUBerlin_ME(transcript_sorted_group_map, df_transcript_array, df_category_co
         PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_MESS_SENSORIK_REGELUNG_PARAM,  # 控制工程
         PROG_SPEC_FLUID_THERMODYNAMIK_PARAM,  # 流體
-        PROG_SPEC_MECHANICS_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANICS_PARAM,  # 靜力學
+        PROG_SPEC_MECHANICS_PARAM,  # 動力學
+        PROG_SPEC_MECHANICS_PARAM,  # 材料力學,機械
         PROG_SPEC_ELEKTROTECHNIK_PARAM,  # 基礎電機電子
         PROG_SPEC_PRODUKTIONSTECHNIK_PARAM,  # 製造
         PROG_SPEC_INFORMATIONSTECHNIK_PARAM,  # 計算機概論
@@ -710,6 +742,8 @@ def RWTH_ME(transcript_sorted_group_map, df_transcript_array, df_category_course
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -720,7 +754,9 @@ def RWTH_ME(transcript_sorted_group_map, df_transcript_array, df_category_course
         PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
         PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
-        PROG_SPEC_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANIK_PARAM,  # 靜力學
+        PROG_SPEC_MECHANIK_PARAM,  # 動力學
+        PROG_SPEC_MECHANIK_PARAM,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_OTHERS,  # 計算機概論
@@ -794,6 +830,8 @@ def TUBraunschweig_ME(transcript_sorted_group_map, df_transcript_array, df_categ
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -804,7 +842,9 @@ def TUBraunschweig_ME(transcript_sorted_group_map, df_transcript_array, df_categ
         PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
         PROG_SPEC_OTHERS,  # 流體
-        PROG_SPEC_TECHNISCHE_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_TECHNISCHE_MECHANIK_PARAM,  # 靜力學
+        PROG_SPEC_TECHNISCHE_MECHANIK_PARAM,  # 動力學
+        PROG_SPEC_TECHNISCHE_MECHANIK_PARAM,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_INFORMATIONSTECHNIK_PARAM,  # 計算機概論
@@ -885,6 +925,8 @@ def KIT_ME(transcript_sorted_group_map, df_transcript_array, df_category_courses
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -895,7 +937,9 @@ def KIT_ME(transcript_sorted_group_map, df_transcript_array, df_category_courses
         PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_MESS_REGELUNG_PARAM,  # 控制工程
         PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
-        PROG_SPEC_MECHANIK_PARAM,  # 力學,機械
+        PROG_SPEC_MECHANIK_PARAM,  # 靜力學
+        PROG_SPEC_MECHANIK_PARAM,  # 動力學
+        PROG_SPEC_MECHANIK_PARAM,  # 材料力學,機械
         PROG_SPEC_ELEKTROTECHNIK_PARAM,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_INFORMATIK_PARAM,  # 計算機概論
@@ -953,6 +997,8 @@ def TU_DORTMUND_ROBOTICS(transcript_sorted_group_map, df_transcript_array, df_ca
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PARAM,  # 微分方程
         PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 物理
         PROG_SPEC_OTHERS,  # 物理實驗
@@ -963,7 +1009,9 @@ def TU_DORTMUND_ROBOTICS(transcript_sorted_group_map, df_transcript_array, df_ca
         PROG_SPEC_OTHERS,  # 材料
         PROG_SPEC_OTHERS,  # 控制工程
         PROG_SPEC_OTHERS,  # 流體
-        PROG_SPEC_OTHERS,  # 力學,機械
+        PROG_SPEC_OTHERS,  # 靜力學
+        PROG_SPEC_OTHERS,  # 動力學
+        PROG_SPEC_OTHERS,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_OTHERS,  # 製造
         PROG_SPEC_INFORMATIK_PARAM,  # 計算機概論
@@ -1043,6 +1091,8 @@ def RWTH_ROBOTICS(transcript_sorted_group_map, df_transcript_array, df_category_
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_MATH_PHY_PARAM,  # 微積分
+        PROG_SPEC_MATH_PHY_PARAM,  # 線性代數
+        PROG_SPEC_MATH_PHY_PARAM,  # 微分方程
         PROG_SPEC_MATH_PHY_PARAM,  # 數學
         PROG_SPEC_MATH_PHY_PARAM,  # 物理
         PROG_SPEC_MATH_PHY_PARAM,  # 物理實驗
@@ -1053,12 +1103,128 @@ def RWTH_ROBOTICS(transcript_sorted_group_map, df_transcript_array, df_category_
         PROG_SPEC_ENG_SCIENCE_PARAM,  # 材料
         PROG_SPEC_SYSTEM_SCIENCE_PARAM,  # 控制工程
         PROG_SPEC_ENG_SCIENCE_PARAM,  # 流體
-        PROG_SPEC_ENG_SCIENCE_PARAM,  # 力學,機械
+        PROG_SPEC_ENG_SCIENCE_PARAM,  # 靜力學
+        PROG_SPEC_ENG_SCIENCE_PARAM,  # 動力學
+        PROG_SPEC_ENG_SCIENCE_PARAM,  # 材料力學,機械
         PROG_SPEC_OTHERS,  # 基礎電機電子
         PROG_SPEC_ENG_SCIENCE_PARAM,  # 製造
         PROG_SPEC_SYSTEM_SCIENCE_PARAM,  # 計算機概論
         PROG_SPEC_ENG_SCIENCE_PARAM,  # 機電
         PROG_SPEC_SYSTEM_SCIENCE_PARAM,  # 測量
+        PROG_SPEC_OTHERS,  # 車輛
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+# TUHH: Mechanical Engineering and Management:
+# FPSO: https://www.tuhh.de/t3resources/tuhh/img/studium/dekanate/mb/fachspez._anforderungen_IMPMEM.pdf?fbclid=IwAR3BHkVyojX970hIUPmusnJHlBicTlzldf3uhFrvDzisIqPlWXiyb3nG6Kg
+def TUHH_MEM(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUHH_MEM'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    # 1. 
+    PROG_SPEC_CALCULUS_PARAM = {
+        'Program_Category': 'Calculus', 'Required_ECTS': 12}
+    # .
+    PROG_SPEC_LINER_ALG_PARAM = {
+        'Program_Category': 'Linear Algebra', 'Required_ECTS': 8}
+    # #3. 
+    PROG_SPEC_DIFF_EQU_PARAM = {
+        'Program_Category': 'Differential equations', 'Required_ECTS': 4}
+    # 4. 
+    PROG_SPEC_STATICS_PARAM = {
+        'Program_Category': 'Statics', 'Required_ECTS': 6}
+    PROG_SPEC_MATERIALS_MECHANICS_PARAM = {
+        'Program_Category': 'Materials Mechanics', 'Required_ECTS': 6}
+    PROG_SPEC_DYNAMICS_PARAM = {
+        'Program_Category': 'Dynamics/Kinematics/Oscillations/Multibody Sys.', 'Required_ECTS': 12}
+    PROG_SPEC_THERMODYNAMICS_PARAM = {
+        'Program_Category': 'Thermodynamics', 'Required_ECTS': 6}
+    PROG_SPEC_MATERIALS_PARAM = {
+        'Program_Category': 'Materials Science', 'Required_ECTS': 6}
+    PROG_SPEC_MANU_CONCE_PARAM = {
+        'Program_Category': 'Manufacturing processes', 'Required_ECTS': 6}
+    PROG_SPEC_MEASUREMENT_TECH_PARAM = {
+        'Program_Category': 'Measurement technology', 'Required_ECTS': 6}
+    PROG_SPEC_CONTROL_ENGINEERING_PARAM = {
+        'Program_Category': 'Control engineering', 'Required_ECTS': 6}
+    PROG_SPEC_CS_PARAM = {
+        'Program_Category': 'Computer Science', 'Required_ECTS': 6}
+    # #5. in-depth theoretical basics of engineering, in a total of at least 12 ECTS and including the subjects of engineering mechanics, design, manufacturing and fluid dynamics,
+    PROG_SPEC_MECH_DESIGN_PARAM = {
+        'Program_Category': 'Mechanical Design', 'Required_ECTS': 12}
+    PROG_SPEC_EE_PARAM = {
+        'Program_Category': 'Electrical engineering', 'Required_ECTS': 6}
+    #6. resource-efficient manufacturing concepts, totalling at least 8 ECTS and including the topics of technical and natural cycles and networks, system optimization and energy concepts,
+    
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_CALCULUS_PARAM,  # 微積分
+        PROG_SPEC_LINER_ALG_PARAM,  # 數學
+        PROG_SPEC_DIFF_EQU_PARAM,   # 微分方程
+        PROG_SPEC_STATICS_PARAM,    # 靜力學
+        PROG_SPEC_MATERIALS_MECHANICS_PARAM, # 材料力學
+        PROG_SPEC_DYNAMICS_PARAM,   # 動力學
+        PROG_SPEC_THERMODYNAMICS_PARAM, # 熱力學
+        PROG_SPEC_MATERIALS_PARAM,  # 材料科學
+        PROG_SPEC_MANU_CONCE_PARAM, # 製造程序
+        PROG_SPEC_MEASUREMENT_TECH_PARAM, # 測量
+        PROG_SPEC_CONTROL_ENGINEERING_PARAM, # 控制工程
+        PROG_SPEC_CS_PARAM,    # 基礎資工 程式 資料結構
+        PROG_SPEC_MECH_DESIGN_PARAM,     # 機械主修 機械設計
+        PROG_SPEC_EE_PARAM,  # 基礎電機
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_CALCULUS_PARAM,  # 微積分
+        PROG_SPEC_LINER_ALG_PARAM,  # 線性代數
+        PROG_SPEC_DIFF_EQU_PARAM,  # 微分方程
+        PROG_SPEC_OTHERS,  # 數學
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
+        PROG_SPEC_MECH_DESIGN_PARAM,  # 機械設計
+        PROG_SPEC_MECH_DESIGN_PARAM,  # 機構
+        PROG_SPEC_THERMODYNAMICS_PARAM,  # 熱力學
+        PROG_SPEC_OTHERS,  # 熱 物質傳導
+        PROG_SPEC_MATERIALS_PARAM,  # 材料
+        PROG_SPEC_CONTROL_ENGINEERING_PARAM,  # 控制工程
+        PROG_SPEC_OTHERS,  # 流體
+        PROG_SPEC_STATICS_PARAM,  # 靜力學
+        PROG_SPEC_DYNAMICS_PARAM,  # 動力學
+        PROG_SPEC_MATERIALS_MECHANICS_PARAM,  # 材料力學,機械
+        PROG_SPEC_EE_PARAM,  # 基礎電機電子
+        PROG_SPEC_MANU_CONCE_PARAM,  # 製造
+        PROG_SPEC_CS_PARAM,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 機電
+        PROG_SPEC_MEASUREMENT_TECH_PARAM,  # 測量
         PROG_SPEC_OTHERS,  # 車輛
         PROG_SPEC_OTHERS  # 其他
     ]
@@ -1088,6 +1254,7 @@ program_sort_function = [RWTH_AUTO, TUM_MW, TUHH_MECHATRONICS,
                          KIT_ME,
                          TU_DORTMUND_ROBOTICS,
                          RWTH_ROBOTICS,
+                         TUHH_MEM,
                          ]
 
 
@@ -1095,6 +1262,8 @@ def ME_sorter(program_idx, file_path, abbrev, studentId):
 
     basic_classification_en = {
             '微積分': [ME_CALCULUS_KEY_WORDS_EN, ME_CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
+            '線性代數': [ME_LINEAR_ALGEBRA_KEY_WORDS_EN, ME_LINEAR_ALGEBRA_ANTI_KEY_WORDS_EN],
+            '微分方程': [ME_DIFF_EQUATION_KEY_WORDS_EN, ME_DIFF_EQUATION_ANTI_KEY_WORDS_EN],
             '數學': [ME_MATH_KEY_WORDS_EN, ME_MATH_ANTI_KEY_WORDS_EN],
             '物理': [ME_PHYSICS_KEY_WORDS_EN, ME_PHYSICS_ANTI_KEY_WORDS_EN, ['一', '二']],
             '物理實驗': [ME_PHYSICS_EXP_KEY_WORDS_EN, ME_PHYSICS_EXP_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -1105,7 +1274,9 @@ def ME_sorter(program_idx, file_path, abbrev, studentId):
             '材料': [ME_WERKSTOFFKUNDE_KEY_WORDS_EN, ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS_EN, ['一', '二']],
             '控制系統': [ME_CONTROL_THEORY_KEY_WORDS_EN, ME_CONTROL_THEORY_ANTI_KEY_WORDS_EN, ['一', '二']],
             '流體': [ME_FLUIDDYN_KEY_WORDS_EN, ME_FLUIDDYN_ANTI_KEY_WORDS_EN, ['一', '二']],
-            '力學': [ME_MECHANIK_KEY_WORDS_EN, ME_MECHANIK_ANTI_KEY_WORDS_EN],
+            '靜力學': [ME_STATICS_KEY_WORDS_EN, ME_STATICS_ANTI_KEY_WORDS_EN, ['一', '二']],
+            '動力學': [ME_DYNAMICS_KEY_WORDS_EN, ME_DYNAMICS_ANTI_KEY_WORDS_EN, ['一', '二']],
+            '材料力學': [ME_MATERIALS_MECHANIK_KEY_WORDS_EN, ME_MATERIALS_MECHANIK_ANTI_KEY_WORDS_EN, ['一', '二']],
             '基礎電機電子': [ME_ELECTRICAL_ENG_KEY_WORDS_EN, ME_ELECTRICAL_ENG_ANTI_KEY_WORDS_EN],
             '製造工程': [ME_MANUFACTURE_ENG_KEY_WORDS_EN, ME_MANUFACTURE_ENG_ANTI_KEY_WORDS_EN],
             '計算機概論': [ME_COMPUTER_SCIENCE_KEY_WORDS_EN, ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN],
@@ -1116,6 +1287,8 @@ def ME_sorter(program_idx, file_path, abbrev, studentId):
 
     basic_classification_zh = {
             '微積分': [ME_CALCULUS_KEY_WORDS, ME_CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
+            '線性代數': [ME_LINEAR_ALGEBRA_KEY_WORDS, ME_LINEAR_ALGEBRA_ANTI_KEY_WORDS],
+            '微分方程': [ME_DIFF_EQUATION_KEY_WORDS, ME_DIFF_EQUATION_ANTI_KEY_WORDS],
             '數學': [ME_MATH_KEY_WORDS, ME_MATH_ANTI_KEY_WORDS],
             '物理': [ME_PHYSICS_KEY_WORDS, ME_PHYSICS_ANTI_KEY_WORDS, ['一', '二']],
             '物理實驗': [ME_PHYSICS_EXP_KEY_WORDS, ME_PHYSICS_EXP_ANTI_KEY_WORDS, ['一', '二']],
@@ -1126,7 +1299,9 @@ def ME_sorter(program_idx, file_path, abbrev, studentId):
             '材料': [ME_WERKSTOFFKUNDE_KEY_WORDS, ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS, ['一', '二']],
             '控制系統': [ME_CONTROL_THEORY_KEY_WORDS, ME_CONTROL_THEORY_ANTI_KEY_WORDS, ['一', '二']],
             '流體': [ME_FLUIDDYN_KEY_WORDS, ME_FLUIDDYN_ANTI_KEY_WORDS, ['一', '二']],
-            '力學': [ME_MECHANIK_KEY_WORDS, ME_MECHANIK_ANTI_KEY_WORDS],
+            '靜力學': [ME_STATICS_KEY_WORDS, ME_STATICS_ANTI_KEY_WORDS, ['一', '二']],
+            '動力學': [ME_DYNAMICS_KEY_WORDS, ME_DYNAMICS_ANTI_KEY_WORDS, ['一', '二']],
+            '材料力學': [ME_MATERIALS_MECHANIK_KEY_WORDS, ME_MATERIALS_MECHANIK_ANTI_KEY_WORDS, ['一', '二']],
             '基礎電機電子': [ME_ELECTRICAL_ENG_KEY_WORDS, ME_ELECTRICAL_ENG_ANTI_KEY_WORDS],
             '製造工程': [ME_MANUFACTURE_ENG_KEY_WORDS, ME_MANUFACTURE_ENG_ANTI_KEY_WORDS],
             '計算機概論': [ME_COMPUTER_SCIENCE_KEY_WORDS, ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS],

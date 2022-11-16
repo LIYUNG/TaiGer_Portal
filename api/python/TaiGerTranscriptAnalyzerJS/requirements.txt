@@ -2,4 +2,4 @@ pandas
 xlsxwriter
 openpyxl
 boto3
-dotenv
+python-dotenv

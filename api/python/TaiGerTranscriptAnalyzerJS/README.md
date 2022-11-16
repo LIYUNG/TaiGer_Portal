@@ -71,6 +71,12 @@ The needed necessary packages are listed in requirements.txt. Use the following 
 pip install -r requirements.txt
 ```
 
+or
+
+```
+sudo pip3 install -r requirements.txt
+```
+
 ## How to use?
 ```
 python main.py <transcript_course.xlsx> <ee/cs/me/dsbi/mgm>

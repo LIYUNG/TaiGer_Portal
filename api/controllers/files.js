@@ -1009,7 +1009,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
         );
         courses.analysis.updatedAt = new Date();
         courses.save();
-        return res.status(200).send({ success: true, data: courses });
+        return res.status(200).send({ success: true, data: courses.analysis });
       } else {
         logger.error('Error occurs while trying to produce analyzed report');
         return res.status(500).send({ success: false });

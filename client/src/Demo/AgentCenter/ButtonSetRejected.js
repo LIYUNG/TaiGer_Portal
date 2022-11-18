@@ -336,22 +336,26 @@ class ButtonSetRejected extends React.Component {
               Warning
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            Do you want to delete {this.props.docName}?
-            {!this.state.isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Body>
+          <Modal.Body>Do you want to delete {this.props.docName}?</Modal.Body>
           <Modal.Footer>
             <Button
               disabled={!this.state.isLoaded}
               onClick={(e) => this.onDeleteFilefromstudent(e)}
             >
-              Yes
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                'Yes'
+              )}
             </Button>
             <Button onClick={this.closeWarningWindow}>No</Button>
           </Modal.Footer>
@@ -370,20 +374,26 @@ class ButtonSetRejected extends React.Component {
           <Modal.Body>
             {this.state.category} is a valid and can be used for the
             application?
-            {!this.state.isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Modal.Body>
           <Modal.Footer>
             <Button
               disabled={!this.state.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              Yes
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                'Yes'
+              )}
             </Button>
             <Button onClick={this.closeAcceptWarningWindow}>No</Button>
           </Modal.Footer>
@@ -424,20 +434,26 @@ class ButtonSetRejected extends React.Component {
                     }
                   />
                 </Form.Group>
-                {!this.state.isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
               </Modal.Body>
               <Modal.Footer>
                 <Button
                   disabled={this.state.comments === ''}
                   onClick={(e) => this.onUpdateRejectMessageStudent(e)}
                 >
-                  Update
+                  {!this.state.isLoaded ? (
+                    <div>
+                      <Spinner
+                        animation="border"
+                        role="status"
+                        variant="light"
+                        size="sm"
+                      >
+                        <span className="visually-hidden"></span>
+                      </Spinner>
+                    </div>
+                  ) : (
+                    'Update'
+                  )}
                 </Button>
                 <Button onClick={this.closeCommentWindow}>Close</Button>
               </Modal.Footer>

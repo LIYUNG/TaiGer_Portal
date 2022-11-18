@@ -213,12 +213,6 @@ class ButtonSetAccepted extends React.Component {
       </tr>
     );
 
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     return (
       <>
         {ButttonRow_Accepted}
@@ -235,20 +229,26 @@ class ButtonSetAccepted extends React.Component {
           </Modal.Header>
           <Modal.Body>
             Do you want to delete {this.props.docName}?
-            {!this.state.isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Modal.Body>
           <Modal.Footer>
             <Button
               disabled={!this.state.isLoaded}
               onClick={(e) => this.onDeleteFilefromstudent(e)}
             >
-              Yes
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                'Yes'
+              )}
             </Button>
             <Button onClick={this.closeWarningWindow}>No</Button>
           </Modal.Footer>
@@ -277,20 +277,26 @@ class ButtonSetAccepted extends React.Component {
                 onChange={(e) => this.handleRejectMessage(e, e.target.value)}
               />
             </Form.Group>
-            {!this.state.isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Modal.Body>
           <Modal.Footer>
             <Button
               disabled={this.state.feedback === ''}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              Yes
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                'Yes'
+              )}
             </Button>
             <Button onClick={this.closeRejectWarningWindow}>No</Button>
           </Modal.Footer>
@@ -308,7 +314,22 @@ class ButtonSetAccepted extends React.Component {
           </Modal.Header>
           <Modal.Body>{this.state.comments}</Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeCommentWindow}>Ok</Button>
+            <Button onClick={this.closeCommentWindow}>
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                'Ok'
+              )}
+            </Button>
           </Modal.Footer>
         </Modal>
       </>

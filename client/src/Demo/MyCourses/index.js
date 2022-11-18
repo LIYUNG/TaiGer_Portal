@@ -30,6 +30,7 @@ export default function MyCourses(props) {
     analyzed_course: '',
     expand: true,
     isAnalysing: false,
+    isUpdating: false,
     isDownloading: false
   });
   // if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
@@ -113,6 +114,10 @@ export default function MyCourses(props) {
 
   const onSubmit = () => {
     const coursesdata_string = JSON.stringify(statedata.coursesdata);
+    setStatedata((state) => ({
+      ...state,
+      isUpdating: true
+    }));
     postMycourses(statedata.student._id.toString(), {
       student_id: statedata.student._id.toString(),
       name: statedata.student.firstname,
@@ -128,20 +133,23 @@ export default function MyCourses(props) {
             updatedAt: data.updatedAt,
             coursesdata: course_from_database,
             confirmModalWindowOpen: true,
-            success: success
+            success: success,
+            isUpdating: false
           }));
         } else {
           if (resp.status === 401 || resp.status === 500) {
             setStatedata((state) => ({
               ...state,
               isLoaded: true,
-              timeouterror: true
+              timeouterror: true,
+              isUpdating: false
             }));
           } else if (resp.status === 403) {
             setStatedata((state) => ({
               ...state,
               isLoaded: true,
-              unauthorizederror: true
+              unauthorizederror: true,
+              isUpdating: false
             }));
           }
         }
@@ -150,9 +158,9 @@ export default function MyCourses(props) {
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          timeouterror: true
+          isUpdating: false
         }));
-        alert('The file is not available.');
+        alert('Course Update failed. Please try later.');
       }
     );
   };
@@ -207,7 +215,9 @@ export default function MyCourses(props) {
           isLoaded: true,
           isAnalysing: false
         }));
-        alert('Make sure that you updated your courses and your credits are number!');
+        alert(
+          'Make sure that you updated your courses and your credits are number!'
+        );
       }
     );
   };
@@ -394,7 +404,9 @@ export default function MyCourses(props) {
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
               <Row className="mx-1">
-                <Button onClick={onSubmit}>Update</Button>
+                <Button onClick={onSubmit} disabled={statedata.isUpdating}>
+                  {statedata.isUpdating ? 'Updating' : 'Update'}
+                </Button>
               </Row>
             </Card.Body>
           </Card>

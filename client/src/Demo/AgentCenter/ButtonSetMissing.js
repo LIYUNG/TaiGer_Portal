@@ -43,6 +43,15 @@ class ButtonSetMissing extends React.Component {
     this.setState((state) => ({ ...state, setMissingWindow: false }));
   };
 
+  handleGeneralDocSubmit = (e, k, student_id) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
+    this.props.handleGeneralDocSubmit(e, k, student_id);
+  };
+
   onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
     this.setState((state) => ({
@@ -90,21 +99,29 @@ class ButtonSetMissing extends React.Component {
         ) : (
           <>
             <td>
-              <Form>
-                <Form.File.Label
-                  onChange={(e) =>
-                    this.props.handleGeneralDocSubmit(
-                      e,
-                      this.props.k,
-                      this.props.student_id
-                    )
-                  }
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File.Input hidden />
-                  <IoMdCloudUpload size={32} />
-                </Form.File.Label>
-              </Form>
+              {!this.state.isLoaded ? (
+                <div style={style}>
+                  <Spinner animation="border" role="status" variant="light">
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                <Form>
+                  <Form.File.Label
+                    onChange={(e) =>
+                      this.handleGeneralDocSubmit(
+                        e,
+                        this.props.k,
+                        this.props.student_id
+                      )
+                    }
+                    onClick={(e) => (e.target.value = null)}
+                  >
+                    <Form.File.Input hidden />
+                    <IoMdCloudUpload size={32} />
+                  </Form.File.Label>
+                </Form>
+              )}
             </td>
             {this.props.role === 'Student' ? (
               <td></td>

@@ -1,3 +1,42 @@
+export const check_english_language_passed = (academic_background) => {
+  if (!academic_background || !academic_background.language) {
+    return false;
+  }
+  if (academic_background.language.english_isPassed === 'O') {
+    return true;
+  }
+
+  return false;
+};
+
+export const check_german_language_passed = (academic_background) => {
+  if (!academic_background || !academic_background.language) {
+    return false;
+  }
+  if (academic_background.language.german_isPassed === 'O') {
+    return true;
+  }
+
+  return false;
+};
+
+export const check_languages_filled = (academic_background) => {
+  if (!academic_background || !academic_background.university) {
+    return false;
+  }
+  if (
+    !academic_background.language ||
+    ((!academic_background.language.english_isPassed ||
+      academic_background.language.english_isPassed === '-') &&
+      (!academic_background.language.german_isPassed ||
+        academic_background.language.german_isPassed === '-'))
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 export const check_academic_background_filled = (academic_background) => {
   if (!academic_background || !academic_background.university) {
     return false;
@@ -19,6 +58,9 @@ export const check_academic_background_filled = (academic_background) => {
 export const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
+  }
+  if (!application.programId.application_deadline) {
+    return 'No Data';
   }
   if (application.programId.application_deadline.includes('olling')) {
     // include Rolling

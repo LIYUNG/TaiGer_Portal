@@ -432,6 +432,34 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
+const updateLanguageSkillEmailFromTaiGer = async (recipient, msg) => {
+  const subject = 'Language skills updated successfully';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.sender_firstname} ${msg.sender_lastname} updated your Language skills information successfully!
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const updateApplicationPreferenceEmail = async (recipient) => {
+  const subject = 'Language skills updated successfully';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+You have updated your application preference information successfully!
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const updatePersonalDataEmail = async (recipient, msg) => {
   const subject = 'Personal data updated successfully';
   const message = `\
@@ -490,6 +518,81 @@ status.
 Please go to ${STUDENT_APPLICATION_URL} and see details.
 
 Also go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const NewMLRLEssayTasksEmail = async (recipient, msg) => {
+  const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
+  let applications_name = '';
+  for (let i = 0; i < msg.student_applications.length; i++) {
+    if (msg.new_app_decided_idx.includes(i)) {
+      if (i === 0) {
+        applications_name =
+          msg.student_applications[i].programId.school +
+          ' ' +
+          msg.student_applications[i].programId.program_name;
+      } else {
+        applications_name += `\
+        
+        ${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}`;
+      }
+    }
+  }
+
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.sender_firstname} ${msg.sender_lastname} has decided applications 
+
+${applications_name}. 
+
+The relavant documents tasks are now assigned to you.
+
+Please go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+
+const NewMLRLEssayTasksEmailFromTaiGer = async (recipient, msg) => {
+  const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
+  let applications_name = '';
+  for (let i = 0; i < msg.student_applications.length; i++) {
+    if (msg.new_app_decided_idx.includes(i)) {
+      if (i === 0) {
+        applications_name =
+          msg.student_applications[i].programId.school +
+          ' ' +
+          msg.student_applications[i].programId.program_name;
+      } else {
+        applications_name += `\
+        
+        ${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}`;
+      }
+    }
+  }
+
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.sender_firstname} ${msg.sender_lastname} has decided applications 
+
+${applications_name}
+
+for ${msg.student_firstname} ${msg.student_lastname}. 
+
+The relavant documents tasks are now assigned to you.
+
+Please go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
 
 ${TAIGER_SIGNATURE}
 
@@ -796,9 +899,13 @@ module.exports = {
   sendChangedProfileFileStatusEmail,
   updateAcademicBackgroundEmail,
   updateLanguageSkillEmail,
+  updateLanguageSkillEmailFromTaiGer,
+  updateApplicationPreferenceEmail,
   updatePersonalDataEmail,
   updateCredentialsEmail,
   UpdateStudentApplicationsEmail,
+  NewMLRLEssayTasksEmail,
+  NewMLRLEssayTasksEmailFromTaiGer,
   sendSomeReminderEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,

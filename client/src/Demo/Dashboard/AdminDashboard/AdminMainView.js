@@ -115,6 +115,7 @@ class AdminMainView extends React.Component {
                 <tr>
                   <th>First-/Lastname</th>
                   <th>Survey</th>
+                  <th>Language</th>
                   <th>Base Documents</th>
                   <th>Uni-Assist</th>
                   <th>Program Selection</th>

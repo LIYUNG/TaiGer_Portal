@@ -8,6 +8,7 @@ import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import {
   check_academic_background_filled,
+  check_languages_filled,
   check_application_preference_filled
 } from '../Utils/checking-functions';
 import {
@@ -58,20 +59,20 @@ class SurveyEditableComponent extends React.Component {
     e.preventDefault();
     var language_temp = { ...this.state.academic_background.language };
     language_temp[e.target.id] = e.target.value;
-    if (e.target.id === 'english_certificate') {
-      if (e.target.value === 'No') {
-        language_temp['english_score'] = '';
-      } else {
-        language_temp['english_test_date'] = '';
-      }
-    }
-    if (e.target.id === 'german_certificate') {
-      if (e.target.value === 'No') {
-        language_temp['german_score'] = '';
-      } else {
-        language_temp['german_test_date'] = '';
-      }
-    }
+    // if (e.target.id === 'english_certificate') {
+    //   if (e.target.value === 'No') {
+    //     language_temp['english_score'] = '';
+    //   } else {
+    //     language_temp['english_test_date'] = '';
+    //   }
+    // }
+    // if (e.target.id === 'german_certificate') {
+    //   if (e.target.value === 'No') {
+    //     language_temp['german_score'] = '';
+    //   } else {
+    //     language_temp['german_test_date'] = '';
+    //   }
+    // }
     this.setState((state) => ({
       ...state,
       changed_language: true,
@@ -161,8 +162,7 @@ class SurveyEditableComponent extends React.Component {
                       </li>
                     )}{' '}
                   {this.props.academic_background &&
-                    !this.props.academic_background.university
-                      .program_name && (
+                    !this.props.academic_background.university.program_name && (
                       <li>
                         <b>University Program</b>
                       </li>
@@ -181,6 +181,18 @@ class SurveyEditableComponent extends React.Component {
                         <b>Expected Application Semester</b>
                       </li>
                     )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
+        {!check_languages_filled(this.props.academic_background) && (
+          <Row>
+            <Col>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  You <b>language skills</b> information are still missing or
+                  not updated.
                 </Card.Body>
               </Card>
             </Col>
@@ -641,173 +653,291 @@ class SurveyEditableComponent extends React.Component {
               <Card.Body>
                 <Row>
                   <Col md={4}>
-                    <Form.Group controlId="english_certificate">
+                    <Form.Group controlId="english_isPassed">
                       <Form.Label className="my-0 mx-0 text-light">
-                        English Certificate
+                        English Passed?
                       </Form.Label>
                       <Form.Control
                         as="select"
                         value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
-                            .english_certificate
-                            ? this.state.academic_background.language
-                                .english_certificate
-                            : ''
+                            .english_isPassed
                         }
                         onChange={(e) => this.handleChange_Language(e)}
                       >
-                        <option value="No">No</option>
-                        <option value="TOEFL">TOEFL</option>
-                        <option value="IELTS">IELTS</option>
+                        <option value="-">-</option>
+                        <option value="O">Yes</option>
+                        <option value="X">No</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
-                  <Col md={4}>
-                    <Form.Group controlId="english_score">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        English Test Score
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="(i.e. TOEFL: 94, or IELTS: 6.5) "
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language.english_score
-                            ? this.state.academic_background.language
-                                .english_score
-                            : ''
-                        }
-                        disabled={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .english_certificate === 'No'
-                            ? true
-                            : false
-                        }
-                        onChange={(e) => this.handleChange_Language(e)}
-                      />
-                    </Form.Group>
-                    <br />
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group controlId="english_test_date">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Expected Test Date
-                      </Form.Label>
-                      <Form.Control
-                        type="date"
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .english_test_date
-                            ? this.state.academic_background.language
-                                .english_test_date
-                            : ''
-                        }
-                        disabled={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .english_certificate === 'No'
-                            ? false
-                            : true
-                        }
-                        placeholder="Date of English Test"
-                        onChange={(e) => this.handleChange_Language(e)}
-                      />
-                    </Form.Group>
-                  </Col>
+                  {this.state.academic_background.language &&
+                  this.state.academic_background.language.english_isPassed &&
+                  this.state.academic_background.language.english_isPassed !==
+                    '-' ? (
+                    this.state.academic_background.language.english_isPassed ===
+                    'O' ? (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="english_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              English Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_certificate
+                                  ? this.state.academic_background.language
+                                      .english_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <option value="TOEFL">TOEFL</option>
+                              <option value="IELTS">IELTS</option>
+                              <option value="Duolingo">Duolingo</option>
+                              <option value="Native">Native</option>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="english_score">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              English Test Score
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="(i.e. TOEFL: 94, or IELTS: 6.5) "
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_score
+                                  ? this.state.academic_background.language
+                                      .english_score
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="english_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              English Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_certificate
+                                  ? this.state.academic_background.language
+                                      .english_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <option value="TOEFL">TOEFL</option>
+                              <option value="IELTS">IELTS</option>
+                              <option value="Duolingo">Duolingo</option>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="english_test_date">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Expected Test Date
+                            </Form.Label>
+                            <Form.Control
+                              type="date"
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_test_date
+                                  ? this.state.academic_background.language
+                                      .english_test_date
+                                  : ''
+                              }
+                              placeholder="Date of English Test"
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </>
+                    )
+                  ) : (
+                    <></>
+                  )}
                 </Row>
                 <Row>
                   <Col md={4}>
-                    <Form.Group controlId="german_certificate">
+                    <Form.Group controlId="german_isPassed">
                       <Form.Label className="my-0 mx-0 text-light">
-                        German Certificate
+                        German Passed? (Not need if applying English taught
+                        programs.)
                       </Form.Label>
                       <Form.Control
                         as="select"
                         value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
-                            .german_certificate
-                            ? this.state.academic_background.language
-                                .german_certificate
-                            : ''
+                            .german_isPassed
                         }
                         onChange={(e) => this.handleChange_Language(e)}
                       >
-                        <option value="No">No</option>
-                        <option value="Goethe Zertifikat A2">
-                          Goethe Zertifikat A2
-                        </option>
-                        <option value="Goethe Zertifikat B1">
-                          Goethe Zertifikat B1
-                        </option>
-                        <option value="Goethe Zertifikat B2">
-                          Goethe Zertifikat B2
-                        </option>
-                        <option value="Goethe Zertifikat C1">
-                          Goethe Zertifikat C1
-                        </option>
-                        <option value="TestDaF">TestDaF</option>
-                        <option value="DSH">DSH</option>
+                        <option value="-">-</option>
+                        <option value="O">Yes</option>
+                        <option value="X">No</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
-                  <Col md={4}>
-                    <Form.Group controlId="german_score">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        German Test Score
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="(i.e. TestDaF: 4, or DSH: 2) "
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language.german_score
-                            ? this.state.academic_background.language
-                                .german_score
-                            : ''
-                        }
-                        disabled={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .german_certificate === 'No'
-                            ? true
-                            : false
-                        }
-                        onChange={(e) => this.handleChange_Language(e)}
-                      />
-                    </Form.Group>
-                    <br />
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group controlId="german_test_date">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Expected Test Date
-                      </Form.Label>
-                      <Form.Control
-                        type="date"
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .german_test_date
-                            ? this.state.academic_background.language
-                                .german_test_date
-                            : ''
-                        }
-                        disabled={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .german_certificate === 'No'
-                            ? false
-                            : true
-                        }
-                        placeholder="Date of Germa Test"
-                        onChange={(e) => this.handleChange_Language(e)}
-                      />
-                    </Form.Group>
-                  </Col>
+                  {this.state.academic_background.language &&
+                  this.state.academic_background.language.german_isPassed &&
+                  this.state.academic_background.language.german_isPassed !==
+                    '-' ? (
+                    this.state.academic_background.language.german_isPassed ===
+                    'O' ? (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="german_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              German Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .german_certificate
+                                  ? this.state.academic_background.language
+                                      .german_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <option value="No">No</option>
+                              <option value="Goethe Zertifikat A2">
+                                Goethe Zertifikat A2
+                              </option>
+                              <option value="Goethe Zertifikat B1">
+                                Goethe Zertifikat B1
+                              </option>
+                              <option value="Goethe Zertifikat B2">
+                                Goethe Zertifikat B2
+                              </option>
+                              <option value="Goethe Zertifikat C1">
+                                Goethe Zertifikat C1
+                              </option>
+                              <option value="TestDaF">TestDaF</option>
+                              <option value="DSH">DSH</option>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="german_score">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              German Test Score
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="(i.e. TestDaF: 4, or DSH: 2) "
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .german_score
+                                  ? this.state.academic_background.language
+                                      .german_score
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .german_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="german_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              German Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .german_certificate
+                                  ? this.state.academic_background.language
+                                      .german_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <option value="No">No</option>
+                              <option value="Goethe Zertifikat A2">
+                                Goethe Zertifikat A2
+                              </option>
+                              <option value="Goethe Zertifikat B1">
+                                Goethe Zertifikat B1
+                              </option>
+                              <option value="Goethe Zertifikat B2">
+                                Goethe Zertifikat B2
+                              </option>
+                              <option value="Goethe Zertifikat C1">
+                                Goethe Zertifikat C1
+                              </option>
+                              <option value="TestDaF">TestDaF</option>
+                              <option value="DSH">DSH</option>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="german_test_date">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Expected Test Date
+                            </Form.Label>
+                            <Form.Control
+                              type="date"
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .german_test_date
+                                  ? this.state.academic_background.language
+                                      .german_test_date
+                                  : ''
+                              }
+                              placeholder="Date of Germa Test"
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </>
+                    )
+                  ) : (
+                    <></>
+                  )}
                 </Row>
                 <Row>
                   <Col md={10} className="my-0 mx-0 text-light">

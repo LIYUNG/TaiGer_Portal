@@ -18,9 +18,13 @@ const {
   sendChangedProfileFileStatusEmail,
   updateAcademicBackgroundEmail,
   updateLanguageSkillEmail,
+  updateLanguageSkillEmailFromTaiGer,
+  updateApplicationPreferenceEmail,
   updatePersonalDataEmail,
   updateCredentialsEmail,
   UpdateStudentApplicationsEmail,
+  NewMLRLEssayTasksEmail,
+  NewMLRLEssayTasksEmailFromTaiGer,
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail
   // sendSomeReminderEmail,
@@ -696,9 +700,10 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate('applications.programId')
-    .populate('agents', 'firstname lastname email')
+    .populate('agents editors', 'firstname lastname email')
     .exec();
 
+  let new_task_flag = false;
   if (!student) {
     logger.error('UpdateStudentApplications: Invalid student id');
     throw new ErrorResponse(400, 'Invalid student id');
@@ -726,6 +731,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       }
       // add reminder banner
       student.notification.isRead_new_cvmlrl_tasks_created = false;
+      new_task_flag = true;
     }
     application.decided = applications[i].decided;
     application.closed = applications[i].closed;
@@ -742,7 +748,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     .lean();
   res.status(201).send({ success: true, data: student_updated });
   if (user.role === Role.Student) {
-    for (let i = 0; i < student.agents.length; i++) {
+    for (let i = 0; i < student.agents.length; i += 1) {
       await UpdateStudentApplicationsEmail(
         {
           firstname: student.agents[i].firstname,
@@ -771,29 +777,23 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
         new_app_decided_idx: new_app_decided_idx
       }
     );
-    // TODO: modify here:
-    // let documentname =
-    //   document_category +
-    //   ' - ' +
-    //   application.programId.school +
-    //   ' - ' +
-    //   application.programId.program_name;
-    // for (let i = 0; i < student.editors.length; i += 1) {
-    //   await assignDocumentTaskToEditorEmail(
-    //     {
-    //       firstname: student.editors[i].firstname,
-    //       lastname: student.editors[i].lastname,
-    //       address: student.editors[i].email
-    //     },
-    //     {
-    //       student_firstname: student.firstname,
-    //       student_lastname: student.lastname,
-    //       thread_id: new_doc_thread._id,
-    //       documentname,
-    //       updatedAt: new Date()
-    //     }
-    //   );
-    // }
+    if (new_task_flag) {
+      for (let i = 0; i < student.editors.length; i += 1) {
+        await NewMLRLEssayTasksEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            sender_firstname: student.firstname,
+            sender_lastname: student.lastname,
+            student_applications: student_updated.applications,
+            new_app_decided_idx: new_app_decided_idx
+          }
+        );
+      }
+    }
   } else {
     await UpdateStudentApplicationsEmail(
       {
@@ -808,15 +808,25 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
         new_app_decided_idx: new_app_decided_idx
       }
     );
-    // TODO: modify here:
-    // await assignDocumentTaskToStudentEmail(
-    //   {
-    //     firstname: student.firstname,
-    //     lastname: student.lastname,
-    //     address: student.email
-    //   },
-    //   { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
-    // );
+    if (new_task_flag) {
+      for (let i = 0; i < student.editors.length; i += 1) {
+        await NewMLRLEssayTasksEmailFromTaiGer(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
+            sender_firstname: user.firstname,
+            sender_lastname: user.lastname,
+            student_applications: student_updated.applications,
+            new_app_decided_idx: new_app_decided_idx
+          }
+        );
+      }
+    }
   }
 });
 
@@ -1254,18 +1264,31 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .send({ success: true, data: updatedStudent.academic_background.language });
-
-  await updateLanguageSkillEmail(
-    {
-      firstname: updatedStudent.firstname,
-      lastname: updatedStudent.lastname,
-      address: updatedStudent.email
-    },
-    {}
-  );
+  if (user.role === Role.Student) {
+    await updateLanguageSkillEmail(
+      {
+        firstname: updatedStudent.firstname,
+        lastname: updatedStudent.lastname,
+        address: updatedStudent.email
+      },
+      {}
+    );
+  } else {
+    await updateLanguageSkillEmailFromTaiGer(
+      {
+        firstname: updatedStudent.firstname,
+        lastname: updatedStudent.lastname,
+        address: updatedStudent.email
+      },
+      {
+        sender_firstname: user.firstname,
+        sender_lastname: user.lastname
+      }
+    );
+  }
 });
 
-// () email : self notification
+// (O) email : self notification
 // () TODO email: notify agents
 const updateApplicationPreferenceSkill = asyncHandler(
   async (req, res, next) => {
@@ -1294,15 +1317,16 @@ const updateApplicationPreferenceSkill = asyncHandler(
       success: true,
       data: updatedStudent.application_preference
     });
-
-    await updateLanguageSkillEmail(
-      {
-        firstname: updatedStudent.firstname,
-        lastname: updatedStudent.lastname,
-        address: updatedStudent.email
-      },
-      {}
-    );
+    if (user.role === Role.Student) {
+      await updateApplicationPreferenceEmail(
+        {
+          firstname: updatedStudent.firstname,
+          lastname: updatedStudent.lastname,
+          address: updatedStudent.email
+        },
+        {}
+      );
+    }
   }
 );
 

@@ -201,6 +201,10 @@ const UserSchema = new Schema(
         updatedAt: Date
       },
       language: {
+        english_isPassed: {
+          type: String,
+          default: '-'
+        },
         english_certificate: {
           type: String,
           default: ''
@@ -212,6 +216,10 @@ const UserSchema = new Schema(
         english_test_date: {
           type: String,
           default: ''
+        },
+        german_isPassed: {
+          type: String,
+          default: '-'
         },
         german_certificate: {
           type: String,

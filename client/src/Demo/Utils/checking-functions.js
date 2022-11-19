@@ -45,7 +45,7 @@ export const check_academic_background_filled = (academic_background) => {
   if (
     !academic_background.university.attended_high_school ||
     !academic_background.university.attended_university ||
-    !academic_background.university.program_name
+    !academic_background.university.attended_university_program
     // ||
     // !academic_background.university.isGraduated
   ) {

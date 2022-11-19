@@ -12,6 +12,7 @@ import { convertDate } from '../../../Utils/contants';
 import {
   check_academic_background_filled,
   check_application_preference_filled,
+  check_languages_filled,
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded
 } from '../../../Utils/checking-functions';
@@ -164,7 +165,8 @@ class StudentTasks extends React.Component {
         ) ||
           !check_application_preference_filled(
             this.props.student.application_preference
-          )) && (
+          ) ||
+          !check_languages_filled(this.props.student.academic_background)) && (
           <tr>
             <td>
               <Link

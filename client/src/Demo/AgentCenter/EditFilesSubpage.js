@@ -64,29 +64,64 @@ class EditFilesSubpage extends React.Component {
     } else {
     }
     var file_information;
-    file_information = keys2.map((k, i) => {
-      if (object_init[k] === 'uploaded') {
-        return (
-          <ButtonSetUploaded
-            key={i + 1}
-            role={this.props.role}
-            isLoaded={this.props.isLoaded}
-            docName={value2[i]}
-            date={object_date_init[k]}
-            time={object_time_init[k]}
-            k={k}
-            student_id={this.props.student._id}
-            onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-            onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.props.onUpdateProfileFilefromstudent
-            }
-            SubmitGeneralFile={this.props.SubmitGeneralFile}
-          />
-        );
-      } else if (object_init[k] === 'accepted') {
-        return (
-          <ButtonSetAccepted
+    file_information = keys2.map((k, i) =>
+      object_init[k] === 'uploaded' ? (
+        <ButtonSetUploaded
+          key={i + 1}
+          role={this.props.role}
+          isLoaded={this.props.isLoaded}
+          docName={value2[i]}
+          date={object_date_init[k]}
+          time={object_time_init[k]}
+          k={k}
+          student_id={this.props.student._id}
+          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={
+            this.props.onUpdateProfileFilefromstudent
+          }
+          SubmitGeneralFile={this.props.SubmitGeneralFile}
+        />
+      ) : object_init[k] === 'accepted' ? (
+        <ButtonSetAccepted
+          key={i + 1}
+          role={this.props.role}
+          isLoaded={this.props.isLoaded}
+          docName={value2[i]}
+          date={object_date_init[k]}
+          time={object_time_init[k]}
+          k={k}
+          student_id={this.props.student._id}
+          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={
+            this.props.onUpdateProfileFilefromstudent
+          }
+          SubmitGeneralFile={this.props.SubmitGeneralFile}
+          deleteFileWarningModel={this.props.deleteFileWarningModel}
+        />
+      ) : object_init[k] === 'rejected' ? (
+        <ButtonSetRejected
+          key={i + 1}
+          role={this.props.role}
+          isLoaded={this.props.isLoaded}
+          docName={value2[i]}
+          date={object_date_init[k]}
+          time={object_time_init[k]}
+          k={k}
+          message={object_message[k]}
+          student_id={this.props.student._id}
+          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={
+            this.props.onUpdateProfileFilefromstudent
+          }
+          SubmitGeneralFile={this.props.SubmitGeneralFile}
+          deleteFileWarningModel={this.props.deleteFileWarningModel}
+        />
+      ) : object_init[k] === 'notneeded' ? (
+        (this.props.role === 'Admin' || this.props.role === 'Agent') && (
+          <ButtonSetNotNeeded
             key={i + 1}
             role={this.props.role}
             isLoaded={this.props.isLoaded}
@@ -103,76 +138,28 @@ class EditFilesSubpage extends React.Component {
             SubmitGeneralFile={this.props.SubmitGeneralFile}
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
-        );
-      } else if (object_init[k] === 'rejected') {
-        return (
-          <ButtonSetRejected
-            key={i + 1}
-            role={this.props.role}
-            isLoaded={this.props.isLoaded}
-            docName={value2[i]}
-            date={object_date_init[k]}
-            time={object_time_init[k]}
-            k={k}
-            message={object_message[k]}
-            student_id={this.props.student._id}
-            onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-            onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.props.onUpdateProfileFilefromstudent
-            }
-            SubmitGeneralFile={this.props.SubmitGeneralFile}
-            deleteFileWarningModel={this.props.deleteFileWarningModel}
-          />
-        );
-      } else if (object_init[k] === 'notneeded') {
-        // TODO: render or hide?
-        return (
-          <>
-            {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
-              <ButtonSetNotNeeded
-                key={i + 1}
-                role={this.props.role}
-                isLoaded={this.props.isLoaded}
-                docName={value2[i]}
-                date={object_date_init[k]}
-                time={object_time_init[k]}
-                k={k}
-                student_id={this.props.student._id}
-                onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-                onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-                onUpdateProfileFilefromstudent={
-                  this.props.onUpdateProfileFilefromstudent
-                }
-                SubmitGeneralFile={this.props.SubmitGeneralFile}
-                deleteFileWarningModel={this.props.deleteFileWarningModel}
-              />
-            )}
-          </>
-        );
-      } else {
-        return (
-          <ButtonSetMissing
-            key={i + 1}
-            role={this.props.role}
-            isLoaded={this.props.isLoaded}
-            docName={value2[i]}
-            date={object_date_init[k]}
-            time={object_time_init[k]}
-            k={k}
-            message={object_message[k]}
-            student_id={this.props.student._id}
-            onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
-            onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.props.onUpdateProfileFilefromstudent
-            }
-            SubmitGeneralFile={this.props.SubmitGeneralFile}
-            handleGeneralDocSubmit={this.handleGeneralDocSubmit}
-          />
-        );
-      }
-    });
+        )
+      ) : (
+        <ButtonSetMissing
+          key={i + 1}
+          role={this.props.role}
+          isLoaded={this.props.isLoaded}
+          docName={value2[i]}
+          date={object_date_init[k]}
+          time={object_time_init[k]}
+          k={k}
+          message={object_message[k]}
+          student_id={this.props.student._id}
+          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
+          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={
+            this.props.onUpdateProfileFilefromstudent
+          }
+          SubmitGeneralFile={this.props.SubmitGeneralFile}
+          handleGeneralDocSubmit={this.handleGeneralDocSubmit}
+        />
+      )
+    );
 
     return (
       <>

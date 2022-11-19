@@ -162,7 +162,8 @@ class SurveyEditableComponent extends React.Component {
                       </li>
                     )}{' '}
                   {this.props.academic_background &&
-                    !this.props.academic_background.university.program_name && (
+                    !this.props.academic_background.university
+                      .attended_university_program && (
                       <li>
                         <b>University Program</b>
                       </li>

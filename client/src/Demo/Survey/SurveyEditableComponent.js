@@ -669,13 +669,16 @@ class SurveyEditableComponent extends React.Component {
                         <option value="-">-</option>
                         <option value="O">Yes</option>
                         <option value="X">No</option>
+                        <option value="--">Not Needed</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
                   {this.state.academic_background.language &&
                   this.state.academic_background.language.english_isPassed &&
-                  this.state.academic_background.language.english_isPassed !==
-                    '-' ? (
+                  (this.state.academic_background.language.english_isPassed ===
+                    'O' ||
+                    this.state.academic_background.language.english_isPassed ===
+                      'X') ? (
                     this.state.academic_background.language.english_isPassed ===
                     'O' ? (
                       <>
@@ -802,13 +805,16 @@ class SurveyEditableComponent extends React.Component {
                         <option value="-">-</option>
                         <option value="O">Yes</option>
                         <option value="X">No</option>
+                        <option value="--">Not Needed</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
                   {this.state.academic_background.language &&
                   this.state.academic_background.language.german_isPassed &&
-                  this.state.academic_background.language.german_isPassed !==
-                    '-' ? (
+                  (this.state.academic_background.language.german_isPassed ===
+                    'O' ||
+                    this.state.academic_background.language.german_isPassed ===
+                      'X') ? (
                     this.state.academic_background.language.german_isPassed ===
                     'O' ? (
                       <>

@@ -155,8 +155,10 @@ class AgentReviewing extends React.Component {
                   {this.props.student.academic_background.language &&
                   this.props.student.academic_background.language
                     .english_isPassed &&
-                  this.props.student.academic_background.language
-                    .english_isPassed !== '-' ? (
+                  (this.props.student.academic_background.language
+                    .english_isPassed === 'O' ||
+                    this.props.student.academic_background.language
+                      .english_isPassed === 'X') ? (
                     isEnglishPassed ? (
                       <p className="text-warning">
                         <IoCheckmarkCircle
@@ -206,8 +208,10 @@ class AgentReviewing extends React.Component {
                   {this.props.student.academic_background.language &&
                   this.props.student.academic_background.language
                     .german_isPassed &&
-                  this.props.student.academic_background.language
-                    .german_isPassed !== '-' ? (
+                  (this.props.student.academic_background.language
+                    .german_isPassed === 'O' ||
+                    this.props.student.academic_background.language
+                      .german_isPassed === 'X') ? (
                     isGermanPassed ? (
                       <p className="text-warning">
                         <IoCheckmarkCircle
@@ -245,6 +249,10 @@ class AgentReviewing extends React.Component {
                   ) : (
                     <></>
                   )}
+                  {this.props.student.academic_background.language
+                    .english_isPassed === '--' &&
+                    this.props.student.academic_background.language
+                      .german_isPassed === '--' && <p className="text-warning" title="Expected Test Date">Not needed</p>}
                 </Link>
               </>
             )}

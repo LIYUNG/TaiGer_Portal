@@ -66,6 +66,23 @@ class ButtonSetNotNeeded extends React.Component {
           </>
         ) : (
           <>
+            <td>
+              <Form>
+                <Form.File.Label
+                  onChange={(e) =>
+                    this.handleGeneralDocSubmit(
+                      e,
+                      this.props.k,
+                      this.props.student_id
+                    )
+                  }
+                  onClick={(e) => (e.target.value = null)}
+                >
+                  <Form.File.Input hidden />
+                  <IoMdCloudUpload size={32} />
+                </Form.File.Label>
+              </Form>
+            </td>{' '}
             {this.props.role === 'Student' ? (
               <td></td>
             ) : (
@@ -90,23 +107,6 @@ class ButtonSetNotNeeded extends React.Component {
                 </Col>
               </td>
             )}
-            <td>
-              <Form>
-                <Form.File.Label
-                  onChange={(e) =>
-                    this.handleGeneralDocSubmit(
-                      e,
-                      this.props.k,
-                      this.props.student_id
-                    )
-                  }
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File.Input hidden />
-                  <IoMdCloudUpload size={32} />
-                </Form.File.Label>
-              </Form>
-            </td>
           </>
         )}
         <td></td>

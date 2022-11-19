@@ -27,7 +27,6 @@ import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
-import UploadAndGenerate from '../TaiGerAI/UploadAndGenerate';
 import SurveyComponent from '../Survey/SurveyComponent';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -497,12 +496,6 @@ class SingleStudentPage extends React.Component {
               </Table>
             </Row>
             <Row>{SYMBOL_EXPLANATION}</Row>
-            {/* <Row>
-              <UploadAndGenerate
-                user={this.state.student}
-                student={this.state.student}
-              />
-            </Row> */}
           </Tab>
           <Tab eventKey="CV_ML_RL" title="CV ML RL">
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>

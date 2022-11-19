@@ -145,7 +145,6 @@ class StudentDashboard extends React.Component {
       <StudentMyself
         role={this.props.role}
         student={this.state.student}
-        profile_list={window.profile_list}
       />
     );
 

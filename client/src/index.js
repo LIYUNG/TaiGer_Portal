@@ -27,21 +27,6 @@ window.documentlist = {
   visa: 'Visa Instruction'
 };
 
-window.editortodolist = [
-  {
-    name: 'Waiting ML_Template',
-    prop: 'waitingrltemplate'
-  },
-  {
-    name: 'Waiting ML Response',
-    prop: 'waitingmltemplate'
-  },
-  {
-    name: 'Provide ML Status',
-    prop: 'providemltemp'
-  }
-];
-
 window.agenttodolist = [
   {
     name: 'Course Analysis',

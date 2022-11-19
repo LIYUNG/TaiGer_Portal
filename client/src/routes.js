@@ -94,9 +94,6 @@ const InternalDocCreatePage = React.lazy(() =>
 );
 
 const Download = React.lazy(() => import('./Demo/DownloadCenter/DownloadPage'));
-const TaiGerAI = React.lazy(() =>
-  import('./Demo/TaiGerAI/Application/CoursesAnalyser')
-);
 
 const AgentsAssignment = React.lazy(() =>
   import('./Demo/AssignmentAgentsEditors/AssignAgents/index')
@@ -303,12 +300,6 @@ const routes = [
     exact: true,
     name: 'Download',
     component: Download
-  },
-  {
-    path: '/taigerai',
-    exact: true,
-    name: 'TaiGer AI',
-    component: TaiGerAI
   },
   {
     path: '/checklist',

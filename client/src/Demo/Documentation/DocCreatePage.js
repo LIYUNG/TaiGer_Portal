@@ -275,17 +275,24 @@ class DocCreatePage extends React.Component {
         </div>
       );
     }
+    const documentlist_key = Object.keys(window.documentlist);
 
-    const document_list = this.state.documentlists.map((document, i) => (
-      <DocumentsListItems
-        idx={i}
-        key={i}
-        path={'/docs/search'}
-        document={document}
-        role={this.props.user.role}
-        openDeleteDocModalWindow={this.openDeleteDocModalWindow}
-      />
-    ));
+    const document_list = (cat) => {
+      let sections = {};
+      sections[`${cat}`] = this.state.documentlists.filter(
+        (document) => document.category === cat
+      );
+      return sections[`${cat}`].map((document, i) => (
+        <DocumentsListItems
+          idx={i}
+          key={i}
+          path={'/docs/search'}
+          document={document}
+          role={this.props.user.role}
+          openDeleteDocModalWindow={this.openDeleteDocModalWindow}
+        />
+      ));
+    };
 
     return (
       <Aux>
@@ -371,9 +378,14 @@ class DocCreatePage extends React.Component {
                 </>
               ) : (
                 <Card.Body>
-                  <Row>
-                    <Col sm={10}>{document_list}</Col>
-                  </Row>{' '}
+                  {documentlist_key.map((catego, i) => (
+                    <>
+                      <Row key={i}>
+                        <h5>- {window.documentlist[`${catego}`]}</h5>
+                      </Row>
+                      <Row key={i}>{document_list(catego)}</Row>
+                    </>
+                  ))}
                   {(this.props.user.role === 'Admin' ||
                     this.props.user.role === 'Agent') && (
                     <Button onClick={this.handleClick}>Add</Button>

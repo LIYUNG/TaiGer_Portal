@@ -8,7 +8,7 @@ const internaldocsSchema = new mongoose.Schema({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },
-  prop: { type: String, default: '' },
+  internal: { type: Boolean, default: true },
   text: { type: String, default: '' },
   country: { type: String, default: '' },
   updatedAt: Date

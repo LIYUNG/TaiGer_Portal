@@ -69,6 +69,14 @@ export const valid_categories = [
   { key: 'visa', value: 'Visa' }
 ];
 
+export const valid_internal_categories = [
+  { key: 'agents', value: 'Agents' },
+  { key: 'editors', value: 'Editors' },
+  { key: 'admin', value: 'Admin' },
+  { key: 'base-documents-internal', value: 'Base Documents Internal' },
+  { key: 'uniassist-internal', value: 'Uni-Assist Internal' }
+];
+
 export const convertDate = (date) => {
   let date_str = '';
   let dat = new Date(date).toLocaleDateString();

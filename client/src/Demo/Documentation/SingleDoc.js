@@ -17,7 +17,7 @@ class SingleDoc extends React.Component {
     editorState: null,
     unauthorizederror: null,
     unauthorizederror: null,
-    isEdit: false
+    isEdit: false,
   };
   componentDidMount() {
     getDocumentation(this.props.match.params.documentation_id).then(
@@ -33,6 +33,7 @@ class SingleDoc extends React.Component {
           } else {
             initialEditorState = {};
           }
+          console.log(data);
           initialEditorState = JSON.parse(data.text);
           this.setState({
             isLoaded: true,

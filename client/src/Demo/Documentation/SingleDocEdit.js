@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_categories } from '../Utils/contants';
+import { valid_categories, valid_internal_categories } from '../Utils/contants';
 class SingleDocEdit extends React.Component {
   state = {
     doc_title: this.props.document_title,
@@ -48,12 +48,29 @@ class SingleDocEdit extends React.Component {
             {' '}
             <Row>
               <Col>
-                {this.props.category === 'internal' ? (
-                  <h4>
-                    Category:<b className='text-danger'>Internal</b>
-                  </h4>
+                {this.props.internal ? (
+                  <>
+                    <h4>
+                      Category:<b className="text-danger">Internal</b>
+                    </h4>
+                    <Form.Group controlId="category">
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => this.handleChange_category(e)}
+                        defaultValue={this.props.category}
+                      >
+                        <option value={''}>Select Document Category</option>
+                        {valid_internal_categories.map((cat, i) => (
+                          <option value={cat.key}>{cat.value}</option>
+                        ))}
+                      </Form.Control>
+                    </Form.Group>
+                  </>
                 ) : (
-                  <h4>
+                  <>
+                    <h4>
+                      Category:<b className="text-danger">Public</b>
+                    </h4>{' '}
                     <Form.Group controlId="category">
                       <Form.Control
                         as="select"
@@ -66,7 +83,7 @@ class SingleDocEdit extends React.Component {
                         ))}
                       </Form.Control>
                     </Form.Group>
-                  </h4>
+                  </>
                 )}
               </Col>
             </Row>{' '}

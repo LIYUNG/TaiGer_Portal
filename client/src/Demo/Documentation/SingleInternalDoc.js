@@ -19,7 +19,8 @@ class SingleDoc extends React.Component {
     editorState: null,
     unauthorizederror: null,
     unauthorizederror: null,
-    isEdit: false
+    isEdit: false,
+    internal: false
   };
   componentDidMount() {
     if (
@@ -47,6 +48,7 @@ class SingleDoc extends React.Component {
             isLoaded: true,
             document_title: data.title,
             category: data.category,
+            internal: data.internal,
             editorState: initialEditorState,
             success: success
           });
@@ -172,6 +174,7 @@ class SingleDoc extends React.Component {
         <>
           <SingleDocEdit
             category={this.state.category}
+            internal={this.state.internal}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}
@@ -187,6 +190,7 @@ class SingleDoc extends React.Component {
         <>
           <SingleDocView
             category={this.state.category}
+            internal={this.state.internal}
             document={document}
             document_title={this.state.document_title}
             editorState={this.state.editorState}

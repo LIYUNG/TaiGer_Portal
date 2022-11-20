@@ -27,6 +27,14 @@ window.documentlist = {
   visa: 'Visa Instruction'
 };
 
+window.internaldocumentlist = {
+  agents: 'Agents',
+  editors: 'Editors',
+  admin: 'Admin',
+  'base-documents-internal': 'Base Documents Internal',
+  'uniassist-internal': 'Uni-Assist Internal'
+};
+
 window.agenttodolist = [
   {
     name: 'Course Analysis',

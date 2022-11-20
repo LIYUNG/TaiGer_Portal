@@ -2,11 +2,7 @@ const { Router } = require('express');
 
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
-const {
-  MessagesThreadUpload
-  // upload,
-  // TranscriptExcelUpload,
-} = require('../middlewares/file-upload');
+const { MessagesThreadUpload } = require('../middlewares/file-upload');
 
 const {
   getCVMLRLOverview,
@@ -65,7 +61,10 @@ router
 
 router
   .route('/:messagesThreadId/:studentId')
-  .delete(permit(Role.Admin, Role.Agent, Role.Editor), deleteGeneralMessagesThread);
+  .delete(
+    permit(Role.Admin, Role.Agent, Role.Editor),
+    deleteGeneralMessagesThread
+  );
 
 router
   .route('/:messagesThreadId/:messageId/:fileId')

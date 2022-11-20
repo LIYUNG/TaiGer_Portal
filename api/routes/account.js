@@ -2,10 +2,7 @@ const { Router } = require('express');
 
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
-const {
-  TemplatefileUpload,
-  TranscriptExcelUpload
-} = require('../middlewares/file-upload');
+const { TemplatefileUpload } = require('../middlewares/file-upload');
 
 const {
   getMyfiles,
@@ -15,7 +12,6 @@ const {
   downloadTemplateFile,
   UpdateStudentApplications,
   processTranscript_test,
-  processTranscript,
   downloadXLSX,
   removeNotification,
   getMyAcademicBackground,
@@ -56,18 +52,8 @@ router
 // TaiGer Transcript Analyser:
 router
   .route('/transcript/:studentId/:category')
-  .post(
-    permit(Role.Admin, Role.Agent, Role.Editor),
-    processTranscript_test
-  );
+  .post(permit(Role.Admin, Role.Agent, Role.Editor), processTranscript_test);
 
-// router
-//   .route('/transcript/:studentId/:category')
-//   .post(
-//     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-//     TranscriptExcelUpload,
-//     processTranscript
-//   );
 router
   .route('/transcript/:studentId')
   .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);

@@ -8,12 +8,7 @@ const Documentation = require('../models/Documentation');
 const Internaldoc = require('../models/Internaldoc');
 const Docspage = require('../models/Docspage');
 const logger = require('../services/logger');
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  UPLOAD_PATH,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME
-} = require('../config');
+const { AWS_S3_PUBLIC_BUCKET } = require('../config');
 const valid_categories = [
   'application',
   'base-documents',
@@ -162,15 +157,28 @@ const createInternalDocumentation = asyncHandler(async (req, res) => {
 });
 
 const uploadDocImage = asyncHandler(async (req, res) => {
-  let imageurl = new URL(`/Documentations/${req.file.key}`, UPLOAD_PATH).href;
+  let imageurl = new URL(
+    `/Documentations/${req.file.key}`,
+    AWS_S3_PUBLIC_BUCKET
+  ).href;
   imageurl = imageurl.replace(/\\/g, '/');
   return res.send({ success: true, data: imageurl });
 });
 
 const uploadDocDocs = asyncHandler(async (req, res) => {
-  let imageurl = new URL(`/Documentations/${req.file.key}`, UPLOAD_PATH).href;
+  let imageurl = new URL(
+    `/Documentations/${req.file.key}`,
+    AWS_S3_PUBLIC_BUCKET
+  ).href;
   imageurl = imageurl.replace(/\\/g, '/');
-  return res.send({ success: true, data: imageurl, title: req.file.key });
+  let extname = path.extname(req.file.key);
+  extname = extname.replace('.', '');
+  return res.send({
+    success: true,
+    data: imageurl,
+    title: req.file.key,
+    extension: extname
+  });
 });
 
 const updateDocumentation = asyncHandler(async (req, res) => {

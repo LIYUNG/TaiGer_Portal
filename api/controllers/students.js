@@ -7,7 +7,6 @@ const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const aws = require('aws-sdk');
 
-const { UPLOAD_PATH } = require('../config');
 var async = require('async');
 const fs = require('fs');
 const {

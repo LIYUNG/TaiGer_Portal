@@ -133,7 +133,7 @@ class NavItem extends Component {
           <a
             href={this.props.item.url}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
           >
             <NavIcon items={this.props.item} />
             {itemTitle}

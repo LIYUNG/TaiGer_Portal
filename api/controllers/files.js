@@ -1025,73 +1025,6 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   }
 });
 
-const processTranscript = asyncHandler(async (req, res, next) => {
-  const {
-    params: { category, studentId }
-  } = req;
-  const filename = req.file.key; // key is updated file name
-  const filePath = path.join(req.file.metadata.path, req.file.key);
-  logger.info(
-    path.join(
-      __dirname,
-      '..',
-      'python',
-      'TaiGer_Transcript-Program_Comparer',
-      'main.py'
-    )
-  );
-  // FIXME: better pass output filepath as argument to python script instead of hard code value
-  const output = `analyzed_${filename}`;
-  const output_filePath = path.join(req.file.metadata.path, 'output', output);
-  const python = spawn('python', [
-    path.join(
-      __dirname,
-      '..',
-      'python',
-      'TaiGer_Transcript-Program_Comparer',
-      'main.py'
-    ),
-    filePath,
-    category
-  ]);
-
-  await User.findByIdAndUpdate(
-    studentId,
-    {
-      'taigerai.input.name': filename,
-      'taigerai.input.path': filePath,
-      'taigerai.input.status': 'uploaded',
-      'taigerai.output.name': output,
-      'taigerai.output.path': output_filePath,
-      'taigerai.output.status': 'uploaded'
-      // $push: {
-      //   taigerai: updatedPathAndName,
-      // },
-    },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
-  );
-  const student = await User.findById(studentId);
-  // const student = await Student.findById(studentId);
-  // student.taigerai.input.name = filePath;
-  // student.taigerai.input.path = req.file.path.replace(UPLOAD_PATH, "");
-  // student.taigerai.input.status = "uploaded";
-  // student.taigerai.output.name = output;
-  // student.taigerai.output.path = path.join(`${student._id}`, "output", output);
-  // student.taigerai.output.status = "uploaded";
-  // await student.save();
-  python.on('close', (code) => {
-    if (code === 0) {
-      return res.status(200).send({ success: true, data: student });
-    }
-
-    next(
-      new ErrorResponse(
-        500,
-        'Error occurs while trying to produce analyzed report'
-      )
-    );
-  });
-});
 
 // FIXME: refactor this
 // Download original transcript excel
@@ -1401,7 +1334,6 @@ module.exports = {
   updateVPDFileNecessity,
   deleteVPDFile,
   processTranscript_test,
-  processTranscript,
   downloadXLSX,
   removeNotification,
   getMyAcademicBackground,

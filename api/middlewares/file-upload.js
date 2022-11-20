@@ -8,10 +8,10 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const uuid = require('uuid');
 const { ErrorResponse } = require('../common/errors');
 const {
-  UPLOAD_PATH,
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME
+  AWS_S3_BUCKET_NAME,
+  AWS_S3_PUBLIC_BUCKET_NAME
 } = require('../config');
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -130,7 +130,7 @@ const storage_vpd_s3 = multerS3({
 });
 
 // Profile file upload
-const storage_s3 = multerS3({
+const storage_profile_s3 = multerS3({
   s3,
   bucket: function (req, file, cb) {
     var { studentId } = req.params;
@@ -182,7 +182,7 @@ const storage_s3 = multerS3({
 const doc_image_s3 = multerS3({
   s3,
   bucket: function (req, file, cb) {
-    var directory = path.join(AWS_S3_BUCKET_NAME, 'Documentations');
+    var directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },
@@ -199,7 +199,7 @@ const doc_image_s3 = multerS3({
 const doc_docs_s3 = multerS3({
   s3,
   bucket: function (req, file, cb) {
-    var directory = path.join(AWS_S3_BUCKET_NAME, 'Documentations');
+    var directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },
@@ -218,7 +218,7 @@ const upload_doc_image_s3 = multer({
   storage: doc_image_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype))
       return cb(
         new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
       );
@@ -267,7 +267,7 @@ const upload_vpd_s3 = multer({
 
 // upload profile pdf/docx/image
 const upload_profile_s3 = multer({
-  storage: storage_s3,
+  storage: storage_profile_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
@@ -403,124 +403,6 @@ const upload_messagesthread_file_s3 = multer({
   }
 });
 
-// const transcript_excel_storage3 = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     var { studentId } = req.params;
-//     if (!studentId) studentId = String(req.user._id);
-
-//     // TODO: check studentId exist
-//     const directory = path.join(UPLOAD_PATH, studentId);
-//     if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
-
-//     return cb(null, directory);
-//   },
-//   filename: (req, file, cb) => {
-//     // TODO: check category exist
-//     var { studentId } = req.params;
-//     try {
-//       User.findOne({ _id: studentId })
-//         .then(function (student) {
-//           if (student) {
-//             var temp_name =
-//               student.lastname +
-//               "_" +
-//               student.firstname +
-//               "_" +
-//               "TaiGerTranscriptAI" +
-//               path.extname(file.originalname);
-//             const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
-//             // if (fs.existsSync(filePath))
-//             //   return cb(
-//             //     new ErrorResponse(400, "Document already existed!33333")
-//             //   );
-//             return {
-//               fileName: temp_name,
-//             };
-//           }
-//         })
-//         .then(function (resp) {
-//           cb(null, resp.fileName);
-//         });
-//     } catch (err) {
-//
-//     }
-
-//     // cb(null, `${req.params.category}${path.extname(file.originalname)}`);
-//   },
-// });
-
-// TODO: upload pdf/docx/image
-// TranscriptExcelUpload
-
-const transcript_excel_storage3 = multerS3({
-  s3,
-  bucket: function (req, _file, cb) {
-    var { studentId } = req.params;
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId and applicationId exist
-    var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
-  },
-  metadata: function (req, file, cb) {
-    var { studentId } = req.params;
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId and applicationId exist
-    var directory = studentId;
-    cb(null, { fieldName: file.fieldname, path: directory });
-  },
-  key: function (req, file, cb) {
-    var { studentId, applicationId, fileCategory } = req.params;
-    var { user } = req;
-
-    User.findOne({ _id: studentId })
-      .then(function (student) {
-        if (student) {
-          var temp_name =
-            student.lastname +
-            '_' +
-            student.firstname +
-            '_' +
-            'TaiGerTranscriptAI' +
-            path.extname(file.originalname);
-          const filePath = path.join(UPLOAD_PATH, studentId, temp_name);
-          // if (fs.existsSync(filePath))
-          //   return cb(
-          //     new ErrorResponse(400, "Document already existed!33333")
-          //   );
-          return {
-            fileName: temp_name
-          };
-        }
-      })
-      .then(function (resp) {
-        cb(null, resp.fileName);
-      });
-  }
-});
-
-const upload_transcript_s3 = multer({
-  storage: transcript_excel_storage3,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          400,
-          'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
-    }
-    const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
-    }
-    cb(null, true);
-  }
-});
-
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'upload/');
@@ -538,7 +420,6 @@ module.exports = {
   VPDfileUpload: upload_vpd_s3.single('file'),
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
-  TranscriptExcelUpload: upload_transcript_s3.single('file'),
   MessagesThreadUpload: upload_messagesthread_file_s3.single('file'),
   upload: upload.single('file')
 };

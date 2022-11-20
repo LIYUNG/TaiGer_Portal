@@ -15,6 +15,9 @@ import CodeTool from '@editorjs/code';
 import Quote from '@editorjs/quote';
 import Underline from '@editorjs/underline';
 import AttachesTool from '@editorjs/attaches';
+// import AttachesTool from '@editorjs/liyungc-attaches';
+// import AttachesTool from './attaches/dist/bundle';
+// const {AttachesTool} = require('@editorjs/attaches');
 import LinkTool from '@editorjs/link';
 import ColorPlugin from 'editorjs-text-color-plugin';
 import TextAlign from '@canburaks/text-align-editorjs';
@@ -135,7 +138,11 @@ const EditorNew = (props) => {
                 const res = await uploadDocDocs(formData);
                 return {
                   success: 1,
-                  file: { url: res.data.data, title: res.data.title }
+                  file: {
+                    url: res.data.data,
+                    title: res.data.title,
+                    extension: res.data.extension
+                  }
                 };
               }
               // async uploadByUrl(url) {

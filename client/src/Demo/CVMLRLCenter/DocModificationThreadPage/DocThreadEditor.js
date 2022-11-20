@@ -43,7 +43,7 @@ function DocThreadEditor(props) {
             >
               <Form.File.Input
                 onChange={(e) => props.onFileChange(e)}
-                multiple
+                // multiple
               />
               {/* <IoMdCloudUpload size={32} /> */}
             </Form.File.Label>

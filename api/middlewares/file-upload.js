@@ -14,7 +14,7 @@ const {
   AWS_S3_PUBLIC_BUCKET_NAME
 } = require('../config');
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_FILE_SIZE_MB = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_MIME_TYPES = [
   'application/pdf',
   'image/png',
@@ -65,7 +65,7 @@ const template_storage_s3 = multerS3({
 // upload template pdf/docx/image
 const upload_template_s3 = multer({
   storage: template_storage_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
       return cb(
@@ -75,8 +75,13 @@ const upload_template_s3 = multer({
         )
       );
     const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          400,
+          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+        )
+      );
     }
     cb(null, true);
   }
@@ -216,15 +221,20 @@ const doc_docs_s3 = multerS3({
 
 const upload_doc_image_s3 = multer({
   storage: doc_image_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype))
       return cb(
         new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
       );
     const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          400,
+          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+        )
+      );
     }
     cb(null, true);
   }
@@ -232,15 +242,20 @@ const upload_doc_image_s3 = multer({
 
 const upload_doc_docs_s3 = multer({
   storage: doc_docs_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
       return cb(
         new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
       );
     const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          400,
+          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+        )
+      );
     }
     cb(null, true);
   }
@@ -248,13 +263,19 @@ const upload_doc_docs_s3 = multer({
 
 const upload_vpd_s3 = multer({
   storage: storage_vpd_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_PDF_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_PDF_TYPES.includes(file.mimetype)) {
       return cb(new ErrorResponse(400, 'Only .pdf format is allowed'));
+    }
     const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          400,
+          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+        )
+      );
     }
     cb(null, true);
   }
@@ -268,7 +289,7 @@ const upload_vpd_s3 = multer({
 // upload profile pdf/docx/image
 const upload_profile_s3 = multer({
   storage: storage_profile_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
       return cb(
@@ -278,8 +299,13 @@ const upload_profile_s3 = multer({
         )
       );
     const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          400,
+          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+        )
+      );
     }
     cb(null, true);
   }
@@ -385,7 +411,7 @@ const storage_messagesthread_file_s3 = multerS3({
 
 const upload_messagesthread_file_s3 = multer({
   storage: storage_messagesthread_file_s3,
-  limits: { fileSize: MAX_FILE_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
@@ -396,8 +422,13 @@ const upload_messagesthread_file_s3 = multer({
       );
     }
     const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE) {
-      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          400,
+          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+        )
+      );
     }
     cb(null, true);
   }

@@ -154,8 +154,21 @@ class DocModificationThreadPage extends Component {
           );
 
           // Open the URL on new Window
-          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
-          newWindow.document.title = actualFileName;
+          // var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
+          // newWindow.document.title = actualFileName;
+          //
+          // const url = window.URL.createObjectURL(new Blob([blob]));
+
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', actualFileName);
+          // Append to html link element page
+          document.body.appendChild(link);
+          // Start download
+          link.click();
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+
         } else {
           //if not pdf, download instead.
 

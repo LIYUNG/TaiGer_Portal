@@ -162,6 +162,7 @@ class SingleStudentPage extends React.Component {
 
           //Open the URL on new Window
           window.open(url); //TODO: having a reasonable file name, pdf viewer
+          
         } else {
           //if not pdf, download instead.
 

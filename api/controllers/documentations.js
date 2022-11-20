@@ -175,7 +175,7 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
   extname = extname.replace('.', '');
   return res.send({
     success: true,
-    data: imageurl,
+    url: imageurl,
     title: req.file.key,
     extension: extname
   });

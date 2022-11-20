@@ -134,14 +134,19 @@ const EditorNew = (props) => {
                 // TODO: collect uploaded files (to be deleted later if cancel editing)
                 formData.append('file', file);
                 const res = await uploadDocDocs(formData);
-                return {
-                  success: 1,
-                  file: {
-                    url: res.data.data,
-                    title: res.data.title,
-                    extension: res.data.extension
-                  }
-                };
+                const { url, title, extension, success } = res.data;
+                if (success) {
+                  return {
+                    success: 1,
+                    file: {
+                      url: url,
+                      title: title,
+                      extension: extension
+                    }
+                  };
+                } else {
+                  alert(res.data.message);
+                }
               }
               // async uploadByUrl(url) {
               //   return {

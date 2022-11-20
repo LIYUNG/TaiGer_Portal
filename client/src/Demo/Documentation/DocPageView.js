@@ -11,9 +11,9 @@ class DocPageView extends React.Component {
       <>
         <Card className="mb-2 mx-0">
           <Card.Body>
-            <section>
+            {/* <section>
               <Output data={this.props.editorState} />
-            </section>
+            </section> */}
             {/* <Blocks
               data={this.props.editorState}
               config={{
@@ -54,12 +54,12 @@ class DocPageView extends React.Component {
                 }
               }}
             /> */}
-            {/* <EditorNew
+            <EditorNew
               readOnly={true}
               handleClickSave={this.props.handleClickSave}
               handleClickCancel={this.props.handleClickCancel}
               editorState={this.props.editorState}
-            /> */}
+            />
             {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
               <>
                 <Row>

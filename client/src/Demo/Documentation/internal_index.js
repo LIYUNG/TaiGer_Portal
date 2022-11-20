@@ -26,13 +26,6 @@ class InternaldocsPage extends React.Component {
   };
 
   componentDidMount() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent'
-    ) {
-      return <Redirect to="/dashboard/default" />;
-    }
     getInternalDocumentationPage().then(
       (resp) => {
         const { data, success } = resp.data;
@@ -118,6 +111,13 @@ class InternaldocsPage extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
   render() {
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Editor' &&
+      this.props.user.role !== 'Agent'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
     const {
       unauthorizederror,
       timeouterror,

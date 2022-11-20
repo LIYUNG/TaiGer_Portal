@@ -41,7 +41,10 @@ function DocThreadEditor(props) {
               // key={this.state.file || ""}
               onClick={(e) => (e.target.value = props.file || '')}
             >
-              <Form.File.Input onChange={(e) => props.onFileChange(e)} />
+              <Form.File.Input
+                onChange={(e) => props.onFileChange(e)}
+                multiple
+              />
               {/* <IoMdCloudUpload size={32} /> */}
             </Form.File.Label>
           </Form>

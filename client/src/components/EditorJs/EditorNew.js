@@ -19,7 +19,7 @@ import LinkTool from '@editorjs/link';
 import ColorPlugin from 'editorjs-text-color-plugin';
 import TextAlign from '@canburaks/text-align-editorjs';
 
-import { uploadImage } from '../../api';
+import { uploadImage, uploadDocDocs } from '../../api';
 
 const EditorNew = (props) => {
   const ejInstance = useRef();
@@ -132,8 +132,11 @@ const EditorNew = (props) => {
                 const formData = new FormData();
                 // TODO: collect uploaded files (to be deleted later if cancel editing)
                 formData.append('file', file);
-                const res = await uploadImage(formData);
-                return { success: 1, file: { url: res.data.data } };
+                const res = await uploadDocDocs(formData);
+                return {
+                  success: 1,
+                  file: { url: res.data.data, title: res.data.title }
+                };
               }
               // async uploadByUrl(url) {
               //   return {

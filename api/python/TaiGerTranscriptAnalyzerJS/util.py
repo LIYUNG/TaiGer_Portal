@@ -279,7 +279,7 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
     print("Save to " + program_name)
 
 
-def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId):
+def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name):
 
     # program_idx, file_path, abbrev
     Database_Path = env_file_path + '/'
@@ -462,7 +462,7 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     aws_secret_access_key=AWS_S3_ACCESS_KEY,
     )
     s3 = session.resource('s3')
-    transcript_path = studentId + '/analysed_transcript.xlsx'
+    transcript_path = studentId + '/analysed_transcript_' + student_name + '.xlsx'
     s3.Bucket(AWS_S3_BUCKET_NAME).put_object(Key=transcript_path, Body=data)
 
 

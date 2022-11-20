@@ -1,5 +1,8 @@
 const { Router } = require('express');
-const { imageUpload } = require('../middlewares/file-upload');
+const {
+  imageUpload,
+  documentationDocsUpload
+} = require('../middlewares/file-upload');
 
 const { protect, permit, prohibit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
@@ -17,6 +20,7 @@ const {
   createDocumentation,
   createInternalDocumentation,
   uploadDocImage,
+  uploadDocDocs,
   updateDocumentation,
   updateInternalDocumentation,
   deleteDocumentation,
@@ -67,6 +71,10 @@ router
 router
   .route('/upload/image')
   .post(permit(Role.Admin, Role.Agent), imageUpload, uploadDocImage);
+router
+  .route('/upload/docs')
+  .post(permit(Role.Admin, Role.Agent), documentationDocsUpload, uploadDocDocs);
+
 router
   .route('/pages/:category')
   .get(prohibit(Role.Guest), getCategoryDocumentationsPage)

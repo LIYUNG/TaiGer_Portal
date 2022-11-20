@@ -645,7 +645,7 @@ class StudentDashboard extends React.Component {
                 <thead>
                   <tr>
                     <th>Uploaded files will be reviewed by your agent:</th>
-                    <th>Programs will be reviewed by your agent:</th>
+                    <th>Please decide the programs:</th>
                   </tr>
                 </thead>
                 <tbody>{agent_reviewing}</tbody>

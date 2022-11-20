@@ -965,7 +965,9 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   const {
     params: { category, studentId }
   } = req;
-  const courses = await Course.findOne({ student_id: studentId });
+  const courses = await Course.findOne({ student_id: studentId }).populate(
+    'student_id'
+  );
   if (!courses) {
     logger.error('no course for this student!');
     return res.send({ success: true, data: {} });
@@ -973,21 +975,9 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   const stringified_courses = JSON.stringify(courses.table_data_string);
 
   // TODO: multitenancy studentId?
-
-  // const filename = req.file.key; // key is updated file name
-  // const filePath = path.join(req.file.metadata.path, req.file.key);
-  // logger.info(
-  //   path.join(
-  //     __dirname,
-  //     '..',
-  //     'python',
-  //     'TaiGer_Transcript-Program_Comparer',
-  //     'main.py'
-  //   )
-  // );
-  // FIXME: better pass output filepath as argument to python script instead of hard code value
-  // const output = `analyzed_${filename}`;
-  // const output_filePath = path.join(req.file.metadata.path, 'output', output);
+  let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
+  student_name = student_name.replace(/ /g, '-');
+  console.log(student_name);
   try {
     let test_var;
     const python = spawn(
@@ -1002,7 +992,8 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
         ),
         stringified_courses,
         category,
-        studentId
+        studentId,
+        student_name
       ],
       { stdio: 'inherit' }
     );
@@ -1015,7 +1006,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
         courses.analysis.isAnalysed = true;
         courses.analysis.path = path.join(
           studentId,
-          'analysed_transcript.xlsx'
+          `analysed_transcript_${student_name}.xlsx`
         );
         courses.analysis.updatedAt = new Date();
         courses.save();

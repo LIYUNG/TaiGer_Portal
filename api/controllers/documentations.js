@@ -167,6 +167,12 @@ const uploadDocImage = asyncHandler(async (req, res) => {
   return res.send({ success: true, data: imageurl });
 });
 
+const uploadDocDocs = asyncHandler(async (req, res) => {
+  let imageurl = new URL(`/Documentations/${req.file.key}`, UPLOAD_PATH).href;
+  imageurl = imageurl.replace(/\\/g, '/');
+  return res.send({ success: true, data: imageurl, title: req.file.key });
+});
+
 const updateDocumentation = asyncHandler(async (req, res) => {
   const updated_doc = await Documentation.findByIdAndUpdate(
     req.params.id,
@@ -210,6 +216,7 @@ module.exports = {
   createDocumentation,
   createInternalDocumentation,
   uploadDocImage,
+  uploadDocDocs,
   updateDocumentation,
   updateInternalDocumentation,
   deleteDocumentation,

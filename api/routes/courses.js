@@ -1,6 +1,4 @@
 const { Router } = require('express');
-const { imageUpload } = require('../middlewares/file-upload');
-
 const { protect, permit, prohibit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
 

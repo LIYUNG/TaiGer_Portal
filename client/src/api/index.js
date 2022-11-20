@@ -183,6 +183,8 @@ export const updateInternalDocumentationPage = (doc) =>
 // External docs
 export const uploadImage = (file) =>
   request.post(`/api/docs/upload/image`, file);
+export const uploadDocDocs = (file) =>
+  request.post(`/api/docs/upload/docs`, file);
 export const getCategorizedDocumentationPage = (category) =>
   request.get(`/api/docs/pages/${category}`);
 export const updateDocumentationPage = (category, doc) =>

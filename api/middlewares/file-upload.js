@@ -196,8 +196,42 @@ const doc_image_s3 = multerS3({
   }
 });
 
+const doc_docs_s3 = multerS3({
+  s3,
+  bucket: function (req, file, cb) {
+    var directory = path.join(AWS_S3_BUCKET_NAME, 'Documentations');
+    directory = directory.replace(/\\/, '/');
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname, path: '' });
+  },
+  key: function (req, file, cb) {
+    // var id = uuid.v4();
+    // const fileName = id + path.extname(file.originalname);
+    const fileName = file.originalname;
+    cb(null, fileName);
+  }
+});
+
 const upload_doc_image_s3 = multer({
   storage: doc_image_s3,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+      return cb(
+        new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
+      );
+    const fileSize = parseInt(req.headers['content-length']);
+    if (fileSize > MAX_FILE_SIZE) {
+      return cb(new ErrorResponse(400, 'File size is limited to 5 MB!'));
+    }
+    cb(null, true);
+  }
+});
+
+const upload_doc_docs_s3 = multer({
+  storage: doc_docs_s3,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
@@ -500,6 +534,7 @@ var upload = multer({ storage: storage });
 
 module.exports = {
   imageUpload: upload_doc_image_s3.single('file'),
+  documentationDocsUpload: upload_doc_docs_s3.single('file'),
   VPDfileUpload: upload_vpd_s3.single('file'),
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),

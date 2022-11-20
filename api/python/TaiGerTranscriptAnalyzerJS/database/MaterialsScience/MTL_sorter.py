@@ -232,7 +232,7 @@ def FAU(transcript_sorted_group_map, df_transcript_array, df_category_courses_su
 program_sort_function = [STUTTGART_MTL, BOCHUM_MTL_SIM, FAU]
 
 
-def MTL_sorter(program_idx, file_path, abbrev, studentId):
+def MTL_sorter(program_idx, file_path, abbrev, studentId, student_name):
 
     basic_classification_en = {
         '微積分': [MTL_CALCULUS_KEY_WORDS_EN, MTL_CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -259,4 +259,4 @@ def MTL_sorter(program_idx, file_path, abbrev, studentId):
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, file_path, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name)

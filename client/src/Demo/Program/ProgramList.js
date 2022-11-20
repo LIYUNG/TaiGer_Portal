@@ -719,6 +719,12 @@ function ProgramList(props) {
             filter: 'includes'
           },
           {
+            Header: 'Language',
+            accessor: 'language'
+            // Filter: NumberRangeColumnFilter,
+            // filter: 'between'
+          },
+          {
             Header: 'TOEFL',
             accessor: 'toefl'
             // Filter: NumberRangeColumnFilter,
@@ -733,8 +739,8 @@ function ProgramList(props) {
           {
             Header: 'Degree',
             accessor: 'degree',
-            Filter: SelectColumnFilter,
-            filter: 'includes'
+            // Filter: SelectColumnFilter,
+            filter: 'fuzzyText'
           },
           {
             Header: 'GRE/GMAT',

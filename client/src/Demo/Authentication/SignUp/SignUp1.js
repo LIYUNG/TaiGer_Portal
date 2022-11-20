@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
+import { Spinner } from 'react-bootstrap';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { register } from '../../../api';
@@ -14,14 +15,35 @@ export default function SignUp1({ userData }) {
   const [firstname, setFirstame] = useState();
   const [lastname, setLastname] = useState();
   const [signupsuccess, setSignupsuccess] = useState(false);
+  const [buttondisable, setButtondisable] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!firstname) return alert('First name, please!');
-    if (!lastname) return alert('Last name, please!');
-    if (!email) return alert('Email, please!');
-    if (!password || !passwordconfirm) return alert('Please enter passwords');
-    if (password !== passwordconfirm) return alert('Password not matched!');
+    if (!firstname) {
+      alert('First name, please!');
+      setButtondisable(false);
+      return;
+    }
+    if (!lastname) {
+      alert('Last name, please!');
+      setButtondisable(false);
+      return;
+    }
+    if (!email) {
+      alert('Email, please!');
+      setButtondisable(false);
+      return;
+    }
+    if (!password || !passwordconfirm) {
+      alert('Please enter passwords');
+      setButtondisable(false);
+      return;
+    }
+    if (password !== passwordconfirm) {
+      alert('Password not matched!');
+      setButtondisable(false);
+      return;
+    }
 
     try {
       const resp = await register({
@@ -34,8 +56,10 @@ export default function SignUp1({ userData }) {
       const { success } = resp.data;
       if (success) {
         setSignupsuccess(true);
+        setButtondisable(false);
       } else {
         alert(resp.data.message);
+        setButtondisable(false);
       }
     } catch (err) {
       // TODO: handle error
@@ -43,6 +67,11 @@ export default function SignUp1({ userData }) {
     }
   };
 
+  const onButtonClick = async (e, buttondisable) => {
+    e.preventDefault();
+    setButtondisable(buttondisable);
+    handleSubmit(e);
+  };
   // render() {
   if (signupsuccess) {
     return (
@@ -50,7 +79,7 @@ export default function SignUp1({ userData }) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <form onSubmit={handleSubmit}>
+            <form>
               <div className="card-body text-center">
                 <img
                   className="mb-3 img-radius"
@@ -64,8 +93,18 @@ export default function SignUp1({ userData }) {
                   </p>
                 </div>
                 <NavLink to="/">
-                  <button className="btn btn-success shadow-2 mb-3">
-                    Login{' '}
+                  <button
+                    className="btn btn-success shadow-2 mb-3"
+                    onClick={(e) => onButtonClick(e, true)}
+                    disabled={buttondisable}
+                  >
+                    {buttondisable ? (
+                      <Spinner animation="border" role="status" size="sm">
+                        <span className="visually-hidden"></span>
+                      </Spinner>
+                    ) : (
+                      'Login'
+                    )}
                   </button>
                 </NavLink>
               </div>
@@ -80,7 +119,7 @@ export default function SignUp1({ userData }) {
         <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
-            <form onSubmit={handleSubmit}>
+            <form>
               <div className="card-body text-center">
                 <img
                   className="mb-2 img-radius"
@@ -134,8 +173,18 @@ export default function SignUp1({ userData }) {
                                     <label htmlFor="checkbox-fill-2" className="cr">Send me the <a href={DEMO.BLANK_LINK}> Newsletter</a> weekly.</label>
                                 </div>
                             </div> */}
-                <button className="btn btn-success shadow-2 mb-3">
-                  Sign up
+                <button
+                  className="btn btn-success shadow-2 mb-3"
+                  disabled={buttondisable}
+                  onClick={(e) => onButtonClick(e, true)}
+                >
+                  {buttondisable ? (
+                    <Spinner animation="border" role="status" size="sm">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Sign up'
+                  )}
                 </button>
                 <p className="mb-0 text-light">Allready have an account?</p>
                 <NavLink to="/login">

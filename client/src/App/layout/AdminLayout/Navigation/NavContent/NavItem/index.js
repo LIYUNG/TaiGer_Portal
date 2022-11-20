@@ -17,7 +17,7 @@ class NavItem extends Component {
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
-        // itemTitle === 'Check List' ||
+        itemTitle === 'Check List' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
@@ -73,6 +73,7 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Statistics' ||
+        itemTitle === 'Check List' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Interview Training' ||
@@ -94,6 +95,8 @@ class NavItem extends Component {
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'Base Documents' ||
         itemTitle === 'My Tasks Overview' ||
+        itemTitle === 'Applications Overview' ||
+        itemTitle === 'Check List' ||
         itemTitle === 'CV/ML/RL Center' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||

@@ -1,6 +1,7 @@
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import React, { useState, useEffect } from 'react';
+import { Spinner } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { login } from '../../../api';
 import Reactivation from '../Activation/Reactivation';
@@ -30,10 +31,12 @@ export default function Signin1({ setUserdata }) {
           setLoginsuccess(false);
         } else if (resp.status === 401 || resp.status === 500) {
           setLoginsuccess(false);
-          // setButtondisable(false);
+          setButtondisable(false);
         } else if (resp.status === 403) {
           setReactivateAccount(true);
+          setButtondisable(false);
         } else {
+          setButtondisable(false);
           setUserdata((state) => ({
             ...state,
             success: resp.data.success,
@@ -44,7 +47,7 @@ export default function Signin1({ setUserdata }) {
       } else {
         alert('Email or password not correct.');
         setLoginsuccess(false);
-        // setButtondisable(false);
+        setButtondisable(false);
       }
     } catch (e) {
       // TODO: Error handler
@@ -122,12 +125,18 @@ export default function Signin1({ setUserdata }) {
                   </p>
                 )}
                 <button
-                  disabled={!emailaddress || !password}
+                  disabled={!emailaddress || !password || buttondisable}
                   onClick={(e) => onButtonClick(e, true)}
                   type="submit"
                   className="btn btn-success shadow-2 mb-2"
                 >
-                  Login
+                  {buttondisable ? (
+                    <Spinner animation="border" role="status" size="sm">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Login'
+                  )}
                 </button>
                 <p className="mb-2 text-light">Forgot password?</p>
                 <NavLink to="/forgot-password">

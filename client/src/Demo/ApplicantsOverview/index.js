@@ -83,6 +83,14 @@ class ApplicantSOverview extends React.Component {
     );
   };
   render() {
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Editor' &&
+      this.props.user.role !== 'Agent' &&
+      this.props.user.role !== 'Student'
+    ) {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
     if (timeouterror) {

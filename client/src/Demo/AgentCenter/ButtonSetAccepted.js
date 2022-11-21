@@ -1,8 +1,9 @@
 import React from 'react';
-import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
+// import Offcanvas from 'react-bootstrap/Offcanvas';
 import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-
+import { FiExternalLink } from 'react-icons/fi';
 class ButtonSetAccepted extends React.Component {
   state = {
     student: this.props.student,
@@ -16,7 +17,12 @@ class ButtonSetAccepted extends React.Component {
     deleteFileWarningModel: false,
     CommentModel: false,
     rejectProfileFileModel: false,
-    acceptProfileFileModel: false
+    acceptProfileFileModel: false,
+    baseDocsflagOffcanvas: false
+  };
+
+  closeOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
   };
 
   closeWarningWindow = () => {
@@ -111,6 +117,11 @@ class ButtonSetAccepted extends React.Component {
         </td>
         <td>
           {this.props.docName}
+          <FiExternalLink
+            className="mx-1 mb-1"
+            style={{ cursor: 'pointer' }}
+            onClick={() => console.log('clicked')}
+          />
           {' - '}
           {this.props.date}
           {' - '}
@@ -227,9 +238,7 @@ class ButtonSetAccepted extends React.Component {
               Warning
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            Do you want to delete {this.props.docName}?
-          </Modal.Body>
+          <Modal.Body>Do you want to delete {this.props.docName}?</Modal.Body>
           <Modal.Footer>
             <Button
               disabled={!this.state.isLoaded}
@@ -332,6 +341,18 @@ class ButtonSetAccepted extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
+        {/* <Offcanvas
+          show={this.state.baseDocsflagOffcanvas}
+          onHide={closeOffcanvasWindow}
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            Some text as placeholder. In real life you can have the elements you
+            have chosen. Like, text, images, lists, etc.
+          </Offcanvas.Body>
+        </Offcanvas> */}
       </>
     );
   }

@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import { Row, Col, Spinner, Button, Card, Form } from 'react-bootstrap';
 import Aux from '../../../hoc/_Aux';
 import MessageList from './MessageList';
-import { convertToRaw } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
 import DocThreadEditor from './DocThreadEditor';
 import TimeOutErrors from '../../Utils/TimeOutErrors';
 import UnauthorizedError from '../../Utils/UnauthorizedError';
 import PageNotFoundError from '../../Utils/PageNotFoundError';
-
-// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-// import '../../../components/DraftEditor.css';
+import { Link } from 'react-router-dom';
 import {
   getTemplateDownload,
   deleteDoc,
@@ -168,7 +164,6 @@ class DocModificationThreadPage extends Component {
           link.click();
           // Clean up and remove the link
           link.parentNode.removeChild(link);
-
         } else {
           //if not pdf, download instead.
 
@@ -417,7 +412,7 @@ class DocModificationThreadPage extends Component {
         <Row>
           <Card className="mb-2 mx-0">
             <Card.Body>
-              <Col md={6}>
+              <Col>
                 <h5>Instruction</h5>
                 <p>
                   Please fill our TaiGer template and attach the filled template
@@ -439,9 +434,20 @@ class DocModificationThreadPage extends Component {
                   )}
                 </p>
               </Col>
-              <Col md={6}>
+              <Col>
                 <h6>
                   <b>Requirements:</b>
+                  {(this.props.user.role === 'Agent' ||
+                    this.props.user.role === 'Admin') &&
+                    this.state.thread.program_id && (
+                      <Link
+                        to={`/programs/${this.state.thread.program_id._id.toString()}`}
+                        target="_blank"
+                      >
+                        {' '}
+                        [Update]
+                      </Link>
+                    )}
                 </h6>
                 {this.state.thread.program_id ? (
                   <>{this.getRequirement(this.state.thread)}</>
@@ -452,6 +458,17 @@ class DocModificationThreadPage extends Component {
                 )}
                 <h6>
                   <b>Deadline</b>
+                  {(this.props.user.role === 'Agent' ||
+                    this.props.user.role === 'Admin') &&
+                    this.state.thread.program_id && (
+                      <Link
+                        to={`/programs/${this.state.thread.program_id._id.toString()}`}
+                        target="_blank"
+                      >
+                        {' '}
+                        [Update]
+                      </Link>
+                    )}
                 </h6>
                 {this.state.thread.program_id && (
                   <h6>
@@ -475,7 +492,6 @@ class DocModificationThreadPage extends Component {
             singleExpandtHandler={this.singleExpandtHandler}
             thread={this.state.thread}
             onTrashClick={this.handleTrashClick}
-            // role={this.props.user.role}
             isLoaded={this.state.isLoaded}
           />
         </Row>
@@ -495,8 +511,6 @@ class DocModificationThreadPage extends Component {
                     editorState={this.state.editorState}
                     handleClickSave={this.handleClickSave}
                     handleClickCancel={this.handleClickCancel}
-                    // readOnlyMode={this.readOnlyMode}
-                    role={this.props.role}
                     file={this.state.file}
                     onFileChange={this.onFileChange}
                   />

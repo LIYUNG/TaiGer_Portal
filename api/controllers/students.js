@@ -496,10 +496,10 @@ const createApplication = asyncHandler(async (req, res) => {
         program.rl_required !== undefined &&
         Number.isInteger(parseInt(program.rl_required)) >= 0
       ) {
-        for (let i = 0; i < parseInt(program.rl_required); i += 1) {
+        for (let j = 0; j < parseInt(program.rl_required); j += 1) {
           const new_doc_thread = new Documentthread({
             student_id: studentId,
-            file_type: RLs_CONSTANT[i],
+            file_type: RLs_CONSTANT[j],
             program_id: new_programIds[i],
             updatedAt: new Date()
           });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import UcFirst from '../../App/components/UcFirst';
 import { IoMdCloudUpload } from 'react-icons/io';
 import {
@@ -13,6 +13,7 @@ import {
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
 import { updateProfileDocumentStatus, deleteFile } from '../../api';
+import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetRejected extends React.Component {
   state = {
@@ -27,8 +28,17 @@ class ButtonSetRejected extends React.Component {
     deleteFileWarningModel: this.props.deleteFileWarningModel,
     CommentModel: this.props.CommentModel,
     rejectProfileFileModel: this.props.rejectProfileFileModel,
-    acceptProfileFileModel: this.props.acceptProfileFileModel
+    acceptProfileFileModel: this.props.acceptProfileFileModel,
+    baseDocsflagOffcanvas: false
   };
+
+  closeOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
+  };
+  openOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
+  };
+
 
   openWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
@@ -173,6 +183,11 @@ class ButtonSetRejected extends React.Component {
         </td>
         <td>
           {this.props.docName}
+          <FiExternalLink
+            className="mx-1 mb-1"
+            style={{ cursor: 'pointer' }}
+            onClick={this.openOffcanvasWindow}
+          />
           {' - '}
           {this.props.date}
           {' - '}
@@ -460,6 +475,18 @@ class ButtonSetRejected extends React.Component {
             </>
           )}
         </Modal>
+        <Offcanvas
+          show={this.state.baseDocsflagOffcanvas}
+          onHide={this.closeOffcanvasWindow}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Information</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            Here is the documentation or editing link.
+          </Offcanvas.Body>
+        </Offcanvas>
       </>
     );
   }

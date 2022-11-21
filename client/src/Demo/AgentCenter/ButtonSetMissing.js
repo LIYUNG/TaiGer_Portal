@@ -1,28 +1,10 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Table,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-  Spinner
-} from 'react-bootstrap';
-import UcFirst from '../../App/components/UcFirst';
+import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import { IoMdCloudUpload } from 'react-icons/io';
 import {
-  AiOutlineDownload,
-  AiOutlineFieldTime,
-  AiFillCloseCircle,
   AiFillQuestionCircle,
-  AiOutlineComment,
-  AiOutlineDelete
 } from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
-import { updateProfileDocumentStatus, deleteFile } from '../../api';
+import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetMissing extends React.Component {
   state = {
@@ -36,7 +18,15 @@ class ButtonSetMissing extends React.Component {
     deleteFileWarningModel: false,
     CommentModel: false,
     setMissingWindow: false,
-    acceptProfileFileModel: false
+    acceptProfileFileModel: false,
+    baseDocsflagOffcanvas: false
+  };
+
+  closeOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
+  };
+  openOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
   };
 
   closeSetMissingWindow = () => {
@@ -90,7 +80,14 @@ class ButtonSetMissing extends React.Component {
             title="No Document uploaded"
           />
         </th>
-        <td>{this.props.docName}</td>
+        <td>
+          {this.props.docName}
+          <FiExternalLink
+            className="mx-1 mb-1"
+            style={{ cursor: 'pointer' }}
+            onClick={this.openOffcanvasWindow}
+          />
+        </td>
         {this.props.role === 'Editor' ? (
           <>
             <td></td>
@@ -100,14 +97,19 @@ class ButtonSetMissing extends React.Component {
           <>
             <td>
               {!this.state.isLoaded ? (
-                <div style={style}>
+                <div>
                   <Spinner animation="border" role="status" variant="light">
                     <span className="visually-hidden"></span>
                   </Spinner>
                 </div>
               ) : (
-                <Form>
-                  <Form.File.Label
+                <Form.Group controlId="formFile">
+                  <Form.Label>
+                    <IoMdCloudUpload color={'white'} size={32} />
+                  </Form.Label>
+                  <Form.Control
+                    hidden
+                    type="file"
                     onChange={(e) =>
                       this.handleGeneralDocSubmit(
                         e,
@@ -115,12 +117,8 @@ class ButtonSetMissing extends React.Component {
                         this.props.student_id
                       )
                     }
-                    onClick={(e) => (e.target.value = null)}
-                  >
-                    <Form.File.Input hidden />
-                    <IoMdCloudUpload size={32} />
-                  </Form.File.Label>
-                </Form>
+                  />
+                </Form.Group>
               )}
             </td>
             {this.props.role === 'Student' ? (
@@ -195,6 +193,18 @@ class ButtonSetMissing extends React.Component {
             <Button onClick={this.closeSetMissingWindow}>No</Button>
           </Modal.Footer>
         </Modal>
+        <Offcanvas
+          show={this.state.baseDocsflagOffcanvas}
+          onHide={this.closeOffcanvasWindow}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Information</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            Here is the documentation or editing link.
+          </Offcanvas.Body>
+        </Offcanvas>
       </>
     );
   }

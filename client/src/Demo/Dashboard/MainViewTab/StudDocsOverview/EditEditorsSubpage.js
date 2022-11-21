@@ -8,7 +8,7 @@ class EditEditorsSubpage extends React.Component {
       <Modal
         show={this.props.show}
         onHide={this.props.onHide}
-        size="xl"
+        size="l"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -47,16 +47,16 @@ class EditEditorsSubpage extends React.Component {
                       </Form.Group>
                     </th>
                     <td>
-                      <h4 className="mb-1">
+                      <h5 className="my-0">
                         {editor.firstname} {editor.lastname}
-                      </h4>
+                      </h5>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td>
-                    <h4 className="mb-1"> No Editor</h4>
+                    <h5 className="my-0"> No Editor</h5>
                   </td>
                 </tr>
               )}

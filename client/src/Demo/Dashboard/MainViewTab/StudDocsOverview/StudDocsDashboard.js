@@ -33,7 +33,7 @@ class StudDocsDashboard extends React.Component {
           <td>
             <DropdownButton
               size="sm"
-              className='mx-0'
+              className="mx-0"
               title="Option"
               variant="primary"
               id={`dropdown-variants-${this.props.student._id}`}
@@ -42,7 +42,7 @@ class StudDocsDashboard extends React.Component {
               {this.props.isDashboard ? (
                 <Dropdown.Item
                   eventKey="5"
-                  onSelect={() =>
+                  onClick={() =>
                     this.updateStudentArchivStatus(this.props.student._id, true)
                   }
                 >
@@ -54,7 +54,7 @@ class StudDocsDashboard extends React.Component {
               {this.props.isArchivPage ? (
                 <Dropdown.Item
                   eventKey="6"
-                  onSelect={() =>
+                  onClick={() =>
                     this.updateStudentArchivStatus(
                       this.props.student._id,
                       false

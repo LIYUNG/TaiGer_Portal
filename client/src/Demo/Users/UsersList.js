@@ -7,7 +7,7 @@ import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { deleteUser, updateUser, changeUserRole } from '../../api';
 
-class Userslist extends React.Component {
+class UsersList extends React.Component {
   state = {
     modalShow: false,
     timeouterror: null,
@@ -219,4 +219,4 @@ class Userslist extends React.Component {
   }
 }
 
-export default Userslist;
+export default UsersList;

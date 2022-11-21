@@ -24,7 +24,9 @@ class ButtonSetAccepted extends React.Component {
   closeOffcanvasWindow = () => {
     this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
   };
-
+  openOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
+  };
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
   };
@@ -120,7 +122,7 @@ class ButtonSetAccepted extends React.Component {
           <FiExternalLink
             className="mx-1 mb-1"
             style={{ cursor: 'pointer' }}
-            onClick={() => console.log('clicked')}
+            onClick={this.openOffcanvasWindow}
           />
           {' - '}
           {this.props.date}
@@ -341,18 +343,18 @@ class ButtonSetAccepted extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
-        {/* <Offcanvas
+        <Offcanvas
           show={this.state.baseDocsflagOffcanvas}
-          onHide={closeOffcanvasWindow}
+          onHide={this.closeOffcanvasWindow}
+          placement='end'
         >
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+            <Offcanvas.Title>Information</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            Some text as placeholder. In real life you can have the elements you
-            have chosen. Like, text, images, lists, etc.
+            Here is the documentation or editing link.
           </Offcanvas.Body>
-        </Offcanvas> */}
+        </Offcanvas>
       </>
     );
   }

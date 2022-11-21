@@ -51,7 +51,7 @@
     "react": "^16.14.0",
     "react-aws-s3": "^1.5.0",
     "react-big-calendar": "^0.40.8",
-    "react-bootstrap": "^1.6.6",
+    "react-bootstrap": "^2.6.0",
     "react-bootstrap-calendar": "0.0.3",
     "react-bootstrap-icons": "^1.9.1",
     "react-datasheet-grid": "^4.5.0",

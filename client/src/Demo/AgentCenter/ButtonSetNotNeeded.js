@@ -1,7 +1,8 @@
 import React from 'react';
-import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import { IoMdCloudUpload } from 'react-icons/io';
 import { BsDash } from 'react-icons/bs';
+import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetNotNeeded extends React.Component {
   state = {
@@ -12,7 +13,15 @@ class ButtonSetNotNeeded extends React.Component {
     comments: '',
     file: '',
     isLoaded: this.props.isLoaded,
-    SetNeededWindow: false
+    SetNeededWindow: false,
+    baseDocsflagOffcanvas: false
+  };
+
+  closeOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
+  };
+  openOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
   };
 
   closeSetNeededWindow = () => {
@@ -43,6 +52,15 @@ class ButtonSetNotNeeded extends React.Component {
       this.state.feedback
     );
   };
+
+  handleGeneralDocSubmit = (e, k, student_id) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
+    this.props.handleGeneralDocSubmit(e, k, student_id);
+  };
   render() {
     const deleteStyle = 'danger';
     const graoutStyle = 'light';
@@ -54,6 +72,11 @@ class ButtonSetNotNeeded extends React.Component {
         </td>
         <td>
           {this.props.docName}
+          <FiExternalLink
+            className="mx-1 mb-1"
+            style={{ cursor: 'pointer' }}
+            onClick={this.openOffcanvasWindow}
+          />
           {' - '}
           {this.props.date}
           {' - '}
@@ -67,21 +90,30 @@ class ButtonSetNotNeeded extends React.Component {
         ) : (
           <>
             <td>
-              <Form>
-                <Form.File.Label
-                  onChange={(e) =>
-                    this.handleGeneralDocSubmit(
-                      e,
-                      this.props.k,
-                      this.props.student_id
-                    )
-                  }
-                  onClick={(e) => (e.target.value = null)}
-                >
-                  <Form.File.Input hidden />
-                  <IoMdCloudUpload size={32} />
-                </Form.File.Label>
-              </Form>
+              {!this.state.isLoaded ? (
+                <div style={style}>
+                  <Spinner animation="border" role="status" variant="light">
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                <Form.Group controlId="formFile">
+                  <Form.Label>
+                    <IoMdCloudUpload color={'white'} size={32} />
+                  </Form.Label>
+                  <Form.Control
+                    hidden
+                    type="file"
+                    onChange={(e) =>
+                      this.handleGeneralDocSubmit(
+                        e,
+                        this.props.k,
+                        this.props.student_id
+                      )
+                    }
+                  />
+                </Form.Group>
+              )}
             </td>{' '}
             {this.props.role === 'Student' ? (
               <td></td>
@@ -155,6 +187,18 @@ class ButtonSetNotNeeded extends React.Component {
             <Button onClick={this.closeSetNeededWindow}>Ok</Button>
           </Modal.Footer>
         </Modal>
+        <Offcanvas
+          show={this.state.baseDocsflagOffcanvas}
+          onHide={this.closeOffcanvasWindow}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Information</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            Here is the documentation or editing link.
+          </Offcanvas.Body>
+        </Offcanvas>
       </>
     );
   }

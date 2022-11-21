@@ -46,7 +46,7 @@ class NoEditorsStudentsCard extends React.Component {
                 >
                   <Dropdown.Item
                     eventKey="2"
-                    onSelect={() => this.startEditingEditor(this.props.student)}
+                    onClick={() => this.startEditingEditor(this.props.student)}
                   >
                     Edit Editor
                   </Dropdown.Item>

@@ -102,13 +102,13 @@ class StudentsAgentEditor extends React.Component {
               >
                 <Dropdown.Item
                   eventKey="1"
-                  onSelect={() => this.startEditingAgent(this.props.student)}
+                  onClick={() => this.startEditingAgent(this.props.student)}
                 >
                   Edit Agent
                 </Dropdown.Item>
                 <Dropdown.Item
                   eventKey="2"
-                  onSelect={() => this.startEditingEditor(this.props.student)}
+                  onClick={() => this.startEditingEditor(this.props.student)}
                 >
                   Edit Editor
                 </Dropdown.Item>

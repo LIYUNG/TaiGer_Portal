@@ -61,13 +61,16 @@ export default function Signin1({ setUserdata }) {
     if (emailValidation()) {
       if (!password) {
         alert('Password please!');
+        // setButtondisable(false);
       } else {
         try {
           const resp = await login({ email: emailaddress, password });
           setuserdata2(resp);
+          setButtondisable(false);
         } catch (err) {
           // TODO: handle error
           alert('Server no response! Please try later.');
+          setButtondisable(false);
           // setButtondisable(false);
           // console.log(err);
         }

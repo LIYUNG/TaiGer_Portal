@@ -213,7 +213,7 @@ class ApplicationProgress extends React.Component {
               this.props.role !== 'Guest' ? (
                 <Dropdown.Item
                   eventKey="5"
-                  onSelect={() =>
+                  onClick={() =>
                     this.updateStudentArchivStatus(this.props.student._id, true)
                   }
                 >
@@ -227,7 +227,7 @@ class ApplicationProgress extends React.Component {
               this.props.role !== 'Guest' ? (
                 <Dropdown.Item
                   eventKey="6"
-                  onSelect={() =>
+                  onClick={() =>
                     this.updateStudentArchivStatus(
                       this.props.student._id,
                       false

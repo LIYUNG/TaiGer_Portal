@@ -217,14 +217,8 @@ class DownloadPage extends React.Component {
                     Download TaiGer Document Templates
                   </Card.Title>
                 </Card.Header>
-                {!isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
                 <EditDownloadFilesSubpage
+                  isLoaded={isLoaded}
                   role={this.props.user.role}
                   userId={this.props.user._id}
                   student={this.state.student}

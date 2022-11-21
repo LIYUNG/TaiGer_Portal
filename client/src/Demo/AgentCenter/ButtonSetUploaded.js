@@ -1,10 +1,11 @@
 import React from 'react';
-import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import {
   AiOutlineDownload,
   AiOutlineFieldTime,
   AiOutlineDelete
 } from 'react-icons/ai';
+import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetUploaded extends React.Component {
   state = {
@@ -19,7 +20,15 @@ class ButtonSetUploaded extends React.Component {
     deleteFileWarningModel: false,
     CommentModel: false,
     rejectProfileFileModel: false,
-    acceptProfileFileModel: false
+    acceptProfileFileModel: false,
+    baseDocsflagOffcanvas: false
+  };
+
+  closeOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
+  };
+  openOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
   };
 
   closeWarningWindow = () => {
@@ -118,6 +127,11 @@ class ButtonSetUploaded extends React.Component {
         </td>
         <td>
           {this.props.docName}
+          <FiExternalLink
+            className="mx-1 mb-1"
+            style={{ cursor: 'pointer' }}
+            onClick={this.openOffcanvasWindow}
+          />
           {' - '}
           {this.props.date}
           {' - '}
@@ -375,6 +389,18 @@ class ButtonSetUploaded extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
+        <Offcanvas
+          show={this.state.baseDocsflagOffcanvas}
+          onHide={this.closeOffcanvasWindow}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Information</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            Here is the documentation or editing link.
+          </Offcanvas.Body>
+        </Offcanvas>
       </>
     );
   }

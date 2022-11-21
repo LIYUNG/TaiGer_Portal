@@ -378,6 +378,7 @@ class SingleStudentPage extends React.Component {
                 }
                 SubmitGeneralFile={this.props.SubmitGeneralFile}
                 deleteFileWarningModel={this.props.deleteFileWarningModel}
+                handleGeneralDocSubmit={this.handleGeneralDocSubmit}
               />
             )}
           </>

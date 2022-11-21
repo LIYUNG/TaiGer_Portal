@@ -1,8 +1,20 @@
 import React from 'react';
-import { Button, Table, Col, Form } from 'react-bootstrap';
+import { Button, Table, Col, Form, Spinner } from 'react-bootstrap';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { IoMdCloudUpload } from 'react-icons/io';
 class EditDownloadFilesSubpage extends React.Component {
-  // edit File subpage
+  state = {
+    isLoaded: this.props.isLoaded
+  };
+
+  submitFile = (e, prop) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
+    this.props.submitFile(e, prop);
+  };
 
   render() {
     const deleteStyle = 'danger';
@@ -31,7 +43,7 @@ class EditDownloadFilesSubpage extends React.Component {
                         size="sm"
                         type="submit"
                         title="Delete"
-                        disabled={this.props.isLoaded}
+                        disabled={!this.props.isLoaded}
                         onClick={(e) =>
                           this.props.onDeleteTemplateFile(e, template.prop)
                         }
@@ -64,25 +76,36 @@ class EditDownloadFilesSubpage extends React.Component {
               <>
                 <td>
                   <Col>
-                    <Form
-                      onChange={(e) => this.props.onFileChange(e)}
-                      onClick={(e) => (e.target.value = null)}
-                    >
-                      <Form.File id={this.props.userId}>
-                        {/* <Form.File.Label>Regular file input</Form.File.Label> */}
-                        <Form.File.Input />
-                      </Form.File>
-                    </Form>
+                    <Form.Group controlId="formFile">
+                      {/* <Form.Label>
+                        <IoMdCloudUpload color={'white'} size={32} />
+                      </Form.Label> */}
+                      <Form.Control
+                        type="file"
+                        onChange={(e) => this.props.onFileChange(e)}
+                      />
+                    </Form.Group>
                   </Col>
                 </td>
                 <td>
                   <Col>
-                    <Form
-                      onSubmit={(e) => this.props.submitFile(e, template.prop)}
-                    >
+                    <Form onSubmit={(e) => this.submitFile(e, template.prop)}>
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <Button size="sm" type="submit">
-                          Upload
+                          {!this.state.isLoaded ? (
+                            <div>
+                              <Spinner
+                                size="sm"
+                                animation="border"
+                                role="status"
+                                variant="light"
+                              >
+                                <span className="visually-hidden"></span>
+                              </Spinner>
+                            </div>
+                          ) : (
+                            'Upload'
+                          )}
                         </Button>
                       </Form.Group>
                     </Form>

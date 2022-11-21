@@ -16,7 +16,7 @@ class User extends React.Component {
             >
               <Dropdown.Item
                 eventKey="2"
-                onSelect={() =>
+                onClick={() =>
                   this.props.setModalShow(
                     this.props.user.firstname,
                     this.props.user.lastname,
@@ -29,7 +29,7 @@ class User extends React.Component {
               </Dropdown.Item>
               {/* <Dropdown.Item
                 eventKey="3"
-                onSelect={() =>
+                onClick={() =>
                   // this.props.RemoveUserHandler3(this.props.user._id)
                   this.props.setModalShowDelete(
                     this.props.user.firstname,

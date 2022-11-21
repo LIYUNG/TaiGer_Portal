@@ -29,15 +29,15 @@ class EditAgentsSubpage extends React.Component {
             </Form.Group>
           </td>
           <td>
-            <h4 className="mb-1">
-              {agent.lastname} {agent.firstname}{" "}
-            </h4>
+            <h5 className="my-0">
+              {agent.lastname} {agent.firstname}
+            </h5>
           </td>
         </tr>
       ))
     ) : (
       <tr>
-        <h4 className="mb-1"> No Agent</h4>
+        <h5 className="my-1"> No Agent</h5>
       </tr>
     );
 
@@ -45,7 +45,7 @@ class EditAgentsSubpage extends React.Component {
       <Modal
         show={this.props.show}
         onHide={this.props.onHide}
-        size="xl"
+        size="l"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >

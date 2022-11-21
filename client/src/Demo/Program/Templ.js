@@ -348,7 +348,7 @@ class Programlist extends React.Component {
                     <DropdownButton size="sm" title="Option" variant="primary">
                       <Dropdown.Item
                         eventKey="2"
-                        onSelect={(e) =>
+                        onClick={(e) =>
                           this.onSubmitAddToMyProgramList(e, this.props.userId)
                         }
                       >
@@ -357,12 +357,12 @@ class Programlist extends React.Component {
                     </DropdownButton>
                   ) : (
                     <DropdownButton size="sm" title="Option" variant="primary">
-                      <Dropdown.Item eventKey="2" onSelect={this.setModalShow}>
+                      <Dropdown.Item eventKey="2" onClick={this.setModalShow}>
                         Assign to student...
                       </Dropdown.Item>
                       {/* <Dropdown.Item
                   eventKey="3"
-                  onSelect={() =>
+                  onClick={() =>
                     this.props.setModalShowDelete(
                       this.props.program.school,
                       this.props.program.program_name,

@@ -441,7 +441,7 @@ function Table2({ columns, data, userId }) {
       {programs.programIds.length !== 0 && (
         <>
           <DropdownButton size="sm" title="Option" variant="primary">
-            <Dropdown.Item eventKey="2" onSelect={setModalShow2}>
+            <Dropdown.Item eventKey="2" onClick={setModalShow2}>
               Assign to student...
             </Dropdown.Item>
           </DropdownButton>

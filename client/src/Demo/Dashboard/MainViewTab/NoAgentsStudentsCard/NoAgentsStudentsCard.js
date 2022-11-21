@@ -48,7 +48,7 @@ class NoAgentsStudentsCard extends React.Component {
                 >
                   <Dropdown.Item
                     eventKey="1"
-                    onSelect={() => this.startEditingAgent(this.props.student)}
+                    onClick={() => this.startEditingAgent(this.props.student)}
                   >
                     Edit Agent
                   </Dropdown.Item>

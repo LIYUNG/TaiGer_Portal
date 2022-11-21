@@ -114,7 +114,7 @@ class ButtonSetNotNeeded extends React.Component {
                   />
                 </Form.Group>
               )}
-            </td>{' '}
+            </td>
             {this.props.role === 'Student' ? (
               <td></td>
             ) : (

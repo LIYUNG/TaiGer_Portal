@@ -379,12 +379,10 @@ class DocCreatePage extends React.Component {
               ) : (
                 <Card.Body>
                   {documentlist_key.map((catego, i) => (
-                    <>
-                      <Row key={i}>
-                        <h5>- {window.documentlist[`${catego}`]}</h5>
-                      </Row>
-                      <Row key={i}>{document_list(catego)}</Row>
-                    </>
+                    <Row key={i}>
+                      <h5>- {window.documentlist[`${catego}`]}</h5>
+                      {document_list(catego)}
+                    </Row>
                   ))}
                   {(this.props.user.role === 'Admin' ||
                     this.props.user.role === 'Agent') && (

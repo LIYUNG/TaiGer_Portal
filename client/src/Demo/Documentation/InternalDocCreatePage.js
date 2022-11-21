@@ -14,7 +14,7 @@ import {
   deleteInternalDocumentation
 } from '../../api';
 
-class DocCreatePage extends React.Component {
+class InternalDocCreatePage extends React.Component {
   state = {
     error: null,
     timeouterror: null,
@@ -288,7 +288,6 @@ class DocCreatePage extends React.Component {
         />
       ));
     };
-   
 
     return (
       <Aux>
@@ -375,12 +374,10 @@ class DocCreatePage extends React.Component {
               ) : (
                 <Card.Body>
                   {documentlist_key.map((catego, i) => (
-                    <>
-                      <Row key={i}>
-                        <h5>- {window.internaldocumentlist[`${catego}`]}</h5>
-                      </Row>
-                      <Row key={i}>{document_list(catego)}</Row>
-                    </>
+                    <Row key={i}>
+                      <h5>- {window.internaldocumentlist[`${catego}`]}</h5>
+                      {document_list(catego)}
+                    </Row>
                   ))}
                   {(this.props.user.role === 'Admin' ||
                     this.props.user.role === 'Agent') && (
@@ -419,4 +416,4 @@ class DocCreatePage extends React.Component {
   }
 }
 
-export default DocCreatePage;
+export default InternalDocCreatePage;

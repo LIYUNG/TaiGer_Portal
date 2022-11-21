@@ -134,9 +134,7 @@ class ApplicationFilesProgress extends React.Component {
               style={{ textDecoration: 'none' }}
               key={i}
             >
-              <p className="mb-1 text-info" key={application._id}>
-                -
-              </p>
+              <p className="mb-1 text-info">-</p>
             </Link>
           ) : (
             <Link
@@ -145,13 +143,9 @@ class ApplicationFilesProgress extends React.Component {
               key={i}
             >
               {isMissingBaseDocs ? (
-                <p className="mb-1 text-danger" key={i}>
-                  X
-                </p>
+                <p className="mb-1 text-danger">X</p>
               ) : (
-                <p className="mb-1 text-info" key={application._id}>
-                  O
-                </p>
+                <p className="mb-1 text-info">O</p>
               )}
             </Link>
           )
@@ -165,28 +159,20 @@ class ApplicationFilesProgress extends React.Component {
             key={i}
           >
             {application.closed === 'O' ? (
-              <p className="mb-1 text-info" key={application._id}>
-                -
-              </p>
+              <p className="mb-1 text-info">-</p>
             ) : (
               <>
                 {check_program_uni_assist_needed(application) ? (
                   <>
                     {application.uni_assist &&
                     application.uni_assist.status === 'uploaded' ? (
-                      <p className="mb-1 text-info" key={i}>
-                        O
-                      </p>
+                      <p className="mb-1 text-info">O</p>
                     ) : (
-                      <p className="mb-1 text-danger" key={application._id}>
-                        X
-                      </p>
+                      <p className="mb-1 text-danger">X</p>
                     )}
                   </>
                 ) : (
-                  <p className="mb-1 text-info" key={application._id}>
-                    Not needed
-                  </p>
+                  <p className="mb-1 text-info">Not needed</p>
                 )}
               </>
             )}
@@ -205,18 +191,12 @@ class ApplicationFilesProgress extends React.Component {
             key={i}
           >
             {is_cv_done ? (
-              <p className="mb-1 text-info" key={i}>
-                O
-              </p>
+              <p className="mb-1 text-info">O</p>
             ) : application.closed !== undefined &&
               application.closed === 'X' ? (
-              <p className="mb-1 text-danger" key={application._id}>
-                X
-              </p>
+              <p className="mb-1 text-danger">X</p>
             ) : (
-              <p className="mb-1 text-info" key={application._id}>
-                -
-              </p>
+              <p className="mb-1 text-info">-</p>
             )}
           </Link>
         )
@@ -235,26 +215,20 @@ class ApplicationFilesProgress extends React.Component {
                 key={i}
               >
                 {is_program_ml_rl_essay_finished(application) ? (
-                  <p className="mb-1 text-info" key={i}>
-                    O
-                  </p>
+                  <p className="mb-1 text-info">O</p>
                 ) : (
-                  <p className="mb-1 text-danger" key={application._id}>
-                    X
-                  </p>
+                  <p className="mb-1 text-danger">X</p>
                 )}
               </Link>
             )
           ) : (
-            <>
-              <p
-                className="mb-1 text-secondary"
-                key={application._id}
-                title="Not decided yet"
-              >
-                X
-              </p>
-            </>
+            <p
+              className="mb-1 text-secondary"
+              key={application._id}
+              title="Not decided yet"
+            >
+              X
+            </p>
           )
       );
     }
@@ -265,31 +239,25 @@ class ApplicationFilesProgress extends React.Component {
             <p className="mb-1 text-info" key={i}>
               -
             </p>
+          ) : !isMissingBaseDocs &&
+            (!check_program_uni_assist_needed(application) ||
+              (check_program_uni_assist_needed(application) &&
+                application.uni_assist &&
+                application.uni_assist.status === 'uploaded')) &&
+            is_cv_done &&
+            is_program_ml_rl_essay_finished(application) ? (
+            <p className="mb-1 text-light" key={i}>
+              <b>Ready!</b>
+            </p>
           ) : (
-            <>
-              {!isMissingBaseDocs &&
-              (!check_program_uni_assist_needed(application) ||
-                (check_program_uni_assist_needed(application) &&
-                  application.uni_assist &&
-                  application.uni_assist.status === 'uploaded')) &&
-              is_cv_done &&
-              is_program_ml_rl_essay_finished(application) ? (
-                <p className="mb-1 text-light" key={i}>
-                  <b>Ready!</b>
-                </p>
-              ) : (
-                <p className="mb-1 text-info" key={i}>
-                  Not Ready :(
-                </p>
-              )}
-            </>
+            <p className="mb-1 text-info" key={i}>
+              Not Ready :(
+            </p>
           )
         ) : (
-          <>
-            <p className="mb-1 text-secondary" key={i} title="Not decided yet">
-              Undecided
-            </p>
-          </>
+          <p className="mb-1 text-secondary" key={i} title="Not decided yet">
+            Undecided
+          </p>
         )
     );
     return (

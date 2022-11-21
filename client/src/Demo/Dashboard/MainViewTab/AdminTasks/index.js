@@ -19,36 +19,32 @@ import {
   is_all_uni_assist_vpd_uploaded
 } from '../../../Utils/checking-functions';
 class AdminTasks extends React.Component {
-
   render() {
     const missing_number_of_applications_students = this.props.students.map(
-      (student, i) => (
-        <>
-          {is_num_Program_Not_specified(student) && (
-            <tr>
-              <td>
-                <Link
-                  to={'/student-applications/' + student._id.toString()}
-                  style={{ textDecoration: 'none' }}
-                  className="text-info"
-                >
-                  Number of Applications{' '}
-                  <b>
-                    {student.firstname} {student.lastname}
-                  </b>
-                </Link>
-              </td>
-              <td>
-                Please specify the number of the application for{' '}
+      (student, i) =>
+        is_num_Program_Not_specified(student) && (
+          <tr>
+            <td>
+              <Link
+                to={'/student-applications/' + student._id.toString()}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                Number of Applications{' '}
                 <b>
                   {student.firstname} {student.lastname}
                 </b>
-              </td>
-              <td></td>
-            </tr>
-          )}
-        </>
-      )
+              </Link>
+            </td>
+            <td>
+              Please specify the number of the application for{' '}
+              <b>
+                {student.firstname} {student.lastname}
+              </b>
+            </td>
+            <td></td>
+          </tr>
+        )
     );
 
     return (

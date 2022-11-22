@@ -4,6 +4,7 @@ const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
+const { AWS_S3_PUBLIC_BUCKET } = require('../config');
 const { Documentthread } = require('../models/Documentthread');
 const {
   sendNewApplicationMessageInThreadEmail,
@@ -21,7 +22,8 @@ const logger = require('../services/logger');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME
+  AWS_S3_BUCKET_NAME,
+  AWS_S3_PUBLIC_BUCKET_NAME
 } = require('../config');
 
 const s3 = new aws.S3({
@@ -347,6 +349,18 @@ const getMessages = asyncHandler(async (req, res) => {
   }
 
   res.status(200).send({ success: true, data: document_thread });
+});
+
+const postImageInThread = asyncHandler(async (req, res) => {
+  const {
+    params: { messagesThreadId, studentId }
+  } = req;
+  let imageurl = new URL(
+    `/${studentId}/${messagesThreadId}/${req.file.key}`,
+    AWS_S3_PUBLIC_BUCKET
+  ).href;
+  imageurl = imageurl.replace(/\\/g, '/');
+  return res.send({ success: true, data: imageurl });
 });
 
 // (O) notification email works
@@ -923,6 +937,29 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
 
     // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
   }
+  // Delete images in Public S3 bucket. (student folder)
+  const listParamsPublic = {
+    Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+    Prefix: directory
+  };
+  const listedObjectsPublic = await s3.listObjectsV2(listParamsPublic).promise();
+
+  if (listedObjectsPublic.Contents.length > 0) {
+    const deleteParams = {
+      Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
+
+    listedObjectsPublic.Contents.forEach(({ Key }) => {
+      deleteParams.Delete.Objects.push({ Key });
+      logger.info('Deleting ', Key);
+    });
+
+    await s3.deleteObjects(deleteParams).promise();
+
+    // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
+  }
+
 
   await Student.findOneAndUpdate(
     { _id: studentId, 'applications.programId': program_id },
@@ -1007,6 +1044,7 @@ module.exports = {
   initApplicationMessagesThread,
   getMessages,
   getMessageFile,
+  postImageInThread,
   postMessages,
   SetStatusMessagesThread,
   deleteGeneralMessagesThread,

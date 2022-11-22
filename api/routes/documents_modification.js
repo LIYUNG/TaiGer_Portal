@@ -2,7 +2,10 @@ const { Router } = require('express');
 
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
-const { MessagesThreadUpload } = require('../middlewares/file-upload');
+const {
+  MessagesThreadUpload,
+  MessagesImageThreadUpload
+} = require('../middlewares/file-upload');
 
 const {
   getCVMLRLOverview,
@@ -13,6 +16,7 @@ const {
   SetStatusMessagesThread,
   deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
+  postImageInThread,
   postMessages
 } = require('../controllers/documents_modification');
 
@@ -53,6 +57,13 @@ router.route('/:messagesThreadId/:studentId').post(
   MessagesThreadUpload,
   // upload,
   postMessages
+);
+
+router.route('/image/:messagesThreadId/:studentId').post(
+  permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+  MessagesImageThreadUpload,
+  // upload,
+  postImageInThread
 );
 
 router

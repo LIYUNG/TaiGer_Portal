@@ -25,6 +25,7 @@ function DocThreadEditor(props) {
         <Col className="my-0 mx-0">
           <EditorSimple
             holder={'editorjs'}
+            thread={props.thread}
             readOnly={false}
             handleEditorChange={handleEditorChange}
             handleClickSave={props.handleClickSave}
@@ -37,16 +38,11 @@ function DocThreadEditor(props) {
       <Row>
         <Col>
           <Form.Group controlId="formFile" className='mb-2'>
-            {/* <Form.Label>
-              <IoMdCloudUpload color={'white'} size={32} />
-            </Form.Label> */}
             <Form.Control
-              // hidden
               type="file"
               onChange={(e) => props.onFileChange(e)}
             />
           </Form.Group>
-        
         </Col>
       </Row>
       <Row>

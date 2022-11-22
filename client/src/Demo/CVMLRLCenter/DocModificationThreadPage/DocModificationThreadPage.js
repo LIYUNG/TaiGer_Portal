@@ -506,6 +506,7 @@ class DocModificationThreadPage extends Component {
               <Row style={{ textDecoration: 'none' }}>
                 <Col className="my-0 mx-0">
                   <DocThreadEditor
+                    thread={this.state.thread}
                     buttonDisabled={this.state.buttonDisabled}
                     doc_title={'this.state.doc_title'}
                     editorState={this.state.editorState}

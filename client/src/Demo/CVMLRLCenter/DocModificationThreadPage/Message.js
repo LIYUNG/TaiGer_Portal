@@ -48,8 +48,6 @@ class Message extends Component {
     }
     const files_info = this.props.message.file.map((file, i) => (
       <Row key={i}>
-        {/* <div>{file._id}</div>
-         */}
         <Col
           md={1}
           style={{ cursor: 'pointer' }}
@@ -61,14 +59,18 @@ class Message extends Component {
             )
           }
         >
-          <FileIcon
-            radius={4}
-            extension={file.name.split('.').pop()}
-            {...defaultStyles[file.name.split('.').pop()]}
-          />
+          <h5>
+            <span>
+              <FileIcon
+                size="sm"
+                radius={4}
+                extension={file.name.split('.').pop()}
+                {...defaultStyles[file.name.split('.').pop()]}
+              />
+            </span>
+          </h5>
         </Col>
         <Col md={11} className="my-3">
-          {' '}
           <p
             style={{ cursor: 'pointer' }}
             onClick={(e) =>

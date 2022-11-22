@@ -223,10 +223,11 @@ const upload_doc_image_s3 = multer({
   storage: doc_image_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
       );
+    }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
@@ -409,6 +410,32 @@ const storage_messagesthread_file_s3 = multerS3({
   }
 });
 
+// Message thread image upload (general)
+const storage_messagesthread_image_s3 = multerS3({
+  s3,
+  bucket: function (req, file, cb) {
+    const { messagesThreadId, studentId } = req.params;
+    let directory = path.join(
+      AWS_S3_PUBLIC_BUCKET_NAME,
+      studentId,
+      messagesThreadId
+    );
+    directory = directory.replace(/\\/g, '/');
+    cb(null, directory);
+  },
+  metadata: function (req, file, cb) {
+    const { messagesThreadId, studentId } = req.params;
+    let directory = path.join(studentId, messagesThreadId);
+    directory = directory.replace(/\\/g, '/'); // g>> replace all!
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: function (req, file, cb) {
+    var id = uuid.v4();
+    const fileName = id + path.extname(file.originalname);
+    cb(null, fileName);
+  }
+});
+
 const upload_messagesthread_file_s3 = multer({
   storage: storage_messagesthread_file_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
@@ -419,6 +446,28 @@ const upload_messagesthread_file_s3 = multer({
           400,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
+      );
+    }
+    const fileSize = parseInt(req.headers['content-length']);
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          400,
+          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+        )
+      );
+    }
+    cb(null, true);
+  }
+});
+
+const upload_messagesthread_image_s3 = multer({
+  storage: storage_messagesthread_image_s3,
+  limits: { fileSize: MAX_FILE_SIZE_MB },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
+      return cb(
+        new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
       );
     }
     const fileSize = parseInt(req.headers['content-length']);
@@ -452,5 +501,6 @@ module.exports = {
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
   MessagesThreadUpload: upload_messagesthread_file_s3.single('file'),
+  MessagesImageThreadUpload: upload_messagesthread_image_s3.single('file'),
   upload: upload.single('file')
 };

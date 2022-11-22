@@ -17,7 +17,7 @@ import ColorPlugin from 'editorjs-text-color-plugin';
 import AttachesTool from '@editorjs/attaches';
 import TextAlign from '@canburaks/text-align-editorjs';
 
-import { uploadImage } from '../../api';
+import { uploadImage, uploadDocumentThreadImage } from '../../api';
 
 const EditorSimple = (props) => {
   const ejInstance = useRef();
@@ -132,7 +132,16 @@ const EditorSimple = (props) => {
                 const formData = new FormData();
                 // TODO: collect uploaded files (to be deleted later if cancel editing)
                 formData.append('file', file);
-                const res = await uploadImage(formData);
+                let res;
+                if (props.thread) {
+                  res = await uploadDocumentThreadImage(
+                    props.thread._id.toString(),
+                    props.thread.student_id._id.toString(),
+                    formData
+                  );
+                } else {
+                  res = await uploadImage(formData);
+                }
                 return { success: 1, file: { url: res.data.data } };
               },
               async uploadByUrl(url) {

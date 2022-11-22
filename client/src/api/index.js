@@ -212,7 +212,6 @@ export const createInternalDocumentation = (doc) =>
 export const deleteInternalDocumentation = (doc_id) =>
   request.delete(`/api/docs/internal/${doc_id}`);
 
-
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');
 export const getProgram = (programId) =>
@@ -240,6 +239,12 @@ export const updateArticle = (id, article) =>
 const getArticle = (type) => request.get(`/api/docs/${type}`);
 
 export const getApplicationArticle = () => getArticle('application');
+export const uploadDocumentThreadImage = (documentsthreadId, studentId, file) =>
+  request.post(
+    `/api/document-threads/image/${documentsthreadId}/${studentId}`,
+    file
+  );
+
 export const SubmitMessageWithAttachment = (
   documentsthreadId,
   studentId,

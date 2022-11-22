@@ -36,18 +36,17 @@ function DocThreadEditor(props) {
       </Row>
       <Row>
         <Col>
-          <Form className="my-2 mx-2">
-            <Form.File.Label
-              // key={this.state.file || ""}
-              onClick={(e) => (e.target.value = props.file || '')}
-            >
-              <Form.File.Input
-                onChange={(e) => props.onFileChange(e)}
-                // multiple
-              />
-              {/* <IoMdCloudUpload size={32} /> */}
-            </Form.File.Label>
-          </Form>
+          <Form.Group controlId="formFile" className='mb-2'>
+            {/* <Form.Label>
+              <IoMdCloudUpload color={'white'} size={32} />
+            </Form.Label> */}
+            <Form.Control
+              // hidden
+              type="file"
+              onChange={(e) => props.onFileChange(e)}
+            />
+          </Form.Group>
+        
         </Col>
       </Row>
       <Row>

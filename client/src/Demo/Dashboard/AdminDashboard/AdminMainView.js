@@ -67,15 +67,15 @@ class AdminMainView extends React.Component {
     );
     return (
       <>
-        <Row>
-          <Col>
-            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+        {/* <Row className="mb-2 my-2"> */}
+            <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   <BsExclamationTriangle size={18} /> To Do Tasks:
                 </Card.Title>
               </Card.Header>
               <Table
+                size="sm"
                 responsive
                 bordered
                 hover
@@ -93,8 +93,7 @@ class AdminMainView extends React.Component {
                 <tbody>{admin_tasks}</tbody>
               </Table>
             </Card>
-          </Col>
-        </Row>
+        {/* </Row> */}
         <TabProgramConflict students={this.props.students} />
         <Row className="mb-2 my-2">
           <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
@@ -110,6 +109,7 @@ class AdminMainView extends React.Component {
               className="my-0 mx-0"
               variant="dark"
               text="light"
+              size="sm"
             >
               <thead>
                 <tr>
@@ -127,7 +127,13 @@ class AdminMainView extends React.Component {
           </Card>
         </Row>
         <Row>
-          <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
+          <Tabs
+            defaultActiveKey="w"
+            id="uncontrolled-tab-example"
+            // variant="dark"
+            fill={true}
+            justify={true}
+          >
             <Tab
               eventKey="w"
               title="Student Background Overview"
@@ -143,6 +149,7 @@ class AdminMainView extends React.Component {
             </Tab>
             <Tab eventKey="dz" title="Agents and Editors">
               <Table
+                size="sm"
                 responsive
                 bordered
                 hover

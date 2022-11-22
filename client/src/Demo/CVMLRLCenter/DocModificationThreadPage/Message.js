@@ -4,6 +4,7 @@ import { RiMoreFill } from 'react-icons/ri';
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import Output from 'editorjs-react-renderer';
+import { Avatar } from '@mui/material';
 
 class Message extends Component {
   state = {
@@ -46,6 +47,35 @@ class Message extends Component {
         </div>
       );
     }
+
+    const stringToColor = (str) => {
+      let hash = 0;
+      let i;
+
+      /* eslint-disable no-bitwise */
+      for (i = 0; i < str.length; i += 1) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+
+      let color = '#';
+
+      for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+      }
+      /* eslint-enable no-bitwise */
+
+      return color;
+    };
+    const stringAvatar = (name) => {
+      return {
+        sx: {
+          bgcolor: stringToColor(name)
+        },
+        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`
+      };
+    };
+
     const files_info = this.props.message.file.map((file, i) => (
       <Row key={i}>
         <Col
@@ -99,27 +129,31 @@ class Message extends Component {
               this.props.accordionKeys[this.props.idx] === this.props.idx
             }
           >
-            {this.props.message.user_id.firstname}{' '}
-            {this.props.message.user_id.lastname}
-            {' on '}
-            {new Date(this.props.message.createdAt).toLocaleTimeString()}
-            {', '}
-            {new Date(this.props.message.createdAt).toLocaleDateString()}
+            <Row>
+              <Col md={1} className="me-3">
+                <Avatar
+                  {...stringAvatar(
+                    this.props.message.user_id.firstname +
+                      ' ' +
+                      this.props.message.user_id.lastname
+                  )}
+                />
+              </Col>
+              <Col className="mt-2 mx-2">
+                <b>
+                  {this.props.message.user_id.firstname}{' '}
+                  {this.props.message.user_id.lastname}
+                </b>
+                <span style={{ float: 'right', cursor: 'pointer' }}>
+                  {' on '}
+                  {new Date(this.props.message.createdAt).toLocaleTimeString()}
+                  {', '}
+                  {new Date(this.props.message.createdAt).toLocaleDateString()}
+                  {/* <RiMoreFill className="ms-4" /> */}
+                </span>
+              </Col>
+            </Row>
           </Card.Title>
-          <RiMoreFill />
-          {/* <Dropdown >
-            <FiMoreHorizontal />
-            <Dropdown.Toggle
-              split
-              variant="secondary"
-              id="dropdown-split-basic-2"
-            />
-            <Dropdown.Menu>
-              <Dropdown.Item hred="#/action-1">Action</Dropdown.Item>
-              <Dropdown.Item hred="#/action-2">Another action</Dropdown.Item>
-              <Dropdown.Item hred="#/action-3">Something else</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown> */}
         </Card.Header>
         <Collapse
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}

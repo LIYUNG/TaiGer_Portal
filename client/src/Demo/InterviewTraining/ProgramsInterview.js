@@ -25,7 +25,7 @@ class ProgramsInterview extends React.Component {
     return (
       <>
         <Col>
-          <Table>
+          <Table size="sm">
             <tbody>{interviews}</tbody>
           </Table>
         </Col>

@@ -112,6 +112,7 @@ class EditorMainView extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 {unread_thread}
               </Table>
@@ -140,8 +141,7 @@ class EditorMainView extends React.Component {
             <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} />{' '}
-                  Editor Open Tasks:
+                  <BsExclamationTriangle size={18} /> Editor Open Tasks:
                 </Card.Title>
               </Card.Header>
               <Table
@@ -151,6 +151,7 @@ class EditorMainView extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 {editor_todo_tasks}
               </Table>
@@ -160,13 +161,19 @@ class EditorMainView extends React.Component {
         <TabProgramConflict students={this.props.students} />
         <Row>
           <Col sm={12}>
-            <Tabs defaultActiveKey="dz" id="uncontrolled-tab-example">
+            <Tabs
+              defaultActiveKey="dz"
+              id="uncontrolled-tab-example"
+              fill={true}
+              justify={true}
+            >
               <Tab eventKey="dz" title="Agents and Editors">
                 <Table
                   responsive
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   {students_agent_editor}
                 </Table>

@@ -97,6 +97,7 @@ class AgentMainView extends React.Component {
                   <Card.Title>New Uploaded Files:</Card.Title>
                 </Card.Header>
                 <Table
+                  size="sm"
                   responsive
                   bordered
                   hover
@@ -134,6 +135,7 @@ class AgentMainView extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>
@@ -162,6 +164,7 @@ class AgentMainView extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>
@@ -182,7 +185,12 @@ class AgentMainView extends React.Component {
         <TabProgramConflict students={this.props.students} />
         <Row>
           <Col sm={12}>
-            <Tabs defaultActiveKey="w" id="uncontrolled-tab-example">
+            <Tabs
+              defaultActiveKey="w"
+              id="uncontrolled-tab-example"
+              fill={true}
+              justify={true}
+            >
               <Tab
                 eventKey="w"
                 title="Student Background Overview"
@@ -205,6 +213,7 @@ class AgentMainView extends React.Component {
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   <thead>
                     <tr>

@@ -232,6 +232,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             {this.props.role !== 'Student' && (
               <td>
                 <Button
+                  size="sm"
                   onClick={(e) =>
                     this.handleDelete(
                       e,
@@ -448,6 +449,7 @@ class StudentApplicationsTableTemplate extends React.Component {
               <Row>
                 <Col>
                   <Table
+                    size="sm"
                     responsive
                     className="my-0 mx-0"
                     variant="dark"

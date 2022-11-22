@@ -71,6 +71,7 @@ class TabProgramConflict extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Table
+                size="sm"
                 responsive
                 bordered
                 hover

@@ -3,7 +3,7 @@ import { Row, Col, Spinner, Table, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import DEMO from '../../store/constant';
 import StudentBaseDocumentsStatus from './StudentBaseDocumentsStatus';
-import EditFilesSubpage from './EditFilesSubpage';
+import BaseDocument_StudentView from './BaseDocument_StudentView';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -374,7 +374,7 @@ class BaseDocuments extends React.Component {
 
     const student_profile_student_view = this.state.students.map(
       (student, i) => (
-        <EditFilesSubpage
+        <BaseDocument_StudentView
           key={i}
           idx={i}
           student={student}
@@ -415,6 +415,7 @@ class BaseDocuments extends React.Component {
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Body>
                 <Table
+                  size="sm"
                   responsive
                   hover
                   className="my-0 mx-0"

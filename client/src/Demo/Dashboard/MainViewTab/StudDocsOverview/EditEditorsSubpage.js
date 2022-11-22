@@ -14,13 +14,13 @@ class EditEditorsSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Editor for {this.props.student.firstname} -{" "}
+            Editor for {this.props.student.firstname} -{' '}
             {this.props.student.lastname}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h4>Editor:</h4>
-          <Table>
+          <Table size="sm">
             <tbody>
               {this.props.editor_list ? (
                 this.props.editor_list.map((editor, i) => (
@@ -42,7 +42,7 @@ class EditEditorsSubpage extends React.Component {
                           }
                           onChange={(e) => this.props.handleChangeEditorlist(e)}
                           value={editor._id}
-                          id={"editor" + i + 1}
+                          id={'editor' + i + 1}
                         />
                       </Form.Group>
                     </th>

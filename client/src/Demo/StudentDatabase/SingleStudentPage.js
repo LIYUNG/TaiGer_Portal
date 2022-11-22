@@ -414,6 +414,7 @@ class SingleStudentPage extends React.Component {
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   <thead>
                     <tr>
@@ -447,9 +448,17 @@ class SingleStudentPage extends React.Component {
         <Tabs
           defaultActiveKey={this.props.match.params.tab}
           id="uncontrolled-tab-example"
+          fill={true}
+          justify={true}
         >
           <Tab eventKey="profile" title="Profile Overview">
-            <Table responsive className="my-2 mx-0" variant="dark" text="light">
+            <Table
+              responsive
+              className="my-2 mx0"
+              variant="dark"
+              text="light"
+              size="sm"
+            >
               <thead>
                 <tr>
                   <th>First-, Last Name</th>
@@ -467,6 +476,7 @@ class SingleStudentPage extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>

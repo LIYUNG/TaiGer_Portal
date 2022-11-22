@@ -9,7 +9,7 @@ import ButtonSetMissing from './ButtonSetMissing';
 
 // import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
 
-class EditFilesSubpage extends React.Component {
+class BaseDocument_StudentView extends React.Component {
   state = {
     student: this.props.student,
     student_id: '',
@@ -194,6 +194,7 @@ class EditFilesSubpage extends React.Component {
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   <thead>
                     <tr>
@@ -226,4 +227,4 @@ class EditFilesSubpage extends React.Component {
   }
 }
 
-export default EditFilesSubpage;
+export default BaseDocument_StudentView;

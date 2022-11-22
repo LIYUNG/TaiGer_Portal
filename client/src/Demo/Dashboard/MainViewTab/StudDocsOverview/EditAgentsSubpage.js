@@ -51,12 +51,12 @@ class EditAgentsSubpage extends React.Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Agent for {this.props.student.firstname} -{" "}
+            Agent for {this.props.student.firstname} -{' '}
             {this.props.student.lastname} to
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Table>
+          <Table size="sm">
             <tbody>{agentlist}</tbody>
           </Table>
         </Modal.Body>

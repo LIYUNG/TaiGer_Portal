@@ -191,7 +191,7 @@ class CVMLRLOverview extends React.Component {
         </Row>
         <Row>
           <Col>
-            <Tabs defaultActiveKey="open">
+            <Tabs defaultActiveKey="open" fill={true} justify={true}>
               <Tab eventKey="open" title="Open">
                 <Table
                   responsive
@@ -200,6 +200,7 @@ class CVMLRLOverview extends React.Component {
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   <thead>
                     <tr>
@@ -226,16 +227,16 @@ class CVMLRLOverview extends React.Component {
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   <thead>
                     <tr>
-                      <>
-                        <th></th>
-                        <th>First-, Last Name</th>
-                        {(this.props.user.role === 'Admin' ||
-                          this.props.user.role === 'Editor' ||
-                          this.props.user.role === 'Agent') && <th>Action</th>}
-                      </>
+                      <th></th>
+                      <th>First-, Last Name</th>
+                      {(this.props.user.role === 'Admin' ||
+                        this.props.user.role === 'Editor' ||
+                        this.props.user.role === 'Agent') && <th>Action</th>}
+
                       {window.cvmlrllist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}

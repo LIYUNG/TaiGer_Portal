@@ -381,6 +381,7 @@ function Table2({ header, data, userId }) {
         text="light"
         responsive
         hover
+        size="sm"
         {...getTableProps()}
       >
         {/* <table {...getTableProps()}> */}
@@ -623,8 +624,8 @@ function AdmissionsTable(props) {
       <Tabs
         defaultActiveKey="Admissions"
         id="fill-tab-example"
-        // className="mb-3"
-        // fill
+        fill={true}
+        justify={true}
       >
         <Tab eventKey="Admissions" title="Admissions" className="my-0 mx-0">
           <Row>

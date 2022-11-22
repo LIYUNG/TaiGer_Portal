@@ -37,6 +37,7 @@ class AssignAgentsPage extends React.Component {
                 variant="dark"
                 text="light"
                 className="my-0 mx-0"
+                size="sm"
               >
                 <thead>
                   <tr>

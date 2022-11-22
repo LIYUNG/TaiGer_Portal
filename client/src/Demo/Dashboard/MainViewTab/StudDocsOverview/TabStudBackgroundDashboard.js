@@ -27,6 +27,7 @@ class TabStudBackgroundDashboard extends React.Component {
     return (
       <>
         <Table
+          size="sm"
           responsive
           bordered
           hover

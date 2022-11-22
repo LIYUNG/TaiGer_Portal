@@ -504,6 +504,7 @@ class StudentDashboard extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>
@@ -537,6 +538,7 @@ class StudentDashboard extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>
@@ -568,6 +570,7 @@ class StudentDashboard extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>
@@ -593,6 +596,7 @@ class StudentDashboard extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>
@@ -617,6 +621,7 @@ class StudentDashboard extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>
@@ -641,6 +646,7 @@ class StudentDashboard extends React.Component {
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
+                size="sm"
               >
                 <thead>
                   <tr>

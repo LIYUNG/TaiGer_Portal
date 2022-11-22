@@ -334,6 +334,7 @@ function Table2({ columns, data, userId }) {
     {
       columns,
       data,
+      initialState: { pageSize: 20 },
       defaultColumn, // Be sure to pass the defaultColumn option
       filterTypes
       // autoResetSelectedRows: false,
@@ -453,6 +454,7 @@ function Table2({ columns, data, userId }) {
         text="light"
         responsive
         hover
+        size="sm"
         {...getTableProps()}
       >
         {/* <table {...getTableProps()}> */}
@@ -568,10 +570,10 @@ function Table2({ columns, data, userId }) {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
                   gotoPage(page);
                 }}
-                style={{ width: '100px' }}
+                style={{ width: '50px' }}
               />
             </span>
-          </Col>{' '}
+          </Col>
           <Col md={2}>
             <select
               value={pageSize}
@@ -579,7 +581,7 @@ function Table2({ columns, data, userId }) {
                 setPageSize(Number(e.target.value));
               }}
             >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[20, 40, 60, 80, 100].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

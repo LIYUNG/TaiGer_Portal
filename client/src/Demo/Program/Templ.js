@@ -380,7 +380,7 @@ class Programlist extends React.Component {
           </Row>
           <Card>
             <Card.Body>
-              <Table responsive border hover>
+              <Table responsive border hover size="sm">
                 <thead>{headers}</thead>
                 <tbody>{programs}</tbody>
               </Table>

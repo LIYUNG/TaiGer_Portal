@@ -173,7 +173,7 @@ class ApplicantSOverview extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Tabs>
+        <Tabs fill={true} justify={true}>
           <Tab
             eventKey="application_status"
             title="Application Progress Overview"
@@ -202,6 +202,7 @@ class ApplicantSOverview extends React.Component {
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   <thead>
                     <tr>
@@ -235,7 +236,6 @@ class ApplicantSOverview extends React.Component {
             eventKey="application_documents_overview"
             title="Application Document Overview"
           >
-            {' '}
             <Row>
               <Col>
                 <Table
@@ -245,6 +245,7 @@ class ApplicantSOverview extends React.Component {
                   className="my-0 mx-0"
                   variant="dark"
                   text="light"
+                  size="sm"
                 >
                   <thead>
                     <tr>

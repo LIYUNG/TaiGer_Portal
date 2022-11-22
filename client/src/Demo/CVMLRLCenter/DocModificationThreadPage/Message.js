@@ -121,39 +121,36 @@ class Message extends Component {
       <Card border="primary" className="mb-2 mx-0">
         <Card.Header
           onClick={() => this.props.singleExpandtHandler(this.props.idx)}
+          as="h5"
+          aria-controls={'accordion' + this.props.idx}
+          aria-expanded={
+            this.props.accordionKeys[this.props.idx] === this.props.idx
+          }
         >
-          <Card.Title
-            as="h5"
-            aria-controls={'accordion' + this.props.idx}
-            aria-expanded={
-              this.props.accordionKeys[this.props.idx] === this.props.idx
-            }
-          >
-            <Row>
-              <Col md={1} className="me-3">
-                <Avatar
-                  {...stringAvatar(
-                    this.props.message.user_id.firstname +
-                      ' ' +
-                      this.props.message.user_id.lastname
-                  )}
-                />
-              </Col>
-              <Col className="mt-2 mx-2">
-                <b>
-                  {this.props.message.user_id.firstname}{' '}
-                  {this.props.message.user_id.lastname}
-                </b>
-                <span style={{ float: 'right', cursor: 'pointer' }}>
-                  {' on '}
-                  {new Date(this.props.message.createdAt).toLocaleTimeString()}
-                  {', '}
-                  {new Date(this.props.message.createdAt).toLocaleDateString()}
-                  {/* <RiMoreFill className="ms-4" /> */}
-                </span>
-              </Col>
-            </Row>
-          </Card.Title>
+          <Row className="my-0">
+            <Col md={1} className="me-1 my-0">
+              <Avatar
+                {...stringAvatar(
+                  this.props.message.user_id.firstname +
+                    ' ' +
+                    this.props.message.user_id.lastname
+                )}
+              />
+            </Col>
+            <Col className="mt-2">
+              <b>
+                {this.props.message.user_id.firstname}{' '}
+                {this.props.message.user_id.lastname}
+              </b>
+              <span style={{ float: 'right', cursor: 'pointer' }}>
+                {' on '}
+                {new Date(this.props.message.createdAt).toLocaleTimeString()}
+                {', '}
+                {new Date(this.props.message.createdAt).toLocaleDateString()}
+                <RiMoreFill className="ms-4" />
+              </span>
+            </Col>
+          </Row>
         </Card.Header>
         <Collapse
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}

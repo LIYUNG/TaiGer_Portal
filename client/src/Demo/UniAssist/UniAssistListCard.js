@@ -296,8 +296,8 @@ class UniAssistListCard extends React.Component {
                   <h4 className="text-info">
                     {application.programId.school}{' '}
                     {application.programId.program_name}
+                    {' Yes-FULL'}
                   </h4>
-                  {' Yes-FULL'}
                 </Link>
               </Row>
               <Row>
@@ -308,8 +308,16 @@ class UniAssistListCard extends React.Component {
                       {this.state.isLoaded ? (
                         <>
                           <Col>
-                            <Form>
-                              <Form.File.Label
+                            <Form.Group controlId="formFile">
+                              <Form.Label>
+                                <IoMdCloudUpload
+                                  color={'lightgray'}
+                                  size={32}
+                                />
+                              </Form.Label>
+                              <Form.Control
+                                hidden
+                                type="file"
                                 onChange={(e) =>
                                   this.handleUniAssistDocSubmit(
                                     e,
@@ -317,15 +325,8 @@ class UniAssistListCard extends React.Component {
                                     application.programId._id.toString()
                                   )
                                 }
-                                onClick={(e) => (e.target.value = null)}
-                              >
-                                <Form.File.Input hidden />
-                                <IoMdCloudUpload
-                                  color={'lightgray'}
-                                  size={32}
-                                />
-                              </Form.File.Label>
-                            </Form>
+                              />
+                            </Form.Group>
                           </Col>
                           {this.props.role === 'Agent' ||
                             (this.props.role === 'Admin' && (
@@ -407,8 +408,8 @@ class UniAssistListCard extends React.Component {
                   <h4 className="text-info">
                     {application.programId.school}{' '}
                     {application.programId.program_name}
+                    {' Yes-VPD'}
                   </h4>
-                  {' Yes-VPD'}
                 </Link>
               </Row>
               <Row>
@@ -419,8 +420,13 @@ class UniAssistListCard extends React.Component {
                     {this.state.isLoaded ? (
                       <>
                         <Col md={1}>
-                          <Form>
-                            <Form.File.Label
+                          <Form.Group controlId="formFile">
+                            <Form.Label>
+                              <IoMdCloudUpload color={'lightgray'} size={32} />
+                            </Form.Label>
+                            <Form.Control
+                              hidden
+                              type="file"
                               onChange={(e) =>
                                 this.handleUniAssistDocSubmit(
                                   e,
@@ -428,12 +434,8 @@ class UniAssistListCard extends React.Component {
                                   application.programId._id.toString()
                                 )
                               }
-                              onClick={(e) => (e.target.value = null)}
-                            >
-                              <Form.File.Input hidden />
-                              <IoMdCloudUpload color={'lightgray'} size={32} />
-                            </Form.File.Label>
-                          </Form>
+                            />
+                          </Form.Group>
                         </Col>
                         <Col>
                           {this.props.role === 'Agent' ||
@@ -549,10 +551,10 @@ class UniAssistListCard extends React.Component {
         {application.programId.uni_assist === undefined &&
           application.decided === 'O' && (
             <>
-              <p className="text-info">
+              <h4 className="text-info">
                 {application.programId.school}{' '}
                 {application.programId.program_name}{' '}
-              </p>
+              </h4>
               <p className="text-light">
                 This program does NOT require Uni-Assist.
               </p>

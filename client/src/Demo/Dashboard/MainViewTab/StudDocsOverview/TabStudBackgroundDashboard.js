@@ -25,33 +25,29 @@ class TabStudBackgroundDashboard extends React.Component {
     );
     let header = Object.values(window.academic_background_header);
     return (
-      <>
-        <Table
-          size="sm"
-          responsive
-          bordered
-          hover
-          className="my-0 mx-0"
-          variant="dark"
-          text="light"
-        >
-          <thead>
-            <tr>
-              <>
-                <th></th>
-                <th>
-                  First-, Last Name <br /> Email
-                </th>
-              </>
-              {header.map((name, index) => (
-                <th key={index}>{name}</th>
-              ))}
-            </tr>
-          </thead>
-          {stdlist}
-        </Table>
-        {/* {this.props.SYMBOL_EXPLANATION} */}
-      </>
+      <Table
+        size="sm"
+        responsive
+        bordered
+        striped
+        hover
+        className="my-0 mx-0"
+        variant="dark"
+        text="light"
+      >
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              First-, Last Name <br /> Email
+            </th>
+            {header.map((name, index) => (
+              <th key={index}>{name}</th>
+            ))}
+          </tr>
+        </thead>
+        {stdlist}
+      </Table>
     );
   }
 }

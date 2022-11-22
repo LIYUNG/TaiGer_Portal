@@ -399,49 +399,45 @@ class BaseDocuments extends React.Component {
     );
     return (
       <Aux>
-        <Row className="sticky-top">
-          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                Base Documents
-              </Card.Title>
-            </Card.Header>
+        {/* <Row className="sticky-top"> */}
+        <Row>
+          <Card className="mb-0 mx-0" bg={'dark'} text={'light'}>
+            <Card.Header as="h5">Base Documents</Card.Header>{' '}
+            {this.props.user.role === 'Admin' ||
+            this.props.user.role === 'Agent' ||
+            this.props.user.role === 'Editor' ? (
+              // <Card bg={'dark'} text={'light'}>
+              <Table
+                size="sm"
+                responsive
+                hover
+                // className="mt-2 mx-0"
+                // style={{
+                //   background: 'black'
+                // }}
+                text="light"
+              >
+                <thead>
+                  <tr className="my-0 mx-0 text-light">
+                    <>
+                      <th style={style2}>First-, Last Name</th>
+                    </>
+                    {profile_list_keys.map((doc_name, index) => (
+                      <th key={index} style={style2}>
+                        {doc_name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>{student_profile}</tbody>
+              </Table>
+            ) : (
+              // </Card>
+              <>{student_profile_student_view}</>
+            )}
           </Card>
         </Row>
         <Row>
-          {this.props.user.role === 'Admin' ||
-          this.props.user.role === 'Agent' ||
-          this.props.user.role === 'Editor' ? (
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Body>
-                <Table
-                  size="sm"
-                  responsive
-                  hover
-                  className="my-0 mx-0"
-                  //   variant="dark"
-                  text="light"
-                >
-                  <thead>
-                    <tr className="my-0 mx-0 text-light">
-                      <>
-                        <th style={style2}>First-, Last Name</th>
-                      </>
-                      {profile_list_keys.map((doc_name, index) => (
-                        <th key={index} style={style2}>
-                          {doc_name}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{student_profile}</tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-          ) : (
-            <>{student_profile_student_view}</>
-          )}
-
           {!isLoaded && (
             <div style={style}>
               <Spinner animation="border" role="status">

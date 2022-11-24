@@ -140,6 +140,7 @@ class NavRight extends Component {
                 Logout
               </Link>
             </li>
+            {/* <li></li> */}
             {/* <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-settings"/> Settings</a></li> */}
           </ul>
           <ChatList

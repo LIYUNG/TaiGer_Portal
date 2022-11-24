@@ -31,21 +31,7 @@ class AgentReviewing_StudentView extends React.Component {
       }
     } else {
     }
-    var to_be_checked_profiles = keys.map((key, i) => {
-      if (object_init[key] === 'uploaded') {
-        return (
-          <h6 key={i}>
-            {' '}
-            <AiOutlineLoading3Quarters
-              size={18}
-              color="lightred"
-              title="No Document uploaded"
-            />{' '}
-            {key.replace(/_/g, ' ')}
-          </h6>
-        );
-      }
-    });
+
     var missing_profiles = keys.map((key, i) => {
       if (
         object_init[key] !== 'accepted' &&
@@ -76,7 +62,7 @@ class AgentReviewing_StudentView extends React.Component {
               title="Under agent's check"
             />{' '}
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={'/base-documents'}
               className="text-info"
               style={{ textDecoration: 'none' }}
             >

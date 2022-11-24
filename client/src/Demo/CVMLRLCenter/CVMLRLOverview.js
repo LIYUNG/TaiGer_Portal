@@ -237,7 +237,7 @@ class CVMLRLOverview extends React.Component {
                         this.props.user.role === 'Editor' ||
                         this.props.user.role === 'Agent') && <th>Action</th>}
 
-                      {window.cvmlrllist.map((doc, index) => (
+                      {window.cvmlrlclosedlist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
                     </tr>

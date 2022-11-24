@@ -21,24 +21,27 @@ class RespondedThreads extends React.Component {
               generaldocs_threads.latest_message_left_by_id ===
                 this.props.user._id.toString() && (
                 <>
-                  <td>
-                    <Link
-                      to={
-                        this.props.role === 'Student' ||
-                        this.props.role === 'Guest'
-                          ? '/cv-ml-rl-center'
-                          : '/student-database/' +
-                            this.props.student._id +
-                            '/CV_ML_RL'
-                      }
-                      className="text-info"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      {this.props.student.firstname}
-                      {' - '}
-                      {this.props.student.lastname}
-                    </Link>
-                  </td>
+                  {this.props.role !== 'Student' && (
+                    <td>
+                      <Link
+                        to={
+                          this.props.role === 'Student' ||
+                          this.props.role === 'Guest'
+                            ? '/cv-ml-rl-center'
+                            : '/student-database/' +
+                              this.props.student._id +
+                              '/CV_ML_RL'
+                        }
+                        className="text-info"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        {this.props.student.firstname}
+                        {' - '}
+                        {this.props.student.lastname}
+                      </Link>
+                    </td>
+                  )}
+
                   <td>
                     <Link
                       to={
@@ -68,24 +71,26 @@ class RespondedThreads extends React.Component {
                     this.props.user._id.toString() &&
                   application.decided === 'O' && (
                     <>
-                      <td>
-                        <Link
-                          to={
-                            this.props.role === 'Student' ||
-                            this.props.role === 'Guest'
-                              ? '/cv-ml-rl-center'
-                              : '/student-database/' +
-                                this.props.student._id +
-                                '/CV_ML_RL'
-                          }
-                          className="text-info"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          {this.props.student.firstname}
-                          {' - '}
-                          {this.props.student.lastname}
-                        </Link>
-                      </td>
+                      {this.props.role !== 'Student' && (
+                        <td>
+                          <Link
+                            to={
+                              this.props.role === 'Student' ||
+                              this.props.role === 'Guest'
+                                ? '/cv-ml-rl-center'
+                                : '/student-database/' +
+                                  this.props.student._id +
+                                  '/CV_ML_RL'
+                            }
+                            className="text-info"
+                            style={{ textDecoration: 'none' }}
+                          >
+                            {this.props.student.firstname}
+                            {' - '}
+                            {this.props.student.lastname}
+                          </Link>
+                        </td>
+                      )}
                       <td>
                         <Link
                           to={

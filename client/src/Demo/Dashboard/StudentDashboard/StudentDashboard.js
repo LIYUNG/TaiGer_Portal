@@ -142,10 +142,7 @@ class StudentDashboard extends React.Component {
     }
 
     const stdlist = (
-      <StudentMyself
-        role={this.props.role}
-        student={this.state.student}
-      />
+      <StudentMyself role={this.props.role} student={this.state.student} />
     );
 
     const application_progress = (
@@ -181,12 +178,12 @@ class StudentDashboard extends React.Component {
     ) : (
       <></>
     );
-    const agent_reviewing = (
-      <AgentReviewing_StudentView
-        role={this.props.role}
-        student={this.state.student}
-      />
-    );
+    // const agent_reviewing = (
+    //   <AgentReviewing_StudentView
+    //     role={this.props.role}
+    //     student={this.state.student}
+    //   />
+    // );
     const read_thread = (
       <RespondedThreads
         user={this.props.user}
@@ -625,7 +622,6 @@ class StudentDashboard extends React.Component {
               >
                 <thead>
                   <tr>
-                    <th>First-, Last Name</th>
                     <th>Documents</th>
                     <th>Last Update</th>
                   </tr>
@@ -633,7 +629,7 @@ class StudentDashboard extends React.Component {
                 <tbody>{read_thread}</tbody>
               </Table>
             </Card>
-            <Card className="my-0 mx-0" bg={'dark'} text={'light'}>
+            {/* <Card className="my-0 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   Agent Reviewing:
@@ -656,7 +652,7 @@ class StudentDashboard extends React.Component {
                 </thead>
                 <tbody>{agent_reviewing}</tbody>
               </Table>
-            </Card>
+            </Card> */}
           </Col>
         </Row>
       </>

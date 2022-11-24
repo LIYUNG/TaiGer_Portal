@@ -149,12 +149,8 @@ class CVMLRLProgressClosed extends React.Component {
                 </Link>
               </td>
               <td>{convertDate(generaldocs_thread.updatedAt)}</td>
-              <td>
-                {!generaldocs_thread.isFinalVersion &&
-                  getNumberOfDays(generaldocs_thread.updatedAt, today)}
-              </td>
               <td></td>
-              <td></td>
+              <td>-</td>
             </>
           )}
         </tr>
@@ -164,7 +160,8 @@ class CVMLRLProgressClosed extends React.Component {
       this.props.student.applications.map((application, i) =>
         application.doc_modification_thread.map((doc_thread, j) => (
           <tr key={j}>
-            {application.decided === 'O' && doc_thread.isFinalVersion && (
+            {((application.decided === 'O' && doc_thread.isFinalVersion) ||
+              application.closed === 'O') && (
               <>
                 <td></td>
                 <td>
@@ -241,10 +238,6 @@ class CVMLRLProgressClosed extends React.Component {
                 </td>
                 <td>{convertDate(doc_thread.updatedAt)}</td>
                 <td>
-                  {!doc_thread.isFinalVersion &&
-                    getNumberOfDays(doc_thread.updatedAt, today)}
-                </td>
-                <td>
                   {this.props.student.application_preference &&
                     this.props.student.application_preference
                       .expected_application_date &&
@@ -254,19 +247,8 @@ class CVMLRLProgressClosed extends React.Component {
                 </td>
                 <td>
                   {application.closed === 'O'
-                    ? '-'
-                    : application.programId.application_deadline
-                    ? this.props.student.application_preference &&
-                      this.props.student.application_preference
-                        .expected_application_date &&
-                      getNumberOfDays(
-                        today,
-                        this.props.student.application_preference
-                          .expected_application_date +
-                          '-' +
-                          application.programId.application_deadline
-                      )
-                    : '-'}
+                    ? 'CLOSE'
+                    : 'OPEN'}
                 </td>
               </>
             )}

@@ -73,7 +73,11 @@ class EditorTODOTasks extends React.Component {
             (application_doc_thread, idx) => (
               <tr key={idx}>
                 {!application_doc_thread.isFinalVersion &&
-                  application.decided === 'O' && (
+                  application.decided === 'O' &&
+                  application_deadline_calculator(
+                    this.props.student,
+                    application
+                  ) !== 'CLOSE' && (
                     <>
                       <td>
                         <Link

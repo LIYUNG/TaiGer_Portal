@@ -18,6 +18,8 @@ DIFFERENTIATE_KEY_WORDS = 2
 
 def isfloat(value):
     try:
+        if value is None:
+            return False
         float(value)
         return True
     except ValueError:
@@ -162,12 +164,16 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
             if(idx2 == len(transcript_sorted_group_map) - 1):
                 temp_string = df_transcript['grades'][idx]
                 temp0 = 0;
-                if isfloat(temp_string):
-                    temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
-                        'grades': float(df_transcript['grades'][idx])}
-                else:
+                if temp_string is None:
                     temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
                         'grades': df_transcript['grades'][idx]}
+                else:
+                    if isfloat(temp_string):
+                        temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
+                            'grades': float(df_transcript['grades'][idx])}
+                    else:
+                        temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
+                            'grades': df_transcript['grades'][idx]}
                 df_category_data[idx2] = df_category_data[idx2].append(
                     temp0, ignore_index=True)
                 continue
@@ -175,16 +181,20 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
             # filter subject by keywords. and exclude subject by anti_keywords
             if any(keywords in subj for keywords in transcript_sorted_group_map[cat][KEY_WORDS] if not any(anti_keywords in subj for anti_keywords in transcript_sorted_group_map[cat][ANTI_KEY_WORDS])):
                 temp_string = df_transcript['grades'][idx]
-                # failed subject not count
-                if((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
-                   or "Fail" in temp_string or "W" in temp_string or "F" in temp_string or "fail" in temp_string or "退選" in temp_string or "withdraw" in temp_string):
-                    continue
-                if isfloat(temp_string):
-                    temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
-                        'grades': float(df_transcript['grades'][idx])}
-                else:
+                if temp_string is None:
                     temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
                         'grades': df_transcript['grades'][idx]}
+                else:
+                    # failed subject not count
+                    if((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
+                        or "Fail" in temp_string or "W" in temp_string or "F" in temp_string or "fail" in temp_string or "退選" in temp_string or "withdraw" in temp_string):
+                        continue
+                    if isfloat(temp_string):
+                        temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
+                        'grades': float(df_transcript['grades'][idx])}
+                    else:
+                        temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
+                            'grades': df_transcript['grades'][idx]}
                 df_category_data[idx2] = df_category_data[idx2].append(
                     temp, ignore_index=True)
                 break

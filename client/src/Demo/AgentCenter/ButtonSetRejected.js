@@ -523,7 +523,9 @@ class ButtonSetRejected extends React.Component {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Form.Group className="mb-3">
-              <Form.Label>Documentation Link</Form.Label>
+              <Form.Label>
+                Documentation Link for <b>{this.props.docName}</b>
+              </Form.Label>
               <Form.Control
                 placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
                 defaultValue={this.state.link}

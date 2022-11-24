@@ -2,11 +2,11 @@ import React from 'react';
 import {Row, Col, Card} from 'react-bootstrap';
 
 import Aux from "../../../hoc/_Aux/index";
-import LineChart from "./LineChart";
-import BarDiscreteChart from "./BarDiscreteChart";
-import MultiBarChart from "./MultiBarChart";
-import PieBasicChart from "./PieBasicChart";
-import PieDonutChart from "./PieDonutChart";
+import LineChart from "../Nvd3Chart/LineChart";
+import BarDiscreteChart from "../Nvd3Chart/BarDiscreteChart";
+import MultiBarChart from "../Nvd3Chart/MultiBarChart";
+import PieBasicChart from "../Nvd3Chart/PieBasicChart";
+import PieDonutChart from "../Nvd3Chart/PieDonutChart";
 
 class Nvd3Chart extends React.Component {
 

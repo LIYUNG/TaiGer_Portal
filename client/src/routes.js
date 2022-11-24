@@ -57,10 +57,11 @@ const SingleInterviewTraining = React.lazy(() =>
   import('./Demo/InterviewTraining/SingleInterviewTraining')
 );
 const Settings = React.lazy(() => import('./Demo/Settings/index'));
-const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
-const Statistics = React.lazy(() =>
-  import('./Demo/Statistics/Nvd3Chart/index')
-);
+// const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
+const OrgChart = React.lazy(() => import('./Demo/Charts/OrgChart/index'));
+// const Statistics = React.lazy(() =>
+//   import('./Demo/Statistics/Nvd3Chart/index')
+// );
 const Admissions = React.lazy(() => import('./Demo/Admissions/Admissions'));
 const StudentDatabase = React.lazy(() =>
   import('./Demo/StudentDatabase/index')
@@ -102,6 +103,9 @@ const AgentsAssignment = React.lazy(() =>
 const EditorsAssignment = React.lazy(() =>
   import('./Demo/AssignmentAgentsEditors/AssignEditors/index')
 );
+
+
+
 const routes = [
   {
     path: '/assignment/agents',
@@ -242,17 +246,23 @@ const routes = [
     component: SingleStudentPage
   },
   {
-    path: '/statistics',
+    path: '/org-charts',
     exact: true,
-    name: 'Statistics',
-    component: Statistics
+    name: 'Organization Charts',
+    component: OrgChart
   },
-  {
-    path: '/charts/nvd3',
-    exact: true,
-    name: 'Nvd3 Chart',
-    component: Nvd3Chart
-  },
+  // {
+  //   path: '/statistics',
+  //   exact: true,
+  //   name: 'Statistics',
+  //   component: Statistics
+  // },
+  // {
+  //   path: '/charts/nvd3',
+  //   exact: true,
+  //   name: 'Nvd3 Chart',
+  //   component: Nvd3Chart
+  // },
   {
     path: '/maps/google-map',
     exact: true,

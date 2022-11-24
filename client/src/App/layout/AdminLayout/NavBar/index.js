@@ -56,12 +56,9 @@ class NavBar extends Component {
               <span className="b-title">TaiGer</span>
             </Link>
           </div>
-          {/* <a
-                className="mobile-menu"
-                id="mobile-header"
-              >
-                <i className="feather icon-more-horizontal" />
-              </a> */}
+          <a className="mobile-menu" id="mobile-header">
+            <i className="feather icon-more-horizontal" />
+          </a>
           <div className="collapse navbar-collapse">
             {/* <NavLeft /> */}
             <NavRight

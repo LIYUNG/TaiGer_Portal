@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { Dropdown, Container, Col } from "react-bootstrap";
-
-import ChatList from "./ChatList";
-import Aux from "../../../../../hoc/_Aux";
-import DEMO from "../../../../../store/constant";
-
-import Avatar1 from "../../../../../assets/images/user/avatar-1.jpg";
-import Avatar2 from "../../../../../assets/images/user/avatar-2.jpg";
-import Avatar3 from "../../../../../assets/images/user/avatar-3.jpg";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { Dropdown, Container, Col, Row } from 'react-bootstrap';
+import { Avatar } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import {
+  stringAvatar
+} from '../../../../../Demo/Utils/contants';
+import ChatList from './ChatList';
+import Aux from '../../../../../hoc/_Aux';
+import DEMO from '../../../../../store/constant';
 
 class NavRight extends Component {
   state = {
-    listOpen: false,
+    listOpen: false
   };
 
   handleOnClick(e) {
@@ -25,12 +25,31 @@ class NavRight extends Component {
         {/* <Container> */}
         <Col>
           <ul className="navbar-nav ml-auto">
-            <li className={this.props.rtlLayout ? 'm-r-15' : 'm-l-15'}>
+            <li className={this.props.rtlLayout ? 'mr-0' : 'm-l-0'}>
               <Link to={DEMO.SETTINGS} style={{ textDecoration: 'none' }}>
-                <i className="icon feather icon-user" />{' '}
-                {this.props.userdata.firstname} {this.props.userdata.lastname}
+                <Row>
+                  {this.props.userdata.firstname} {this.props.userdata.lastname}{' '}
+                  <Avatar
+                    {...stringAvatar(
+                      this.props.userdata.firstname +
+                        ' ' +
+                        this.props.userdata.lastname
+                    )}
+                    className="mt-3 mx-2"
+                    title={
+                      this.props.userdata.firstname +
+                      ' ' +
+                      this.props.userdata.lastname
+                    }
+                  />
+                </Row>
               </Link>
             </li>
+            {/* <li className={this.props.rtlLayout ? 'm-r-0' : 'm-l-0'}> */}
+
+            {/* <i className="icon feather icon-user" />{' '} */}
+            {/* {this.props.userdata.firstname} {this.props.userdata.lastname} */}
+            {/* </li> */}
             {/* <li>
               <Dropdown alignRight={!this.props.rtlLayout}>
                 <Dropdown.Toggle variant={"link"} id="dropdown-basic">
@@ -129,19 +148,18 @@ class NavRight extends Component {
               </a>
             </li> */}
             <li>
-              {/* <a href={DEMO.LOG_OUT} className="dud-logout" title="Logout">
-                        <i className="feather icon-log-out" /> Logout</a> */}
-              <Link
-                to={'/'}
-                onClick={(e) => this.handleOnClick(e)}
-                className="dud-logout"
-                style={{ textDecoration: 'none' }}
-              >
-                Logout
-              </Link>
+              <Row>
+                {/* <LogoutIcon color="success" /> */}
+                <Link
+                  to={'/'}
+                  onClick={(e) => this.handleOnClick(e)}
+                  className="dud-logout"
+                  style={{ textDecoration: 'none' }}
+                >
+                  Logout
+                </Link>
+              </Row>
             </li>
-            {/* <li></li> */}
-            {/* <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-settings"/> Settings</a></li> */}
           </ul>
           <ChatList
             listOpen={this.state.listOpen}

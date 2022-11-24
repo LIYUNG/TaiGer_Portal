@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
-import { Editor } from 'react-draft-wysiwyg';
 import EditorNew from '../../components/EditorJs/EditorNew';
 import { convertDate } from '../Utils/contants';
 // import Blocks from 'editorjs-blocks-react-renderer';

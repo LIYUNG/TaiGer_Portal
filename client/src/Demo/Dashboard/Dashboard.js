@@ -1,17 +1,6 @@
 import React from 'react';
 import { Spinner } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
-// import DEMO from "../../store/constant";
-// import avatar1 from "../../assets/images/user/avatar-1.jpg";
-// import avatar2 from "../../assets/images/user/avatar-2.jpg";
-// import avatar3 from "../../assets/images/user/avatar-3.jpg";
-// import {
-//   AiFillCloseCircle,
-//   AiFillQuestionCircle,
-//   AiOutlineFieldTime
-// } from 'react-icons/ai';
-// import { IoCheckmarkCircle } from 'react-icons/io5';
-// import { BsDash } from 'react-icons/bs';
 import AdminMainView from './AdminDashboard/AdminMainView';
 import AgentMainView from './AgentDashboard/AgentMainView';
 import EditorMainView from './EditorDashboard/EditorMainView';

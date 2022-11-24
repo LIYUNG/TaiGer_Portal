@@ -1,13 +1,10 @@
 import React from 'react';
 import { Row, Col, Table, Card, Collapse } from 'react-bootstrap';
-// import UcFirst from "../../App/components/UcFirst";
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
 import ButtonSetRejected from './ButtonSetRejected';
 import ButtonSetNotNeeded from './ButtonSetNotNeeded';
 import ButtonSetMissing from './ButtonSetMissing';
-
-// import UploadAndGenerate from "../TaiGerAI/UploadAndGenerate";
 
 class BaseDocument_StudentView extends React.Component {
   state = {
@@ -31,24 +28,29 @@ class BaseDocument_StudentView extends React.Component {
     let object_date_init = {};
     let object_time_init = {};
     for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = 'missing';
+      object_init[keys2[i]] = { status: 'missing', link: '' };
       object_message[keys2[i]] = '';
       object_date_init[keys2[i]] = '';
       object_time_init[keys2[i]] = '';
     }
-
+    // TODO: what if this.state.student.profile[i].name key not in base_docs_link[i].key?
+    if (this.props.base_docs_link) {
+      for (let i = 0; i < this.props.base_docs_link.length; i++) {
+        object_init[this.props.base_docs_link[i].key].link = this.props.base_docs_link[i].link;
+      }
+    }
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
         if (this.props.student.profile[i].status === 'uploaded') {
-          object_init[this.props.student.profile[i].name] = 'uploaded';
+          object_init[this.props.student.profile[i].name].status = 'uploaded';
         } else if (this.props.student.profile[i].status === 'accepted') {
-          object_init[this.props.student.profile[i].name] = 'accepted';
+          object_init[this.props.student.profile[i].name].status = 'accepted';
         } else if (this.props.student.profile[i].status === 'rejected') {
-          object_init[this.props.student.profile[i].name] = 'rejected';
+          object_init[this.props.student.profile[i].name].status = 'rejected';
         } else if (this.props.student.profile[i].status === 'notneeded') {
-          object_init[this.props.student.profile[i].name] = 'notneeded';
+          object_init[this.props.student.profile[i].name].status = 'notneeded';
         } else if (this.props.student.profile[i].status === 'missing') {
-          object_init[this.props.student.profile[i].name] = 'missing';
+          object_init[this.props.student.profile[i].name].status = 'missing';
         }
         object_message[this.props.student.profile[i].name] = this.props.student
           .profile[i].feedback
@@ -65,10 +67,11 @@ class BaseDocument_StudentView extends React.Component {
     }
     var file_information;
     file_information = keys2.map((k, i) =>
-      object_init[k] === 'uploaded' ? (
+      object_init[k].status === 'uploaded' ? (
         <ButtonSetUploaded
           key={i + 1}
           role={this.props.role}
+          link={object_init[k].link}
           isLoaded={this.props.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -82,10 +85,11 @@ class BaseDocument_StudentView extends React.Component {
           }
           SubmitGeneralFile={this.props.SubmitGeneralFile}
         />
-      ) : object_init[k] === 'accepted' ? (
+      ) : object_init[k].status === 'accepted' ? (
         <ButtonSetAccepted
           key={i + 1}
           role={this.props.role}
+          link={object_init[k].link}
           isLoaded={this.props.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -100,10 +104,11 @@ class BaseDocument_StudentView extends React.Component {
           SubmitGeneralFile={this.props.SubmitGeneralFile}
           deleteFileWarningModel={this.props.deleteFileWarningModel}
         />
-      ) : object_init[k] === 'rejected' ? (
+      ) : object_init[k].status === 'rejected' ? (
         <ButtonSetRejected
           key={i + 1}
           role={this.props.role}
+          link={object_init[k].link}
           isLoaded={this.props.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -119,11 +124,12 @@ class BaseDocument_StudentView extends React.Component {
           SubmitGeneralFile={this.props.SubmitGeneralFile}
           deleteFileWarningModel={this.props.deleteFileWarningModel}
         />
-      ) : object_init[k] === 'notneeded' ? (
+      ) : object_init[k].status === 'notneeded' ? (
         (this.props.role === 'Admin' || this.props.role === 'Agent') && (
           <ButtonSetNotNeeded
             key={i + 1}
             role={this.props.role}
+            link={object_init[k].link}
             isLoaded={this.props.isLoaded}
             docName={value2[i]}
             date={object_date_init[k]}
@@ -143,6 +149,7 @@ class BaseDocument_StudentView extends React.Component {
         <ButtonSetMissing
           key={i + 1}
           role={this.props.role}
+          link={object_init[k].link}
           isLoaded={this.props.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -169,58 +176,38 @@ class BaseDocument_StudentView extends React.Component {
           text={'light'}
           key={this.props.idx}
         >
-          <Card.Header
-            onClick={() => this.props.singleExpandtHandler(this.props.idx)}
-          >
-            <Card.Title
-              aria-controls={'accordion' + this.props.idx}
-              aria-expanded={
-                this.props.accordionKeys[this.props.idx] === this.props.idx
-              }
-              className="my-0 mx-0 text-light"
-            >
+          <Card.Header>
+            <Card.Title className="my-0 mx-0 text-light">
               {this.state.student.firstname}
               {' ,'}
               {this.state.student.lastname}
             </Card.Title>
           </Card.Header>
-          <Collapse
-            in={this.props.accordionKeys[this.props.idx] === this.props.idx}
-          >
-            <div id="accordion1">
-              <Row>
-                <Table
-                  responsive
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th>Status</th>
-                      <th>File Name:</th>
-                      <th></th>
-                      <th></th>
-                      <th>Feedback</th>
-                      <th></th>
-                      <th>Delete</th>
-                    </tr>
-                  </thead>
-                  <tbody>{file_information}</tbody>
-                </Table>
-              </Row>
-              <Row>
-                <Col className="md-4">{this.props.SYMBOL_EXPLANATION}</Col>
-              </Row>
-              <Row>
-                {/* <UploadAndGenerate
-                    user={this.state.student}
-                    student={this.state.student}
-                  /> */}
-              </Row>
-            </div>
-          </Collapse>
+          <Row>
+            <Table
+              responsive
+              className="my-0 mx-0"
+              variant="dark"
+              text="light"
+              size="sm"
+            >
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>File Name:</th>
+                  <th></th>
+                  <th></th>
+                  <th>Feedback</th>
+                  <th></th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>{file_information}</tbody>
+            </Table>
+          </Row>
+          <Row>
+            <Col className="md-4">{this.props.SYMBOL_EXPLANATION}</Col>
+          </Row>
         </Card>
       </>
     );

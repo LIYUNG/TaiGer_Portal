@@ -13,6 +13,7 @@ import {
   updateProfileDocumentStatus,
   deleteFile,
   getStudents,
+  getStudentsAndDocLinks,
   downloadProfile
 } from '../../api';
 class BaseDocuments extends React.Component {
@@ -22,6 +23,7 @@ class BaseDocuments extends React.Component {
     unauthorizederror: null,
     isLoaded: false,
     data: null,
+    base_docs_link: null,
     success: false,
     students: null,
     file: '',
@@ -44,13 +46,14 @@ class BaseDocuments extends React.Component {
   };
 
   componentDidMount() {
-    getStudents().then(
+    getStudentsAndDocLinks().then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { base_docs_link, data, success } = resp.data;
         if (success) {
           this.setState({
             isLoaded: true,
             students: data,
+            base_docs_link,
             success: success
             // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
             // accordionKeys: new Array(-1, data.length) // to collapse all
@@ -307,7 +310,8 @@ class BaseDocuments extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { unauthorizederror, base_docs_link, timeouterror, isLoaded } =
+      this.state;
 
     if (timeouterror) {
       return (
@@ -353,13 +357,12 @@ class BaseDocuments extends React.Component {
       <StudentBaseDocumentsStatus
         key={i}
         idx={i}
+        base_docs_link={base_docs_link}
         student={student}
         accordionKeys={this.state.accordionKeys}
         singleExpandtHandler={this.singleExpandtHandler}
         role={this.props.user.role}
         user={this.props.user}
-        documentslist2={this.props.documentslist2}
-        documentslist={this.props.documentslist}
         onDownloadFilefromstudent={this.onDownloadFilefromstudent}
         SubmitGeneralFile={this.SubmitGeneralFile}
         onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
@@ -377,13 +380,10 @@ class BaseDocuments extends React.Component {
         <BaseDocument_StudentView
           key={i}
           idx={i}
+          base_docs_link={base_docs_link}
           student={student}
-          accordionKeys={this.state.accordionKeys}
-          singleExpandtHandler={this.singleExpandtHandler}
           role={this.props.user.role}
           user={this.props.user}
-          documentslist2={this.props.documentslist2}
-          documentslist={this.props.documentslist}
           onDownloadFilefromstudent={this.onDownloadFilefromstudent}
           SubmitGeneralFile={this.SubmitGeneralFile}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
@@ -401,12 +401,12 @@ class BaseDocuments extends React.Component {
       <Aux>
         {/* <Row className="sticky-top"> */}
         <Row>
-          <Card className="mb-0 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header as="h5">Base Documents</Card.Header>{' '}
-            {this.props.user.role === 'Admin' ||
-            this.props.user.role === 'Agent' ||
-            this.props.user.role === 'Editor' ? (
-              // <Card bg={'dark'} text={'light'}>
+          {this.props.user.role === 'Admin' ||
+          this.props.user.role === 'Agent' ||
+          this.props.user.role === 'Editor' ? (
+            // <Card bg={'dark'} text={'light'}>
+            <Card className="mb-0 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header as="h5">Base Documents</Card.Header>{' '}
               <Table
                 size="sm"
                 responsive
@@ -431,11 +431,11 @@ class BaseDocuments extends React.Component {
                 </thead>
                 <tbody>{student_profile}</tbody>
               </Table>
-            ) : (
-              // </Card>
-              <>{student_profile_student_view}</>
-            )}
-          </Card>
+            </Card>
+          ) : (
+            // </Card>
+            <>{student_profile_student_view}</>
+          )}
         </Row>
         <Row>
           {!isLoaded && (

@@ -174,6 +174,66 @@ const getStudents = asyncHandler(async (req, res) => {
   }
 });
 
+const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
+  const { user } = req;
+  if (user.role === Role.Admin) {
+    const students = await Student.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('applications.programId agents editors')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      )
+      .lean();
+    const base_docs_link = await Basedocumentationslink.find();
+    res.status(200).send({ success: true, data: students, base_docs_link });
+  } else if (user.role === Role.Agent) {
+    const students = await Student.find({
+      _id: { $in: user.students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('applications.programId agents editors')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      )
+      .lean()
+      .exec();
+    // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
+    // console.log(students[0].applications[0].programId); // looks ok!
+    // console.log(students[0].applications[0].programId.school);
+    const base_docs_link = await Basedocumentationslink.find();
+
+    res.status(200).send({ success: true, data: students, base_docs_link });
+  } else if (user.role === Role.Editor) {
+    const students = await Student.find({
+      _id: { $in: user.students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('applications.programId agents editors')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      );
+    const base_docs_link = await Basedocumentationslink.find();
+
+    res.status(200).send({ success: true, data: students, base_docs_link });
+  } else if (user.role === Role.Student) {
+    const student = await Student.findById(user._id)
+      .populate('applications.programId')
+      .populate('agents editors', '-students')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      )
+      // .populate('editors', '-students')
+      .lean()
+      .exec();
+    const base_docs_link = await Basedocumentationslink.find();
+    res.status(200).send({ success: true, data: [student], base_docs_link });
+  } else {
+    // Guest
+    res.status(200).send({ success: true, data: [user] });
+  }
+});
+
 const getArchivStudent = asyncHandler(async (req, res) => {
   const {
     user,
@@ -728,6 +788,7 @@ module.exports = {
   updateBaseDocsDocumentationLink,
   getAllStudents,
   getStudents,
+  getStudentsAndDocLinks,
   getArchivStudent,
   getArchivStudents,
   updateStudentsArchivStatus,

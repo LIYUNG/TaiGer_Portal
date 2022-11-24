@@ -12,6 +12,7 @@ const {
   getStudent,
   getStudentAndDocLinks,
   updateBaseDocsDocumentationLink,
+  getStudentsAndDocLinks,
   getStudents,
   getAllStudents,
   getArchivStudent,
@@ -54,6 +55,13 @@ router
 router
   .route('/doc-links')
   .post(permit(Role.Admin, Role.Agent), updateBaseDocsDocumentationLink);
+
+router
+  .route('/doc-links')
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getStudentsAndDocLinks
+  );
 
 router
   .route('/doc-links/:studentId')

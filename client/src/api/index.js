@@ -80,6 +80,9 @@ export const uploadforstudent = (category, studentId, data) =>
 
 export const getStudentAndDocLinks = (studentId) =>
   request.get(`/api/students/doc-links/${studentId}`);
+  
+export const getStudentsAndDocLinks = () =>
+  request.get(`/api/students/doc-links`);
 
 export const updateBaseDocsDocumentationLink = (link, key) =>
   request.post(`/api/students/doc-links`, { link, key });

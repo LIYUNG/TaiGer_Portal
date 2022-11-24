@@ -299,6 +299,7 @@ class SingleStudentPage extends React.Component {
       object_date_init[keys2[i]] = '';
       object_time_init[keys2[i]] = '';
     }
+    // TODO: what if this.state.student.profile[i].name key not in base_docs_link[i].key?
     if (base_docs_link) {
       for (let i = 0; i < base_docs_link.length; i++) {
         object_init[base_docs_link[i].key].link = base_docs_link[i].link;

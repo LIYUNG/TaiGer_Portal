@@ -10,6 +10,8 @@ const { Role, Student } = require('../models/User');
 
 const {
   getStudent,
+  getStudentAndDocLinks,
+  updateBaseDocsDocumentationLink,
   getStudents,
   getAllStudents,
   getArchivStudent,
@@ -48,6 +50,16 @@ router
   .get(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getAllStudents
+  );
+router
+  .route('/doc-links')
+  .post(permit(Role.Admin, Role.Agent), updateBaseDocsDocumentationLink);
+
+router
+  .route('/doc-links/:studentId')
+  .get(
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getStudentAndDocLinks
   );
 
 router
@@ -100,7 +112,6 @@ router
     saveVPDFilePath
   )
   .delete(permit(Role.Admin, Role.Agent, Role.Student), deleteVPDFile);
-
 
 router
   .route('/:studentId/applications/:program_id')

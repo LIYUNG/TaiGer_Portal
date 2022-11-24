@@ -60,9 +60,9 @@ class Settings extends React.Component {
             updateconfirmed: true
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
+          if (resp.status === 403 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
+          } else if (resp.status === 401) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true
@@ -109,9 +109,9 @@ class Settings extends React.Component {
             updatecredentialconfirmed: true
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
+          if (resp.status === 403 || resp.status === 500) {
             this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
+          } else if (resp.status === 401) {
             this.setState({
               isLoaded: true,
               unauthorizederror: true
@@ -139,6 +139,11 @@ class Settings extends React.Component {
       updateconfirmed: false
     });
   };
+  onHideUnauthorizederror = () => {
+    this.setState({
+      unauthorizederror: false
+    });
+  };
   setmodalhide = () => {
     window.location.reload(true);
     // this.setState({
@@ -163,7 +168,7 @@ class Settings extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { timeouterror, isLoaded } = this.state;
 
     if (timeouterror) {
       return (
@@ -172,13 +177,7 @@ class Settings extends React.Component {
         </div>
       );
     }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
+
     const style = {
       position: 'fixed',
       top: '40%',
@@ -386,6 +385,25 @@ class Settings extends React.Component {
           </Modal.Footer>
         </Modal>
 
+        <Modal
+          show={this.state.unauthorizederror}
+          onHide={this.onHideUnauthorizederror}
+          size="sm"
+          bg={"danger"}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Your current passwords are wrong. Please enter correct the current
+            passwords.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={(e) => this.onHideUnauthorizederror(e)}>Ok</Button>
+          </Modal.Footer>
+        </Modal>
         <Modal
           show={this.state.updatecredentialconfirmed}
           onHide={this.onHideCredential}

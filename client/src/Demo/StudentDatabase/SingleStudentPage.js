@@ -11,11 +11,12 @@ import {
   Spinner
 } from 'react-bootstrap';
 import {
-  getStudent,
+  getStudentAndDocLinks,
   updateProfileDocumentStatus,
   downloadProfile,
   uploadforstudent,
-  deleteFile
+  deleteFile,
+  updateBaseDocsDocumentationLink
 } from '../../api';
 import { Link } from 'react-router-dom';
 import ButtonSetUploaded from '../AgentCenter/ButtonSetUploaded';
@@ -38,19 +39,21 @@ class SingleStudentPage extends React.Component {
   state = {
     isLoaded: false,
     student: null,
+    base_docs_link: null,
     success: false,
     timeouterror: null,
     unauthorizederror: null,
     error: null
   };
   componentDidMount() {
-    getStudent(this.props.match.params.studentId).then(
+    getStudentAndDocLinks(this.props.match.params.studentId).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { base_docs_link, data, success } = resp.data;
         if (success) {
           this.setState({
             isLoaded: true,
             student: data,
+            base_docs_link,
             success: success
           });
         } else {
@@ -183,6 +186,28 @@ class SingleStudentPage extends React.Component {
       }
     );
   }
+  updateDocLink = (link, key) => {
+    updateBaseDocsDocumentationLink(link, key).then(
+      (resp) => {
+        const { base_docs_link, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            base_docs_link,
+            success: success
+          }));
+        } else {
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {}
+    );
+  };
 
   onDeleteFilefromstudent = (category, student_id) => {
     // e.preventDefault();
@@ -227,7 +252,8 @@ class SingleStudentPage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { unauthorizederror, base_docs_link, timeouterror, isLoaded } =
+      this.state;
 
     if (timeouterror) {
       return (
@@ -258,6 +284,7 @@ class SingleStudentPage extends React.Component {
         </div>
       );
     }
+
     const deleteStyle = 'danger';
     const graoutStyle = 'light';
     let value2 = Object.values(window.profile_list);
@@ -267,24 +294,28 @@ class SingleStudentPage extends React.Component {
     let object_date_init = {};
     let object_time_init = {};
     for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = 'missing';
+      object_init[keys2[i]] = { status: 'missing', link: '' };
       object_message[keys2[i]] = '';
       object_date_init[keys2[i]] = '';
       object_time_init[keys2[i]] = '';
     }
-
+    if (base_docs_link) {
+      for (let i = 0; i < base_docs_link.length; i++) {
+        object_init[base_docs_link[i].key].link = base_docs_link[i].link;
+      }
+    }
     if (this.state.student.profile) {
       for (let i = 0; i < this.state.student.profile.length; i++) {
         if (this.state.student.profile[i].status === 'uploaded') {
-          object_init[this.state.student.profile[i].name] = 'uploaded';
+          object_init[this.state.student.profile[i].name].status = 'uploaded';
         } else if (this.state.student.profile[i].status === 'accepted') {
-          object_init[this.state.student.profile[i].name] = 'accepted';
+          object_init[this.state.student.profile[i].name].status = 'accepted';
         } else if (this.state.student.profile[i].status === 'rejected') {
-          object_init[this.state.student.profile[i].name] = 'rejected';
+          object_init[this.state.student.profile[i].name].status = 'rejected';
         } else if (this.state.student.profile[i].status === 'notneeded') {
-          object_init[this.state.student.profile[i].name] = 'notneeded';
+          object_init[this.state.student.profile[i].name].status = 'notneeded';
         } else if (this.state.student.profile[i].status === 'missing') {
-          object_init[this.state.student.profile[i].name] = 'missing';
+          object_init[this.state.student.profile[i].name].status = 'missing';
         }
         object_message[this.state.student.profile[i].name] = this.state.student
           .profile[i].feedback
@@ -301,9 +332,11 @@ class SingleStudentPage extends React.Component {
     }
     var documentlist22;
     documentlist22 = keys2.map((k, i) =>
-      object_init[k] === 'uploaded' ? (
+      object_init[k].status === 'uploaded' ? (
         <ButtonSetUploaded
           key={i + 1}
+          updateDocLink={this.updateDocLink}
+          link={object_init[k].link}
           role={this.props.user.role}
           isLoaded={this.state.isLoaded}
           docName={value2[i]}
@@ -316,9 +349,11 @@ class SingleStudentPage extends React.Component {
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           SubmitGeneralFile={this.props.SubmitGeneralFile}
         />
-      ) : object_init[k] === 'accepted' ? (
+      ) : object_init[k].status === 'accepted' ? (
         <ButtonSetAccepted
           key={i + 1}
+          updateDocLink={this.updateDocLink}
+          link={object_init[k].link}
           role={this.props.user.role}
           isLoaded={this.state.isLoaded}
           docName={value2[i]}
@@ -332,9 +367,11 @@ class SingleStudentPage extends React.Component {
           SubmitGeneralFile={this.props.SubmitGeneralFile}
           deleteFileWarningModel={this.props.deleteFileWarningModel}
         />
-      ) : object_init[k] === 'rejected' ? (
+      ) : object_init[k].status === 'rejected' ? (
         <ButtonSetRejected
           key={i + 1}
+          updateDocLink={this.updateDocLink}
+          link={object_init[k].link}
           role={this.props.user.role}
           isLoaded={this.state.isLoaded}
           docName={value2[i]}
@@ -349,12 +386,14 @@ class SingleStudentPage extends React.Component {
           SubmitGeneralFile={this.props.SubmitGeneralFile}
           deleteFileWarningModel={this.props.deleteFileWarningModel}
         />
-      ) : object_init[k] === 'notneeded' ? (
+      ) : object_init[k].status === 'notneeded' ? (
         (this.props.user.role === 'Admin' ||
           this.props.user.role === 'Agent' ||
           this.props.user.role === 'Edior') && (
           <ButtonSetNotNeeded
             key={i + 1}
+            updateDocLink={this.updateDocLink}
+            link={object_init[k].link}
             role={this.props.user.role}
             isLoaded={this.state.isLoaded}
             docName={value2[i]}
@@ -373,6 +412,8 @@ class SingleStudentPage extends React.Component {
       ) : (
         <ButtonSetMissing
           key={i + 1}
+          updateDocLink={this.updateDocLink}
+          link={object_init[k].link}
           role={this.props.user.role}
           isLoaded={this.state.isLoaded}
           docName={value2[i]}

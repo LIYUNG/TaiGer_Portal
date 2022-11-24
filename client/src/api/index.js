@@ -78,6 +78,12 @@ export const downloadProfile = (category, studentId) =>
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 
+export const getStudentAndDocLinks = (studentId) =>
+  request.get(`/api/students/doc-links/${studentId}`);
+
+export const updateBaseDocsDocumentationLink = (link, key) =>
+  request.post(`/api/students/doc-links`, { link, key });
+
 export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);
 

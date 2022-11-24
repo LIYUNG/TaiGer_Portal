@@ -171,6 +171,23 @@ window.checklist = {
   visa_instruction: 'Visa Instruction'
 };
 
+window.profile_wtih_doc_link_list = {
+  High_School_Diploma: { name: 'High School Diploma', link: '' },
+  High_School_Transcript: { name: 'High School Transcript', link: '' },
+  University_Entrance_Examination_GSAT: { name: 'GSAT/SAT (學測)', link: '' },
+  Bachelor_Certificate: { name: 'Bachelor Certificate', link: '' },
+  Bachelor_Transcript: { name: 'Bachelor Transcript', link: '' },
+  Englisch_Certificate: { name: 'TOEFL or IELTS', link: '' },
+  German_Certificate: { name: 'TestDaF or Goethe B2/C1', link: '' },
+  GREGMAT: { name: 'GRE or GMAT', link: '' },
+  ECTS_Conversion: { name: 'ECTS Conversion', link: '' },
+  Course_Description: { name: 'Course Description', link: '' },
+  Internship: { name: 'Internship Certificate', link: '' },
+  Employment_Certificate: { name: 'Employment Certificate', link: '' },
+  Passport: { name: 'Passport Copy', link: '' },
+  Others: { name: 'Others', link: '' }
+};
+
 window.profile_list = {
   High_School_Diploma: 'High School Diploma',
   High_School_Transcript: 'High School Transcript',

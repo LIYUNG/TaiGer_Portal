@@ -18,10 +18,10 @@ const {
   updateAcademicBackground,
   updateLanguageSkill,
   updateApplicationPreferenceSkill,
-  updatePersonalData,
-  updateCredentials
+  updatePersonalData
 } = require('../controllers/files');
 
+const { updateCredentials } = require('../controllers/account');
 const { localAuth } = require('../middlewares/auth');
 
 const router = Router();

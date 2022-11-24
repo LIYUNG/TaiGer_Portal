@@ -4,6 +4,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
+const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const logger = require('../services/logger');
 const aws = require('aws-sdk');
 
@@ -50,6 +51,61 @@ const getStudent = asyncHandler(async (req, res) => {
     )
     .lean();
   res.status(200).send({ success: true, data: student });
+});
+
+const getStudentAndDocLinks = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId }
+  } = req;
+  if (user.role === Role.Student || user.role === Role.Guest) {
+    const student = await Student.findById(user._id)
+      .populate('applications.programId agents editors')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      )
+      .lean();
+    // const base_docs_link = '';
+    const base_docs_link = await Basedocumentationslink.find();
+    return res
+      .status(200)
+      .send({ success: true, data: student, base_docs_link });
+  }
+  const student = await Student.findById(studentId)
+    .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+    )
+    .lean();
+  // const base_docs_link = '';
+  const base_docs_link = await Basedocumentationslink.find();
+  res.status(200).send({ success: true, data: student, base_docs_link });
+});
+
+const updateBaseDocsDocumentationLink = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId }
+  } = req;
+  const { link, key } = req.body;
+  // TODO: if not in database, then create one
+  // otherwise: update the existing one.
+  let base_docs_link = await Basedocumentationslink.findOne({ key });
+  if (!base_docs_link) {
+    base_docs_link = await Basedocumentationslink.create({
+      key,
+      link,
+      updatedAt: new Date()
+    });
+  } else {
+    base_docs_link.link = link;
+    base_docs_link.updatedAt = new Date();
+    await base_docs_link.save();
+  }
+  const updated_base_docs_link = await Basedocumentationslink.find({});
+  res
+    .status(200)
+    .send({ success: true, base_docs_link: updated_base_docs_link });
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
@@ -668,6 +724,8 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   getStudent,
+  getStudentAndDocLinks,
+  updateBaseDocsDocumentationLink,
   getAllStudents,
   getStudents,
   getArchivStudent,

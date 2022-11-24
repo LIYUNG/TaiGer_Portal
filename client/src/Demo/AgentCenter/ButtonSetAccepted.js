@@ -7,6 +7,7 @@ import { FiExternalLink } from 'react-icons/fi';
 class ButtonSetAccepted extends React.Component {
   state = {
     student: this.props.student,
+    link: this.props.link,
     student_id: '',
     category: '',
     docName: '',
@@ -18,7 +19,8 @@ class ButtonSetAccepted extends React.Component {
     CommentModel: false,
     rejectProfileFileModel: false,
     acceptProfileFileModel: false,
-    baseDocsflagOffcanvas: false
+    baseDocsflagOffcanvas: false,
+    baseDocsflagOffcanvasButtonDisable: false
   };
 
   closeOffcanvasWindow = () => {
@@ -104,6 +106,31 @@ class ButtonSetAccepted extends React.Component {
       this.state.feedback
     );
   };
+
+  updateDocLink = (e) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      baseDocsflagOffcanvasButtonDisable: true
+    }));
+    this.props.updateDocLink(this.state.link, this.props.k);
+    this.setState((state) => ({
+      ...state,
+      baseDocsflagOffcanvasButtonDisable: false,
+      baseDocsflagOffcanvas: false
+    }));
+  };
+
+  onChangeURL = (e) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    const url_temp = e.target.value;
+    this.setState((state) => ({
+      ...state,
+      link: url_temp
+    }));
+  };
+
   render() {
     const deleteStyle = 'danger';
     // const graoutStyle = 'light';
@@ -119,11 +146,24 @@ class ButtonSetAccepted extends React.Component {
         </td>
         <td>
           {this.props.docName}
-          <FiExternalLink
-            className="mx-1 mb-1"
-            style={{ cursor: 'pointer' }}
-            onClick={this.openOffcanvasWindow}
-          />
+          <a
+            href={
+              this.state.link && this.state.link != '' ? this.state.link : '/'
+            }
+            target="_blank"
+            className="text-info"
+          >
+            <FiExternalLink
+              className="mx-1 mb-1"
+              style={{ cursor: 'pointer' }}
+            />
+          </a>
+          {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
+            <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
+              [Edit]
+            </a>
+          )}
+
           {' - '}
           {this.props.date}
           {' - '}
@@ -346,13 +386,26 @@ class ButtonSetAccepted extends React.Component {
         <Offcanvas
           show={this.state.baseDocsflagOffcanvas}
           onHide={this.closeOffcanvasWindow}
-          placement='end'
+          placement="end"
         >
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Information</Offcanvas.Title>
+            <Offcanvas.Title>Edit</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            Here is the documentation or editing link.
+            <Form.Group className="mb-3">
+              <Form.Label>Documentation Link</Form.Label>
+              <Form.Control
+                placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
+                defaultValue={this.state.link}
+                onChange={(e) => this.onChangeURL(e)}
+              />
+            </Form.Group>
+            <Button
+              onClick={(e) => this.updateDocLink(e)}
+              disabled={this.state.baseDocsflagOffcanvasButtonDisable}
+            >
+              Save
+            </Button>
           </Offcanvas.Body>
         </Offcanvas>
       </>

@@ -25,7 +25,7 @@ class BaseDocument_StudentView extends React.Component {
     // const deleteStyle = "danger";
     // const graoutStyle = "light";
     let value2 = Object.values(window.profile_list);
-    let keys2 = Object.keys(window.profile_list);
+    let keys2 = Object.keys(window.profile_wtih_doc_link_list);
     let object_init = {};
     let object_message = {};
     let object_date_init = {};

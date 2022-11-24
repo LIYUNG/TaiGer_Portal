@@ -84,6 +84,21 @@ export const convertDate = (date) => {
   return dat + ', ' + time;
 };
 
+export const split_header = (header_name) => {
+  var rest = header_name.substring(0, header_name.lastIndexOf(' ') + 1);
+  var last = header_name.substring(
+    header_name.lastIndexOf(' ') + 1,
+    header_name.length
+  );
+  return (
+    <>
+      {rest}
+      <br />
+      {last}
+    </>
+  );
+};
+
 export const stringToColor = (str) => {
   let hash = 0;
   let i;

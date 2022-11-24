@@ -264,7 +264,9 @@ class AgentTasks extends React.Component {
               </Link>
             </td>
             <td>
-              {this.props.student.firstname} {this.props.student.lastname}{' '}
+              <b>
+                {this.props.student.firstname} {this.props.student.lastname}
+              </b>{' '}
               uploaded new files
             </td>
             <td></td>

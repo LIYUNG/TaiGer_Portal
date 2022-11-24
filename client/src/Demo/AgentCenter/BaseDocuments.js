@@ -4,7 +4,7 @@ import Aux from '../../hoc/_Aux';
 // import DEMO from '../../store/constant';
 import StudentBaseDocumentsStatus from './StudentBaseDocumentsStatus';
 import BaseDocument_StudentView from './BaseDocument_StudentView';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
+import { SYMBOL_EXPLANATION, split_header } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 
@@ -397,6 +397,7 @@ class BaseDocuments extends React.Component {
         />
       )
     );
+
     return (
       <Aux>
         {/* <Row className="sticky-top"> */}
@@ -424,7 +425,7 @@ class BaseDocuments extends React.Component {
                     </>
                     {profile_list_keys.map((doc_name, index) => (
                       <th key={index} style={style2}>
-                        {doc_name}
+                        {split_header(doc_name)}
                       </th>
                     ))}
                   </tr>

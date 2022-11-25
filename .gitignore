@@ -2,7 +2,8 @@
 
 # generated file
 .VSCodeCounter
-/api/python/TaiGerTranscriptAnalyzerJS/__pycache__/*
+/api/python/TaiGerTranscriptAnalyzerJS/__pycache__
+/api/python/TaiGerTranscriptAnalyzerJS/database/*/__pycache__
 # dependencies
 node_modules
 /api/.pnp

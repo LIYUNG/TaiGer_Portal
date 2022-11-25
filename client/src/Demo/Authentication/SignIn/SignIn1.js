@@ -35,6 +35,10 @@ export default function Signin1({ setUserdata }) {
         } else if (resp.status === 403) {
           setReactivateAccount(true);
           setButtondisable(false);
+        } else if (resp.status === 429) {
+          setLoginsuccess(false);
+          alert('You try too many times. Please try 1 hour later.');
+          setButtondisable(false);
         } else {
           setButtondisable(false);
           setUserdata((state) => ({
@@ -83,6 +87,7 @@ export default function Signin1({ setUserdata }) {
   const onButtonClick = async (e, buttondisable) => {
     e.preventDefault();
     setButtondisable(buttondisable);
+    setLoginsuccess(true);
     handleSubmit(e);
   };
 

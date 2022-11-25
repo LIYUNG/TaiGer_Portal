@@ -1,5 +1,13 @@
 const { Router } = require('express');
-
+const {
+  GeneralGETRequestRateLimiter,
+  GeneralPUTRequestRateLimiter,
+  DownloadTemplateRateLimiter,
+  RemoveNotificationRateLimiter,
+  updateCredentialRateLimiter,
+  updatePersonalInformationRateLimiter,
+  TranscriptAnalyserRateLimiter
+} = require('../middlewares/rate_limiter');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const { TemplatefileUpload } = require('../middlewares/file-upload');
@@ -30,38 +38,60 @@ router.use(protect);
 
 router
   .route('/files')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMyfiles);
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getMyfiles
+  );
 
 router
   .route('/files/template')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getTemplates);
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getTemplates
+  );
 
 router
   .route('/files/template/:category_name')
   .post(permit(Role.Admin), TemplatefileUpload, uploadTemplate)
   .delete(permit(Role.Admin), deleteTemplate)
   .get(
+    DownloadTemplateRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadTemplateFile
   );
 
 router
   .route('/applications/:studentId')
-  .put(permit(Role.Admin, Role.Agent, Role.Student), UpdateStudentApplications);
+  .put(
+    GeneralPUTRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Student),
+    UpdateStudentApplications
+  );
 
 // TaiGer Transcript Analyser:
 router
   .route('/transcript/:studentId/:category')
-  .post(permit(Role.Admin, Role.Agent, Role.Editor), processTranscript_test);
+  .post(
+    TranscriptAnalyserRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor),
+    processTranscript_test
+  );
 
 router
   .route('/transcript/:studentId')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), downloadXLSX);
+  .get(
+    DownloadTemplateRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    downloadXLSX
+  );
 
 // Academic Survey for Students
 router
   .route('/notifications')
   .post(
+    RemoveNotificationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     removeNotification
   );
@@ -70,6 +100,7 @@ router
 router
   .route('/survey')
   .get(
+    updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     getMyAcademicBackground
   );
@@ -77,6 +108,7 @@ router
 router
   .route('/survey/university/:studentId')
   .post(
+    updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateAcademicBackground
   );
@@ -84,6 +116,7 @@ router
 router
   .route('/survey/language/:studentId')
   .post(
+    updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateLanguageSkill
   );
@@ -91,6 +124,7 @@ router
 router
   .route('/survey/preferences/:studentId')
   .post(
+    updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateApplicationPreferenceSkill
   );
@@ -98,12 +132,14 @@ router
 router
   .route('/profile')
   .post(
+    updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updatePersonalData
   );
 router
   .route('/credentials')
   .post(
+    updateCredentialRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     localAuth,
     updateCredentials

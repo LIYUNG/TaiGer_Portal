@@ -1,4 +1,9 @@
 const { Router } = require('express');
+const {
+  loginRateLimiter,
+  registerRateLimiter,
+  GeneralGETRequestRateLimiter
+} = require('../middlewares/rate_limiter');
 
 const { localAuth, protect } = require('../middlewares/auth');
 const {
@@ -14,20 +19,20 @@ const {
 
 const router = Router();
 
-router.post('/signup', signup);
+router.post('/signup', registerRateLimiter, signup);
 
-router.post('/login', localAuth, login);
+router.post('/login', loginRateLimiter, localAuth, login);
 
-router.get('/logout', logout);
+router.get('/logout', GeneralGETRequestRateLimiter, logout);
 
-router.get('/verify', protect, verify); // check current user
+router.get('/verify', GeneralGETRequestRateLimiter, protect, verify); // check current user
 
-router.post('/activation', activateAccount);
+router.post('/activation', loginRateLimiter, activateAccount);
 
-router.post('/resend-activation', resendActivation);
+router.post('/resend-activation', loginRateLimiter, resendActivation);
 
-router.post('/forgot-password', forgotPassword);
+router.post('/forgot-password', loginRateLimiter, forgotPassword);
 
-router.post('/reset-password', resetPassword);
+router.post('/reset-password', loginRateLimiter, resetPassword);
 
 module.exports = router;

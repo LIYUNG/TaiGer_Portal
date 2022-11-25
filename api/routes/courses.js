@@ -1,4 +1,9 @@
 const { Router } = require('express');
+const {
+  loginRateLimiter,
+  GeneralPOSTRequestRateLimiter,
+  GeneralGETRequestRateLimiter
+} = require('../middlewares/rate_limiter');
 const { protect, permit, prohibit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
 
@@ -15,9 +20,15 @@ router.use(protect);
 
 router
   .route('/:student_id')
-  .post(permit(Role.Admin, Role.Agent, Role.Student, Role.Guest), createCourse);
+  .post(
+    permit(Role.Admin, Role.Agent, Role.Student, Role.Guest),
+    GeneralPOSTRequestRateLimiter,
+    createCourse
+  );
 
-router.route('/:student_id').get(prohibit(Role.Guest), getCourse);
+router
+  .route('/:student_id')
+  .get(prohibit(Role.Guest), GeneralGETRequestRateLimiter, getCourse);
 
 // router
 //   .route('/:id')

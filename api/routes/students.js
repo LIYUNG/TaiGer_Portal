@@ -1,6 +1,10 @@
 const { Router } = require('express');
-
-const { ErrorResponse } = require('../common/errors');
+const {
+  GeneralPUTRequestRateLimiter,
+  GeneralPOSTRequestRateLimiter,
+  GeneralDELETERequestRateLimiter,
+  GeneralGETRequestRateLimiter
+} = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 const {
   ProfilefileUpload,
@@ -42,6 +46,7 @@ router.use(protect);
 router
   .route('/')
   .get(
+    GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     getStudents
   );
@@ -49,16 +54,22 @@ router
 router
   .route('/all')
   .get(
+    GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getAllStudents
   );
 router
   .route('/doc-links')
-  .post(permit(Role.Admin, Role.Agent), updateBaseDocsDocumentationLink);
+  .post(
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Agent),
+    updateBaseDocsDocumentationLink
+  );
 
 router
   .route('/doc-links')
   .get(
+    GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getStudentsAndDocLinks
   );
@@ -66,6 +77,7 @@ router
 router
   .route('/doc-links/:studentId')
   .get(
+    GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getStudentAndDocLinks
   );
@@ -73,53 +85,85 @@ router
 router
   .route('/archiv')
   .get(
+    GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getArchivStudents
   );
 
 router
   .route('/archiv/:studentId')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor), getArchivStudent)
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor),
+    getArchivStudent
+  )
   .post(
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     updateStudentsArchivStatus
   );
 router
   .route('/:studentId')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getStudent);
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getStudent
+  );
 
 router
   .route('/:studentId/agents')
-  .post(permit(Role.Admin), assignAgentToStudent);
+  .post(
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin),
+    assignAgentToStudent
+  );
 
 router
   .route('/:studentId/editors')
-  .post(permit(Role.Admin), assignEditorToStudent);
+  .post(
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin),
+    assignEditorToStudent
+  );
 
 router
   .route('/:studentId/applications')
-  .post(permit(Role.Admin, Role.Agent, Role.Student), createApplication);
+  .post(
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Student),
+    createApplication
+  );
 
 router
   .route('/:studentId/:program_id')
-  .put(permit(Role.Admin, Role.Agent, Role.Student), ToggleProgramStatus);
+  .put(
+    GeneralPUTRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Student),
+    ToggleProgramStatus
+  );
 
 router
   .route('/:studentId/vpd/:program_id')
   .put(
+    GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     updateVPDFileNecessity
   )
   .get(
+    GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     downloadVPDFile
   )
   .post(
+    GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     VPDfileUpload,
     saveVPDFilePath
   )
-  .delete(permit(Role.Admin, Role.Agent, Role.Student), deleteVPDFile);
+  .delete(
+    GeneralDELETERequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Student),
+    deleteVPDFile
+  );
 
 router
   .route('/:studentId/applications/:program_id')
@@ -128,17 +172,27 @@ router
 router
   .route('/:studentId/files/:category')
   .get(
+    GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     downloadProfileFile
   )
   .post(
+    GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     ProfilefileUpload,
     saveProfileFilePath
   )
-  .delete(permit(Role.Admin, Role.Agent, Role.Student), deleteProfileFile);
+  .delete(
+    GeneralDELETERequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Student),
+    deleteProfileFile
+  );
 
 router
   .route('/:studentId/:category/status')
-  .post(permit(Role.Admin, Role.Agent), updateProfileDocumentStatus);
+  .post(
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Agent),
+    updateProfileDocumentStatus
+  );
 module.exports = router;

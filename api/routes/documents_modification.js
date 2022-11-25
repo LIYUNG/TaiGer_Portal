@@ -1,5 +1,14 @@
 const { Router } = require('express');
-
+const {
+  getMessagesRateLimiter,
+  postMessagesRateLimiter,
+  postMessagesImageRateLimiter,
+  GeneralPOSTRequestRateLimiter,
+  SetStatusMessagesThreadRateLimiter,
+  GeneralPUTRequestRateLimiter,
+  GeneralDELETERequestRateLimiter,
+  getMessageFileRateLimiter
+} = require('../middlewares/rate_limiter');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const {
@@ -27,6 +36,7 @@ router.use(protect);
 router
   .route('/overview')
   .get(
+    getMessagesRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getCVMLRLOverview
   );
@@ -34,6 +44,7 @@ router
 router
   .route('/init/general/:studentId/:document_category')
   .post(
+    GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initGeneralMessagesThread
   );
@@ -41,6 +52,7 @@ router
 router
   .route('/init/application/:studentId/:program_id/:document_category')
   .post(
+    GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initApplicationMessagesThread
   );
@@ -48,38 +60,50 @@ router
 router
   .route('/:messagesThreadId/:studentId')
   .put(
+    SetStatusMessagesThreadRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     SetStatusMessagesThread
   );
 
-router.route('/:messagesThreadId/:studentId').post(
-  permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-  MessagesThreadUpload,
-  // upload,
-  postMessages
-);
+router
+  .route('/:messagesThreadId/:studentId')
+  .post(
+    postMessagesRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    MessagesThreadUpload,
+    postMessages
+  );
 
-router.route('/image/:messagesThreadId/:studentId').post(
-  permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-  MessagesImageThreadUpload,
-  // upload,
-  postImageInThread
-);
+router
+  .route('/image/:messagesThreadId/:studentId')
+  .post(
+    postMessagesImageRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    MessagesImageThreadUpload,
+    postImageInThread
+  );
 
 router
   .route('/:messagesThreadId')
-  .get(permit(Role.Admin, Role.Agent, Role.Editor, Role.Student), getMessages);
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getMessages
+  );
 
 router
   .route('/:messagesThreadId/:studentId')
   .delete(
+    GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     deleteGeneralMessagesThread
   );
 
+// WARNING: strict ratelimiter for S3 file download
 router
   .route('/:messagesThreadId/:messageId/:fileId')
   .get(
+    getMessageFileRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getMessageFile
   );
@@ -87,6 +111,7 @@ router
 router
   .route('/:messagesThreadId/:program_id/:studentId')
   .delete(
+    GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     deleteProgramSpecificMessagesThread
   );

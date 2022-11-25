@@ -13,7 +13,7 @@ const programsRouter = require('./programs');
 const docsModiRouter = require('./documents_modification');
 const tasksRouter = require('./tasks');
 const admissionsRouter = require('./admissions');
-const interviewsRouter = require('./interviews');
+// const interviewsRouter = require('./interviews');
 
 const router = (app) => {
   const apiRouter = Router();
@@ -31,7 +31,7 @@ const router = (app) => {
   apiRouter.use('/document-threads', docsModiRouter);
   apiRouter.use('/tasks', tasksRouter);
   apiRouter.use('/admissions', admissionsRouter);
-  apiRouter.use('/interviews', interviewsRouter);
+  // apiRouter.use('/interviews', interviewsRouter);
 
   app.use('/api', apiRouter);
   app.use('/auth', authRouter);

@@ -1,13 +1,26 @@
 # TaiGer Portal
 The project of TaiGer portal will increase the efficieny of files exchange and communication between editor, agent and students. With a great overview, agent and editor can follow up the application process of each student. Furthermore, it open a bunch of opportunities to extend the service to students like transcript-analysis. 
 
-## Technology
+## Technology Overview
 TaiGer portal is implemented by JavaScript framework ExpressJS as backend to serve API requsts and ReactJS as frontend. MongoDB stores all user data. Special service like Transcript-Analysis is implemented in Python. 
+
+### Backend
+- Rate Limiter
+- JWT cookie authentication
+- AWS S3 Bucket for file, image, docs, pdf, xlsx storage
+- MongoDB as database for program list, user information, transcript table data.
+- Keywords-based transcript analyser implemented in Python
+
+### Frontend
+- React JS
+- Mostly React Bootstrap Components and fews MUI Components
 
 ## Design Demo Screenshots
 ## Individual Student Data View
 - Download/Delete/Giving Feedback of Student's uploaded files
+- Uni Assist document tracking.
 - For students, they can upload their pdf in this page.
+- Course analyse implemented
 
 ![](/screenshot/demo1.png)
 ## Agent's Overview of Students' Uploaded Documents And Their Status
@@ -21,7 +34,7 @@ TaiGer portal is implemented by JavaScript framework ExpressJS as backend to ser
 
 ![](/screenshot/editorprogress.png)
 ## FIles and Information Exchange
-- Editor's files/information exchange
+- Each document modification discussion thread status overview
 - Files naming convention is implemented, i.e. < user_name >_< file_name >_< version >.pdf
 
 ![](/screenshot/editor.png)
@@ -32,11 +45,12 @@ TaiGer portal is implemented by JavaScript framework ExpressJS as backend to ser
 
 ![](/screenshot/Survey.png)
 
-## Student's Background and Program Conflict Overview
+## Student's Progress, Background and Program Conflict Overview Dashboard
 - The same programs that different students want to apply are listed.
 - Students' background as well as their English/German Certificate is presented. Each student should maintain their current status. 
-
-![](/screenshot/background_conflict.png)
+- Overview of each task for each student.
+  
+![](/screenshot/admin_agent_dashboard.png)
 
 
 # How to use?

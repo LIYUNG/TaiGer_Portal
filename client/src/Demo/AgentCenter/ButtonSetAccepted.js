@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
-// import Offcanvas from 'react-bootstrap/Offcanvas';
+import { BASE_URL } from '../../api/request';
 import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { FiExternalLink } from 'react-icons/fi';
@@ -171,21 +171,17 @@ class ButtonSetAccepted extends React.Component {
         </td>
         <td>
           <Col md>
-            <Form
-              onSubmit={(e) =>
-                this.props.onDownloadFilefromstudent(
-                  e,
-                  this.props.k,
-                  this.props.student_id
-                )
-              }
+            <a
+              href={`${BASE_URL}/api/students/${this.props.student_id.toString()}/files/${
+                this.props.path
+              }`}
+              target="_blank"
             >
-              <Form.Group controlId="exampleForm.ControlSelect1">
-                <Button size="sm" type="submit" title="Download">
-                  <AiOutlineDownload size={16} />
-                </Button>
-              </Form.Group>
-            </Form>
+              <Button size="sm" type="submit" title="Download">
+                <AiOutlineDownload size={16} />
+              </Button>
+              
+            </a>
           </Col>
         </td>
         {this.props.role === 'Editor' ? (

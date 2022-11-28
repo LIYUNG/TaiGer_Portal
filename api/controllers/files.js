@@ -568,7 +568,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
 const downloadProfileFile = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, category }
+    params: { studentId, file_key }
   } = req;
 
   // AWS S3
@@ -580,7 +580,66 @@ const downloadProfileFile = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, 'Invalid student id');
   }
 
-  const document = student.profile.find(({ name }) => name === category);
+  const document = student.profile.find(({ name }) => name === file_key);
+  if (!document) {
+    logger.error('downloadProfileFile: Invalid document name!');
+    throw new ErrorResponse(400, 'Invalid document name');
+  }
+  if (!document.path) {
+    logger.error('downloadProfileFile: File not uploaded yet!');
+    throw new ErrorResponse(400, 'File not uploaded yet');
+  }
+
+  // var fileKey = path.join(UPLOAD_PATH, document.path);
+  let document_split = document.path.replace(/\\/g, '/');
+  document_split = document_split.split('/');
+  const fileKey = document_split[1];
+  let directory = document_split[0];
+  logger.info('Trying to download profile file', fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(fileKey);
+      const fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        logger.error('downloadProfileFile: ', error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
+});
+
+const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, file_key }
+  } = req;
+
+  // AWS S3
+  // download the file via aws s3 here
+  const student =
+    user.role === Role.Student ? user : await Student.findById(studentId);
+  if (!student) {
+    logger.error('downloadProfileFile: Invalid student id!');
+    throw new ErrorResponse(400, 'Invalid student id');
+  }
+
+  const document = student.profile.find((profile) =>
+    profile.path.includes(file_key)
+  );
   if (!document) {
     logger.error('downloadProfileFile: Invalid document name!');
     throw new ErrorResponse(400, 'Invalid document name');
@@ -1298,6 +1357,7 @@ module.exports = {
   saveVPDFilePath,
   downloadVPDFile,
   downloadProfileFile,
+  downloadProfileFileURL,
   downloadTemplateFile,
   updateProfileDocumentStatus,
   UpdateStudentApplications,

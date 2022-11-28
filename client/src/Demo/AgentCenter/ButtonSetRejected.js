@@ -1,17 +1,12 @@
 import React from 'react';
 import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
-import UcFirst from '../../App/components/UcFirst';
-import { IoMdCloudUpload } from 'react-icons/io';
+import { BASE_URL } from '../../api/request';
 import {
   AiOutlineDownload,
-  AiOutlineFieldTime,
   AiFillCloseCircle,
-  AiFillQuestionCircle,
   AiOutlineComment,
   AiOutlineDelete
 } from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
 import { updateProfileDocumentStatus, deleteFile } from '../../api';
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -233,21 +228,16 @@ class ButtonSetRejected extends React.Component {
         </td>
         <td>
           <Col>
-            <Form
-              onSubmit={(e) =>
-                this.props.onDownloadFilefromstudent(
-                  e,
-                  this.props.k,
-                  this.props.student_id
-                )
-              }
+            <a
+              href={`${BASE_URL}/api/students/${this.props.student_id.toString()}/files/${
+                this.props.path
+              }`}
+              target="_blank"
             >
-              <Form.Group controlId="exampleForm.ControlSelect1">
-                <Button size="sm" type="submit" title="Download">
-                  <AiOutlineDownload size={16} />
-                </Button>
-              </Form.Group>
-            </Form>
+              <Button size="sm" type="submit" title="Download">
+                <AiOutlineDownload size={16} />
+              </Button>
+            </a>
           </Col>
         </td>
         {this.props.role === 'Editor' ? (

@@ -145,47 +145,7 @@ class SingleStudentPage extends React.Component {
       }
     );
   };
-  onDownloadFilefromstudent(e, category, id) {
-    e.preventDefault();
-    downloadProfile(category, id).then(
-      (resp) => {
-        // TODO: timeout? success?
-        const actualFileName =
-          resp.headers['content-disposition'].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
 
-        var filetype = actualFileName.split('.'); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === 'pdf') {
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: 'application/pdf' })
-          );
-
-          //Open the URL on new Window
-          window.open(url); //TODO: having a reasonable file name, pdf viewer
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert('The file is not available.');
-      }
-    );
-  }
   updateDocLink = (link, key) => {
     updateBaseDocsDocumentationLink(link, key).then(
       (resp) => {
@@ -294,7 +254,7 @@ class SingleStudentPage extends React.Component {
     let object_date_init = {};
     let object_time_init = {};
     for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = { status: 'missing', link: '' };
+      object_init[keys2[i]] = { status: 'missing', link: '', path: '' };
       object_message[keys2[i]] = '';
       object_date_init[keys2[i]] = '';
       object_time_init[keys2[i]] = '';
@@ -307,12 +267,22 @@ class SingleStudentPage extends React.Component {
     }
     if (this.state.student.profile) {
       for (let i = 0; i < this.state.student.profile.length; i++) {
+        let document_split = this.state.student.profile[i].path.replace(
+          /\\/g,
+          '/'
+        );
         if (this.state.student.profile[i].status === 'uploaded') {
           object_init[this.state.student.profile[i].name].status = 'uploaded';
+          object_init[this.state.student.profile[i].name].path =
+            document_split.split('/')[1];
         } else if (this.state.student.profile[i].status === 'accepted') {
           object_init[this.state.student.profile[i].name].status = 'accepted';
+          object_init[this.state.student.profile[i].name].path =
+            document_split.split('/')[1];
         } else if (this.state.student.profile[i].status === 'rejected') {
           object_init[this.state.student.profile[i].name].status = 'rejected';
+          object_init[this.state.student.profile[i].name].path =
+            document_split.split('/')[1];
         } else if (this.state.student.profile[i].status === 'notneeded') {
           object_init[this.state.student.profile[i].name].status = 'notneeded';
         } else if (this.state.student.profile[i].status === 'missing') {
@@ -338,6 +308,7 @@ class SingleStudentPage extends React.Component {
           key={i + 1}
           updateDocLink={this.updateDocLink}
           link={object_init[k].link}
+          path={object_init[k].path}
           role={this.props.user.role}
           isLoaded={this.state.isLoaded}
           docName={value2[i]}
@@ -345,7 +316,6 @@ class SingleStudentPage extends React.Component {
           time={object_time_init[k]}
           k={k}
           student_id={this.state.student._id}
-          onDownloadFilefromstudent={this.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           SubmitGeneralFile={this.props.SubmitGeneralFile}
@@ -355,6 +325,7 @@ class SingleStudentPage extends React.Component {
           key={i + 1}
           updateDocLink={this.updateDocLink}
           link={object_init[k].link}
+          path={object_init[k].path}
           role={this.props.user.role}
           isLoaded={this.state.isLoaded}
           docName={value2[i]}
@@ -362,7 +333,6 @@ class SingleStudentPage extends React.Component {
           time={object_time_init[k]}
           k={k}
           student_id={this.state.student._id}
-          onDownloadFilefromstudent={this.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           SubmitGeneralFile={this.props.SubmitGeneralFile}
@@ -373,6 +343,7 @@ class SingleStudentPage extends React.Component {
           key={i + 1}
           updateDocLink={this.updateDocLink}
           link={object_init[k].link}
+          path={object_init[k].path}
           role={this.props.user.role}
           isLoaded={this.state.isLoaded}
           docName={value2[i]}
@@ -381,7 +352,6 @@ class SingleStudentPage extends React.Component {
           k={k}
           message={object_message[k]}
           student_id={this.state.student._id}
-          onDownloadFilefromstudent={this.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           SubmitGeneralFile={this.props.SubmitGeneralFile}
@@ -402,7 +372,6 @@ class SingleStudentPage extends React.Component {
             time={object_time_init[k]}
             k={k}
             student_id={this.state.student._id}
-            onDownloadFilefromstudent={this.onDownloadFilefromstudent}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
             onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             SubmitGeneralFile={this.props.SubmitGeneralFile}
@@ -423,7 +392,6 @@ class SingleStudentPage extends React.Component {
           k={k}
           message={object_message[k]}
           student_id={this.state.student._id}
-          onDownloadFilefromstudent={this.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           SubmitGeneralFile={this.SubmitGeneralFile}

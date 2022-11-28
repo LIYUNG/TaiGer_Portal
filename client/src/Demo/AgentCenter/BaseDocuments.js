@@ -12,9 +12,7 @@ import {
   uploadforstudent,
   updateProfileDocumentStatus,
   deleteFile,
-  getStudents,
-  getStudentsAndDocLinks,
-  downloadProfile
+  getStudentsAndDocLinks
 } from '../../api';
 class BaseDocuments extends React.Component {
   state = {
@@ -193,72 +191,6 @@ class BaseDocuments extends React.Component {
     );
   };
 
-  onDownloadFilefromstudent(e, category, id) {
-    e.preventDefault();
-    // this.setState((state) => ({
-    //   ...state,
-    //   isLoaded: false
-    // }));
-    downloadProfile(category, id).then(
-      (resp) => {
-        const { status } = resp;
-        if (status === 200) {
-          const actualFileName =
-            resp.headers['content-disposition'].split('"')[1];
-          const { data: blob } = resp;
-          if (blob.size === 0) return;
-
-          var filetype = actualFileName.split('.'); //split file name
-          filetype = filetype.pop(); //get the file type
-
-          if (filetype === 'pdf') {
-            const url = window.URL.createObjectURL(
-              new Blob([blob], { type: 'application/pdf' })
-            );
-
-            //Open the URL on new Window
-            // window.open(url); //TODO: having a reasonable file name, pdf viewer
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', actualFileName);
-            // Append to html link element page
-            document.body.appendChild(link);
-            // Start download
-            link.click();
-            // Clean up and remove the link
-            link.parentNode.removeChild(link);
-          } else {
-            //if not pdf, download instead.
-
-            const url = window.URL.createObjectURL(new Blob([blob]));
-
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', actualFileName);
-            // Append to html link element page
-            document.body.appendChild(link);
-            // Start download
-            link.click();
-            // Clean up and remove the link
-            link.parentNode.removeChild(link);
-          }
-        } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
-        }
-      },
-      (error) => {
-        alert('The file is not available.');
-      }
-    );
-  }
-
   SubmitGeneralFile = (e, studentId, fileCategory) => {
     this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
   };
@@ -363,7 +295,6 @@ class BaseDocuments extends React.Component {
         singleExpandtHandler={this.singleExpandtHandler}
         role={this.props.user.role}
         user={this.props.user}
-        onDownloadFilefromstudent={this.onDownloadFilefromstudent}
         SubmitGeneralFile={this.SubmitGeneralFile}
         onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
         onDeleteFilefromstudent={this.onDeleteFilefromstudent}
@@ -384,7 +315,6 @@ class BaseDocuments extends React.Component {
           student={student}
           role={this.props.user.role}
           user={this.props.user}
-          onDownloadFilefromstudent={this.onDownloadFilefromstudent}
           SubmitGeneralFile={this.SubmitGeneralFile}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}

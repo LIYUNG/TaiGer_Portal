@@ -1,5 +1,6 @@
 import React from 'react';
 import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
+import { BASE_URL } from '../../api/request';
 import {
   AiOutlineDownload,
   AiOutlineFieldTime,
@@ -178,20 +179,16 @@ class ButtonSetUploaded extends React.Component {
         </td>
         <td>
           <Col md>
-            <Button
-              size="sm"
-              type="submit"
-              title="Download"
-              onClick={(e) =>
-                this.props.onDownloadFilefromstudent(
-                  e,
-                  this.props.k,
-                  this.props.student_id
-                )
-              }
+            <a
+              href={`${BASE_URL}/api/students/${this.props.student_id.toString()}/files/${
+                this.props.path
+              }`}
+              target="_blank"
             >
-              <AiOutlineDownload size={16} />
-            </Button>
+              <Button size="sm" type="submit" title="Download">
+                <AiOutlineDownload size={16} />
+              </Button>
+            </a>
           </Col>
         </td>
         {this.props.role === 'Editor' || this.props.role === 'Student' ? (

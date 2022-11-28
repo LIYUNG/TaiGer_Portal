@@ -5,7 +5,6 @@ import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudB
 import AgentTodoList from './AgentTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import AgentTasks from '../MainViewTab/AgentTasks/index';
-import NewBaseFilesUploaded from '../MainViewTab/NewBaseFilesUploaded/NewBaseFilesUploaded';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -14,8 +13,7 @@ import {
   uploadforstudent,
   updateProfileDocumentStatus,
   deleteFile,
-  getStudents,
-  downloadProfile
+  getStudents
 } from '../../../api';
 class AgentMainView extends React.Component {
   checkMissingBaseDocument = (students) => {
@@ -63,20 +61,7 @@ class AgentMainView extends React.Component {
         documentslist={this.props.documentslist}
       />
     ));
-    const new_base_files_card = this.props.students.map((student, i) => (
-      <NewBaseFilesUploaded
-        key={i}
-        role={this.props.role}
-        student={student}
-        isLoaded={this.props.isLoaded}
-        onUpdateProfileFilefromstudent={
-          this.props.onUpdateProfileFilefromstudent
-        }
-      />
-    ));
-    const new_uploaded_files = this.checkMissingBaseDocument(
-      this.props.students
-    );
+
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
@@ -89,37 +74,6 @@ class AgentMainView extends React.Component {
     ));
     return (
       <>
-        {/* {new_uploaded_files && (
-          <Row>
-            <Col md={12}>
-              <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header>
-                  <Card.Title>New Uploaded Files:</Card.Title>
-                </Card.Header>
-                <Table
-                  size="sm"
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                >
-                  <thead>
-                    <tr>
-                      <th>First-/Lastname</th>
-                      <th>New Uploaded Files</th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>{new_base_files_card}</tbody>
-                </Table>
-              </Card>
-            </Col>
-          </Row>
-        )} */}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>

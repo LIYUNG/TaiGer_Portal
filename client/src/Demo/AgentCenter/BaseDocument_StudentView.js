@@ -19,8 +19,6 @@ class BaseDocument_StudentView extends React.Component {
     this.props.SubmitGeneralFile(e, studentId, fileCategory);
   };
   render() {
-    // const deleteStyle = "danger";
-    // const graoutStyle = "light";
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_wtih_doc_link_list);
     let object_init = {};
@@ -36,17 +34,28 @@ class BaseDocument_StudentView extends React.Component {
     // TODO: what if this.state.student.profile[i].name key not in base_docs_link[i].key?
     if (this.props.base_docs_link) {
       for (let i = 0; i < this.props.base_docs_link.length; i++) {
-        object_init[this.props.base_docs_link[i].key].link = this.props.base_docs_link[i].link;
+        object_init[this.props.base_docs_link[i].key].link =
+          this.props.base_docs_link[i].link;
       }
     }
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
+        let document_split = this.props.student.profile[i].path.replace(
+          /\\/g,
+          '/'
+        );
         if (this.props.student.profile[i].status === 'uploaded') {
           object_init[this.props.student.profile[i].name].status = 'uploaded';
+          object_init[this.props.student.profile[i].name].path =
+            document_split.split('/')[1];
         } else if (this.props.student.profile[i].status === 'accepted') {
           object_init[this.props.student.profile[i].name].status = 'accepted';
+          object_init[this.props.student.profile[i].name].path =
+            document_split.split('/')[1];
         } else if (this.props.student.profile[i].status === 'rejected') {
           object_init[this.props.student.profile[i].name].status = 'rejected';
+          object_init[this.props.student.profile[i].name].path =
+            document_split.split('/')[1];
         } else if (this.props.student.profile[i].status === 'notneeded') {
           object_init[this.props.student.profile[i].name].status = 'notneeded';
         } else if (this.props.student.profile[i].status === 'missing') {
@@ -72,13 +81,13 @@ class BaseDocument_StudentView extends React.Component {
           key={i + 1}
           role={this.props.role}
           link={object_init[k].link}
+          path={object_init[k].path}
           isLoaded={this.props.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           student_id={this.props.student._id}
-          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent
@@ -90,13 +99,13 @@ class BaseDocument_StudentView extends React.Component {
           key={i + 1}
           role={this.props.role}
           link={object_init[k].link}
+          path={object_init[k].path}
           isLoaded={this.props.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           student_id={this.props.student._id}
-          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent
@@ -109,6 +118,7 @@ class BaseDocument_StudentView extends React.Component {
           key={i + 1}
           role={this.props.role}
           link={object_init[k].link}
+          path={object_init[k].path}
           isLoaded={this.props.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -116,7 +126,6 @@ class BaseDocument_StudentView extends React.Component {
           k={k}
           message={object_message[k]}
           student_id={this.props.student._id}
-          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent
@@ -136,7 +145,6 @@ class BaseDocument_StudentView extends React.Component {
             time={object_time_init[k]}
             k={k}
             student_id={this.props.student._id}
-            onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
             onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
             onUpdateProfileFilefromstudent={
               this.props.onUpdateProfileFilefromstudent
@@ -157,7 +165,6 @@ class BaseDocument_StudentView extends React.Component {
           k={k}
           message={object_message[k]}
           student_id={this.props.student._id}
-          onDownloadFilefromstudent={this.props.onDownloadFilefromstudent}
           onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent

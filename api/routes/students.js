@@ -33,7 +33,7 @@ const {
   updateVPDFileNecessity,
   saveVPDFilePath,
   downloadVPDFile,
-  downloadProfileFile,
+  downloadProfileFileURL,
   updateProfileDocumentStatus,
   deleteProfileFile,
   deleteVPDFile
@@ -170,12 +170,15 @@ router
   .delete(permit(Role.Admin, Role.Agent), deleteApplication);
 
 router
-  .route('/:studentId/files/:category')
+  .route('/:studentId/files/:file_key')
   .get(
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
-    downloadProfileFile
-  )
+    downloadProfileFileURL
+  );
+
+router
+  .route('/:studentId/files/:category')
   .post(
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),

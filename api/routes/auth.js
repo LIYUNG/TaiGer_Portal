@@ -1,6 +1,10 @@
 const { Router } = require('express');
 const {
   loginRateLimiter,
+  activateAccountRateLimiter,
+  resendActivationRateLimiter,
+  forgotPasswordRateLimiter,
+  resetPasswordRateLimiter,
   registerRateLimiter,
   GeneralGETRequestRateLimiter
 } = require('../middlewares/rate_limiter');
@@ -27,12 +31,16 @@ router.get('/logout', GeneralGETRequestRateLimiter, logout);
 
 router.get('/verify', GeneralGETRequestRateLimiter, protect, verify); // check current user
 
-router.post('/activation', loginRateLimiter, activateAccount);
+router.post('/activation', activateAccountRateLimiter, activateAccount);
 
-router.post('/resend-activation', loginRateLimiter, resendActivation);
+router.post(
+  '/resend-activation',
+  resendActivationRateLimiter,
+  resendActivation
+);
 
-router.post('/forgot-password', loginRateLimiter, forgotPassword);
+router.post('/forgot-password', forgotPasswordRateLimiter, forgotPassword);
 
-router.post('/reset-password', loginRateLimiter, resetPassword);
+router.post('/reset-password', resetPasswordRateLimiter, resetPassword);
 
 module.exports = router;

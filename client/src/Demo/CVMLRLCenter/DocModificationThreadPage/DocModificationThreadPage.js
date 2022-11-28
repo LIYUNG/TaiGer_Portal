@@ -488,6 +488,7 @@ class DocModificationThreadPage extends Component {
         <Row>
           <MessageList
             onDownloadFileInMessage={this.onDownloadFileInMessage}
+            documentsthreadId={this.state.documentsthreadId}
             accordionKeys={this.state.accordionKeys}
             singleExpandtHandler={this.singleExpandtHandler}
             thread={this.state.thread}

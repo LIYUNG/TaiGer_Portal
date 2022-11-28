@@ -162,7 +162,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   } = req;
   // Check authorized role
   if (user.role === Role.Guest) {
-    logger.error('downloadProfileFile: Invalid role!');
+    logger.error('downloadTemplateFile: Invalid role!');
     throw new ErrorResponse(400, 'Invalid role');
   }
   const template = await Template.findOne({ category_name });
@@ -565,63 +565,6 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     });
 });
 
-const downloadProfileFile = asyncHandler(async (req, res, next) => {
-  const {
-    user,
-    params: { studentId, file_key }
-  } = req;
-
-  // AWS S3
-  // download the file via aws s3 here
-  const student =
-    user.role === Role.Student ? user : await Student.findById(studentId);
-  if (!student) {
-    logger.error('downloadProfileFile: Invalid student id!');
-    throw new ErrorResponse(400, 'Invalid student id');
-  }
-
-  const document = student.profile.find(({ name }) => name === file_key);
-  if (!document) {
-    logger.error('downloadProfileFile: Invalid document name!');
-    throw new ErrorResponse(400, 'Invalid document name');
-  }
-  if (!document.path) {
-    logger.error('downloadProfileFile: File not uploaded yet!');
-    throw new ErrorResponse(400, 'File not uploaded yet');
-  }
-
-  // var fileKey = path.join(UPLOAD_PATH, document.path);
-  let document_split = document.path.replace(/\\/g, '/');
-  document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
-  logger.info('Trying to download profile file', fileKey);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
-
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(fileKey);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error('downloadProfileFile: ', error);
-      }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
-    });
-});
-
 const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -630,10 +573,22 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
 
   // AWS S3
   // download the file via aws s3 here
-  const student =
-    user.role === Role.Student ? user : await Student.findById(studentId);
+  let student;
+  if (user.role === Role.Student) {
+    student = user;
+  } else if (
+    user.role === Role.Admin ||
+    user.role === Role.Agent ||
+    user.role === Role.Editor
+  ) {
+    student = await Student.findById(studentId);
+  } else {
+    logger.error('downloadProfileFileURL: Invalid access from the public!');
+    throw new ErrorResponse(400, 'Invalid access from the public');
+  }
+
   if (!student) {
-    logger.error('downloadProfileFile: Invalid student id!');
+    logger.error('downloadProfileFileURL: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
 
@@ -641,11 +596,11 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
     profile.path.includes(file_key)
   );
   if (!document) {
-    logger.error('downloadProfileFile: Invalid document name!');
+    logger.error('downloadProfileFileURL: Invalid document name!');
     throw new ErrorResponse(400, 'Invalid document name');
   }
   if (!document.path) {
-    logger.error('downloadProfileFile: File not uploaded yet!');
+    logger.error('downloadProfileFileURL: File not uploaded yet!');
     throw new ErrorResponse(400, 'File not uploaded yet');
   }
 
@@ -673,7 +628,7 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
     .catch((error) => {
       if (error.statusCode === 404) {
         // Catching NoSuchKey
-        logger.error('downloadProfileFile: ', error);
+        logger.error('downloadProfileFileURL: ', error);
       }
       return res
         .status(error.statusCode)
@@ -1356,7 +1311,6 @@ module.exports = {
   saveProfileFilePath,
   saveVPDFilePath,
   downloadVPDFile,
-  downloadProfileFile,
   downloadProfileFileURL,
   downloadTemplateFile,
   updateProfileDocumentStatus,

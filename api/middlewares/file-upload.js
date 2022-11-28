@@ -398,8 +398,6 @@ const storage_messagesthread_file_s3 = multerS3({
             '_' +
             thread.student_id.firstname +
             '_' +
-            program_name +
-            '_' +
             thread.file_type +
             '_v' +
             version_number.toString() +

@@ -21,6 +21,34 @@ const loginRateLimiter = rateLimit({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const activateAccountRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const resendActivationRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const forgotPasswordRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const resetPasswordRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 const updateCredentialRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
   max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -148,6 +176,10 @@ module.exports = {
   GeneralDELETERequestRateLimiter,
   registerRateLimiter,
   loginRateLimiter,
+  activateAccountRateLimiter,
+  resendActivationRateLimiter,
+  forgotPasswordRateLimiter,
+  resetPasswordRateLimiter,
   updatePersonalInformationRateLimiter,
   TranscriptAnalyserRateLimiter,
   RemoveNotificationRateLimiter,

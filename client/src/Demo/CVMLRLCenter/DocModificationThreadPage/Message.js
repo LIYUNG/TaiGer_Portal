@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Spinner, Collapse, Button, Row, Col } from 'react-bootstrap';
 import { RiMoreFill } from 'react-icons/ri';
+import { BASE_URL } from '../../../api/request';
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import Output from 'editorjs-react-renderer';
@@ -51,41 +52,40 @@ class Message extends Component {
 
     const files_info = this.props.message.file.map((file, i) => (
       <Row key={i}>
-        <Col
-          md={1}
-          style={{ cursor: 'pointer' }}
-          onClick={(e) =>
-            this.props.onDownloadFileInMessage(
-              e,
-              this.props.message._id,
-              file._id
-            )
-          }
-        >
+        <Col md={1} style={{ cursor: 'pointer' }}>
           <h5>
             <span>
-              <FileIcon
-                size="sm"
-                radius={4}
-                extension={file.name.split('.').pop()}
-                {...defaultStyles[file.name.split('.').pop()]}
-              />
+              {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
+              <a
+                href={`${BASE_URL}/api/document-threads/${
+                  this.props.documentsthreadId
+                }/${this.props.message._id.toString()}/${
+                  file.path.replace(/\\/g, '/').split('/')[2]
+                }`}
+                target="_blank"
+              >
+                <FileIcon
+                  size="sm"
+                  radius={4}
+                  extension={file.name.split('.').pop()}
+                  {...defaultStyles[file.name.split('.').pop()]}
+                />
+              </a>
             </span>
           </h5>
         </Col>
         <Col md={11} className="my-3">
-          <p
-            style={{ cursor: 'pointer' }}
-            onClick={(e) =>
-              this.props.onDownloadFileInMessage(
-                e,
-                this.props.message._id,
-                file._id
-              )
-            }
+          {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
+          <a
+            href={`${BASE_URL}/api/document-threads/${
+              this.props.documentsthreadId
+            }/${this.props.message._id.toString()}/${
+              file.path.replace(/\\/g, '/').split('/')[2]
+            }`}
+            target="_blank"
           >
             {file.name}
-          </p>
+          </a>
         </Col>
       </Row>
     ));

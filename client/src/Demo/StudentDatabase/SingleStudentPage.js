@@ -13,7 +13,6 @@ import {
 import {
   getStudentAndDocLinks,
   updateProfileDocumentStatus,
-  downloadProfile,
   uploadforstudent,
   deleteFile,
   updateBaseDocsDocumentationLink

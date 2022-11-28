@@ -21,7 +21,7 @@ const {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
-  getMessageFile,
+  getMessageFileDownload,
   SetStatusMessagesThread,
   deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
@@ -101,11 +101,11 @@ router
 
 // WARNING: strict ratelimiter for S3 file download
 router
-  .route('/:messagesThreadId/:messageId/:fileId')
+  .route('/:messagesThreadId/:messageId/:file_key')
   .get(
     getMessageFileRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    getMessageFile
+    getMessageFileDownload
   );
 
 router

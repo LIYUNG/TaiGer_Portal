@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Col, Table, Tabs, Tab, Card } from 'react-bootstrap';
-// import Card from '../../../App/components/MainCard';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentTodoList from './AgentTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';

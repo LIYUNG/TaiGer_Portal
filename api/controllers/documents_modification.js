@@ -609,37 +609,40 @@ const postMessages = asyncHandler(async (req, res) => {
 });
 
 // Download file in a message in a thread
-const getMessageFile = asyncHandler(async (req, res) => {
+const getMessageFileDownload = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { messagesThreadId, messageId, fileId }
+    params: { messagesThreadId, messageId, file_key }
   } = req;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
   if (!document_thread) {
-    logger.error('getMessageFile: thread not found!');
+    logger.error('getMessageFileDownload: thread not found!');
     throw new ErrorResponse(400, 'thread not found');
   }
 
+  // (O) Multitenancy check
   if (
     user.role === Role.Student &&
     document_thread.student_id.toString() !== user._id.toString()
   ) {
-    logger.error('getMessageFile: Not authorized!');
+    logger.error('getMessageFileDownload: Not authorized!');
     throw new ErrorResponse(400, 'Not authorized');
   }
 
   const message = document_thread.messages.find(
-    (message) => message._id == messageId
+    (message) => message._id.toString() === messageId
   );
   if (!message) {
-    logger.error('getMessageFile: message not found!');
+    logger.error('getMessageFileDownload: message not found!');
     throw new ErrorResponse(400, 'message not found');
   }
 
-  const file = message.file.find((file) => file._id == fileId);
+  const file = message.file.find(
+    (each_file) => each_file.path.replace(/\\/g, '/').split('/')[2] === file_key
+  );
   if (!file) {
-    logger.error('getMessageFile: file not found!');
+    logger.error('getMessageFileDownload: file not found!');
     throw new ErrorResponse(400, 'file not found');
   }
 
@@ -942,7 +945,9 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
     Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
     Prefix: directory
   };
-  const listedObjectsPublic = await s3.listObjectsV2(listParamsPublic).promise();
+  const listedObjectsPublic = await s3
+    .listObjectsV2(listParamsPublic)
+    .promise();
 
   if (listedObjectsPublic.Contents.length > 0) {
     const deleteParams = {
@@ -959,7 +964,6 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
 
     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
   }
-
 
   await Student.findOneAndUpdate(
     { _id: studentId, 'applications.programId': program_id },
@@ -1043,7 +1047,7 @@ module.exports = {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
-  getMessageFile,
+  getMessageFileDownload,
   postImageInThread,
   postMessages,
   SetStatusMessagesThread,

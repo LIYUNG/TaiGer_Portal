@@ -192,7 +192,8 @@ const doc_image_s3 = multerS3({
     cb(null, directory);
   },
   metadata: function (req, file, cb) {
-    cb(null, { fieldName: file.fieldname, path: '' });
+    var directory = 'Documentations';
+    cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: function (req, file, cb) {
     var id = uuid.v4();

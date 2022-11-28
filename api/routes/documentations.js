@@ -26,6 +26,7 @@ const {
   createDocumentation,
   createInternalDocumentation,
   uploadDocImage,
+  getDocFile,
   uploadDocDocs,
   updateDocumentation,
   updateInternalDocumentation,
@@ -95,6 +96,14 @@ router
     imageUpload,
     uploadDocImage
   );
+router
+  .route('/file/:object_key')
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    getDocFile
+  );
+
 router
   .route('/upload/docs')
   .post(

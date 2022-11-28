@@ -43,7 +43,7 @@ function AdminLayout(props) {
         isloaded: true
       }));
     });
-  }, []);
+  }, [userdata.isloaded]);
 
   useEffect(() => {
     if (
@@ -124,7 +124,15 @@ function AdminLayout(props) {
     left: '50%',
     transform: 'translate(-50%, -50%)'
   };
-
+  // if (!userdata.isloaded) {
+  //   return (
+  //     <Aux>
+  //       <ScrollToTop>
+  //         <Suspense fallback={<Loader />}></Suspense>
+  //       </ScrollToTop>
+  //     </Aux>
+  //   );
+  // }
   // if (!userdata.isloaded) {
   //   return (
   //     <Aux>
@@ -175,7 +183,7 @@ function AdminLayout(props) {
             <div className="pcoded-wrapper">
               <div className="pcoded-content">
                 <div className="pcoded-inner-content">
-                  <Breadcrumb />
+                  {/* <Breadcrumb /> */}
                   <div className="main-body">
                     <div className="page-wrapper">
                       <Suspense fallback={<Loader />}>

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const aws = require('aws-sdk');
 const { ErrorResponse } = require('../common/errors');
 const path = require('path');
 const { Role, Agent, Student, Editor } = require('../models/User');
@@ -8,7 +9,20 @@ const Documentation = require('../models/Documentation');
 const Internaldoc = require('../models/Internaldoc');
 const Docspage = require('../models/Docspage');
 const logger = require('../services/logger');
-const { AWS_S3_PUBLIC_BUCKET } = require('../config');
+const {
+  API_ORIGIN,
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_PUBLIC_BUCKET,
+  AWS_S3_BUCKET_NAME,
+  AWS_S3_PUBLIC_BUCKET_NAME
+} = require('../config');
+
+const s3 = new aws.S3({
+  accessKeyId: AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: AWS_S3_ACCESS_KEY
+});
+
 const valid_categories = [
   'application',
   'base-documents',
@@ -157,19 +171,44 @@ const createInternalDocumentation = asyncHandler(async (req, res) => {
 });
 
 const uploadDocImage = asyncHandler(async (req, res) => {
-  let imageurl = new URL(
-    `/Documentations/${req.file.key}`,
-    AWS_S3_PUBLIC_BUCKET
-  ).href;
+  let imageurl = new URL(`/api/docs/file/${req.file.key}`, API_ORIGIN).href;
   imageurl = imageurl.replace(/\\/g, '/');
   return res.send({ success: true, data: imageurl });
 });
 
+const getDocFile = asyncHandler(async (req, res) => {
+  const {
+    params: { object_key }
+  } = req;
+
+  let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: object_key,
+    Bucket: directory
+  };
+
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(object_key);
+      const fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        logger.error(error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
+});
+
 const uploadDocDocs = asyncHandler(async (req, res) => {
-  let imageurl = new URL(
-    `/Documentations/${req.file.key}`,
-    AWS_S3_PUBLIC_BUCKET
-  ).href;
+  let imageurl = new URL(`/api/docs/file/${req.file.key}`, API_ORIGIN).href;
   imageurl = imageurl.replace(/\\/g, '/');
   let extname = path.extname(req.file.key);
   extname = extname.replace('.', '');
@@ -224,6 +263,7 @@ module.exports = {
   createDocumentation,
   createInternalDocumentation,
   uploadDocImage,
+  getDocFile,
   uploadDocDocs,
   updateDocumentation,
   updateInternalDocumentation,

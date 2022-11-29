@@ -8,6 +8,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const Documentation = require('../models/Documentation');
 const Internaldoc = require('../models/Internaldoc');
 const Docspage = require('../models/Docspage');
+const { myCache } = require('../cache/node-cache');
 const logger = require('../services/logger');
 const {
   API_ORIGIN,
@@ -87,6 +88,10 @@ const updateDocumentationPage = asyncHandler(async (req, res) => {
     newDocPage = await Docspage.create(fields);
     return res.status(201).send({ success: true, data: newDocPage });
   }
+  const success = myCache.set(req.url, doc_page_existed);
+  if (success) {
+    console.log('cache set update successfully');
+  }
   return res.status(201).send({ success: true, data: doc_page_existed });
 });
 
@@ -113,10 +118,22 @@ const getCategoryDocumentationsPage = asyncHandler(async (req, res) => {
     }
   }
 
-  const docspage = await Docspage.findOne({
-    category: req.params.category
-  });
-  return res.send({ success: true, data: !docspage ? {} : docspage });
+  // Use redis/cache
+  const value = myCache.get(req.url);
+  if (value === undefined) {
+    // cache miss
+    console.log('cache miss');
+    const docspage = await Docspage.findOne({
+      category: req.params.category
+    });
+    const success = myCache.set(req.url, docspage);
+    if (success) {
+      console.log('cache set successfully');
+    }
+    return res.send({ success: true, data: !docspage ? {} : docspage });
+  }
+  console.log('cache hit');
+  return res.send({ success: true, data: !value ? {} : value });
 });
 
 const getCategoryDocumentations = asyncHandler(async (req, res) => {
@@ -173,6 +190,7 @@ const createInternalDocumentation = asyncHandler(async (req, res) => {
 const uploadDocImage = asyncHandler(async (req, res) => {
   let imageurl = new URL(`/api/docs/file/${req.file.key}`, API_ORIGIN).href;
   imageurl = imageurl.replace(/\\/g, '/');
+  // TODO: to overwrite cache image, pdf, docs, file here.
   return res.send({ success: true, data: imageurl });
 });
 
@@ -187,24 +205,60 @@ const getDocFile = asyncHandler(async (req, res) => {
     Key: object_key,
     Bucket: directory
   };
+  // Use redis/cache
+  // TODO: need to update when new uploaded file with same key name!
+  const value = myCache.get(req.originalUrl);
+  if (value === undefined) {
+    // cache miss
+    console.log(`cache miss: ${req.originalUrl}`);
+    s3.getObject(options, function (err, data) {
+      // Handle any error and exit
+      if (err) return err;
 
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(object_key);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error(error);
+      // No error happened
+      // Convert Body from a Buffer to a String
+      let objectData = data.Body.toString('utf-8'); // Use the encoding necessary
+      const success = myCache.set(req.originalUrl, data.Body);
+      if (success) {
+        console.log('cache set successfully');
       }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
+      // let buf = new Buffer.alloc(data.Body, 'base64');
+
+      res.attachment(object_key);
+      return res.end(data.Body);
+
+      // const fileStream = data.createReadStream();
+      // fileStream.pipe(res);
     });
+  } else {
+    console.log('cache hit');
+    res.attachment(object_key);
+    return res.end(value);
+  }
+
+  // res.attachment(object_key);
+  // const fileStream = value.createReadStream();
+  // fileStream.pipe(res);
+  // Backup, another implementation
+  // s3.headObject(options)
+  //   .promise()
+  //   .then(() => {
+  //     // This will not throw error anymore
+  //     res.attachment(object_key);
+  //     const fileStream = s3.getObject(options).createReadStream();
+  //     fileStream.pipe(res);
+  //     // TODO: to cache image, pdf, docs, file here.
+  //     // console.log(fileStream.pipe(res));
+  //   })
+  //   .catch((error) => {
+  //     if (error.statusCode === 404) {
+  //       // Catching NoSuchKey
+  //       logger.error(error);
+  //     }
+  //     return res
+  //       .status(error.statusCode)
+  //       .json({ success: false, message: error.message });
+  //   });
 });
 
 const uploadDocDocs = asyncHandler(async (req, res) => {
@@ -212,6 +266,14 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
   imageurl = imageurl.replace(/\\/g, '/');
   let extname = path.extname(req.file.key);
   extname = extname.replace('.', '');
+  // TODO: to delete cache key for image, pdf, docs, file here.
+  const value = myCache.del(
+    `/api/docs/file/${encodeURIComponent(req.file.key)}`
+  );
+  // encodeURIComponent convert chinese to url match charater %E7%94%B3%E8%AB%8 etc.
+  if (value === 1) {
+    console.log('cache key deleted successfully');
+  }
   return res.send({
     success: true,
     url: imageurl,

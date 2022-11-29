@@ -1,9 +1,9 @@
 {
   "files": {
     "main.css": "/static/css/main.81cf2fb3.css",
-    "main.js": "/static/js/main.16f4620c.js",
+    "main.js": "/static/js/main.2a24ca2b.js",
     "static/js/3245.35f04131.chunk.js": "/static/js/3245.35f04131.chunk.js",
-    "static/js/6939.f2d9393f.chunk.js": "/static/js/6939.f2d9393f.chunk.js",
+    "static/js/6939.dafccccb.chunk.js": "/static/js/6939.dafccccb.chunk.js",
     "static/js/1032.29e2398f.chunk.js": "/static/js/1032.29e2398f.chunk.js",
     "static/js/8686.573427a4.chunk.js": "/static/js/8686.573427a4.chunk.js",
     "static/js/3361.c6e8f3f9.chunk.js": "/static/js/3361.c6e8f3f9.chunk.js",
@@ -31,7 +31,7 @@
     "static/js/2502.49099197.chunk.js": "/static/js/2502.49099197.chunk.js",
     "static/js/6276.dc4b0e26.chunk.js": "/static/js/6276.dc4b0e26.chunk.js",
     "static/js/8206.46c09a18.chunk.js": "/static/js/8206.46c09a18.chunk.js",
-    "static/js/3942.6eaaaf9b.chunk.js": "/static/js/3942.6eaaaf9b.chunk.js",
+    "static/js/3942.1e46b3af.chunk.js": "/static/js/3942.1e46b3af.chunk.js",
     "static/js/5266.be2d70df.chunk.js": "/static/js/5266.be2d70df.chunk.js",
     "static/js/1152.b96fc20e.chunk.js": "/static/js/1152.b96fc20e.chunk.js",
     "static/css/3429.31d6cfe0.chunk.css": "/static/css/3429.31d6cfe0.chunk.css",
@@ -93,7 +93,7 @@
     "static/js/478.ef41433a.chunk.js": "/static/js/478.ef41433a.chunk.js",
     "static/js/4646.b2e83d9e.chunk.js": "/static/js/4646.b2e83d9e.chunk.js",
     "static/js/8979.5f56db54.chunk.js": "/static/js/8979.5f56db54.chunk.js",
-    "static/js/843.bf2950f2.chunk.js": "/static/js/843.bf2950f2.chunk.js",
+    "static/js/843.3f15776e.chunk.js": "/static/js/843.3f15776e.chunk.js",
     "static/js/5851.3fae0cb2.chunk.js": "/static/js/5851.3fae0cb2.chunk.js",
     "static/js/2303.743b299c.chunk.js": "/static/js/2303.743b299c.chunk.js",
     "static/js/9718.9fe5adc8.chunk.js": "/static/js/9718.9fe5adc8.chunk.js",
@@ -101,6 +101,6 @@
   },
   "entrypoints": [
     "static/css/main.81cf2fb3.css",
-    "static/js/main.16f4620c.js"
+    "static/js/main.2a24ca2b.js"
   ]
 }

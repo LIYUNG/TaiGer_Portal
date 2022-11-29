@@ -496,31 +496,43 @@ class DocModificationThreadPage extends Component {
             isLoaded={this.state.isLoaded}
           />
         </Row>
-        <Row>
-          <Card className="my-0 mx-0">
-            <Card.Header>
-              <Card.Title as="h5">
-                {this.props.user.firstname} {this.props.user.lastname}
-              </Card.Title>
-            </Card.Header>
-            <Card.Body>
-              <Row style={{ textDecoration: 'none' }}>
-                <Col className="my-0 mx-0">
-                  <DocThreadEditor
-                    thread={this.state.thread}
-                    buttonDisabled={this.state.buttonDisabled}
-                    doc_title={'this.state.doc_title'}
-                    editorState={this.state.editorState}
-                    handleClickSave={this.handleClickSave}
-                    handleClickCancel={this.handleClickCancel}
-                    file={this.state.file}
-                    onFileChange={this.onFileChange}
-                  />
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Row>
+        {this.props.user.archiv !== true ? (
+          <Row>
+            <Card className="my-0 mx-0">
+              <Card.Header>
+                <Card.Title as="h5">
+                  {this.props.user.firstname} {this.props.user.lastname}
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <Row style={{ textDecoration: 'none' }}>
+                  <Col className="my-0 mx-0">
+                    <DocThreadEditor
+                      thread={this.state.thread}
+                      buttonDisabled={this.state.buttonDisabled}
+                      doc_title={'this.state.doc_title'}
+                      editorState={this.state.editorState}
+                      handleClickSave={this.handleClickSave}
+                      handleClickCancel={this.handleClickCancel}
+                      file={this.state.file}
+                      onFileChange={this.onFileChange}
+                    />
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Row>
+        ) : (
+          <Row>
+            <Card className="my-0 mx-0">
+              <Card.Body>
+                <Row style={{ textDecoration: 'none' }}>
+                  <Col className="my-0 mx-0">You service is finished. Therefore, you are in read only mode.</Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Row>
+        )}
       </Aux>
     );
   }

@@ -449,22 +449,24 @@ class SurveyEditableComponent extends React.Component {
                         )
                       : ''}
                   </Col>
-                  <Col md={2}>
-                    <br />
-                    <Button
-                      variant="primary"
-                      disabled={!this.state.changed_academic}
-                      onClick={(e) =>
-                        this.props.handleSubmit_AcademicBackground(
-                          e,
-                          this.state.academic_background.university
-                        )
-                      }
-                    >
-                      Update
-                    </Button>
-                    <br />
-                  </Col>
+                  {this.props.user.archiv !== true && (
+                    <Col md={2}>
+                      <br />
+                      <Button
+                        variant="primary"
+                        disabled={!this.state.changed_academic}
+                        onClick={(e) =>
+                          this.props.handleSubmit_AcademicBackground(
+                            e,
+                            this.state.academic_background.university
+                          )
+                        }
+                      >
+                        Update
+                      </Button>
+                      <br />
+                    </Col>
+                  )}
                 </Row>
               </Card.Body>
             </Card>
@@ -626,22 +628,24 @@ class SurveyEditableComponent extends React.Component {
                       ? convertDate(this.props.application_preference.updatedAt)
                       : ''}
                   </Col>
-                  <Col md={2}>
-                    <br />
-                    <Button
-                      variant="primary"
-                      disabled={!this.state.changed_application_preference}
-                      onClick={(e) =>
-                        this.props.handleSubmit_ApplicationPreference(
-                          e,
-                          this.state.application_preference
-                        )
-                      }
-                    >
-                      Update
-                    </Button>
-                    <br />
-                  </Col>
+                  {this.props.user.archiv !== true && (
+                    <Col md={2}>
+                      <br />
+                      <Button
+                        variant="primary"
+                        disabled={!this.state.changed_application_preference}
+                        onClick={(e) =>
+                          this.props.handleSubmit_ApplicationPreference(
+                            e,
+                            this.state.application_preference
+                          )
+                        }
+                      >
+                        Update
+                      </Button>
+                      <br />
+                    </Col>
+                  )}
                 </Row>
               </Card.Body>
             </Card>
@@ -958,22 +962,24 @@ class SurveyEditableComponent extends React.Component {
                         )
                       : ''}
                   </Col>
-                  <Col md={2}>
-                    <br />
-                    <Button
-                      variant="primary"
-                      disabled={!this.state.changed_language}
-                      onClick={(e) =>
-                        this.props.handleSubmit_Language(
-                          e,
-                          this.state.academic_background.language
-                        )
-                      }
-                    >
-                      Update
-                    </Button>
-                    <br />
-                  </Col>
+                  {this.props.user.archiv !== true && (
+                    <Col md={2}>
+                      <br />
+                      <Button
+                        variant="primary"
+                        disabled={!this.state.changed_language}
+                        onClick={(e) =>
+                          this.props.handleSubmit_Language(
+                            e,
+                            this.state.academic_background.language
+                          )
+                        }
+                      >
+                        Update
+                      </Button>
+                      <br />
+                    </Col>
+                  )}
                 </Row>
               </Card.Body>
             </Card>

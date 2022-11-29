@@ -554,7 +554,7 @@ class StudentDashboard extends React.Component {
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   <Link
-                    to={'/student-database/' + student._id + '/profile'}
+                    to={'/base-documents'}
                     style={{ textDecoration: 'none' }}
                     className="text-info"
                   >

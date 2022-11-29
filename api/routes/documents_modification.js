@@ -9,6 +9,7 @@ const {
   GeneralDELETERequestRateLimiter,
   getMessageFileRateLimiter
 } = require('../middlewares/rate_limiter');
+const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const {
@@ -44,6 +45,7 @@ router
 router
   .route('/init/general/:studentId/:document_category')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initGeneralMessagesThread
@@ -52,6 +54,7 @@ router
 router
   .route('/init/application/:studentId/:program_id/:document_category')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     initApplicationMessagesThread
@@ -60,6 +63,7 @@ router
 router
   .route('/:messagesThreadId/:studentId')
   .put(
+    filter_archiv_user,
     SetStatusMessagesThreadRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     SetStatusMessagesThread
@@ -68,6 +72,7 @@ router
 router
   .route('/:messagesThreadId/:studentId')
   .post(
+    filter_archiv_user,
     postMessagesRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     MessagesThreadUpload,
@@ -77,6 +82,7 @@ router
 router
   .route('/image/:messagesThreadId/:studentId')
   .post(
+    filter_archiv_user,
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     MessagesImageThreadUpload,
@@ -94,6 +100,7 @@ router
 router
   .route('/:messagesThreadId/:studentId')
   .delete(
+    filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     deleteGeneralMessagesThread
@@ -103,6 +110,7 @@ router
 router
   .route('/:messagesThreadId/:messageId/:file_key')
   .get(
+    filter_archiv_user,
     getMessageFileRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getMessageFileDownload
@@ -111,6 +119,7 @@ router
 router
   .route('/:messagesThreadId/:program_id/:studentId')
   .delete(
+    filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     deleteProgramSpecificMessagesThread

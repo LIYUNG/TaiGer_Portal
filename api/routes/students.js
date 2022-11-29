@@ -6,6 +6,7 @@ const {
   GeneralGETRequestRateLimiter
 } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
+const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const {
   ProfilefileUpload,
   VPDfileUpload
@@ -54,6 +55,7 @@ router
 router
   .route('/all')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getAllStudents
@@ -61,11 +63,13 @@ router
 router
   .route('/doc-links')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent),
     updateBaseDocsDocumentationLink
   );
 
+// Let student still see their uploaded file status
 router
   .route('/doc-links')
   .get(
@@ -77,6 +81,7 @@ router
 router
   .route('/doc-links/:studentId')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getStudentAndDocLinks
@@ -85,25 +90,30 @@ router
 router
   .route('/archiv')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Agent, Role.Editor),
     getArchivStudents
   );
 
 router
   .route('/archiv/:studentId')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     getArchivStudent
   )
   .post(
+    filter_archiv_user,
+    GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     updateStudentsArchivStatus
   );
 router
   .route('/:studentId')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getStudent
@@ -112,6 +122,7 @@ router
 router
   .route('/:studentId/agents')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin),
     assignAgentToStudent
@@ -120,6 +131,7 @@ router
 router
   .route('/:studentId/editors')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin),
     assignEditorToStudent
@@ -128,6 +140,7 @@ router
 router
   .route('/:studentId/applications')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     createApplication
@@ -136,6 +149,7 @@ router
 router
   .route('/:studentId/:program_id')
   .put(
+    filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     ToggleProgramStatus
@@ -144,22 +158,26 @@ router
 router
   .route('/:studentId/vpd/:program_id')
   .put(
+    filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     updateVPDFileNecessity
   )
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     downloadVPDFile
   )
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     VPDfileUpload,
     saveVPDFilePath
   )
   .delete(
+    filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     deleteVPDFile
@@ -167,11 +185,16 @@ router
 
 router
   .route('/:studentId/applications/:program_id')
-  .delete(permit(Role.Admin, Role.Agent), deleteApplication);
+  .delete(
+    filter_archiv_user,
+    permit(Role.Admin, Role.Agent),
+    deleteApplication
+  );
 
 router
   .route('/:studentId/files/:file_key')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     downloadProfileFileURL
@@ -180,12 +203,14 @@ router
 router
   .route('/:studentId/files/:category')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     ProfilefileUpload,
     saveProfileFilePath
   )
   .delete(
+    filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     deleteProfileFile
@@ -194,6 +219,7 @@ router
 router
   .route('/:studentId/:category/status')
   .post(
+    filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent),
     updateProfileDocumentStatus

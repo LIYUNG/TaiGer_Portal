@@ -614,7 +614,8 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId, messageId, file_key }
   } = req;
-
+  console.log(req.originalUrl);
+  console.log(req.url);
   const document_thread = await Documentthread.findById(messagesThreadId);
   if (!document_thread) {
     logger.error('getMessageFileDownload: thread not found!');

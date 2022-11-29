@@ -6,6 +6,7 @@ const {
   getAdmissions,
   getAdmissionsYear
 } = require('../controllers/admissions');
+const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 
 const router = Router();
 router.use(protect);
@@ -13,6 +14,7 @@ router.use(protect);
 router
   .route('/')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     getAdmissions
@@ -22,6 +24,7 @@ router
 router
   .route('/:applications_year')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     getAdmissionsYear

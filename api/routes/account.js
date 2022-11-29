@@ -8,6 +8,7 @@ const {
   updatePersonalInformationRateLimiter,
   TranscriptAnalyserRateLimiter
 } = require('../middlewares/rate_limiter');
+const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const { TemplatefileUpload } = require('../middlewares/file-upload');
@@ -39,6 +40,7 @@ router.use(protect);
 router
   .route('/files')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getMyfiles
@@ -47,6 +49,7 @@ router
 router
   .route('/files/template')
   .get(
+    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getTemplates
@@ -54,9 +57,15 @@ router
 
 router
   .route('/files/template/:category_name')
-  .post(permit(Role.Admin), TemplatefileUpload, uploadTemplate)
-  .delete(permit(Role.Admin), deleteTemplate)
+  .post(
+    filter_archiv_user,
+    permit(Role.Admin),
+    TemplatefileUpload,
+    uploadTemplate
+  )
+  .delete(filter_archiv_user, permit(Role.Admin), deleteTemplate)
   .get(
+    filter_archiv_user,
     DownloadTemplateRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadTemplateFile
@@ -65,6 +74,7 @@ router
 router
   .route('/applications/:studentId')
   .put(
+    filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     UpdateStudentApplications
@@ -74,6 +84,7 @@ router
 router
   .route('/transcript/:studentId/:category')
   .post(
+    filter_archiv_user,
     TranscriptAnalyserRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     processTranscript_test
@@ -82,6 +93,7 @@ router
 router
   .route('/transcript/:studentId')
   .get(
+    filter_archiv_user,
     DownloadTemplateRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     downloadXLSX
@@ -91,6 +103,7 @@ router
 router
   .route('/notifications')
   .post(
+    filter_archiv_user,
     RemoveNotificationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     removeNotification
@@ -108,6 +121,7 @@ router
 router
   .route('/survey/university/:studentId')
   .post(
+    filter_archiv_user,
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateAcademicBackground
@@ -116,6 +130,7 @@ router
 router
   .route('/survey/language/:studentId')
   .post(
+    filter_archiv_user,
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateLanguageSkill
@@ -124,6 +139,7 @@ router
 router
   .route('/survey/preferences/:studentId')
   .post(
+    filter_archiv_user,
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updateApplicationPreferenceSkill
@@ -132,6 +148,7 @@ router
 router
   .route('/profile')
   .post(
+    filter_archiv_user,
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     updatePersonalData

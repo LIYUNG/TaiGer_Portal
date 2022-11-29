@@ -23,21 +23,21 @@ const loginRateLimiter = rateLimit({
 
 const activateAccountRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
 const resendActivationRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
 const forgotPasswordRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -58,14 +58,14 @@ const updateCredentialRateLimiter = rateLimit({
 
 const updatePersonalInformationRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 10, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 10, // Limit each IP to 10 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
 const TranscriptAnalyserRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 50, // Limit each IP to 50 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -79,7 +79,7 @@ const RemoveNotificationRateLimiter = rateLimit({
 
 const GeneralGETRequestRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 200, // Limit each IP to 200 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -93,7 +93,7 @@ const GeneralPUTRequestRateLimiter = rateLimit({
 
 const GeneralDELETERequestRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -168,6 +168,14 @@ const DeleteProgramRateLimiter = rateLimit({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const DocumentationGETRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 * 1 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+
 module.exports = {
   DownloadTemplateRateLimiter,
   GeneralGETRequestRateLimiter,
@@ -192,5 +200,6 @@ module.exports = {
   GetProgramListRateLimiter,
   GetProgramRateLimiter,
   UpdateProgramRateLimiter,
-  DeleteProgramRateLimiter
+  DeleteProgramRateLimiter,
+  DocumentationGETRateLimiter
 };

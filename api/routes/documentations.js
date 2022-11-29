@@ -3,7 +3,8 @@ const {
   GeneralPUTRequestRateLimiter,
   GeneralPOSTRequestRateLimiter,
   GeneralGETRequestRateLimiter,
-  GeneralDELETERequestRateLimiter
+  GeneralDELETERequestRateLimiter,
+  DocumentationGETRateLimiter
 } = require('../middlewares/rate_limiter');
 const {
   imageUpload,
@@ -54,7 +55,7 @@ router
   .route('/internal/all')
   .get(
     filter_archiv_user,
-    GeneralGETRequestRateLimiter,
+    DocumentationGETRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent),
     getAllInternalDocumentations
   );
@@ -62,7 +63,7 @@ router
   .route('/internal/search/:doc_id')
   .get(
     filter_archiv_user,
-    GeneralGETRequestRateLimiter,
+    DocumentationGETRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent),
     getInternalDocumentation
   );
@@ -85,7 +86,7 @@ router
   .route('/taiger/internal/confidential')
   .get(
     filter_archiv_user,
-    GeneralGETRequestRateLimiter,
+    DocumentationGETRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent),
     getInternalDocumentationsPage
   )
@@ -109,7 +110,7 @@ router
   .route('/file/:object_key')
   .get(
     filter_archiv_user,
-    GeneralGETRequestRateLimiter,
+    DocumentationGETRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     getDocFile
   );
@@ -128,7 +129,7 @@ router
   .route('/pages/:category')
   .get(
     filter_archiv_user,
-    GeneralGETRequestRateLimiter,
+    DocumentationGETRateLimiter,
     prohibit(Role.Guest),
     getCategoryDocumentationsPage
   )
@@ -143,7 +144,7 @@ router
   .route('/all')
   .get(
     filter_archiv_user,
-    GeneralGETRequestRateLimiter,
+    DocumentationGETRateLimiter,
     prohibit(Role.Guest),
     getAllDocumentations
   );
@@ -151,13 +152,13 @@ router
   .route('/:category')
   .get(
     filter_archiv_user,
-    GeneralGETRequestRateLimiter,
+    DocumentationGETRateLimiter,
     prohibit(Role.Guest),
     getCategoryDocumentations
   );
 router
   .route('/search/:doc_id')
-  .get(GeneralGETRequestRateLimiter, prohibit(Role.Guest), getDocumentation);
+  .get(DocumentationGETRateLimiter, prohibit(Role.Guest), getDocumentation);
 
 router
   .route('/:id')

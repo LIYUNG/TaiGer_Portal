@@ -540,6 +540,7 @@ class SingleStudentPage extends React.Component {
           <Tab eventKey="background" title="Background">
             <SurveyComponent
               role={this.props.user.role}
+              user={this.props.user}
               academic_background={this.state.student.academic_background}
               application_preference={this.state.student.application_preference}
               isLoaded={this.state.isLoaded}

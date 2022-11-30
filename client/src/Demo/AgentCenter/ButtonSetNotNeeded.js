@@ -71,7 +71,6 @@ class ButtonSetNotNeeded extends React.Component {
 
   onChangeURL = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     const url_temp = e.target.value;
     this.setState((state) => ({
       ...state,
@@ -135,7 +134,7 @@ class ButtonSetNotNeeded extends React.Component {
                   </Spinner>
                 </div>
               ) : (
-                <Form.Group controlId="formFile">
+                <Form.Group controlId={`${this.props.k}`}>
                   <Form.Label>
                     <IoMdCloudUpload color={'white'} size={32} />
                   </Form.Label>
@@ -168,7 +167,7 @@ class ButtonSetNotNeeded extends React.Component {
                       )
                     }
                   >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Form.Group controlId={`${this.props.k}`}>
                       <Button size="sm" type="submit">
                         Set Needed
                       </Button>

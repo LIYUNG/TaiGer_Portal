@@ -21,7 +21,7 @@ export const check_german_language_passed = (academic_background) => {
 };
 
 export const check_languages_filled = (academic_background) => {
-  if (!academic_background || !academic_background.university) {
+  if (!academic_background || !academic_background.language) {
     return false;
   }
   if (

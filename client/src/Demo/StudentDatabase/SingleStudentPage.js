@@ -14,6 +14,7 @@ import {
   getStudentAndDocLinks,
   updateProfileDocumentStatus,
   uploadforstudent,
+  updateAcademicBackground,
   deleteFile,
   updateBaseDocsDocumentationLink
 } from '../../api';
@@ -101,9 +102,9 @@ class SingleStudentPage extends React.Component {
     );
   };
 
-  handleGeneralDocSubmit = (e, studentId, fileCategory) => {
+  handleGeneralDocSubmit = (e, fileCategory, studentId) => {
     e.preventDefault();
-    this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
+    this.onSubmitGeneralFile(e, e.target.files[0], fileCategory, studentId);
   };
 
   onSubmitGeneralFile = (e, NewFile, category, student_id) => {
@@ -165,6 +166,43 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {}
+    );
+  };
+
+  handleSubmit_AcademicBackground_root = (e, university, student_id) => {
+    e.preventDefault();
+    updateAcademicBackground(university, student_id).then(
+      (resp) => {
+        const { profile, data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            changed_academic: false,
+            student: {
+              ...state.student,
+              academic_background: {
+                ...state.student.academic_background,
+                university: data
+              },
+              profile: profile
+            },
+            success: success,
+            updateconfirmed: true
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
+      }
     );
   };
 
@@ -545,6 +583,11 @@ class SingleStudentPage extends React.Component {
               application_preference={this.state.student.application_preference}
               isLoaded={this.state.isLoaded}
               student_id={this.state.student._id}
+              singlestudentpage_fromtaiger={true}
+              handleSubmit_AcademicBackground_root={
+                this.handleSubmit_AcademicBackground_root
+              }
+              updateconfirmed={this.state.updateconfirmed}
             />
           </Tab>
           <Tab eventKey="Courses_Table" title="Courses Table">

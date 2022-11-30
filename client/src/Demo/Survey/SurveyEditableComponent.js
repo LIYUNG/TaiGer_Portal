@@ -29,6 +29,27 @@ class SurveyEditableComponent extends React.Component {
     changed_language: false,
     changed_application_preference: false
   };
+  componentDidUpdate(prevProps) {
+    // 常見用法（別忘了比較 prop）：
+    if (
+      prevProps.academic_background.university !==
+      this.props.academic_background.university
+    ) {
+      this.setState((state) => ({
+        ...state,
+        changed_academic: false
+      }));
+    }
+    if (
+      prevProps.academic_background.language !==
+      this.props.academic_background.language
+    ) {
+      this.setState((state) => ({
+        ...state,
+        changed_language: false
+      }));
+    }
+  }
 
   handleChange_ApplicationPreference = (e) => {
     e.preventDefault();
@@ -59,20 +80,6 @@ class SurveyEditableComponent extends React.Component {
     e.preventDefault();
     var language_temp = { ...this.state.academic_background.language };
     language_temp[e.target.id] = e.target.value;
-    // if (e.target.id === 'english_certificate') {
-    //   if (e.target.value === 'No') {
-    //     language_temp['english_score'] = '';
-    //   } else {
-    //     language_temp['english_test_date'] = '';
-    //   }
-    // }
-    // if (e.target.id === 'german_certificate') {
-    //   if (e.target.value === 'No') {
-    //     language_temp['german_score'] = '';
-    //   } else {
-    //     language_temp['german_test_date'] = '';
-    //   }
-    // }
     this.setState((state) => ({
       ...state,
       changed_language: true,
@@ -231,31 +238,73 @@ class SurveyEditableComponent extends React.Component {
                         }
                       />
                     </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="high_school_graduated_year">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        High School Gradate Year
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="2022"
-                        defaultValue={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .high_school_graduated_year
-                            ? this.state.academic_background.university
-                                .high_school_graduated_year
-                            : ''
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      />
-                    </Form.Group>
                     <br />
                   </Col>
                 </Row>
                 <Row>
-                  <h4 className="my-2 mx-0 text-light">University</h4>
+                  <Col md={6}>
+                    <Form.Group controlId="high_school_isGraduated">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        High School already graduated?
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        defaultValue={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university
+                            .high_school_isGraduated
+                            ? this.state.academic_background.university
+                                .high_school_isGraduated
+                            : '-'
+                        }
+                        onChange={(e) => this.handleChange_Academic(e)}
+                      >
+                        <option value="-">-</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="pending">Not finished yet</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
+                  {this.state.academic_background.university &&
+                    this.state.academic_background.university
+                      .high_school_isGraduated !== '-' && (
+                      <Col md={6}>
+                        <Form.Group controlId="high_school_graduated_year">
+                          <Form.Label className="my-0 mx-0 text-light">
+                            {this.state.academic_background.university
+                              .high_school_isGraduated === 'Yes' &&
+                              'High School Gradate Year'}
+                            {this.state.academic_background.university
+                              .high_school_isGraduated === 'pending' &&
+                              'Expected High School Gradate Year'}
+                            {this.state.academic_background.university
+                              .high_school_isGraduated === 'No' &&
+                              'High School Gradate leaved Year'}
+                          </Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="2022"
+                            defaultValue={
+                              this.state.academic_background.university &&
+                              this.state.academic_background.university
+                                .high_school_graduated_year
+                                ? this.state.academic_background.university
+                                    .high_school_graduated_year
+                                : ''
+                            }
+                            onChange={(e) => this.handleChange_Academic(e)}
+                          />
+                        </Form.Group>
+                        <br />
+                      </Col>
+                    )}
+                </Row>
+                <Row>
+                  <h4 className="my-2 mx-0 text-light">
+                    University (Bachelor degree)
+                  </h4>
                 </Row>
                 <Row>
                   <Col md={6}>
@@ -317,9 +366,10 @@ class SurveyEditableComponent extends React.Component {
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       >
-                        <option>-</option>
-                        <option>Yes</option>
-                        <option>No</option>
+                        <option value="-">-</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="pending">Not finished yet</option>
                       </Form.Control>
                     </Form.Group>
                     <br />
@@ -331,9 +381,12 @@ class SurveyEditableComponent extends React.Component {
                         <Form.Group controlId="expected_grad_date">
                           <Form.Label className="my-0 mx-0 text-light">
                             {this.state.academic_background.university
-                              .isGraduated === 'No' && 'Expected Graduate Year'}
+                              .isGraduated === 'No' && 'Leaved Year'}
                             {this.state.academic_background.university
                               .isGraduated === 'Yes' && 'Graduated Year'}
+                            {this.state.academic_background.university
+                              .isGraduated === 'pending' &&
+                              'Expected Graduate Year'}
                           </Form.Label>
                           <Form.Control
                             as="select"
@@ -452,19 +505,40 @@ class SurveyEditableComponent extends React.Component {
                   {this.props.user.archiv !== true && (
                     <Col md={2}>
                       <br />
-                      <Button
-                        variant="primary"
-                        disabled={!this.state.changed_academic}
-                        onClick={(e) =>
-                          this.props.handleSubmit_AcademicBackground(
-                            e,
-                            this.state.academic_background.university
-                          )
-                        }
-                      >
-                        Update
-                      </Button>
-                      <br />
+                      {this.props.singlestudentpage_fromtaiger ? (
+                        <>
+                          {' '}
+                          <Button
+                            variant="primary"
+                            disabled={!this.state.changed_academic}
+                            onClick={(e) =>
+                              this.props.handleSubmit_AcademicBackground_root(
+                                e,
+                                this.state.academic_background.university
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
+                          <br />
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            variant="primary"
+                            disabled={!this.state.changed_academic}
+                            onClick={(e) =>
+                              this.props.handleSubmit_AcademicBackground(
+                                e,
+                                this.state.academic_background.university
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
+                          <br />
+                        </>
+                      )}
                     </Col>
                   )}
                 </Row>

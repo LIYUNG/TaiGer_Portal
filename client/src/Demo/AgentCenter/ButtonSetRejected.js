@@ -147,7 +147,6 @@ class ButtonSetRejected extends React.Component {
 
   onChangeURL = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     const url_temp = e.target.value;
     this.setState((state) => ({
       ...state,
@@ -303,8 +302,12 @@ class ButtonSetRejected extends React.Component {
                 </td>
                 <td>
                   <Col>
-                    <Form
-                      onSubmit={(e) =>
+                    <Button
+                      variant={acceptStyle}
+                      size="sm"
+                      type="submit"
+                      disabled={!this.state.isLoaded}
+                      onClick={(e) =>
                         this.onUpdateProfileDocStatus(
                           e,
                           this.props.k,
@@ -313,25 +316,21 @@ class ButtonSetRejected extends React.Component {
                         )
                       }
                     >
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button
-                          variant={acceptStyle}
-                          size="sm"
-                          type="submit"
-                          disabled={!this.state.isLoaded}
-                        >
-                          O
-                        </Button>
-                      </Form.Group>
-                    </Form>
+                      O
+                    </Button>
                   </Col>
                 </td>
               </>
             )}
             <td>
               <Col>
-                <Form
-                  onSubmit={(e) =>
+                <Button
+                  variant={deleteStyle}
+                  size="sm"
+                  type="submit"
+                  title="Delete"
+                  disabled={!this.state.isLoaded}
+                  onClick={(e) =>
                     this.onDeleteFileWarningPopUp(
                       e,
                       this.props.k,
@@ -340,18 +339,8 @@ class ButtonSetRejected extends React.Component {
                     )
                   }
                 >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button
-                      variant={deleteStyle}
-                      size="sm"
-                      type="submit"
-                      title="Delete"
-                      disabled={!this.state.isLoaded}
-                    >
-                      <AiOutlineDelete size={16} />
-                    </Button>
-                  </Form.Group>
-                </Form>
+                  <AiOutlineDelete size={16} />
+                </Button>
               </Col>
             </td>
           </>

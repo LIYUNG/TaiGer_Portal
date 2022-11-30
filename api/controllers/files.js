@@ -8,7 +8,7 @@ const { Template } = require('../models/Template');
 const Course = require('../models/Course');
 const { UPLOAD_PATH } = require('../config');
 const { ErrorResponse } = require('../common/errors');
-const { DocumentStatus } = require('../constants');
+const { DocumentStatus, profile_name_list } = require('../constants');
 const {
   deleteTemplateSuccessEmail,
   uploadTemplateSuccessEmail,
@@ -990,7 +990,6 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   // TODO: multitenancy studentId?
   let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
   student_name = student_name.replace(/ /g, '-');
-  console.log(student_name);
   try {
     let test_var;
     const python = spawn(
@@ -1154,7 +1153,101 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       },
       { upsert: true, new: true }
     );
-    res.status(200).send({ success: true, data: university });
+
+    // TODO: update base documents needed or not:
+
+    // no need university doc
+    if (
+      updatedStudent.academic_background.university.high_school_isGraduated ===
+      'pending'
+    ) {
+      // make sure if existing uploaded file
+      let bachelor_diploma_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Bachelor_Certificate
+      );
+      if (!bachelor_diploma_doc) {
+        // Set not needed
+        bachelor_diploma_doc = updatedStudent.profile.create({
+          name: profile_name_list.Bachelor_Certificate
+        });
+        bachelor_diploma_doc.status = DocumentStatus.NotNeeded;
+        bachelor_diploma_doc.required = true;
+        bachelor_diploma_doc.updatedAt = new Date();
+        bachelor_diploma_doc.path = '';
+        updatedStudent.profile.push(bachelor_diploma_doc);
+      } else {
+        if (bachelor_diploma_doc.status === DocumentStatus.Missing) {
+          bachelor_diploma_doc.status = DocumentStatus.NotNeeded;
+        }
+      }
+
+      let bachelor_transcript_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Bachelor_Transcript
+      );
+      if (!bachelor_transcript_doc) {
+        // Set not needed
+        bachelor_transcript_doc = updatedStudent.profile.create({
+          name: profile_name_list.Bachelor_Transcript
+        });
+        bachelor_transcript_doc.status = DocumentStatus.NotNeeded;
+        bachelor_transcript_doc.required = true;
+        bachelor_transcript_doc.updatedAt = new Date();
+        bachelor_transcript_doc.path = '';
+        updatedStudent.profile.push(bachelor_transcript_doc);
+      } else {
+        if (bachelor_transcript_doc.status === DocumentStatus.Missing) {
+          bachelor_transcript_doc.status = DocumentStatus.NotNeeded;
+        }
+      }
+      await updatedStudent.save();
+    } else {
+      let bachelor_diploma_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Bachelor_Certificate
+      );
+      if (!bachelor_diploma_doc) {
+        // Set not needed
+        bachelor_diploma_doc = updatedStudent.profile.create({
+          name: profile_name_list.Bachelor_Certificate
+        });
+        bachelor_diploma_doc.status = DocumentStatus.Missing;
+        bachelor_diploma_doc.required = true;
+        bachelor_diploma_doc.updatedAt = new Date();
+        bachelor_diploma_doc.path = '';
+        updatedStudent.profile.push(bachelor_diploma_doc);
+      } else {
+        if (bachelor_diploma_doc.status === DocumentStatus.NotNeeded) {
+          bachelor_diploma_doc.status = DocumentStatus.Missing;
+        }
+      }
+
+      let bachelor_transcript_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Bachelor_Transcript
+      );
+      if (!bachelor_transcript_doc) {
+        // Set not needed
+        bachelor_transcript_doc = updatedStudent.profile.create({
+          name: profile_name_list.Bachelor_Transcript
+        });
+        bachelor_transcript_doc.status = DocumentStatus.Missing;
+        bachelor_transcript_doc.required = true;
+        bachelor_transcript_doc.updatedAt = new Date();
+        bachelor_transcript_doc.path = '';
+        updatedStudent.profile.push(bachelor_transcript_doc);
+      } else {
+        if (bachelor_transcript_doc.status === DocumentStatus.NotNeeded) {
+          bachelor_transcript_doc.status = DocumentStatus.Missing;
+        }
+      }
+      await updatedStudent.save();
+    }
+
+    res
+      .status(200)
+      .send({
+        success: true,
+        data: university,
+        profile: updatedStudent.profile
+      });
 
     await updateAcademicBackgroundEmail(
       {
@@ -1196,7 +1289,49 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     },
     { upsert: true, new: true }
   );
-  // const updatedStudent = await User.findById(_id);
+
+  // German not needed
+  if (updatedStudent.academic_background.language.german_isPassed === '--') {
+    let german_certificate_doc = updatedStudent.profile.find(
+      (doc) => doc.name === profile_name_list.German_Certificate
+    );
+    if (!german_certificate_doc) {
+      // Set not needed
+      german_certificate_doc = updatedStudent.profile.create({
+        name: profile_name_list.German_Certificate
+      });
+      german_certificate_doc.status = DocumentStatus.NotNeeded;
+      german_certificate_doc.required = true;
+      german_certificate_doc.updatedAt = new Date();
+      german_certificate_doc.path = '';
+      updatedStudent.profile.push(german_certificate_doc);
+    } else {
+      if (german_certificate_doc.status === DocumentStatus.Missing) {
+        german_certificate_doc.status = DocumentStatus.NotNeeded;
+      }
+    }
+  } else {
+    let german_certificate_doc = updatedStudent.profile.find(
+      (doc) => doc.name === profile_name_list.German_Certificate
+    );
+    if (!german_certificate_doc) {
+      // Set not needed
+      german_certificate_doc = updatedStudent.profile.create({
+        name: profile_name_list.German_Certificate
+      });
+      german_certificate_doc.status = DocumentStatus.Missing;
+      german_certificate_doc.required = true;
+      german_certificate_doc.updatedAt = new Date();
+      german_certificate_doc.path = '';
+      updatedStudent.profile.push(german_certificate_doc);
+    } else {
+      if (german_certificate_doc.status === DocumentStatus.NotNeeded) {
+        german_certificate_doc.status = DocumentStatus.Missing;
+      }
+    }
+  }
+  await updatedStudent.save();
+
   res
     .status(200)
     .send({ success: true, data: updatedStudent.academic_background.language });

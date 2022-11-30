@@ -107,7 +107,6 @@ class ButtonSetUploaded extends React.Component {
 
   onChangeURL = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     const url_temp = e.target.value;
     this.setState((state) => ({
       ...state,

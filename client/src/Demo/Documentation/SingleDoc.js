@@ -33,7 +33,6 @@ class SingleDoc extends React.Component {
           } else {
             initialEditorState = {};
           }
-          console.log(data);
           initialEditorState = JSON.parse(data.text);
           this.setState({
             isLoaded: true,

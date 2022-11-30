@@ -41,7 +41,8 @@ class SurveyComponent extends React.Component {
     if (prevProps.academic_background !== this.props.academic_background) {
       this.setState((state) => ({
         ...state,
-        academic_background: this.props.academic_background
+        academic_background: this.props.academic_background,
+        updateconfirmed: this.props.updateconfirmed
       }));
     }
   }
@@ -160,6 +161,14 @@ class SurveyComponent extends React.Component {
     });
   };
 
+  handleSubmit_AcademicBackground_root = (e, university) => {
+    this.props.handleSubmit_AcademicBackground_root(
+      e,
+      university,
+      this.state.student_id
+    );
+  };
+
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
@@ -190,7 +199,11 @@ class SurveyComponent extends React.Component {
           handleSubmit_ApplicationPreference={
             this.handleSubmit_ApplicationPreference
           }
-        />{' '}
+          singlestudentpage_fromtaiger={this.props.singlestudentpage_fromtaiger}
+          handleSubmit_AcademicBackground_root={
+            this.handleSubmit_AcademicBackground_root
+          }
+        />
         <Modal
           show={this.state.updateconfirmed}
           onHide={this.onHide}

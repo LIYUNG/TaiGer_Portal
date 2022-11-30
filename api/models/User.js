@@ -165,6 +165,10 @@ const UserSchema = new Schema(
     },
     academic_background: {
       university: {
+        high_school_isGraduated: {
+          type: String,
+          default: ''
+        },
         attended_high_school: {
           type: String,
           default: ''

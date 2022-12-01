@@ -1199,6 +1199,62 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
           bachelor_transcript_doc.status = DocumentStatus.NotNeeded;
         }
       }
+
+      let course_description_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Course_Description
+      );
+      if (!course_description_doc) {
+        // Set not needed
+        course_description_doc = updatedStudent.profile.create({
+          name: profile_name_list.Course_Description
+        });
+        course_description_doc.status = DocumentStatus.NotNeeded;
+        course_description_doc.required = true;
+        course_description_doc.updatedAt = new Date();
+        course_description_doc.path = '';
+        updatedStudent.profile.push(course_description_doc);
+      } else {
+        if (course_description_doc.status === DocumentStatus.Missing) {
+          course_description_doc.status = DocumentStatus.NotNeeded;
+        }
+      }
+
+      let employment_certificate_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Employment_Certificate
+      );
+      if (!employment_certificate_doc) {
+        // Set not needed
+        employment_certificate_doc = updatedStudent.profile.create({
+          name: profile_name_list.Employment_Certificate
+        });
+        employment_certificate_doc.status = DocumentStatus.NotNeeded;
+        employment_certificate_doc.required = true;
+        employment_certificate_doc.updatedAt = new Date();
+        employment_certificate_doc.path = '';
+        updatedStudent.profile.push(employment_certificate_doc);
+      } else {
+        if (employment_certificate_doc.status === DocumentStatus.Missing) {
+          employment_certificate_doc.status = DocumentStatus.NotNeeded;
+        }
+      }
+      let ects_conversion_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.ECTS_Conversion
+      );
+      if (!ects_conversion_doc) {
+        // Set not needed
+        ects_conversion_doc = updatedStudent.profile.create({
+          name: profile_name_list.ECTS_Conversion
+        });
+        ects_conversion_doc.status = DocumentStatus.NotNeeded;
+        ects_conversion_doc.required = true;
+        ects_conversion_doc.updatedAt = new Date();
+        ects_conversion_doc.path = '';
+        updatedStudent.profile.push(ects_conversion_doc);
+      } else {
+        if (ects_conversion_doc.status === DocumentStatus.Missing) {
+          ects_conversion_doc.status = DocumentStatus.NotNeeded;
+        }
+      }
       await updatedStudent.save();
     } else {
       let bachelor_diploma_doc = updatedStudent.profile.find(
@@ -1236,6 +1292,63 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       } else {
         if (bachelor_transcript_doc.status === DocumentStatus.NotNeeded) {
           bachelor_transcript_doc.status = DocumentStatus.Missing;
+        }
+      }
+
+      let course_description_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Course_Description
+      );
+      if (!course_description_doc) {
+        // Set not needed
+        course_description_doc = updatedStudent.profile.create({
+          name: profile_name_list.Course_Description
+        });
+        course_description_doc.status = DocumentStatus.Missing;
+        course_description_doc.required = true;
+        course_description_doc.updatedAt = new Date();
+        course_description_doc.path = '';
+        updatedStudent.profile.push(course_description_doc);
+      } else {
+        if (course_description_doc.status === DocumentStatus.NotNeeded) {
+          course_description_doc.status = DocumentStatus.Missing;
+        }
+      }
+
+      let employment_certificate_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Employment_Certificate
+      );
+      if (!employment_certificate_doc) {
+        // Set not needed
+        employment_certificate_doc = updatedStudent.profile.create({
+          name: profile_name_list.Employment_Certificate
+        });
+        employment_certificate_doc.status = DocumentStatus.Missing;
+        employment_certificate_doc.required = true;
+        employment_certificate_doc.updatedAt = new Date();
+        employment_certificate_doc.path = '';
+        updatedStudent.profile.push(employment_certificate_doc);
+      } else {
+        if (employment_certificate_doc.status === DocumentStatus.NotNeeded) {
+          employment_certificate_doc.status = DocumentStatus.Missing;
+        }
+      }
+
+      let ects_conversion_doc = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.ECTS_Conversion
+      );
+      if (!ects_conversion_doc) {
+        // Set not needed
+        ects_conversion_doc = updatedStudent.profile.create({
+          name: profile_name_list.ECTS_Conversion
+        });
+        ects_conversion_doc.status = DocumentStatus.Missing;
+        ects_conversion_doc.required = true;
+        ects_conversion_doc.updatedAt = new Date();
+        ects_conversion_doc.path = '';
+        updatedStudent.profile.push(ects_conversion_doc);
+      } else {
+        if (ects_conversion_doc.status === DocumentStatus.NotNeeded) {
+          ects_conversion_doc.status = DocumentStatus.Missing;
         }
       }
       await updatedStudent.save();

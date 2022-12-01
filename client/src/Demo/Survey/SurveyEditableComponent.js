@@ -155,6 +155,7 @@ class SurveyEditableComponent extends React.Component {
                 <Card.Body>
                   The followings information are still missing:{' '}
                   {this.props.academic_background &&
+                    this.props.academic_background.university &&
                     !this.props.academic_background.university
                       .attended_high_school && (
                       <li>
@@ -162,6 +163,17 @@ class SurveyEditableComponent extends React.Component {
                       </li>
                     )}
                   {this.props.academic_background &&
+                    this.props.academic_background.university &&
+                    (!this.props.academic_background.university
+                      .high_school_isGraduated ||
+                      this.props.academic_background.university
+                        .high_school_isGraduated === '-') && (
+                      <li>
+                        <b>High School graduate status</b>
+                      </li>
+                    )}
+                  {this.props.academic_background &&
+                    this.props.academic_background.university &&
                     !this.props.academic_background.university
                       .attended_university && (
                       <li>
@@ -169,10 +181,21 @@ class SurveyEditableComponent extends React.Component {
                       </li>
                     )}{' '}
                   {this.props.academic_background &&
+                    this.props.academic_background.university &&
                     !this.props.academic_background.university
                       .attended_university_program && (
                       <li>
                         <b>University Program</b>
+                      </li>
+                    )}
+                  {this.props.academic_background &&
+                    this.props.academic_background.university &&
+                    (!this.props.academic_background.university
+                      .isGraduated ||
+                      this.props.academic_background.university
+                        .isGraduated === '-') && (
+                      <li>
+                        <b>Bachelor Degree graduate status</b>
                       </li>
                     )}
                   {this.props.application_preference &&
@@ -353,7 +376,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="isGraduated">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Already graduated?
+                        Already Bechelor graduated?
                       </Form.Label>
                       <Form.Control
                         as="select"

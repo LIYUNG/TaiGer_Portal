@@ -507,7 +507,6 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          {' '}
                           <Button
                             variant="primary"
                             disabled={!this.state.changed_academic}
@@ -1039,19 +1038,39 @@ class SurveyEditableComponent extends React.Component {
                   {this.props.user.archiv !== true && (
                     <Col md={2}>
                       <br />
-                      <Button
-                        variant="primary"
-                        disabled={!this.state.changed_language}
-                        onClick={(e) =>
-                          this.props.handleSubmit_Language(
-                            e,
-                            this.state.academic_background.language
-                          )
-                        }
-                      >
-                        Update
-                      </Button>
-                      <br />
+                      {this.props.singlestudentpage_fromtaiger ? (
+                        <>
+                          <Button
+                            variant="primary"
+                            disabled={!this.state.changed_language}
+                            onClick={(e) =>
+                              this.props.handleSubmit_Language_root(
+                                e,
+                                this.state.academic_background.language
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
+                          <br />
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            variant="primary"
+                            disabled={!this.state.changed_language}
+                            onClick={(e) =>
+                              this.props.handleSubmit_Language(
+                                e,
+                                this.state.academic_background.language
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
+                          <br />
+                        </>
+                      )}
                     </Col>
                   )}
                 </Row>

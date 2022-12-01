@@ -169,6 +169,14 @@ class SurveyComponent extends React.Component {
     );
   };
 
+  handleSubmit_Language_root = (e, language) => {
+    this.props.handleSubmit_Language_root(
+      e,
+      language,
+      this.state.student_id
+    );
+  };
+
   render() {
     const { unauthorizederror, timeouterror, isLoaded } = this.state;
 
@@ -203,6 +211,7 @@ class SurveyComponent extends React.Component {
           handleSubmit_AcademicBackground_root={
             this.handleSubmit_AcademicBackground_root
           }
+          handleSubmit_Language_root={this.handleSubmit_Language_root}
         />
         <Modal
           show={this.state.updateconfirmed}

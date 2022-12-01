@@ -15,6 +15,7 @@ import {
   updateProfileDocumentStatus,
   uploadforstudent,
   updateAcademicBackground,
+  updateLanguageSkill,
   deleteFile,
   updateBaseDocsDocumentationLink
 } from '../../api';
@@ -177,12 +178,49 @@ class SingleStudentPage extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            changed_academic: false,
+            isLoaded: true,
             student: {
               ...state.student,
               academic_background: {
                 ...state.student.academic_background,
                 university: data
+              },
+              profile: profile
+            },
+            success: success,
+            updateconfirmed: true
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
+      }
+    );
+  };
+
+  handleSubmit_Language_root = (e, language, student_id) => {
+    e.preventDefault();
+    updateLanguageSkill(language, student_id).then(
+      (resp) => {
+        const { profile, data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            student: {
+              ...state.student,
+              academic_background: {
+                ...state.student.academic_background,
+                language: data
               },
               profile: profile
             },
@@ -587,6 +625,7 @@ class SingleStudentPage extends React.Component {
               handleSubmit_AcademicBackground_root={
                 this.handleSubmit_AcademicBackground_root
               }
+              handleSubmit_Language_root={this.handleSubmit_Language_root}
               updateconfirmed={this.state.updateconfirmed}
             />
           </Tab>

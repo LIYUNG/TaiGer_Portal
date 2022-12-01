@@ -1241,13 +1241,12 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       await updatedStudent.save();
     }
 
-    res
-      .status(200)
-      .send({
-        success: true,
-        data: university,
-        profile: updatedStudent.profile
-      });
+    // TODO: minor: profile field not used for student.
+    res.status(200).send({
+      success: true,
+      data: university,
+      profile: updatedStudent.profile
+    });
 
     await updateAcademicBackgroundEmail(
       {
@@ -1291,10 +1290,13 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   );
 
   // German not needed
+  let german_certificate_doc = updatedStudent.profile.find(
+    (doc) => doc.name === profile_name_list.German_Certificate
+  );
+  let english_certificate_doc = updatedStudent.profile.find(
+    (doc) => doc.name === profile_name_list.Englisch_Certificate
+  );
   if (updatedStudent.academic_background.language.german_isPassed === '--') {
-    let german_certificate_doc = updatedStudent.profile.find(
-      (doc) => doc.name === profile_name_list.German_Certificate
-    );
     if (!german_certificate_doc) {
       // Set not needed
       german_certificate_doc = updatedStudent.profile.create({
@@ -1311,9 +1313,6 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
       }
     }
   } else {
-    let german_certificate_doc = updatedStudent.profile.find(
-      (doc) => doc.name === profile_name_list.German_Certificate
-    );
     if (!german_certificate_doc) {
       // Set not needed
       german_certificate_doc = updatedStudent.profile.create({
@@ -1330,11 +1329,42 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
       }
     }
   }
-  await updatedStudent.save();
 
-  res
-    .status(200)
-    .send({ success: true, data: updatedStudent.academic_background.language });
+  if (updatedStudent.academic_background.language.english_isPassed === '--') {
+    if (!english_certificate_doc) {
+      // Set not needed
+      english_certificate_doc = updatedStudent.profile.create({
+        name: profile_name_list.Englisch_Certificate
+      });
+      english_certificate_doc.status = DocumentStatus.NotNeeded;
+      english_certificate_doc.required = true;
+      english_certificate_doc.updatedAt = new Date();
+      english_certificate_doc.path = '';
+      updatedStudent.profile.push(english_certificate_doc);
+    } else if (english_certificate_doc.status === DocumentStatus.Missing) {
+      english_certificate_doc.status = DocumentStatus.NotNeeded;
+    }
+  } else if (!english_certificate_doc) {
+    // Set not needed
+    english_certificate_doc = updatedStudent.profile.create({
+      name: profile_name_list.Englisch_Certificate
+    });
+    english_certificate_doc.status = DocumentStatus.Missing;
+    english_certificate_doc.required = true;
+    english_certificate_doc.updatedAt = new Date();
+    english_certificate_doc.path = '';
+    updatedStudent.profile.push(english_certificate_doc);
+  } else if (english_certificate_doc.status === DocumentStatus.NotNeeded) {
+    english_certificate_doc.status = DocumentStatus.Missing;
+  }
+
+  await updatedStudent.save();
+  // TODO: minor: profile field not used for student.
+  res.status(200).send({
+    success: true,
+    data: updatedStudent.academic_background.language,
+    profile: updatedStudent.profile
+  });
   if (user.role === Role.Student) {
     await updateLanguageSkillEmail(
       {

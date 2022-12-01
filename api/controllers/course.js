@@ -6,26 +6,14 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const Course = require('../models/Course');
 const { Role, Student, User } = require('../models/User');
 const logger = require('../services/logger');
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  UPLOAD_PATH,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME
-} = require('../config');
 
 const getCourse = asyncHandler(async (req, res) => {
-  const { user } = req;
-  if (user.role === Role.Student) {
-    if (user._id.toString() !== req.params.student_id) {
-      logger.info('getCourse: no student found');
-      throw new ErrorResponse(403, 'Invalid operation');
-    }
-  }
+  const { studentId } = req.params;
   const courses = await Course.findOne({
-    student_id: req.params.student_id
+    student_id: studentId
   });
   if (!courses) {
-    const student = await Student.findById(req.params.student_id);
+    const student = await Student.findById(studentId);
     if (!student) {
       logger.info('getCourse: no student found');
       throw new ErrorResponse(500, 'Invalid student');
@@ -43,34 +31,26 @@ const getCourse = asyncHandler(async (req, res) => {
     });
   }
   const courses2 = await Course.findOne({
-    student_id: req.params.student_id
+    student_id: studentId
   }).populate('student_id', 'firstname lastname');
   return res.send({ success: true, data: courses2 });
 });
 
 const createCourse = asyncHandler(async (req, res) => {
-  const { user } = req;
-  if (user.role === Role.Student) {
-    if (user._id.toString() !== req.params.student_id) {
-      logger.info('createCourse: Invalid operation, unauthorized');
-      throw new ErrorResponse(403, 'Invalid operation');
-    }
-  }
+  const { studentId } = req.params;
   const fields = req.body;
-  const courses = await Course.findOne({ student_id: req.params.student_id });
+  const courses = await Course.findOne({ student_id: studentId });
   fields.updatedAt = new Date();
   if (!courses) {
     const newDoc = await Course.create(fields);
     const courses3 = await Course.findOne({
-      student_id: req.params.student_id
+      student_id: studentId
     }).populate('student_id', 'firstname lastname');
     return res.send({ success: true, data: courses3 });
   }
-  const courses2 = await Course.findOneAndUpdate(
-    req.params.student_id,
-    fields,
-    { new: true }
-  ).populate('student_id', 'firstname lastname');
+  const courses2 = await Course.findOneAndUpdate(studentId, fields, {
+    new: true
+  }).populate('student_id', 'firstname lastname');
   return res.send({ success: true, data: courses2 });
 });
 

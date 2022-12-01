@@ -61,9 +61,9 @@ const getMyInterview = asyncHandler(async (req, res) => {
 const createInterview = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { program_id, student_id }
+    params: { program_id, studentId }
   } = req;
-  const student = await Student.findById(student_id)
+  const student = await Student.findById(studentId)
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email')
     .exec();
@@ -72,7 +72,7 @@ const createInterview = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid student id');
   }
   const interview = await Interview.findOne({
-    student_id,
+    student_id: studentId,
     program_id
   });
 
@@ -81,7 +81,7 @@ const createInterview = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'this interview is already existed!');
   }
   // const new_interview = new Interview();
-  await Interview.create({ student_id, program_id });
+  await Interview.create({ student_id: studentId, program_id });
   const new_interviews = await Interview.find({})
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name')

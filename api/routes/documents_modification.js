@@ -10,6 +10,7 @@ const {
   getMessageFileRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
+const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const {
@@ -48,6 +49,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     initGeneralMessagesThread
   );
 
@@ -57,6 +59,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     initApplicationMessagesThread
   );
 
@@ -66,6 +69,7 @@ router
     filter_archiv_user,
     SetStatusMessagesThreadRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     SetStatusMessagesThread
   );
 
@@ -75,6 +79,7 @@ router
     filter_archiv_user,
     postMessagesRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     MessagesThreadUpload,
     postMessages
   );
@@ -85,10 +90,12 @@ router
     filter_archiv_user,
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     MessagesImageThreadUpload,
     postImageInThread
   );
 
+// Multitenant-filter in call-back function
 router
   .route('/:messagesThreadId')
   .get(
@@ -103,10 +110,12 @@ router
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
+    multitenant_filter,
     deleteGeneralMessagesThread
   );
 
 // WARNING: strict ratelimiter for S3 file download
+// Multitenant-filter in call-back function
 router
   .route('/:messagesThreadId/:messageId/:file_key')
   .get(
@@ -122,6 +131,7 @@ router
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     deleteProgramSpecificMessagesThread
   );
 

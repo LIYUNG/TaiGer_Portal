@@ -208,10 +208,9 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     params: { studentId, category }
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student =
-    user.role === Role.Student
-      ? user
-      : await Student.findById(studentId).populate('applications.programId');
+  const student = await Student.findById(studentId).populate(
+    'applications.programId'
+  );
   if (!student) {
     logger.error('saveProfileFilePath: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
@@ -328,19 +327,12 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
 
 const updateVPDFileNecessity = asyncHandler(async (req, res) => {
   const {
-    user,
     params: { studentId, program_id }
   } = req;
-  let student;
-  if (user.role === Role.Student) {
-    student = await Student.findById(user._id.toString()).populate(
-      'applications.programId'
-    );
-  } else {
-    student = await Student.findById(studentId).populate(
-      'applications.programId'
-    );
-  }
+
+  const student = await Student.findById(studentId).populate(
+    'applications.programId'
+  );
 
   if (!student) {
     logger.error('updateVPDFileNecessity: Invalid student id!');
@@ -367,24 +359,16 @@ const updateVPDFileNecessity = asyncHandler(async (req, res) => {
   res.status(201).send({ success: true, data: student });
 });
 
-// () email : student notification
-// () email : agent notification
+// () email : TODO student notification
+// () email : TODO agent notification
 const saveVPDFilePath = asyncHandler(async (req, res) => {
   const {
-    user,
     params: { studentId, program_id }
   } = req;
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  let student;
-  if (user.role === Role.Student) {
-    student = await Student.findById(user._id.toString()).populate(
-      'applications.programId'
-    );
-  } else {
-    student = await Student.findById(studentId).populate(
-      'applications.programId'
-    );
-  }
+
+  const student = await Student.findById(studentId).populate(
+    'applications.programId'
+  );
 
   if (!student) {
     logger.error('saveVPDFilePath: Invalid student id!');
@@ -510,8 +494,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
 
   // AWS S3
   // download the file via aws s3 here
-  const student =
-    user.role == Role.Student ? user : await Student.findById(studentId);
+  const student = await Student.findById(studentId);
   if (!student) {
     logger.error('downloadVPDFile: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
@@ -567,25 +550,12 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
 
 const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
   const {
-    user,
     params: { studentId, file_key }
   } = req;
 
   // AWS S3
   // download the file via aws s3 here
-  let student;
-  if (user.role === Role.Student) {
-    student = user;
-  } else if (
-    user.role === Role.Admin ||
-    user.role === Role.Agent ||
-    user.role === Role.Editor
-  ) {
-    student = await Student.findById(studentId);
-  } else {
-    logger.error('downloadProfileFileURL: Invalid access from the public!');
-    throw new ErrorResponse(400, 'Invalid access from the public');
-  }
+  const student = await Student.findById(studentId);
 
   if (!student) {
     logger.error('downloadProfileFileURL: Invalid student id!');
@@ -845,13 +815,6 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
 
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
-  const { user } = req;
-  if (user.role === Role.Student) {
-    if (studentId !== user._id.toString()) {
-      logger.error('deleteProfileFile: Invalid operation for student');
-      throw new ErrorResponse(403, 'Invalid operation for student');
-    }
-  }
 
   const student = await Student.findOne({
     _id: studentId
@@ -907,13 +870,6 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
 
 const deleteVPDFile = asyncHandler(async (req, res, next) => {
   const { studentId, program_id } = req.params;
-  const { user } = req;
-  if (user.role === Role.Student) {
-    if (studentId !== user._id.toString()) {
-      logger.error('deleteVPDFile: Invalid operation for student');
-      throw new ErrorResponse(403, 'Invalid operation for student');
-    }
-  }
 
   const student = await Student.findOne({
     _id: studentId

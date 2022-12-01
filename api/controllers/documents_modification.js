@@ -340,7 +340,7 @@ const getMessages = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
 
-  // Check student can only access their own thread!!!!
+  // Multitenant-filter: Check student can only access their own thread!!!!
   if (user.role === Role.Student) {
     if (document_thread.student_id._id.toString() !== user._id.toString()) {
       logger.error('getMessages: Unauthorized request!');
@@ -631,7 +631,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   }
 
   const message = document_thread.messages.find(
-    (message) => message._id.toString() === messageId
+    (msg) => msg._id.toString() === messageId
   );
   if (!message) {
     logger.error('getMessageFileDownload: message not found!');
@@ -902,8 +902,6 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   } = req;
 
   const to_be_delete_thread = await Documentthread.findById(messagesThreadId);
-  const student = await Student.findById(studentId);
-
   if (!to_be_delete_thread) {
     logger.error(
       'deleteProgramSpecificMessagesThread: Invalid message thread id!'
@@ -911,6 +909,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
 
+  const student = await Student.findById(studentId);
   if (!student) {
     logger.error('deleteProgramSpecificMessagesThread: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');

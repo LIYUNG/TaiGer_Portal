@@ -5,7 +5,8 @@ import Aux from '../../hoc/_Aux';
 import {
   updateAcademicBackground,
   updateLanguageSkill,
-  updateApplicationPreference
+  updateApplicationPreference,
+  updateDocumentationHelperLink
 } from '../../api';
 import { convertDate } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
@@ -22,6 +23,7 @@ class SurveyComponent extends React.Component {
     success: false,
     academic_background: this.props.academic_background,
     application_preference: this.props.application_preference,
+    survey_link: this.props.survey_link,
     updateconfirmed: false,
     changed_academic: false,
     changed_application_preference: false,
@@ -170,10 +172,29 @@ class SurveyComponent extends React.Component {
   };
 
   handleSubmit_Language_root = (e, language) => {
-    this.props.handleSubmit_Language_root(
-      e,
-      language,
-      this.state.student_id
+    this.props.handleSubmit_Language_root(e, language, this.state.student_id);
+  };
+
+  updateDocLink = (link, key) => {
+    updateDocumentationHelperLink(link, key, 'survey').then(
+      (resp) => {
+        const { helper_link, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            survey_link: helper_link,
+            success: success
+          }));
+        } else {
+          if (resp.status == 401) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status == 403) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
+          }
+        }
+      },
+      (error) => {}
     );
   };
 
@@ -212,6 +233,8 @@ class SurveyComponent extends React.Component {
             this.handleSubmit_AcademicBackground_root
           }
           handleSubmit_Language_root={this.handleSubmit_Language_root}
+          updateDocLink={this.updateDocLink}
+          survey_link={this.state.survey_link}
         />
         <Modal
           show={this.state.updateconfirmed}

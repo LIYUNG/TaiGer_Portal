@@ -69,6 +69,24 @@ export const valid_categories = [
   { key: 'visa', value: 'Visa' }
 ];
 
+export const profile_name_list = {
+  High_School_Diploma: 'High_School_Diploma',
+  High_School_Transcript: 'High_School_Transcript',
+  University_Entrance_Examination_GSAT: 'University_Entrance_Examination_GSAT',
+  Bachelor_Certificate: 'Bachelor_Certificate',
+  Bachelor_Transcript: 'Bachelor_Transcript',
+  Englisch_Certificate: 'Englisch_Certificate',
+  German_Certificate: 'German_Certificate',
+  GREGMAT: 'GREGMAT',
+  ECTS_Conversion: 'ECTS_Conversion',
+  Course_Description: 'Course_Description',
+  Internship: 'Internship',
+  Employment_Certificate: 'Employment_Certificate',
+  Passport: 'Passport',
+  Others: 'Others',
+  Grading_System: 'Grading_System'
+};
+
 export const valid_internal_categories = [
   { key: 'agents', value: 'Agents' },
   { key: 'editors', value: 'Editors' },

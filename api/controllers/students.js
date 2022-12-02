@@ -55,33 +55,43 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
     )
     .lean();
-  const base_docs_link = await Basedocumentationslink.find();
-  res.status(200).send({ success: true, data: student, base_docs_link });
+  const base_docs_link = await Basedocumentationslink.find({
+    category: 'base-documents'
+  });
+  const survey_link = await Basedocumentationslink.find({
+    category: 'survey'
+  });
+  res
+    .status(200)
+    .send({ success: true, data: student, base_docs_link, survey_link });
 });
 
-const updateBaseDocsDocumentationLink = asyncHandler(async (req, res) => {
+
+
+const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
   const {
     params: { studentId }
   } = req;
-  const { link, key } = req.body;
+  const { link, key, category } = req.body;
   // TODO: if not in database, then create one
   // otherwise: update the existing one.
-  let base_docs_link = await Basedocumentationslink.findOne({ key });
-  if (!base_docs_link) {
-    base_docs_link = await Basedocumentationslink.create({
+  let helper_link = await Basedocumentationslink.findOne({ category, key });
+  if (!helper_link) {
+    helper_link = await Basedocumentationslink.create({
+      category,
       key,
       link,
       updatedAt: new Date()
     });
   } else {
-    base_docs_link.link = link;
-    base_docs_link.updatedAt = new Date();
-    await base_docs_link.save();
+    helper_link.link = link;
+    helper_link.updatedAt = new Date();
+    await helper_link.save();
   }
-  const updated_base_docs_link = await Basedocumentationslink.find({});
-  res
-    .status(200)
-    .send({ success: true, base_docs_link: updated_base_docs_link });
+  const updated_helper_link = await Basedocumentationslink.find({
+    category
+  });
+  res.status(200).send({ success: true, helper_link: updated_helper_link });
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
@@ -748,7 +758,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 module.exports = {
   getStudent,
   getStudentAndDocLinks,
-  updateBaseDocsDocumentationLink,
+  updateDocumentationHelperLink,
   getAllStudents,
   getStudents,
   getStudentsAndDocLinks,

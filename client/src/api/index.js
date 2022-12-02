@@ -80,12 +80,12 @@ export const uploadforstudent = (category, studentId, data) =>
 
 export const getStudentAndDocLinks = (studentId) =>
   request.get(`/api/students/doc-links/${studentId}`);
-  
+
 export const getStudentsAndDocLinks = () =>
   request.get(`/api/students/doc-links`);
 
-export const updateBaseDocsDocumentationLink = (link, key) =>
-  request.post(`/api/students/doc-links`, { link, key });
+export const updateDocumentationHelperLink = (link, key, category) =>
+  request.post(`/api/students/doc-links`, { link, key, category });
 
 export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);

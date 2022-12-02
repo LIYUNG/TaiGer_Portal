@@ -11,6 +11,7 @@ import SurveyComponent from './SurveyComponent';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { Redirect } from 'react-router-dom';
+import { profile_name_list } from '../Utils/contants';
 
 class Survey extends React.Component {
   state = {
@@ -28,12 +29,16 @@ class Survey extends React.Component {
   componentDidMount() {
     getMyAcademicBackground().then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { survey_link, data, success } = resp.data;
+        const granding_system_doc_link = survey_link.find(
+          (link) => link.key === profile_name_list.Grading_System
+        );
         if (success) {
           this.setState({
             isLoaded: true,
             academic_background: data.academic_background,
             application_preference: data.application_preference,
+            survey_link: granding_system_doc_link.link,
             success: success
           });
         } else {
@@ -100,6 +105,7 @@ class Survey extends React.Component {
           role={this.props.user.role}
           academic_background={this.state.academic_background}
           application_preference={this.state.application_preference}
+          survey_link={this.state.survey_link}
           isLoaded={this.state.isLoaded}
           user={this.props.user}
         />

@@ -17,7 +17,7 @@ const { Role, Student } = require('../models/User');
 const {
   getStudent,
   getStudentAndDocLinks,
-  updateBaseDocsDocumentationLink,
+  updateDocumentationHelperLink,
   getStudentsAndDocLinks,
   getStudents,
   getAllStudents,
@@ -67,7 +67,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent),
-    updateBaseDocsDocumentationLink
+    updateDocumentationHelperLink
   );
 
 // Let student still see their uploaded file status

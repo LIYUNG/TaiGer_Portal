@@ -1,11 +1,20 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Spinner,
+  Offcanvas
+} from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import { updateLanguageSkill } from '../../api';
 import { convertDate } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
+import { FiExternalLink } from 'react-icons/fi';
 import {
   check_academic_background_filled,
   check_languages_filled,
@@ -13,7 +22,8 @@ import {
 } from '../Utils/checking-functions';
 import {
   APPLICATION_YEARS_FUTURE,
-  EXPECTATION_APPLICATION_YEARS
+  EXPECTATION_APPLICATION_YEARS,
+  profile_name_list
 } from '../Utils/contants';
 class SurveyEditableComponent extends React.Component {
   state = {
@@ -21,13 +31,16 @@ class SurveyEditableComponent extends React.Component {
     timeouterror: null,
     unauthorizederror: null,
     role: '',
+    survey_link: this.props.survey_link,
     isLoaded: this.props.isLoaded,
     academic_background: this.props.academic_background,
     application_preference: this.props.application_preference,
     updateconfirmed: false,
     changed_academic: false,
     changed_language: false,
-    changed_application_preference: false
+    changed_application_preference: false,
+    baseDocsflagOffcanvas: false,
+    baseDocsflagOffcanvasButtonDisable: false
   };
   componentDidUpdate(prevProps) {
     // 常見用法（別忘了比較 prop）：
@@ -50,6 +63,39 @@ class SurveyEditableComponent extends React.Component {
       }));
     }
   }
+  closeOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
+  };
+
+  openOffcanvasWindow = () => {
+    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
+  };
+
+  updateDocLink = (e) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      baseDocsflagOffcanvasButtonDisable: true
+    }));
+    this.props.updateDocLink(
+      this.state.survey_link,
+      profile_name_list.Grading_System
+    ); // this.props.k is the grading system name
+    this.setState((state) => ({
+      ...state,
+      baseDocsflagOffcanvasButtonDisable: false,
+      baseDocsflagOffcanvas: false
+    }));
+  };
+
+  onChangeURL = (e) => {
+    e.preventDefault();
+    const url_temp = e.target.value;
+    this.setState((state) => ({
+      ...state,
+      survey_link: url_temp
+    }));
+  };
 
   handleChange_ApplicationPreference = (e) => {
     e.preventDefault();
@@ -190,10 +236,9 @@ class SurveyEditableComponent extends React.Component {
                     )}
                   {this.props.academic_background &&
                     this.props.academic_background.university &&
-                    (!this.props.academic_background.university
-                      .isGraduated ||
-                      this.props.academic_background.university
-                        .isGraduated === '-') && (
+                    (!this.props.academic_background.university.isGraduated ||
+                      this.props.academic_background.university.isGraduated ===
+                        '-') && (
                       <li>
                         <b>Bachelor Degree graduate status</b>
                       </li>
@@ -434,8 +479,31 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="Highest_GPA_Uni">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Highest Score GPA of your university program (TODO: add
-                        instruction)
+                        Highest Score GPA of your university program
+                        <a
+                          href={
+                            this.state.survey_link &&
+                            this.state.survey_link != ''
+                              ? this.state.survey_link
+                              : '/'
+                          }
+                          target="_blank"
+                          className="text-info"
+                        >
+                          <FiExternalLink
+                            className="mx-1 mb-1"
+                            style={{ cursor: 'pointer' }}
+                          />
+                        </a>
+                        {(this.props.user.role === 'Admin' ||
+                          this.props.user.role === 'Agent') && (
+                          <a
+                            onClick={this.openOffcanvasWindow}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            [Edit]
+                          </a>
+                        )}
                       </Form.Label>
                       <Form.Control
                         type="number"
@@ -452,8 +520,31 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="Passing_GPA_Uni">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Passing Score GPA of your university program (TODO: add
-                        instruction)
+                        Passing Score GPA of your university program
+                        <a
+                          href={
+                            this.state.survey_link &&
+                            this.state.survey_link != ''
+                              ? this.state.survey_link
+                              : '/'
+                          }
+                          target="_blank"
+                          className="text-info"
+                        >
+                          <FiExternalLink
+                            className="mx-1 mb-1"
+                            style={{ cursor: 'pointer' }}
+                          />
+                        </a>
+                        {(this.props.user.role === 'Admin' ||
+                          this.props.user.role === 'Agent') && (
+                          <a
+                            onClick={this.openOffcanvasWindow}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            [Edit]
+                          </a>
+                        )}
                       </Form.Label>
                       <Form.Control
                         type="number"
@@ -473,7 +564,31 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="My_GPA_Uni">
                       <Form.Label className="my-0 mx-0 text-light">
-                        My GPA (TODO: add instruction)
+                        My GPA
+                        <a
+                          href={
+                            this.state.survey_link &&
+                            this.state.survey_link != ''
+                              ? this.state.survey_link
+                              : '/'
+                          }
+                          target="_blank"
+                          className="text-info"
+                        >
+                          <FiExternalLink
+                            className="mx-1 mb-1"
+                            style={{ cursor: 'pointer' }}
+                          />
+                        </a>
+                        {(this.props.user.role === 'Admin' ||
+                          this.props.user.role === 'Agent') && (
+                          <a
+                            onClick={this.openOffcanvasWindow}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            [Edit]
+                          </a>
+                        )}
                       </Form.Label>
                       <Form.Control
                         type="number"
@@ -1101,14 +1216,33 @@ class SurveyEditableComponent extends React.Component {
             </Card>
           </Col>
         </Row>
-        {/* 
-        {!isLoaded && (
-          <div style={style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )} */}
+        <Offcanvas
+          show={this.state.baseDocsflagOffcanvas}
+          onHide={this.closeOffcanvasWindow}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Edit</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Documentation Link for <b>{this.props.docName}</b>
+              </Form.Label>
+              <Form.Control
+                placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
+                defaultValue={this.state.survey_link}
+                onChange={(e) => this.onChangeURL(e)}
+              />
+            </Form.Group>
+            <Button
+              onClick={(e) => this.updateDocLink(e)}
+              disabled={this.state.baseDocsflagOffcanvasButtonDisable}
+            >
+              Save
+            </Button>
+          </Offcanvas.Body>
+        </Offcanvas>
       </Aux>
     );
   }

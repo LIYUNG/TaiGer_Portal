@@ -17,7 +17,7 @@ import {
   updateAcademicBackground,
   updateLanguageSkill,
   deleteFile,
-  updateBaseDocsDocumentationLink
+  updateDocumentationHelperLink
 } from '../../api';
 import { Link } from 'react-router-dom';
 import ButtonSetUploaded from '../AgentCenter/ButtonSetUploaded';
@@ -32,7 +32,7 @@ import UnauthorizedError from '../Utils/UnauthorizedError';
 import SurveyComponent from '../Survey/SurveyComponent';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
-import Task from '../Task/Task';
+import { profile_name_list } from '../Utils/contants';
 import { Redirect } from 'react-router-dom';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 
@@ -41,6 +41,7 @@ class SingleStudentPage extends React.Component {
     isLoaded: false,
     student: null,
     base_docs_link: null,
+    survey_link: null,
     success: false,
     timeouterror: null,
     unauthorizederror: null,
@@ -49,12 +50,16 @@ class SingleStudentPage extends React.Component {
   componentDidMount() {
     getStudentAndDocLinks(this.props.match.params.studentId).then(
       (resp) => {
-        const { base_docs_link, data, success } = resp.data;
+        const { survey_link, base_docs_link, data, success } = resp.data;
+        const granding_system_doc_link = survey_link.find(
+          (link) => link.key === profile_name_list.Grading_System
+        );
         if (success) {
           this.setState({
             isLoaded: true,
             student: data,
             base_docs_link,
+            survey_link: granding_system_doc_link.link,
             success: success
           });
         } else {
@@ -148,14 +153,14 @@ class SingleStudentPage extends React.Component {
   };
 
   updateDocLink = (link, key) => {
-    updateBaseDocsDocumentationLink(link, key).then(
+    updateDocumentationHelperLink(link, key, 'base-documents').then(
       (resp) => {
-        const { base_docs_link, success } = resp.data;
+        const { helper_link, success } = resp.data;
         if (success) {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
-            base_docs_link,
+            base_docs_link: helper_link,
             success: success
           }));
         } else {
@@ -616,6 +621,7 @@ class SingleStudentPage extends React.Component {
           <Tab eventKey="background" title="Background">
             <SurveyComponent
               role={this.props.user.role}
+              survey_link={this.state.survey_link}
               user={this.props.user}
               academic_background={this.state.student.academic_background}
               application_preference={this.state.student.application_preference}

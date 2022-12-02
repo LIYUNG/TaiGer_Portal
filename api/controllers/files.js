@@ -7,6 +7,7 @@ const { Role, Student, User } = require('../models/User');
 const { Template } = require('../models/Template');
 const Course = require('../models/Course');
 const { UPLOAD_PATH } = require('../config');
+const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const { ErrorResponse } = require('../common/errors');
 const { DocumentStatus, profile_name_list } = require('../constants');
 const {
@@ -1073,12 +1074,18 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   const me = await User.findById(_id);
   if (me.academic_background === undefined) me.academic_background = {};
   await me.save();
+  // TODO: mix with base-docuement link??
+  const survey_docs_link = await Basedocumentationslink.find({
+    category: 'survey'
+  });
+
   res.status(200).send({
     success: true,
     data: {
       academic_background: me.academic_background,
       application_preference: me.application_preference
-    }
+    },
+    survey_link: survey_docs_link
   });
 });
 
@@ -1443,6 +1450,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
       },
       {}
     );
+    // TODO : inform agents
   } else {
     await updateLanguageSkillEmailFromTaiGer(
       {

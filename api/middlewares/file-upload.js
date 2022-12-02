@@ -15,6 +15,7 @@ const {
 } = require('../config');
 
 const MAX_FILE_SIZE_MB = 5 * 1024 * 1024; // 5 MB
+const MAX_DOC_FILE_SIZE_MB = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_MIME_TYPES = [
   'application/pdf',
   'image/png',
@@ -437,7 +438,7 @@ const storage_messagesthread_image_s3 = multerS3({
 
 const upload_messagesthread_file_s3 = multer({
   storage: storage_messagesthread_file_s3,
-  limits: { fileSize: MAX_FILE_SIZE_MB },
+  limits: { fileSize: MAX_DOC_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
@@ -448,11 +449,11 @@ const upload_messagesthread_file_s3 = multer({
       );
     }
     const fileSize = parseInt(req.headers['content-length']);
-    if (fileSize > MAX_FILE_SIZE_MB) {
+    if (fileSize > MAX_DOC_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
           400,
-          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `File size is limited to ${MAX_DOC_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }
@@ -482,7 +483,7 @@ const upload_messagesthread_image_s3 = multer({
   }
 });
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'upload/');
   },
@@ -491,7 +492,7 @@ var storage = multer.diskStorage({
   }
 });
 
-var upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 module.exports = {
   imageUpload: upload_doc_image_s3.single('file'),

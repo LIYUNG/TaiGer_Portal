@@ -685,7 +685,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
     params: { messagesThreadId, studentId },
-    body: { program_id }
+    body: { program_id, thread_only }
   } = req;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
@@ -706,7 +706,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   logger.info('program_id ', program_id);
   if (program_id) {
     const student_application = student.applications.find(
-      (application) => application.programId._id == program_id
+      (application) => application.programId._id.toString() === program_id
     );
     if (!student_application) {
       logger.error('SetStatusMessagesThread: application not found');
@@ -726,6 +726,13 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     document_thread.isFinalVersion = application_thread.isFinalVersion;
     await document_thread.save();
     await student.save();
+
+    if (thread_only) {
+      return res
+        .status(200)
+        .send({ success: true, data: document_thread.isFinalVersion });
+    }
+
     const student2 = await Student.findById(studentId)
       .populate('applications.programId generaldocs_threads.doc_thread_id')
       .populate(
@@ -733,6 +740,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         'file_type updatedAt'
       );
     res.status(200).send({ success: true, data: student2 });
+
     await sendSetAsFinalProgramSpecificFileForStudentEmail(
       {
         firstname: student2.firstname,
@@ -787,6 +795,12 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     document_thread.isFinalVersion = generaldocs_thread.isFinalVersion;
     await document_thread.save();
     await student.save();
+    if (thread_only) {
+      return res
+        .status(200)
+        .send({ success: true, data: document_thread.isFinalVersion });
+    }
+
     const student2 = await Student.findById(studentId)
       .populate('applications.programId generaldocs_threads.doc_thread_id')
       .populate(

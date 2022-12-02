@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Button, Card, Form } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
 import Aux from '../../../hoc/_Aux';
 import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
@@ -12,7 +12,8 @@ import {
   deleteDoc,
   SubmitMessageWithAttachment,
   getMessageFileDownload,
-  getMessagThread
+  getMessagThread,
+  SetFileAsFinal
 } from '../../../api';
 
 // const steps = [
@@ -30,6 +31,7 @@ class DocModificationThreadPage extends Component {
     pagenotfounderror: null,
     file: null,
     isLoaded: false,
+    isSubmissionLoaded: true,
     articles: [],
     isEdit: false,
     thread: [],
@@ -38,6 +40,7 @@ class DocModificationThreadPage extends Component {
     buttonDisabled: false,
     editorState: {},
     expand: true,
+    SetAsFinalFileModel: false,
     accordionKeys: [0] // to expand all]
   };
   componentDidMount() {
@@ -76,6 +79,13 @@ class DocModificationThreadPage extends Component {
       }
     );
   }
+
+  closeSetAsFinalFileModelWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      SetAsFinalFileModel: false
+    }));
+  };
 
   onFileChange = (e) => {
     e.preventDefault();
@@ -322,9 +332,66 @@ class DocModificationThreadPage extends Component {
     this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
+  handleAsFinalFile = (doc_thread_id, student_id, program_id) => {
+    this.setState((state) => ({
+      ...state,
+      doc_thread_id,
+      student_id,
+      program_id,
+      SetAsFinalFileModel: true
+    }));
+  };
+
+  ConfirmSetAsFinalFileHandler = (e) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      isSubmissionLoaded: false // false to reload everything
+    }));
+    const temp_program_id = this.state.program_id
+      ? this.state.program_id._id.toString()
+      : undefined;
+    SetFileAsFinal(
+      this.state.doc_thread_id,
+      this.state.student_id,
+      temp_program_id,
+      true
+    ).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isSubmissionLoaded: true,
+            thread: { ...state.thread, isFinalVersion: data },
+            success: success,
+            SetAsFinalFileModel: false
+          }));
+        } else {
+          if (resp.status === 401 || resp.status === 500) {
+            this.setState({ isLoaded: true, timeouterror: true });
+          } else if (resp.status === 403) {
+            this.setState({
+              isSubmissionLoaded: true,
+              unauthorizederror: true
+            });
+          }
+        }
+      },
+      (error) => {
+        this.setState({ error });
+      }
+    );
+  };
+
   render() {
-    const { pagenotfounderror, unauthorizederror, timeouterror, isLoaded } =
-      this.state;
+    const {
+      pagenotfounderror,
+      unauthorizederror,
+      timeouterror,
+      isLoaded,
+      isSubmissionLoaded
+    } = this.state;
     const style = {
       position: 'fixed',
       top: '40%',
@@ -366,6 +433,27 @@ class DocModificationThreadPage extends Component {
       prop.includes(this.state.thread.file_type.split('_')[0])
     );
 
+    let docName;
+    if (this.state.thread.program_id) {
+      docName =
+        this.state.thread.student_id.firstname +
+        ' ' +
+        this.state.thread.student_id.lastname +
+        ' - ' +
+        this.state.thread.program_id.school +
+        ' ' +
+        this.state.thread.program_id.program_name +
+        ' ' +
+        this.state.thread.file_type;
+    } else {
+      docName =
+        this.state.thread.student_id.firstname +
+        ' ' +
+        this.state.thread.student_id.lastname +
+        ' - ' +
+        this.state.thread.file_type;
+    }
+
     return (
       <Aux>
         {!isLoaded && (
@@ -379,15 +467,7 @@ class DocModificationThreadPage extends Component {
           <Card className="mb-2 mx-0">
             <Card.Header>
               <Card.Title as="h5">
-                {this.state.thread.student_id.firstname}{' '}
-                {this.state.thread.student_id.lastname}
-                {' - '}
-                {this.state.thread.program_id
-                  ? this.state.thread.program_id.school +
-                    ' ' +
-                    this.state.thread.program_id.program_name
-                  : ''}{' '}
-                {this.state.thread.file_type}
+                {docName}
                 {' Discussion thread'}
                 {'   '}
                 {this.state.expand ? (
@@ -409,6 +489,18 @@ class DocModificationThreadPage extends Component {
             </Card.Header>
           </Card>
         </Row>
+        {this.state.thread.isFinalVersion && (
+          <Row className="sticky-top">
+            <Card className="mb-2 mx-0" bg={'danger'} text={'white'}>
+              <Card.Header>
+                <Card.Title as="h5" className="text-light">
+                  Status: <b>Close</b>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Row>
+        )}
+
         <Row>
           <Card className="mb-2 mx-0">
             <Card.Body>
@@ -513,7 +605,6 @@ class DocModificationThreadPage extends Component {
                       doc_title={'this.state.doc_title'}
                       editorState={this.state.editorState}
                       handleClickSave={this.handleClickSave}
-                      handleClickCancel={this.handleClickCancel}
                       file={this.state.file}
                       onFileChange={this.onFileChange}
                     />
@@ -527,12 +618,88 @@ class DocModificationThreadPage extends Component {
             <Card className="my-0 mx-0">
               <Card.Body>
                 <Row style={{ textDecoration: 'none' }}>
-                  <Col className="my-0 mx-0">You service is finished. Therefore, you are in read only mode.</Col>
+                  <Col className="my-0 mx-0">
+                    You service is finished. Therefore, you are in read only
+                    mode.
+                  </Col>
                 </Row>
               </Card.Body>
             </Card>
           </Row>
         )}
+        {/* TODO handle button click */}
+        {(this.props.user.role === 'Editor' ||
+          this.props.user.role === 'Admin') &&
+          (!this.state.thread.isFinalVersion ? (
+            <Row className="mt-2">
+              <Button
+                variant="danger"
+                onClick={(e) =>
+                  this.handleAsFinalFile(
+                    this.state.thread._id,
+                    this.state.thread.student_id._id,
+                    this.state.thread.program_id,
+                    this.state.thread.isFinalVersion
+                  )
+                }
+              >
+                {isSubmissionLoaded ? (
+                  'Mark as finished'
+                ) : (
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                )}
+              </Button>
+            </Row>
+          ) : (
+            <Row className="mt-2">
+              <Button
+                variant="success"
+                onClick={(e) =>
+                  this.handleAsFinalFile(
+                    this.state.thread._id,
+                    this.state.thread.student_id._id,
+                    this.state.thread.program_id,
+                    this.state.thread.isFinalVersion
+                  )
+                }
+              >
+                {isSubmissionLoaded ? (
+                  'Mark as open'
+                ) : (
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                )}
+              </Button>
+            </Row>
+          ))}
+        <Modal
+          show={this.state.SetAsFinalFileModel}
+          onHide={this.closeSetAsFinalFileModelWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Do you want to set {docName} as{' '}
+            {this.state.thread.isFinalVersion ? 'open' : 'final'}?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              disabled={!isLoaded}
+              onClick={(e) => this.ConfirmSetAsFinalFileHandler(e)}
+            >
+              Yes
+            </Button>
+            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
+          </Modal.Footer>
+        </Modal>
       </Aux>
     );
   }

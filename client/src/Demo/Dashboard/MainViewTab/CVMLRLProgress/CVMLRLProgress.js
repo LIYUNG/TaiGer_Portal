@@ -16,13 +16,15 @@ class CVMLRLProgress extends React.Component {
     thread_id,
     student_id,
     program_id,
-    documenName
+    documenName,
+    isFinalVersion
   ) => {
     this.props.handleAsFinalFile(
       thread_id,
       student_id,
       program_id,
-      documenName
+      documenName,
+      isFinalVersion
     );
   };
   render() {
@@ -113,7 +115,8 @@ class CVMLRLProgress extends React.Component {
                           generaldocs_thread.doc_thread_id._id,
                           this.props.student._id,
                           null,
-                          generaldocs_thread.doc_thread_id.file_type
+                          generaldocs_thread.doc_thread_id.file_type,
+                          generaldocs_thread.isFinalVersion
                         )
                       }
                     />
@@ -129,7 +132,8 @@ class CVMLRLProgress extends React.Component {
                           generaldocs_thread.doc_thread_id._id,
                           this.props.student._id,
                           null,
-                          generaldocs_thread.doc_thread_id.file_type
+                          generaldocs_thread.doc_thread_id.file_type,
+                          generaldocs_thread.isFinalVersion
                         )
                       }
                     />
@@ -202,7 +206,8 @@ class CVMLRLProgress extends React.Component {
                               doc_thread.doc_thread_id._id,
                               this.props.student._id,
                               application.programId._id,
-                              doc_thread.doc_thread_id.file_type
+                              doc_thread.doc_thread_id.file_type,
+                              doc_thread.isFinalVersion
                             )
                           }
                         />
@@ -218,7 +223,8 @@ class CVMLRLProgress extends React.Component {
                               doc_thread.doc_thread_id._id,
                               this.props.student._id,
                               application.programId._id,
-                              doc_thread.doc_thread_id.file_type
+                              doc_thread.doc_thread_id.file_type,
+                              doc_thread.isFinalVersion
                             )
                           }
                         />

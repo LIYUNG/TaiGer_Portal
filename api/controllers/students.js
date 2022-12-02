@@ -66,8 +66,6 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
     .send({ success: true, data: student, base_docs_link, survey_link });
 });
 
-
-
 const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
   const {
     params: { studentId }
@@ -171,7 +169,9 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
         'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
       )
       .lean();
-    const base_docs_link = await Basedocumentationslink.find();
+    const base_docs_link = await Basedocumentationslink.find({
+      category: 'base-documents'
+    });
     res.status(200).send({ success: true, data: students, base_docs_link });
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
@@ -187,7 +187,9 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
     // console.log(students[0].applications[0].programId); // looks ok!
     // console.log(students[0].applications[0].programId.school);
-    const base_docs_link = await Basedocumentationslink.find();
+    const base_docs_link = await Basedocumentationslink.find({
+      category: 'base-documents'
+    });
 
     res.status(200).send({ success: true, data: students, base_docs_link });
   } else if (user.role === Role.Editor) {
@@ -199,7 +201,9 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
       .populate(
         'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
       );
-    const base_docs_link = await Basedocumentationslink.find();
+    const base_docs_link = await Basedocumentationslink.find({
+      category: 'base-documents'
+    });
 
     res.status(200).send({ success: true, data: students, base_docs_link });
   } else if (user.role === Role.Student) {
@@ -212,7 +216,9 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
       // .populate('editors', '-students')
       .lean()
       .exec();
-    const base_docs_link = await Basedocumentationslink.find();
+    const base_docs_link = await Basedocumentationslink.find({
+      category: 'base-documents'
+    });
     res.status(200).send({ success: true, data: [student], base_docs_link });
   } else {
     // Guest

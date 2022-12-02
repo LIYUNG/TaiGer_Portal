@@ -29,21 +29,18 @@ function DocThreadEditor(props) {
             readOnly={false}
             handleEditorChange={handleEditorChange}
             handleClickSave={props.handleClickSave}
-            handleClickCancel={props.handleClickCancel}
             editorState={props.editorState}
             setStatedata={setStatedata}
           />
         </Col>
       </Row>
       <Row>
-        <Col>
-          <Form.Group controlId="formFile" className='mb-2'>
-            <Form.Control
-              type="file"
-              onChange={(e) => props.onFileChange(e)}
-            />
+        <Col md={8}>
+          <Form.Group controlId="formFile" className="mb-2">
+            <Form.Control type="file" onChange={(e) => props.onFileChange(e)} />
           </Form.Group>
         </Col>
+        <Col className="mt-2" md={4}>(max. 2MB)</Col>
       </Row>
       <Row>
         <Col className="my-0 mx-0">
@@ -57,7 +54,6 @@ function DocThreadEditor(props) {
           >
             Save
           </Button>
-          <Button onClick={(e) => props.handleClickCancel(e)}>Cancel</Button>
         </Col>
       </Row>
     </>

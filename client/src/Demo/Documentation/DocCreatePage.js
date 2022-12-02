@@ -379,7 +379,7 @@ class DocCreatePage extends React.Component {
               ) : (
                 <Card.Body>
                   {documentlist_key.map((catego, i) => (
-                    <Row key={i}>
+                    <Row className="mb-4" key={i}>
                       <h5>- {window.documentlist[`${catego}`]}</h5>
                       {document_list(catego)}
                     </Row>

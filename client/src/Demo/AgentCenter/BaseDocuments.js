@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row, Col, Spinner, Table, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
-// import DEMO from '../../store/constant';
 import StudentBaseDocumentsStatus from './StudentBaseDocumentsStatus';
 import BaseDocument_StudentView from './BaseDocument_StudentView';
 import { SYMBOL_EXPLANATION, split_header } from '../Utils/contants';

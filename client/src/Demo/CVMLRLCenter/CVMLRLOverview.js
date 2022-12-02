@@ -31,6 +31,7 @@ class CVMLRLOverview extends React.Component {
     student_id: '',
     program_id: '',
     SetAsFinalFileModel: false,
+    isFinalVersion: false,
     status: '' //reject, accept... etc
   };
 
@@ -77,7 +78,8 @@ class CVMLRLOverview extends React.Component {
     SetFileAsFinal(
       this.state.doc_thread_id,
       this.state.student_id,
-      this.state.program_id
+      this.state.program_id,
+      false
     ).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -93,7 +95,8 @@ class CVMLRLOverview extends React.Component {
             isLoaded: true,
             students: temp_students,
             success: success,
-            SetAsFinalFileModel: false
+            SetAsFinalFileModel: false,
+            isFinalVersion: false
           }));
         } else {
           if (resp.status === 401 || resp.status === 500) {
@@ -112,14 +115,21 @@ class CVMLRLOverview extends React.Component {
     );
   };
 
-  handleAsFinalFile = (doc_thread_id, student_id, program_id, docName) => {
+  handleAsFinalFile = (
+    doc_thread_id,
+    student_id,
+    program_id,
+    docName,
+    isFinalVersion
+  ) => {
     this.setState((state) => ({
       ...state,
       doc_thread_id,
       student_id,
       program_id,
       docName,
-      SetAsFinalFileModel: true
+      SetAsFinalFileModel: true,
+      isFinalVersion
     }));
   };
   render() {
@@ -244,6 +254,13 @@ class CVMLRLOverview extends React.Component {
                   </thead>
                   <tbody>{cvmlrl_progress_closed}</tbody>
                 </Table>
+                <Row className="mt-4">
+                  <p>
+                    Note: if the documents are not closed but locate here, it is
+                    becaue the applications are already submitted. The documents can
+                    safely closed eventually.
+                  </p>
+                </Row>
               </Tab>
             </Tabs>
           </Col>
@@ -260,7 +277,8 @@ class CVMLRLOverview extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Do you want to set {this.state.docName} as final for student?
+            Do you want to set {this.state.docName} as{' '}
+            {this.state.isFinalVersion ? 'open' : 'final'} for student?
           </Modal.Body>
           <Modal.Footer>
             <Button

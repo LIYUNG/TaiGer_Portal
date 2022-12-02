@@ -178,7 +178,8 @@ class EditorDocsProgress extends React.Component {
     SetFileAsFinal(
       this.state.doc_thread_id,
       this.state.student_id,
-      this.state.program_id
+      this.state.program_id,
+      false
     ).then(
       (resp) => {
         const { data, success } = resp.data;

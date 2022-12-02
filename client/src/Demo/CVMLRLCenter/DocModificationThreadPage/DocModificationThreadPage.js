@@ -629,6 +629,7 @@ class DocModificationThreadPage extends Component {
         )}
         {/* TODO handle button click */}
         {(this.props.user.role === 'Editor' ||
+          this.props.user.role === 'Agent' ||
           this.props.user.role === 'Admin') &&
           (!this.state.thread.isFinalVersion ? (
             <Row className="mt-2">

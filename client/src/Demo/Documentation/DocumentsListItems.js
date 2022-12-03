@@ -144,7 +144,7 @@ class DocumentsListItems extends React.Component {
             <HiX
               size={24}
               color="red"
-              title="Un do Final Version"
+              title="Delete"
               style={{ cursor: 'pointer' }}
               onClick={() =>
                 this.props.openDeleteDocModalWindow(this.props.document)

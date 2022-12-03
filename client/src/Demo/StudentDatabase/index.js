@@ -26,8 +26,8 @@ class Dashboard extends React.Component {
     students: [],
     updateAgentList: {},
     updateEditorList: {},
-    success: false,
-    isArchivPage: true
+    success: false
+    // isArchivPage: true
   };
 
   componentDidMount() {

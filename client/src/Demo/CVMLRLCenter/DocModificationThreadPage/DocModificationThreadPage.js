@@ -647,7 +647,7 @@ class DocModificationThreadPage extends Component {
                 {isSubmissionLoaded ? (
                   'Mark as finished'
                 ) : (
-                  <Spinner animation="border" role="status">
+                  <Spinner animation="border" role="status" size="sm">
                     <span className="visually-hidden"></span>
                   </Spinner>
                 )}
@@ -693,10 +693,16 @@ class DocModificationThreadPage extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!isLoaded}
+              disabled={!isLoaded || !isSubmissionLoaded}
               onClick={(e) => this.ConfirmSetAsFinalFileHandler(e)}
             >
-              Yes
+              {isSubmissionLoaded ? (
+                'Yes'
+              ) : (
+                <Spinner animation="border" role="status" size="sm">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              )}
             </Button>
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
           </Modal.Footer>

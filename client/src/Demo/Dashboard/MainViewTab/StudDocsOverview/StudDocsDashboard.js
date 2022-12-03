@@ -31,15 +31,15 @@ class StudDocsDashboard extends React.Component {
       <>
         <tr>
           <td>
-            <DropdownButton
-              size="sm"
-              className="mx-0"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${this.props.student._id}`}
-              key={this.props.student._id}
-            >
-              {this.props.isDashboard ? (
+            {this.props.isDashboard && (
+              <DropdownButton
+                size="sm"
+                className="mx-0"
+                title="Option"
+                variant="primary"
+                id={`dropdown-variants-${this.props.student._id}`}
+                key={this.props.student._id}
+              >
                 <Dropdown.Item
                   eventKey="5"
                   onClick={() =>
@@ -48,10 +48,17 @@ class StudDocsDashboard extends React.Component {
                 >
                   Move to Archiv
                 </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-              {this.props.isArchivPage ? (
+              </DropdownButton>
+            )}
+            {this.props.isArchivPage && (
+              <DropdownButton
+                size="sm"
+                className="mx-0"
+                title="Option"
+                variant="primary"
+                id={`dropdown-variants-${this.props.student._id}`}
+                key={this.props.student._id}
+              >
                 <Dropdown.Item
                   eventKey="6"
                   onClick={() =>
@@ -63,10 +70,8 @@ class StudDocsDashboard extends React.Component {
                 >
                   Move to Active
                 </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-            </DropdownButton>
+              </DropdownButton>
+            )}
           </td>
           <td>
             <Link

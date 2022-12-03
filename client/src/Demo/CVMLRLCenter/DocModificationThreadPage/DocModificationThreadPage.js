@@ -320,6 +320,8 @@ class DocModificationThreadPage extends Component {
             this.setState({ isLoaded: true, timeouterror: true });
           } else if (resp.status === 403) {
             this.setState({ isLoaded: true, unauthorizederror: true });
+          } else if (resp.status === 423) {
+            this.setState({ isLoaded: true, unauthorizederror: true });
           } else {
             this.setState({ isLoaded: true, pagenotfounderror: true });
           }
@@ -707,6 +709,37 @@ class DocModificationThreadPage extends Component {
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
           </Modal.Footer>
         </Modal>
+        {/* <Modal
+          show={this.state.SetAsFinalFileModel}
+          onHide={this.closeSetAsFinalFileModelWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Warning
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Do you want to set {docName} as{' '}
+            {this.state.thread.isFinalVersion ? 'open' : 'final'}?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              disabled={!isLoaded || !isSubmissionLoaded}
+              onClick={(e) => this.ConfirmSetAsFinalFileHandler(e)}
+            >
+              {isSubmissionLoaded ? (
+                'Yes'
+              ) : (
+                <Spinner animation="border" role="status" size="sm">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              )}
+            </Button>
+            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
+          </Modal.Footer>
+        </Modal> */}
       </Aux>
     );
   }

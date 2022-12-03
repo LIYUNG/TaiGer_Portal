@@ -11,6 +11,10 @@ const {
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
+const {
+  doc_thread_ops_validator
+} = require('../middlewares/docs_thread_operation_validation');
+
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const {
@@ -80,6 +84,7 @@ router
     postMessagesRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    doc_thread_ops_validator,
     MessagesThreadUpload,
     postMessages
   );

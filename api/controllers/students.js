@@ -36,9 +36,11 @@ const getStudent = asyncHandler(async (req, res) => {
   } = req;
 
   const student = await Student.findById(studentId)
-    .populate('applications.programId agents editors')
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
     .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
     )
     .lean();
   res.status(200).send({ success: true, data: student });
@@ -50,9 +52,11 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
   } = req;
 
   const student = await Student.findById(studentId)
-    .populate('applications.programId agents editors')
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
     .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
     )
     .lean();
   const base_docs_link = await Basedocumentationslink.find({
@@ -108,10 +112,13 @@ const getStudents = asyncHandler(async (req, res) => {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId agents editors')
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
       )
+      .select('-notification')
       .lean();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Agent) {
@@ -119,10 +126,13 @@ const getStudents = asyncHandler(async (req, res) => {
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId agents editors')
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
       )
+      .select('-notification')
       .lean()
       .exec();
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
@@ -135,10 +145,13 @@ const getStudents = asyncHandler(async (req, res) => {
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId agents editors')
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
-      );
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select('-notification');
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Student) {
@@ -146,7 +159,8 @@ const getStudents = asyncHandler(async (req, res) => {
       .populate('applications.programId')
       .populate('agents editors', '-students')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
       )
       // .populate('editors', '-students')
       .lean()
@@ -166,8 +180,10 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     })
       .populate('applications.programId agents editors')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
       )
+      .select('-notification')
       .lean();
     const base_docs_link = await Basedocumentationslink.find({
       category: 'base-documents'
@@ -180,8 +196,10 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     })
       .populate('applications.programId agents editors')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
       )
+      .select('-notification')
       .lean()
       .exec();
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
@@ -199,8 +217,10 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     })
       .populate('applications.programId agents editors')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
-      );
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select('-notification');
     const base_docs_link = await Basedocumentationslink.find({
       category: 'base-documents'
     });
@@ -211,7 +231,8 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
       .populate('applications.programId')
       .populate('agents editors', '-students')
       .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
       )
       // .populate('editors', '-students')
       .lean()
@@ -489,7 +510,8 @@ const ToggleProgramStatus = asyncHandler(async (req, res) => {
   const student = await Student.findById(studentId)
     .populate('applications.programId agents editors')
     .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
     );
   if (!student) {
     logger.error('ToggleProgramStatus: Invalid student id');

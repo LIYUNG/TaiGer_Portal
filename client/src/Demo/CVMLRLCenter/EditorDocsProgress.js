@@ -511,13 +511,23 @@ class EditorDocsProgress extends React.Component {
                               style={{ textDecoration: 'none' }}
                               className="text-info"
                             >
-                              <h5 className="text-light">
-                                <b>
-                                  {application.programId.school}
-                                  {' - '}
-                                  {application.programId.program_name}
-                                </b>
-                              </h5>
+                              {application.closed === 'O' ? (
+                                <h5 className="text-warning">
+                                  <b>
+                                    {application.programId.school}
+                                    {' - '}
+                                    {application.programId.program_name}
+                                  </b>
+                                </h5>
+                              ) : (
+                                <h5 className="text-danger">
+                                  <b>
+                                    {application.programId.school}
+                                    {' - '}
+                                    {application.programId.program_name}
+                                  </b>
+                                </h5>
+                              )}
                             </Link>
                           </Col>
                           <Col md={2}>
@@ -603,7 +613,7 @@ class EditorDocsProgress extends React.Component {
                           </Col>
                           <Col md={1}>
                             {application.closed === 'O' ? (
-                              <p className="text-warning">Close</p>
+                              <p className="text-warning"><b>Close</b></p>
                             ) : (
                               <p className="text-danger">
                                 <b>Open</b>

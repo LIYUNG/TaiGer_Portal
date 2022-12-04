@@ -328,7 +328,7 @@ class DocModificationThreadPage extends Component {
   };
 
   render() {
-    const { isLoaded, isSubmissionLoaded } = this.state;
+    const { isLoaded, isSubmissionLoaded, res_status } = this.state;
 
     if (!isLoaded && !this.state.data) {
       return (
@@ -406,7 +406,7 @@ class DocModificationThreadPage extends Component {
         </Row>
         {this.state.thread.isFinalVersion && (
           <Row className="sticky-top">
-            <Card className="mb-2 mx-0" bg={'danger'} text={'white'}>
+            <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
               <Card.Header>
                 <Card.Title as="h5" className="text-light">
                   Status: <b>Close</b>
@@ -511,19 +511,27 @@ class DocModificationThreadPage extends Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                <Row style={{ textDecoration: 'none' }}>
-                  <Col className="my-0 mx-0">
-                    <DocThreadEditor
-                      thread={this.state.thread}
-                      buttonDisabled={this.state.buttonDisabled}
-                      doc_title={'this.state.doc_title'}
-                      editorState={this.state.editorState}
-                      handleClickSave={this.handleClickSave}
-                      file={this.state.file}
-                      onFileChange={this.onFileChange}
-                    />
-                  </Col>
-                </Row>
+                {this.state.thread.isFinalVersion ? (
+                  <Row style={{ textDecoration: 'none' }}>
+                    <Col className="my-0 mx-0">
+                      This discussion thread is close.
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row style={{ textDecoration: 'none' }}>
+                    <Col className="my-0 mx-0">
+                      <DocThreadEditor
+                        thread={this.state.thread}
+                        buttonDisabled={this.state.buttonDisabled}
+                        doc_title={'this.state.doc_title'}
+                        editorState={this.state.editorState}
+                        handleClickSave={this.handleClickSave}
+                        file={this.state.file}
+                        onFileChange={this.onFileChange}
+                      />
+                    </Col>
+                  </Row>
+                )}
               </Card.Body>
             </Card>
           </Row>
@@ -541,14 +549,13 @@ class DocModificationThreadPage extends Component {
             </Card>
           </Row>
         )}
-        {/* TODO handle button click */}
         {(this.props.user.role === 'Editor' ||
           this.props.user.role === 'Agent' ||
           this.props.user.role === 'Admin') &&
           (!this.state.thread.isFinalVersion ? (
             <Row className="mt-2">
               <Button
-                variant="danger"
+                variant="success"
                 onClick={(e) =>
                   this.handleAsFinalFile(
                     this.state.thread._id,
@@ -570,7 +577,7 @@ class DocModificationThreadPage extends Component {
           ) : (
             <Row className="mt-2">
               <Button
-                variant="success"
+                variant="danger"
                 onClick={(e) =>
                   this.handleAsFinalFile(
                     this.state.thread._id,
@@ -583,7 +590,7 @@ class DocModificationThreadPage extends Component {
                 {isSubmissionLoaded ? (
                   'Mark as open'
                 ) : (
-                  <Spinner animation="border" role="status">
+                  <Spinner animation="border" role="status" size="sm">
                     <span className="visually-hidden"></span>
                   </Spinner>
                 )}

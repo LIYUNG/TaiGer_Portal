@@ -116,7 +116,6 @@ class Message extends Component {
                 {this.props.message.user_id.lastname}
               </b>
               <span style={{ float: 'right', cursor: 'pointer' }}>
-                {' on '}
                 {new Date(this.props.message.createdAt).toLocaleTimeString()}
                 {', '}
                 {new Date(this.props.message.createdAt).toLocaleDateString()}

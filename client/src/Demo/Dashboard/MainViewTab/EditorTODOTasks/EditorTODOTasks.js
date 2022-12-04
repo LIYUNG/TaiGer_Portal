@@ -8,7 +8,7 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 // import { Card, Col, Row } from "react-bootstrap";
 // import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
-import { convertDate } from '../../../Utils/contants';
+import { convertDate, return_thread_status } from '../../../Utils/contants';
 import { application_deadline_calculator } from '../../../Utils/checking-functions';
 
 class EditorTODOTasks extends React.Component {
@@ -42,6 +42,9 @@ class EditorTODOTasks extends React.Component {
                     {' - '}
                     {this.props.student.lastname}
                   </Link>
+                </td>
+                <td>
+                  {return_thread_status(this.props.user, generaldocs_threads)}
                 </td>
                 <td>
                   <Link
@@ -93,6 +96,12 @@ class EditorTODOTasks extends React.Component {
                           {' - '}
                           {this.props.student.lastname}
                         </Link>
+                      </td>
+                      <td>
+                        {return_thread_status(
+                          this.props.user,
+                          application_doc_thread
+                        )}
                       </td>
                       <td>
                         <Link

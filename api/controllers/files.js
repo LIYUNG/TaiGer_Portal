@@ -8,6 +8,7 @@ const { Template } = require('../models/Template');
 const Course = require('../models/Course');
 const { UPLOAD_PATH } = require('../config');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
+const { Documentthread } = require('../models/Documentthread');
 const { ErrorResponse } = require('../common/errors');
 const { DocumentStatus, profile_name_list } = require('../constants');
 const {
@@ -695,7 +696,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
     .populate('applications.programId')
-    .populate('agents editors', 'firstname lastname email')
+    .populate('applications', 'doc_modification_thread.doc_thread_id')
     .exec();
 
   let new_task_flag = false;
@@ -730,6 +731,19 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     }
     application.decided = applications[i].decided;
     application.closed = applications[i].closed;
+    // TODO: any faster way to query one time and write back once?!
+    if (application.closed === 'O') {
+      for (let k = 0; k < application.doc_modification_thread.length; k += 1) {
+        application.doc_modification_thread[k].isFinalVersion = true;
+        application.doc_modification_thread[k].updatedAt = new Date();
+        const document_thread = await Documentthread.findById(
+          application.doc_modification_thread[k].doc_thread_id
+        );
+        document_thread.isFinalVersion = true;
+        document_thread.updatedAt = new Date();
+        await document_thread.save();
+      }
+    }
     application.admission = applications[i].admission;
   }
   if (user.role === Role.Admin) {

@@ -9,7 +9,7 @@ import {
   AiOutlineUndo
 } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-import { getNumberOfDays } from '../../../Utils/contants';
+import { getNumberOfDays, return_thread_status } from '../../../Utils/contants';
 import { BiCommentDots } from 'react-icons/bi';
 class CVMLRLProgress extends React.Component {
   handleAsFinalFileThread = (
@@ -29,49 +29,7 @@ class CVMLRLProgress extends React.Component {
   };
   render() {
     var today = new Date();
-    const return_thread_status = (user, thread) => {
-      if (thread.isFinalVersion) {
-        return (
-          <td className="mb-1 text-info">
-            <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />
-          </td>
-        );
-      }
-      if (
-        thread.latest_message_left_by_id === undefined ||
-        thread.latest_message_left_by_id === ''
-      ) {
-        if (user.role !== 'Student') {
-          return (
-            <td className="mb-1 text-info">
-              <AiFillQuestionCircle
-                size={24}
-                color="lightgray"
-                title="Waiting feedback"
-              />
-            </td>
-          );
-        }
-      }
-      if (user._id.toString() === thread.latest_message_left_by_id) {
-        return (
-          <td className="mb-1 text-info">
-            <AiFillQuestionCircle
-              size={24}
-              color="lightgray"
-              title="Waiting feedback"
-            />
-          </td>
-        );
-      } else {
-        return (
-          <td className="mb-1 text-info">
-            <BiCommentDots size={24} color="red" title="New Message" />
-          </td>
-        );
-      }
-    };
-
+    
     let general_document_items = <></>;
     // TODO: implement:
     let no_started_general_document_items = <></>;

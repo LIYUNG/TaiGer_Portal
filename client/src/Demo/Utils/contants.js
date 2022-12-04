@@ -6,6 +6,7 @@ import {
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
+import { BiCommentDots } from 'react-icons/bi';
 let FILE_OK_SYMBOL = (
   <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
 );
@@ -202,4 +203,47 @@ export const EXPECTATION_APPLICATION_YEARS = () => {
       ))}
     </>
   );
+};
+
+export const return_thread_status = (user, thread) => {
+  if (thread.isFinalVersion) {
+    return (
+      <td className="mb-1 text-info">
+        <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />
+      </td>
+    );
+  }
+  if (
+    thread.latest_message_left_by_id === undefined ||
+    thread.latest_message_left_by_id === ''
+  ) {
+    if (user.role !== 'Student') {
+      return (
+        <td className="mb-1 text-info">
+          <AiFillQuestionCircle
+            size={24}
+            color="lightgray"
+            title="Waiting feedback"
+          />
+        </td>
+      );
+    }
+  }
+  if (user._id.toString() === thread.latest_message_left_by_id) {
+    return (
+      <td className="mb-1 text-info">
+        <AiFillQuestionCircle
+          size={24}
+          color="lightgray"
+          title="Waiting feedback"
+        />
+      </td>
+    );
+  } else {
+    return (
+      <td className="mb-1 text-info">
+        <BiCommentDots size={24} color="red" title="New Message" />
+      </td>
+    );
+  }
 };

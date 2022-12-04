@@ -80,6 +80,7 @@ class EditorMainView extends React.Component {
         <thead>
           <tr>
             <th>First-, Last Name</th>
+            <th>Status</th>
             <th>Documents</th>
             <th>Deadline</th>
             <th>Last Update</th>
@@ -88,6 +89,7 @@ class EditorMainView extends React.Component {
         <tbody>
           {this.props.students.map((student, i) => (
             <EditorTODOTasks
+              user={this.props.user}
               key={student._id}
               role={this.props.role}
               student={student}
@@ -103,7 +105,10 @@ class EditorMainView extends React.Component {
           <Col md={12}>
             <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
-                <Card.Title>Unread messages:</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  <BsExclamationTriangle size={18} />{' '}
+                  Unreplied messages:
+                </Card.Title>
               </Card.Header>
               <Table
                 responsive
@@ -118,30 +123,13 @@ class EditorMainView extends React.Component {
               </Table>
             </Card>
           </Col>
-          {/* <Col md={6}>
-            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header>
-                <Card.Title>Waiting responses:</Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-              >
-                {read_thread}
-              </Table>
-            </Card>
-          </Col> */}
         </Row>
         <Row>
           <Col md={12}>
-            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+            <Card className="mb-2 mx-0" bg={'primary'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} /> Editor Open Tasks:
+                  Editor Open Tasks:
                 </Card.Title>
               </Card.Header>
               <Table

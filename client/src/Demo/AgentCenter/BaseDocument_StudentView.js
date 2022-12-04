@@ -204,7 +204,7 @@ class BaseDocument_StudentView extends React.Component {
                   <th>File Name:</th>
                   <th></th>
                   <th></th>
-                  <th>Feedback</th>
+                  <th></th>
                   <th></th>
                   <th>Delete</th>
                 </tr>

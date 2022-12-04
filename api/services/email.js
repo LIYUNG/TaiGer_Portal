@@ -949,7 +949,7 @@ const assignDocumentTaskToEditorEmail = async (recipient, msg) => {
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname}:
+${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},
 
 is assigned to you 
 
@@ -975,7 +975,7 @@ const assignDocumentTaskToStudentEmail = async (recipient, msg) => {
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-${msg.documentname}:
+${msg.documentname},
 
 is assigned to you 
 

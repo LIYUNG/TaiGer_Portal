@@ -1,7 +1,11 @@
 import React from 'react';
 import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import { BASE_URL } from '../../api/request';
-import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
+import {
+  AiOutlineDownload,
+  AiOutlineWarning,
+  AiOutlineDelete
+} from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { FiExternalLink } from 'react-icons/fi';
 class ButtonSetAccepted extends React.Component {
@@ -132,7 +136,7 @@ class ButtonSetAccepted extends React.Component {
 
   render() {
     const deleteStyle = 'danger';
-    // const graoutStyle = 'light';
+    const rejectStyle = 'secondary';
     var ButttonRow_Accepted;
     ButttonRow_Accepted = (
       <tr>
@@ -182,79 +186,67 @@ class ButtonSetAccepted extends React.Component {
             </a>
           </Col>
         </td>
-        {this.props.role === 'Editor' ? (
+        <td></td>
+        {this.props.role === 'Editor' || this.props.role === 'Student' ? (
           <>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
           </>
         ) : (
           <>
-            {this.props.role === 'Student' ? (
-              <>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </>
-            ) : (
-              <>
-                <td>
-                  <Col md>
-                    <Form
-                      onSubmit={(e) =>
-                        this.onUpdateProfileDocStatus(
-                          e,
-                          this.props.k,
-                          this.props.student_id,
-                          'rejected'
-                        )
-                      }
+            <td>
+              <Col md>
+                <Form
+                  onSubmit={(e) =>
+                    this.onUpdateProfileDocStatus(
+                      e,
+                      this.props.k,
+                      this.props.student_id,
+                      'rejected'
+                    )
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button
+                      variant={rejectStyle}
+                      size="sm"
+                      type="submit"
+                      disabled={!this.state.isLoaded}
                     >
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button
-                          variant={deleteStyle}
-                          size="sm"
-                          type="submit"
-                          disabled={!this.state.isLoaded}
-                        >
-                          X
-                        </Button>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                  <Col>
-                    <Form
-                      onSubmit={(e) =>
-                        this.onDeleteFileWarningPopUp(
-                          e,
-                          this.props.k,
-                          this.props.student_id,
-                          this.props.docName
-                        )
-                      }
+                      <AiOutlineWarning size={16} />
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
+            <td></td>
+            <td>
+              <Col>
+                <Form
+                  onSubmit={(e) =>
+                    this.onDeleteFileWarningPopUp(
+                      e,
+                      this.props.k,
+                      this.props.student_id,
+                      this.props.docName
+                    )
+                  }
+                >
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button
+                      variant={deleteStyle}
+                      size="sm"
+                      type="submit"
+                      title="Delete"
+                      disabled={!this.state.isLoaded}
                     >
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button
-                          variant={deleteStyle}
-                          size="sm"
-                          type="submit"
-                          title="Delete"
-                          disabled={!this.state.isLoaded}
-                        >
-                          <AiOutlineDelete size={16} />
-                        </Button>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                </td>
-              </>
-            )}
+                      <AiOutlineDelete size={16} />
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </td>
           </>
         )}
       </tr>

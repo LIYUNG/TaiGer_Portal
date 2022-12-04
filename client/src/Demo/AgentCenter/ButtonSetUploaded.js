@@ -3,7 +3,9 @@ import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import { BASE_URL } from '../../api/request';
 import {
   AiOutlineDownload,
+  AiOutlineCheck,
   AiOutlineFieldTime,
+  AiOutlineWarning,
   AiOutlineDelete
 } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
@@ -141,7 +143,8 @@ class ButtonSetUploaded extends React.Component {
   };
   render() {
     const deleteStyle = 'danger';
-    const acceptStyle = 'warning';
+    const rejectStyle = 'secondary';
+    const acceptStyle = 'success';
     var ButttonRow_Uploaded;
     ButttonRow_Uploaded = (
       <tr>
@@ -201,30 +204,10 @@ class ButtonSetUploaded extends React.Component {
             <td>
               <Col md>
                 <Button
-                  variant={deleteStyle}
-                  size="sm"
-                  type="submit"
-                  disabled={!this.state.isLoaded}
-                  onClick={(e) =>
-                    this.onUpdateProfileDocStatus(
-                      e,
-                      this.props.k,
-                      this.props.student_id,
-                      'rejected'
-                    )
-                  }
-                >
-                  X
-                </Button>
-              </Col>
-            </td>
-            <td></td>
-            <td>
-              <Col md>
-                <Button
                   variant={acceptStyle}
                   size="sm"
                   type="submit"
+                  title="Mark as finshed"
                   disabled={!this.state.isLoaded}
                   onClick={(e) =>
                     this.onUpdateProfileDocStatus(
@@ -235,10 +218,32 @@ class ButtonSetUploaded extends React.Component {
                     )
                   }
                 >
-                  O
+                  <AiOutlineCheck />
                 </Button>
               </Col>
             </td>
+            <td>
+              <Col md>
+                <Button
+                  variant={rejectStyle}
+                  size="sm"
+                  type="submit"
+                  title="Mark as reject"
+                  disabled={!this.state.isLoaded}
+                  onClick={(e) =>
+                    this.onUpdateProfileDocStatus(
+                      e,
+                      this.props.k,
+                      this.props.student_id,
+                      'rejected'
+                    )
+                  }
+                >
+                  <AiOutlineWarning size={16} />
+                </Button>
+              </Col>
+            </td>
+            <td></td>
           </>
         )}
         {this.props.role === 'Editor' ? (

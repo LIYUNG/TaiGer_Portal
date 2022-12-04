@@ -152,33 +152,29 @@ class ButtonSetNotNeeded extends React.Component {
                 </Form.Group>
               )}
             </td>
-            {this.props.role === 'Student' ? (
-              <td></td>
-            ) : (
-              <td>
-                <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.onUpdateProfileDocStatus(
-                        e,
-                        this.props.k,
-                        this.props.student_id,
-                        'missing'
-                      )
-                    }
-                  >
-                    <Form.Group controlId={`${this.props.k}`}>
-                      <Button size="sm" type="submit">
-                        Set Needed
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-            )}
+            <td></td>
           </>
         )}
-        <td></td>
+        <td>
+          <Col>
+            <Form
+              onSubmit={(e) =>
+                this.onUpdateProfileDocStatus(
+                  e,
+                  this.props.k,
+                  this.props.student_id,
+                  'missing'
+                )
+              }
+            >
+              <Form.Group controlId={`${this.props.k}`}>
+                <Button size="sm" type="submit">
+                  Set Needed
+                </Button>
+              </Form.Group>
+            </Form>
+          </Col>
+        </td>
         <td></td>
         <td></td>
       </tr>

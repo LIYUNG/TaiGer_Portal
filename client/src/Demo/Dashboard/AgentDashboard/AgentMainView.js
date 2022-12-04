@@ -1,5 +1,8 @@
 import React from 'react';
 import { Row, Col, Table, Tabs, Tab, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentTodoList from './AgentTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
@@ -7,14 +10,14 @@ import AgentTasks from '../MainViewTab/AgentTasks/index';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
-import {
-  uploadforstudent,
-  updateProfileDocumentStatus,
-  deleteFile,
-  getStudents
-} from '../../../api';
+
+import { updateAgentBanner } from '../../../api';
+
 class AgentMainView extends React.Component {
+  state = {
+    user: this.props.user
+  };
+
   checkMissingBaseDocument = (students) => {
     for (let stud_idx = 0; stud_idx < students.length; stud_idx += 1) {
       let student = students[stud_idx];
@@ -48,6 +51,46 @@ class AgentMainView extends React.Component {
     }
     return false;
   };
+
+  removeAgentBanner = (e, notification_key, student_id) => {
+    e.preventDefault();
+    const temp_user = { ...this.state.user };
+    console.log(temp_user);
+    const idx = temp_user.agent_notification[`${notification_key}`].findIndex(
+      (student_obj) => student_obj.student_id === student_id
+    );
+    temp_user.agent_notification[`${notification_key}`].splice(idx, 1);
+
+    this.setState({
+      user: temp_user
+    });
+
+    updateAgentBanner(notification_key, student_id).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            success: success,
+            isLoaded: true,
+            res_status: status
+          }));
+        } else {
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
+      }
+    );
+  };
   render() {
     const agent_todo = this.props.students.map((student, i) => (
       <AgentTodoList key={i} student={student} />
@@ -73,6 +116,47 @@ class AgentMainView extends React.Component {
     ));
     return (
       <>
+        {this.state.user.agent_notification &&
+          this.state.user.agent_notification.isRead_new_base_docs_uploaded.map(
+            (student) => (
+              <Row>
+                <Col>
+                  <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                    <p
+                      className="text-light my-3 mx-3"
+                      style={{ textAlign: 'left' }}
+                    >
+                      <BsExclamationTriangle size={18} />
+                      <b className="mx-2">Reminder:</b> There are new base
+                      documents uploaded by{' '}
+                      <b>
+                        {student.student_firstname} {student.student_lastname}
+                      </b>{' '}
+                      <Link
+                        to={`/student-database/${student.student_id}/profile`}
+                        style={{ textDecoration: 'none' }}
+                        className="text-info"
+                      >
+                        Base Document
+                      </Link>{' '}
+                      <span style={{ float: 'right', cursor: 'pointer' }}>
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeAgentBanner(
+                              e,
+                              'isRead_new_base_docs_uploaded',
+                              student.student_id
+                            )
+                          }
+                        />
+                      </span>
+                    </p>
+                  </Card>
+                </Col>
+              </Row>
+            )
+          )}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>

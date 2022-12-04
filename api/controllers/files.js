@@ -3,7 +3,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const aws = require('aws-sdk');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Student, User } = require('../models/User');
+const { Role, Student, User, Agent } = require('../models/User');
 const { Template } = require('../models/Template');
 const Course = require('../models/Course');
 const { UPLOAD_PATH } = require('../config');
@@ -228,6 +228,27 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     await student.save();
     res.status(201).send({ success: true, data: student });
     if (user.role === Role.Student) {
+      // TODO: add notification for agents
+      for (let i = 0; i < student.agents.length; i += 1) {
+        console.log(student.agents[i]._id.toString());
+        const agent = await Agent.findById(student.agents[i]._id.toString());
+        if (agent.agent_notification) {
+          const temp_student =
+            agent.agent_notification.isRead_new_base_docs_uploaded.find(
+              (std_obj) => std_obj.student_id === student._id.toString()
+            );
+          // if not notified yet:
+          if (!temp_student) {
+            agent.agent_notification.isRead_new_base_docs_uploaded.push({
+              student_id: student._id.toString(),
+              student_firstname: student.firstname,
+              student_lastname: student.lastname
+            });
+          }
+          // else: nothing to do as there was a notification before.
+        }
+        await agent.save();
+      }
       await sendUploadedProfileFilesEmail(
         {
           firstname: student.firstname,
@@ -282,6 +303,27 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
   if (user.role === Role.Student) {
+    // TODO: notify agents
+    for (let i = 0; i < student.agents.length; i += 1) {
+      console.log(student.agents[i]._id.toString());
+      const agent = await Agent.findById(student.agents[i]._id.toString());
+      if (agent.agent_notification) {
+        const temp_student =
+          agent.agent_notification.isRead_new_base_docs_uploaded.find(
+            (std_obj) => std_obj.student_id === student._id.toString()
+          );
+        // if not notified yet:
+        if (!temp_student) {
+          agent.agent_notification.isRead_new_base_docs_uploaded.push({
+            student_id: student._id.toString(),
+            student_firstname: student.firstname,
+            student_lastname: student.lastname
+          });
+        }
+        // else: nothing to do as there was a notification before.
+      }
+      await agent.save();
+    }
     await sendUploadedProfileFilesEmail(
       {
         firstname: student.firstname,
@@ -1032,8 +1074,25 @@ const removeNotification = asyncHandler(async (req, res, next) => {
   me.notification[`${notification_key}`] = true;
   await me.save();
   res.status(200).send({
-    success: true,
-    data: me
+    success: true
+  });
+});
+
+const removeAgentNotification = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  const { notification_key, student_id } = req.body;
+  const me = await Agent.findById(user._id.toString());
+  const idx = me.agent_notification[`${notification_key}`].findIndex(
+    (student_obj) => student_obj.student_id === student_id
+  );
+  if (idx === -1) {
+    logger.error('removeAgentNotification: student id not existed');
+    throw new ErrorResponse(400, 'student id not existed');
+  }
+  me.agent_notification[`${notification_key}`].splice(idx, 1);
+  await me.save();
+  res.status(200).send({
+    success: true
   });
 });
 
@@ -1532,6 +1591,7 @@ module.exports = {
   processTranscript_test,
   downloadXLSX,
   removeNotification,
+  removeAgentNotification,
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,

@@ -24,6 +24,7 @@ const {
   processTranscript_test,
   downloadXLSX,
   removeNotification,
+  removeAgentNotification,
   getMyAcademicBackground,
   updateAcademicBackground,
   updateLanguageSkill,
@@ -103,14 +104,24 @@ router
     downloadXLSX
   );
 
-// Academic Survey for Students
+// Close notification for Studen
 router
-  .route('/notifications')
+  .route('/student/notifications')
   .post(
     filter_archiv_user,
     RemoveNotificationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     removeNotification
+  );
+
+// Close notification for Agent
+router
+  .route('/agent/notifications')
+  .post(
+    filter_archiv_user,
+    RemoveNotificationRateLimiter,
+    permit(Role.Agent),
+    removeAgentNotification
   );
 
 // Academic Survey for Students

@@ -314,8 +314,14 @@ export const getStudentTask = (student_id) =>
 
 // remove Banner/notification
 export const updateBanner = (notification_key) =>
-  request.post(`/api/account/notifications`, {
+  request.post(`/api/account/student/notifications`, {
     notification_key
+  });
+
+export const updateAgentBanner = (notification_key, student_id) =>
+  request.post(`/api/account/agent/notifications`, {
+    notification_key,
+    student_id
   });
 
 //Survey:

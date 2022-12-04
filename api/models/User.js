@@ -435,7 +435,37 @@ const Agent = User.discriminator(
   'Agent',
   new Schema(
     {
-      students: [{ type: ObjectId, ref: 'Student' }]
+      students: [{ type: ObjectId, ref: 'Student' }],
+      agent_notification: {
+        isRead_new_base_docs_uploaded: [
+          {
+            student_id: {
+              type: String,
+              default: ''
+            },
+            student_firstname: {
+              type: String,
+              default: ''
+            },
+            student_lastname: {
+              type: String,
+              default: ''
+            }
+          }
+        ],
+        isRead_new_survey_updated: {
+          type: Boolean,
+          default: true
+        },
+        isRead_applications_status_changed: {
+          type: Boolean,
+          default: true
+        },
+        isRead_new_programs_assigned: {
+          type: Boolean,
+          default: false
+        }
+      }
     },
     options
   ),
@@ -446,7 +476,25 @@ const Editor = User.discriminator(
   'Editor',
   new Schema(
     {
-      students: [{ type: ObjectId, ref: 'Student' }]
+      students: [{ type: ObjectId, ref: 'Student' }],
+      editor_notification: {
+        isRead_survey_not_complete: {
+          type: Boolean,
+          default: false
+        },
+        isRead_base_documents_missing: {
+          type: Boolean,
+          default: false
+        },
+        isRead_base_documents_rejected: {
+          type: Boolean,
+          default: false
+        },
+        isRead_new_programs_assigned: {
+          type: Boolean,
+          default: false
+        }
+      }
     },
     options
   ),

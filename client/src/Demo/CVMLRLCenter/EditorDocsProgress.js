@@ -294,6 +294,7 @@ class EditorDocsProgress extends React.Component {
               res_status: status
             });
           } else {
+            // TODO: handle frontend render if create duplicate thread
             this.setState({
               isLoaded: true,
               res_status: status
@@ -325,6 +326,7 @@ class EditorDocsProgress extends React.Component {
               res_status: status
             });
           } else {
+            // TODO: handle frontend render if create duplicate thread
             this.setState({
               isLoaded: true,
               res_status: status

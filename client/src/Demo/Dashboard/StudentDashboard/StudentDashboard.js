@@ -28,15 +28,17 @@ class StudentDashboard extends React.Component {
 
   removeBanner = (e, notification_key) => {
     e.preventDefault();
+    const temp_student = this.state.student;
+    temp_student.notification[`${notification_key}`] = true;
+    this.setState({ student: temp_student });
     updateBanner(notification_key).then(
       (resp) => {
-        const { success, data } = resp.data;
+        const { success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             success: success,
-            student: data,
             isLoaded: true,
             res_status: status
           }));

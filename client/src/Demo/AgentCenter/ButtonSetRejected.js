@@ -3,6 +3,7 @@ import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import { BASE_URL } from '../../api/request';
 import {
   AiOutlineDownload,
+  AiOutlineCheck,
   AiFillCloseCircle,
   AiOutlineComment,
   AiOutlineDelete
@@ -194,7 +195,7 @@ class ButtonSetRejected extends React.Component {
   };
   render() {
     const deleteStyle = 'danger';
-    const acceptStyle = 'warning';
+    const acceptStyle = 'success';
     var ButttonRow_Rejected;
     ButttonRow_Rejected = (
       <tr>
@@ -239,9 +240,30 @@ class ButtonSetRejected extends React.Component {
             </a>
           </Col>
         </td>
+        <td>
+          {' '}
+          <Col>
+            <Button
+              variant={acceptStyle}
+              size="sm"
+              type="submit"
+              title="Mark as finshed"
+              disabled={!this.state.isLoaded}
+              onClick={(e) =>
+                this.onUpdateProfileDocStatus(
+                  e,
+                  this.props.k,
+                  this.props.student_id,
+                  'accepted'
+                )
+              }
+            >
+              <AiOutlineCheck />
+            </Button>
+          </Col>
+        </td>
         {this.props.role === 'Editor' ? (
           <>
-            <td></td>
             <td>
               <Button
                 size="sm"
@@ -262,7 +284,6 @@ class ButtonSetRejected extends React.Component {
           <>
             {this.props.role === 'Student' ? (
               <>
-                <td></td>
                 <td>
                   <Button
                     size="sm"
@@ -283,7 +304,6 @@ class ButtonSetRejected extends React.Component {
               </>
             ) : (
               <>
-                <td></td>
                 <td>
                   <Button
                     size="sm"
@@ -300,26 +320,7 @@ class ButtonSetRejected extends React.Component {
                     <AiOutlineComment size={20} />
                   </Button>
                 </td>
-                <td>
-                  <Col>
-                    <Button
-                      variant={acceptStyle}
-                      size="sm"
-                      type="submit"
-                      disabled={!this.state.isLoaded}
-                      onClick={(e) =>
-                        this.onUpdateProfileDocStatus(
-                          e,
-                          this.props.k,
-                          this.props.student_id,
-                          'accepted'
-                        )
-                      }
-                    >
-                      O
-                    </Button>
-                  </Col>
-                </td>
+                <td></td>
               </>
             )}
             <td>

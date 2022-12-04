@@ -127,12 +127,7 @@ class ButtonSetMissing extends React.Component {
             </a>
           )}
         </td>
-        {this.props.role === 'Editor' ? (
-          <>
-            <td></td>
-            <td></td>
-          </>
-        ) : (
+        {this.props.role === 'Student' ? (
           <>
             <td>
               {!this.state.isLoaded ? (
@@ -160,33 +155,39 @@ class ButtonSetMissing extends React.Component {
                 </Form.Group>
               )}
             </td>
-            {this.props.role === 'Student' ? (
-              <td></td>
-            ) : (
-              <td>
-                <Col md>
-                  <Form
-                    onSubmit={(e) =>
-                      this.onUpdateProfileDocStatus(
-                        e,
-                        this.props.k,
-                        this.props.student_id,
-                        'notneeded'
-                      )
-                    }
-                  >
-                    <Form.Group controlId={`${this.props.k}`}>
-                      <Button variant={'secondary'} size="sm" type="submit">
-                        Set notneeded
-                      </Button>
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </td>
-            )}
+            <td></td>
+            <td></td>
+          </>
+        ) : (
+          <>
+            <td></td>
+            <td></td>
+            <td>
+              {this.props.role === 'Admin' ||
+                (this.props.role === 'Agent' && (
+                  <Col md>
+                    <Form
+                      onSubmit={(e) =>
+                        this.onUpdateProfileDocStatus(
+                          e,
+                          this.props.k,
+                          this.props.student_id,
+                          'notneeded'
+                        )
+                      }
+                    >
+                      <Form.Group controlId={`${this.props.k}`}>
+                        <Button variant={'secondary'} size="sm" type="submit">
+                          Set notneeded
+                        </Button>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                ))}
+            </td>
           </>
         )}
-        <td></td>
+
         <td></td>
         <td></td>
       </tr>

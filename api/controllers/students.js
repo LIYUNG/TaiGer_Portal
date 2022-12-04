@@ -414,7 +414,8 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       },
       {
         std_firstname: student.firstname,
-        std_lastname: student.lastname
+        std_lastname: student.lastname,
+        std_id: student._id.toString()
       }
     );
   }
@@ -485,7 +486,8 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       },
       {
         std_firstname: student.firstname,
-        std_lastname: student.lastname
+        std_lastname: student.lastname,
+        std_id: student._id.toString()
       }
     );
   }

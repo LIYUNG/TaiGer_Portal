@@ -12,20 +12,28 @@ const {
   ORIGIN
 } = require('../config');
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
-// const ACCOUNT_ACTIVATION_URL = path.join(ORIGIN, 'account/activation');
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
   .href;
-// const RESEND_ACTIVATION_URL = path.join(ORIGIN, 'account/resend-activation');
 const PASSWORD_RESET_URL = new URL('/account/reset-password', ORIGIN).href;
-// const PASSWORD_RESET_URL = path.join(ORIGIN, 'account/reset-password');
 const FORGOT_PASSWORD_URL = new URL('/forgot-password', ORIGIN).href;
-// const FORGOT_PASSWORD_URL = path.join(ORIGIN, 'forgot-password');
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
+const CVMLRL_FOR_EDITOR_URL = (studentId) =>
+  new URL(`/student-database/${studentId}/CV_ML_RL`, ORIGIN).href;
+const UNI_ASSIST_FOR_STUDENT_URL = new URL('/uni-assist', ORIGIN).href;
+const UNI_ASSIST_FOR_AGENT_URL = (studentId) =>
+  new URL(`/student-database/${studentId}/uni-assist`, ORIGIN).href;
 const THREAD_URL = new URL('/document-modification', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
+const BASE_DOCUMENT_FOR_AGENT_URL = (studentId) =>
+  new URL(`/student-database/${studentId}/profile`, ORIGIN).href;
 const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
+const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
+const SETTINGS_URL = new URL('/settings', ORIGIN).href;
+
+const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
+  new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
 
@@ -163,7 +171,9 @@ const sendPasswordResetEmail = async (recipient) => {
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname},
 
-Your password has been successfully updated, you can now login with your new password.
+Your password has been successfully updated, you can now login with your new password
+
+in TaiGer portal: ${ORIGIN}
 
 ${TAIGER_SIGNATURE}
 
@@ -180,6 +190,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 Your TaiGer Portal Account has been successfully activated.
 
 You can now login and explore the power of TaiGer Portal!
+
+TaiGer Portal: ${ORIGIN}
 
 ${TAIGER_SIGNATURE}
 
@@ -199,6 +211,8 @@ for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
 
 Your editor will review it and give you feedback as soon as possible.
 
+Keep tracking your documents progress: ${CVMLRL_CENTER_URL}
+
 ${TAIGER_SIGNATURE}
 
 `;
@@ -214,6 +228,25 @@ Hi ${recipient.firstname} ${recipient.lastname},
 you have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.
 
 Your agent will review it as soon as possible.
+
+Keep tracking your base documents progress: ${BASE_DOCUMENT_URL}
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendUploadedVPDEmail = async (recipient, msg) => {
+  const subject = 'VPD is successfully uploaded!';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+you have successfully uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.
+
+Keep tracking your VPD here: ${UNI_ASSIST_FOR_STUDENT_URL}
+
 
 ${TAIGER_SIGNATURE}
 
@@ -240,16 +273,56 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
+const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
+  const subject = 'Your VPD is successfully uploaded!';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
+
+Please go to ${UNI_ASSIST_FOR_STUDENT_URL} and see the details.
+
+If you have any question, feel free to contact your agent.
+
+${TAIGER_SIGNATURE}
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
   const subject = `New ${msg.uploaded_documentname} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${msg.uploaded_documentname}
+your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
+    msg.uploaded_documentname
+  }
 
 on ${msg.uploaded_updatedAt}.
 
-Please go to ${BASE_DOCUMENT_URL} and see the details.
+Please go to ${BASE_DOCUMENT_FOR_AGENT_URL(msg.student_id)} and see the details.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for student/agent/editor
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
+  const subject = `New VPD uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
+    msg.uploaded_documentname
+  }
+
+on ${msg.uploaded_updatedAt}.
+
+Please go to ${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)} and see the details.
 
 ${TAIGER_SIGNATURE}
 
@@ -303,7 +376,9 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${msg.std_firstname} ${msg.std_lastname} will be your student!
 
-Please say hello to your student!
+Please see the survey ${STUDENT_BACKGROUND_FOR_AGENT_URL(msg.std_id)}
+
+and say hello to your student!
 
 ${TAIGER_SIGNATURE}
 
@@ -327,6 +402,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${agent} will be your agent!
 
+Please go to ${ORIGIN} , and prepare your documents!
+
 ${TAIGER_SIGNATURE}
 
 `;
@@ -341,7 +418,9 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${msg.std_firstname} ${msg.std_lastname} will be your student!
 
-Please say hello to your student!
+Please go to ${CVMLRL_FOR_EDITOR_URL(
+    msg.std_id
+  )} , and check if the CV task is created and say hello to your student!
 
 ${TAIGER_SIGNATURE}
 
@@ -364,6 +443,8 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 ${editor} will be your editor!
+
+Please go to ${ORIGIN} , and prepare your documents!
 
 ${TAIGER_SIGNATURE}
 
@@ -411,6 +492,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 You have updated your academic background information successfully!
 
+Please double check in ${STUDENT_SURVEY_URL} 
+
 ${TAIGER_SIGNATURE}
 
 `; // should be for admin/editor/agent/student
@@ -424,6 +507,8 @@ const updateLanguageSkillEmail = async (recipient) => {
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your Language skills information successfully!
+
+Please double check in ${STUDENT_SURVEY_URL} 
 
 ${TAIGER_SIGNATURE}
 
@@ -439,6 +524,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${msg.sender_firstname} ${msg.sender_lastname} updated your Language skills information successfully!
 
+Please double check in ${STUDENT_SURVEY_URL} 
+
 ${TAIGER_SIGNATURE}
 
 `; // should be for admin/editor/agent/student
@@ -452,6 +539,8 @@ const updateApplicationPreferenceEmail = async (recipient) => {
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your application preference information successfully!
+
+Please double check in ${STUDENT_SURVEY_URL} 
 
 ${TAIGER_SIGNATURE}
 
@@ -467,6 +556,8 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 You have updated your personal data successfully!
 
+Please double check in ${SETTINGS_URL} 
+
 ${TAIGER_SIGNATURE}
 
 `; // should be for admin/editor/agent/student
@@ -480,6 +571,8 @@ const updateCredentialsEmail = async (recipient, msg) => {
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your passwords successfully!
+
+Please make sure you can login in ${ORIGIN} 
 
 ${TAIGER_SIGNATURE}
 
@@ -504,6 +597,22 @@ const UpdateStudentApplicationsEmail = async (recipient, msg) => {
         ${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}`;
       }
     }
+  }
+  if (applications_name === '') {
+    const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.sender_firstname} ${msg.sender_lastname} has updated or declined some applications.
+
+Please go to ${STUDENT_APPLICATION_URL} and see details.
+
+Also go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+    return sendEmail(recipient, subject, message);
   }
 
   const message = `\
@@ -562,7 +671,6 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-
 const NewMLRLEssayTasksEmailFromTaiGer = async (recipient, msg) => {
   const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
   let applications_name = '';
@@ -593,20 +701,6 @@ for ${msg.student_firstname} ${msg.student_lastname}.
 The relavant documents tasks are now assigned to you.
 
 Please go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
-
-${TAIGER_SIGNATURE}
-
-`; // should be for admin/editor/agent/student
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendSomeReminderEmail = async (recipient) => {
-  const subject = 'File Status changes';
-  const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-Some reminder email template.
 
 ${TAIGER_SIGNATURE}
 
@@ -664,13 +758,17 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
     const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} 
+${msg.editor_firstname} ${msg.editor_lastname} have finalized ${
+      msg.uploaded_documentname
+    } 
 
 for student ${recipient.firstname} ${recipient.lastname}
 
 on ${msg.uploaded_updatedAt}.
 
 This document is ready for the application. 
+
+Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
 
 If you have any question, feel free to contact your editor.
 
@@ -684,9 +782,11 @@ ${TAIGER_SIGNATURE}
     const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-editor ${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
+${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
 
 as not finished.
+
+Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
 
 If you have any question, feel free to contact your editor.
 
@@ -712,6 +812,8 @@ for you.
 
 This document is ready for the application. 
 
+Please go to ${CVMLRL_CENTER_URL} for more details.
+
 If you have any question, feel free to contact your editor.
 
 ${TAIGER_SIGNATURE}
@@ -728,6 +830,7 @@ your editor ${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_do
 
 as not finished.
 
+Please go to ${CVMLRL_CENTER_URL} for more details.
 
 If you have any question, feel free to contact your editor.
 
@@ -748,7 +851,7 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
     const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized
+${msg.editor_firstname} ${msg.editor_lastname} have finalized
 
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
 
@@ -757,6 +860,8 @@ on ${msg.uploaded_updatedAt}
 for you.
 
 This document is ready for the application. 
+
+Please go to ${CVMLRL_CENTER_URL} for more details.
 
 If you have any question, feel free to contact your editor.
 
@@ -775,6 +880,8 @@ your editor ${msg.editor_firstname} ${msg.editor_lastname} set
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
 
 as not finished.
+
+Please go to ${CVMLRL_CENTER_URL} for more details.
 
 If you have any question, feel free to contact your editor.
 
@@ -803,6 +910,8 @@ for ${msg.student_firstname} ${msg.student_lastname}.
 
 Double check this document and finalize the application if applicable. 
 
+Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
+
 ${TAIGER_SIGNATURE}
 
 `;
@@ -822,6 +931,8 @@ on ${msg.uploaded_updatedAt}
 for ${msg.student_firstname} ${msg.student_lastname}.
 
 Double check this document and finalize the application if applicable. 
+
+Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
 
 ${TAIGER_SIGNATURE}
 
@@ -882,6 +993,20 @@ ${TAIGER_SIGNATURE}
   sendEmail(recipient, subject, message);
 };
 
+const sendSomeReminderEmail = async (recipient) => {
+  const subject = 'File Status changes';
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Some reminder email template.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -894,8 +1019,11 @@ module.exports = {
   sendAccountActivationConfirmationEmail,
   sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
+  sendUploadedVPDEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
+  sendAgentUploadedVPDForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
+  sendUploadedVPDRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
   updateAcademicBackgroundEmail,
   updateLanguageSkillEmail,

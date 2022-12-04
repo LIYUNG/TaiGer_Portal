@@ -263,6 +263,7 @@ class DocModificationThreadPage extends Component {
             res_status: status
           });
         } else {
+          // TODO: what if data is oversize? data type not match?
           this.setState({
             isLoaded: true,
             res_status: status

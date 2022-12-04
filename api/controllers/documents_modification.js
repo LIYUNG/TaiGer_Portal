@@ -838,6 +838,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         {
           student_firstname: student3.firstname,
           student_lastname: student3.lastname,
+          student_id: student3._id.toString(),
           editor_firstname: user.firstname,
           editor_lastname: user.lastname,
           uploaded_documentname: generaldocs_thread.doc_thread_id.file_type,

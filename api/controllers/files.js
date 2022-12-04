@@ -14,8 +14,11 @@ const {
   deleteTemplateSuccessEmail,
   uploadTemplateSuccessEmail,
   sendUploadedProfileFilesEmail,
+  sendUploadedVPDEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
+  sendAgentUploadedVPDForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
+  sendUploadedVPDRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
   updateAcademicBackgroundEmail,
   updateLanguageSkillEmail,
@@ -24,9 +27,7 @@ const {
   updatePersonalDataEmail,
   UpdateStudentApplicationsEmail,
   NewMLRLEssayTasksEmail,
-  NewMLRLEssayTasksEmailFromTaiGer,
-  assignDocumentTaskToEditorEmail,
-  assignDocumentTaskToStudentEmail
+  NewMLRLEssayTasksEmailFromTaiGer
   // sendSomeReminderEmail,
 } = require('../services/email');
 const {
@@ -209,9 +210,9 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     params: { studentId, category }
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId).populate(
-    'applications.programId'
-  );
+  const student = await Student.findById(studentId)
+    .populate('agents', 'firstname lastname email')
+    .populate('applications.programId');
   if (!student) {
     logger.error('saveProfileFilePath: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
@@ -249,6 +250,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
           {
             student_firstname: student.firstname,
             student_lastname: student.lastname,
+            student_id: student._id.toString(),
             uploaded_documentname: document.name.replace(/_/g, ' '),
             uploaded_updatedAt: document.updatedAt
           }
@@ -302,6 +304,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         {
           student_firstname: student.firstname,
           student_lastname: student.lastname,
+          student_id: student._id.toString(),
           uploaded_documentname: document.name.replace(/_/g, ' '),
           uploaded_updatedAt: document.updatedAt
         }
@@ -339,7 +342,7 @@ const updateVPDFileNecessity = asyncHandler(async (req, res) => {
     logger.error('updateVPDFileNecessity: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
-  let app = student.applications.find(
+  const app = student.applications.find(
     (application) => application.programId._id.toString() === program_id
   );
   if (!app) {
@@ -360,10 +363,11 @@ const updateVPDFileNecessity = asyncHandler(async (req, res) => {
   res.status(201).send({ success: true, data: student });
 });
 
-// () email : TODO student notification
-// () email : TODO agent notification
+// (O) email : student notification
+// (O) email : agent notification
 const saveVPDFilePath = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { studentId, program_id }
   } = req;
 
@@ -375,7 +379,7 @@ const saveVPDFilePath = asyncHandler(async (req, res) => {
     logger.error('saveVPDFilePath: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
-  let app = student.applications.find(
+  const app = student.applications.find(
     (application) => application.programId._id.toString() === program_id
   );
   if (!app) {
@@ -387,49 +391,7 @@ const saveVPDFilePath = asyncHandler(async (req, res) => {
     );
     await student.save();
     res.status(201).send({ success: true, data: student });
-    // if (user.role === Role.Student) {
-    //   await sendUploadedProfileFilesEmail(
-    //     {
-    //       firstname: student.firstname,
-    //       lastname: student.lastname,
-    //       address: student.email
-    //     },
-    //     {
-    //       uploaded_documentname: document.name.replace(/_/g, ' '),
-    //       uploaded_updatedAt: document.updatedAt
-    //     }
-    //   );
 
-    //   for (let i = 0; i < student.agents.length; i++) {
-    //     await sendUploadedProfileFilesRemindForAgentEmail(
-    //       {
-    //         firstname: student.agents[i].firstname,
-    //         lastname: student.agents[i].lastname,
-    //         address: student.agents[i].email
-    //       },
-    //       {
-    //         student_firstname: student.firstname,
-    //         student_lastname: student.lastname,
-    //         uploaded_documentname: document.name.replace(/_/g, ' '),
-    //         uploaded_updatedAt: document.updatedAt
-    //       }
-    //     );
-    //   }
-    // } else {
-    //   await sendAgentUploadedProfileFilesForStudentEmail(
-    //     {
-    //       firstname: student.firstname,
-    //       lastname: student.lastname,
-    //       address: student.email
-    //     },
-    //     {
-    //       agent_firstname: user.firstname,
-    //       agent_lastname: user.lastname,
-    //       uploaded_documentname: document.name.replace(/_/g, ' '),
-    //       uploaded_updatedAt: document.updatedAt
-    //     }
-    //   );
-    // }
     return;
   }
   app.uni_assist.status = DocumentStatus.Uploaded;
@@ -442,49 +404,56 @@ const saveVPDFilePath = asyncHandler(async (req, res) => {
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
-  // if (user.role === Role.Student) {
-  //   await sendUploadedProfileFilesEmail(
-  //     {
-  //       firstname: student.firstname,
-  //       lastname: student.lastname,
-  //       address: student.email
-  //     },
-  //     {
-  //       uploaded_documentname: document.name.replace(/_/g, ' '),
-  //       uploaded_updatedAt: document.updatedAt
-  //     }
-  //   );
-  //   // Reminder for Agent:
-  //   for (let i = 0; i < student.agents.length; i++) {
-  //     await sendUploadedProfileFilesRemindForAgentEmail(
-  //       {
-  //         firstname: student.agents[i].firstname,
-  //         lastname: student.agents[i].lastname,
-  //         address: student.agents[i].email
-  //       },
-  //       {
-  //         student_firstname: student.firstname,
-  //         student_lastname: student.lastname,
-  //         uploaded_documentname: document.name.replace(/_/g, ' '),
-  //         uploaded_updatedAt: document.updatedAt
-  //       }
-  //     );
-  //   }
-  // } else {
-  //   await sendAgentUploadedProfileFilesForStudentEmail(
-  //     {
-  //       firstname: student.firstname,
-  //       lastname: student.lastname,
-  //       address: student.email
-  //     },
-  //     {
-  //       agent_firstname: user.firstname,
-  //       agent_lastname: user.lastname,
-  //       uploaded_documentname: document.name.replace(/_/g, ' '),
-  //       uploaded_updatedAt: document.updatedAt
-  //     }
-  //   );
-  // }
+
+  const student_updated = await Student.findById(studentId).populate(
+    'agents',
+    'firstname lastname email'
+  );
+
+  if (user.role === Role.Student) {
+    await sendUploadedVPDEmail(
+      {
+        firstname: student_updated.firstname,
+        lastname: student_updated.lastname,
+        address: student_updated.email
+      },
+      {
+        uploaded_documentname: req.file.key.replace(/_/g, ' '),
+        uploaded_updatedAt: app.uni_assist.updatedAt
+      }
+    );
+    // Reminder for Agent:
+    for (let i = 0; i < student_updated.agents.length; i++) {
+      await sendUploadedVPDRemindForAgentEmail(
+        {
+          firstname: student_updated.agents[i].firstname,
+          lastname: student_updated.agents[i].lastname,
+          address: student_updated.agents[i].email
+        },
+        {
+          student_firstname: student_updated.firstname,
+          student_lastname: student_updated.lastname,
+          student_id: student_updated._id.toString(),
+          uploaded_documentname: req.file.key.replace(/_/g, ' '),
+          uploaded_updatedAt: app.uni_assist.updatedAt
+        }
+      );
+    }
+  } else {
+    await sendAgentUploadedVPDForStudentEmail(
+      {
+        firstname: student_updated.firstname,
+        lastname: student_updated.lastname,
+        address: student_updated.email
+      },
+      {
+        agent_firstname: user.firstname,
+        agent_lastname: user.lastname,
+        uploaded_documentname: req.file.key.replace(/_/g, ' '),
+        uploaded_updatedAt: app.uni_assist.updatedAt
+      }
+    );
+  }
 });
 
 const downloadVPDFile = asyncHandler(async (req, res, next) => {

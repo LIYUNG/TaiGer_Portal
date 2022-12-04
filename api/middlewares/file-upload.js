@@ -71,7 +71,7 @@ const upload_template_s3 = multer({
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
       return cb(
         new ErrorResponse(
-          400,
+          415,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
@@ -79,7 +79,7 @@ const upload_template_s3 = multer({
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
-          400,
+          413,
           `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
@@ -227,14 +227,14 @@ const upload_doc_image_s3 = multer({
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
       return cb(
-        new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
+        new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
       );
     }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
-          400,
+          413,
           `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
@@ -249,13 +249,13 @@ const upload_doc_docs_s3 = multer({
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
       return cb(
-        new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
+        new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
       );
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
-          400,
+          413,
           `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
@@ -269,13 +269,13 @@ const upload_vpd_s3 = multer({
   limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_PDF_TYPES.includes(file.mimetype)) {
-      return cb(new ErrorResponse(400, 'Only .pdf format is allowed'));
+      return cb(new ErrorResponse(415, 'Only .pdf format is allowed'));
     }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
-          400,
+          413,
           `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
@@ -297,7 +297,7 @@ const upload_profile_s3 = multer({
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
       return cb(
         new ErrorResponse(
-          400,
+          415,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
@@ -305,7 +305,7 @@ const upload_profile_s3 = multer({
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
-          400,
+          413,
           `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
@@ -443,7 +443,7 @@ const upload_messagesthread_file_s3 = multer({
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(
-          400,
+          415,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
@@ -452,7 +452,7 @@ const upload_messagesthread_file_s3 = multer({
     if (fileSize > MAX_DOC_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
-          400,
+          413,
           `File size is limited to ${MAX_DOC_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
@@ -467,14 +467,14 @@ const upload_messagesthread_image_s3 = multer({
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
       return cb(
-        new ErrorResponse(400, 'Only .png, .jpg and .jpeg format are allowed')
+        new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
       );
     }
     const fileSize = parseInt(req.headers['content-length']);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
-          400,
+          413,
           `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );

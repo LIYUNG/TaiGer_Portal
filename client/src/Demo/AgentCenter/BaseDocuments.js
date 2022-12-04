@@ -126,6 +126,7 @@ class BaseDocuments extends React.Component {
             res_status: status
           }));
         } else {
+          // TODO: redesign, modal ist better!
           this.setState({
             isLoaded: true,
             res_status: status
@@ -168,6 +169,7 @@ class BaseDocuments extends React.Component {
             res_status: status
           }));
         } else {
+          // TODO: redesign, modal ist better!
           this.setState({
             isLoaded: true,
             res_status: status
@@ -215,6 +217,7 @@ class BaseDocuments extends React.Component {
             res_status: status
           }));
         } else {
+          // TODO: what if data is oversize? data type not match?
           this.setState({
             isLoaded: true,
             res_status: status
@@ -243,7 +246,7 @@ class BaseDocuments extends React.Component {
       );
     }
 
-    if (res_status >= 400) {
+    if (res_status >= 400 && res_status != 413 && res_status != 415) {
       return <ErrorPage res_status={res_status} />;
     }
 
@@ -319,17 +322,7 @@ class BaseDocuments extends React.Component {
               </Table>
             </Card>
           ) : (
-            // </Card>
             <>{student_profile_student_view}</>
-          )}
-        </Row>
-        <Row>
-          {!isLoaded && (
-            <div style={spinner_style}>
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            </div>
           )}
         </Row>
       </Aux>

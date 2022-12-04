@@ -244,7 +244,7 @@ window.templatelist = [
   },
   {
     name: 'ML',
-    prop: 'ML_survey_lock_1'
+    prop: 'ML_Survey'
   },
   {
     name: 'RL',

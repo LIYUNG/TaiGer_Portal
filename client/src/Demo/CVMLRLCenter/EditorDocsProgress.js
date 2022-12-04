@@ -282,8 +282,8 @@ class EditorDocsProgress extends React.Component {
     } else {
       e.preventDefault();
       initApplicationMessageThread(studentId, applicationId, document_catgory)
-        .then((res) => {
-          const { data, success } = res.data;
+        .then((resp) => {
+          const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
             this.setState({
@@ -313,8 +313,8 @@ class EditorDocsProgress extends React.Component {
     } else {
       e.preventDefault();
       initGeneralMessageThread(studentId, document_catgory)
-        .then((res) => {
-          const { data, success } = res.data;
+        .then((resp) => {
+          const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
             this.setState({

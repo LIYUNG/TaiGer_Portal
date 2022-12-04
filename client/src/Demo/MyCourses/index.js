@@ -106,7 +106,6 @@ export default function MyCourses(props) {
     }));
   };
 
-  // TODO: redesign, modal ist better!
   const onSubmit = () => {
     const coursesdata_string = JSON.stringify(statedata.coursesdata);
     setStatedata((state) => ({
@@ -134,6 +133,7 @@ export default function MyCourses(props) {
             res_status: status
           }));
         } else {
+          // TODO: redesign, modal ist better!
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
@@ -181,6 +181,7 @@ export default function MyCourses(props) {
             res_status: status
           }));
         } else {
+          // TODO: redesign, modal ist better!
           setStatedata((state) => ({
             ...state,
             isLoaded: true,

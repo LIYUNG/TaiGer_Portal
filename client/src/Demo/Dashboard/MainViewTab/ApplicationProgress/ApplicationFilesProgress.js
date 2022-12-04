@@ -192,11 +192,8 @@ class ApplicationFilesProgress extends React.Component {
           >
             {is_cv_done ? (
               <p className="mb-1 text-info">O</p>
-            ) : application.closed !== undefined &&
-              application.closed === 'X' ? (
-              <p className="mb-1 text-danger">X</p>
             ) : (
-              <p className="mb-1 text-info">-</p>
+              <p className="mb-1 text-danger">X</p>
             )}
           </Link>
         )

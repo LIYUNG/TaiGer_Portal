@@ -15,6 +15,7 @@ import {
   is_num_Program_Not_specified,
   isProgramNotSelectedEnough,
   check_applications_decision_from_student,
+  is_cv_finished,
   is_all_uni_assist_vpd_uploaded,
   is_program_ready_to_submit,
   is_program_closed
@@ -222,6 +223,30 @@ class AgentTasks extends React.Component {
                 <td></td>
               </tr>
             )
+        )}
+        {!is_cv_finished(this.props.student) && (
+          <tr>
+            <td>
+              <Link
+                to={
+                  '/student-database/' +
+                  this.props.student._id.toString() +
+                  '/CV_ML_RL'
+                }
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                CV
+              </Link>
+            </td>
+            <td>
+              <b>
+                {this.props.student.firstname} {this.props.student.lastname}
+              </b>{' '}
+              CV not assigned yet.
+            </td>
+            <td></td>
+          </tr>
         )}
         {/* check uni-assist */}
         {!is_all_uni_assist_vpd_uploaded(this.props.student) && (

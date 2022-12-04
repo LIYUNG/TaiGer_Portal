@@ -495,8 +495,7 @@ class SurveyEditableComponent extends React.Component {
                             style={{ cursor: 'pointer' }}
                           />
                         </a>
-                        {(this.props.user.role === 'Admin' ||
-                          this.props.user.role === 'Agent') && (
+                        {this.props.user.role === 'Admin' && (
                           <a
                             onClick={this.openOffcanvasWindow}
                             style={{ cursor: 'pointer' }}
@@ -536,8 +535,7 @@ class SurveyEditableComponent extends React.Component {
                             style={{ cursor: 'pointer' }}
                           />
                         </a>
-                        {(this.props.user.role === 'Admin' ||
-                          this.props.user.role === 'Agent') && (
+                        {this.props.user.role === 'Admin' && (
                           <a
                             onClick={this.openOffcanvasWindow}
                             style={{ cursor: 'pointer' }}
@@ -580,8 +578,7 @@ class SurveyEditableComponent extends React.Component {
                             style={{ cursor: 'pointer' }}
                           />
                         </a>
-                        {(this.props.user.role === 'Admin' ||
-                          this.props.user.role === 'Agent') && (
+                        {this.props.user.role === 'Admin' && (
                           <a
                             onClick={this.openOffcanvasWindow}
                             style={{ cursor: 'pointer' }}

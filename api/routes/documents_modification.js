@@ -96,6 +96,7 @@ router
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    doc_thread_ops_validator,
     MessagesImageThreadUpload,
     postImageInThread
   );
@@ -116,6 +117,7 @@ router
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     multitenant_filter,
+    doc_thread_ops_validator,
     deleteGeneralMessagesThread
   );
 
@@ -137,6 +139,7 @@ router
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    doc_thread_ops_validator,
     deleteProgramSpecificMessagesThread
   );
 

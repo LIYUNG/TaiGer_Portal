@@ -215,7 +215,7 @@ class ButtonSetRejected extends React.Component {
               style={{ cursor: 'pointer' }}
             />
           </a>
-          {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
+          {this.props.role === 'Admin' && (
             <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
               [Edit]
             </a>

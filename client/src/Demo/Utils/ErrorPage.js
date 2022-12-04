@@ -7,7 +7,7 @@ import TimeOutErrors from './TimeOutErrors';
 import UnauthorizedError from './UnauthorizedError';
 import UnauthenticatedError from './UnauthenticatedError';
 import TooManyRequestsError from './TooManyRequestsError';
-
+import ResourceLockedError from './ResourceLockedError';
 class ErrorPage extends React.Component {
   render() {
     if (this.props.res_status === 401) {
@@ -18,6 +18,8 @@ class ErrorPage extends React.Component {
       return <PageNotFoundError />;
     } else if (this.props.res_status === 408) {
       return <TimeOutErrors />;
+    } else if (this.props.res_status === 423) {
+      return <ResourceLockedError />;
     } else if (this.props.res_status === 429) {
       return <TooManyRequestsError />;
     } else if (this.props.res_status >= 500) {

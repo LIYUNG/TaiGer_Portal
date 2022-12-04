@@ -11,6 +11,18 @@ import {
   Modal,
   Spinner
 } from 'react-bootstrap';
+
+import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
+import { ImCheckmark } from 'react-icons/im';
+import ManualFiles from './ManualFiles';
+import { check_generaldocs } from '../Utils/checking-functions';
+import {
+  is_program_ml_rl_essay_finished,
+  is_program_closed
+} from '../Utils/checking-functions';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   deleteGenralFileThread,
   deleteProgramSpecificFileThread,
@@ -19,22 +31,7 @@ import {
   initGeneralMessageThread,
   initApplicationMessageThread
 } from '../../api';
-import ManualFiles from './ManualFiles';
-import {
-  // AiOutlineDownload,
-  // AiOutlineDelete,
-  AiOutlineCheck,
-  AiOutlineMore,
-  AiOutlineUndo
-  // AiFillMessage
-} from 'react-icons/ai';
-import { ImCheckmark } from 'react-icons/im';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { check_generaldocs } from '../Utils/checking-functions';
-import {
-  is_program_ml_rl_essay_finished,
-  is_program_closed
-} from '../Utils/checking-functions';
+
 class EditorDocsProgress extends React.Component {
   state = {
     timeouterror: null,
@@ -53,7 +50,8 @@ class EditorDocsProgress extends React.Component {
     isLoaded: false,
     requirements: '',
     file: '',
-    isThreadExisted: false
+    isThreadExisted: false,
+    res_status: 0
   };
   componentDidMount() {
     this.setState((state) => ({
@@ -105,6 +103,7 @@ class EditorDocsProgress extends React.Component {
       ).then(
         (resp) => {
           const { data, success } = resp.data;
+          const { status } = resp;
           if (success) {
             this.setState((state) => ({
               ...state,
@@ -113,18 +112,14 @@ class EditorDocsProgress extends React.Component {
               isLoaded: true,
               student: data,
               success: success,
-              deleteFileWarningModel: false
+              deleteFileWarningModel: false,
+              res_status: status
             }));
           } else {
-            alert(resp.data.message);
-            this.setState((state) => ({
-              ...state,
-              student_id: '',
-              doc_thread_id: '',
+            this.setState({
               isLoaded: true,
-              success: success,
-              deleteFileWarningModel: false
-            }));
+              res_status: status
+            });
           }
         },
         (error) => {
@@ -139,6 +134,7 @@ class EditorDocsProgress extends React.Component {
       ).then(
         (resp) => {
           const { data, success } = resp.data;
+          const { status } = resp;
           if (success) {
             this.setState((state) => ({
               ...state,
@@ -148,19 +144,14 @@ class EditorDocsProgress extends React.Component {
               isLoaded: true,
               student: data,
               success: success,
-              deleteFileWarningModel: false
+              deleteFileWarningModel: false,
+              res_status: status
             }));
           } else {
-            alert(resp.data.message);
-            this.setState((state) => ({
-              ...state,
-              studentId: '',
-              program_id: '',
-              docName: '',
+            this.setState({
               isLoaded: true,
-              success: success,
-              deleteFileWarningModel: false
-            }));
+              res_status: status
+            });
           }
         },
         (error) => {
@@ -183,6 +174,7 @@ class EditorDocsProgress extends React.Component {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -192,17 +184,14 @@ class EditorDocsProgress extends React.Component {
             isLoaded: true,
             student: data,
             success: success,
-            SetAsFinalFileModel: false
+            SetAsFinalFileModel: false,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -228,6 +217,7 @@ class EditorDocsProgress extends React.Component {
     ToggleProgramStatus(this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -236,17 +226,14 @@ class EditorDocsProgress extends React.Component {
             isLoaded: true,
             student: data,
             success: success,
-            SetProgramStatusModel: false
+            SetProgramStatusModel: false,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -297,25 +284,20 @@ class EditorDocsProgress extends React.Component {
       initApplicationMessageThread(studentId, applicationId, document_catgory)
         .then((res) => {
           const { data, success } = res.data;
+          const { status } = resp;
           if (success) {
             this.setState({
               isLoaded: true, //false to reload everything
               student: data,
               success: success,
-              file: ''
+              file: '',
+              res_status: status
             });
           } else {
-            if (res.status === 400) {
-              this.setState({
-                isLoaded: true,
-                docName: thread_name,
-                isThreadExisted: true
-              });
-            } else if (res.status === 401) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (res.status === 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
           }
         })
         .catch((error) => {
@@ -333,26 +315,20 @@ class EditorDocsProgress extends React.Component {
       initGeneralMessageThread(studentId, document_catgory)
         .then((res) => {
           const { data, success } = res.data;
+          const { status } = resp;
           if (success) {
             this.setState({
               isLoaded: true, //false to reload everything
               student: data,
               success: success,
-              file: ''
+              file: '',
+              res_status: status
             });
           } else {
-            if (res.status === 400) {
-              this.setState({
-                isLoaded: true,
-                docName: thread_name,
-                isThreadExisted: true
-              });
-            } else if (res.status === 401) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (res.status === 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
-            // alert(res.data.message);
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
           }
         })
         .catch((error) => {
@@ -362,43 +338,22 @@ class EditorDocsProgress extends React.Component {
   };
 
   render() {
-    const { timeouterror, unauthorizederror, error, isLoaded } = this.state;
-    if (error) {
-      return (
-        <div>
-          Error: your session is timeout! Please refresh the page and Login
-        </div>
-      );
-    }
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+    const { res_status, isLoaded } = this.state;
+
     if (!isLoaded && !this.state.student) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     const create_generaldoc_reminder = check_generaldocs(this.state.student);
     return (
       <>
@@ -804,7 +759,7 @@ class EditorDocsProgress extends React.Component {
           </div>
         </Collapse>{' '}
         {!isLoaded && (
-          <div style={style}>
+          <div style={spinner_style}>
             <Spinner animation="border" role="status">
               <span className="visually-hidden"></span>
             </Spinner>
@@ -834,7 +789,7 @@ class EditorDocsProgress extends React.Component {
 
             <Button onClick={this.closeWarningWindow}>No</Button>
             {!isLoaded && (
-              <div style={style}>
+              <div style={spinner_style}>
                 <Spinner animation="border" role="status">
                   <span className="visually-hidden"></span>
                 </Spinner>
@@ -867,7 +822,7 @@ class EditorDocsProgress extends React.Component {
 
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
             {!isLoaded && (
-              <div style={style}>
+              <div style={spinner_style}>
                 <Spinner animation="border" role="status">
                   <span className="visually-hidden"></span>
                 </Spinner>
@@ -890,7 +845,7 @@ class EditorDocsProgress extends React.Component {
           <Modal.Footer>
             <Button onClick={this.close_Requirements_ModalWindow}>Close</Button>
             {!isLoaded && (
-              <div style={style}>
+              <div style={spinner_style}>
                 <Spinner animation="border" role="status">
                   <span className="visually-hidden"></span>
                 </Spinner>

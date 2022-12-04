@@ -54,10 +54,10 @@ class SingleStudentPage extends React.Component {
       (resp) => {
         const { survey_link, base_docs_link, data, success } = resp.data;
         const { status } = resp;
-        const granding_system_doc_link = survey_link.find(
-          (link) => link.key === profile_name_list.Grading_System
-        );
         if (success) {
+          const granding_system_doc_link = survey_link.find(
+            (link) => link.key === profile_name_list.Grading_System
+          );
           this.setState({
             isLoaded: true,
             student: data,
@@ -265,9 +265,9 @@ class SingleStudentPage extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        student.profile[idx] = data;
-        // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
         if (success) {
+          student.profile[idx] = data;
+
           this.setState((state) => ({
             ...state,
             student_id: '',

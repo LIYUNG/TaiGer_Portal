@@ -10,23 +10,22 @@ import {
   Modal
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Aux from '../../hoc/_Aux';
 import { AiFillDelete } from 'react-icons/ai';
-import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import { getNumberOfDays } from '../Utils/contants';
+
+import Aux from '../../hoc/_Aux';
 import {
   isProgramNotSelectedEnough,
   is_num_Program_Not_specified,
   application_deadline_calculator
 } from '../Utils/checking-functions';
+import { getNumberOfDays, spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
+import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     student: this.props.student,
     applications: this.props.student.applications,
     isLoaded: this.props.isLoaded,
@@ -36,7 +35,8 @@ class StudentApplicationsTableTemplate extends React.Component {
     application_status_changed: false,
     applying_program_count: this.props.student.applying_program_count,
     modalDeleteApplication: false,
-    modalUpdatedApplication: false
+    modalUpdatedApplication: false,
+    res_status: 0
   };
 
   handleChangeProgramCount = (e) => {
@@ -48,6 +48,7 @@ class StudentApplicationsTableTemplate extends React.Component {
       applying_program_count
     }));
   };
+
   handleChange = (e, application_idx) => {
     e.preventDefault();
     let applications_temp = [...this.state.applications];
@@ -85,19 +86,20 @@ class StudentApplicationsTableTemplate extends React.Component {
     removeProgramFromStudent(this.state.program_id, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             student: data,
             success: success,
-            modalDeleteApplication: false
+            modalDeleteApplication: false,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -125,23 +127,21 @@ class StudentApplicationsTableTemplate extends React.Component {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             student: data,
             success: success,
             application_status_changed: false,
-            modalUpdatedApplication: true
+            modalUpdatedApplication: true,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -154,38 +154,22 @@ class StudentApplicationsTableTemplate extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+    const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.student) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     var applying_university_info;
     // var applying_university;
     var today = new Date();

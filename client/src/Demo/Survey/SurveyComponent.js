@@ -1,22 +1,21 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Button, Spinner, Modal } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
+import SurveyEditableComponent from './SurveyEditableComponent';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   updateAcademicBackground,
   updateLanguageSkill,
   updateApplicationPreference,
   updateDocumentationHelperLink
 } from '../../api';
-import { convertDate } from '../Utils/contants';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import SurveyEditableComponent from './SurveyEditableComponent';
+
 class SurveyComponent extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     role: '',
     isLoaded: this.props.isLoaded,
     student_id: this.props.student_id,
@@ -27,7 +26,8 @@ class SurveyComponent extends React.Component {
     updateconfirmed: false,
     changed_academic: false,
     changed_application_preference: false,
-    changed_language: false
+    changed_language: false,
+    res_status: 0
   };
   componentDidMount() {
     if (!this.props.student_id) {
@@ -54,6 +54,7 @@ class SurveyComponent extends React.Component {
     updateAcademicBackground(university, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -64,14 +65,14 @@ class SurveyComponent extends React.Component {
               university: data
             },
             success: success,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -88,6 +89,7 @@ class SurveyComponent extends React.Component {
     updateLanguageSkill(language, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -98,14 +100,14 @@ class SurveyComponent extends React.Component {
               language: data
             },
             success: success,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -125,6 +127,7 @@ class SurveyComponent extends React.Component {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -132,14 +135,14 @@ class SurveyComponent extends React.Component {
             changed_application_preference: true,
             application_preference: data,
             success: success,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -179,19 +182,20 @@ class SurveyComponent extends React.Component {
     updateDocumentationHelperLink(link, key, 'survey').then(
       (resp) => {
         const { helper_link, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
             survey_link: helper_link,
-            success: success
+            success: success,
+            res_status: status
           }));
         } else {
-          if (resp.status == 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {}
@@ -199,21 +203,10 @@ class SurveyComponent extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { res_status, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
     }
 
     return (

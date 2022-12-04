@@ -132,15 +132,15 @@ class DocCreatePage extends React.Component {
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
-        let documentlists_temp = [...this.state.documentlists];
-        let to_be_delete_doc_idx = documentlists_temp.findIndex(
-          (doc) => doc._id.toString() === this.state.doc_id_toBeDelete
-        );
-        if (to_be_delete_doc_idx > -1) {
-          // only splice array when item is found
-          documentlists_temp.splice(to_be_delete_doc_idx, 1); // 2nd parameter means remove one item only
-        }
         if (success) {
+          let documentlists_temp = [...this.state.documentlists];
+          let to_be_delete_doc_idx = documentlists_temp.findIndex(
+            (doc) => doc._id.toString() === this.state.doc_id_toBeDelete
+          );
+          if (to_be_delete_doc_idx > -1) {
+            // only splice array when item is found
+            documentlists_temp.splice(to_be_delete_doc_idx, 1); // 2nd parameter means remove one item only
+          }
           this.setState({
             success,
             documentlists: documentlists_temp,
@@ -200,9 +200,9 @@ class DocCreatePage extends React.Component {
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
-        let documentlists_temp = [...this.state.documentlists];
-        documentlists_temp.push(data);
         if (success) {
+          let documentlists_temp = [...this.state.documentlists];
+          documentlists_temp.push(data);
           this.setState({
             success,
             documentlists: documentlists_temp,

@@ -49,13 +49,6 @@ class UniAssistList extends React.Component {
     }
     const { res_status, isLoaded } = this.state;
 
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
-
     if (!isLoaded && !this.state.student) {
       return (
         <div style={spinner_style}>

@@ -135,12 +135,12 @@ class AssignEditors extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        var students_temp = [...this.state.students];
-        var studentIdx = students_temp.findIndex(
-          ({ _id }) => _id === student_id
-        );
-        students_temp[studentIdx] = data; // datda is single student updated
         if (success) {
+          var students_temp = [...this.state.students];
+          var studentIdx = students_temp.findIndex(
+            ({ _id }) => _id === student_id
+          );
+          students_temp[studentIdx] = data; // datda is single student updated
           this.setState({
             isLoaded: true, //false to reload everything
             students: students_temp,

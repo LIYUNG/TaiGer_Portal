@@ -1,26 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import {
-  convertToRaw,
-  convertFromRaw,
-  EditorState,
-  RichUtils,
-  CompositeDecorator,
-  AtomicBlockUtils,
-  Entity
-} from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
-import { uploadImageDraftEditorCallBack, uploadImage } from '../../api';
-// import S3 from 'react-aws-s3';
-import { uploadFile } from 'react-s3';
-// import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
+import { uploadImage } from '../../api';
 import { Row, Col, Button, Spinner } from 'react-bootstrap';
-// import createImagePlugin from '@draft-js-plugins/image';
-// const imagePlugin = createImagePlugin();
+
 window.Buffer = window.Buffer || require('buffer').Buffer;
 
 class MediaComponent extends React.Component {

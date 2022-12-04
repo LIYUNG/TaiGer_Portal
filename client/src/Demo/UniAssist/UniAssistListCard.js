@@ -1,16 +1,12 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Table,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-  Spinner
-} from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { IoMdCloudUpload } from 'react-icons/io';
+import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
+import { Link } from 'react-router-dom';
+
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   uploadVPDforstudent,
   deleteVPDFile,
@@ -18,12 +14,6 @@ import {
   getStudent,
   SetAsNotNeeded
 } from '../../api';
-
-import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
-
-import { Link } from 'react-router-dom';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
 
 class UniAssistListCard extends React.Component {
   state = {
@@ -34,21 +24,27 @@ class UniAssistListCard extends React.Component {
     timeouterror: null,
     unauthorizederror: null,
     deleteVPDFileWarningModel: false,
-    setAsNotNeededModel: false
+    setAsNotNeededModel: false,
+    res_status: 0
   };
   componentDidMount() {
     if (!this.props.student) {
       getStudent(this.props.user._id.toString()).then(
         (resp) => {
           const { data, success } = resp.data;
+          const { status } = resp;
           if (success) {
-            this.setState({ isLoaded: true, student: data, success: success });
+            this.setState({
+              isLoaded: true,
+              student: data,
+              success: success,
+              res_status: status
+            });
           } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
           }
         },
         (error) => {
@@ -90,6 +86,7 @@ class UniAssistListCard extends React.Component {
     SetAsNotNeeded(this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
@@ -97,14 +94,14 @@ class UniAssistListCard extends React.Component {
             success: success,
             setAsNotNeededModel: false,
             student_id: '',
-            program_id: ''
+            program_id: '',
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -121,23 +118,21 @@ class UniAssistListCard extends React.Component {
     deleteVPDFile(this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
             student: data,
             success: success,
-            deleteVPDFileWarningModel: false
+            deleteVPDFileWarningModel: false,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -210,6 +205,7 @@ class UniAssistListCard extends React.Component {
       }
     );
   };
+
   onSubmitGeneralFile = (e, NewFile, student_id, program_id) => {
     e.preventDefault();
     const formData = new FormData();
@@ -219,7 +215,7 @@ class UniAssistListCard extends React.Component {
     uploadVPDforstudent(student_id, program_id, formData).then(
       (resp) => {
         const { data, success } = resp.data;
-
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -227,17 +223,14 @@ class UniAssistListCard extends React.Component {
             success,
             category: '',
             isLoaded: true,
-            file: ''
+            file: '',
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -250,39 +243,22 @@ class UniAssistListCard extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+    const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.student) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     const app_name = this.state.student.applications.map((application, i) => (
       <div key={i}>
         {application.programId.uni_assist === 'Yes-FULL' &&
@@ -352,7 +328,7 @@ class UniAssistListCard extends React.Component {
                         </>
                       ) : (
                         <>
-                          <div style={style}>
+                          <div style={spinner_style}>
                             <Spinner
                               className="mx-2 my-2"
                               animation="border"

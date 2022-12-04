@@ -4,6 +4,7 @@ import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 
 import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style, study_group } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
 import 'react-datasheet-grid/dist/style.css';
 
 import {
@@ -12,13 +13,10 @@ import {
   analyzedFileDownload_test,
   transcriptanalyser_test
 } from '../../api';
-import ErrorPage from '../Utils/ErrorPage';
 
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     isLoaded: false,
     coursesdata: {},
     analysis: {},
@@ -108,6 +106,7 @@ export default function MyCourses(props) {
     }));
   };
 
+  // TODO: redesign, modal ist better!
   const onSubmit = () => {
     const coursesdata_string = JSON.stringify(statedata.coursesdata);
     setStatedata((state) => ({
@@ -122,8 +121,8 @@ export default function MyCourses(props) {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        const course_from_database = JSON.parse(data.table_data_string);
         if (success) {
+          const course_from_database = JSON.parse(data.table_data_string);
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
@@ -144,6 +143,7 @@ export default function MyCourses(props) {
         }
       },
       (error) => {
+        console.log(error);
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
@@ -285,11 +285,7 @@ export default function MyCourses(props) {
   }
 
   if (statedata.res_status >= 400) {
-    return (
-      <div>
-        <ErrorPage res_status={statedata.res_status} />
-      </div>
-    );
+    return <ErrorPage res_status={statedata.res_status} />;
   }
 
   return (

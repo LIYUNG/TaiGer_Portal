@@ -17,10 +17,6 @@ class StudentBaseDocumentsStatus extends React.Component {
     file: ''
   };
 
-  handleGeneralDocSubmit = (e, studentId, fileCategory) => {
-    e.preventDefault();
-    this.props.SubmitGeneralFile(e, studentId, fileCategory);
-  };
   render() {
     // const deleteStyle = "danger";
     // const graoutStyle = "light";

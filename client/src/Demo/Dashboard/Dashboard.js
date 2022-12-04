@@ -41,7 +41,6 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        console.log(resp);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -205,12 +204,12 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        var students_temp = [...this.state.students];
-        var studentIdx = students_temp.findIndex(
-          ({ _id }) => _id === student_id
-        );
-        students_temp[studentIdx] = data; // datda is single student updated
         if (success) {
+          var students_temp = [...this.state.students];
+          var studentIdx = students_temp.findIndex(
+            ({ _id }) => _id === student_id
+          );
+          students_temp[studentIdx] = data; // datda is single student updated
           this.setState({
             isLoaded: true, //false to reload everything
             students: students_temp,
@@ -237,12 +236,12 @@ class Dashboard extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        var students_temp = [...this.state.students];
-        var studentIdx = students_temp.findIndex(
-          ({ _id }) => _id === student_id
-        );
-        students_temp[studentIdx] = data; // datda is single student updated
         if (success) {
+          var students_temp = [...this.state.students];
+          var studentIdx = students_temp.findIndex(
+            ({ _id }) => _id === student_id
+          );
+          students_temp[studentIdx] = data; // datda is single student updated
           this.setState({
             isLoaded: true, //false to reload everything
             students: students_temp,
@@ -302,10 +301,10 @@ class Dashboard extends React.Component {
     var students = [...this.state.students];
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (res) => {
-        students[student_arrayidx] = res.data.data;
-        const { success } = res.data;
+        const { success, data } = res.data;
         const { status } = res;
         if (success) {
+          students[student_arrayidx] = data;
           this.setState((state) => ({
             ...state,
             students: students,

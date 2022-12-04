@@ -1,25 +1,14 @@
 import React from 'react';
-
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
 import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
+import { Row, Col, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import '../../components/DraftEditor.css';
 import { HiX } from 'react-icons/hi';
-// import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
-import {
-  Row,
-  Col,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-  Form,
-  Spinner
-} from 'react-bootstrap';
+
+import '../../components/DraftEditor.css';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import { updateChecklistDocument } from '../../api';
 
 class DocumentsListItems extends React.Component {
@@ -39,7 +28,8 @@ class DocumentsListItems extends React.Component {
     isLoaded: false,
     requirements: '',
     file: '',
-    isThreadExisted: false
+    isThreadExisted: false,
+    res_status: 0
   };
   componentDidMount() {
     var initialEditorState = null;
@@ -57,10 +47,6 @@ class DocumentsListItems extends React.Component {
       ConvertedContent: initialEditorState,
       isLoaded: true
     }));
-
-    // this.setState((state) => ({
-    //   isLoaded: true
-    // }));
   }
   handleClickEdit = (e) => {
     e.preventDefault();
@@ -78,20 +64,19 @@ class DocumentsListItems extends React.Component {
     updateChecklistDocument(msg).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             success,
             editorState,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -106,37 +91,22 @@ class DocumentsListItems extends React.Component {
   };
 
   render() {
-    const { timeouterror, unauthorizederror, error, isLoaded } = this.state;
+    const { res_status, error, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     if (!isLoaded && !this.state.student) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     return (
       <>
         <Row>

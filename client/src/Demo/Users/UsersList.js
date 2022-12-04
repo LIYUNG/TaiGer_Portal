@@ -1,10 +1,12 @@
 import React from 'react';
 import { Table, Spinner } from 'react-bootstrap';
+
 import User from './User';
 import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import { deleteUser, updateUser, changeUserRole } from '../../api';
 
 class UsersList extends React.Component {
@@ -19,7 +21,8 @@ class UsersList extends React.Component {
     data: this.props.user,
     modalShowNewProgram: false,
     deleteUserWarning: false,
-    success: this.props.success
+    success: this.props.success,
+    res_status: 0
   };
   setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
     this.setState({
@@ -69,22 +72,20 @@ class UsersList extends React.Component {
     deleteUser(user_id).then(
       (resp) => {
         const { success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             success,
             deleteUserWarning: false,
-            data: array
+            data: array,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -108,22 +109,20 @@ class UsersList extends React.Component {
     changeUserRole(user_data._id, user_data.role).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             modalShow: false,
             isLoaded: true,
             success,
-            data: updated_user
+            data: updated_user,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -147,81 +146,64 @@ class UsersList extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror } = this.state;
+    const { res_status } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
     }
 
-    if (this.state.success) {
-      const headers = (
-        <tr>
-          <th> </th>
-          {this.props.header.map((x, i) => (
-            <th key={i}>{x.name}</th>
-          ))}
-        </tr>
-      );
-      const users = this.state.data.map((user) => (
-        <User
-          key={user._id}
-          user={user}
-          header={this.props.header}
-          setModalShowDelete={this.setModalShowDelete}
-          setModalShow={this.setModalShow}
-          success={this.state.success}
+    const headers = (
+      <tr>
+        <th> </th>
+        {this.props.header.map((x, i) => (
+          <th key={i}>{x.name}</th>
+        ))}
+      </tr>
+    );
+
+    const users = this.state.data.map((user) => (
+      <User
+        key={user._id}
+        user={user}
+        header={this.props.header}
+        setModalShowDelete={this.setModalShowDelete}
+        setModalShow={this.setModalShow}
+        success={this.state.success}
+      />
+    ));
+    
+    return (
+      <>
+        <Table
+          responsive
+          className="my-0 mx-0"
+          variant="dark"
+          text="light"
+          size="sm"
+        >
+          <thead>{headers}</thead>
+          <tbody>{users}</tbody>
+        </Table>
+        <UsersListSubpage
+          show={this.state.modalShow}
+          setModalHide={this.setModalHide}
+          firstname={this.state.firstname}
+          lastname={this.state.lastname}
+          selected_user_role={this.state.selected_user_role}
+          selected_user_id={this.state.selected_user_id}
+          handleChange2={this.handleChange2}
+          onSubmit2={this.onSubmit2}
         />
-      ));
-      return (
-        <>
-          <Table
-            responsive
-            className="my-0 mx-0"
-            variant="dark"
-            text="light"
-            size="sm"
-          >
-            <thead>{headers}</thead>
-            <tbody>{users}</tbody>
-          </Table>
-          <UsersListSubpage
-            show={this.state.modalShow}
-            setModalHide={this.setModalHide}
-            firstname={this.state.firstname}
-            lastname={this.state.lastname}
-            selected_user_role={this.state.selected_user_role}
-            selected_user_id={this.state.selected_user_id}
-            handleChange2={this.handleChange2}
-            onSubmit2={this.onSubmit2}
-          />
-          <UserDeleteWarning
-            deleteUserWarning={this.state.deleteUserWarning}
-            setModalHideDDelete={this.setModalHideDDelete}
-            firstname={this.state.firstname}
-            lastname={this.state.lastname}
-            selected_user_id={this.state.selected_user_id}
-            RemoveUserHandler3={this.RemoveUserHandler3}
-          />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <p>This is for Admin only.</p>
-        </>
-      );
-    }
+        <UserDeleteWarning
+          deleteUserWarning={this.state.deleteUserWarning}
+          setModalHideDDelete={this.setModalHideDDelete}
+          firstname={this.state.firstname}
+          lastname={this.state.lastname}
+          selected_user_id={this.state.selected_user_id}
+          RemoveUserHandler3={this.RemoveUserHandler3}
+        />
+      </>
+    );
   }
 }
 

@@ -114,10 +114,10 @@ class BaseDocuments extends React.Component {
     var students = [...this.state.students];
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (resp) => {
-        students[student_arrayidx] = resp.data.data;
-        const { success } = resp.data;
+        const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
+          students[student_arrayidx] = data;
           this.setState((state) => ({
             ...state,
             students: students,
@@ -154,9 +154,9 @@ class BaseDocuments extends React.Component {
     deleteFile(category, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
-        students[student_arrayidx].profile[idx] = data;
-        // std.profile[idx] = resp.data.data; // resp.data = {success: true, data:{...}}
+        const { status } = resp;
         if (success) {
+          students[student_arrayidx].profile[idx] = data;
           this.setState((state) => ({
             ...state,
             student_id: '',
@@ -164,17 +164,14 @@ class BaseDocuments extends React.Component {
             isLoaded: true,
             students: students,
             success: success,
-            deleteFileWarningModel: false
+            deleteFileWarningModel: false,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -203,28 +200,25 @@ class BaseDocuments extends React.Component {
     }));
     uploadforstudent(category, student_id, formData).then(
       (resp) => {
-        let students = [...this.state.students];
         const { data, success } = resp.data;
-        students[student_arrayidx] = data;
-
+        const { status } = resp;
         if (success) {
+          let students = [...this.state.students];
+          students[student_arrayidx] = data;
           this.setState((state) => ({
             ...state,
             students: students, // resp.data = {success: true, data:{...}}
             success,
             category: '',
             isLoaded: true,
-            file: ''
+            file: '',
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -259,20 +253,11 @@ class BaseDocuments extends React.Component {
       <StudentBaseDocumentsStatus
         key={i}
         idx={i}
-        base_docs_link={base_docs_link}
         student={student}
-        accordionKeys={this.state.accordionKeys}
-        singleExpandtHandler={this.singleExpandtHandler}
         role={this.props.user.role}
         user={this.props.user}
-        SubmitGeneralFile={this.SubmitGeneralFile}
-        onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-        onDeleteFilefromstudent={this.onDeleteFilefromstudent}
         SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
         isLoaded={isLoaded}
-        CommentModel={this.state.CommentModel}
-        rejectProfileFileModel={this.state.rejectProfileFileModel}
-        acceptProfileFileModel={this.state.acceptProfileFileModel}
       />
     ));
 

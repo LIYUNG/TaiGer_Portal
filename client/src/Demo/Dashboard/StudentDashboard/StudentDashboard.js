@@ -1,29 +1,29 @@
 import React from 'react';
 import { Row, Col, Table, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import StudentMyself from './StudentMyself';
-import AgentReviewing_StudentView from '../MainViewTab/AgentReview/AgentReviewing_StudentView';
-import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
-import Generator from './Generator';
-import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
-import StudentTasks from '../MainViewTab/StudentTasks/index';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import { RiInformationLine } from 'react-icons/ri';
+
+import StudentMyself from './StudentMyself';
+import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
+import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
+import StudentTasks from '../MainViewTab/StudentTasks/index';
 import {
   check_academic_background_filled,
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded
 } from '../../Utils/checking-functions';
+import { spinner_style } from '../../Utils/contants';
+import ErrorPage from '../../Utils/ErrorPage';
+
 import { updateBanner } from '../../../api';
-import TimeOutErrors from '../../Utils/TimeOutErrors';
-import UnauthorizedError from '../../Utils/UnauthorizedError';
+
 class StudentDashboard extends React.Component {
   state = {
     student: this.props.student,
     itemheight: 20,
     data: [],
-    timeouterror: null,
-    unauthorizederror: null
+    res_status: 0
   };
 
   removeBanner = (e, notification_key) => {
@@ -31,18 +31,20 @@ class StudentDashboard extends React.Component {
     updateBanner(notification_key).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             success: success,
-            student: data
+            student: data,
+            isLoaded: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -90,6 +92,7 @@ class StudentDashboard extends React.Component {
     }
     return true;
   };
+
   check_base_documents_rejected = (student) => {
     let documentlist2_keys = Object.keys(window.profile_list);
     let object_init = {};
@@ -124,21 +127,10 @@ class StudentDashboard extends React.Component {
     return false;
   };
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { res_status, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
     }
 
     const stdlist = (

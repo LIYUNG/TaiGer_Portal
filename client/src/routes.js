@@ -17,9 +17,7 @@ const BaseDocuments = React.lazy(() =>
 const Checklist = React.lazy(() => import('./Demo/CheckList/index'));
 
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
-const CVMLRLCenter = React.lazy(() =>
-  import('./Demo/CVMLRLCenter/CVMLRLCenter')
-);
+
 const CVMLRLOverview = React.lazy(() =>
   import('./Demo/CVMLRLCenter/CVMLRLOverview')
 );

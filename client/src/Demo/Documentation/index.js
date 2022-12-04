@@ -1,18 +1,20 @@
 import React from 'react';
 import { Spinner, Button, Row, Col, Card } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import PageNotFoundError from '../Utils/PageNotFoundError';
-import { updateDocumentationPage } from '../../api';
 import { valid_categories } from '../Utils/contants';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   getCategorizedDocumentationPage,
-  createDocumentation,
-  deleteDocumentation
+  updateDocumentationPage
 } from '../../api';
-import { Redirect } from 'react-router-dom';
 
 class ApplicationList extends React.Component {
   state = {
@@ -22,13 +24,15 @@ class ApplicationList extends React.Component {
     editorState: null,
     unauthorizederror: null,
     unauthorizederror: null,
-    isEdit: false
+    isEdit: false,
+    res_status: 0
   };
 
   componentDidMount() {
     getCategorizedDocumentationPage(this.props.match.params.category).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           var initialEditorState = null;
           if (data.text) {
@@ -43,19 +47,14 @@ class ApplicationList extends React.Component {
             editorState: initialEditorState,
             timeouterror: false,
             pagenotfounderror: false,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -75,6 +74,7 @@ class ApplicationList extends React.Component {
       getCategorizedDocumentationPage(this.props.match.params.category).then(
         (resp) => {
           const { data, success } = resp.data;
+          const { status } = resp;
           if (success) {
             var initialEditorState = null;
             if (data.text) {
@@ -90,19 +90,14 @@ class ApplicationList extends React.Component {
               editorState: initialEditorState,
               timeouterror: false,
               pagenotfounderror: false,
-              success: success
+              success: success,
+              res_status: status
             });
           } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({
-                isLoaded: true,
-                unauthorizederror: true
-              });
-            } else {
-              this.setState({ isLoaded: true, pagenotfounderror: true });
-            }
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
           }
         },
         (error) => {
@@ -130,6 +125,7 @@ class ApplicationList extends React.Component {
     updateDocumentationPage(this.props.match.params.category, msg).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             success,
@@ -138,18 +134,14 @@ class ApplicationList extends React.Component {
             document_title: data.title,
             editorState,
             isEdit: !this.state.isEdit,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -171,52 +163,22 @@ class ApplicationList extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const {
-      unauthorizederror,
-      timeouterror,
-      pagenotfounderror,
-      error,
-      editorState,
-      isLoaded
-    } = this.state;
+    const { res_status, editorState, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    if (pagenotfounderror) {
-      return (
-        <div>
-          <PageNotFoundError />
-        </div>
-      );
-    }
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     if (!isLoaded && !editorState) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     if (this.state.isEdit) {
       return (
         <>

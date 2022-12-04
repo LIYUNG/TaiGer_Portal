@@ -2,10 +2,10 @@ import React from 'react';
 import { Row, Col, Card, Spinner } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import AdmissionsTable from './AdmissionsTable';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
+import ErrorPage from '../Utils/ErrorPage';
+import { spinner_style } from '../Utils/contants';
 
-import { getAdmissions, getArchivStudents } from '../../api';
+import { getAdmissions } from '../../api';
 
 class Admissions extends React.Component {
   state = {
@@ -14,21 +14,27 @@ class Admissions extends React.Component {
     unauthorizederror: null,
     isLoaded: false,
     students: [],
-    success: false
+    success: false,
+    res_status: 0
   };
 
   componentDidMount() {
     getAdmissions().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
-          this.setState({ isLoaded: true, students: data, success: success });
+          this.setState({
+            isLoaded: true,
+            students: data,
+            success: success,
+            res_status: status
+          });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -41,64 +47,40 @@ class Admissions extends React.Component {
   }
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { res_status, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     if (!isLoaded && !this.state.data) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
-    } else {
-      if (this.state.success) {
-        return (
-          <Aux>
-            <Row>
-              <Col>
-                {/* <Card.Body> */}
-                {this.props.user.role === 'Admin' ||
-                this.props.user.role === 'Agent' ||
-                this.props.user.role === 'Editor' ? (
-                  <AdmissionsTable students={this.state.students} />
-                ) : (
-                  <></>
-                )}
-                {!isLoaded && (
-                  <div style={style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
-                {/* </Card.Body> */}
-              </Col>
-            </Row>
-          </Aux>
-        );
-      }
+    }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
+    if (this.state.success) {
+      return (
+        <Aux>
+          <Row>
+            <Col>
+              {/* <Card.Body> */}
+              {this.props.user.role === 'Admin' ||
+              this.props.user.role === 'Agent' ||
+              this.props.user.role === 'Editor' ? (
+                <AdmissionsTable students={this.state.students} />
+              ) : (
+                <></>
+              )}
+              {/* </Card.Body> */}
+            </Col>
+          </Row>
+        </Aux>
+      );
     }
   }
 }

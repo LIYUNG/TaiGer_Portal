@@ -1,28 +1,21 @@
 import React, { Component } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
 import Aux from '../../../hoc/_Aux';
 import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
-import TimeOutErrors from '../../Utils/TimeOutErrors';
-import UnauthorizedError from '../../Utils/UnauthorizedError';
-import PageNotFoundError from '../../Utils/PageNotFoundError';
-import { Link } from 'react-router-dom';
+import ErrorPage from '../../Utils/ErrorPage';
+import { spinner_style } from '../../Utils/contants';
+
 import {
   getTemplateDownload,
   deleteDoc,
   SubmitMessageWithAttachment,
-  getMessageFileDownload,
   getMessagThread,
   SetFileAsFinal
 } from '../../../api';
 
-// const steps = [
-//   'Step 1: Get an account',
-//   'Step 2: Fill personal information',
-//   'Step 3: Choose programs',
-//   'Step 4: Pay',
-//   'Step 5: Send copy to Germany'
-// ];
 class DocModificationThreadPage extends Component {
   state = {
     error: null,
@@ -41,12 +34,14 @@ class DocModificationThreadPage extends Component {
     editorState: {},
     expand: true,
     SetAsFinalFileModel: false,
-    accordionKeys: [0] // to expand all]
+    accordionKeys: [0], // to expand all]
+    res_status: 0
   };
   componentDidMount() {
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             success,
@@ -59,16 +54,14 @@ class DocModificationThreadPage extends Component {
             //   .map((x, i) => i) // to expand all
             accordionKeys: new Array(data.messages.length)
               .fill()
-              .map((x, i) => (i === data.messages.length - 1 ? i : -1)) // to collapse all
+              .map((x, i) => (i === data.messages.length - 1 ? i : -1)), // to collapse all
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -138,64 +131,6 @@ class DocModificationThreadPage extends Component {
     );
   };
 
-  onDownloadFileInMessage = (e, message_id, file_id) => {
-    e.preventDefault();
-    getMessageFileDownload(
-      this.state.documentsthreadId,
-      message_id,
-      file_id
-    ).then(
-      (resp) => {
-        const actualFileName =
-          resp.headers['content-disposition'].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-
-        var filetype = actualFileName.split('.'); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === 'pdf') {
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: 'application/pdf' })
-          );
-
-          // Open the URL on new Window
-          // var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
-          // newWindow.document.title = actualFileName;
-          //
-          // const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert('The file is not available.');
-      }
-    );
-  };
-
   handleTrashClick = (articleId) => {
     this.deleteArticle(articleId);
   };
@@ -208,7 +143,17 @@ class DocModificationThreadPage extends Component {
     });
 
     deleteDoc(articleId).then(
-      (result) => {},
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+        } else {
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
+        }
+      },
       (error) => {
         this.setState({
           isLoaded: false,
@@ -302,6 +247,7 @@ class DocModificationThreadPage extends Component {
     ).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             success,
@@ -313,18 +259,14 @@ class DocModificationThreadPage extends Component {
             accordionKeys: [
               ...this.state.accordionKeys,
               data.messages.length - 1
-            ]
+            ],
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 423) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -361,23 +303,21 @@ class DocModificationThreadPage extends Component {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             isSubmissionLoaded: true,
             thread: { ...state.thread, isFinalVersion: data },
             success: success,
-            SetAsFinalFileModel: false
+            SetAsFinalFileModel: false,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isSubmissionLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -387,48 +327,20 @@ class DocModificationThreadPage extends Component {
   };
 
   render() {
-    const {
-      pagenotfounderror,
-      unauthorizederror,
-      timeouterror,
-      isLoaded,
-      isSubmissionLoaded
-    } = this.state;
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    if (pagenotfounderror) {
-      return (
-        <div>
-          <PageNotFoundError />
-        </div>
-      );
-    }
+    const { isLoaded, isSubmissionLoaded } = this.state;
+
     if (!isLoaded && !this.state.data) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
+    }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
     }
 
     let template_obj = window.templatelist.find(({ prop }) =>
@@ -459,7 +371,7 @@ class DocModificationThreadPage extends Component {
     return (
       <Aux>
         {!isLoaded && (
-          <div style={style}>
+          <div style={spinner_style}>
             <Spinner animation="border" role="status">
               <span className="visually-hidden"></span>
             </Spinner>
@@ -581,7 +493,6 @@ class DocModificationThreadPage extends Component {
         </Row>
         <Row>
           <MessageList
-            onDownloadFileInMessage={this.onDownloadFileInMessage}
             documentsthreadId={this.state.documentsthreadId}
             accordionKeys={this.state.accordionKeys}
             singleExpandtHandler={this.singleExpandtHandler}

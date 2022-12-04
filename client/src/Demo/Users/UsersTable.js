@@ -1,11 +1,11 @@
 import React from 'react';
 import { Row, Col, Spinner, Card } from 'react-bootstrap';
-// import Card from '../../App/components/MainCard';
+import { Redirect } from 'react-router-dom';
+
 import Aux from '../../hoc/_Aux';
 import UsersList from './UsersList';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import { Redirect } from 'react-router-dom';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
 
 import { getUsers } from '../../api';
 
@@ -17,21 +17,27 @@ class UsersTable extends React.Component {
     isLoaded: false,
     user: null,
     unauthorizederror: null,
-    success: false
+    success: false,
+    res_status: 0
   };
 
   componentDidMount() {
     getUsers().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
-          this.setState({ isLoaded: true, user: data, success });
+          this.setState({
+            isLoaded: true,
+            user: data,
+            success,
+            res_status: status
+          });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => this.setState({ isLoaded: true, error })
@@ -43,14 +49,19 @@ class UsersTable extends React.Component {
       getUsers().then(
         (resp) => {
           const { data, success } = resp.data;
+          const { status } = resp;
           if (success) {
-            this.setState({ isLoaded: true, user: data, success });
+            this.setState({
+              isLoaded: true,
+              user: data,
+              success,
+              res_status: status
+            });
           } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
           }
         },
         (error) => this.setState({ isLoaded: true, error })
@@ -58,68 +69,24 @@ class UsersTable extends React.Component {
     }
   }
 
-  validate = () => {
-    let isError = false;
-    const errors = {
-      firstName: '',
-      lastName: '',
-      username: '',
-      email: '',
-      password: ''
-    };
-
-    const { username, email } = this.state.values;
-
-    if (username.length < 5) {
-      isError = true;
-      errors.username = 'Username needs to be atleast 5 characters long';
-    }
-
-    if (email.indexOf('@') === -1) {
-      isError = true;
-      errors.email = 'Requires valid email';
-    }
-
-    this.setState({
-      errors
-    });
-
-    return isError;
-  };
-
   render() {
     if (this.props.user.role !== 'Admin') {
       return <Redirect to="/dashboard/default" />;
     }
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
+    const { res_status, isLoaded } = this.state;
+
     if (!isLoaded && !this.state.data) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
+    }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
     }
 
     return (
@@ -140,7 +107,7 @@ class UsersTable extends React.Component {
               />
             </Card>
             {!this.state.isLoaded && (
-              <div style={style}>
+              <div style={spinner_style}>
                 <Spinner animation="border" role="status">
                   <span className="visually-hidden"></span>
                 </Spinner>

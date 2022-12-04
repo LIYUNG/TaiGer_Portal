@@ -1,46 +1,47 @@
 import React from 'react';
 import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+
 import Aux from '../../hoc/_Aux';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import ApplicationFilesProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationFilesProgress';
-import { Redirect } from 'react-router-dom';
+import { isProgramNotSelectedEnough } from '../Utils/checking-functions';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
 
 import { updateArchivStudents, getStudents } from '../../api';
-import { isProgramNotSelectedEnough } from '../Utils/checking-functions';
+
 class ApplicantSOverview extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     isLoaded: false,
     data: null,
     success: false,
     students: null,
     file: '',
-    status: '' //reject, accept... etc
+    status: '', //reject, accept... etc
+    res_status: 0
   };
 
   componentDidMount() {
     getStudents().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             students: data,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -56,22 +57,20 @@ class ApplicantSOverview extends React.Component {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
             students: data,
-            success: success
+            success: success,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -91,33 +90,11 @@ class ApplicantSOverview extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+    const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.students) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
@@ -125,6 +102,10 @@ class ApplicantSOverview extends React.Component {
       );
     }
 
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+    
     const listStudentProgramNotSelected = this.state.students.map(
       (student, i) => (
         <div key={i}>

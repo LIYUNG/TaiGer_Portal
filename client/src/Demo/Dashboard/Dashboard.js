@@ -1,14 +1,14 @@
 import React from 'react';
 import { Spinner } from 'react-bootstrap';
+
 import Aux from '../../hoc/_Aux';
 import AdminMainView from './AdminDashboard/AdminMainView';
 import AgentMainView from './AgentDashboard/AgentMainView';
 import EditorMainView from './EditorDashboard/EditorMainView';
 import StudentDashboard from './StudentDashboard/StudentDashboard';
 import GuestDashboard from './GuestDashboard/GuestDashboard';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
 
 import {
   getStudents,
@@ -23,8 +23,6 @@ import {
 class Dashboard extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     modalShow: false,
     agent_list: [],
     editor_list: [],
@@ -34,25 +32,28 @@ class Dashboard extends React.Component {
     updateEditorList: {},
     success: false,
     isDashboard: true,
-    file: ''
+    file: '',
+    res_status: 0
   };
 
   componentDidMount() {
     getStudents().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
+        console.log(resp);
         if (success) {
           this.setState({
             isLoaded: true,
             students: data,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -69,18 +70,19 @@ class Dashboard extends React.Component {
       getStudents().then(
         (resp) => {
           const { data, success } = resp.data;
+          const { status } = resp;
           if (success) {
             this.setState({
               isLoaded: true,
               students: data,
-              success: success
+              success: success,
+              res_status: status
             });
           } else {
-            if (resp.status === 401 || resp.status === 500) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status === 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
           }
         },
         (error) => {
@@ -96,17 +98,15 @@ class Dashboard extends React.Component {
   editAgent = (student) => {
     getAgents().then(
       (resp) => {
+        // TODO: check success
         const { success } = resp;
+        const { status } = resp;
         if (success) {
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
         const { data: agents } = resp.data; //get all agent
         const { agents: student_agents } = student;
@@ -135,17 +135,15 @@ class Dashboard extends React.Component {
   editEditor = (student) => {
     getEditors().then(
       (resp) => {
+        // TODO: check success
         const { success } = resp;
+        const { status } = resp;
         if (success) {
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
         const { data: editors } = resp.data;
         const { editors: student_editors } = student;
@@ -206,6 +204,7 @@ class Dashboard extends React.Component {
     updateAgents(updateAgentList, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         var students_temp = [...this.state.students];
         var studentIdx = students_temp.findIndex(
           ({ _id }) => _id === student_id
@@ -216,17 +215,14 @@ class Dashboard extends React.Component {
             isLoaded: true, //false to reload everything
             students: students_temp,
             success: success,
-            updateAgentList: []
+            updateAgentList: [],
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -240,6 +236,7 @@ class Dashboard extends React.Component {
     updateEditors(updateEditorList, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         var students_temp = [...this.state.students];
         var studentIdx = students_temp.findIndex(
           ({ _id }) => _id === student_id
@@ -250,17 +247,14 @@ class Dashboard extends React.Component {
             isLoaded: true, //false to reload everything
             students: students_temp,
             success: success,
-            updateAgentList: []
+            updateAgentList: [],
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -273,22 +267,20 @@ class Dashboard extends React.Component {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
             students: data,
-            success: success
+            success: success,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -312,19 +304,20 @@ class Dashboard extends React.Component {
       (res) => {
         students[student_arrayidx] = res.data.data;
         const { success } = res.data;
+        const { status } = res;
         if (success) {
           this.setState((state) => ({
             ...state,
             students: students,
             success,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           }));
         } else {
-          if (res.status === 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (res.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -337,155 +330,135 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-   
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
+    const { isLoaded, res_status } = this.state;
 
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     if (!isLoaded && !this.state.data) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
+    }
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
+    if (this.props.user.role === 'Admin') {
+      return (
+        <Aux>
+          {!isLoaded && (
+            <div style={spinner_style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
+          <AdminMainView
+            user={this.props.user}
+            role={this.props.user.role}
+            editAgent={this.editAgent}
+            editEditor={this.editEditor}
+            agent_list={this.state.agent_list}
+            editor_list={this.state.editor_list}
+            UpdateAgentlist={this.UpdateAgentlist}
+            students={this.state.students}
+            updateAgentList={this.state.updateAgentList}
+            handleChangeAgentlist={this.handleChangeAgentlist}
+            submitUpdateAgentlist={this.submitUpdateAgentlist}
+            updateEditorList={this.state.updateEditorList}
+            handleChangeEditorlist={this.handleChangeEditorlist}
+            submitUpdateEditorlist={this.submitUpdateEditorlist}
+            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+            updateStudentArchivStatus={this.updateStudentArchivStatus}
+            isDashboard={this.state.isDashboard}
+          />
+        </Aux>
+      );
+    } else if (this.props.user.role === 'Agent') {
+      return (
+        <Aux>
+          {!isLoaded && (
+            <div style={spinner_style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
+          <AgentMainView
+            user={this.props.user}
+            role={this.props.user.role}
+            isLoaded={isLoaded}
+            students={this.state.students}
+            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+            updateStudentArchivStatus={this.updateStudentArchivStatus}
+            isDashboard={this.state.isDashboard}
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
+          />
+        </Aux>
+      );
+    } else if (this.props.user.role === 'Editor') {
+      return (
+        <Aux>
+          {!isLoaded && (
+            <div style={spinner_style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
+          <EditorMainView
+            user={this.props.user}
+            role={this.props.user.role}
+            editAgent={this.editAgent}
+            editEditor={this.editEditor}
+            agent_list={this.state.agent_list}
+            editor_list={this.state.editor_list}
+            students={this.state.students}
+            updateEditorList={this.state.updateEditorList}
+            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+            updateStudentArchivStatus={this.updateStudentArchivStatus}
+            isDashboard={this.state.isDashboard}
+          />
+        </Aux>
+      );
+    } else if (this.props.user.role === 'Student') {
+      return (
+        <Aux>
+          {!isLoaded && (
+            <div style={spinner_style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
+          <StudentDashboard
+            user={this.props.user}
+            role={this.props.user.role}
+            student={this.state.students[0]}
+            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+          />
+        </Aux>
+      );
     } else {
-      if (this.props.user.role === 'Admin') {
-        return (
-          <Aux>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-            <AdminMainView
-              user={this.props.user}
-              role={this.props.user.role}
-              editAgent={this.editAgent}
-              editEditor={this.editEditor}
-              agent_list={this.state.agent_list}
-              editor_list={this.state.editor_list}
-              UpdateAgentlist={this.UpdateAgentlist}
-              students={this.state.students}
-              updateAgentList={this.state.updateAgentList}
-              handleChangeAgentlist={this.handleChangeAgentlist}
-              submitUpdateAgentlist={this.submitUpdateAgentlist}
-              updateEditorList={this.state.updateEditorList}
-              handleChangeEditorlist={this.handleChangeEditorlist}
-              submitUpdateEditorlist={this.submitUpdateEditorlist}
-              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-              updateStudentArchivStatus={this.updateStudentArchivStatus}
-              isDashboard={this.state.isDashboard}
-            />
-          </Aux>
-        );
-      } else if (this.props.user.role === 'Agent') {
-        return (
-          <Aux>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-            <AgentMainView
-              user={this.props.user}
-              role={this.props.user.role}
-              isLoaded={isLoaded}
-              students={this.state.students}
-              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-              updateStudentArchivStatus={this.updateStudentArchivStatus}
-              isDashboard={this.state.isDashboard}
-              onUpdateProfileFilefromstudent={
-                this.onUpdateProfileFilefromstudent
-              }
-            />
-          </Aux>
-        );
-      } else if (this.props.user.role === 'Editor') {
-        return (
-          <Aux>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-            <EditorMainView
-              user={this.props.user}
-              role={this.props.user.role}
-              editAgent={this.editAgent}
-              editEditor={this.editEditor}
-              agent_list={this.state.agent_list}
-              editor_list={this.state.editor_list}
-              students={this.state.students}
-              updateEditorList={this.state.updateEditorList}
-              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-              updateStudentArchivStatus={this.updateStudentArchivStatus}
-              isDashboard={this.state.isDashboard}
-            />
-          </Aux>
-        );
-      } else if (this.props.user.role === 'Student') {
-        return (
-          <Aux>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-            <StudentDashboard
-              user={this.props.user}
-              role={this.props.user.role}
-              student={this.state.students[0]}
-              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-            />
-          </Aux>
-        );
-      } else {
-        return (
-          <Aux>
-            {!isLoaded && (
-              <div style={style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-            <GuestDashboard
-              role={this.props.user.role}
-              success={this.state.success}
-              students={this.state.students}
-              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-            />
-          </Aux>
-        );
-      }
+      return (
+        <Aux>
+          {!isLoaded && (
+            <div style={spinner_style}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden"></span>
+              </Spinner>
+            </div>
+          )}
+          <GuestDashboard
+            role={this.props.user.role}
+            success={this.state.success}
+            students={this.state.students}
+            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+          />
+        </Aux>
+      );
     }
   }
 }

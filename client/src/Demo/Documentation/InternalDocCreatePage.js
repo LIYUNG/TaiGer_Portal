@@ -1,13 +1,13 @@
 import React from 'react';
 import { Row, Col, Spinner, Button, Card, Form, Modal } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+
 import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import PageNotFoundError from '../Utils/PageNotFoundError';
-import { valid_internal_categories } from '../Utils/contants';
-import { Redirect } from 'react-router-dom';
+import { valid_internal_categories, spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   getAllInternalDocumentations,
   createInternalDocumentation,
@@ -17,8 +17,6 @@ import {
 class InternalDocCreatePage extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     isLoaded: false,
     data: null,
     success: false,
@@ -37,30 +35,27 @@ class InternalDocCreatePage extends React.Component {
         ? new Array(Object.keys(window.checklist).length)
             .fill()
             .map((x, i) => i)
-        : [0] // to expand all]
+        : [0], // to expand all]
+    res_status: 0
   };
 
   componentDidMount() {
     getAllInternalDocumentations().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             documentlists: data,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -133,6 +128,7 @@ class InternalDocCreatePage extends React.Component {
     deleteInternalDocumentation(this.state.doc_id_toBeDelete).then(
       (resp) => {
         const { success } = resp.data;
+        const { status } = resp;
         let documentlists_temp = [...this.state.documentlists];
         let to_be_delete_doc_idx = documentlists_temp.findIndex(
           (doc) => doc._id.toString() === this.state.doc_id_toBeDelete
@@ -147,16 +143,14 @@ class InternalDocCreatePage extends React.Component {
             documentlists: documentlists_temp,
             SetDeleteDocModel: false,
             isEdit: false,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -197,6 +191,7 @@ class InternalDocCreatePage extends React.Component {
     createInternalDocumentation(msg).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         let documentlists_temp = [...this.state.documentlists];
         documentlists_temp.push(data);
         if (success) {
@@ -205,16 +200,14 @@ class InternalDocCreatePage extends React.Component {
             documentlists: documentlists_temp,
             editorState: '',
             isEdit: !this.state.isEdit,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -232,44 +225,22 @@ class InternalDocCreatePage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { unauthorizederror, timeouterror, isLoaded, pagenotfounderror } =
-      this.state;
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    if (pagenotfounderror) {
-      return (
-        <div>
-          <PageNotFoundError />
-        </div>
-      );
-    }
+    const { res_status, isLoaded } = this.state;
+
     if (!isLoaded) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+    
     const documentlist_key = Object.keys(window.internaldocumentlist);
 
     const document_list = (cat) => {
@@ -374,7 +345,7 @@ class InternalDocCreatePage extends React.Component {
               ) : (
                 <Card.Body>
                   {documentlist_key.map((catego, i) => (
-                    <Row className='mb-4' key={i}>
+                    <Row className="mb-4" key={i}>
                       <h5>- {window.internaldocumentlist[`${catego}`]}</h5>
                       {document_list(catego)}
                     </Row>

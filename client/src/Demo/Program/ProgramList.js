@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import styled from 'styled-components';
 import {
   useTable,
   useFilters,
@@ -8,10 +7,11 @@ import {
   useRowSelect,
   usePagination
 } from 'react-table';
-import ProgramListSubpage from './ProgramListSubpage';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import TimeOutErrors from '../Utils/TimeOutErrors';
 import { Link } from 'react-router-dom';
+
+import ProgramListSubpage from './ProgramListSubpage';
+import ErrorPage from '../Utils/ErrorPage';
+import { spinner_style } from '../Utils/contants';
 
 import {
   Button,
@@ -19,7 +19,6 @@ import {
   Table,
   Row,
   Col,
-  // ButtonToolbar,
   DropdownButton,
   Dropdown,
   Spinner,
@@ -658,34 +657,28 @@ function ProgramList(props) {
     programs: null,
     isloaded: false,
     error: null,
-    unauthorizederror: null
+    res_status: 0
   });
 
   useEffect(() => {
     getPrograms().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           setStatedata((state) => ({
             ...state,
             success: success,
             programs: data,
-            isloaded: true
+            isloaded: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            setStatedata((state) => ({
-              ...state,
-              error: true,
-              isloaded: true
-            }));
-          } else if (resp.status === 403) {
-            setStatedata((state) => ({
-              ...state,
-              unauthorizederror: true,
-              isloaded: true
-            }));
-          }
+          setStatedata((state) => ({
+            ...state,
+            isloaded: true,
+            res_status: status
+          }));
         }
       },
       (error) =>
@@ -765,34 +758,18 @@ function ProgramList(props) {
   );
 
   // const data = React.useMemo(() => makeData(100000), []);
-  const style = {
-    position: 'fixed',
-    top: '40%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)'
-  };
-  if (statedata.error) {
-    return (
-      <div>
-        <TimeOutErrors />
-      </div>
-    );
-  }
-  if (statedata.unauthorizederror) {
-    return (
-      <div>
-        <UnauthorizedError />
-      </div>
-    );
-  }
   if (!statedata.isloaded && !statedata.programs) {
     return (
-      <div style={style}>
+      <div style={spinner_style}>
         <Spinner animation="border" role="status">
           <span className="visually-hidden"></span>
         </Spinner>
       </div>
     );
+  }
+
+  if (statedata.res_status >= 400) {
+    return <ErrorPage res_status={statedata.res_status} />;
   }
 
   return (

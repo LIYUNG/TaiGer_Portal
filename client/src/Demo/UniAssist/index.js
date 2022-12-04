@@ -1,40 +1,37 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Table,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-  Spinner
-} from 'react-bootstrap';
-import { getStudent } from '../../api';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import UniAssistListCard from './UniAssistListCard';
+import { Row, Col, Card, Modal, Spinner } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
+
+import UniAssistListCard from './UniAssistListCard';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
+import { getStudent } from '../../api';
+
 class UniAssistList extends React.Component {
   state = {
     isLoaded: false,
     student: null,
-    timeouterror: null,
-    unauthorizederror: null,
-    deleteVPDFileWarningModel: false
+    deleteVPDFileWarningModel: false,
+    res_status: 0
   };
   componentDidMount() {
     getStudent(this.props.user._id.toString()).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
-          this.setState({ isLoaded: true, student: data, success: success });
+          this.setState({
+            isLoaded: true,
+            student: data,
+            success: success,
+            res_status: status
+          });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -50,22 +47,7 @@ class UniAssistList extends React.Component {
     if (this.props.user.role !== 'Student') {
       return <Redirect to="/dashboard/default" />;
     }
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
+    const { res_status, isLoaded } = this.state;
 
     const style = {
       position: 'fixed',
@@ -76,12 +58,16 @@ class UniAssistList extends React.Component {
 
     if (!isLoaded && !this.state.student) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
+    }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
     }
 
     return (

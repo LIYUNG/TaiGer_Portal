@@ -1,9 +1,9 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import Card from '../../App/components/MainCard';
+import { Redirect } from 'react-router-dom';
+
 import Aux from '../../hoc/_Aux';
 import ProgramList from './ProgramList';
-import { Redirect } from 'react-router-dom';
 
 class ProgramTable extends React.Component {
   render() {

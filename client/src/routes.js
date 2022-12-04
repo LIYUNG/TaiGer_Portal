@@ -7,26 +7,9 @@ global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
-const UIBasicButton = React.lazy(() =>
-  import('./Demo/UIElements/Basic/Button')
-);
-const UIBasicBadges = React.lazy(() =>
-  import('./Demo/UIElements/Basic/Badges')
-);
 const UIBasicBreadcrumbPagination = React.lazy(() =>
   import('./Demo/UIElements/Basic/BreadcrumbPagination')
 );
-const UIBasicCollapse = React.lazy(() =>
-  import('./Demo/UIElements/Basic/Collapse')
-);
-const UIBasicTabsPills = React.lazy(() =>
-  import('./Demo/UIElements/Basic/TabsPills')
-);
-const UIBasicBasicTypography = React.lazy(() =>
-  import('./Demo/UIElements/Basic/Typography')
-);
-const FormsElements = React.lazy(() => import('./Demo/Forms/FormsElements'));
-
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
 const BaseDocuments = React.lazy(() =>
   import('./Demo/AgentCenter/BaseDocuments')
@@ -138,46 +121,10 @@ const routes = [
     component: ArchivStudent
   },
   {
-    path: '/basic/button',
-    exact: true,
-    name: 'Basic Button',
-    component: UIBasicButton
-  },
-  {
-    path: '/basic/badges',
-    exact: true,
-    name: 'Basic Badges',
-    component: UIBasicBadges
-  },
-  {
     path: '/basic/breadcrumb-paging',
     exact: true,
     name: 'Basic Breadcrumb Pagination',
     component: UIBasicBreadcrumbPagination
-  },
-  {
-    path: '/basic/collapse',
-    exact: true,
-    name: 'Basic Collapse',
-    component: UIBasicCollapse
-  },
-  {
-    path: '/basic/tabs-pills',
-    exact: true,
-    name: 'Basic Tabs & Pills',
-    component: UIBasicTabsPills
-  },
-  {
-    path: '/basic/typography',
-    exact: true,
-    name: 'Basic Typography',
-    component: UIBasicBasicTypography
-  },
-  {
-    path: '/forms/form-basic',
-    exact: true,
-    name: 'Forms Elements',
-    component: FormsElements
   },
   {
     path: '/programs/:programId',

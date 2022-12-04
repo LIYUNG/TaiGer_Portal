@@ -1,15 +1,16 @@
 import React from 'react';
-import { Spinner, Button } from 'react-bootstrap';
-// import { useParams } from "react-router-dom";
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
-import { getInternalDocumentation } from '../../api';
+import { Spinner } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+
 import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import PageNotFoundError from '../Utils/PageNotFoundError';
-import { updateInternalDocumentation } from '../../api';
-import { Redirect } from 'react-router-dom';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
+import {
+  updateInternalDocumentation,
+  getInternalDocumentation
+} from '../../api';
 
 class SingleDoc extends React.Component {
   state = {
@@ -17,22 +18,15 @@ class SingleDoc extends React.Component {
     success: false,
     error: null,
     editorState: null,
-    unauthorizederror: null,
-    unauthorizederror: null,
     isEdit: false,
-    internal: false
+    internal: false,
+    res_status: 0
   };
   componentDidMount() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent'
-    ) {
-      return <Redirect to="/dashboard/default" />;
-    }
     getInternalDocumentation(this.props.match.params.documentation_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (!data) {
           this.setState({ isLoaded: true, pagenotfounderror: true });
         }
@@ -50,19 +44,14 @@ class SingleDoc extends React.Component {
             category: data.category,
             internal: data.internal,
             editorState: initialEditorState,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -92,24 +81,21 @@ class SingleDoc extends React.Component {
     ).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             success,
             document_title: data.title,
             editorState,
             isEdit: !this.state.isEdit,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -123,82 +109,56 @@ class SingleDoc extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
   render() {
-    const {
-      unauthorizederror,
-      timeouterror,
-      pagenotfounderror,
-      error,
-      editorState,
-      isLoaded
-    } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    if (pagenotfounderror) {
-      return (
-        <div>
-          <PageNotFoundError />
-        </div>
-      );
+    if (
+      this.props.user.role !== 'Admin' &&
+      this.props.user.role !== 'Editor' &&
+      this.props.user.role !== 'Agent'
+    ) {
+      return <Redirect to="/dashboard/default" />;
     }
 
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+    const { res_status, editorState, isLoaded } = this.state;
+
     if (!isLoaded && !editorState) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     if (this.state.isEdit) {
       return (
-        <>
-          <SingleDocEdit
-            category={this.state.category}
-            internal={this.state.internal}
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            isLoaded={isLoaded}
-            handleClick={this.handleClick}
-            handleClickCancel={this.handleClickCancel}
-            handleClickSave={this.handleClickSave}
-          />
-        </>
+        <SingleDocEdit
+          category={this.state.category}
+          internal={this.state.internal}
+          document={document}
+          document_title={this.state.document_title}
+          editorState={this.state.editorState}
+          isLoaded={isLoaded}
+          handleClick={this.handleClick}
+          handleClickCancel={this.handleClickCancel}
+          handleClickSave={this.handleClickSave}
+        />
       );
     } else {
       return (
-        <>
-          <SingleDocView
-            category={this.state.category}
-            internal={this.state.internal}
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            isLoaded={isLoaded}
-            role={this.props.user.role}
-            handleClick={this.handleClick}
-          />
-        </>
+        <SingleDocView
+          category={this.state.category}
+          internal={this.state.internal}
+          document={document}
+          document_title={this.state.document_title}
+          editorState={this.state.editorState}
+          isLoaded={isLoaded}
+          role={this.props.user.role}
+          handleClick={this.handleClick}
+        />
       );
     }
   }

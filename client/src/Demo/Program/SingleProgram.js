@@ -1,41 +1,37 @@
 import React from 'react';
 import { Spinner, Button } from 'react-bootstrap';
-// import { useParams } from "react-router-dom";
-import { getProgram } from '../../api';
+import { getProgram, updateProgram } from '../../api';
 import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import { updateProgram } from '../../api';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 class SingleProgram extends React.Component {
   state = {
     isLoaded: false,
     program: null,
     success: false,
     error: null,
-    unauthorizederror: null,
-    unauthorizederror: null,
-    isEdit: false
+    isEdit: false,
+    res_status: 0
   };
   componentDidMount() {
     getProgram(this.props.match.params.programId).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             program: data,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403 || resp.status === 400) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -51,22 +47,20 @@ class SingleProgram extends React.Component {
     updateProgram(program).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             program: data,
             success: success,
-            isEdit: !this.state.isEdit
+            isEdit: !this.state.isEdit,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -81,39 +75,24 @@ class SingleProgram extends React.Component {
   handleClick = () => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
-  render() {
-    const { unauthorizederror, timeouterror, error, program, isLoaded } =
-      this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+  render() {
+    const { res_status, program, isLoaded } = this.state;
+
     if (!isLoaded && !program) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     if (this.state.isEdit) {
       return (
         <>

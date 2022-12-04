@@ -1,13 +1,12 @@
 import React from 'react';
 import { Row, Col, Card, Spinner } from 'react-bootstrap';
-// import { Link } from 'react-router-dom';
-import Aux from '../../hoc/_Aux';
-// import DEMO from "../../store/constant";
-import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
 import { Redirect } from 'react-router-dom';
+
+import Aux from '../../hoc/_Aux';
+import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
+import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   getAllStudents,
   getArchivStudents,
@@ -26,7 +25,9 @@ class Dashboard extends React.Component {
     students: [],
     updateAgentList: {},
     updateEditorList: {},
-    success: false
+    success: false,
+    res_status: 0
+
     // isArchivPage: true
   };
 
@@ -34,14 +35,19 @@ class Dashboard extends React.Component {
     getAllStudents().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
-          this.setState({ isLoaded: true, students: data, success: success });
+          this.setState({
+            isLoaded: true,
+            students: data,
+            success: success,
+            res_status: status
+          });
         } else {
-          if (resp.status == 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -58,14 +64,19 @@ class Dashboard extends React.Component {
       getArchivStudents().then(
         (resp) => {
           const { data, success } = resp.data;
+          const { status } = resp;
           if (success) {
-            this.setState({ isLoaded: true, students: data, success: success });
+            this.setState({
+              isLoaded: true,
+              students: data,
+              success: success,
+              res_status: status
+            });
           } else {
-            if (resp.status == 401) {
-              this.setState({ isLoaded: true, timeouterror: true });
-            } else if (resp.status == 403) {
-              this.setState({ isLoaded: true, unauthorizederror: true });
-            }
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
           }
         },
         (error) => {
@@ -82,17 +93,19 @@ class Dashboard extends React.Component {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
-          this.setState({ isLoaded: true, students: data, success: success });
+          this.setState({
+            isLoaded: true,
+            students: data,
+            success: success,
+            res_status: status
+          });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -112,74 +125,57 @@ class Dashboard extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
+    const { res_status, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     if (!isLoaded && !this.state.data) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
-    } else {
-      if (this.state.success) {
-        return (
-          <Aux>
-            <Row>
-              <Col>
-                <Card className="my-0 mx-0">
-                  {/* <Card.Body> */}
-                  {this.props.user.role === 'Admin' ||
-                  this.props.user.role === 'Agent' ||
-                  this.props.user.role === 'Editor' ? (
-                    <TabStudBackgroundDashboard
-                      role={this.props.user.role}
-                      students={this.state.students}
-                      agent_list={this.state.agent_list}
-                      editor_list={this.state.editor_list}
-                      updateStudentArchivStatus={this.updateStudentArchivStatus}
-                      isArchivPage={this.state.isArchivPage}
-                      SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                  {!isLoaded && (
-                    <div style={style}>
-                      <Spinner animation="border" role="status">
-                        <span className="visually-hidden"></span>
-                      </Spinner>
-                    </div>
-                  )}
-                  {/* </Card.Body> */}
-                </Card>
-              </Col>
-            </Row>
-          </Aux>
-        );
-      }
+    }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
+    if (this.state.success) {
+      return (
+        <Aux>
+          <Row>
+            <Col>
+              <Card className="my-0 mx-0">
+                {/* <Card.Body> */}
+                {this.props.user.role === 'Admin' ||
+                this.props.user.role === 'Agent' ||
+                this.props.user.role === 'Editor' ? (
+                  <TabStudBackgroundDashboard
+                    role={this.props.user.role}
+                    students={this.state.students}
+                    agent_list={this.state.agent_list}
+                    editor_list={this.state.editor_list}
+                    updateStudentArchivStatus={this.updateStudentArchivStatus}
+                    isArchivPage={this.state.isArchivPage}
+                    SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+                  />
+                ) : (
+                  <></>
+                )}
+                {!isLoaded && (
+                  <div style={spinner_style}>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  </div>
+                )}
+                {/* </Card.Body> */}
+              </Card>
+            </Col>
+          </Row>
+        </Aux>
+      );
     }
   }
 }

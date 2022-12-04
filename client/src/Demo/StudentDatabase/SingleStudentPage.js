@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Dropdown,
   Tabs,
   Tab,
   Card,
@@ -10,6 +9,26 @@ import {
   Button,
   Spinner
 } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+
+import ButtonSetUploaded from '../AgentCenter/ButtonSetUploaded';
+import ButtonSetAccepted from '../AgentCenter/ButtonSetAccepted';
+import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
+import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
+import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
+import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
+import UniAssistListCard from '../UniAssist/UniAssistListCard';
+import SurveyComponent from '../Survey/SurveyComponent';
+import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
+import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
+import {
+  SYMBOL_EXPLANATION,
+  profile_name_list,
+  spinner_style
+} from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   getStudentAndDocLinks,
   updateProfileDocumentStatus,
@@ -19,22 +38,6 @@ import {
   deleteFile,
   updateDocumentationHelperLink
 } from '../../api';
-import { Link } from 'react-router-dom';
-import ButtonSetUploaded from '../AgentCenter/ButtonSetUploaded';
-import ButtonSetAccepted from '../AgentCenter/ButtonSetAccepted';
-import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
-import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
-import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
-import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
-import UniAssistListCard from '../UniAssist/UniAssistListCard';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import SurveyComponent from '../Survey/SurveyComponent';
-import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
-import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
-import { profile_name_list } from '../Utils/contants';
-import { Redirect } from 'react-router-dom';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -43,14 +46,14 @@ class SingleStudentPage extends React.Component {
     base_docs_link: null,
     survey_link: null,
     success: false,
-    timeouterror: null,
-    unauthorizederror: null,
-    error: null
+    error: null,
+    res_status: 0
   };
   componentDidMount() {
     getStudentAndDocLinks(this.props.match.params.studentId).then(
       (resp) => {
         const { survey_link, base_docs_link, data, success } = resp.data;
+        const { status } = resp;
         const granding_system_doc_link = survey_link.find(
           (link) => link.key === profile_name_list.Grading_System
         );
@@ -60,14 +63,14 @@ class SingleStudentPage extends React.Component {
             student: data,
             base_docs_link,
             survey_link: granding_system_doc_link.link,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status == 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -83,20 +86,21 @@ class SingleStudentPage extends React.Component {
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           //Start the timer
           this.setState((state) => ({
             ...state,
             student: data,
             success,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           }));
         } else {
-          if (resp.status == 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -125,6 +129,7 @@ class SingleStudentPage extends React.Component {
     uploadforstudent(category, student_id, formData).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           //Start the timer
           this.setState((state) => ({
@@ -133,14 +138,14 @@ class SingleStudentPage extends React.Component {
             success,
             category: '',
             isLoaded: true,
-            file: ''
+            file: '',
+            res_status: status
           }));
         } else {
-          if (resp.status == 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -156,19 +161,20 @@ class SingleStudentPage extends React.Component {
     updateDocumentationHelperLink(link, key, 'base-documents').then(
       (resp) => {
         const { helper_link, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
             base_docs_link: helper_link,
-            success: success
+            success: success,
+            res_status: status
           }));
         } else {
-          if (resp.status == 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {}
@@ -180,6 +186,7 @@ class SingleStudentPage extends React.Component {
     updateAcademicBackground(university, student_id).then(
       (resp) => {
         const { profile, data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -193,14 +200,14 @@ class SingleStudentPage extends React.Component {
               profile: profile
             },
             success: success,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -217,6 +224,7 @@ class SingleStudentPage extends React.Component {
     updateLanguageSkill(language, student_id).then(
       (resp) => {
         const { profile, data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -230,14 +238,14 @@ class SingleStudentPage extends React.Component {
               profile: profile
             },
             success: success,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -256,6 +264,7 @@ class SingleStudentPage extends React.Component {
     deleteFile(category, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         student.profile[idx] = data;
         // std.profile[idx] = res.data.data; // res.data = {success: true, data:{...}}
         if (success) {
@@ -266,14 +275,14 @@ class SingleStudentPage extends React.Component {
             isLoaded: true,
             student: student,
             success: success,
-            deleteFileWarningModel: false
+            deleteFileWarningModel: false,
+            res_status: status
           }));
         } else {
-          if (resp.status == 401) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status == 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -292,32 +301,11 @@ class SingleStudentPage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { unauthorizederror, base_docs_link, timeouterror, isLoaded } =
-      this.state;
+    const { res_status, base_docs_link, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     if (!isLoaded && !this.state.student) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
@@ -325,8 +313,10 @@ class SingleStudentPage extends React.Component {
       );
     }
 
-    const deleteStyle = 'danger';
-    const graoutStyle = 'light';
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_list);
     let object_init = {};

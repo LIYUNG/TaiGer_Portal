@@ -2,6 +2,9 @@ import React from 'react';
 import { Spinner } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   getInterview,
   updateAcademicBackground,
@@ -16,21 +19,27 @@ class SingleInterviewTraining extends React.Component {
     data: null,
     success: false,
     academic_background: {},
-    updateconfirmed: false
+    updateconfirmed: false,
+    res_status: 0
   };
 
   componentDidMount() {
     getInterview(this.props.match.params.interview_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             academic_background: data,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          alert(resp.data.message);
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -74,6 +83,7 @@ class SingleInterviewTraining extends React.Component {
     updateAcademicBackground(university).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -83,10 +93,14 @@ class SingleInterviewTraining extends React.Component {
               university: data
             },
             success: success,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          alert(resp.data.message);
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -103,6 +117,7 @@ class SingleInterviewTraining extends React.Component {
     updateLanguageSkill(language).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -112,10 +127,14 @@ class SingleInterviewTraining extends React.Component {
               language: data
             },
             success: success,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          alert(resp.data.message);
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -126,6 +145,7 @@ class SingleInterviewTraining extends React.Component {
       }
     );
   };
+
   Bayerische_Formel = (high, low, my) => {
     if (high - low !== 0) {
       var Germen_note = 1 + (3 * (high - my)) / (high - low);
@@ -147,29 +167,28 @@ class SingleInterviewTraining extends React.Component {
   };
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { error, spinner_style, isLoaded } = this.state;
     const style = {
       position: 'fixed',
       top: '40%',
       left: '50%',
       transform: 'translate(-50%, -50%)'
     };
-    if (error) {
-      return (
-        <div>
-          Error: your session is timeout! Please refresh the page and Login
-        </div>
-      );
-    }
+
     if (!isLoaded) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     return (
       <Aux>
         {this.props.user.role === 'Student' && <>Book interview</>}

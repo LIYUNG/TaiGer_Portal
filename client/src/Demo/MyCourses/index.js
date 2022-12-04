@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
+import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
+
 import Aux from '../../hoc/_Aux';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
+import { convertDate, spinner_style, study_group } from '../Utils/contants';
+import 'react-datasheet-grid/dist/style.css';
+
 import {
   getMycourses,
   postMycourses,
   analyzedFileDownload_test,
   transcriptanalyser_test
 } from '../../api';
-import { convertDate, study_group } from '../Utils/contants';
-import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
-import 'react-datasheet-grid/dist/style.css';
-// import { Redirect } from 'react-router-dom';
+import ErrorPage from '../Utils/ErrorPage';
+
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
     error: null,
@@ -31,7 +32,8 @@ export default function MyCourses(props) {
     expand: true,
     isAnalysing: false,
     isUpdating: false,
-    isDownloading: false
+    isDownloading: false,
+    res_status: 0
   });
   // if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
   //   return <Redirect to="/dashboard/default" />;
@@ -43,6 +45,7 @@ export default function MyCourses(props) {
     getMycourses(student_id).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           const course_from_database = data.table_data_string
             ? JSON.parse(data.table_data_string)
@@ -54,22 +57,15 @@ export default function MyCourses(props) {
             coursesdata: course_from_database,
             analysis: data.analysis,
             student: data.student_id, // populated
-            success: success
+            success: success,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              timeouterror: true
-            }));
-          } else if (resp.status === 403) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              unauthorizederror: true
-            }));
-          }
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            res_status: status
+          }));
         }
       },
       (error) => {
@@ -125,6 +121,7 @@ export default function MyCourses(props) {
     }).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         const course_from_database = JSON.parse(data.table_data_string);
         if (success) {
           setStatedata((state) => ({
@@ -134,24 +131,16 @@ export default function MyCourses(props) {
             coursesdata: course_from_database,
             confirmModalWindowOpen: true,
             success: success,
-            isUpdating: false
+            isUpdating: false,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              timeouterror: true,
-              isUpdating: false
-            }));
-          } else if (resp.status === 403) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              unauthorizederror: true,
-              isUpdating: false
-            }));
-          }
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            isUpdating: false,
+            res_status: status
+          }));
         }
       },
       (error) => {
@@ -180,33 +169,24 @@ export default function MyCourses(props) {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
-            // updatedAt: data.updatedAt,
             analysis: data,
             analysisSuccessModalWindowOpen: true,
             success: success,
-            isAnalysing: false
+            isAnalysing: false,
+            res_status: status
           }));
         } else {
-          console.log('here2');
-          if (resp.status === 401 || resp.status === 500) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              isAnalysing: false,
-              timeouterror: true
-            }));
-          } else if (resp.status === 403) {
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              isAnalysing: false,
-              unauthorizederror: true
-            }));
-          }
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            isAnalysing: false,
+            res_status: status
+          }));
         }
       },
       (error) => {
@@ -262,34 +242,6 @@ export default function MyCourses(props) {
           isDownloading: false
         }));
       }
-
-      // const { data, success } = resp.data;
-      // const course_from_database = JSON.parse(data.table_data_string);
-      // if (success) {
-      //   setStatedata((state) => ({
-      //     ...state,
-      //     isLoaded: true,
-      //     // updatedAt: data.updatedAt,
-      //     analysis: data.analysis,
-      //     analysisSuccessModalWindowOpen: true,
-      //     success: success,
-      //     isDownloading: false
-      //   }));
-      // } else {
-      //   if (resp.status === 401 || resp.status === 500) {
-      //     setStatedata((state) => ({
-      //       ...state,
-      //       isLoaded: true,
-      //       timeouterror: true
-      //     }));
-      //   } else if (resp.status === 403) {
-      //     setStatedata((state) => ({
-      //       ...state,
-      //       isLoaded: true,
-      //       unauthorizederror: true
-      //     }));
-      //   }
-      // }
     });
   };
 
@@ -322,32 +274,20 @@ export default function MyCourses(props) {
     { ...keyColumn('grades', textColumn), title: 'Grades' }
   ];
 
-  const style = {
-    position: 'fixed',
-    top: '40%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)'
-  };
-  if (statedata.timeouterror) {
-    return (
-      <div>
-        <TimeOutErrors />
-      </div>
-    );
-  }
-  if (statedata.unauthorizederror) {
-    return (
-      <div>
-        <UnauthorizedError />
-      </div>
-    );
-  }
   if (!statedata.isLoaded) {
     return (
-      <div style={style}>
+      <div style={spinner_style}>
         <Spinner animation="border" role="status">
           <span className="visually-hidden"></span>
         </Spinner>
+      </div>
+    );
+  }
+
+  if (statedata.res_status >= 400) {
+    return (
+      <div>
+        <ErrorPage res_status={statedata.res_status} />
       </div>
     );
   }

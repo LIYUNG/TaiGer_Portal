@@ -10,19 +10,18 @@ import {
   Tab,
   Tabs
 } from 'react-bootstrap';
+
 import Aux from '../../hoc/_Aux';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
 
 import { updateArchivStudents, SetFileAsFinal, getStudents } from '../../api';
 
 class CVMLRLOverview extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     isLoaded: false,
     data: null,
     success: false,
@@ -32,28 +31,27 @@ class CVMLRLOverview extends React.Component {
     program_id: '',
     SetAsFinalFileModel: false,
     isFinalVersion: false,
-    status: '' //reject, accept... etc
+    status: '', //reject, accept... etc
+    res_status: 0
   };
 
   componentDidMount() {
     getStudents().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             students: data,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -83,6 +81,7 @@ class CVMLRLOverview extends React.Component {
     ).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         let temp_students = [...this.state.students];
         let student_idx = this.state.students.findIndex(
           (student) => student._id.toString() === data._id.toString()
@@ -96,17 +95,14 @@ class CVMLRLOverview extends React.Component {
             students: temp_students,
             success: success,
             SetAsFinalFileModel: false,
-            isFinalVersion: false
+            isFinalVersion: false,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -133,22 +129,7 @@ class CVMLRLOverview extends React.Component {
     }));
   };
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
+    const { res_status, isLoaded } = this.state;
 
     const style = {
       position: 'fixed',
@@ -159,13 +140,18 @@ class CVMLRLOverview extends React.Component {
 
     if (!isLoaded && !this.state.students) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     const cvmlrl_progress = this.state.students.map((student, i) => (
       <CVMLRLProgress
         key={i}
@@ -257,8 +243,8 @@ class CVMLRLOverview extends React.Component {
                 <Row className="mt-4">
                   <p>
                     Note: if the documents are not closed but locate here, it is
-                    becaue the applications are already submitted. The documents can
-                    safely closed eventually.
+                    becaue the applications are already submitted. The documents
+                    can safely closed eventually.
                   </p>
                 </Row>
               </Tab>
@@ -290,7 +276,7 @@ class CVMLRLOverview extends React.Component {
 
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
             {!isLoaded && (
-              <div style={style}>
+              <div style={spinner_style}>
                 <Spinner animation="border" role="status">
                   <span className="visually-hidden"></span>
                 </Spinner>

@@ -1,11 +1,16 @@
 import React from 'react';
 import { Row, Col, Spinner, Table, Card } from 'react-bootstrap';
+
 import Aux from '../../hoc/_Aux';
 import StudentBaseDocumentsStatus from './StudentBaseDocumentsStatus';
 import BaseDocument_StudentView from './BaseDocument_StudentView';
-import { SYMBOL_EXPLANATION, split_header } from '../Utils/contants';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
+import {
+  SYMBOL_EXPLANATION,
+  split_header,
+  spinner_style,
+  spinner_style2
+} from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
 
 import {
   uploadforstudent,
@@ -13,11 +18,10 @@ import {
   deleteFile,
   getStudentsAndDocLinks
 } from '../../api';
+
 class BaseDocuments extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
-    unauthorizederror: null,
     isLoaded: false,
     data: null,
     base_docs_link: null,
@@ -30,40 +34,34 @@ class BaseDocuments extends React.Component {
     feedback: '',
     expand: false,
     CommentModel: false,
-    // accordionKeys: new Array(-1, this.props.user.students.length), // To collapse all
     accordionKeys:
       this.props.user.students &&
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-        : [0] // to expand all]
-    // accordionKeys:
-    //   this.props.user.students &&
-    //   new Array(this.props.user.students.length).fill().map((x, i) => i)
-    // // to expand all]
+        : [0], // to expand all]
+    res_status: 0
   };
 
   componentDidMount() {
     getStudentsAndDocLinks().then(
       (resp) => {
         const { base_docs_link, data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             students: data,
             base_docs_link,
-            success: success
+            success: success,
+            res_status: status
             // accordionKeys: new Array(data.length).fill().map((x, i) => i), // to expand all
             // accordionKeys: new Array(-1, data.length) // to collapse all
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -118,22 +116,20 @@ class BaseDocuments extends React.Component {
       (resp) => {
         students[student_arrayidx] = resp.data.data;
         const { success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             students: students,
             success,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -241,48 +237,23 @@ class BaseDocuments extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, base_docs_link, timeouterror, isLoaded } =
-      this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    let profile_list_keys = Object.values(window.profile_list);
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
-
-    const style2 = {
-      transform: 'rotate(360deg)',
-      textAlign: 'left',
-      verticalAlign: 'left',
-      overflowWrap: 'break-word'
-    };
+    const { res_status, base_docs_link, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.students) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
+    let profile_list_keys = Object.values(window.profile_list);
 
     const student_profile = this.state.students.map((student, i) => (
       <StudentBaseDocumentsStatus
@@ -350,10 +321,10 @@ class BaseDocuments extends React.Component {
                 <thead>
                   <tr className="my-0 mx-0 text-light">
                     <>
-                      <th style={style2}>First-, Last Name</th>
+                      <th style={spinner_style2}>First-, Last Name</th>
                     </>
                     {profile_list_keys.map((doc_name, index) => (
-                      <th key={index} style={style2}>
+                      <th key={index} style={spinner_style2}>
                         {split_header(doc_name)}
                       </th>
                     ))}
@@ -369,7 +340,7 @@ class BaseDocuments extends React.Component {
         </Row>
         <Row>
           {!isLoaded && (
-            <div style={style}>
+            <div style={spinner_style}>
               <Spinner animation="border" role="status">
                 <span className="visually-hidden"></span>
               </Spinner>

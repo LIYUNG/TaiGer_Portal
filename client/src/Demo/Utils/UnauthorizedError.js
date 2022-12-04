@@ -3,7 +3,8 @@ import { Row, Col } from 'react-bootstrap';
 import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
 
-class unauthorizederror extends React.Component {
+// Status 403: Forbidden requests
+class UnauthorizedError extends React.Component {
   render() {
     return (
       <Aux>
@@ -17,4 +18,4 @@ class unauthorizederror extends React.Component {
   }
 }
 
-export default unauthorizederror;
+export default UnauthorizedError;

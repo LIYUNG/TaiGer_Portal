@@ -1,8 +1,10 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+
 import Aux from '../../hoc/_Aux';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 class Settings extends React.Component {
   state = {
@@ -25,7 +27,8 @@ class Settings extends React.Component {
       new_password_again: ''
     },
     updateconfirmed: false,
-    updatecredentialconfirmed: false
+    updatecredentialconfirmed: false,
+    res_status: 0
   };
 
   componentDidMount() {
@@ -50,6 +53,7 @@ class Settings extends React.Component {
     updatePersonalData(personaldata).then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
@@ -57,17 +61,14 @@ class Settings extends React.Component {
             personaldata: data,
             success: success,
             changed_personaldata: false,
-            updateconfirmed: true
+            updateconfirmed: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 403 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 401) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -100,23 +101,20 @@ class Settings extends React.Component {
     updateCredentials(credentials, email, credentials.current_password).then(
       (resp) => {
         const { success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
-            // personaldata: data,
             success: success,
-            updatecredentialconfirmed: true
+            updatecredentialconfirmed: true,
+            res_status: status
           }));
         } else {
-          if (resp.status === 403 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 401) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -168,32 +166,22 @@ class Settings extends React.Component {
   };
 
   render() {
-    const { timeouterror, isLoaded } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+    const { res_status, isLoaded } = this.state;
 
     if (!isLoaded) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     return (
       <Aux>
         <Row>
@@ -272,7 +260,7 @@ class Settings extends React.Component {
               </Card.Body>
             </Card>
             {!isLoaded && (
-              <div style={style}>
+              <div style={spinner_style}>
                 <Spinner animation="border" role="status">
                   <span className="visually-hidden"></span>
                 </Spinner>
@@ -359,7 +347,7 @@ class Settings extends React.Component {
               </Card.Body>
             </Card>
             {!isLoaded && (
-              <div style={style}>
+              <div style={spinner_style}>
                 <Spinner animation="border" role="status">
                   <span className="visually-hidden"></span>
                 </Spinner>
@@ -389,7 +377,7 @@ class Settings extends React.Component {
           show={this.state.unauthorizederror}
           onHide={this.onHideUnauthorizederror}
           size="sm"
-          bg={"danger"}
+          bg={'danger'}
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >

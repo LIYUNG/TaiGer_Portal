@@ -1,14 +1,12 @@
 import React from 'react';
-import { Spinner, Button } from 'react-bootstrap';
-// import { useParams } from "react-router-dom";
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
-import { getDocumentation } from '../../api';
+import { Spinner } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import PageNotFoundError from '../Utils/PageNotFoundError';
-import { Redirect } from 'react-router-dom';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+
 import {
   getInternalDocumentationPage,
   updateInternalDocumentationPage
@@ -20,15 +18,15 @@ class InternaldocsPage extends React.Component {
     success: false,
     error: null,
     editorState: null,
-    unauthorizederror: null,
-    unauthorizederror: null,
-    isEdit: false
+    isEdit: false,
+    res_status: 0
   };
 
   componentDidMount() {
     getInternalDocumentationPage().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           var initialEditorState = null;
           if (data.text) {
@@ -41,19 +39,14 @@ class InternaldocsPage extends React.Component {
           this.setState({
             isLoaded: true,
             editorState: initialEditorState,
-            success: success
+            success: success,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -80,24 +73,21 @@ class InternaldocsPage extends React.Component {
     updateInternalDocumentationPage(msg).then(
       (resp) => {
         const { success, data } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             success,
             document_title: data.title,
             editorState,
             isEdit: !this.state.isEdit,
-            isLoaded: true
+            isLoaded: true,
+            res_status: status
           });
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({ isLoaded: true, unauthorizederror: true });
-          } else if (resp.status === 400) {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          } else {
-            this.setState({ isLoaded: true, pagenotfounderror: true });
-          }
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
       },
       (error) => {
@@ -118,52 +108,22 @@ class InternaldocsPage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const {
-      unauthorizederror,
-      timeouterror,
-      pagenotfounderror,
-      error,
-      editorState,
-      isLoaded
-    } = this.state;
+    const { res_status, editorState, isLoaded } = this.state;
 
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
-    if (pagenotfounderror) {
-      return (
-        <div>
-          <PageNotFoundError />
-        </div>
-      );
-    }
-
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     if (!isLoaded && !editorState) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
         </div>
       );
     }
+
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     if (this.state.isEdit) {
       return (
         <>

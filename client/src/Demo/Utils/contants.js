@@ -87,6 +87,20 @@ export const profile_name_list = {
   Grading_System: 'Grading_System'
 };
 
+export const spinner_style = {
+  position: 'fixed',
+  top: '40%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)'
+};
+
+export const spinner_style2 = {
+  transform: 'rotate(360deg)',
+  textAlign: 'left',
+  verticalAlign: 'left',
+  overflowWrap: 'break-word'
+};
+
 export const valid_internal_categories = [
   { key: 'agents', value: 'Agents' },
   { key: 'editors', value: 'Editors' },

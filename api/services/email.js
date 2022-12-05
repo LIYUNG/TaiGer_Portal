@@ -36,6 +36,9 @@ const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 
 const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
+const SPLIT_LINE = '-------------------------------------------------------';
+const ENGLISH_BELOW = '(English version below)';
+const CONTACT_AGENT = '如果您有任何疑問，請聯絡您的顧問。';
 
 const transporter = isDev()
   ? createTransport({
@@ -70,11 +73,26 @@ const sendEmail = (to, subject, message) => {
 };
 
 const updateNotificationEmail = async (recipient, msg) => {
-  const subject = 'Your status in TaiGer Portal updated';
+  const subject =
+    '您的TaiGer Portal使用者權限已更新 / Your user role in TaiGer Portal updated';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname},
+
+您的 TaiGer Portal 使用者權限已更新。
+
+請至 ${SETTINGS_URL} 確認使用者身分角色。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname},
 
-Your user status in TaiGer Portal has been changed.
+Your user role in TaiGer Portal has been changed.
+
+Please visit ${SETTINGS_URL} and make sure your user role.
 
 ${TAIGER_SIGNATURE}
 
@@ -86,6 +104,20 @@ ${TAIGER_SIGNATURE}
 const uploadTemplateSuccessEmail = async (recipient, msg) => {
   const subject = `Template ${msg.category_name} uploaded successfully!`;
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname},
+
+${msg.category_name} 模板已成功上傳於
+
+ ${msg.updatedAt}
+
+更多細節請至 ${TEMPLATE_DOWNLOAD_URL}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname},
 
 the template ${msg.category_name} is uploaded sucessfully on
@@ -104,6 +136,20 @@ ${TAIGER_SIGNATURE}
 const deleteTemplateSuccessEmail = async (recipient, msg) => {
   const subject = `Template ${msg.category_name} deleted successfully!`;
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname},
+
+${msg.category_name} 模板已成功刪除於
+
+ ${msg.updatedAt}
+
+更多細節請至 ${TEMPLATE_DOWNLOAD_URL}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname},
 
 the template ${msg.category_name} is deleted sucessfully on
@@ -120,12 +166,30 @@ ${TAIGER_SIGNATURE}
 };
 
 const sendConfirmationEmail = async (recipient, token) => {
-  const subject = 'TaiGer Portal Email verification';
+  const subject =
+    'TaiGer Portal 電子信箱驗證 / TaiGer Portal Email verification';
   const activationLink = queryString.stringifyUrl({
     url: ACCOUNT_ACTIVATION_URL,
     query: { email: recipient.address, token }
   });
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname},
+
+您的 TaiGer Portal 帳戶已被建立。
+請使用以下連結來啟用您的帳戶：
+
+${activationLink}
+
+此連結將於 20 分鐘後失效。
+
+但您仍可再次請求啟用連結於： ${RESEND_ACTIVATION_URL}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname},
 
 Your user account has been created.
@@ -144,12 +208,29 @@ ${TAIGER_SIGNATURE}
 };
 
 const sendForgotPasswordEmail = async (recipient, token) => {
-  const subject = 'Password reset instructions';
+  const subject =
+    'TaiGer Portal 密碼重設指示 / TaiGer Portal Password reset instructions';
   const passwordResetLink = queryString.stringifyUrl({
     url: PASSWORD_RESET_URL,
     query: { email: recipient.address, token }
   });
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname},
+
+請用以下連結重新設定您的 TaiGer Portal 密碼：
+
+${passwordResetLink}
+
+此連結將於 20 分鐘後失效。
+
+但您仍可再次請求密碼重設連結於： ${FORGOT_PASSWORD_URL}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname},
 
 Please use the link below to reset your password:
@@ -167,8 +248,21 @@ ${TAIGER_SIGNATURE}
 };
 
 const sendPasswordResetEmail = async (recipient) => {
-  const subject = 'Password reset successfully';
+  const subject =
+    'TaiGer Portal 密碼重設成功 / TaiGer Portal Password reset successfully';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname},
+
+您的 TaiGer Portal 密碼已成功被更新，您現在可以使用新密碼登入 TaiGer Portl。
+
+TaiGer portal: ${ORIGIN}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname},
 
 Your password has been successfully updated, you can now login with your new password
@@ -185,6 +279,20 @@ ${TAIGER_SIGNATURE}
 const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
   const subject = 'TaiGer Portal Account activation confirmation';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname},
+
+您的 TaiGer Portal 帳戶已成功開通。
+
+您現在可以登入並開始使用 TaiGer Portal。
+
+TaiGer Portal 連結： ${ORIGIN}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname},
 
 Your TaiGer Portal Account has been successfully activated.
@@ -200,29 +308,25 @@ ${TAIGER_SIGNATURE}
   return sendEmail(recipient, subject, message);
 };
 
-const sendUploadedGeneralFilesEmail = async (recipient, msg) => {
-  const subject = 'Thank you for your input!';
+const sendUploadedProfileFilesEmail = async (recipient, msg) => {
+  const subject = `您的 ${msg.uploaded_documentname} 已成功上傳！ / Your ${msg.uploaded_documentname} is successfully uploaded!`;
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+${ENGLISH_BELOW}
 
-has uploaded ${msg.uploaded_documentname} 
+嗨 ${recipient.firstname} ${recipient.lastname}, 
 
-for ${msg.university_name} - ${msg.program_name} on ${msg.uploaded_updatedAt}.
+您已於 ${msg.uploaded_updatedAt} 成功上傳
 
-Your editor will review it and give you feedback as soon as possible.
+${msg.uploaded_documentname} 。
 
-Keep tracking your documents progress: ${CVMLRL_CENTER_URL}
+您的顧問將會盡快瀏覽這份文件並給您意見回饋。
+
+有任何更新，請至 ${BASE_DOCUMENT_URL} 查看細節。
 
 ${TAIGER_SIGNATURE}
 
-`;
+${SPLIT_LINE}
 
-  return sendEmail(recipient, subject, message);
-};
-
-const sendUploadedProfileFilesEmail = async (recipient, msg) => {
-  const subject = `Your ${msg.uploaded_documentname} is successfully uploaded!`;
-  const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 you have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.
@@ -241,12 +345,25 @@ ${TAIGER_SIGNATURE}
 const sendUploadedVPDEmail = async (recipient, msg) => {
   const subject = 'VPD is successfully uploaded!';
   const message = `\
+${ENGLISH_BELOW}
+
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+您已於 ${msg.uploaded_updatedAt} 成功上傳
+
+${msg.uploaded_documentname} 。
+
+有任何 VPD 更新，請至 ${UNI_ASSIST_FOR_STUDENT_URL}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 you have successfully uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.
 
 Keep tracking your VPD here: ${UNI_ASSIST_FOR_STUDENT_URL}
-
 
 ${TAIGER_SIGNATURE}
 
@@ -258,6 +375,22 @@ ${TAIGER_SIGNATURE}
 const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
   const subject = `Your ${msg.uploaded_documentname} is successfully uploaded!`;
   const message = `\
+${ENGLISH_BELOW}
+
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+您的顧問 ${msg.agent_firstname} ${msg.agent_lastname} 已幫您上傳 ${msg.uploaded_documentname} 
+
+於 ${msg.uploaded_updatedAt} 。
+
+請至 ${BASE_DOCUMENT_URL} 並查看細節。
+
+${CONTACT_AGENT}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
@@ -274,8 +407,24 @@ ${TAIGER_SIGNATURE}
 };
 
 const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
-  const subject = 'Your VPD is successfully uploaded!';
+  const subject = '您的 VPD 已成功上傳 / Your VPD is successfully uploaded!';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您的顧問 ${msg.agent_firstname} ${msg.agent_lastname} 已幫您上傳 ${msg.uploaded_documentname} 
+
+於${msg.uploaded_updatedAt} 。
+
+請至 ${UNI_ASSIST_FOR_STUDENT_URL} 並查看細節。
+
+${CONTACT_AGENT}
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
@@ -294,6 +443,22 @@ ${TAIGER_SIGNATURE}
 const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
   const subject = `New ${msg.uploaded_documentname} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
+    msg.uploaded_documentname
+  }
+
+於 ${msg.uploaded_updatedAt} 。
+
+請至 ${BASE_DOCUMENT_FOR_AGENT_URL(msg.student_id)} 確認細節。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
@@ -312,8 +477,24 @@ ${TAIGER_SIGNATURE}
 };
 
 const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
-  const subject = `New VPD uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
+  const subject = `新 VPD 上傳從 ${msg.student_firstname} ${msg.student_lastname} / New VPD uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
+    msg.uploaded_documentname
+  }
+
+在 ${msg.uploaded_updatedAt}.
+
+請至 ${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)} 確認細節。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
@@ -335,13 +516,31 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
   var subject;
   var message;
   if (msg.status === 'rejected') {
-    subject = `File Status changes: please upload ${msg.category} again`;
+    subject = `文件狀態更新：請再次上傳 ${msg.category} / File Status changes: please upload ${msg.category} again`;
     message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+由於下列原因, 請再次上傳 ${msg.category}:
+
+${msg.message}
+
+
+請至 ${BASE_DOCUMENT_URL} 確認細節。
+
+如果有任何疑問，請聯絡您的顧問。 
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 due to the following reason, please upload ${msg.category} again:
 
 ${msg.message}
+
 
 Please go to ${BASE_DOCUMENT_URL} and see the details.
 
@@ -351,8 +550,22 @@ ${TAIGER_SIGNATURE}
 
 `; // should be for student
   } else {
-    subject = `File Status changes: ${msg.category} is valid`;
+    subject = `文件狀態更新：${msg.category} 合格 / File Status changes: ${msg.category} is valid`;
     message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您的顧問已經看過您上傳的文件 ${msg.category}，文字清楚、無資訊遺漏
+
+並且該文件可以拿來做為申請!
+
+請至 ${BASE_DOCUMENT_URL} 並再次確認。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 your uploaded file ${msg.category} is successfully checked by your agent
@@ -370,8 +583,20 @@ ${TAIGER_SIGNATURE}
 };
 
 const informAgentNewStudentEmail = async (recipient, msg) => {
-  const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
+  const subject = `新學生 ${msg.std_firstname} ${msg.std_lastname} 已被指派給您 / New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.std_firstname} ${msg.std_lastname} 將被指配給您。
+
+請至 ${STUDENT_BACKGROUND_FOR_AGENT_URL(msg.std_id)} 查看他的背景問卷並與她/他打聲招呼！
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 ${msg.std_firstname} ${msg.std_lastname} will be your student!
@@ -398,6 +623,18 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
     }
   }
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+${agent} 將會是您的顧問。
+
+請至 ${ORIGIN} 並開始準備您的文件。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 ${agent} will be your agent!
@@ -440,11 +677,23 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
     }
   }
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+${editor} 將會是您的外語文件編輯，她/他會輔助您完成您的動機信、推薦信、個人履歷。
+
+請至 ${ORIGIN} 開始準備您的第一份文件吧！
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 ${editor} will be your editor!
 
-Please go to ${ORIGIN} , and prepare your documents!
+Please go to ${ORIGIN} , and prepare your first documents!
 
 ${TAIGER_SIGNATURE}
 
@@ -454,7 +703,7 @@ ${TAIGER_SIGNATURE}
 };
 
 const createApplicationToStudentEmail = async (recipient, msg) => {
-  const subject = 'New Programs assigned to you.';
+  const subject = '新的建議申請學程指派給您 / New Programs assigned to you.';
   let programList;
   for (let i = 0; i < msg.programs.length; i += 1) {
     if (i === 0) {
@@ -468,6 +717,22 @@ const createApplicationToStudentEmail = async (recipient, msg) => {
     }
   }
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.agent_firstname} ${msg.agent_lastname} 顧問指派建議的學校學程給您：
+
+
+${programList}
+
+
+請至 ${STUDENT_APPLICATION_URL} 查看細節並選擇是否決定要申請 (Decided: Yes / No)。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 ${msg.agent_firstname} ${msg.agent_lastname} has assigned programs for you:
@@ -486,13 +751,25 @@ ${TAIGER_SIGNATURE}
 };
 
 const updateAcademicBackgroundEmail = async (recipient) => {
-  const subject = 'Academic Background updated successfully';
+  const subject = 'TaiGer Portal 學術背景更新成功！ TaiGer Portal Academic Background updated successfully!';
   const message = `\
+${ENGLISH_BELOW}
+
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+您已成功更新您的學術背景資訊！
+
+若有新的資訊，請再次到 ${STUDENT_SURVEY_URL} 更新資訊。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your academic background information successfully!
 
-Please double check in ${STUDENT_SURVEY_URL} 
+If there is nw update, please go to ${STUDENT_SURVEY_URL} and synchronize the information.
 
 ${TAIGER_SIGNATURE}
 
@@ -502,13 +779,28 @@ ${TAIGER_SIGNATURE}
 };
 
 const updateLanguageSkillEmail = async (recipient) => {
-  const subject = 'Language skills updated successfully';
+  const subject =
+    '語言能力與檢定資訊更新成功 / Language skills updated successfully';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您已成功更新您的語言能力資訊與檢定！
+
+若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 ${STUDENT_SURVEY_URL} 更新資訊。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your Language skills information successfully!
 
-Please double check in ${STUDENT_SURVEY_URL} 
+If there is nw update (for example: languages test passed or new test date registered) 
+
+please go to ${STUDENT_SURVEY_URL} and synchronize the information.
 
 ${TAIGER_SIGNATURE}
 
@@ -518,8 +810,20 @@ ${TAIGER_SIGNATURE}
 };
 
 const updateLanguageSkillEmailFromTaiGer = async (recipient, msg) => {
-  const subject = 'Language skills updated successfully';
+  const subject = '語言能力與檢定資訊更新成功 /Language skills updated successfully';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+${msg.sender_firstname} ${msg.sender_lastname} 成功更新您的語言能力與檢定資訊與檢定。
+
+若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 ${STUDENT_SURVEY_URL} 更新語言檢定資訊。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 ${msg.sender_firstname} ${msg.sender_lastname} updated your Language skills information successfully!
@@ -534,13 +838,25 @@ ${TAIGER_SIGNATURE}
 };
 
 const updateApplicationPreferenceEmail = async (recipient) => {
-  const subject = 'Language skills updated successfully';
+  const subject = '申請學程偏好資訊更新成功 / Application preference updated successfully';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您成功更新您的申請偏好資訊。
+
+若有更新，請至 ${STUDENT_SURVEY_URL} 
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your application preference information successfully!
 
-Please double check in ${STUDENT_SURVEY_URL} 
+If there is new update, please go to ${STUDENT_SURVEY_URL} 
 
 ${TAIGER_SIGNATURE}
 
@@ -550,8 +866,20 @@ ${TAIGER_SIGNATURE}
 };
 
 const updatePersonalDataEmail = async (recipient, msg) => {
-  const subject = 'Personal data updated successfully';
+  const subject = '個人基本資料更新成功 / Personal data updated successfully';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您的個人基本資料已更新成功。
+
+請至 ${SETTINGS_URL} 查看細節。
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your personal data successfully!
@@ -566,8 +894,20 @@ ${TAIGER_SIGNATURE}
 };
 
 const updateCredentialsEmail = async (recipient, msg) => {
-  const subject = 'TaiGer Portal passwords updated successfully';
+  const subject = 'TaiGer Portal 密碼更新成功 / TaiGer Portal passwords updated successfully';
   const message = `\
+${ENGLISH_BELOW}
+
+嗨 ${recipient.firstname} ${recipient.lastname}, 
+
+您已成功更新您的 TaiGer Portal 密碼。
+
+請使用您的新密碼登入 TaiGer Portal： ${ORIGIN} 
+
+${TAIGER_SIGNATURE}
+
+${SPLIT_LINE}
+
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
 You have updated your passwords successfully!
@@ -904,7 +1244,9 @@ Hi ${recipient.firstname} ${recipient.lastname},
 
 ${msg.editor_firstname} ${msg.editor_lastname} has finalized
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} 
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} on ${
+      msg.uploaded_updatedAt
+    } 
 
 for ${msg.student_firstname} ${msg.student_lastname}.
 
@@ -1017,7 +1359,6 @@ module.exports = {
   sendForgotPasswordEmail,
   sendPasswordResetEmail,
   sendAccountActivationConfirmationEmail,
-  sendUploadedGeneralFilesEmail,
   sendUploadedProfileFilesEmail,
   sendUploadedVPDEmail,
   sendAgentUploadedProfileFilesForStudentEmail,

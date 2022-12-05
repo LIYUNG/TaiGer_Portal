@@ -196,10 +196,10 @@ class BaseDocuments extends React.Component {
     let student_arrayidx = this.state.students.findIndex(
       (student) => student._id === student_id
     );
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false
-    }));
+    // this.setState((state) => ({
+    //   ...state,
+    //   isLoaded: false
+    // }));
     uploadforstudent(category, student_id, formData).then(
       (resp) => {
         const { data, success } = resp.data;

@@ -240,89 +240,50 @@ class ButtonSetRejected extends React.Component {
             </a>
           </Col>
         </td>
-        <td>
-          {' '}
-          <Col>
-            <Button
-              variant={acceptStyle}
-              size="sm"
-              type="submit"
-              title="Mark as finshed"
-              disabled={!this.state.isLoaded}
-              onClick={(e) =>
-                this.onUpdateProfileDocStatus(
-                  e,
-                  this.props.k,
-                  this.props.student_id,
-                  'accepted'
-                )
-              }
-            >
-              <AiOutlineCheck />
-            </Button>
-          </Col>
-        </td>
-        {this.props.role === 'Editor' ? (
-          <>
-            <td>
+        {this.props.role === 'Agent' || this.props.role === 'Admin' ? (
+          <td>
+            <Col>
               <Button
+                variant={acceptStyle}
                 size="sm"
                 type="submit"
+                title="Mark as finshed"
                 disabled={!this.state.isLoaded}
-                title="Show Comments"
                 onClick={(e) =>
-                  this.openCommentWindow(this.props.student_id, this.props.k)
+                  this.onUpdateProfileDocStatus(
+                    e,
+                    this.props.k,
+                    this.props.student_id,
+                    'accepted'
+                  )
                 }
               >
-                <AiOutlineComment size={20} />
+                <AiOutlineCheck />
               </Button>
-            </td>
-            <td></td>
-            <td></td>
-          </>
+            </Col>
+          </td>
         ) : (
+          <td></td>
+        )}
+        <td>
+          <Button
+            size="sm"
+            type="submit"
+            variant='light'
+            disabled={!this.state.isLoaded}
+            title="Show Comments"
+            onClick={(e) =>
+              this.openCommentWindow(this.props.student_id, this.props.k)
+            }
+          >
+            <AiOutlineComment size={20} />
+          </Button>
+        </td>
+        <td></td>
+        {this.props.role === 'Agent' ||
+        this.props.role === 'Admin' ||
+        this.props.role === 'Student' ? (
           <>
-            {this.props.role === 'Student' ? (
-              <>
-                <td>
-                  <Button
-                    size="sm"
-                    type="submit"
-                    disabled={!this.state.isLoaded}
-                    title="Show Comments"
-                    onClick={(e) =>
-                      this.openCommentWindow(
-                        this.props.student_id,
-                        this.props.k
-                      )
-                    }
-                  >
-                    <AiOutlineComment size={20} />
-                  </Button>
-                </td>
-                <td></td>
-              </>
-            ) : (
-              <>
-                <td>
-                  <Button
-                    size="sm"
-                    type="submit"
-                    disabled={!this.state.isLoaded}
-                    title="Show Comments"
-                    onClick={(e) =>
-                      this.openCommentWindow(
-                        this.props.student_id,
-                        this.props.k
-                      )
-                    }
-                  >
-                    <AiOutlineComment size={20} />
-                  </Button>
-                </td>
-                <td></td>
-              </>
-            )}
             <td>
               <Col>
                 <Button
@@ -344,6 +305,10 @@ class ButtonSetRejected extends React.Component {
                 </Button>
               </Col>
             </td>
+          </>
+        ) : (
+          <>
+            <td></td>
           </>
         )}
       </tr>

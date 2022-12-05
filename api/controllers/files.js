@@ -212,7 +212,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
-    .populate('agents', 'firstname lastname email')
+    .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId');
   if (!student) {
     logger.error('saveProfileFilePath: Invalid student id!');

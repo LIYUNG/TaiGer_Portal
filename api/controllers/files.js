@@ -231,7 +231,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
     if (user.role === Role.Student) {
       // TODO: add notification for agents
       for (let i = 0; i < student.agents.length; i += 1) {
-        console.log(student.agents[i]._id.toString());
+        // console.log(student.agents[i]._id.toString());
         const agent = await Agent.findById(student.agents[i]._id.toString());
         if (agent.agent_notification) {
           const temp_student =
@@ -306,7 +306,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     // TODO: notify agents
     for (let i = 0; i < student.agents.length; i += 1) {
-      console.log(student.agents[i]._id.toString());
+      // console.log(student.agents[i]._id.toString());
       const agent = await Agent.findById(student.agents[i]._id.toString());
       if (agent.agent_notification) {
         const temp_student =

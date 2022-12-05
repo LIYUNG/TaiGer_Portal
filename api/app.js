@@ -4,7 +4,6 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const helmet = require('helmet');
-
 const { ORIGIN } = require('./config');
 
 require('./middlewares/passport');

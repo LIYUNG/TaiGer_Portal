@@ -34,6 +34,64 @@ const valid_categories = [
   'visa'
 ];
 
+const DocumentationS3GarbageCollector = async () => {
+  const doc = await Documentation.find();
+
+  var params = {
+    Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+    Delimiter: '/',
+    Prefix: 'Documentations/'
+  };
+
+  // s3.listObjects(params, function (err, data) {
+  //   // Handle any error and exit
+  //   if (err) throw err;
+  //   console.log(data);
+  // });
+  const listParamsPublic = {
+    Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+    Delimiter: '/',
+    Prefix: 'Documentations/'
+  };
+  const listedObjectsPublic = await s3
+    .listObjectsV2(listParamsPublic)
+    .promise();
+
+  if (listedObjectsPublic.Contents.length > 0) {
+    const deleteParams = {
+      Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
+    let new_redundant = false;
+    listedObjectsPublic.Contents.forEach(({ Key }) => {
+      for (let i = 0; i < doc.length; i += 1) {
+        let file_name = encodeURIComponent(Key.split('/')[1]);
+        if (doc[i].text.includes(file_name)) {
+          break;
+        }
+
+        if (i === doc.length - 1) {
+          // if until last doc still not found, add the Key to the delete list
+          if (!doc[i].text.includes(file_name)) {
+            console.log(`include: ${file_name}`);
+            deleteParams.Delete.Objects.push({ Key });
+            new_redundant = true;
+          }
+        }
+      }
+      // logger.info('Deleting ', Key);
+    });
+    console.log(deleteParams.Delete.Objects);
+    // TODO: there are something mixed in Documentations/ folder:
+    // 1. documentation
+    if (new_redundant) {
+      await s3.deleteObjects(deleteParams).promise();
+    }
+
+    // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
+  }
+};
+
 const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
   const { user } = req;
   const fields = _.omit(req.body, '_id');
@@ -262,7 +320,10 @@ const getDocFile = asyncHandler(async (req, res) => {
 });
 
 const uploadDocDocs = asyncHandler(async (req, res) => {
-  let imageurl = new URL(`/api/docs/file/${req.file.key}`, API_ORIGIN).href;
+  let imageurl = new URL(
+    `/api/docs/file/${encodeURIComponent(req.file.key)}`,
+    API_ORIGIN
+  ).href;
   imageurl = imageurl.replace(/\\/g, '/');
   let extname = path.extname(req.file.key);
   extname = extname.replace('.', '');
@@ -313,6 +374,7 @@ const deleteInternalDocumentation = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  DocumentationS3GarbageCollector,
   updateInternalDocumentationPage,
   getInternalDocumentationsPage,
   updateDocumentationPage,

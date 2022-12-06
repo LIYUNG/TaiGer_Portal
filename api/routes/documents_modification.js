@@ -27,6 +27,7 @@ const {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  getMessageImageDownload,
   getMessageFileDownload,
   SetStatusMessagesThread,
   deleteGeneralMessagesThread,
@@ -88,7 +89,16 @@ router
     MessagesThreadUpload,
     postMessages
   );
-
+// TODO: get image in thread
+router
+  .route('/image/:messagesThreadId/:studentId/:file_name')
+  .get(
+    filter_archiv_user,
+    postMessagesImageRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
+    getMessageImageDownload
+  );
 router
   .route('/image/:messagesThreadId/:studentId')
   .post(
@@ -122,7 +132,7 @@ router
   );
 
 // WARNING: strict ratelimiter for S3 file download
-// Multitenant-filter in call-back function
+// TODO: Multitenant-filter in call-back function, maybe add studentId both in frontend and backend
 router
   .route('/:messagesThreadId/:messageId/:file_key')
   .get(

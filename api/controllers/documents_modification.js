@@ -4,7 +4,7 @@ const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
-const { AWS_S3_PUBLIC_BUCKET } = require('../config');
+const { AWS_S3_PUBLIC_BUCKET, API_ORIGIN } = require('../config');
 const { Documentthread } = require('../models/Documentthread');
 const {
   sendNewApplicationMessageInThreadEmail,
@@ -65,7 +65,7 @@ const ThreadS3GarbageCollector = async () => {
 
           for (let k = 0; k < message_a[i].file.length; k += 1) {
             if (message_a[i].file[k].path.includes(file_name)) {
-              break;// TODO bug here! not really break the outer loop
+              break; // TODO bug here! not really break the outer loop
             }
           }
 
@@ -424,9 +424,10 @@ const postImageInThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId }
   } = req;
+  console.log('TEST: imageurl');
   let imageurl = new URL(
-    `/${studentId}/${messagesThreadId}/${req.file.key}`,
-    AWS_S3_PUBLIC_BUCKET
+    `/api/document-threads/image/${messagesThreadId}/${studentId}/${req.file.key}`, // TODO: not the match API get file!!!!
+    API_ORIGIN
   ).href;
   imageurl = imageurl.replace(/\\/g, '/');
   return res.send({ success: true, data: imageurl });
@@ -675,6 +676,45 @@ const postMessages = asyncHandler(async (req, res) => {
       );
     }
   }
+});
+
+// TODO: Download image in a message in a thread
+const getMessageImageDownload = asyncHandler(async (req, res) => {
+  const {
+    params: { messagesThreadId, studentId, file_name }
+  } = req;
+
+  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: file_name,
+    Bucket: directory
+  };
+  // TODO: cache download files docx, files.
+  // const value = myCache.get(req.originalUrl);
+  // if (value === undefined) {
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      res.attachment(file_name);
+      const fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        logger.error(error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
+  // } else {
+  //   console.log('cache hit');
+  //   res.attachment(file_name);
+  //   return res.end(value);
+  // }
 });
 
 // Download file in a message in a thread
@@ -1134,6 +1174,7 @@ module.exports = {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  getMessageImageDownload,
   getMessageFileDownload,
   postImageInThread,
   postMessages,

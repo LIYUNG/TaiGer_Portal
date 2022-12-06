@@ -31,6 +31,75 @@ const s3 = new aws.S3({
   secretAccessKey: AWS_S3_ACCESS_KEY
 });
 
+const ThreadS3GarbageCollector = async () => {
+  const doc_threads = await Documentthread.find();
+  for (let j = 0; j < doc_threads.length; j += 1) {
+    const thread_id = doc_threads[j]._id.toString();
+    const student_id = doc_threads[j].student_id.toString();
+    const message_a = doc_threads[j].messages;
+    let directory = path.join(student_id, thread_id);
+    logger.info('Trying to delete message thread and folder');
+    directory = directory.replace(/\\/g, '/');
+
+    const listParamsPublic = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delimiter: '/',
+      Prefix: `${directory}/`
+    };
+    const listedObjectsPublic = await s3
+      .listObjectsV2(listParamsPublic)
+      .promise();
+    // console.log(listedObjectsPublic.Contents);
+    if (listedObjectsPublic.Contents.length > 0) {
+      const deleteParams = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Delete: { Objects: [] }
+      };
+      let new_redundant = false;
+      listedObjectsPublic.Contents.forEach(({ Key }) => {
+        for (let i = 0; i < message_a.length; i += 1) {
+          let file_name = encodeURIComponent(Key.split('/')[2]);
+          if (message_a[i].message.includes(file_name)) {
+            break;
+          }
+
+          for (let k = 0; k < message_a[i].file.length; k += 1) {
+            if (message_a[i].file[k].path.includes(file_name)) {
+              break;// TODO bug here! not really break the outer loop
+            }
+          }
+
+          if (i === message_a.length - 1) {
+            // if until last message_a still not found, add the Key to the delete list
+            if (!message_a[i].message.includes(file_name)) {
+              for (let k = 0; k < message_a[i].file.length; k += 1) {
+                if (message_a[i].file[k].path.includes(file_name)) {
+                  break;
+                }
+
+                if (k === message_a[i].file[k].length - 1) {
+                  console.log(`include: ${file_name}`);
+                  deleteParams.Delete.Objects.push({ Key });
+                  new_redundant = true;
+                }
+              }
+            }
+          }
+        }
+        // logger.info('Deleting ', Key);
+      });
+      // console.log(deleteParams.Delete.Objects);
+      // TODO: there are something mixed in Documentations/ folder:
+      // 1. documentation
+      // if (new_redundant) {
+      //   await s3.deleteObjects(deleteParams).promise();
+      // }
+
+      // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
+    }
+  }
+};
+
 const getCVMLRLOverview = asyncHandler(async (req, res) => {
   const {
     user
@@ -959,7 +1028,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   }
   // Delete images in Public S3 bucket. (student folder)
   const listParamsPublic = {
-    Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+    Bucket: AWS_S3_BUCKET_NAME,
     Prefix: directory
   };
   const listedObjectsPublic = await s3
@@ -968,7 +1037,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
 
   if (listedObjectsPublic.Contents.length > 0) {
     const deleteParams = {
-      Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+      Bucket: AWS_S3_BUCKET_NAME,
       Delete: { Objects: [] }
     };
 
@@ -1060,6 +1129,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  ThreadS3GarbageCollector,
   getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,

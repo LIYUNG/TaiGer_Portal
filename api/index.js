@@ -13,7 +13,9 @@ const logger = require('./services/logger');
 const {
   DocumentationS3GarbageCollector
 } = require('./controllers/documentations');
-
+const {
+  ThreadS3GarbageCollector
+} = require('./controllers/documents_modification');
 var https = require('https');
 var fs = require('fs');
 
@@ -58,10 +60,7 @@ const launch = async () => {
   );
 
   // TODO every 1. of month clean up the redundant screenshots,for thg thread.
-  // const job2 = schedule.scheduleJob(
-  //   '* * * 1 * *',
-  //   DocumentationS3GarbageCollector
-  // );
+  const job2 = schedule.scheduleJob('1 * * * * *', ThreadS3GarbageCollector);
 
   https
     .createServer(

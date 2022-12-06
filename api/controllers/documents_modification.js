@@ -33,12 +33,17 @@ const s3 = new aws.S3({
 
 const ThreadS3GarbageCollector = async () => {
   const doc_threads = await Documentthread.find();
+
+  const deleteParams = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Delete: { Objects: [] }
+  };
+  logger.info('Trying to delete message thread and folder');
   for (let j = 0; j < doc_threads.length; j += 1) {
     const thread_id = doc_threads[j]._id.toString();
     const student_id = doc_threads[j].student_id.toString();
     const message_a = doc_threads[j].messages;
-    let directory = path.join(student_id, thread_id);
-    logger.info('Trying to delete message thread and folder');
+    let directory = path.join(student_id, thread_id, 'img');
     directory = directory.replace(/\\/g, '/');
 
     const listParamsPublic = {
@@ -49,16 +54,16 @@ const ThreadS3GarbageCollector = async () => {
     const listedObjectsPublic = await s3
       .listObjectsV2(listParamsPublic)
       .promise();
-    // console.log(listedObjectsPublic.Contents);
+
     if (listedObjectsPublic.Contents.length > 0) {
-      const deleteParams = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delete: { Objects: [] }
-      };
-      let new_redundant = false;
       listedObjectsPublic.Contents.forEach(({ Key }) => {
+        if (message_a.length === 0) {
+          let file_name = encodeURIComponent(Key.split('/')[3]);
+          // console.log(`include: ${file_name}`);
+          deleteParams.Delete.Objects.push({ Key });
+        }
         for (let i = 0; i < message_a.length; i += 1) {
-          let file_name = encodeURIComponent(Key.split('/')[2]);
+          let file_name = encodeURIComponent(Key.split('/')[3]);
           if (message_a[i].message.includes(file_name)) {
             break;
           }
@@ -72,31 +77,20 @@ const ThreadS3GarbageCollector = async () => {
           if (i === message_a.length - 1) {
             // if until last message_a still not found, add the Key to the delete list
             if (!message_a[i].message.includes(file_name)) {
-              for (let k = 0; k < message_a[i].file.length; k += 1) {
-                if (message_a[i].file[k].path.includes(file_name)) {
-                  break;
-                }
-
-                if (k === message_a[i].file[k].length - 1) {
-                  console.log(`include: ${file_name}`);
-                  deleteParams.Delete.Objects.push({ Key });
-                  new_redundant = true;
-                }
-              }
+              // console.log(`include: ${file_name}`);
+              deleteParams.Delete.Objects.push({ Key });
             }
           }
         }
-        // logger.info('Deleting ', Key);
       });
-      // console.log(deleteParams.Delete.Objects);
-      // TODO: there are something mixed in Documentations/ folder:
-      // 1. documentation
-      // if (new_redundant) {
-      //   await s3.deleteObjects(deleteParams).promise();
-      // }
-
-      // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
     }
+  }
+  if (deleteParams.Delete.Objects.length > 0) {
+    await s3.deleteObjects(deleteParams).promise();
+    console.log('Deleted redundant images');
+    console.log(deleteParams.Delete.Objects);
+  } else {
+    console.log('Nothing to be deleted.');
   }
 };
 
@@ -684,7 +678,12 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
     params: { messagesThreadId, studentId, file_name }
   } = req;
 
-  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
+  let directory = path.join(
+    AWS_S3_BUCKET_NAME,
+    studentId,
+    messagesThreadId,
+    'img'
+  );
   directory = directory.replace(/\\/g, '/');
   const options = {
     Key: file_name,

@@ -34,6 +34,7 @@ module.exports = {
   SMTP_PASSWORD: env('SMTP_PASSWORD', 'KHJ5yg3xpSCgRDHCjd'),
   BASE_URL: env('BASE_URL', 'http://localhost:3000'),
   UPLOAD_PATH: env('UPLOAD_PATH'),
+  CLEAN_UP_SCHEDULE: env('CLEAN_UP_SCHEDULE', '* * * 1 * *'),
   AWS_S3_PUBLIC_BUCKET: env('AWS_S3_PUBLIC_BUCKET'),
   AWS_S3_ACCESS_KEY_ID: env('AWS_S3_ACCESS_KEY_ID', ''),
   AWS_S3_ACCESS_KEY: env('AWS_S3_ACCESS_KEY', ''),

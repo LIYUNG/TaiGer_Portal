@@ -415,7 +415,12 @@ const storage_messagesthread_image_s3 = multerS3({
   s3,
   bucket: function (req, file, cb) {
     const { messagesThreadId, studentId } = req.params;
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
+    let directory = path.join(
+      AWS_S3_BUCKET_NAME,
+      studentId,
+      messagesThreadId,
+      'img'
+    );
     directory = directory.replace(/\\/g, '/');
     cb(null, directory);
   },

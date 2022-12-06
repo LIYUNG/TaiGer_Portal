@@ -1,4 +1,6 @@
 const schedule = require('node-schedule');
+const https = require('https');
+const fs = require('fs');
 const { app } = require('./app');
 const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {
@@ -7,6 +9,7 @@ const {
   HTTPS_CERT,
   HTTPS_CA,
   HTTPS_PORT,
+  CLEAN_UP_SCHEDULE,
   MONGODB_URI
 } = require('./config');
 const logger = require('./services/logger');
@@ -16,8 +19,6 @@ const {
 const {
   ThreadS3GarbageCollector
 } = require('./controllers/documents_modification');
-var https = require('https');
-var fs = require('fs');
 
 process.on('SIGINT', () => {
   disconnectFromDatabase(() => {
@@ -42,6 +43,7 @@ const launch = async () => {
   logger.info(`HTTPS_CERT: ${HTTPS_CERT}`);
   logger.info(`HTTPS_KEY: ${HTTPS_KEY}`);
   // setInterval(foo, 1000 * 100);
+
   //   *    *    *    *    *    *
   //   ┬    ┬    ┬    ┬    ┬    ┬
   //   │    │    │    │    │    │
@@ -54,13 +56,14 @@ const launch = async () => {
   //  ex:  '42 * * * *',: Execute a cron job when the minute is 42 (e.g. 19:42, 20:42, etc.).
 
   // every 1. of month clean up the documents screenshots, redundant attachment.
+  console.log(CLEAN_UP_SCHEDULE);
   const job = schedule.scheduleJob(
-    '* * * 1 * *',
+    CLEAN_UP_SCHEDULE,
     DocumentationS3GarbageCollector
   );
 
   // TODO every 1. of month clean up the redundant screenshots,for thg thread.
-  const job2 = schedule.scheduleJob('1 * * * * *', ThreadS3GarbageCollector);
+  const job2 = schedule.scheduleJob(CLEAN_UP_SCHEDULE, ThreadS3GarbageCollector);
 
   https
     .createServer(

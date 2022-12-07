@@ -44,10 +44,6 @@ class ButtonSetMissing extends React.Component {
       isLoaded: false
     }));
     this.props.handleGeneralDocSubmit(e, k, student_id);
-    this.setState((state) => ({
-      ...state,
-      isLoaded: true
-    }));
   };
 
   onUpdateProfileDocStatus = (e, category, student_id, status) => {
@@ -134,64 +130,59 @@ class ButtonSetMissing extends React.Component {
         {this.props.role === 'Student' ||
         this.props.role === 'Admin' ||
         this.props.role === 'Agent' ? (
-          <>
-            <td>
-              {!this.state.isLoaded ? (
-                <div>
-                  <Spinner animation="border" role="status" variant="light">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
-              ) : (
-                <Form.Group controlId={`${this.props.k}`}>
-                  <Form.Label>
-                    <IoMdCloudUpload color={'white'} size={32} />
-                  </Form.Label>
-                  <Form.Control
-                    hidden
-                    type="file"
-                    onChange={(e) =>
-                      this.handleGeneralDocSubmit(
-                        e,
-                        this.props.k,
-                        this.props.student_id
-                      )
-                    }
-                  />
-                </Form.Group>
-              )}
-            </td>
-            <td></td>
-            <td></td>
-          </>
+          <td>
+            {!this.state.isLoaded ? (
+              <div>
+                <Spinner animation="border" role="status" variant="light">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            ) : (
+              <Form.Group controlId={`${this.props.k}`}>
+                <Form.Label>
+                  <IoMdCloudUpload color={'white'} size={32} />
+                </Form.Label>
+                <Form.Control
+                  hidden
+                  type="file"
+                  onChange={(e) =>
+                    this.handleGeneralDocSubmit(
+                      e,
+                      this.props.k,
+                      this.props.student_id
+                    )
+                  }
+                />
+              </Form.Group>
+            )}
+          </td>
         ) : (
-          <>
-            <td></td>
-            <td></td>
-            <td>
-              {this.props.role === 'Admin' ||
-                (this.props.role === 'Agent' && (
-                  <Col md>
-                    <Form
-                      onSubmit={(e) =>
-                        this.onUpdateProfileDocStatus(
-                          e,
-                          this.props.k,
-                          this.props.student_id,
-                          'notneeded'
-                        )
-                      }
-                    >
-                      <Form.Group controlId={`${this.props.k}`}>
-                        <Button variant={'secondary'} size="sm" type="submit">
-                          Set notneeded
-                        </Button>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                ))}
-            </td>
-          </>
+          <td></td>
+        )}
+        <td></td>
+        {this.props.role === 'Admin' || this.props.role === 'Agent' ? (
+          <td>
+            <Col md>
+              <Form
+                onSubmit={(e) =>
+                  this.onUpdateProfileDocStatus(
+                    e,
+                    this.props.k,
+                    this.props.student_id,
+                    'notneeded'
+                  )
+                }
+              >
+                <Form.Group controlId={`${this.props.k}`}>
+                  <Button variant={'secondary'} size="sm" type="submit">
+                    Set notneeded
+                  </Button>
+                </Form.Group>
+              </Form>
+            </Col>
+          </td>
+        ) : (
+          <td></td>
         )}
 
         <td></td>

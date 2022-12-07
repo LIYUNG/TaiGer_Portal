@@ -1,24 +1,167 @@
 import React from 'react';
-import { Row, Col, Table, Card, Collapse } from 'react-bootstrap';
+import { Row, Col, Table, Card, Modal } from 'react-bootstrap';
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
 import ButtonSetRejected from './ButtonSetRejected';
 import ButtonSetNotNeeded from './ButtonSetNotNeeded';
 import ButtonSetMissing from './ButtonSetMissing';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
+
+import {
+  uploadforstudent,
+  updateProfileDocumentStatus,
+  deleteFile,
+  getStudentsAndDocLinks
+} from '../../api';
 
 class BaseDocument_StudentView extends React.Component {
   state = {
     student: this.props.student,
     student_id: '',
+    isLoaded: this.props.isLoaded,
     docName: '',
-    file: ''
+    file: '',
+    deleteFileWarningModel: false,
+    res_status: 0,
+    res_modal_status: ''
+  };
+
+  onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
+    updateProfileDocumentStatus(category, student_id, status, feedback).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            student: data,
+            success,
+            isLoaded: true,
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: redesign, modal ist better!
+          const { message } = resp.data;
+          this.setState({
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      }
+    );
+  };
+
+  onDeleteFilefromstudent = (category, student_id) => {
+    // e.preventDefault();
+    let student_new = { ...this.state.student };
+
+    let idx = student_new.profile.findIndex((doc) => doc.name === category);
+    deleteFile(category, student_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          student_new.profile[idx] = data;
+          this.setState((state) => ({
+            ...state,
+            student_id: '',
+            category: '',
+            isLoaded: true,
+            student: student_new,
+            success: success,
+            deleteFileWarningModel: false,
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: redesign, modal ist better!
+          const { message } = resp.data;
+          this.setState({
+            isLoaded: true,
+            deleteFileWarningModel: false,
+            res_modal_message: message,
+            res_modal_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error: true
+        });
+      }
+    );
+  };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   handleGeneralDocSubmit = (e, studentId, fileCategory) => {
     e.preventDefault();
-    this.props.SubmitGeneralFile(e, studentId, fileCategory);
+    this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
   };
+
+  onSubmitGeneralFile = (e, NewFile, category, student_id) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('file', NewFile);
+
+    // this.setState((state) => ({
+    //   ...state,
+    //   isLoaded: false
+    // }));
+    uploadforstudent(category, student_id, formData).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            student: data, // resp.data = {success: true, data:{...}}
+            success,
+            category: '',
+            isLoaded: true,
+            file: '',
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          this.setState({
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      }
+    );
+  };
+
   render() {
+    const {
+      res_status,
+      base_docs_link,
+      isLoaded,
+      res_modal_status,
+      res_modal_message
+    } = this.state;
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_wtih_doc_link_list);
     let object_init = {};
@@ -38,38 +181,38 @@ class BaseDocument_StudentView extends React.Component {
           this.props.base_docs_link[i].link;
       }
     }
-    if (this.props.student.profile) {
-      for (let i = 0; i < this.props.student.profile.length; i++) {
-        let document_split = this.props.student.profile[i].path.replace(
+    if (this.state.student.profile) {
+      for (let i = 0; i < this.state.student.profile.length; i++) {
+        let document_split = this.state.student.profile[i].path.replace(
           /\\/g,
           '/'
         );
-        if (this.props.student.profile[i].status === 'uploaded') {
-          object_init[this.props.student.profile[i].name].status = 'uploaded';
-          object_init[this.props.student.profile[i].name].path =
+        if (this.state.student.profile[i].status === 'uploaded') {
+          object_init[this.state.student.profile[i].name].status = 'uploaded';
+          object_init[this.state.student.profile[i].name].path =
             document_split.split('/')[1];
-        } else if (this.props.student.profile[i].status === 'accepted') {
-          object_init[this.props.student.profile[i].name].status = 'accepted';
-          object_init[this.props.student.profile[i].name].path =
+        } else if (this.state.student.profile[i].status === 'accepted') {
+          object_init[this.state.student.profile[i].name].status = 'accepted';
+          object_init[this.state.student.profile[i].name].path =
             document_split.split('/')[1];
-        } else if (this.props.student.profile[i].status === 'rejected') {
-          object_init[this.props.student.profile[i].name].status = 'rejected';
-          object_init[this.props.student.profile[i].name].path =
+        } else if (this.state.student.profile[i].status === 'rejected') {
+          object_init[this.state.student.profile[i].name].status = 'rejected';
+          object_init[this.state.student.profile[i].name].path =
             document_split.split('/')[1];
-        } else if (this.props.student.profile[i].status === 'notneeded') {
-          object_init[this.props.student.profile[i].name].status = 'notneeded';
-        } else if (this.props.student.profile[i].status === 'missing') {
-          object_init[this.props.student.profile[i].name].status = 'missing';
+        } else if (this.state.student.profile[i].status === 'notneeded') {
+          object_init[this.state.student.profile[i].name].status = 'notneeded';
+        } else if (this.state.student.profile[i].status === 'missing') {
+          object_init[this.state.student.profile[i].name].status = 'missing';
         }
-        object_message[this.props.student.profile[i].name] = this.props.student
+        object_message[this.state.student.profile[i].name] = this.state.student
           .profile[i].feedback
-          ? this.props.student.profile[i].feedback
+          ? this.state.student.profile[i].feedback
           : '';
-        object_date_init[this.props.student.profile[i].name] = new Date(
-          this.props.student.profile[i].updatedAt
+        object_date_init[this.state.student.profile[i].name] = new Date(
+          this.state.student.profile[i].updatedAt
         ).toLocaleDateString();
-        object_time_init[this.props.student.profile[i].name] = new Date(
-          this.props.student.profile[i].updatedAt
+        object_time_init[this.state.student.profile[i].name] = new Date(
+          this.state.student.profile[i].updatedAt
         ).toLocaleTimeString();
       }
     } else {
@@ -82,16 +225,14 @@ class BaseDocument_StudentView extends React.Component {
           role={this.props.role}
           link={object_init[k].link}
           path={object_init[k].path}
-          isLoaded={this.props.isLoaded}
+          isLoaded={this.state.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
-          student_id={this.props.student._id}
-          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={
-            this.props.onUpdateProfileFilefromstudent
-          }
+          student_id={this.state.student._id}
+          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
         />
       ) : object_init[k].status === 'accepted' ? (
         <ButtonSetAccepted
@@ -99,17 +240,15 @@ class BaseDocument_StudentView extends React.Component {
           role={this.props.role}
           link={object_init[k].link}
           path={object_init[k].path}
-          isLoaded={this.props.isLoaded}
+          isLoaded={this.state.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
-          student_id={this.props.student._id}
-          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={
-            this.props.onUpdateProfileFilefromstudent
-          }
-          deleteFileWarningModel={this.props.deleteFileWarningModel}
+          student_id={this.state.student._id}
+          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
+          deleteFileWarningModel={this.state.deleteFileWarningModel}
         />
       ) : object_init[k].status === 'rejected' ? (
         <ButtonSetRejected
@@ -117,18 +256,16 @@ class BaseDocument_StudentView extends React.Component {
           role={this.props.role}
           link={object_init[k].link}
           path={object_init[k].path}
-          isLoaded={this.props.isLoaded}
+          isLoaded={this.state.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           message={object_message[k]}
-          student_id={this.props.student._id}
-          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={
-            this.props.onUpdateProfileFilefromstudent
-          }
-          deleteFileWarningModel={this.props.deleteFileWarningModel}
+          student_id={this.state.student._id}
+          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
+          deleteFileWarningModel={this.state.deleteFileWarningModel}
         />
       ) : object_init[k].status === 'notneeded' ? (
         (this.props.role === 'Admin' || this.props.role === 'Agent') && (
@@ -136,17 +273,15 @@ class BaseDocument_StudentView extends React.Component {
             key={i + 1}
             role={this.props.role}
             link={object_init[k].link}
-            isLoaded={this.props.isLoaded}
+            isLoaded={this.state.isLoaded}
             docName={value2[i]}
             date={object_date_init[k]}
             time={object_time_init[k]}
             k={k}
-            student_id={this.props.student._id}
-            onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={
-              this.props.onUpdateProfileFilefromstudent
-            }
-            deleteFileWarningModel={this.props.deleteFileWarningModel}
+            student_id={this.state.student._id}
+            onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
+            deleteFileWarningModel={this.state.deleteFileWarningModel}
           />
         )
       ) : (
@@ -154,17 +289,15 @@ class BaseDocument_StudentView extends React.Component {
           key={i + 1}
           role={this.props.role}
           link={object_init[k].link}
-          isLoaded={this.props.isLoaded}
+          isLoaded={this.state.isLoaded}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           message={object_message[k]}
-          student_id={this.props.student._id}
-          onDeleteFilefromstudent={this.props.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={
-            this.props.onUpdateProfileFilefromstudent
-          }
+          student_id={this.state.student._id}
+          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
+          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           handleGeneralDocSubmit={this.handleGeneralDocSubmit}
         />
       )
@@ -211,6 +344,13 @@ class BaseDocument_StudentView extends React.Component {
             <Col className="md-4">{this.props.SYMBOL_EXPLANATION}</Col>
           </Row>
         </Card>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
       </>
     );
   }

@@ -116,7 +116,7 @@ class NavCollapse extends Component {
 
       let navLinkClass = ['nav-link'];
 
-      let navItemClass = ['nav-item', 'pcoded-hasmenu','text-light'];
+      let navItemClass = ['nav-item', 'pcoded-hasmenu', 'text-light'];
       const openIndex = isOpen.findIndex((id) => id === this.props.collapse.id);
       if (openIndex > -1) {
         navItemClass = [...navItemClass, 'active'];

@@ -13,6 +13,22 @@ const CheckListStatus = {
   NotNeeded: 'notneeded'
 };
 
+const getNumberOfDays = (start, end) => {
+  const date1 = new Date(start);
+  const date2 = new Date(end);
+
+  // One day in milliseconds
+  const oneDay = 1000 * 60 * 60 * 24;
+
+  // Calculating the time difference between two dates
+  const diffInTime = date2.getTime() - date1.getTime();
+
+  // Calculating the no. of days between two dates
+  const diffInDays = Math.round(diffInTime / oneDay);
+
+  return diffInDays.toString();
+};
+
 const TaskStatus = {
   Finished: 'finished',
   Locked: 'locked',
@@ -44,5 +60,6 @@ module.exports = {
   CheckListStatus,
   TaskStatus,
   RLs_CONSTANT,
-  profile_name_list
+  profile_name_list,
+  getNumberOfDays
 };

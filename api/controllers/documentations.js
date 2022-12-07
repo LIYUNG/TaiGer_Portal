@@ -10,6 +10,7 @@ const Internaldoc = require('../models/Internaldoc');
 const Docspage = require('../models/Docspage');
 const { myCache } = require('../cache/node-cache');
 const logger = require('../services/logger');
+const { getNumberOfDays } = require('../constants');
 const {
   API_ORIGIN,
   AWS_S3_ACCESS_KEY_ID,
@@ -57,15 +58,16 @@ const DocumentationS3GarbageCollector = async () => {
     .listObjectsV2(listParamsPublic)
     .promise();
 
+  const temp_date = new Date();
   if (listedObjectsPublic.Contents.length > 0) {
     const deleteParams = {
       Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
       Delete: { Objects: [] }
     };
     let new_redundant = false;
-    listedObjectsPublic.Contents.forEach(({ Key }) => {
+    listedObjectsPublic.Contents.forEach((Obj) => {
       for (let i = 0; i < doc.length; i += 1) {
-        let file_name = encodeURIComponent(Key.split('/')[1]);
+        const file_name = encodeURIComponent(Obj.Key.split('/')[1]);
         if (doc[i].text.includes(file_name)) {
           break;
         }
@@ -73,19 +75,24 @@ const DocumentationS3GarbageCollector = async () => {
         if (i === doc.length - 1) {
           // if until last doc still not found, add the Key to the delete list
           if (!doc[i].text.includes(file_name)) {
-            console.log(`include: ${file_name}`);
-            deleteParams.Delete.Objects.push({ Key });
-            new_redundant = true;
+            // Delete only older than 2 week
+            if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+              deleteParams.Delete.Objects.push({ Key: Obj.Key });
+              new_redundant = true;
+            }
           }
         }
       }
       // logger.info('Deleting ', Key);
     });
-    console.log(deleteParams.Delete.Objects);
     // TODO: there are something mixed in Documentations/ folder:
     // 1. documentation
-    if (new_redundant) {
+    if (deleteParams.Delete.Objects.length > 0) {
       await s3.deleteObjects(deleteParams).promise();
+      console.log('Deleted redundant files and image for documentation.');
+      console.log(deleteParams.Delete.Objects);
+    } else {
+      console.log('Nothing to be deleted for documentation.');
     }
 
     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);

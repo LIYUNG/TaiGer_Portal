@@ -18,6 +18,7 @@ const {
   // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
+const { getNumberOfDays } = require('../constants');
 
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -54,16 +55,19 @@ const ThreadS3GarbageCollector = async () => {
     const listedObjectsPublic = await s3
       .listObjectsV2(listParamsPublic)
       .promise();
-
     if (listedObjectsPublic.Contents.length > 0) {
-      listedObjectsPublic.Contents.forEach(({ Key }) => {
+      // console.log(listedObjectsPublic);
+      listedObjectsPublic.Contents.forEach((Obj) => {
+        // console.log(Obj.LastModified);
+        const temp_date = new Date();
+        // console.log(getNumberOfDays(Obj.LastModified, temp_date));
         if (message_a.length === 0) {
-          let file_name = encodeURIComponent(Key.split('/')[3]);
+          let file_name = encodeURIComponent(Obj.Key.split('/')[3]);
           // console.log(`include: ${file_name}`);
-          deleteParams.Delete.Objects.push({ Key });
+          deleteParams.Delete.Objects.push({ Key: Obj.Key });
         }
         for (let i = 0; i < message_a.length; i += 1) {
-          let file_name = encodeURIComponent(Key.split('/')[3]);
+          let file_name = encodeURIComponent(Obj.Key.split('/')[3]);
           if (message_a[i].message.includes(file_name)) {
             break;
           }
@@ -78,7 +82,11 @@ const ThreadS3GarbageCollector = async () => {
             // if until last message_a still not found, add the Key to the delete list
             if (!message_a[i].message.includes(file_name)) {
               // console.log(`include: ${file_name}`);
-              deleteParams.Delete.Objects.push({ Key });
+              // console.log(getNumberOfDays(Obj.LastModified, temp_date));
+              // Delete only older than 2 week
+              if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+                deleteParams.Delete.Objects.push({ Key: Obj.Key });
+              }
             }
           }
         }
@@ -87,10 +95,10 @@ const ThreadS3GarbageCollector = async () => {
   }
   if (deleteParams.Delete.Objects.length > 0) {
     await s3.deleteObjects(deleteParams).promise();
-    console.log('Deleted redundant images');
+    console.log('Deleted redundant images for threads.');
     console.log(deleteParams.Delete.Objects);
   } else {
-    console.log('Nothing to be deleted.');
+    console.log('Nothing to be deleted for threads.');
   }
 };
 

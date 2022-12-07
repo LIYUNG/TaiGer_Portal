@@ -92,7 +92,6 @@ class BaseDocument_StudentView extends React.Component {
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent
           }
-          SubmitGeneralFile={this.props.SubmitGeneralFile}
         />
       ) : object_init[k].status === 'accepted' ? (
         <ButtonSetAccepted
@@ -110,7 +109,6 @@ class BaseDocument_StudentView extends React.Component {
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent
           }
-          SubmitGeneralFile={this.props.SubmitGeneralFile}
           deleteFileWarningModel={this.props.deleteFileWarningModel}
         />
       ) : object_init[k].status === 'rejected' ? (
@@ -130,7 +128,6 @@ class BaseDocument_StudentView extends React.Component {
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent
           }
-          SubmitGeneralFile={this.props.SubmitGeneralFile}
           deleteFileWarningModel={this.props.deleteFileWarningModel}
         />
       ) : object_init[k].status === 'notneeded' ? (
@@ -149,7 +146,6 @@ class BaseDocument_StudentView extends React.Component {
             onUpdateProfileFilefromstudent={
               this.props.onUpdateProfileFilefromstudent
             }
-            SubmitGeneralFile={this.props.SubmitGeneralFile}
             deleteFileWarningModel={this.props.deleteFileWarningModel}
           />
         )
@@ -169,7 +165,6 @@ class BaseDocument_StudentView extends React.Component {
           onUpdateProfileFilefromstudent={
             this.props.onUpdateProfileFilefromstudent
           }
-          SubmitGeneralFile={this.props.SubmitGeneralFile}
           handleGeneralDocSubmit={this.handleGeneralDocSubmit}
         />
       )

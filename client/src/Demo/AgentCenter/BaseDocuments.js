@@ -10,6 +10,7 @@ import {
   spinner_style,
   spinner_style2
 } from '../Utils/contants';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ErrorPage from '../Utils/ErrorPage';
 
 import {
@@ -39,7 +40,8 @@ class BaseDocuments extends React.Component {
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
         ? new Array(this.props.user.students.length).fill().map((x, i) => i)
         : [0], // to expand all]
-    res_status: 0
+    res_status: 0,
+    res_modal_status: ''
   };
 
   componentDidMount() {
@@ -79,6 +81,14 @@ class BaseDocuments extends React.Component {
     this.setState((state) => ({
       ...state,
       accordionKeys: accordionKeys
+    }));
+  };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
     }));
   };
 
@@ -123,13 +133,15 @@ class BaseDocuments extends React.Component {
             students: students,
             success,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
           // TODO: redesign, modal ist better!
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -166,13 +178,16 @@ class BaseDocuments extends React.Component {
             students: students,
             success: success,
             deleteFileWarningModel: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
           // TODO: redesign, modal ist better!
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            deleteFileWarningModel: false,
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -214,13 +229,15 @@ class BaseDocuments extends React.Component {
             category: '',
             isLoaded: true,
             file: '',
-            res_status: status
+            res_modal_status: status
           }));
         } else {
           // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -234,7 +251,13 @@ class BaseDocuments extends React.Component {
   };
 
   render() {
-    const { res_status, base_docs_link, isLoaded } = this.state;
+    const {
+      res_status,
+      base_docs_link,
+      isLoaded,
+      res_modal_status,
+      res_modal_message
+    } = this.state;
 
     if (!isLoaded && !this.state.students) {
       return (
@@ -323,6 +346,13 @@ class BaseDocuments extends React.Component {
             </Card>
           ) : (
             <>{student_profile_student_view}</>
+          )}
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
           )}
         </Row>
       </Aux>

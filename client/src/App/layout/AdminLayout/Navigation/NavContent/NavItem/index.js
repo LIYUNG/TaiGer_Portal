@@ -133,11 +133,7 @@ class NavItem extends Component {
 
       if (this.props.item.external) {
         subContent = (
-          <a
-            href={this.props.item.url}
-            target="_blank"
-            rel="noopener"
-          >
+          <a href={this.props.item.url} target="_blank" rel="noopener">
             <NavIcon items={this.props.item} />
             {itemTitle}
             <NavBadge layout={this.props.layout} items={this.props.item} />
@@ -147,7 +143,7 @@ class NavItem extends Component {
         subContent = (
           <NavLink
             to={this.props.item.url}
-            className="nav-link"
+            className="nav-link my-0 mx-0"
             exact={true}
             target={itemTarget}
           >

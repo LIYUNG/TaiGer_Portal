@@ -44,6 +44,10 @@ class ButtonSetMissing extends React.Component {
       isLoaded: false
     }));
     this.props.handleGeneralDocSubmit(e, k, student_id);
+    this.setState((state) => ({
+      ...state,
+      isLoaded: true
+    }));
   };
 
   onUpdateProfileDocStatus = (e, category, student_id, status) => {

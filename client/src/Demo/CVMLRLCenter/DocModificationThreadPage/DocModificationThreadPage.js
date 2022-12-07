@@ -6,6 +6,7 @@ import Aux from '../../../hoc/_Aux';
 import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
+import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style } from '../../Utils/contants';
 
 import {
@@ -35,7 +36,9 @@ class DocModificationThreadPage extends Component {
     expand: true,
     SetAsFinalFileModel: false,
     accordionKeys: [0], // to expand all]
-    res_status: 0
+    res_status: 0,
+    res_modal_status: 0,
+    res_modal_message: ''
   };
   componentDidMount() {
     getMessagThread(this.props.match.params.documentsthreadId).then(
@@ -135,6 +138,14 @@ class DocModificationThreadPage extends Component {
     this.deleteArticle(articleId);
   };
 
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   deleteArticle = (articleId) => {
     this.setState({
       articles: this.state.articles.filter(
@@ -150,7 +161,7 @@ class DocModificationThreadPage extends Component {
         } else {
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         }
       },
@@ -260,13 +271,16 @@ class DocModificationThreadPage extends Component {
               ...this.state.accordionKeys,
               data.messages.length - 1
             ],
-            res_status: status
+            res_modal_status: status
           });
         } else {
           // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            buttonDisabled: false,
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -312,12 +326,15 @@ class DocModificationThreadPage extends Component {
             thread: { ...state.thread, isFinalVersion: data },
             success: success,
             SetAsFinalFileModel: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            isSubmissionLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -328,7 +345,13 @@ class DocModificationThreadPage extends Component {
   };
 
   render() {
-    const { isLoaded, isSubmissionLoaded, res_status } = this.state;
+    const {
+      isLoaded,
+      isSubmissionLoaded,
+      res_status,
+      res_modal_status,
+      res_modal_message
+    } = this.state;
 
     if (!isLoaded && !this.state.data) {
       return (
@@ -628,6 +651,14 @@ class DocModificationThreadPage extends Component {
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
           </Modal.Footer>
         </Modal>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
+
         {/* <Modal
           show={this.state.SetAsFinalFileModel}
           onHide={this.closeSetAsFinalFileModelWindow}

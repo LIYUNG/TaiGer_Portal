@@ -126,6 +126,10 @@ class ButtonSetUploaded extends React.Component {
       this.state.category,
       this.state.student_id
     );
+    this.setState((state) => ({
+      ...state,
+      isLoaded: true
+    }));
   };
 
   onUpdateProfileFilefromstudent = (e) => {
@@ -140,6 +144,10 @@ class ButtonSetUploaded extends React.Component {
       this.state.status,
       this.state.feedback
     );
+    this.setState((state) => ({
+      ...state,
+      isLoaded: true
+    }));
   };
   render() {
     const deleteStyle = 'danger';

@@ -20,8 +20,8 @@ class ButtonSetUploaded extends React.Component {
     docName: '',
     comments: '',
     file: '',
-    feedback: '',
     isLoaded: this.props.isLoaded,
+    feedback: '',
     deleteFileWarningModel: false,
     CommentModel: false,
     rejectProfileFileModel: false,
@@ -118,10 +118,6 @@ class ButtonSetUploaded extends React.Component {
 
   onDeleteFilefromstudent = (e) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false
-    }));
     this.props.onDeleteFilefromstudent(
       this.state.category,
       this.state.student_id
@@ -130,10 +126,6 @@ class ButtonSetUploaded extends React.Component {
 
   onUpdateProfileFilefromstudent = (e) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false
-    }));
     this.props.onUpdateProfileFilefromstudent(
       this.state.category,
       this.state.student_id,
@@ -141,7 +133,7 @@ class ButtonSetUploaded extends React.Component {
       this.state.feedback
     );
   };
-  
+
   render() {
     const deleteStyle = 'danger';
     const rejectStyle = 'secondary';
@@ -209,7 +201,7 @@ class ButtonSetUploaded extends React.Component {
                   size="sm"
                   type="submit"
                   title="Mark as finshed"
-                  disabled={!this.state.isLoaded}
+                  disabled={!this.props.isLoaded}
                   onClick={(e) =>
                     this.onUpdateProfileDocStatus(
                       e,
@@ -230,7 +222,7 @@ class ButtonSetUploaded extends React.Component {
                   size="sm"
                   type="submit"
                   title="Mark as reject"
-                  disabled={!this.state.isLoaded}
+                  disabled={!this.props.isLoaded}
                   onClick={(e) =>
                     this.onUpdateProfileDocStatus(
                       e,
@@ -257,7 +249,7 @@ class ButtonSetUploaded extends React.Component {
                 size="sm"
                 type="submit"
                 title="Delete"
-                disabled={!this.state.isLoaded}
+                disabled={!this.props.isLoaded}
                 onClick={(e) =>
                   this.onDeleteFileWarningPopUp(
                     e,
@@ -292,10 +284,10 @@ class ButtonSetUploaded extends React.Component {
           <Modal.Body>Do you want to delete {this.props.docName}?</Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded}
+              disabled={!this.props.isLoaded}
               onClick={(e) => this.onDeleteFilefromstudent(e)}
             >
-              {!this.state.isLoaded ? (
+              {!this.props.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -340,10 +332,10 @@ class ButtonSetUploaded extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={this.state.feedback === '' || !this.state.isLoaded}
+              disabled={this.state.feedback === '' || !this.props.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              {!this.state.isLoaded ? (
+              {!this.props.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -378,10 +370,10 @@ class ButtonSetUploaded extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded}
+              disabled={!this.props.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              {!this.state.isLoaded ? (
+              {!this.props.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -413,7 +405,7 @@ class ButtonSetUploaded extends React.Component {
           <Modal.Body>{this.state.comments}</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeCommentWindow}>
-              {!this.state.isLoaded ? (
+              {!this.props.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"

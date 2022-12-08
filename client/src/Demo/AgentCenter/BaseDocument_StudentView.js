@@ -1,11 +1,17 @@
 import React from 'react';
-import { Row, Col, Table, Card, Modal } from 'react-bootstrap';
+import { Row, Col, Table, Card, Spinner } from 'react-bootstrap';
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
 import ButtonSetRejected from './ButtonSetRejected';
 import ButtonSetNotNeeded from './ButtonSetNotNeeded';
 import ButtonSetMissing from './ButtonSetMissing';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
+import {
+  SYMBOL_EXPLANATION,
+  split_header,
+  spinner_style,
+  spinner_style2
+} from '../Utils/contants';
 
 import {
   uploadforstudent,
@@ -18,7 +24,9 @@ class BaseDocument_StudentView extends React.Component {
   state = {
     student: this.props.student,
     student_id: '',
-    isLoaded: this.props.isLoaded,
+    // isLoaded: this.props.isLoaded,
+    isLoaded: {},
+    ready: false,
     docName: '',
     file: '',
     deleteFileWarningModel: false,
@@ -26,7 +34,22 @@ class BaseDocument_StudentView extends React.Component {
     res_modal_status: ''
   };
 
+  componentDidMount() {
+    let keys2 = Object.keys(window.profile_wtih_doc_link_list);
+    let temp_isLoaded = {};
+    for (let i = 0; i < keys2.length; i++) {
+      temp_isLoaded[keys2[i]] = true;
+    }
+    this.setState({ isLoaded: temp_isLoaded, ready: true });
+  }
+
   onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
+    this.setState((state) => ({
+      isLoaded: {
+        ...state.isLoaded,
+        [category]: false
+      }
+    }));
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -36,17 +59,23 @@ class BaseDocument_StudentView extends React.Component {
             ...state,
             student: data,
             success,
-            isLoaded: true,
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             res_modal_status: status
           }));
         } else {
           // TODO: redesign, modal ist better!
           const { message } = resp.data;
-          this.setState({
-            isLoaded: true,
+          this.setState((state) => ({
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
@@ -61,8 +90,13 @@ class BaseDocument_StudentView extends React.Component {
   onDeleteFilefromstudent = (category, student_id) => {
     // e.preventDefault();
     let student_new = { ...this.state.student };
-
     let idx = student_new.profile.findIndex((doc) => doc.name === category);
+    this.setState((state) => ({
+      isLoaded: {
+        ...state.isLoaded,
+        [category]: false
+      }
+    }));
     deleteFile(category, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -73,7 +107,10 @@ class BaseDocument_StudentView extends React.Component {
             ...state,
             student_id: '',
             category: '',
-            isLoaded: true,
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             student: student_new,
             success: success,
             deleteFileWarningModel: false,
@@ -82,12 +119,15 @@ class BaseDocument_StudentView extends React.Component {
         } else {
           // TODO: redesign, modal ist better!
           const { message } = resp.data;
-          this.setState({
-            isLoaded: true,
+          this.setState((state) => ({
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             deleteFileWarningModel: false,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
@@ -117,10 +157,12 @@ class BaseDocument_StudentView extends React.Component {
     const formData = new FormData();
     formData.append('file', NewFile);
 
-    // this.setState((state) => ({
-    //   ...state,
-    //   isLoaded: false
-    // }));
+    this.setState((state) => ({
+      isLoaded: {
+        ...state.isLoaded,
+        [category]: false
+      }
+    }));
     uploadforstudent(category, student_id, formData).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -131,18 +173,24 @@ class BaseDocument_StudentView extends React.Component {
             student: data, // resp.data = {success: true, data:{...}}
             success,
             category: '',
-            isLoaded: true,
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             file: '',
             res_modal_status: status
           }));
         } else {
           // TODO: what if data is oversize? data type not match?
           const { message } = resp.data;
-          this.setState({
-            isLoaded: true,
+          this.setState((state) => ({
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
@@ -155,13 +203,16 @@ class BaseDocument_StudentView extends React.Component {
   };
 
   render() {
-    const {
-      res_status,
-      base_docs_link,
-      isLoaded,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
+    const { res_modal_status, res_modal_message, ready } = this.state;
+    if (!ready) {
+      return (
+        <div style={spinner_style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_wtih_doc_link_list);
     let object_init = {};
@@ -225,7 +276,7 @@ class BaseDocument_StudentView extends React.Component {
           role={this.props.role}
           link={object_init[k].link}
           path={object_init[k].path}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
@@ -240,7 +291,7 @@ class BaseDocument_StudentView extends React.Component {
           role={this.props.role}
           link={object_init[k].link}
           path={object_init[k].path}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
@@ -256,7 +307,7 @@ class BaseDocument_StudentView extends React.Component {
           role={this.props.role}
           link={object_init[k].link}
           path={object_init[k].path}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
@@ -273,7 +324,7 @@ class BaseDocument_StudentView extends React.Component {
             key={i + 1}
             role={this.props.role}
             link={object_init[k].link}
-            isLoaded={this.state.isLoaded}
+            isLoaded={this.state.isLoaded[k]}
             docName={value2[i]}
             date={object_date_init[k]}
             time={object_time_init[k]}
@@ -289,7 +340,7 @@ class BaseDocument_StudentView extends React.Component {
           key={i + 1}
           role={this.props.role}
           link={object_init[k].link}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}

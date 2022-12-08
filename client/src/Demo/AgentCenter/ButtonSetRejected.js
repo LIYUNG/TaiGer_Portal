@@ -291,7 +291,7 @@ class ButtonSetRejected extends React.Component {
                   size="sm"
                   type="submit"
                   title="Delete"
-                  disabled={!this.state.isLoaded}
+                  disabled={!this.props.isLoaded}
                   onClick={(e) =>
                     this.onDeleteFileWarningPopUp(
                       e,
@@ -340,7 +340,7 @@ class ButtonSetRejected extends React.Component {
               disabled={!this.state.isLoaded}
               onClick={(e) => this.onDeleteFilefromstudent(e)}
             >
-              {!this.state.isLoaded ? (
+              {!this.props.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -375,10 +375,10 @@ class ButtonSetRejected extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded}
+              disabled={!this.props.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              {!this.state.isLoaded ? (
+              {!this.props.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -438,7 +438,7 @@ class ButtonSetRejected extends React.Component {
                   disabled={this.state.comments === ''}
                   onClick={(e) => this.onUpdateRejectMessageStudent(e)}
                 >
-                  {!this.state.isLoaded ? (
+                  {!this.props.isLoaded ? (
                     <div>
                       <Spinner
                         animation="border"

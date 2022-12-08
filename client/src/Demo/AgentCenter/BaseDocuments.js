@@ -13,12 +13,7 @@ import {
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ErrorPage from '../Utils/ErrorPage';
 
-import {
-  uploadforstudent,
-  updateProfileDocumentStatus,
-  deleteFile,
-  getStudentsAndDocLinks
-} from '../../api';
+import { getStudentsAndDocLinks } from '../../api';
 
 class BaseDocuments extends React.Component {
   state = {

@@ -28,6 +28,7 @@ import {
   spinner_style
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   getStudentAndDocLinks,
@@ -41,15 +42,22 @@ import {
 
 class SingleStudentPage extends React.Component {
   state = {
-    isLoaded: false,
+    isLoaded: {},
+    isLoaded2: false,
     student: null,
     base_docs_link: null,
     survey_link: null,
     success: false,
     error: null,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: ''
   };
   componentDidMount() {
+    let keys2 = Object.keys(window.profile_wtih_doc_link_list);
+    let temp_isLoaded = {};
+    for (let i = 0; i < keys2.length; i++) {
+      temp_isLoaded[keys2[i]] = true;
+    }
     getStudentAndDocLinks(this.props.match.params.studentId).then(
       (resp) => {
         const { survey_link, base_docs_link, data, success } = resp.data;
@@ -59,7 +67,8 @@ class SingleStudentPage extends React.Component {
             (link) => link.key === profile_name_list.Grading_System
           );
           this.setState({
-            isLoaded: true,
+            isLoaded: temp_isLoaded,
+            isLoaded2: true,
             student: data,
             base_docs_link,
             survey_link: granding_system_doc_link.link,
@@ -68,14 +77,16 @@ class SingleStudentPage extends React.Component {
           });
         } else {
           this.setState({
-            isLoaded: true,
+            isLoaded: temp_isLoaded,
+            isLoaded2: true,
             res_status: status
           });
         }
       },
       (error) => {
         this.setState({
-          isLoaded: true,
+          isLoaded: temp_isLoaded,
+          isLoaded2: true,
           error: true
         });
       }
@@ -83,6 +94,12 @@ class SingleStudentPage extends React.Component {
   }
 
   onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
+    this.setState((state) => ({
+      isLoaded: {
+        ...state.isLoaded,
+        [category]: false
+      }
+    }));
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -93,14 +110,22 @@ class SingleStudentPage extends React.Component {
             ...state,
             student: data,
             success,
-            isLoaded: true,
-            res_status: status
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
+            res_modal_status: status
           }));
         } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
+          const { message } = resp.data;
+          this.setState((state) => ({
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -121,11 +146,12 @@ class SingleStudentPage extends React.Component {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', NewFile);
-
-    // this.setState((state) => ({
-    //   ...state,
-    //   isLoaded: false,
-    // }));
+    this.setState((state) => ({
+      isLoaded: {
+        ...state.isLoaded,
+        [category]: false
+      }
+    }));
     uploadforstudent(category, student_id, formData).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -137,15 +163,23 @@ class SingleStudentPage extends React.Component {
             student: data, // res.data = {success: true, data:{...}}
             success,
             category: '',
-            isLoaded: true,
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             file: '',
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
+          const { message } = resp.data;
+          this.setState((state) => ({
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -165,14 +199,14 @@ class SingleStudentPage extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded2: true,
             base_docs_link: helper_link,
             success: success,
             res_status: status
           }));
         } else {
           this.setState({
-            isLoaded: true,
+            isLoaded2: true,
             res_status: status
           });
         }
@@ -190,7 +224,7 @@ class SingleStudentPage extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded2: true,
             student: {
               ...state.student,
               academic_background: {
@@ -205,14 +239,14 @@ class SingleStudentPage extends React.Component {
           }));
         } else {
           this.setState({
-            isLoaded: true,
+            isLoaded2: true,
             res_status: status
           });
         }
       },
       (error) => {
         this.setState({
-          isLoaded: true,
+          isLoaded2: true,
           error: true
         });
       }
@@ -228,7 +262,7 @@ class SingleStudentPage extends React.Component {
         if (success) {
           this.setState((state) => ({
             ...state,
-            isLoaded: true,
+            isLoaded2: true,
             student: {
               ...state.student,
               academic_background: {
@@ -243,14 +277,14 @@ class SingleStudentPage extends React.Component {
           }));
         } else {
           this.setState({
-            isLoaded: true,
+            isLoaded2: true,
             res_status: status
           });
         }
       },
       (error) => {
         this.setState({
-          isLoaded: true,
+          isLoaded2: true,
           error: true
         });
       }
@@ -261,6 +295,12 @@ class SingleStudentPage extends React.Component {
     // e.preventDefault();
     var student = { ...this.state.student };
     var idx = student.profile.findIndex((doc) => doc.name === category);
+    this.setState((state) => ({
+      isLoaded: {
+        ...state.isLoaded,
+        [category]: false
+      }
+    }));
     deleteFile(category, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -272,17 +312,25 @@ class SingleStudentPage extends React.Component {
             ...state,
             student_id: '',
             category: '',
-            isLoaded: true,
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
             student: student,
             success: success,
             deleteFileWarningModel: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
+          const { message } = resp.data;
+          this.setState((state) => ({
+            isLoaded: {
+              ...state.isLoaded,
+              [category]: true
+            },
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -293,6 +341,15 @@ class SingleStudentPage extends React.Component {
       }
     );
   };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
     if (
       this.props.user.role !== 'Admin' &&
@@ -301,9 +358,16 @@ class SingleStudentPage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { res_status, base_docs_link, isLoaded } = this.state;
+    const {
+      res_modal_status,
+      res_status,
+      base_docs_link,
+      res_modal_message,
+      isLoaded2,
+      ready
+    } = this.state;
 
-    if (!isLoaded && !this.state.student) {
+    if (!ready && !this.state.student) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -380,7 +444,7 @@ class SingleStudentPage extends React.Component {
           link={object_init[k].link}
           path={object_init[k].path}
           role={this.props.user.role}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
@@ -397,7 +461,7 @@ class SingleStudentPage extends React.Component {
           link={object_init[k].link}
           path={object_init[k].path}
           role={this.props.user.role}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
@@ -415,7 +479,7 @@ class SingleStudentPage extends React.Component {
           link={object_init[k].link}
           path={object_init[k].path}
           role={this.props.user.role}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
@@ -436,7 +500,7 @@ class SingleStudentPage extends React.Component {
             updateDocLink={this.updateDocLink}
             link={object_init[k].link}
             role={this.props.user.role}
-            isLoaded={this.state.isLoaded}
+            isLoaded={this.state.isLoaded[k]}
             docName={value2[i]}
             date={object_date_init[k]}
             time={object_time_init[k]}
@@ -455,7 +519,7 @@ class SingleStudentPage extends React.Component {
           updateDocLink={this.updateDocLink}
           link={object_init[k].link}
           role={this.props.user.role}
-          isLoaded={this.state.isLoaded}
+          isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
           time={object_time_init[k]}
@@ -472,6 +536,13 @@ class SingleStudentPage extends React.Component {
 
     return (
       <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
@@ -517,7 +588,7 @@ class SingleStudentPage extends React.Component {
                     <ApplicationProgress
                       role={this.props.user.role}
                       student={this.state.student}
-                      isLoaded={this.state.isLoaded}
+                      isLoaded={this.state.isLoaded2}
                     />
                   </tbody>
                 </Table>
@@ -615,7 +686,7 @@ class SingleStudentPage extends React.Component {
               user={this.props.user}
               academic_background={this.state.student.academic_background}
               application_preference={this.state.student.application_preference}
-              isLoaded={this.state.isLoaded}
+              isLoaded={this.state.isLoaded2}
               student_id={this.state.student._id}
               singlestudentpage_fromtaiger={true}
               handleSubmit_AcademicBackground_root={
@@ -655,7 +726,7 @@ class SingleStudentPage extends React.Component {
               <ApplicationProgress
                 role={this.props.user.role}
                 student={this.state.student}
-                isLoaded={this.state.isLoaded}
+                isLoaded={this.state.ready}
               />
             </Table>
           </Tab> */}

@@ -1,6 +1,12 @@
 const path = require('path');
 const { createTransport } = require('nodemailer');
 const queryString = require('query-string');
+const {
+  profile_list,
+  profile_keys_list,
+  cv_ml_rl_unfinished_summary,
+  unsubmitted_applications_summary
+} = require('../constants');
 
 const {
   SMTP_HOST,
@@ -11,6 +17,7 @@ const {
   isDev,
   ORIGIN
 } = require('../config');
+
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
   .href;
@@ -1585,26 +1592,84 @@ ${TAIGER_SIGNATURE}
 
 const StudentTasksReminderEmail = async (recipient, payload) => {
   const subject = `TaiGer Student Reminder: ${recipient.firstname} ${recipient.lastname}`;
-  let application_task;
-  for (let i = 0; i < payload.student.applications.length; i += 1) {
-    if (i === 0) {
-      application_task =
-        payload.student.applications[i].programId.school +
-        ' ' +
-        payload.student.applications[i].programId.program_name +
-        ' ' +
-        payload.student.applications[i].closed;
-    } else {
-      application_task += `
+  const unsubmitted_applications = unsubmitted_applications_summary(
+    payload.student
+  );
 
-        ${payload.student.applications[i].programId.school} - ${payload.student.applications[i].programId.program_name}  ${payload.student.applications[i].closed}`;
+  let rejected_base_documents = '';
+  let missing_base_documents = '';
+  const object_init = {};
+  for (let i = 0; i < profile_keys_list.length; i += 1) {
+    object_init[profile_keys_list[i]] = 'missing';
+  }
+  for (let i = 0; i < payload.student.profile.length; i += 1) {
+    if (payload.student.profile[i].status === 'uploaded') {
+      object_init[payload.student.profile[i].name] = 'uploaded';
+    } else if (payload.student.profile[i].status === 'accepted') {
+      object_init[payload.student.profile[i].name] = 'accepted';
+    } else if (payload.student.profile[i].status === 'rejected') {
+      object_init[payload.student.profile[i].name] = 'rejected';
+    } else if (payload.student.profile[i].status === 'missing') {
+      object_init[payload.student.profile[i].name] = 'missing';
+    } else if (payload.student.profile[i].status === 'notneeded') {
+      object_init[payload.student.profile[i].name] = 'notneeded';
     }
   }
+  let xx = 0;
+  let yy = 0;
+  for (let i = 0; i < profile_keys_list.length; i += 1) {
+    if (object_init[profile_keys_list[i]] === 'missing') {
+      if (xx === 0) {
+        xx += 1;
+        missing_base_documents = `
+        The following base documents are still missing, please upload them as soon as possible:
+
+        - ${profile_list[profile_keys_list[i]]}`;
+      } else {
+        missing_base_documents += `
+
+        - ${profile_list[profile_keys_list[i]]}`;
+      }
+    }
+    if (object_init[profile_keys_list[i]] === 'rejected') {
+      if (yy === 0) {
+        yy += 1;
+        rejected_base_documents = `
+        The following base documents are not okay, please upload them again as soon as possible:
+         
+        - ${profile_list[profile_keys_list[i]]}`;
+      } else {
+        rejected_base_documents += `
+
+        - ${profile_list[profile_keys_list[i]]}`;
+      }
+    }
+  }
+  const base_documents = `
+
+  ${missing_base_documents}
+
+  ${rejected_base_documents}
+
+  `;
+  const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+    payload.student,
+    payload.student
+  );
+  // TODO: uni-assist if missing
+  // TODO if english not passed and not registering any date, inform them
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-Some student reminder email template.
-${application_task}
+${unsubmitted_applications}
+
+${base_documents}
+
+Please go to ${BASE_DOCUMENT_URL} and upload them.
+
+
+${unread_cv_ml_rl_thread}
+
 ${TAIGER_SIGNATURE}
 
 `; // should be for admin/editor/agent/student
@@ -1613,12 +1678,23 @@ ${TAIGER_SIGNATURE}
 };
 const AgentTasksReminderEmail = async (recipient, payload) => {
   const subject = `TaiGer Agent Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  let student_i;
+  for (let i = 0; i < payload.students.length; i += 1) {
+    if (i === 0) {
+      student_i = `${payload.students[i].firstname} - ${payload.students[i].lastname}`;
+    } else {
+      student_i += `
+
+        ${payload.students[i].firstname} - ${payload.students[i].lastname}`;
+    }
+  }
+
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-Some agent reminder email template.
+The following is the overview of the current status for your each student:
 
-${payload.students[0].firstname}
+${student_i}
 
 ${TAIGER_SIGNATURE}
 
@@ -1631,7 +1707,7 @@ const EditorTasksReminderEmail = async (recipient, payload) => {
   const message = `\
 Hi ${recipient.firstname} ${recipient.lastname}, 
 
-Some editor reminder email template.
+The following is the overview of the open tasks for your students
 
 ${TAIGER_SIGNATURE}
 

@@ -30,6 +30,12 @@ class ButtonSetUploaded extends React.Component {
     baseDocsflagOffcanvasButtonDisable: false
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.isLoaded !== this.props.isLoaded) {
+      this.setState((state) => ({ ...state, isLoaded: this.props.isLoaded }));
+    }
+  }
+
   closeOffcanvasWindow = () => {
     this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
   };
@@ -201,7 +207,7 @@ class ButtonSetUploaded extends React.Component {
                   size="sm"
                   type="submit"
                   title="Mark as finshed"
-                  disabled={!this.props.isLoaded}
+                  disabled={!this.state.isLoaded}
                   onClick={(e) =>
                     this.onUpdateProfileDocStatus(
                       e,
@@ -222,7 +228,7 @@ class ButtonSetUploaded extends React.Component {
                   size="sm"
                   type="submit"
                   title="Mark as reject"
-                  disabled={!this.props.isLoaded}
+                  disabled={!this.state.isLoaded}
                   onClick={(e) =>
                     this.onUpdateProfileDocStatus(
                       e,
@@ -249,7 +255,7 @@ class ButtonSetUploaded extends React.Component {
                 size="sm"
                 type="submit"
                 title="Delete"
-                disabled={!this.props.isLoaded}
+                disabled={!this.state.isLoaded}
                 onClick={(e) =>
                   this.onDeleteFileWarningPopUp(
                     e,
@@ -284,10 +290,10 @@ class ButtonSetUploaded extends React.Component {
           <Modal.Body>Do you want to delete {this.props.docName}?</Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.props.isLoaded}
+              disabled={!this.state.isLoaded}
               onClick={(e) => this.onDeleteFilefromstudent(e)}
             >
-              {!this.props.isLoaded ? (
+              {!this.state.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -332,10 +338,10 @@ class ButtonSetUploaded extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={this.state.feedback === '' || !this.props.isLoaded}
+              disabled={this.state.feedback === '' || !this.state.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              {!this.props.isLoaded ? (
+              {!this.state.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -370,10 +376,10 @@ class ButtonSetUploaded extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.props.isLoaded}
+              disabled={!this.state.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              {!this.props.isLoaded ? (
+              {!this.state.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -405,7 +411,7 @@ class ButtonSetUploaded extends React.Component {
           <Modal.Body>{this.state.comments}</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeCommentWindow}>
-              {!this.props.isLoaded ? (
+              {!this.state.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"

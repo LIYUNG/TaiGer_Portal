@@ -10,6 +10,7 @@ const {
   HTTPS_CA,
   HTTPS_PORT,
   CLEAN_UP_SCHEDULE,
+  WEEKLY_TASKS_REMINDER_SCHEDULE,
   MONGODB_URI
 } = require('./config');
 const logger = require('./services/logger');
@@ -19,6 +20,7 @@ const {
 const {
   ThreadS3GarbageCollector
 } = require('./controllers/documents_modification');
+const { TasksReminderEmails } = require('./utils/utils_function');
 
 process.on('SIGINT', () => {
   disconnectFromDatabase(() => {
@@ -56,15 +58,24 @@ const launch = async () => {
   //  ex:  '42 * * * *',: Execute a cron job when the minute is 42 (e.g. 19:42, 20:42, etc.).
 
   // every 1. of month clean up the documents screenshots, redundant attachment.
-  logger.info(CLEAN_UP_SCHEDULE);
+  logger.info(`Clean up period: ${CLEAN_UP_SCHEDULE}`);
   const job = schedule.scheduleJob(
     CLEAN_UP_SCHEDULE,
     DocumentationS3GarbageCollector
   );
 
   // every 1. of month clean up the redundant screenshots,for thg thread.
-  const job2 = schedule.scheduleJob(CLEAN_UP_SCHEDULE, ThreadS3GarbageCollector);
+  const job2 = schedule.scheduleJob(
+    CLEAN_UP_SCHEDULE,
+    ThreadS3GarbageCollector
+  );
 
+  // every Friday, send tasks reminder emails to agents, editor and student
+  logger.info(`Reminder period: ${WEEKLY_TASKS_REMINDER_SCHEDULE}`);
+  const job3 = schedule.scheduleJob(
+    WEEKLY_TASKS_REMINDER_SCHEDULE,
+    TasksReminderEmails
+  );
   https
     .createServer(
       {

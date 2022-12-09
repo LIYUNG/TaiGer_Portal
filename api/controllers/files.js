@@ -755,18 +755,19 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email')
     .lean();
+
   res.status(201).send({ success: true, data: student_updated });
   if (user.role === Role.Student) {
-    for (let i = 0; i < student.agents.length; i += 1) {
+    for (let i = 0; i < student_updated.agents.length; i += 1) {
       await UpdateStudentApplicationsEmail(
         {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
+          firstname: student_updated.agents[i].firstname,
+          lastname: student_updated.agents[i].lastname,
+          address: student_updated.agents[i].email
         },
         {
-          sender_firstname: student.firstname,
-          sender_lastname: student.lastname,
+          sender_firstname: student_updated.firstname,
+          sender_lastname: student_updated.lastname,
           student_applications: student_updated.applications,
           new_app_decided_idx: new_app_decided_idx
         }
@@ -775,28 +776,28 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
 
     await UpdateStudentApplicationsEmail(
       {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
+        firstname: student_updated.firstname,
+        lastname: student_updated.lastname,
+        address: student_updated.email
       },
       {
-        sender_firstname: user.firstname,
-        sender_lastname: user.lastname,
+        sender_firstname: student_updated.firstname,
+        sender_lastname: student_updated.lastname,
         student_applications: student_updated.applications,
         new_app_decided_idx: new_app_decided_idx
       }
     );
     if (new_task_flag) {
-      for (let i = 0; i < student.editors.length; i += 1) {
+      for (let i = 0; i < student_updated.editors.length; i += 1) {
         await NewMLRLEssayTasksEmail(
           {
-            firstname: student.editors[i].firstname,
-            lastname: student.editors[i].lastname,
-            address: student.editors[i].email
+            firstname: student_updated.editors[i].firstname,
+            lastname: student_updated.editors[i].lastname,
+            address: student_updated.editors[i].email
           },
           {
-            sender_firstname: student.firstname,
-            sender_lastname: student.lastname,
+            sender_firstname: student_updated.firstname,
+            sender_lastname: student_updated.lastname,
             student_applications: student_updated.applications,
             new_app_decided_idx: new_app_decided_idx
           }
@@ -806,9 +807,9 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   } else {
     await UpdateStudentApplicationsEmail(
       {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
+        firstname: student_updated.firstname,
+        lastname: student_updated.lastname,
+        address: student_updated.email
       },
       {
         sender_firstname: user.firstname,
@@ -818,16 +819,16 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       }
     );
     if (new_task_flag) {
-      for (let i = 0; i < student.editors.length; i += 1) {
+      for (let i = 0; i < student_updated.editors.length; i += 1) {
         await NewMLRLEssayTasksEmailFromTaiGer(
           {
-            firstname: student.editors[i].firstname,
-            lastname: student.editors[i].lastname,
-            address: student.editors[i].email
+            firstname: student_updated.editors[i].firstname,
+            lastname: student_updated.editors[i].lastname,
+            address: student_updated.editors[i].email
           },
           {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
+            student_firstname: student_updated.firstname,
+            student_lastname: student_updated.lastname,
             sender_firstname: user.firstname,
             sender_lastname: user.lastname,
             student_applications: student_updated.applications,

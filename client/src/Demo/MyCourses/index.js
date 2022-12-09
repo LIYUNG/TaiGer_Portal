@@ -5,6 +5,7 @@ import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 import 'react-datasheet-grid/dist/style.css';
 
 import {
@@ -31,7 +32,9 @@ export default function MyCourses(props) {
     isAnalysing: false,
     isUpdating: false,
     isDownloading: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_status: 0,
+    res_modal_message: ''
   });
   // if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
   //   return <Redirect to="/dashboard/default" />;
@@ -130,15 +133,16 @@ export default function MyCourses(props) {
             confirmModalWindowOpen: true,
             success: success,
             isUpdating: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          // TODO: redesign, modal ist better!
+          const { message } = resp.data;
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             isUpdating: false,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           }));
         }
       },
@@ -152,6 +156,14 @@ export default function MyCourses(props) {
         alert('Course Update failed. Please try later.');
       }
     );
+  };
+
+  const ConfirmError = () => {
+    setStatedata((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   const onAnalyse = () => {
@@ -178,15 +190,16 @@ export default function MyCourses(props) {
             analysisSuccessModalWindowOpen: true,
             success: success,
             isAnalysing: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          // TODO: redesign, modal ist better!
+          const { message } = resp.data;
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             isAnalysing: false,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           }));
         }
       },
@@ -291,6 +304,13 @@ export default function MyCourses(props) {
 
   return (
     <Aux>
+      {statedata.res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={statedata.res_modal_status}
+          res_modal_message={statedata.res_modal_message}
+        />
+      )}
       <Row className="sticky-top ">
         <Col>
           <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>

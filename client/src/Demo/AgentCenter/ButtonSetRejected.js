@@ -30,6 +30,12 @@ class ButtonSetRejected extends React.Component {
     baseDocsflagOffcanvasButtonDisable: false
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.isLoaded !== this.props.isLoaded) {
+      this.setState((state) => ({ ...state, isLoaded: this.props.isLoaded }));
+    }
+  }
+
   closeOffcanvasWindow = () => {
     this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
   };
@@ -269,7 +275,7 @@ class ButtonSetRejected extends React.Component {
           <Button
             size="sm"
             type="submit"
-            variant='light'
+            variant="light"
             disabled={!this.state.isLoaded}
             title="Show Comments"
             onClick={(e) =>
@@ -291,7 +297,7 @@ class ButtonSetRejected extends React.Component {
                   size="sm"
                   type="submit"
                   title="Delete"
-                  disabled={!this.props.isLoaded}
+                  disabled={!this.state.isLoaded}
                   onClick={(e) =>
                     this.onDeleteFileWarningPopUp(
                       e,
@@ -340,7 +346,7 @@ class ButtonSetRejected extends React.Component {
               disabled={!this.state.isLoaded}
               onClick={(e) => this.onDeleteFilefromstudent(e)}
             >
-              {!this.props.isLoaded ? (
+              {!this.state.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -375,10 +381,10 @@ class ButtonSetRejected extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.props.isLoaded}
+              disabled={!this.state.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              {!this.props.isLoaded ? (
+              {!this.state.isLoaded ? (
                 <div>
                   <Spinner
                     animation="border"
@@ -438,7 +444,7 @@ class ButtonSetRejected extends React.Component {
                   disabled={this.state.comments === ''}
                   onClick={(e) => this.onUpdateRejectMessageStudent(e)}
                 >
-                  {!this.props.isLoaded ? (
+                  {!this.state.isLoaded ? (
                     <div>
                       <Spinner
                         animation="border"

@@ -37,7 +37,7 @@ export default function Signin1({ setUserdata }) {
           setButtondisable(false);
         } else if (resp.status === 429) {
           setLoginsuccess(false);
-          alert('You try too many times. Please try 1 hour later.');
+          alert(`${resp.data}`);
           setButtondisable(false);
         } else {
           setButtondisable(false);

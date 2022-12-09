@@ -50,7 +50,8 @@ class SingleStudentPage extends React.Component {
     success: false,
     error: null,
     res_status: 0,
-    res_modal_message: ''
+    res_modal_message: '',
+    res_modal_status: 0
   };
   componentDidMount() {
     let keys2 = Object.keys(window.profile_wtih_doc_link_list);
@@ -202,13 +203,16 @@ class SingleStudentPage extends React.Component {
             isLoaded2: true,
             base_docs_link: helper_link,
             success: success,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded2: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {}
@@ -235,13 +239,16 @@ class SingleStudentPage extends React.Component {
             },
             success: success,
             updateconfirmed: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded2: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -273,13 +280,16 @@ class SingleStudentPage extends React.Component {
             },
             success: success,
             updateconfirmed: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded2: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -324,6 +334,7 @@ class SingleStudentPage extends React.Component {
         } else {
           const { message } = resp.data;
           this.setState((state) => ({
+            ...state,
             isLoaded: {
               ...state.isLoaded,
               [category]: true
@@ -367,6 +378,10 @@ class SingleStudentPage extends React.Component {
       ready
     } = this.state;
 
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+    
     if (!ready && !this.state.student) {
       return (
         <div style={spinner_style}>
@@ -377,9 +392,7 @@ class SingleStudentPage extends React.Component {
       );
     }
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
+
 
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_list);

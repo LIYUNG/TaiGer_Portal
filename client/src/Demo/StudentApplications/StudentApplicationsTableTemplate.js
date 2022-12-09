@@ -20,6 +20,7 @@ import {
 } from '../Utils/checking-functions';
 import { getNumberOfDays, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 
@@ -36,7 +37,9 @@ class StudentApplicationsTableTemplate extends React.Component {
     applying_program_count: this.props.student.applying_program_count,
     modalDeleteApplication: false,
     modalUpdatedApplication: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_status: 0,
+    res_modal_message: ''
   };
 
   handleChangeProgramCount = (e) => {
@@ -51,7 +54,7 @@ class StudentApplicationsTableTemplate extends React.Component {
 
   handleChange = (e, application_idx) => {
     e.preventDefault();
-    let applications_temp = [...this.state.applications];
+    let applications_temp = [...this.state.student.applications];
     applications_temp[application_idx][e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
@@ -82,24 +85,36 @@ class StudentApplicationsTableTemplate extends React.Component {
 
   handleDeleteConfirm = (e) => {
     e.preventDefault();
+    // let applications_temp = [...this.state.applications];
+    // for (let i = 0; i < applications_temp.length; i += 1) {
+    //   delete applications_temp[i].programId;
+    //   delete applications_temp[i].doc_modification_thread;
+    // }
     this.setState({ isLoaded: false });
     removeProgramFromStudent(this.state.program_id, this.state.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            student: data,
+            student: {
+              ...state.student,
+              applications: data
+            },
             success: success,
             modalDeleteApplication: false,
-            res_status: status
-          });
+            res_modal_status: status
+          }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_status: status,
+            res_modal_message: message
+          }));
         }
       },
       (error) => {
@@ -113,13 +128,12 @@ class StudentApplicationsTableTemplate extends React.Component {
 
   handleSubmit = (e, student_id, applications) => {
     e.preventDefault();
-    let applications_temp = [...this.state.applications];
+    let applications_temp = [...this.state.student.applications];
     let applying_program_count = this.state.applying_program_count;
-    for (let i = 0; i < applications_temp.length; i += 1) {
-      delete applications_temp[i].programId;
-      delete applications_temp[i].doc_modification_thread;
-    }
-
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
     UpdateStudentApplications(
       student_id,
       applications_temp,
@@ -129,19 +143,23 @@ class StudentApplicationsTableTemplate extends React.Component {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
             student: data,
             success: success,
             application_status_changed: false,
             modalUpdatedApplication: true,
-            res_status: status
-          });
+            res_modal_status: status
+          }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_status: status,
+            res_modal_message: message
+          }));
         }
       },
       (error) => {
@@ -153,8 +171,17 @@ class StudentApplicationsTableTemplate extends React.Component {
     );
   };
 
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
-    const { res_status, isLoaded } = this.state;
+    const { res_status, isLoaded, res_modal_status, res_modal_message } =
+      this.state;
 
     if (!isLoaded && !this.state.student) {
       return (
@@ -174,8 +201,8 @@ class StudentApplicationsTableTemplate extends React.Component {
     // var applying_university;
     var today = new Date();
     if (
-      this.props.student.applications === undefined ||
-      this.props.student.applications.length === 0
+      this.state.student.applications === undefined ||
+      this.state.student.applications.length === 0
     ) {
       applying_university_info = (
         <>
@@ -356,6 +383,13 @@ class StudentApplicationsTableTemplate extends React.Component {
     }
     return (
       <Aux>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'black'} text={'light'}>
@@ -460,7 +494,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                   this.handleSubmit(
                     e,
                     this.state.student._id,
-                    this.state.applications
+                    this.state.student.applications
                   )
                 }
               >

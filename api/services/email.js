@@ -1583,6 +1583,62 @@ ${TAIGER_SIGNATURE}
   sendEmail(recipient, subject, message);
 };
 
+const StudentTasksReminderEmail = async (recipient, payload) => {
+  const subject = `TaiGer Student Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  let application_task;
+  for (let i = 0; i < payload.student.applications.length; i += 1) {
+    if (i === 0) {
+      application_task =
+        payload.student.applications[i].programId.school +
+        ' ' +
+        payload.student.applications[i].programId.program_name +
+        ' ' +
+        payload.student.applications[i].closed;
+    } else {
+      application_task += `
+
+        ${payload.student.applications[i].programId.school} - ${payload.student.applications[i].programId.program_name}  ${payload.student.applications[i].closed}`;
+    }
+  }
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Some student reminder email template.
+${application_task}
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+const AgentTasksReminderEmail = async (recipient, payload) => {
+  const subject = `TaiGer Agent Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Some agent reminder email template.
+
+${payload.students[0].firstname}
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+const EditorTasksReminderEmail = async (recipient, payload) => {
+  const subject = `TaiGer Editor Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  const message = `\
+Hi ${recipient.firstname} ${recipient.lastname}, 
+
+Some editor reminder email template.
+
+${TAIGER_SIGNATURE}
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
 const sendSomeReminderEmail = async (recipient) => {
   const subject = 'File Status changes';
   const message = `\
@@ -1636,5 +1692,8 @@ module.exports = {
   assignDocumentTaskToStudentEmail,
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
-  createApplicationToStudentEmail
+  createApplicationToStudentEmail,
+  StudentTasksReminderEmail,
+  AgentTasksReminderEmail,
+  EditorTasksReminderEmail
 };

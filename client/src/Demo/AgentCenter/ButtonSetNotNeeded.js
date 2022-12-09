@@ -19,6 +19,12 @@ class ButtonSetNotNeeded extends React.Component {
     baseDocsflagOffcanvasButtonDisable: false
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.isLoaded !== this.props.isLoaded) {
+      this.setState((state) => ({ ...state, isLoaded: this.props.isLoaded }));
+    }
+  }
+  
   closeOffcanvasWindow = () => {
     this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
   };

@@ -4,6 +4,7 @@ import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 class Settings extends React.Component {
@@ -28,7 +29,9 @@ class Settings extends React.Component {
     },
     updateconfirmed: false,
     updatecredentialconfirmed: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -62,12 +65,14 @@ class Settings extends React.Component {
             success: success,
             changed_personaldata: false,
             updateconfirmed: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -108,12 +113,14 @@ class Settings extends React.Component {
             isLoaded: true,
             success: success,
             updatecredentialconfirmed: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -165,8 +172,18 @@ class Settings extends React.Component {
     );
   };
 
+  ConfirmError = () => {
+    // window.location.reload(true);
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
-    const { res_status, isLoaded } = this.state;
+    const { res_status, isLoaded, res_modal_status, res_modal_message } =
+      this.state;
 
     if (!isLoaded) {
       return (
@@ -184,6 +201,13 @@ class Settings extends React.Component {
 
     return (
       <Aux>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Row>
           <Col>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>

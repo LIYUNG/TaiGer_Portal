@@ -775,10 +775,8 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
         $pull: { applications: { programId: { _id: program_id } } }
       },
       { new: true }
-    )
-      .populate('applications.programId')
-      .lean();
-    res.status(200).send({ success: true, data: student_updated });
+    ).populate('applications.programId');
+    res.status(200).send({ success: true, data: student_updated.applications });
   } catch (err) {
     logger.error('Your Application folder not empty!', err);
     throw new ErrorResponse(500, 'Your Application folder not empty!');

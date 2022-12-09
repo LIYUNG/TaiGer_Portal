@@ -5,6 +5,7 @@ import Aux from '../../hoc/_Aux';
 import SurveyEditableComponent from './SurveyEditableComponent';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   updateAcademicBackground,
@@ -27,7 +28,9 @@ class SurveyComponent extends React.Component {
     changed_academic: false,
     changed_application_preference: false,
     changed_language: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_status: 0,
+    res_modal_message: ''
   };
   componentDidMount() {
     if (!this.props.student_id) {
@@ -66,13 +69,16 @@ class SurveyComponent extends React.Component {
             },
             success: success,
             updateconfirmed: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -101,13 +107,16 @@ class SurveyComponent extends React.Component {
             },
             success: success,
             updateconfirmed: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -136,13 +145,16 @@ class SurveyComponent extends React.Component {
             application_preference: data,
             success: success,
             updateconfirmed: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -152,6 +164,14 @@ class SurveyComponent extends React.Component {
         });
       }
     );
+  };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   onHide = () => {
@@ -189,13 +209,16 @@ class SurveyComponent extends React.Component {
             isLoaded: true,
             survey_link: helper_link,
             success: success,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {}
@@ -203,7 +226,8 @@ class SurveyComponent extends React.Component {
   };
 
   render() {
-    const { res_status, isLoaded } = this.state;
+    const { res_status, isLoaded, res_modal_message, res_modal_status } =
+      this.state;
 
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
@@ -211,6 +235,13 @@ class SurveyComponent extends React.Component {
 
     return (
       <Aux>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <SurveyEditableComponent
           academic_background={this.state.academic_background}
           application_preference={this.state.application_preference}

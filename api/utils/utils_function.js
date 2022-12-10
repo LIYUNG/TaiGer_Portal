@@ -27,6 +27,8 @@ const s3 = new aws.S3({
 });
 
 const TasksReminderEmails = async () => {
+    // Only inform active student
+    // TODO: deactivate or change email frequency (default 1 week.)
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })

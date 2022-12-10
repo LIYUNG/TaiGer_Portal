@@ -536,6 +536,8 @@ const postMessages = asyncHandler(async (req, res) => {
           {
             writer_firstname: user.firstname,
             writer_lastname: user.lastname,
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
             uploaded_documentname: document_thread.file_type,
             school: document_thread.program_id.school,
             program_name: document_thread.program_id.program_name,
@@ -554,6 +556,8 @@ const postMessages = asyncHandler(async (req, res) => {
           {
             writer_firstname: user.firstname,
             writer_lastname: user.lastname,
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
             uploaded_documentname: document_thread.file_type,
             thread_id: document_thread._id.toString(),
             uploaded_updatedAt: new Date(),
@@ -575,6 +579,8 @@ const postMessages = asyncHandler(async (req, res) => {
         {
           writer_firstname: user.firstname,
           writer_lastname: user.lastname,
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
           uploaded_documentname: document_thread.file_type,
           school: document_thread.program_id.school,
           thread_id: document_thread._id.toString(),
@@ -593,6 +599,8 @@ const postMessages = asyncHandler(async (req, res) => {
         {
           writer_firstname: user.firstname,
           writer_lastname: user.lastname,
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
           uploaded_documentname: document_thread.file_type,
           thread_id: document_thread._id.toString(),
           uploaded_updatedAt: new Date(),
@@ -615,6 +623,8 @@ const postMessages = asyncHandler(async (req, res) => {
           {
             writer_firstname: user.firstname,
             writer_lastname: user.lastname,
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
             uploaded_documentname: document_thread.file_type,
             school: document_thread.program_id.school,
             program_name: document_thread.program_id.program_name,
@@ -633,6 +643,8 @@ const postMessages = asyncHandler(async (req, res) => {
           {
             writer_firstname: user.firstname,
             writer_lastname: user.lastname,
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
             uploaded_documentname: document_thread.file_type,
             thread_id: document_thread._id.toString(),
             uploaded_updatedAt: new Date(),
@@ -652,6 +664,8 @@ const postMessages = asyncHandler(async (req, res) => {
         {
           writer_firstname: user.firstname,
           writer_lastname: user.lastname,
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
           uploaded_documentname: document_thread.file_type,
           school: document_thread.program_id.school,
           thread_id: document_thread._id.toString(),
@@ -670,6 +684,8 @@ const postMessages = asyncHandler(async (req, res) => {
         {
           writer_firstname: user.firstname,
           writer_lastname: user.lastname,
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
           uploaded_documentname: document_thread.file_type,
           thread_id: document_thread._id.toString(),
           uploaded_updatedAt: new Date(),

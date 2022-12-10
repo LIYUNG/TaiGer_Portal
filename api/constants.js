@@ -63,16 +63,15 @@ const unsubmitted_applications_summary = (student) => {
       if (x === 0) {
         unsubmitted_applications = `
         The follow program are not submitted yet: 
-
-        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].closed}`;
+        <ul>
+        <li>- ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].closed}</li>`;
         x += 1;
       } else {
-        unsubmitted_applications += `
-
-        - ${student.applications[i].programId.school} - ${student.applications[i].programId.program_name}  ${student.applications[i].closed}`;
+        unsubmitted_applications += `<li>- ${student.applications[i].programId.school} - ${student.applications[i].programId.program_name}  ${student.applications[i].closed}</li>`;
       }
     }
   }
+  unsubmitted_applications += '</ul>';
   return unsubmitted_applications;
 };
 
@@ -95,14 +94,12 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
         ) {
           if (kk === 0) {
             missing_doc_list = `
-        The following documents are not okay, please replay your editor as soon as possible:
-
-        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li>- ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}</li>`;
             kk += 1;
           } else {
-            missing_doc_list += `
-
-        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+            missing_doc_list += `<li>- ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}</li>`;
           }
         }
       } else if (user.role === 'Student') {
@@ -113,14 +110,12 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
         ) {
           if (kk === 0) {
             missing_doc_list = `
-        The following documents are not okay, please replay your editor as soon as possible:
-
-        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li>- ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}</li>`;
             kk += 1;
           } else {
-            missing_doc_list += `
-
-        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+            missing_doc_list += `<li>- ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}</li>`;
           }
         }
       } else if (user.role === 'Agent') {
@@ -129,19 +124,18 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
         ) {
           if (kk === 0) {
             missing_doc_list = `
-        The following documents are not okay, please replay your editor as soon as possible:
-
-        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+        The following documents are not finished:
+        <ul>
+        <li>- ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}</li>`;
             kk += 1;
           } else {
-            missing_doc_list += `
-
-        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+            missing_doc_list += `<li>- ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}</li>`;
           }
         }
       }
     }
   }
+  missing_doc_list += '</ul>';
   return missing_doc_list;
 };
 const profile_keys_list = [
@@ -178,7 +172,7 @@ const profile_name_list = {
   Others: 'Others'
 };
 
-const ml_rl_essay_summary = (student) => {
+const base_documents_summary = (student) => {
   let rejected_base_documents = '';
   let missing_base_documents = '';
   const object_init = {};
@@ -205,29 +199,27 @@ const ml_rl_essay_summary = (student) => {
       if (xx === 0) {
         xx += 1;
         missing_base_documents = `
-        The following base documents are still missing, please upload them as soon as possible:
-
-        - ${profile_list[profile_keys_list[i]]}`;
+        <p>The following base documents are still missing, please upload them as soon as possible:</p>
+        <ul>
+        <li>${profile_list[profile_keys_list[i]]}</li>`;
       } else {
-        missing_base_documents += `
-
-        - ${profile_list[profile_keys_list[i]]}`;
+        missing_base_documents += `<li>${profile_list[profile_keys_list[i]]}</li>`;
       }
     }
     if (object_init[profile_keys_list[i]] === 'rejected') {
       if (yy === 0) {
         yy += 1;
         rejected_base_documents = `
-        The following base documents are not okay, please upload them again as soon as possible:
-         
-        - ${profile_list[profile_keys_list[i]]}`;
+        <p>The following base documents are not okay, please upload them again as soon as possible:</p>
+        <ul>
+        <li>${profile_list[profile_keys_list[i]]}</li>`;
       } else {
-        rejected_base_documents += `
-
-        - ${profile_list[profile_keys_list[i]]}`;
+        rejected_base_documents += `<li>${profile_list[profile_keys_list[i]]}</li>`;
       }
     }
   }
+  missing_base_documents += '</ul>';
+  rejected_base_documents += '</ul>';
   return { rejected_base_documents, missing_base_documents };
 };
 
@@ -236,7 +228,7 @@ module.exports = {
   CheckListStatus,
   TaskStatus,
   RLs_CONSTANT,
-  ml_rl_essay_summary,
+  base_documents_summary,
   unsubmitted_applications_summary,
   cv_ml_rl_unfinished_summary,
   profile_list,

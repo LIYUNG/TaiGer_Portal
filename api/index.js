@@ -76,6 +76,14 @@ const launch = async () => {
     WEEKLY_TASKS_REMINDER_SCHEDULE,
     TasksReminderEmails
   );
+
+  // everyday, send emergency tasks (deadline within 1 month)
+  // reminder emails to agents, editor and student
+
+  // const job4 = schedule.scheduleJob(
+  //   WEEKLY_TASKS_REMINDER_SCHEDULE,
+  //   TasksReminderEmails
+  // );
   https
     .createServer(
       {

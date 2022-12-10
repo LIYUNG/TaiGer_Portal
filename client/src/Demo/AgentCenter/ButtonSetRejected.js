@@ -416,7 +416,14 @@ class ButtonSetRejected extends React.Component {
 
           {this.props.role === 'Student' ? (
             <>
-              <Modal.Body>{this.state.comments}</Modal.Body>
+              <Modal.Body>
+                <p>
+                  {this.state.comments}
+                </p>
+                <p>
+                  Please delete the old file before upload the new file.
+                </p>
+              </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeCommentWindow}>Ok</Button>
               </Modal.Footer>

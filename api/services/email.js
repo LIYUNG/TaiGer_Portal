@@ -5,7 +5,7 @@ const {
   profile_list,
   profile_keys_list,
   cv_ml_rl_unfinished_summary,
-  ml_rl_essay_summary,
+  base_documents_summary,
   unsubmitted_applications_summary
 } = require('../constants');
 
@@ -75,7 +75,8 @@ const sendEmail = (to, subject, message) => {
     from: senderName,
     to,
     subject,
-    text: message
+    // text: message,
+    html: message
   };
   return transporter.sendMail(mail);
 };
@@ -84,25 +85,25 @@ const updateNotificationEmail = async (recipient, msg) => {
   const subject =
     '您的TaiGer Portal使用者權限已更新 / Your user role in TaiGer Portal updated';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的 TaiGer Portal 使用者權限已更新。
+<p>您的 TaiGer Portal 使用者權限已更新。</p>
 
-請至 ${SETTINGS_URL} 確認使用者身分角色。
+<p>請至 <a href="${SETTINGS_URL}">Setting</a> 確認使用者身分角色。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname},
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-Your user role in TaiGer Portal has been changed.
+<p>Your user role in TaiGer Portal has been changed.</p>
 
-Please visit ${SETTINGS_URL} and make sure your user role.
+<p>Please visit <a href="${SETTINGS_URL}">Setting</a> and make sure your user role.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -112,29 +113,29 @@ ${TAIGER_SIGNATURE}
 const uploadTemplateSuccessEmail = async (recipient, msg) => {
   const subject = `Template ${msg.category_name} uploaded successfully!`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.category_name} 模板已成功上傳於
+<p>${msg.category_name} 模板已成功上傳於</p>
 
- ${msg.updatedAt}
+<p>${msg.updatedAt}</p>
 
-更多細節請至 ${TEMPLATE_DOWNLOAD_URL}
+<p>更多細節請至 <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname},
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-the template ${msg.category_name} is uploaded sucessfully on
+<p>the template ${msg.category_name} is uploaded sucessfully on</p>
 
- ${msg.updatedAt}
+<p>${msg.updatedAt}</p>
 
-For more details, please visit: ${TEMPLATE_DOWNLOAD_URL}
+<p>For more details, please visit: <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -144,29 +145,29 @@ ${TAIGER_SIGNATURE}
 const deleteTemplateSuccessEmail = async (recipient, msg) => {
   const subject = `Template ${msg.category_name} deleted successfully!`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.category_name} 模板已成功刪除於
+<p>${msg.category_name} 模板已成功刪除於</p>
 
- ${msg.updatedAt}
+<p>${msg.updatedAt}</p>
 
-更多細節請至 ${TEMPLATE_DOWNLOAD_URL}
+<p>更多細節請至 <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname},
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-the template ${msg.category_name} is deleted sucessfully on
+<p>the template ${msg.category_name} is deleted sucessfully on</p>
 
- ${msg.updatedAt}
+<p>${msg.updatedAt}</p>
 
-For more details, please visit: ${TEMPLATE_DOWNLOAD_URL}
+<p>For more details, please visit: <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -181,34 +182,33 @@ const sendConfirmationEmail = async (recipient, token) => {
     query: { email: recipient.address, token }
   });
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的 TaiGer Portal 帳戶已被建立。
-請使用以下連結來啟用您的帳戶：
-
-${activationLink}
-
-此連結將於 20 分鐘後失效。
-
-但您仍可再次請求啟用連結於： ${RESEND_ACTIVATION_URL}
-
-${TAIGER_SIGNATURE}
-
-${SPLIT_LINE}
-
-Hi ${recipient.firstname} ${recipient.lastname},
-
-Your user account has been created.
-Please use the following link to activate your account:
+<p>您的 TaiGer Portal 帳戶已被建立。請使用以下連結來啟用您的帳戶：</p>
 
 ${activationLink}
 
-This link will expire in 20 minutes.
-You can request another here: ${RESEND_ACTIVATION_URL}
+<p>此連結將於 20 分鐘後失效。</p>
 
-${TAIGER_SIGNATURE}
+<p>但您仍可再次請求啟用連結於： ${RESEND_ACTIVATION_URL}</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Your user account has been created.</p>
+<p>Please use the following link to activate your account:</p>
+
+${activationLink}
+
+<p>This link will expire in 20 minutes.</p>
+<p>You can request another here: ${RESEND_ACTIVATION_URL}</p>
+
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -223,32 +223,32 @@ const sendForgotPasswordEmail = async (recipient, token) => {
     query: { email: recipient.address, token }
   });
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-請用以下連結重新設定您的 TaiGer Portal 密碼：
+<p>請用以下連結重新設定您的 TaiGer Portal 密碼：</p>
 
 ${passwordResetLink}
 
-此連結將於 20 分鐘後失效。
+<p>此連結將於 20 分鐘後失效。</p>
 
-但您仍可再次請求密碼重設連結於： ${FORGOT_PASSWORD_URL}
+<p>但您仍可再次請求密碼重設連結於： ${FORGOT_PASSWORD_URL} </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname},
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 Please use the link below to reset your password:
 
 ${passwordResetLink}
 
-This link will expire in 20 minutes.
-You can request another here: ${FORGOT_PASSWORD_URL}
+<p>This link will expire in 20 minutes.</p>
+<p>You can request another here: ${FORGOT_PASSWORD_URL}</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -259,25 +259,25 @@ const sendPasswordResetEmail = async (recipient) => {
   const subject =
     'TaiGer Portal 密碼重設成功 / TaiGer Portal Password reset successfully';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的 TaiGer Portal 密碼已成功被更新，您現在可以使用新密碼登入 TaiGer Portl。
+<p>您的 TaiGer Portal 密碼已成功被更新，您現在可以使用新密碼登入 TaiGer Portl。</p>
 
-TaiGer portal: ${ORIGIN}
+<p>TaiGer portal: <a href="${ORIGIN}">TaiGer portal</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname},
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-Your password has been successfully updated, you can now login with your new password
+<p>Your password has been successfully updated, you can now login with your new password</p>
 
-in TaiGer portal: ${ORIGIN}
+<p>in <a href="${ORIGIN}">TaiGer portal</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -287,29 +287,29 @@ ${TAIGER_SIGNATURE}
 const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
   const subject = 'TaiGer Portal Account activation confirmation';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的 TaiGer Portal 帳戶已成功開通。
+<p>您的 TaiGer Portal 帳戶已成功開通。</p>
 
 您現在可以登入並開始使用 TaiGer Portal。
 
-TaiGer Portal 連結： ${ORIGIN}
+<p>TaiGer Portal 連結： <a href="${ORIGIN}">TaiGer portal</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname},
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-Your TaiGer Portal Account has been successfully activated.
+<p>Your TaiGer Portal Account has been successfully activated.</p>
 
-You can now login and explore the power of TaiGer Portal!
+<p>You can now login and explore the power of TaiGer Portal!</p>
 
-TaiGer Portal: ${ORIGIN}
+<p>TaiGer Portal: <a href="${ORIGIN}">TaiGer portal</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -319,31 +319,31 @@ ${TAIGER_SIGNATURE}
 const sendUploadedProfileFilesEmail = async (recipient, msg) => {
   const subject = `您的 ${msg.uploaded_documentname} 已成功上傳！ / Your ${msg.uploaded_documentname} is successfully uploaded!`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您已於 ${msg.uploaded_updatedAt} 成功上傳
+<p>您已於 ${msg.uploaded_updatedAt} 成功上傳</p>
 
-${msg.uploaded_documentname} 。
+${msg.uploaded_documentname}。
 
-您的顧問將會盡快瀏覽這份文件並給您意見回饋。
+<p>您的顧問將會盡快瀏覽這份文件並給您意見回饋。</p>
 
-有任何更新，請至 ${BASE_DOCUMENT_URL} 查看細節。
+<p>有任何更新，請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 查看細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-you have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.
+<p>you have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} .</p>
 
-Your agent will review it as soon as possible.
+<p>Your agent will review it as soon as possible.</p>
 
-Keep tracking your base documents progress: ${BASE_DOCUMENT_URL}
+<p>Keep tracking your base documents progress: <a href="${BASE_DOCUMENT_URL}">Base Documents</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -353,27 +353,27 @@ ${TAIGER_SIGNATURE}
 const sendUploadedVPDEmail = async (recipient, msg) => {
   const subject = 'VPD is successfully uploaded!';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-您已於 ${msg.uploaded_updatedAt} 成功上傳
+<p>您已於 ${msg.uploaded_updatedAt} 成功上傳</p>
 
-${msg.uploaded_documentname} 。
+<p>${msg.uploaded_documentname} 。</p>
 
-有任何 VPD 更新，請至 ${UNI_ASSIST_FOR_STUDENT_URL}
+<p>有任何 VPD 更新，請至 <a href="${UNI_ASSIST_FOR_STUDENT_URL}">Student Uni-Assist</a></p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-you have successfully uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.
+<p>you have successfully uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.</p>
 
-Keep tracking your VPD here: ${UNI_ASSIST_FOR_STUDENT_URL}
+<p>Keep tracking your VPD here: <a href="${UNI_ASSIST_FOR_STUDENT_URL}">Student Uni-Assist</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -383,31 +383,31 @@ ${TAIGER_SIGNATURE}
 const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
   const subject = `Your ${msg.uploaded_documentname} is successfully uploaded!`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-您的顧問 ${msg.agent_firstname} ${msg.agent_lastname} 已幫您上傳 ${msg.uploaded_documentname} 
+<p>您的顧問 ${msg.agent_firstname} ${msg.agent_lastname} 已幫您上傳 ${msg.uploaded_documentname} </p>
 
-於 ${msg.uploaded_updatedAt} 。
+<p>於 ${msg.uploaded_updatedAt} 。 </p>
 
-請至 ${BASE_DOCUMENT_URL} 並查看細節。
+<p>請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 並查看細節。</p>
 
-${CONTACT_AGENT}
+<p>${CONTACT_AGENT}</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
+<p>your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you. </p>
 
-Please go to ${BASE_DOCUMENT_URL} and see the details.
+<p>Please go to <a href="${BASE_DOCUMENT_URL}">Base Documents</a> and see the details.</p>
 
-If you have any question, feel free to contact your agent.
+<p>If you have any question, feel free to contact your agent.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -417,31 +417,31 @@ ${TAIGER_SIGNATURE}
 const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
   const subject = '您的 VPD 已成功上傳 / Your VPD is successfully uploaded!';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的顧問 ${msg.agent_firstname} ${msg.agent_lastname} 已幫您上傳 ${msg.uploaded_documentname} 
+<p>您的顧問 ${msg.agent_firstname} ${msg.agent_lastname} 已幫您上傳 ${msg.uploaded_documentname} </p>
 
-於${msg.uploaded_updatedAt} 。
+<p>於${msg.uploaded_updatedAt} 。</p>
 
-請至 ${UNI_ASSIST_FOR_STUDENT_URL} 並查看細節。
+<p>請至 <a href="${UNI_ASSIST_FOR_STUDENT_URL}">Student Uni-Assit</a> 並查看細節。</p>
 
-${CONTACT_AGENT}
+<p>${CONTACT_AGENT}</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.
+<p>your agent ${msg.agent_firstname} ${msg.agent_lastname} have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} for you.</p>
 
-Please go to ${UNI_ASSIST_FOR_STUDENT_URL} and see the details.
+<p>Please go to <a href="${UNI_ASSIST_FOR_STUDENT_URL}">Student Uni-Assist</a> and see the details.</p>
 
-If you have any question, feel free to contact your agent.
+<p>If you have any question, feel free to contact your agent.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -451,33 +451,35 @@ ${TAIGER_SIGNATURE}
 const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
   const subject = `New ${msg.uploaded_documentname} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
+<p>您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
     msg.uploaded_documentname
-  }
+  } </p>
 
-於 ${msg.uploaded_updatedAt} 。
+<p>於 ${msg.uploaded_updatedAt} 。</p>
 
-請至 ${BASE_DOCUMENT_FOR_AGENT_URL(msg.student_id)} 確認細節。
+<p>請至 ${BASE_DOCUMENT_FOR_AGENT_URL(msg.student_id)} 確認細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
+<p>your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
     msg.uploaded_documentname
-  }
+  } </p>
 
-on ${msg.uploaded_updatedAt}.
+<p>on ${msg.uploaded_updatedAt}.</p>
 
-Please go to ${BASE_DOCUMENT_FOR_AGENT_URL(msg.student_id)} and see the details.
+<p>Please go to ${BASE_DOCUMENT_FOR_AGENT_URL(
+    msg.student_id
+  )} and see the details.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student/agent/editor
 
@@ -487,33 +489,37 @@ ${TAIGER_SIGNATURE}
 const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
   const subject = `新 VPD 上傳從 ${msg.student_firstname} ${msg.student_lastname} / New VPD uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
+<p>您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
     msg.uploaded_documentname
-  }
+  } </p>
 
-在 ${msg.uploaded_updatedAt}.
+<p>在 ${msg.uploaded_updatedAt}.</p>
 
-請至 ${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)} 確認細節。
+<p>請至 <a href="${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)}">${
+    msg.student_firstname
+  } ${msg.student_lastname} Uni-Assist</a> 確認細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
+<p>your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
     msg.uploaded_documentname
-  }
+  } </p>
 
-on ${msg.uploaded_updatedAt}.
+<p>on ${msg.uploaded_updatedAt}.</p>
 
-Please go to ${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)} and see the details.
+<p>Please go to <a href="${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)}">${
+    msg.student_firstname
+  } ${msg.student_lastname} Uni-Assist</a> and see the details.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student/agent/editor
 
@@ -526,63 +532,61 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
   if (msg.status === 'rejected') {
     subject = `文件狀態更新：請再次上傳 ${msg.category} / File Status changes: please upload ${msg.category} again`;
     message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-由於下列原因, 請再次上傳 ${msg.category}:
+<p>由於下列原因, 請再次上傳 ${msg.category}:</p>
 
-${msg.message}
+<p>${msg.message}</p>
 
+<p>請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 確認被拒絕原因，並刪除舊檔案，然後再次上傳。</p>
 
-請至 ${BASE_DOCUMENT_URL} 確認細節。
+<p>如果有任何疑問，請聯絡您的顧問。 </p>
 
-如果有任何疑問，請聯絡您的顧問。 
+<p>${TAIGER_SIGNATURE}</p>
 
-${TAIGER_SIGNATURE}
+<p>${SPLIT_LINE}</p>
 
-${SPLIT_LINE}
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>due to the following reason, please upload ${msg.category} again:</p>
 
-due to the following reason, please upload ${msg.category} again:
+<p>${msg.message}</p>
 
-${msg.message}
+<p>Please go to <a href="${BASE_DOCUMENT_URL}">Base Documents</a> and check again the reason and then delete it before upload it again.</p>
 
+<p>If you have any question, please contact your agent. </p>
 
-Please go to ${BASE_DOCUMENT_URL} and see the details.
-
-If you have any question, please contact your agent. 
-
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student
   } else {
     subject = `文件狀態更新：${msg.category} 合格 / File Status changes: ${msg.category} is valid`;
     message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的顧問已經看過您上傳的文件 ${msg.category}，文字清楚、無資訊遺漏
+<p>您的顧問已經看過您上傳的文件 ${msg.category}，文字清楚、無資訊遺漏</p>
 
-並且該文件可以拿來做為申請!
+<p>並且該文件可以拿來做為申請!</p>
 
-請至 ${BASE_DOCUMENT_URL} 並再次確認。
+<p>請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 並再次確認。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-your uploaded file ${msg.category} is successfully checked by your agent
+<p>your uploaded file ${msg.category} is successfully checked by your agent</p>
 
-and it can be used for the application! 
+<p>and it can be used for the application! </p>
 
-Please go to ${BASE_DOCUMENT_URL} and doueble check the details.
+<p>Please go to <a href="${BASE_DOCUMENT_URL}">Base Documents</a> and doueble check the details.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student
   }
@@ -593,29 +597,29 @@ ${TAIGER_SIGNATURE}
 const informAgentNewStudentEmail = async (recipient, msg) => {
   const subject = `新學生 ${msg.std_firstname} ${msg.std_lastname} 已被指派給您 / New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.std_firstname} ${msg.std_lastname} 將被指配給您。
+<p>${msg.std_firstname} ${msg.std_lastname} 將被指配給您。</p>
 
-請至 ${STUDENT_BACKGROUND_FOR_AGENT_URL(
+<p>請至 ${STUDENT_BACKGROUND_FOR_AGENT_URL(
     msg.std_id
-  )} 查看他的背景問卷並與她/他打聲招呼！
+  )} 查看他的背景問卷並與她/他打聲招呼！</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.std_firstname} ${msg.std_lastname} will be your student!
+<p>${msg.std_firstname} ${msg.std_lastname} will be your student!</p>
 
-Please see the survey ${STUDENT_BACKGROUND_FOR_AGENT_URL(msg.std_id)}
+<p>Please see the survey ${STUDENT_BACKGROUND_FOR_AGENT_URL(msg.std_id)}</p>
 
-and say hello to your student!
+<p>and say hello to your student!</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -633,25 +637,25 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
     }
   }
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${agent} 將會是您的顧問。
+<p>${agent} 將會是您的顧問。</p>
 
-請至 ${ORIGIN} 並開始準備您的文件。
+<p>請至 <a href="${ORIGIN}">TaiGer portal</a> 並開始準備您的文件。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${agent} will be your agent!
+<p>${agent} will be your agent!</p>
 
-Please go to ${ORIGIN} , and prepare your documents!
+<p>Please go to <a href="${ORIGIN}">TaiGer portal</a> , and prepare your documents!</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -661,15 +665,15 @@ ${TAIGER_SIGNATURE}
 const informEditorNewStudentEmail = async (recipient, msg) => {
   const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.std_firstname} ${msg.std_lastname} will be your student!
+<p>${msg.std_firstname} ${msg.std_lastname} will be your student!</p>
 
-Please go to ${CVMLRL_FOR_EDITOR_URL(
+<p>Please go to ${CVMLRL_FOR_EDITOR_URL(
     msg.std_id
-  )} , and check if the CV task is created and say hello to your student!
+  )} , and check if the CV task is created and say hello to your student!</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -681,31 +685,31 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
   var editor;
   for (let i = 0; i < msg.editors.length; i++) {
     if (i === 0) {
-      editor = msg.editors[i].firstname + ' ' + msg.editors[i].lastname;
+      editor = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
     } else {
-      editor += ', ' + msg.editors[i].firstname + ' ' + msg.editors[i].lastname;
+      editor += `, ${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
     }
   }
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${editor} 將會是您的外語文件編輯，她/他會輔助您完成您的動機信、推薦信、個人履歷。
+<p>${editor} 將會是您的外語文件編輯，她/他會輔助您完成您的動機信、推薦信、個人履歷。</p>
 
-請至 ${ORIGIN} 開始準備您的第一份文件吧！
+<p>請至 <a href="${ORIGIN}">TaiGer portal</a> 開始準備您的第一份文件吧！</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${editor} will be your editor!
+<p>${editor} will be your editor!</p>
 
-Please go to ${ORIGIN} , and prepare your first documents!
+<p>Please go to <a href="${ORIGIN}">TaiGer portal</a> , and prepare your first documents!</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -717,43 +721,37 @@ const createApplicationToStudentEmail = async (recipient, msg) => {
   let programList;
   for (let i = 0; i < msg.programs.length; i += 1) {
     if (i === 0) {
-      programList = `
-      ${msg.programs[i].school} - ${msg.programs[i].program_name}
+      programList = `<ul><li>${msg.programs[i].school} - ${msg.programs[i].program_name}</li>
       `;
     } else {
-      programList += `
-      ${msg.programs[i].school} - ${msg.programs[i].program_name}
-      `;
+      programList += `<li>${msg.programs[i].school} - ${msg.programs[i].program_name}</li>`;
     }
   }
+  programList += '</ul>';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.agent_firstname} ${msg.agent_lastname} 顧問指派建議的學校學程給您：
-
-
-${programList}
-
-
-請至 ${STUDENT_APPLICATION_URL} 查看細節並選擇是否決定要申請 (Decided: Yes / No)。
-
-${TAIGER_SIGNATURE}
-
-${SPLIT_LINE}
-
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-${msg.agent_firstname} ${msg.agent_lastname} has assigned programs for you:
-
+<p>${msg.agent_firstname} ${msg.agent_lastname} 顧問指派建議的學校學程給您：</p>
 
 ${programList}
 
+<p>請至 <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> 查看細節並選擇是否決定要申請 (Decided: Yes / No)。</p>
 
-Please go to ${STUDENT_APPLICATION_URL} and mark it as decided if these programs look good to you.
+<p>${TAIGER_SIGNATURE}</p>
 
-${TAIGER_SIGNATURE}
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.agent_firstname} ${msg.agent_lastname} has assigned programs for you:</p>
+
+${programList}
+
+<p>Please go to <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> and mark it as decided if these programs look good to you.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -764,25 +762,25 @@ const updateAcademicBackgroundEmail = async (recipient) => {
   const subject =
     'TaiGer Portal 學術背景更新成功！ TaiGer Portal Academic Background updated successfully!';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-您已成功更新您的學術背景資訊！
+<p>您已成功更新您的學術背景資訊！</p>
 
-若有新的資訊，請再次到 ${STUDENT_SURVEY_URL} 更新資訊。
+<p>若有新的資訊，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新資訊。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-You have updated your academic background information successfully!
+<p>You have updated your academic background information successfully!</p>
 
-If there is nw update, please go to ${STUDENT_SURVEY_URL} and synchronize the information.
+<p>If there is nw update, please go to <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> and synchronize the information.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -793,27 +791,27 @@ const updateLanguageSkillEmail = async (recipient) => {
   const subject =
     '語言能力與檢定資訊更新成功 / Language skills updated successfully';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您已成功更新您的語言能力資訊與檢定！
+<p>您已成功更新您的語言能力資訊與檢定！</p>
 
-若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 ${STUDENT_SURVEY_URL} 更新資訊。
+<p>若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新資訊。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-You have updated your Language skills information successfully!
+<p>You have updated your Language skills information successfully!</p>
 
-If there is nw update (for example: languages test passed or new test date registered) 
+<p>If there is nw update (for example: languages test passed or new test date registered) </p>
 
-please go to ${STUDENT_SURVEY_URL} and synchronize the information.
+Please go to <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> and synchronize the information.
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -824,25 +822,25 @@ const updateLanguageSkillEmailFromTaiGer = async (recipient, msg) => {
   const subject =
     '語言能力與檢定資訊更新成功 /Language skills updated successfully';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.sender_firstname} ${msg.sender_lastname} 成功更新您的語言能力與檢定資訊與檢定。
+<p>${msg.sender_firstname} ${msg.sender_lastname} 成功更新您的語言能力與檢定資訊與檢定。</p>
 
-若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 ${STUDENT_SURVEY_URL} 更新語言檢定資訊。
+<p>若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新語言檢定資訊。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.sender_firstname} ${msg.sender_lastname} updated your Language skills information successfully!
+<p>${msg.sender_firstname} ${msg.sender_lastname} updated your Language skills information successfully!</p>
 
-Please double check in ${STUDENT_SURVEY_URL} 
+<p>Please double check in <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -853,25 +851,25 @@ const updateApplicationPreferenceEmail = async (recipient) => {
   const subject =
     '申請學程偏好資訊更新成功 / Application preference updated successfully';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您成功更新您的申請偏好資訊。
+<p>您成功更新您的申請偏好資訊。</p>
 
-若有更新，請至 ${STUDENT_SURVEY_URL} 
+<p>若有更新，請至 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-You have updated your application preference information successfully!
+<p>You have updated your application preference information successfully!</p>
 
-If there is new update, please go to ${STUDENT_SURVEY_URL} 
+<p>If there is new update, please go to <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -881,25 +879,25 @@ ${TAIGER_SIGNATURE}
 const updatePersonalDataEmail = async (recipient, msg) => {
   const subject = '個人基本資料更新成功 / Personal data updated successfully';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您的個人基本資料已更新成功。
+<p>您的個人基本資料已更新成功。</p>
 
-請至 ${SETTINGS_URL} 查看細節。
+<p>請至 <a href="${SETTINGS_URL}">Setting</a> 查看細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-You have updated your personal data successfully!
+<p>You have updated your personal data successfully!</p>
 
-Please double check in ${SETTINGS_URL} 
+<p>Please double check in <a href="${SETTINGS_URL}">Setting</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -910,25 +908,25 @@ const updateCredentialsEmail = async (recipient, msg) => {
   const subject =
     'TaiGer Portal 密碼更新成功 / TaiGer Portal passwords updated successfully';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-您已成功更新您的 TaiGer Portal 密碼。
+<p>您已成功更新您的 TaiGer Portal 密碼。</p>
 
-請使用您的新密碼登入 TaiGer Portal： ${ORIGIN} 
+<p>請使用您的新密碼登入 TaiGer Portal： <a href="${ORIGIN}">TaiGer portal</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-You have updated your passwords successfully!
+<p>You have updated your passwords successfully!</p>
 
-Please make sure you can login in ${ORIGIN} 
+<p>Please make sure you can login in <a href="${ORIGIN}">TaiGer portal</a> </p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -941,80 +939,74 @@ const UpdateStudentApplicationsEmail = async (recipient, msg) => {
   for (let i = 0; i < msg.student_applications.length; i++) {
     if (msg.new_app_decided_idx.includes(i)) {
       if (i === 0) {
-        applications_name =
-          msg.student_applications[i].programId.school +
-          ' ' +
-          msg.student_applications[i].programId.program_name;
+        applications_name = `<ul><li>${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}</li>`;
       } else {
-        applications_name += `\
-        
-        ${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}`;
+        applications_name += `<li>${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}</li>`;
       }
     }
   }
   if (applications_name === '') {
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname},
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.sender_firstname} ${msg.sender_lastname} 更新了是否申請的學程狀態。
+<p>${msg.sender_firstname} ${msg.sender_lastname} 更新了是否申請的學程狀態。</p>
 
-請至 ${STUDENT_APPLICATION_URL} 查看細節。
+<p>請至 <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> 查看細節。</p>
 
-並且到 ${CVMLRL_CENTER_URL} 查看對於上述申請學程的新指派的文件任務細節。
+<p>並且到 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看對於上述申請學程的新指派的文件任務細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.sender_firstname} ${msg.sender_lastname} has updated or declined some applications.
+<p>${msg.sender_firstname} ${msg.sender_lastname} has updated or declined some applications.</p>
 
-Please go to ${STUDENT_APPLICATION_URL} and see details.
+<p>Please go to <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> and see details.</p>
 
-Also go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
+<p>Also go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
     return sendEmail(recipient, subject, message);
   }
 
+  applications_name += '</ul>';
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.sender_firstname} ${msg.sender_lastname} 更新了您以下學程的申請狀態：
-
-${applications_name}
-
-
-
-請至 ${STUDENT_APPLICATION_URL} 並查看細節。
-
-並且到 ${CVMLRL_CENTER_URL} 查看對於上述申請學程的新指派的文件任務細節。
-
-${TAIGER_SIGNATURE}
-
-${SPLIT_LINE}
-
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-${msg.sender_firstname} ${msg.sender_lastname} has updated applications 
+<p>${msg.sender_firstname} ${msg.sender_lastname} 更新了您以下學程的申請狀態：</p>
 
 ${applications_name}
 
-status.
+<p>請至 <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> 並查看細節。</p>
 
-Please go to ${STUDENT_APPLICATION_URL} and see details.
+並且到 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看對於上述申請學程的新指派的文件任務細節。
 
-Also go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
+<p>${TAIGER_SIGNATURE}</p>
 
-${TAIGER_SIGNATURE}
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.sender_firstname} ${msg.sender_lastname} has updated applications </p>
+
+${applications_name}
+
+<p>status.</p>
+
+<p>Please go to <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> and see details.</p>
+
+<p>Also go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1028,30 +1020,28 @@ const NewMLRLEssayTasksEmail = async (recipient, msg) => {
   for (let i = 0; i < msg.student_applications.length; i++) {
     if (msg.new_app_decided_idx.includes(i)) {
       if (i === 0) {
-        applications_name =
-          msg.student_applications[i].programId.school +
-          ' ' +
-          msg.student_applications[i].programId.program_name;
+        applications_name = `<ul><li>${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}</li>`;
       } else {
-        applications_name += `\
-        
-        ${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}`;
+        applications_name += `<li>${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}</li>`;
       }
     }
   }
+  if (applications_name !== '') {
+    applications_name += '</ul>';
+  }
 
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.sender_firstname} ${msg.sender_lastname} has decided applications 
+<p>${msg.sender_firstname} ${msg.sender_lastname} has decided applications </p>
 
 ${applications_name}. 
 
-The relavant documents tasks are now assigned to you.
+<p>The relavant documents tasks are now assigned to you.</p>
 
-Please go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1065,32 +1055,30 @@ const NewMLRLEssayTasksEmailFromTaiGer = async (recipient, msg) => {
   for (let i = 0; i < msg.student_applications.length; i += 1) {
     if (msg.new_app_decided_idx.includes(i)) {
       if (i === 0) {
-        applications_name =
-          msg.student_applications[i].programId.school +
-          ' ' +
-          msg.student_applications[i].programId.program_name;
+        applications_name = `<ul><li>${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}</li>`;
       } else {
-        applications_name += `\
-        
-        ${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}`;
+        applications_name += `<li>${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}</li>`;
       }
     }
   }
+  if (applications_name !== '') {
+    applications_name += '</ul>';
+  }
 
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.sender_firstname} ${msg.sender_lastname} has decided applications 
+<p>${msg.sender_firstname} ${msg.sender_lastname} has decided applications </p>
 
 ${applications_name}
 
-for ${msg.student_firstname} ${msg.student_lastname}. 
+<p>for ${msg.student_firstname} ${msg.student_lastname}. </p>
 
-The relavant documents tasks are now assigned to you.
+<p>The relavant documents tasks are now assigned to you.</p>
 
-Please go to ${CVMLRL_CENTER_URL} and see the new assigned tasks details for the applications above.
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1101,35 +1089,33 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} 新增了訊息 > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has a new update > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.writer_firstname} ${msg.writer_lastname} 對於 
+<p>${msg.writer_firstname} ${msg.writer_lastname} 對於 </p>
 
-${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}
+<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</p>
 
-更新了訊息，於 ${msg.uploaded_updatedAt} 。
+<p>更新了訊息，於 ${msg.uploaded_updatedAt} 。</p>
 
+<p>請至 TaiGer Portal <a href="${thread_url}">${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</a> 並查看新訊息。 </p>
 
-請至 TaiGer Portal ${thread_url} 並查看新訊息。 
+<p>${TAIGER_SIGNATURE}</p>
 
-${TAIGER_SIGNATURE}
+<p>${SPLIT_LINE}</p>
 
-${SPLIT_LINE}
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>${msg.writer_firstname} ${msg.writer_lastname} has a new update for </p>
 
-${msg.writer_firstname} ${msg.writer_lastname} has a new update for 
+<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</p>
 
-${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}
+<p>on ${msg.uploaded_updatedAt}.</p>
 
-on ${msg.uploaded_updatedAt}.
+<p>Please go to TaiGer Portal <a href="${thread_url}">${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</a> and check the updates. </p>
 
-
-Please go to TaiGer Portal ${thread_url} and check the updates. 
-
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1138,37 +1124,36 @@ ${TAIGER_SIGNATURE}
 
 const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} 給了了新訊息 > ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.uploaded_documentname}!`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} 給了了新訊息 > ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}!`;
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.writer_firstname} ${msg.writer_lastname} 給了一則新訊息： 
+<p>${msg.writer_firstname} ${msg.writer_lastname} 給了一則新訊息： </p>
 
-${msg.uploaded_documentname}
+<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.uploaded_documentname}</p>
 
-於 ${msg.uploaded_updatedAt}。
-
-
-請至 TaiGer Portal ${thread_url} 並查看細節。
-
-${TAIGER_SIGNATURE}
-
-${SPLIT_LINE}
-
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-${msg.writer_firstname} ${msg.writer_lastname} has a new update for 
-
-${msg.uploaded_documentname}
-
-on ${msg.uploaded_updatedAt}.
+<p>於 ${msg.uploaded_updatedAt}。</p>
 
 
-Please go to TaiGer Portal ${thread_url} and check the updates. 
+<p>請至 TaiGer Portal <a href="${thread_url}">${msg.student_firstname} ${msg.student_lastname}  - ${msg.uploaded_documentname}</a> 並查看細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.writer_firstname} ${msg.writer_lastname} has a new update for </p>
+
+<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.uploaded_documentname}</p>
+
+<p>on ${msg.uploaded_updatedAt}.</p>
+
+<p>Please go to TaiGer Portal <a href="${thread_url}">${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}</a> and check the updates. </p>
+
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1179,43 +1164,47 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
   if (msg.isFinalVersion) {
     const subject = `[Close] ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} 已完成 / ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 對於學生 ${
-      recipient.firstname
-    } ${recipient.lastname} 已標示 ${msg.uploaded_documentname} 為完成。
+<p>${msg.editor_firstname} ${msg.editor_lastname} 對於學生 ${
+      msg.student_firstname
+    } ${msg.student_lastname} 已標示 ${msg.uploaded_documentname} 為完成，
 
-於 ${msg.uploaded_updatedAt}.
+於 ${msg.uploaded_updatedAt}. </p>
 
-此文件已可以拿來作申請使用。 
+<p>此文件已可以拿來作申請使用。 </p>
 
-請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節
+<p>請至 <a href="${CVMLRL_FOR_EDITOR_URL(
+      msg.student_id
+    )}">TaiGer Portal</a> 查看細節</p>
 
-如果您有任何問題，請聯絡您的文件編輯 Editor。
+<p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} have finalized ${
+<p>${msg.editor_firstname} ${msg.editor_lastname} have finalized ${
       msg.uploaded_documentname
-    } 
+    } </p>
 
-for student ${recipient.firstname} ${recipient.lastname}
+<p>for student ${msg.student_firstname} ${msg.student_lastname} </p>
 
-on ${msg.uploaded_updatedAt}.
+<p>on ${msg.uploaded_updatedAt}.</p>
 
-This document is ready for the application. 
+<p>This document is ready for the application. </p>
 
-Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
+<p>Please go to <a href="${CVMLRL_FOR_EDITOR_URL(
+      msg.student_id
+    )}">TaiGer Portal</a> for more details.</p>
 
-If you have any question, feel free to contact your editor.
+<p>If you have any question, feel free to contact your editor.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1223,9 +1212,9 @@ ${TAIGER_SIGNATURE}
   } else {
     const subject = `${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} 未完成 / ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is not finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
 ${msg.editor_firstname} ${msg.editor_lastname} 標示 ${
       msg.uploaded_documentname
@@ -1233,25 +1222,29 @@ ${msg.editor_firstname} ${msg.editor_lastname} 標示 ${
 
 為未完成。
 
-請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節。
+<p>請至 <a href="${CVMLRL_FOR_EDITOR_URL(
+      msg.student_id
+    )}">TaiGer Portal</a> 查看細節。</p>
 
-如果您有任何問題，請聯絡您的文件編輯 Editor 或顧問。
+<p>如果您有任何問題，請聯絡您的文件編輯 Editor 或顧問。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
   
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
+<p>${msg.editor_firstname} ${msg.editor_lastname} set ${
+      msg.uploaded_documentname
+    } 
 
-as not finished.
+as not finished.</p>
 
-Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
+<p>Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.</p>
 
-If you have any question, feel free to contact your editor.
+<p>If you have any question, feel free to contact your editor.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1263,39 +1256,37 @@ const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
   if (msg.isFinalVersion) {
     const subject = `您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 將 ${msg.uploaded_documentname} 列為已完成
+<p>${msg.editor_firstname} ${msg.editor_lastname} 將 ${msg.uploaded_documentname} 列為已完成
 
-於 ${msg.uploaded_updatedAt} 。
+於 ${msg.uploaded_updatedAt} 。</p>
 
-此文件已可以拿來作申請使用。 
+<p>此文件已可以拿來作申請使用。 </p>
 
-請至${CVMLRL_CENTER_URL} 查看細節
+<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
 
-如果您有任何問題，請聯絡您的文件編輯 Editor。
+<p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} 
+<p>your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} 
 
-on ${msg.uploaded_updatedAt} 
+on ${msg.uploaded_updatedAt} for you.</p>
 
-for you.
+<p>This document is ready for the application. </p>
 
-This document is ready for the application. 
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
 
-Please go to ${CVMLRL_CENTER_URL} for more details.
+<p>If you have any question, feel free to contact your editor.</p>
 
-If you have any question, feel free to contact your editor.
-
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1303,33 +1294,33 @@ ${TAIGER_SIGNATURE}
   } else {
     const subject = `您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 標記 ${msg.uploaded_documentname} 
+<p>${msg.editor_firstname} ${msg.editor_lastname} 標記 ${msg.uploaded_documentname} 
 
-為未完成。 
+為未完成。 </p>
 
-請至 ${CVMLRL_CENTER_URL} 查看細節
+<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
 
-如果您有任何問題，請聯絡您的文件編輯 Editor。
+<p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
+<p>${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
 
-as not finished.
+as not finished.</p>
 
-Please go to ${CVMLRL_CENTER_URL} for more details.
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
 
-If you have any question, feel free to contact your editor.
+<p>If you have any question, feel free to contact your editor.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1344,43 +1335,41 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
   if (msg.isFinalVersion) {
     const subject = `您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 已完成
+<p>${msg.editor_firstname} ${msg.editor_lastname} 已完成</p>
+
+<p>${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
+
+於 ${msg.uploaded_updatedAt} </p>
+
+<p>此份最終文件可以拿來作為申請。 </p>
+
+<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
+
+<p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.editor_firstname} ${msg.editor_lastname} have finalized
 
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
 
-於 ${msg.uploaded_updatedAt} 
-
-此份最終文件可以拿來作為申請。 
-
-請至 ${CVMLRL_CENTER_URL} 查看細節
-
-如果您有任何問題，請聯絡您的文件編輯 Editor。
-
-${TAIGER_SIGNATURE}
-
-${SPLIT_LINE}
-
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-${msg.editor_firstname} ${msg.editor_lastname} have finalized
-
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
-
-on ${msg.uploaded_updatedAt} 
-
-for you.
+on ${msg.uploaded_updatedAt} for you.</p>
 
 This document is ready for the application. 
 
-Please go to ${CVMLRL_CENTER_URL} for more details.
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
 
-If you have any question, feel free to contact your editor.
+<p>If you have any question, feel free to contact your editor.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1388,37 +1377,37 @@ ${TAIGER_SIGNATURE}
   } else {
     const subject = `您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 將
-
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
-
-設為未完成。
-
-請至 ${CVMLRL_CENTER_URL} 查看細節
-
-如果您有任何問題，請聯絡您的文件編輯 Editor。
-
-${TAIGER_SIGNATURE}
-
-${SPLIT_LINE}
-
-Hi ${recipient.firstname} ${recipient.lastname}, 
-
-your editor ${msg.editor_firstname} ${msg.editor_lastname} set
+<p>${msg.editor_firstname} ${msg.editor_lastname} 將
 
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
 
-as not finished.
+設為未完成。</p>
 
-Please go to ${CVMLRL_CENTER_URL} for more details.
+<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
 
-If you have any question, feel free to contact your editor.
+<p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>your editor ${msg.editor_firstname} ${msg.editor_lastname} set
+
+${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
+
+as not finished.</p>
+
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
+
+<p>If you have any question, feel free to contact your editor.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1433,41 +1422,41 @@ const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
   if (msg.isFinalVersion) {
     const subject = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} 已完成 / ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 已完成
+<p>${msg.editor_firstname} ${msg.editor_lastname} 已完成
 
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 於 ${
       msg.uploaded_updatedAt
     } 
 
-給學生 ${msg.student_firstname} ${msg.student_lastname}.
+給學生 ${msg.student_firstname} ${msg.student_lastname}.</p>
 
-請再次確認此文件，並確認是否可以結案此申請. 
+<p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
-請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節。
+<p>請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} has finalized
+<p>${msg.editor_firstname} ${msg.editor_lastname} has finalized
 
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} on ${
       msg.uploaded_updatedAt
     } 
 
-for ${msg.student_firstname} ${msg.student_lastname}.
+for ${msg.student_firstname} ${msg.student_lastname}.</p>
 
-Double check this document and finalize the application if applicable. 
+<p>Double check this document and finalize the application if applicable. </p>
 
-Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
+<p>Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1475,41 +1464,41 @@ ${TAIGER_SIGNATURE}
   } else {
     const subject = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} 未完成 / ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is not finished!`;
     const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-嗨 ${recipient.firstname} ${recipient.lastname}, 
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 設
+<p>${msg.editor_firstname} ${msg.editor_lastname} 設
 
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 為未完成
 
 於 ${msg.uploaded_updatedAt} 
 
-給學生 ${msg.student_firstname} ${msg.student_lastname}.
+給學生 ${msg.student_firstname} ${msg.student_lastname}.</p>
 
-請再次確認此文件，並確認是否可以結案此申請. 
+<p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
-請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節。
+<p>請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} set
+<p>${msg.editor_firstname} ${msg.editor_lastname} set
 
 ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} as not finished
 
-on ${msg.uploaded_updatedAt} 
+on ${msg.uploaded_updatedAt} for ${msg.student_firstname} ${
+      msg.student_lastname
+    }.</p>
 
-for ${msg.student_firstname} ${msg.student_lastname}.
+<p>Double check this document and finalize the application if applicable. </p>
 
-Double check this document and finalize the application if applicable. 
+<p>Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.</p>
 
-Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.
-
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1523,20 +1512,19 @@ const assignDocumentTaskToEditorEmail = async (recipient, msg) => {
   const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
     .href;
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},
 
-is assigned to you 
+<p>is assigned to you </p>
 
-on ${msg.updatedAt}.
+<p>on ${msg.updatedAt}.</p>
 
+<p>Please go to TaiGer Portal ${THREAD_LINK} and check the updates. </p>
 
-Please go to TaiGer Portal ${THREAD_LINK} and check the updates. 
+<p>If you have any question, feel free to contact your editor.</p>
 
-If you have any question, feel free to contact your editor.
-
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1550,41 +1538,41 @@ const assignDocumentTaskToStudentEmail = async (recipient, msg) => {
     .href;
 
   const message = `\
-${ENGLISH_BELOW}
+<p>${ENGLISH_BELOW}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-以下文件任務
+<p>以下文件任務</p>
 
-${msg.documentname},
+<p>${msg.documentname},
 
-於 ${msg.updatedAt} 指派給你。
+於 ${msg.updatedAt} 指派給你。</p>
 
-請至 TaiGer Template 下載中心 ${TEMPLATE_DOWNLOAD_URL} 下載模板。
+<p>請至 TaiGer Template 下載中心 <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a> 下載模板。</p>
 
-填寫好後並到 TaiGer Portal ${THREAD_LINK} 上傳填完的模板，讓您的 Editor 可以盡快開始修改您的文件。 
+<p>填寫好後並到 TaiGer Portal ${THREAD_LINK} 上傳填完的模板，讓您的 Editor 可以盡快開始修改您的文件。</p> 
 
-如果您有任何問題，請聯絡您的文件編輯 Editor 或顧問。
+<p>如果您有任何問題，請聯絡您的文件編輯 Editor 或顧問。</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
-${SPLIT_LINE}
+<p>${SPLIT_LINE}</p>
 
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.documentname},
+<p>${msg.documentname},
 
 is assigned to you 
 
-on ${msg.updatedAt}.
+on ${msg.updatedAt}.</p>
 
-Please go to TaiGer Template Download Center ${TEMPLATE_DOWNLOAD_URL} to download relavant template。
+<p>Please go to <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a> to download relavant template。</p>
 
-Fill the template and go to TaiGer Portal ${THREAD_LINK} and upate your filled template for editor's modification. 
+<p>Fill the template and go to TaiGer Portal ${THREAD_LINK} and upate your filled template for editor's modification. </p>
 
-If you have any question, feel free to contact your editor.
+<p>If you have any question, feel free to contact your editor.</p>
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1598,7 +1586,7 @@ const StudentTasksReminderEmail = async (recipient, payload) => {
   );
 
   const { rejected_base_documents, missing_base_documents } =
-    ml_rl_essay_summary(payload.student);
+    base_documents_summary(payload.student);
 
   const base_documents = `
 
@@ -1614,18 +1602,18 @@ const StudentTasksReminderEmail = async (recipient, payload) => {
   // TODO: uni-assist if missing
   // TODO if english not passed and not registering any date, inform them
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unsubmitted_applications}
 
 ${base_documents}
 
-Please go to ${BASE_DOCUMENT_URL} and upload them.
+<p>Please go to <a href="${BASE_DOCUMENT_URL}">Base Documents</a> and upload them.</p>
 
 
 ${unread_cv_ml_rl_thread}
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1640,7 +1628,7 @@ const AgentTasksReminderEmail = async (recipient, payload) => {
         payload.students[i]
       );
       const { rejected_base_documents, missing_base_documents } =
-        ml_rl_essay_summary(payload.students[i]);
+        base_documents_summary(payload.students[i]);
       const base_documents = `
 
       ${missing_base_documents}
@@ -1653,7 +1641,7 @@ const AgentTasksReminderEmail = async (recipient, payload) => {
         payload.students[i]
       );
       student_i = `
-      ${payload.students[i].firstname} ${payload.students[i].lastname},
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
 
       ${unsubmitted_applications}
 
@@ -1666,7 +1654,7 @@ const AgentTasksReminderEmail = async (recipient, payload) => {
         payload.students[i]
       );
       const { rejected_base_documents, missing_base_documents } =
-        ml_rl_essay_summary(payload.students[i]);
+        base_documents_summary(payload.students[i]);
       const base_documents = `
 
       ${missing_base_documents}
@@ -1679,7 +1667,7 @@ const AgentTasksReminderEmail = async (recipient, payload) => {
         payload.agent
       );
       student_i += `
-      ${payload.students[i].firstname} ${payload.students[i].lastname},
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
 
       ${unsubmitted_applications}
 
@@ -1691,13 +1679,13 @@ const AgentTasksReminderEmail = async (recipient, payload) => {
   }
 
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-The following is the overview of the current status for your each student:
+<p>The following is the overview of the current status for your each student:</p>
 
 ${student_i}
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1710,10 +1698,10 @@ const EditorTasksReminderEmail = async (recipient, payload) => {
     if (i === 0) {
       const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
         payload.students[i],
-        payload.students[i]
+        payload.editor
       );
       student_i = `
-      ${payload.students[i].firstname} ${payload.students[i].lastname},
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
       
       ${unread_cv_ml_rl_thread}
 `;
@@ -1723,7 +1711,7 @@ const EditorTasksReminderEmail = async (recipient, payload) => {
         payload.editor
       );
       student_i += `
-      ${payload.students[i].firstname} ${payload.students[i].lastname},
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
       
       ${unread_cv_ml_rl_thread}
     `;
@@ -1731,14 +1719,14 @@ const EditorTasksReminderEmail = async (recipient, payload) => {
   }
 
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 The following is the overview of the open tasks for your students
 
 ${student_i}
 
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1747,11 +1735,11 @@ ${TAIGER_SIGNATURE}
 const sendSomeReminderEmail = async (recipient) => {
   const subject = 'File Status changes';
   const message = `\
-Hi ${recipient.firstname} ${recipient.lastname}, 
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 Some reminder email template.
 
-${TAIGER_SIGNATURE}
+<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 

@@ -252,7 +252,11 @@ class AgentReviewing extends React.Component {
                   {this.props.student.academic_background.language
                     .english_isPassed === '--' &&
                     this.props.student.academic_background.language
-                      .german_isPassed === '--' && <p className="text-warning" title="Expected Test Date">Not needed</p>}
+                      .german_isPassed === '--' && (
+                      <p className="text-warning" title="Expected Test Date">
+                        Not needed
+                      </p>
+                    )}
                 </Link>
               </>
             )}
@@ -367,18 +371,26 @@ class AgentReviewing extends React.Component {
             >
               {is_All_Applications_Submitted ? (
                 <p className="text-warning">
-                  <IoCheckmarkCircle
-                    size={24}
-                    color="limegreen"
-                    title="complete"
-                    className="mx-2"
-                  />
-                  (
-                  {num_apps_closed >
+                  {num_apps_closed >=
                   this.props.student.applying_program_count ? (
-                    <b>{num_apps_closed}</b>
+                    <>
+                      <IoCheckmarkCircle
+                        size={24}
+                        color="limegreen"
+                        title="complete"
+                        className="mx-2"
+                      />
+                      <b>({num_apps_closed}</b>
+                    </>
                   ) : (
-                    num_apps_closed
+                    <>
+                      <AiFillQuestionCircle
+                        size={24}
+                        color="lightgray"
+                        className="mx-2"
+                      />
+                      ({num_apps_closed}
+                    </>
                   )}
                   /{this.props.student.applying_program_count})
                 </p>

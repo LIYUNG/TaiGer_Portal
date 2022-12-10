@@ -38,8 +38,9 @@ const TasksReminderEmails = async () => {
     )
     .select('-notification')
     .lean(); // Only active student, not archiv
-  const agents = await Agent.find().populate('students');
-  const editors = await Editor.find().populate('students');
+  const agents = await Agent.find();
+  const editors = await Editor.find();
+
   for (let j = 0; j < students.length; j += 1) {
     await StudentTasksReminderEmail(
       {
@@ -51,24 +52,52 @@ const TasksReminderEmails = async () => {
     );
   }
   for (let j = 0; j < agents.length; j += 1) {
-    await AgentTasksReminderEmail(
-      {
-        firstname: agents[j].firstname,
-        lastname: agents[j].lastname,
-        address: agents[j].email
-      },
-      { students: agents[j].students }
-    );
+    const agent_students = await Student.find({
+      _id: { $in: agents[j].students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select('-notification')
+      .lean()
+      .exec();
+    if (agent_students.length > 0) {
+      await AgentTasksReminderEmail(
+        {
+          firstname: agents[j].firstname,
+          lastname: agents[j].lastname,
+          address: agents[j].email
+        },
+        { students: agent_students, agent: agents[j] }
+      );
+    }
   }
   for (let j = 0; j < editors.length; j += 1) {
-    await EditorTasksReminderEmail(
-      {
-        firstname: editors[j].firstname,
-        lastname: editors[j].lastname,
-        address: editors[j].email
-      },
-      { students: editors[j].students }
-    );
+    const editor_students = await Student.find({
+      _id: { $in: editors[j].students },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select('-notification');
+    if (editor_students.length > 0) {
+      await EditorTasksReminderEmail(
+        {
+          firstname: editors[j].firstname,
+          lastname: editors[j].lastname,
+          address: editors[j].email
+        },
+        { students: editor_students, editor: editors[j] }
+      );
+    }
   }
   console.log('Reminder email sent');
 };

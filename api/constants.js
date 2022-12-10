@@ -85,21 +85,59 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
       j < student.applications[i].doc_modification_thread.length;
       j += 1
     ) {
-      if (
-        !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-        student.applications[i].doc_modification_thread[j]
-          .latest_message_left_by_id !== user._id.toString()
-      ) {
-        if (kk === 0) {
-          missing_doc_list = `
+      if (user.role === 'Editor') {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== '' &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString()
+        ) {
+          if (kk === 0) {
+            missing_doc_list = `
         The following documents are not okay, please replay your editor as soon as possible:
 
         - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
-          kk += 1;
-        } else {
-          missing_doc_list += `
+            kk += 1;
+          } else {
+            missing_doc_list += `
 
         - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+          }
+        }
+      } else if (user.role === 'Student') {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString()
+        ) {
+          if (kk === 0) {
+            missing_doc_list = `
+        The following documents are not okay, please replay your editor as soon as possible:
+
+        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+            kk += 1;
+          } else {
+            missing_doc_list += `
+
+        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+          }
+        }
+      } else if (user.role === 'Agent') {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion
+        ) {
+          if (kk === 0) {
+            missing_doc_list = `
+        The following documents are not okay, please replay your editor as soon as possible:
+
+        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+            kk += 1;
+          } else {
+            missing_doc_list += `
+
+        - ${student.applications[i].programId.school} ${student.applications[i].programId.program_name} ${student.applications[i].doc_modification_thread[j].doc_thread_id.file_type}`;
+          }
         }
       }
     }
@@ -140,11 +178,65 @@ const profile_name_list = {
   Others: 'Others'
 };
 
+const ml_rl_essay_summary = (student) => {
+  let rejected_base_documents = '';
+  let missing_base_documents = '';
+  const object_init = {};
+  for (let i = 0; i < profile_keys_list.length; i += 1) {
+    object_init[profile_keys_list[i]] = 'missing';
+  }
+  for (let i = 0; i < student.profile.length; i += 1) {
+    if (student.profile[i].status === 'uploaded') {
+      object_init[student.profile[i].name] = 'uploaded';
+    } else if (student.profile[i].status === 'accepted') {
+      object_init[student.profile[i].name] = 'accepted';
+    } else if (student.profile[i].status === 'rejected') {
+      object_init[student.profile[i].name] = 'rejected';
+    } else if (student.profile[i].status === 'missing') {
+      object_init[student.profile[i].name] = 'missing';
+    } else if (student.profile[i].status === 'notneeded') {
+      object_init[student.profile[i].name] = 'notneeded';
+    }
+  }
+  let xx = 0;
+  let yy = 0;
+  for (let i = 0; i < profile_keys_list.length; i += 1) {
+    if (object_init[profile_keys_list[i]] === 'missing') {
+      if (xx === 0) {
+        xx += 1;
+        missing_base_documents = `
+        The following base documents are still missing, please upload them as soon as possible:
+
+        - ${profile_list[profile_keys_list[i]]}`;
+      } else {
+        missing_base_documents += `
+
+        - ${profile_list[profile_keys_list[i]]}`;
+      }
+    }
+    if (object_init[profile_keys_list[i]] === 'rejected') {
+      if (yy === 0) {
+        yy += 1;
+        rejected_base_documents = `
+        The following base documents are not okay, please upload them again as soon as possible:
+         
+        - ${profile_list[profile_keys_list[i]]}`;
+      } else {
+        rejected_base_documents += `
+
+        - ${profile_list[profile_keys_list[i]]}`;
+      }
+    }
+  }
+  return { rejected_base_documents, missing_base_documents };
+};
+
 module.exports = {
   DocumentStatus,
   CheckListStatus,
   TaskStatus,
   RLs_CONSTANT,
+  ml_rl_essay_summary,
   unsubmitted_applications_summary,
   cv_ml_rl_unfinished_summary,
   profile_list,

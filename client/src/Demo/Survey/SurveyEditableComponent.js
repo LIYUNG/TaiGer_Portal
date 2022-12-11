@@ -343,13 +343,13 @@ class SurveyEditableComponent extends React.Component {
                           <Form.Label className="my-0 mx-0 text-light">
                             {this.state.academic_background.university
                               .high_school_isGraduated === 'Yes' &&
-                              'High School Gradate Year'}
+                              'High School Graduate Year'}
                             {this.state.academic_background.university
                               .high_school_isGraduated === 'pending' &&
-                              'Expected High School Gradate Year'}
+                              'Expected High School Graduate Year'}
                             {this.state.academic_background.university
                               .high_school_isGraduated === 'No' &&
-                              'High School Gradate leaved Year'}
+                              'High School Graduate leaved Year'}
                           </Form.Label>
                           <Form.Control
                             type="text"

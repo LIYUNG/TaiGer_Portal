@@ -106,7 +106,7 @@ const unsubmitted_applications_summary = (student) => {
   }
   if (unsubmitted_applications !== '') {
     unsubmitted_applications += '</ul>';
-    unsubmitted_applications += `<p>If there is any updates, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and udpate them.</p>`;
+    unsubmitted_applications += `<p>If there is any updates, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
   }
   return unsubmitted_applications;
 };
@@ -272,7 +272,7 @@ const check_languages_filled = (academic_background) => {
   return true;
 };
 
-const missing_academic_background = (student, role) => {
+const missing_academic_background = (student, user) => {
   let missing_background_fields = '';
   if (
     (!student.academic_background || !student.academic_background.university) &&
@@ -289,7 +289,17 @@ const missing_academic_background = (student, role) => {
     missing_background_fields += '<li>Expected Application Year</li>';
     missing_background_fields += '<li>Expected Application Semester</li>';
     missing_background_fields += '</ul>';
-    missing_background_fields += `<p>Please go to <a href="${STUDENT_SURVEY_URL}">Survey</a> and udpate them.</p>`;
+    if (
+      user.role === 'Agent' ||
+      user.role === 'Admin' ||
+      user.role === 'Agent'
+    ) {
+      missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
+        student._id.toString()
+      )}">Survey</a> and update them.</p>`;
+    } else {
+      missing_background_fields += `<p>Please go to <a href="${STUDENT_SURVEY_URL}">Survey</a> and update them.</p>`;
+    }
     return missing_background_fields;
   }
   // TODO: can add more mandatory field
@@ -339,15 +349,15 @@ const missing_academic_background = (student, role) => {
       missing_background_fields += '<li>Expected Application Semester</li>';
     }
     if (
-      role.role === 'Agent' ||
-      role.role === 'Admin' ||
-      role.role === 'Agent'
+      user.role === 'Agent' ||
+      user.role === 'Admin' ||
+      user.role === 'Agent'
     ) {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
-      )}">Survey</a> and udpate them.</p>`;
+      )}">Survey</a> and update them.</p>`;
     } else {
-      missing_background_fields += `<p>Please go to <a href="${STUDENT_SURVEY_URL}">Survey</a> and udpate them.</p>`;
+      missing_background_fields += `<p>Please go to <a href="${STUDENT_SURVEY_URL}">Survey</a> and update them.</p>`;
     }
     missing_background_fields += '</ul>';
   }

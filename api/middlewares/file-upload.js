@@ -96,7 +96,7 @@ const storage_vpd_s3 = multerS3({
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'vpd');
+    let directory = path.join(AWS_S3_BUCKET_NAME, studentId);
     // var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
     directory = directory.replace(/\\/g, '/');
     cb(null, directory);
@@ -106,7 +106,7 @@ const storage_vpd_s3 = multerS3({
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
-    let directory = path.join(studentId, 'vpd');
+    let directory = path.join(studentId);
     directory = directory.replace(/\\/g, '/'); // g>> replace all!
     // var directory = studentId;
     cb(null, { fieldName: file.fieldname, path: directory });

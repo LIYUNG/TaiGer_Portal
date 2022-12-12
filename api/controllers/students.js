@@ -1,15 +1,15 @@
-const { ErrorResponse } = require('../common/errors');
+const aws = require('aws-sdk');
 const path = require('path');
+const async = require('async');
+
+const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const logger = require('../services/logger');
-const aws = require('aws-sdk');
 
-var async = require('async');
-const fs = require('fs');
 const {
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
@@ -405,7 +405,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     .exec();
   res.status(200).send({ success: true, data: student_upated });
 
-  for (let i = 0; i < updated_agent.length; i++) {
+  for (let i = 0; i < updated_agent.length; i += 1) {
     await informAgentNewStudentEmail(
       {
         firstname: updated_agent[i].firstname,
@@ -768,6 +768,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
         }
       );
     }
+    // TODO: delete VPD
 
     const student_updated = await Student.findByIdAndUpdate(
       studentId,

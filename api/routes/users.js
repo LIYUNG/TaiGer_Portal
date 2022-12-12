@@ -19,7 +19,7 @@ router
   .get(filter_archiv_user, GeneralGETRequestRateLimiter, getUsers);
 
 router
-  .route('/:id')
+  .route('/:user_id')
   .post(filter_archiv_user, GeneralPOSTRequestRateLimiter, updateUser)
   .delete(filter_archiv_user, GeneralDELETERequestRateLimiter, deleteUser);
 

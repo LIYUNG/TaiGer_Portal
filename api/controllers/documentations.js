@@ -37,18 +37,6 @@ const valid_categories = [
 
 const DocumentationS3GarbageCollector = async () => {
   const doc = await Documentation.find();
-
-  var params = {
-    Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
-    Delimiter: '/',
-    Prefix: 'Documentations/'
-  };
-
-  // s3.listObjects(params, function (err, data) {
-  //   // Handle any error and exit
-  //   if (err) throw err;
-  //   console.log(data);
-  // });
   const listParamsPublic = {
     Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
     Delimiter: '/',
@@ -64,7 +52,6 @@ const DocumentationS3GarbageCollector = async () => {
       Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
       Delete: { Objects: [] }
     };
-    let new_redundant = false;
     listedObjectsPublic.Contents.forEach((Obj) => {
       for (let i = 0; i < doc.length; i += 1) {
         const file_name = encodeURIComponent(Obj.Key.split('/')[1]);
@@ -78,7 +65,6 @@ const DocumentationS3GarbageCollector = async () => {
             // Delete only older than 2 week
             if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
               deleteParams.Delete.Objects.push({ Key: Obj.Key });
-              new_redundant = true;
             }
           }
         }

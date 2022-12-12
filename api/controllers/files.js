@@ -528,13 +528,9 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
   // var fileKey = path.join(UPLOAD_PATH, document.path);
   let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[2];
-  let directory = path.join(
-    AWS_S3_BUCKET_NAME,
-    document_split[0],
-    document_split[1]
-  );
-  logger.info('Trying to download profile file', fileKey);
+  const fileKey = document_split[1];
+  let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
+  logger.info('Trying to download VPD file', fileKey);
 
   directory = directory.replace(/\\/g, '/');
   const options = {
@@ -923,12 +919,8 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
 
   let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[2];
-  let directory = path.join(
-    AWS_S3_BUCKET_NAME,
-    document_split[0],
-    document_split[1]
-  );
+  const fileKey = document_split[1];
+  let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
   logger.info('Trying to delete file', fileKey);
   directory = directory.replace(/\\/g, '/');
 

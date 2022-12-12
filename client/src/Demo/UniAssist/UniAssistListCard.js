@@ -278,13 +278,16 @@ class UniAssistListCard extends React.Component {
               </Row>
               <Row>
                 {!application.uni_assist ||
+                application.uni_assist.status === 'missing' ||
                 application.uni_assist.status === 'notstarted' ? (
                   <>
                     <Row>
                       {this.state.isLoaded ? (
                         <>
                           <Col>
-                            <Form.Group controlId="formFile">
+                            <Form.Group
+                              controlId={`${application.programId._id.toString()}`}
+                            >
                               <Form.Label>
                                 <IoMdCloudUpload
                                   color={'lightgray'}
@@ -344,30 +347,34 @@ class UniAssistListCard extends React.Component {
                   </>
                 ) : (
                   <>
-                    <Button
-                      onClick={(e) =>
-                        this.handleUniAssistDocDownload(
-                          e,
-                          this.state.student._id.toString(),
-                          application.programId._id.toString()
-                        )
-                      }
-                      size={'sm'}
-                    >
-                      <AiOutlineDownload size={16} />
-                    </Button>
-                    <Button
-                      onClick={(e) =>
-                        this.onDeleteVPDFileWarningPopUp(
-                          e,
-                          this.state.student._id.toString(),
-                          application.programId._id.toString()
-                        )
-                      }
-                      size={'sm'}
-                    >
-                      <AiOutlineDelete size={16} />
-                    </Button>
+                    <Col md={2}>
+                      <Button
+                        onClick={(e) =>
+                          this.handleUniAssistDocDownload(
+                            e,
+                            this.state.student._id.toString(),
+                            application.programId._id.toString()
+                          )
+                        }
+                        size={'sm'}
+                      >
+                        <AiOutlineDownload size={16} />
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        onClick={(e) =>
+                          this.onDeleteVPDFileWarningPopUp(
+                            e,
+                            this.state.student._id.toString(),
+                            application.programId._id.toString()
+                          )
+                        }
+                        size={'sm'}
+                      >
+                        <AiOutlineDelete size={16} />
+                      </Button>
+                    </Col>
                   </>
                 )}
               </Row>
@@ -396,7 +403,9 @@ class UniAssistListCard extends React.Component {
                     {this.state.isLoaded ? (
                       <>
                         <Col md={1}>
-                          <Form.Group controlId="formFile">
+                          <Form.Group
+                            controlId={`${application.programId._id.toString()}`}
+                          >
                             <Form.Label>
                               <IoMdCloudUpload color={'lightgray'} size={32} />
                             </Form.Label>

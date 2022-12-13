@@ -304,7 +304,7 @@ export const check_uni_assist_needed = (student) => {
       student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('Full'))
+        student.applications[j].programId.uni_assist.includes('FULL'))
     ) {
       return true;
     }
@@ -322,7 +322,7 @@ export const num_uni_assist_vpd_uploaded = (student) => {
       student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('Full'))
+        student.applications[j].programId.uni_assist.includes('FULL'))
     ) {
       if (!student.applications[j].uni_assist) {
         continue;
@@ -356,7 +356,7 @@ export const num_uni_assist_vpd_needed = (student) => {
       student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('Full'))
+        student.applications[j].programId.uni_assist.includes('FULL'))
     ) {
       if (!student.applications[j].uni_assist) {
         continue;
@@ -442,7 +442,7 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
       student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
       (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('Full'))
+        student.applications[j].programId.uni_assist.includes('FULL'))
     ) {
       if (!student.applications[j].uni_assist) {
         return false;

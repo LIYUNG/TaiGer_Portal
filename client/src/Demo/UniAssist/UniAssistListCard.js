@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   uploadVPDforstudent,
@@ -19,46 +20,28 @@ class UniAssistListCard extends React.Component {
   state = {
     student_id: '',
     program_id: '',
+    isLoaded2: {},
     isLoaded: false,
     student: this.props.student,
     timeouterror: null,
     unauthorizederror: null,
     deleteVPDFileWarningModel: false,
     setAsNotNeededModel: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
   componentDidMount() {
-    if (!this.props.student) {
-      getStudent(this.props.user._id.toString()).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              student: data,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error: true
-          });
-        }
-      );
-    } else {
-      this.setState({
-        isLoaded: true
-      });
+    let temp_isLoaded = {};
+    for (let i = 0; i < this.props.student.applications.length; i++) {
+      temp_isLoaded[
+        `${this.props.student.applications[i].programId._id.toString()}`
+      ] = true;
     }
+    console.log(temp_isLoaded);
+    this.setState({
+      isLoaded2: temp_isLoaded
+    });
   }
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteVPDFileWarningModel: false }));
@@ -95,12 +78,14 @@ class UniAssistListCard extends React.Component {
             setAsNotNeededModel: false,
             student_id: '',
             program_id: '',
-            res_status: status
+            res_modal_status: status
           });
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -113,8 +98,14 @@ class UniAssistListCard extends React.Component {
     );
   };
 
-  handleUniAssistDocDelete = (e) => {
-    this.setState({ isLoaded: false });
+  handleUniAssistDocDelete = (e, program_id) => {
+    // this.setState({ isLoaded: false });
+    this.setState((state) => ({
+      isLoaded2: {
+        ...state.isLoaded2,
+        [program_id]: false
+      }
+    }));
     deleteVPDFile(this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -123,15 +114,25 @@ class UniAssistListCard extends React.Component {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
+            isLoaded2: {
+              ...state.isLoaded2,
+              [program_id]: true
+            },
             student: data,
             success: success,
             deleteVPDFileWarningModel: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            isLoaded2: {
+              ...state.isLoaded2,
+              [program_id]: true
+            },
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -210,7 +211,12 @@ class UniAssistListCard extends React.Component {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', NewFile);
-    this.setState({ isLoaded: false });
+    this.setState((state) => ({
+      isLoaded2: {
+        ...state.isLoaded2,
+        [program_id]: false
+      }
+    }));
 
     uploadVPDforstudent(student_id, program_id, formData).then(
       (resp) => {
@@ -223,13 +229,23 @@ class UniAssistListCard extends React.Component {
             success,
             category: '',
             isLoaded: true,
+            isLoaded2: {
+              ...state.isLoaded2,
+              [program_id]: true
+            },
             file: '',
-            res_status: status
+            res_modal_status: status
           }));
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            isLoaded2: {
+              ...state.isLoaded2,
+              [program_id]: true
+            },
+            res_modal_message: message,
+            res_modal_status: status
           });
         }
       },
@@ -242,8 +258,17 @@ class UniAssistListCard extends React.Component {
     );
   };
 
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
-    const { res_status, isLoaded } = this.state;
+    const { res_status, isLoaded, res_modal_status, res_modal_message } =
+      this.state;
 
     if (!isLoaded && !this.state.student) {
       return (
@@ -282,9 +307,11 @@ class UniAssistListCard extends React.Component {
                 application.uni_assist.status === 'notstarted' ? (
                   <>
                     <Row>
-                      {this.state.isLoaded ? (
+                      {this.state.isLoaded2[
+                        `${application.programId._id.toString()}`
+                      ] ? (
                         <>
-                          <Col>
+                          <Col md={1}>
                             <Form.Group
                               controlId={`${application.programId._id.toString()}`}
                             >
@@ -307,41 +334,36 @@ class UniAssistListCard extends React.Component {
                               />
                             </Form.Group>
                           </Col>
-                          {this.props.role === 'Agent' ||
-                            (this.props.role === 'Admin' && (
-                              <Col>
-                                {this.props.role === 'Agent' ||
-                                  (this.props.role === 'Admin' && (
-                                    <Button
-                                      size={'sm'}
-                                      color={'lightgray'}
-                                      onClick={(e) =>
-                                        this.opensetAsNotNeededWindow(
-                                          e,
-                                          this.state.student._id.toString(),
-                                          application.programId._id.toString()
-                                        )
-                                      }
-                                    >
-                                      Set Not Needed
-                                    </Button>
-                                  ))}
-                              </Col>
-                            ))}
+                          <Col>
+                            {this.props.role === 'Agent' ||
+                              (this.props.role === 'Admin' && (
+                                <Button
+                                  size={'sm'}
+                                  color={'lightgray'}
+                                  onClick={(e) =>
+                                    this.opensetAsNotNeededWindow(
+                                      e,
+                                      this.state.student._id.toString(),
+                                      application.programId._id.toString()
+                                    )
+                                  }
+                                >
+                                  Set Not Needed
+                                </Button>
+                              ))}
+                          </Col>
                         </>
                       ) : (
-                        <>
-                          <div style={spinner_style}>
-                            <Spinner
-                              className="mx-2 my-2"
-                              animation="border"
-                              role="status"
-                              variant="light"
-                            >
-                              <span className="visually-hidden"></span>
-                            </Spinner>
-                          </div>
-                        </>
+                        <div>
+                          <Spinner
+                            // className="mx-2 my-2"
+                            animation="border"
+                            role="status"
+                            variant="light"
+                          >
+                            <span className="visually-hidden"></span>
+                          </Spinner>
+                        </div>
                       )}
                     </Row>
                   </>
@@ -356,6 +378,11 @@ class UniAssistListCard extends React.Component {
                             application.programId._id.toString()
                           )
                         }
+                        disabled={
+                          !this.state.isLoaded2[
+                            application.programId._id.toString()
+                          ]
+                        }
                         size={'sm'}
                       >
                         <AiOutlineDownload size={16} />
@@ -369,6 +396,11 @@ class UniAssistListCard extends React.Component {
                             this.state.student._id.toString(),
                             application.programId._id.toString()
                           )
+                        }
+                        disabled={
+                          !this.state.isLoaded2[
+                            application.programId._id.toString()
+                          ]
                         }
                         size={'sm'}
                       >
@@ -400,7 +432,9 @@ class UniAssistListCard extends React.Component {
                 application.uni_assist.status === 'missing' ||
                 application.uni_assist.status === 'notstarted' ? (
                   <>
-                    {this.state.isLoaded ? (
+                    {this.state.isLoaded2[
+                      `${application.programId._id.toString()}`
+                    ] ? (
                       <>
                         <Col md={1}>
                           <Form.Group
@@ -491,6 +525,11 @@ class UniAssistListCard extends React.Component {
                             application.programId._id.toString()
                           )
                         }
+                        disabled={
+                          !this.state.isLoaded2[
+                            application.programId._id.toString()
+                          ]
+                        }
                         size={'sm'}
                       >
                         <AiOutlineDownload size={16} />
@@ -504,6 +543,11 @@ class UniAssistListCard extends React.Component {
                             this.state.student._id.toString(),
                             application.programId._id.toString()
                           )
+                        }
+                        disabled={
+                          !this.state.isLoaded2[
+                            application.programId._id.toString()
+                          ]
                         }
                         variant={'danger'}
                         size={'sm'}
@@ -549,6 +593,13 @@ class UniAssistListCard extends React.Component {
     ));
     return (
       <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
           <Card.Body>{app_name}</Card.Body>
         </Card>
@@ -566,10 +617,23 @@ class UniAssistListCard extends React.Component {
           <Modal.Body>Do you want to delete?</Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded}
-              onClick={(e) => this.handleUniAssistDocDelete(e)}
+              disabled={!this.state.isLoaded2[this.state.program_id]}
+              onClick={(e) =>
+                this.handleUniAssistDocDelete(e, this.state.program_id)
+              }
             >
-              Yes
+              {this.state.isLoaded2[this.state.program_id] ? (
+                'Yes'
+              ) : (
+                <Spinner
+                  size="sm"
+                  animation="border"
+                  role="status"
+                  variant="light"
+                >
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              )}
             </Button>
             <Button onClick={this.closeWarningWindow}>No</Button>
           </Modal.Footer>
@@ -591,10 +655,21 @@ class UniAssistListCard extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              //   disabled={!this.state.isLoaded}
+              disabled={!this.state.isLoaded2[this.state.program_id]}
               onClick={(e) => this.handleSetAsNotNeeded(e)}
             >
-              Yes
+              {this.state.isLoaded2[this.state.program_id] ? (
+                'Yes'
+              ) : (
+                <Spinner
+                  size="sm"
+                  animation="border"
+                  role="status"
+                  variant="light"
+                >
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              )}
             </Button>
             <Button onClick={this.closesetAsNotNeededWindow}>No</Button>
           </Modal.Footer>

@@ -8,6 +8,7 @@ import EditorMainView from './EditorDashboard/EditorMainView';
 import StudentDashboard from './StudentDashboard/StudentDashboard';
 import GuestDashboard from './GuestDashboard/GuestDashboard';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
 
 import {
@@ -33,7 +34,9 @@ class Dashboard extends React.Component {
     success: false,
     isDashboard: true,
     file: '',
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -98,34 +101,38 @@ class Dashboard extends React.Component {
     getAgents().then(
       (resp) => {
         // TODO: check success
-        const { success } = resp;
+        const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-        const { data: agents } = resp.data; //get all agent
-        const { agents: student_agents } = student;
-        const updateAgentList = agents.reduce(
-          (prev, { _id }) => ({
-            ...prev,
-            [_id]: student_agents
-              ? student_agents.findIndex(
-                  (student_agent) => student_agent._id === _id
-                ) > -1
-              : false
-          }),
-          {}
-        );
+          const agents = data; //get all agent
+          const { agents: student_agents } = student;
+          const updateAgentList = agents.reduce(
+            (prev, { _id }) => ({
+              ...prev,
+              [_id]: student_agents
+                ? student_agents.findIndex(
+                    (student_agent) => student_agent._id === _id
+                  ) > -1
+                : false
+            }),
+            {}
+          );
 
-        this.setState((state) => ({
-          ...state,
-          agent_list: agents,
-          updateAgentList
-        }));
+          this.setState((state) => ({
+            ...state,
+            agent_list: agents,
+            updateAgentList,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
       },
       (error) => {}
     );
@@ -135,34 +142,38 @@ class Dashboard extends React.Component {
     getEditors().then(
       (resp) => {
         // TODO: check success
-        const { success } = resp;
+        const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-        const { data: editors } = resp.data;
-        const { editors: student_editors } = student;
-        const updateEditorList = editors.reduce(
-          (prev, { _id }) => ({
-            ...prev,
-            [_id]: student_editors
-              ? student_editors.findIndex(
-                  (student_editor) => student_editor._id === _id
-                ) > -1
-              : false
-          }),
-          {}
-        );
+          const editors = data;
+          const { editors: student_editors } = student;
+          const updateEditorList = editors.reduce(
+            (prev, { _id }) => ({
+              ...prev,
+              [_id]: student_editors
+                ? student_editors.findIndex(
+                    (student_editor) => student_editor._id === _id
+                  ) > -1
+                : false
+            }),
+            {}
+          );
 
-        this.setState((state) => ({
-          ...state,
-          editor_list: editors,
-          updateEditorList
-        }));
+          this.setState((state) => ({
+            ...state,
+            editor_list: editors,
+            updateEditorList,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
       },
       (error) => {}
     );
@@ -215,13 +226,16 @@ class Dashboard extends React.Component {
             students: students_temp,
             success: success,
             updateAgentList: [],
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -247,13 +261,16 @@ class Dashboard extends React.Component {
             students: students_temp,
             success: success,
             updateAgentList: [],
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -273,13 +290,16 @@ class Dashboard extends React.Component {
             isLoaded: true,
             students: data,
             success: success,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -310,13 +330,16 @@ class Dashboard extends React.Component {
             students: students,
             success,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -328,8 +351,17 @@ class Dashboard extends React.Component {
     );
   };
 
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
-    const { isLoaded, res_status } = this.state;
+    const { res_modal_status, res_modal_message, isLoaded, res_status } =
+      this.state;
 
     if (!isLoaded && !this.state.data) {
       return (
@@ -353,6 +385,13 @@ class Dashboard extends React.Component {
                 <span className="visually-hidden"></span>
               </Spinner>
             </div>
+          )}
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
           )}
           <AdminMainView
             user={this.props.user}
@@ -385,6 +424,13 @@ class Dashboard extends React.Component {
               </Spinner>
             </div>
           )}
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <AgentMainView
             user={this.props.user}
             role={this.props.user.role}
@@ -406,6 +452,13 @@ class Dashboard extends React.Component {
                 <span className="visually-hidden"></span>
               </Spinner>
             </div>
+          )}
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
           )}
           <EditorMainView
             user={this.props.user}
@@ -449,6 +502,13 @@ class Dashboard extends React.Component {
                 <span className="visually-hidden"></span>
               </Spinner>
             </div>
+          )}
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
           )}
           <GuestDashboard
             role={this.props.user.role}

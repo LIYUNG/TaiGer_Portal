@@ -6,7 +6,6 @@ import {
   getStudents,
   updateArchivStudents,
   updateProfileDocumentStatus,
-  getAgents,
   updateAgents,
   getEditors,
   updateEditors

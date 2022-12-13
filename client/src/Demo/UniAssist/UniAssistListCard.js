@@ -82,11 +82,12 @@ class UniAssistListCard extends React.Component {
           });
         } else {
           const { message } = resp.data;
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
@@ -106,11 +107,23 @@ class UniAssistListCard extends React.Component {
         [program_id]: false
       }
     }));
+
     deleteVPDFile(this.state.student_id, this.state.program_id).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { success } = resp.data;
         const { status } = resp;
         if (success) {
+          const app = this.state.student.applications.find(
+            (application) => application.programId._id.toString() === program_id
+          );
+          const app_idx = this.state.student.applications.findIndex(
+            (application) => application.programId._id.toString() === program_id
+          );
+          app.uni_assist.status = 'missing';
+          app.uni_assist.vpd_file_path = '';
+          app.uni_assist.updatedAt = new Date();
+          let tmep_student = { ...this.state.student };
+          tmep_student.applications[app_idx] = app;
           this.setState((state) => ({
             ...state,
             isLoaded: true,
@@ -118,14 +131,15 @@ class UniAssistListCard extends React.Component {
               ...state.isLoaded2,
               [program_id]: true
             },
-            student: data,
+            student: tmep_student,
             success: success,
             deleteVPDFileWarningModel: false,
             res_modal_status: status
           }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
             isLoaded2: {
               ...state.isLoaded2,
@@ -133,7 +147,7 @@ class UniAssistListCard extends React.Component {
             },
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
@@ -238,7 +252,8 @@ class UniAssistListCard extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
             isLoaded2: {
               ...state.isLoaded2,
@@ -246,7 +261,7 @@ class UniAssistListCard extends React.Component {
             },
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
@@ -335,22 +350,22 @@ class UniAssistListCard extends React.Component {
                             </Form.Group>
                           </Col>
                           <Col>
-                            {this.props.role === 'Agent' ||
-                              (this.props.role === 'Admin' && (
-                                <Button
-                                  size={'sm'}
-                                  color={'lightgray'}
-                                  onClick={(e) =>
-                                    this.opensetAsNotNeededWindow(
-                                      e,
-                                      this.state.student._id.toString(),
-                                      application.programId._id.toString()
-                                    )
-                                  }
-                                >
-                                  Set Not Needed
-                                </Button>
-                              ))}
+                            {(this.props.role === 'Agent' ||
+                              this.props.role === 'Admin') && (
+                              <Button
+                                size={'sm'}
+                                color={'lightgray'}
+                                onClick={(e) =>
+                                  this.opensetAsNotNeededWindow(
+                                    e,
+                                    this.state.student._id.toString(),
+                                    application.programId._id.toString()
+                                  )
+                                }
+                              >
+                                Set Not Needed
+                              </Button>
+                            )}
                           </Col>
                         </>
                       ) : (
@@ -402,6 +417,7 @@ class UniAssistListCard extends React.Component {
                             application.programId._id.toString()
                           ]
                         }
+                        variant={'danger'}
                         size={'sm'}
                       >
                         <AiOutlineDelete size={16} />
@@ -457,22 +473,22 @@ class UniAssistListCard extends React.Component {
                           </Form.Group>
                         </Col>
                         <Col>
-                          {this.props.role === 'Agent' ||
-                            (this.props.role === 'Admin' && (
-                              <Button
-                                size={'sm'}
-                                color={'lightgray'}
-                                onClick={(e) =>
-                                  this.opensetAsNotNeededWindow(
-                                    e,
-                                    this.state.student._id.toString(),
-                                    application.programId._id.toString()
-                                  )
-                                }
-                              >
-                                Set Not Needed
-                              </Button>
-                            ))}
+                          {(this.props.role === 'Agent' ||
+                            this.props.role === 'Admin') && (
+                            <Button
+                              size={'sm'}
+                              color={'lightgray'}
+                              onClick={(e) =>
+                                this.opensetAsNotNeededWindow(
+                                  e,
+                                  this.state.student._id.toString(),
+                                  application.programId._id.toString()
+                                )
+                              }
+                            >
+                              Set Not Needed
+                            </Button>
+                          )}
                         </Col>
                       </>
                     ) : (
@@ -499,19 +515,22 @@ class UniAssistListCard extends React.Component {
                       </p>
                     </Col>
                     <Col>
-                      <Button
-                        size={'sm'}
-                        color={'lightgray'}
-                        onClick={(e) =>
-                          this.opensetAsNotNeededWindow(
-                            e,
-                            this.state.student._id.toString(),
-                            application.programId._id.toString()
-                          )
-                        }
-                      >
-                        Set Needed
-                      </Button>
+                      {(this.props.role === 'Agent' ||
+                        this.props.role === 'Admin') && (
+                        <Button
+                          size={'sm'}
+                          color={'lightgray'}
+                          onClick={(e) =>
+                            this.opensetAsNotNeededWindow(
+                              e,
+                              this.state.student._id.toString(),
+                              application.programId._id.toString()
+                            )
+                          }
+                        >
+                          Set needed
+                        </Button>
+                      )}
                     </Col>
                   </>
                 ) : (

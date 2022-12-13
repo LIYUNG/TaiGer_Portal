@@ -938,7 +938,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
         app.uni_assist.updatedAt = new Date();
 
         student.save();
-        res.status(200).send({ success: true, data: student });
+        res.status(200).send({ success: true });
       }
     });
   } catch (err) {

@@ -30,11 +30,7 @@ const getPrograms = asyncHandler(async (req, res) => {
 
 const getProgram = asyncHandler(async (req, res) => {
   const { user } = req;
-  const program = await Program.findById(req.params.programId);
-  if (!program) {
-    logger.error('getProgram: Invalid program id');
-    throw new ErrorResponse(400, 'Invalid program id');
-  }
+  // prevent student multitenancy
   if (user.role === Role.Student) {
     if (
       user.applications.findIndex(
@@ -46,7 +42,23 @@ const getProgram = asyncHandler(async (req, res) => {
     }
   }
 
-  res.send({ success: true, data: program });
+  console.log(req.originalUrl);
+  const value = myCache.get(req.originalUrl);
+  if (value === undefined) {
+    // cache miss
+    const program = await Program.findById(req.params.programId);
+    if (!program) {
+      logger.error('getProgram: Invalid program id');
+      throw new ErrorResponse(400, 'Invalid program id');
+    }
+    const success = myCache.set(req.originalUrl, program);
+    if (success) {
+      console.log('programs cache set successfully');
+    }
+    return res.send({ success: true, data: program });
+  }
+  console.log('programs cache hit');
+  res.send({ success: true, data: value });
 });
 
 const createProgram = asyncHandler(async (req, res) => {
@@ -73,6 +85,11 @@ const updateProgram = asyncHandler(async (req, res) => {
       new: true
     }
   );
+  // TODO: to delete cache key for image, pdf, docs, file here.
+  const value = myCache.del(req.originalUrl);
+  if (value === 1) {
+    console.log('cache key deleted successfully due to update');
+  }
 
   return res.status(200).send({ success: true, data: program });
 });

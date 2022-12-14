@@ -1,17 +1,5 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Table,
-  Spinner,
-  Modal
-} from 'react-bootstrap';
-
-import Aux from '../../hoc/_Aux';
-import { getCVMLRLOverview } from '../../api';
+import { Col, Table, Spinner, Modal } from 'react-bootstrap';
 
 class ProgramsInterview extends React.Component {
   render() {

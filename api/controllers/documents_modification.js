@@ -111,10 +111,20 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId generaldocs_threads.doc_thread_id')
+      .populate(
+        'applications.programId',
+        'school program_name application_deadline'
+      )
+      .populate(
+        'generaldocs_threads.doc_thread_id',
+        'file_type updatedAt isFinalVersion'
+      )
       .populate(
         'applications.doc_modification_thread.doc_thread_id',
-        'file_type updatedAt'
+        'file_type isFinalVersion updatedAt'
+      )
+      .select(
+        'applications applications generaldocs_threads firstname lastname application_preference'
       )
       .lean();
     res.status(200).send({ success: true, data: students });
@@ -123,10 +133,20 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId generaldocs_threads.doc_thread_id')
+      .populate(
+        'applications.programId',
+        'school program_name application_deadline'
+      )
+      .populate(
+        'generaldocs_threads.doc_thread_id',
+        'file_type updatedAt isFinalVersion'
+      )
       .populate(
         'applications.doc_modification_thread.doc_thread_id',
-        'file_type updatedAt'
+        'file_type isFinalVersion updatedAt'
+      )
+      .select(
+        'applications applications generaldocs_threads firstname lastname application_preference'
       )
       .lean()
       .exec();
@@ -137,19 +157,39 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId generaldocs_threads.doc_thread_id')
+      .populate(
+        'applications.programId',
+        'school program_name application_deadline'
+      )
+      .populate(
+        'generaldocs_threads.doc_thread_id',
+        'file_type updatedAt isFinalVersion'
+      )
       .populate(
         'applications.doc_modification_thread.doc_thread_id',
-        'file_type updatedAt'
+        'file_type isFinalVersion updatedAt'
+      )
+      .select(
+        'applications applications generaldocs_threads firstname lastname application_preference'
       );
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Student) {
     const student = await Student.findById(user._id)
-      .populate('applications.programId generaldocs_threads.doc_thread_id')
+      .populate(
+        'applications.programId',
+        'school program_name application_deadline'
+      )
+      .populate(
+        'generaldocs_threads.doc_thread_id',
+        'file_type updatedAt isFinalVersion'
+      )
       .populate(
         'applications.doc_modification_thread.doc_thread_id',
-        'file_type updatedAt'
+        'file_type isFinalVersion updatedAt'
+      )
+      .select(
+        'applications applications generaldocs_threads firstname lastname application_preference'
       )
       .lean()
       .exec();

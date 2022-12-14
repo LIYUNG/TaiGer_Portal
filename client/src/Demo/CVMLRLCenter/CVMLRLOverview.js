@@ -17,7 +17,7 @@ import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRL
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
-import { updateArchivStudents, SetFileAsFinal, getStudents } from '../../api';
+import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
 
 class CVMLRLOverview extends React.Component {
   state = {
@@ -36,7 +36,7 @@ class CVMLRLOverview extends React.Component {
   };
 
   componentDidMount() {
-    getStudents().then(
+    getCVMLRLOverview().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;

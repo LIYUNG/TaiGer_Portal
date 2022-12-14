@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillQuestionCircle } from 'react-icons/ai';
-import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
+import {
+  BsExclamationTriangle,
+  BsFillExclamationCircleFill,
+  BsDash
+} from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
   check_english_language_passed,
@@ -11,6 +15,8 @@ import {
   num_applications_submitted,
   check_all_applications_decided,
   check_all_applications_submitted,
+  is_cv_finished,
+  is_cv_assigned,
   check_uni_assist_needed,
   is_all_uni_assist_vpd_uploaded,
   num_uni_assist_vpd_needed,
@@ -75,6 +81,9 @@ class AgentReviewing extends React.Component {
       this.props.student
     );
 
+    const isCVFinished = is_cv_finished(this.props.student);
+    const isCVAssigned = is_cv_assigned(this.props.student);
+
     var is_uni_assist_needed = check_uni_assist_needed(this.props.student);
     let isall_uni_assist_vpd_uploaded = is_all_uni_assist_vpd_uploaded(
       this.props.student
@@ -86,7 +95,17 @@ class AgentReviewing extends React.Component {
     let numb_uni_assist_vpd_uploaded = num_uni_assist_vpd_uploaded(
       this.props.student
     );
-
+    let expected_application_year =
+      this.props.student.application_preference &&
+      this.props.student.application_preference.expected_application_date
+        ? this.props.student.application_preference.expected_application_date
+        : '';
+    let expected_application_semster =
+      this.props.student.application_preference &&
+      this.props.student.application_preference.expected_application_semester
+        ? this.props.student.application_preference
+            .expected_application_semester
+        : '';
     return (
       <>
         <tr className="my-0">
@@ -99,6 +118,11 @@ class AgentReviewing extends React.Component {
               {this.props.student.firstname}
               {' - '}
               {this.props.student.lastname}
+              {' ( '}
+              {expected_application_year}
+              {'/'}
+              {expected_application_semster}
+              {' )'}
             </Link>
           </td>
           <td>
@@ -291,6 +315,44 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
+              to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
+              style={{ textDecoration: 'none' }}
+            >
+              {!isCVFinished ? (
+                isCVAssigned ? (
+                  <p className="text-warning">
+                    <AiFillQuestionCircle
+                      size={24}
+                      color="lightgray"
+                      title="Working"
+                      className="mx-2"
+                    />
+                  </p>
+                ) : (
+                  <p className="text-warning">
+                    <BsFillExclamationCircleFill
+                      size={20}
+                      color="red"
+                      title="Not assigned yet"
+                      className="mx-2"
+                    />
+                  </p>
+                )
+              ) : (
+                <p className="text-warning">
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    title="complete"
+                    className="mx-2"
+                  />
+                  complete
+                </p>
+              )}
+            </Link>
+          </td>
+          <td>
+            <Link
               to={'/student-database/' + this.props.student._id + '/uni-assist'}
               style={{ textDecoration: 'none' }}
             >
@@ -301,8 +363,8 @@ class AgentReviewing extends React.Component {
                       size={24}
                       color="limegreen"
                       className="mx-2"
+                      title="Complete"
                     />
-                    complete
                   </p>
                 ) : (
                   <p className="text-warning" title="incomplete">
@@ -311,8 +373,8 @@ class AgentReviewing extends React.Component {
                       color="lightgray"
                       className="mx-2"
                     />
-                    VPD ({numb_uni_assist_vpd_uploaded}/
-                    {numb_uni_assist_vpd_needed})
+                    ({numb_uni_assist_vpd_uploaded}/{numb_uni_assist_vpd_needed}
+                    )
                   </p>
                 )
               ) : (

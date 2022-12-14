@@ -3,10 +3,29 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Program } = require('../models/Program');
 const { User, Role } = require('../models/User');
 const logger = require('../services/logger');
+const { myCache } = require('../cache/node-cache');
 
 const getPrograms = asyncHandler(async (req, res) => {
-  const programs = await Program.find();
-  res.send({ success: true, data: programs });
+  console.log(req.originalUrl);
+  const value = myCache.get(req.originalUrl);
+  if (value === undefined) {
+    // cache miss
+    const programs = await Program.find().select(
+      '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated -country'
+    );
+    const success = myCache.set(req.originalUrl, programs);
+    if (success) {
+      console.log('programs cache set successfully');
+    }
+    return res.send({ success: true, data: programs });
+  }
+  console.log('programs cache hit');
+  res.send({ success: true, data: value });
+
+  // const programs = await Program.find().select(
+  //   '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated -country'
+  // );
+  // res.send({ success: true, data: programs });
 });
 
 const getProgram = asyncHandler(async (req, res) => {

@@ -8,7 +8,11 @@ const async = require('async');
 const getAdmissions = asyncHandler(async (req, res) => {
   const { user } = req;
 
-  const students = await Student.find().populate('applications.programId');
+  const students = await Student.find()
+    .select(
+      '-applications.doc_modification_thread -applications.uni_assist -email -birthday -applying_program_count -agents -editors -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -checklist -academic_background'
+    )
+    .populate('applications.programId', 'school program_name semester');
   res.status(200).send({ success: true, data: students });
 });
 

@@ -66,31 +66,31 @@ class AdminMainView extends React.Component {
     return (
       <>
         {/* <Row className="mb-2 my-2"> */}
-            <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} /> To Do Tasks:
-                </Card.Title>
-              </Card.Header>
-              <Table
-                size="sm"
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-              >
-                <thead>
-                  <tr>
-                    <th>Tasks</th>
-                    <th>Description</th>
-                    <th>Last Update</th>
-                  </tr>
-                </thead>
-                <tbody>{admin_tasks}</tbody>
-              </Table>
-            </Card>
+        <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
+          <Card.Header>
+            <Card.Title className="my-0 mx-0 text-light">
+              <BsExclamationTriangle size={18} /> To Do Tasks:
+            </Card.Title>
+          </Card.Header>
+          <Table
+            size="sm"
+            responsive
+            bordered
+            hover
+            className="my-0 mx-0"
+            variant="dark"
+            text="light"
+          >
+            <thead>
+              <tr>
+                <th>Tasks</th>
+                <th>Description</th>
+                <th>Last Update</th>
+              </tr>
+            </thead>
+            <tbody>{admin_tasks}</tbody>
+          </Table>
+        </Card>
         {/* </Row> */}
         <TabProgramConflict students={this.props.students} />
         <Row className="mb-2 my-2">
@@ -115,6 +115,7 @@ class AdminMainView extends React.Component {
                   <th>Survey</th>
                   <th>Language</th>
                   <th>Base Documents</th>
+                  <th>CV</th>
                   <th>Uni-Assist</th>
                   <th>Program Selection</th>
                   <th>Submission</th>

@@ -53,11 +53,15 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
 
   const student = await Student.findById(studentId)
     .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
+    .populate(
+      'applications.programId',
+      'school program_name semester application_deadline ml_required ml_requirements rl_required uni_assist rl_requirements essay_required essay_requirements'
+    )
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
+    .select('-notification -taigerai')
     .lean();
   const base_docs_link = await Basedocumentationslink.find({
     category: 'base-documents'
@@ -185,31 +189,28 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
       )
       .select('-notification')
       .lean();
-    const base_docs_link = await Basedocumentationslink.find({
-      category: 'base-documents'
-    });
-    res.status(200).send({ success: true, data: students, base_docs_link });
+    // const base_docs_link = await Basedocumentationslink.find({
+    //   category: 'base-documents'
+    // });
+    // res.status(200).send({ success: true, data: students, base_docs_link });
+    res.status(200).send({ success: true, data: students, base_docs_link: {} });
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId agents editors')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
-      .select('-notification')
+      .select('firstname lastname profile')
       .lean()
       .exec();
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
     // console.log(students[0].applications[0].programId); // looks ok!
     // console.log(students[0].applications[0].programId.school);
-    const base_docs_link = await Basedocumentationslink.find({
-      category: 'base-documents'
-    });
+    // const base_docs_link = await Basedocumentationslink.find({
+    //   category: 'base-documents'
+    // });
 
-    res.status(200).send({ success: true, data: students, base_docs_link });
+    // res.status(200).send({ success: true, data: students, base_docs_link });
+    res.status(200).send({ success: true, data: students, base_docs_link: {} });
   } else if (user.role === Role.Editor) {
     const students = await Student.find({
       _id: { $in: user.students },
@@ -228,13 +229,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     res.status(200).send({ success: true, data: students, base_docs_link });
   } else if (user.role === Role.Student) {
     const student = await Student.findById(user._id)
-      .populate('applications.programId')
-      .populate('agents editors', '-students')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
-      // .populate('editors', '-students')
+      .select('firstname lastname profile')
       .lean()
       .exec();
     const base_docs_link = await Basedocumentationslink.find({

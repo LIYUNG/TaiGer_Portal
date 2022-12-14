@@ -383,6 +383,22 @@ export const is_program_ml_rl_essay_finished = (application) => {
   return true;
 };
 
+export const is_cv_assigned = (student) => {
+  // check CV
+  if (!student.generaldocs_threads) {
+    return false;
+  }
+  if (
+    student.generaldocs_threads.findIndex(
+      (thread) => thread.doc_thread_id.file_type === 'CV'
+    ) === -1
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 export const is_cv_finished = (student) => {
   // check CV
   if (!student.generaldocs_threads) {

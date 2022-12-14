@@ -420,21 +420,17 @@ function Table2({ header, data, userId }) {
                 {row.cells.map((cell, j) => {
                   return (
                     <td {...cell.getCellProps()}>
-                      {j === 0 ? (
-                        <>{cell.render('Cell')}</>
-                      ) : (
-                        <Link
-                          to={
-                            '/student-database/' +
-                            row.original._id +
-                            '/background'
-                          }
-                          className="text-info"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          {cell.render('Cell')}
-                        </Link>
-                      )}
+                      <Link
+                        to={
+                          '/student-database/' +
+                          row.original._id +
+                          '/background'
+                        }
+                        className="text-info"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        {cell.render('Cell')}
+                      </Link>
                     </td>
                   );
                 })}

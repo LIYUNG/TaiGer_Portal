@@ -16,8 +16,7 @@ import {
 import {
   uploadforstudent,
   updateProfileDocumentStatus,
-  deleteFile,
-  getStudentsAndDocLinks
+  deleteFile
 } from '../../api';
 
 class BaseDocument_StudentView extends React.Component {

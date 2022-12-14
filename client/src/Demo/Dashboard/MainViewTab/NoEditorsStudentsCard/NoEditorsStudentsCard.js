@@ -1,7 +1,8 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
+
 class NoEditorsStudentsCard extends React.Component {
   state = {
     showEditorPage: false

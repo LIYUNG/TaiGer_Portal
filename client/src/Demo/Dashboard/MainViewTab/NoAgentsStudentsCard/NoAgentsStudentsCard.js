@@ -1,8 +1,9 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import { Link } from 'react-router-dom';
+
+import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
+
 class NoAgentsStudentsCard extends React.Component {
   state = {
     showAgentPage: false

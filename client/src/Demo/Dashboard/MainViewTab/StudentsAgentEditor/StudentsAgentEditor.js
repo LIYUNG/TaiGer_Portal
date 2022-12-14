@@ -1,9 +1,9 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
+import { Link } from 'react-router-dom';
+
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
-import { Link } from 'react-router-dom';
 
 class StudentsAgentEditor extends React.Component {
   state = {

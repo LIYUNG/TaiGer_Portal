@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Modal, Spinner } from 'react-bootstrap';
+import { Row, Col, Card, Spinner } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import UniAssistListCard from './UniAssistListCard';

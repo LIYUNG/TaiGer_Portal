@@ -5,12 +5,10 @@ import {
   Card,
   Form,
   Button,
-  Spinner,
   Offcanvas
 } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
-import { updateLanguageSkill } from '../../api';
 import { convertDate } from '../Utils/contants';
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
@@ -173,22 +171,7 @@ class SurveyEditableComponent extends React.Component {
         </div>
       );
     }
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
 
-    // if (!isLoaded) {
-    //   return (
-    //     <div style={style}>
-    //       <Spinner animation="border" role="status">
-    //         <span className="visually-hidden"></span>
-    //       </Spinner>
-    //     </div>
-    //   );
-    // }
     return (
       <Aux>
         {(!check_academic_background_filled(this.props.academic_background) ||

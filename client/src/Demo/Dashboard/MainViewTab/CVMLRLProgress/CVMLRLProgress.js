@@ -1,16 +1,10 @@
 import React from 'react';
-import { Dropdown, DropdownButton, Button } from 'react-bootstrap';
-// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { convertDate } from '../../../Utils/contants';
-import {
-  AiFillQuestionCircle,
-  AiOutlineCheck,
-  AiOutlineUndo
-} from 'react-icons/ai';
+import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+
+import { convertDate } from '../../../Utils/contants';
 import { getNumberOfDays, return_thread_status } from '../../../Utils/contants';
-import { BiCommentDots } from 'react-icons/bi';
+
 class CVMLRLProgress extends React.Component {
   handleAsFinalFileThread = (
     thread_id,
@@ -29,7 +23,7 @@ class CVMLRLProgress extends React.Component {
   };
   render() {
     var today = new Date();
-    
+
     let general_document_items = <></>;
     // TODO: implement:
     let no_started_general_document_items = <></>;

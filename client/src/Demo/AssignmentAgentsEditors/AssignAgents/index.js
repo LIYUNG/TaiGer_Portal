@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../../hoc/_Aux';
 import AssignAgentsPage from './AssignAgentsPage';
 import ErrorPage from '../../Utils/ErrorPage';
+import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { SYMBOL_EXPLANATION, spinner_style } from '../../Utils/contants';
 
 import { getStudents, getAgents, updateAgents } from '../../../api';
@@ -18,7 +19,9 @@ class AssignAgents extends React.Component {
     updateAgentList: {},
     success: false,
     isDashboard: true,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -82,34 +85,38 @@ class AssignAgents extends React.Component {
   editAgent = (student) => {
     getAgents().then(
       (resp) => {
-        const { success } = resp;
+        const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-        const { data: agents } = resp.data; //get all agent
-        const { agents: student_agents } = student;
-        const updateAgentList = agents.reduce(
-          (prev, { _id }) => ({
-            ...prev,
-            [_id]: student_agents
-              ? student_agents.findIndex(
-                  (student_agent) => student_agent._id === _id
-                ) > -1
-              : false
-          }),
-          {}
-        );
+          const agents = data; //get all agent
+          const { agents: student_agents } = student;
+          const updateAgentList = agents.reduce(
+            (prev, { _id }) => ({
+              ...prev,
+              [_id]: student_agents
+                ? student_agents.findIndex(
+                    (student_agent) => student_agent._id === _id
+                  ) > -1
+                : false
+            }),
+            {}
+          );
 
-        this.setState((state) => ({
-          ...state,
-          agent_list: agents,
-          updateAgentList
-        }));
+          this.setState((state) => ({
+            ...state,
+            agent_list: agents,
+            updateAgentList,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
       },
       (error) => {}
     );
@@ -162,11 +169,20 @@ class AssignAgents extends React.Component {
     );
   };
 
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
     if (this.props.user.role !== 'Admin') {
       return <Redirect to="/dashboard/default" />;
     }
-    const { isLoaded, res_status } = this.state;
+    const { isLoaded, res_status, res_modal_status, res_modal_message } =
+      this.state;
 
     if (!isLoaded && !this.state.data) {
       return (
@@ -190,6 +206,13 @@ class AssignAgents extends React.Component {
               <span className="visually-hidden"></span>
             </Spinner>
           </div>
+        )}
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
         )}
         <AssignAgentsPage
           role={this.props.user.role}

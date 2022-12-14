@@ -6,7 +6,6 @@ import {
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
-// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 
 class StudentMyself extends React.Component {
   state = {

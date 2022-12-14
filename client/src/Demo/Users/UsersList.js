@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Spinner } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 import User from './User';
 import UsersListSubpage from './UsersListSubpage';

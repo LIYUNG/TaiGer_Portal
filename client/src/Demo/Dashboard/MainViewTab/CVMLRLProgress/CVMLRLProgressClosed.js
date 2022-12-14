@@ -1,16 +1,15 @@
 import React from 'react';
-import { Dropdown, DropdownButton, Button } from 'react-bootstrap';
-// import avatar1 from "../../../assets/images/user/avatar-1.jpg";
 import { IoCheckmarkCircle } from 'react-icons/io5';
-import { convertDate } from '../../../Utils/contants';
+import { BiCommentDots } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
 import {
   AiFillQuestionCircle,
   AiOutlineCheck,
   AiOutlineUndo
 } from 'react-icons/ai';
-import { Link } from 'react-router-dom';
-import { getNumberOfDays } from '../../../Utils/contants';
-import { BiCommentDots } from 'react-icons/bi';
+
+import { convertDate } from '../../../Utils/contants';
+
 class CVMLRLProgressClosed extends React.Component {
   handleAsFinalFileThread = (
     thread_id,

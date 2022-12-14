@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import EditableFile_Thread from './EditableFile_Thread';
-// import { Row, Col } from 'react-bootstrap';
 
 class ManualFilesList extends Component {
   render() {

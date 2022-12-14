@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { IoMdCloudUpload } from 'react-icons/io';
 import { Button, Form, Row, Col } from 'react-bootstrap';
 
 class ToggleableUploadFileForm extends Component {

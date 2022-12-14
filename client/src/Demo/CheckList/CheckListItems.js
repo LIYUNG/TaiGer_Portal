@@ -1,33 +1,15 @@
 import React from 'react';
+import { Row, Col, Button, Card, Collapse, Spinner } from 'react-bootstrap';
 
 import TimeOutErrors from '../Utils/TimeOutErrors';
 import UnauthorizedError from '../Utils/UnauthorizedError';
 import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { Link } from 'react-router-dom';
 import CheckListItemsEditor from './CheckListItemsEditor';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../components/DraftEditor.css';
 
-// import avatar1 from "../../../../assets/images/user/avatar-1.jpg";
-import {
-  Row,
-  Col,
-  Button,
-  Card,
-  Collapse,
-  Modal,
-  Spinner
-} from 'react-bootstrap';
 import { updateChecklistDocument } from '../../api';
-import {
-  // AiOutlineDownload,
-  // AiOutlineDelete,
-  // AiOutlineCheck,
-  AiOutlineMore
-  // AiOutlineUndo,
-  // AiFillMessage
-} from 'react-icons/ai';
 
 class CheckListItems extends React.Component {
   state = {

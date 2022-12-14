@@ -101,9 +101,8 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
-  const students = await Student.find().lean();
-  // .populate("applications.programId agents editors");
-  // .lean();
+  const students = await Student.find().select('firstname lastname academic_background email').lean();
+
   res.status(200).send({ success: true, data: students });
 });
 
@@ -182,12 +181,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId agents editors')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
-      .select('-notification')
+      .select('firstname lastname profile')
       .lean();
     // const base_docs_link = await Basedocumentationslink.find({
     //   category: 'base-documents'
@@ -202,12 +196,6 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
       .select('firstname lastname profile')
       .lean()
       .exec();
-    // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
-    // console.log(students[0].applications[0].programId); // looks ok!
-    // console.log(students[0].applications[0].programId.school);
-    // const base_docs_link = await Basedocumentationslink.find({
-    //   category: 'base-documents'
-    // });
 
     // res.status(200).send({ success: true, data: students, base_docs_link });
     res.status(200).send({ success: true, data: students, base_docs_link: {} });
@@ -216,11 +204,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
       _id: { $in: user.students },
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .populate('applications.programId agents editors')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
+      .select('firstname lastname profile')
       .select('-notification');
     const base_docs_link = await Basedocumentationslink.find({
       category: 'base-documents'

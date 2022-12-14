@@ -207,12 +207,12 @@ const getCategoryDocumentations = asyncHandler(async (req, res) => {
 });
 
 const getAllDocumentations = asyncHandler(async (req, res) => {
-  const document = await Documentation.find();
+  const document = await Documentation.find().select('title category');
   return res.send({ success: true, data: document });
 });
 
 const getAllInternalDocumentations = asyncHandler(async (req, res) => {
-  const document = await Internaldoc.find();
+  const document = await Internaldoc.find().select('title internal category');
   return res.send({ success: true, data: document });
 });
 

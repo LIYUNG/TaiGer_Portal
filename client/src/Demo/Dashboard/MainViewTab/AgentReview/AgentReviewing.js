@@ -48,15 +48,21 @@ class AgentReviewing extends React.Component {
     } else {
     }
     let isMissingBaseDocs = false;
+    let total_base_docs_needed = 0;
+    let total_accepted_base_docs_needed = 0;
     for (let i = 0; i < keys.length; i += 1) {
+      if (object_init[keys[i]] !== 'notneeded') {
+        total_base_docs_needed += 1;
+      }
       if (
-        object_init[keys[i]] !== 'accepted' &&
+        object_init[keys[i]] === 'accepted' &&
         object_init[keys[i]] !== 'notneeded'
       ) {
-        isMissingBaseDocs = true;
-        break;
+        total_accepted_base_docs_needed += 1;
       }
     }
+    isMissingBaseDocs =
+      total_base_docs_needed > total_accepted_base_docs_needed ? true : false;
     // TODO: logic improvement (necessary field)
     let isEnglishPassed = check_english_language_passed(
       this.props.student.academic_background
@@ -277,7 +283,7 @@ class AgentReviewing extends React.Component {
                     .english_isPassed === '--' &&
                     this.props.student.academic_background.language
                       .german_isPassed === '--' && (
-                      <p className="text-warning" title="Expected Test Date">
+                      <p className="text-warning" title="Not needed">
                         Not needed
                       </p>
                     )}
@@ -291,24 +297,22 @@ class AgentReviewing extends React.Component {
               style={{ textDecoration: 'none' }}
             >
               {isMissingBaseDocs ? (
-                <p className="text-warning">
+                <p className="text-warning" title="incomplete">
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
-                    title="incomplete"
                     className="mx-2"
                   />
-                  incomplete
+                  {total_accepted_base_docs_needed}/{total_base_docs_needed}
                 </p>
               ) : (
-                <p className="text-warning">
+                <p className="text-warning" title="complete">
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
-                    title="complete"
                     className="mx-2"
                   />
-                  complete
+                  {total_accepted_base_docs_needed}/{total_base_docs_needed}
                 </p>
               )}
             </Link>
@@ -331,7 +335,7 @@ class AgentReviewing extends React.Component {
                 ) : (
                   <p className="text-warning">
                     <BsFillExclamationCircleFill
-                      size={20}
+                      size={23}
                       color="red"
                       title="Not assigned yet"
                       className="mx-2"
@@ -346,7 +350,6 @@ class AgentReviewing extends React.Component {
                     title="complete"
                     className="mx-2"
                   />
-                  complete
                 </p>
               )}
             </Link>

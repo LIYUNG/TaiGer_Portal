@@ -4,19 +4,17 @@ import { Redirect } from 'react-router-dom';
 
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import PageNotFoundError from '../Utils/PageNotFoundError';
 import { valid_categories } from '../Utils/contants';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   getCategorizedDocumentationPage,
   updateDocumentationPage
 } from '../../api';
 
-class ApplicationList extends React.Component {
+class Documentation extends React.Component {
   state = {
     isLoaded: false,
     success: false,
@@ -25,7 +23,9 @@ class ApplicationList extends React.Component {
     unauthorizederror: null,
     unauthorizederror: null,
     isEdit: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -135,13 +135,16 @@ class ApplicationList extends React.Component {
             editorState,
             isEdit: !this.state.isEdit,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -154,6 +157,15 @@ class ApplicationList extends React.Component {
   handleClick = () => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
     if (
       this.props.user.role !== 'Admin' &&
@@ -163,7 +175,13 @@ class ApplicationList extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { res_status, editorState, isLoaded } = this.state;
+    const {
+      res_status,
+      editorState,
+      isLoaded,
+      res_modal_status,
+      res_modal_message
+    } = this.state;
 
     if (!isLoaded && !editorState) {
       return (
@@ -182,6 +200,13 @@ class ApplicationList extends React.Component {
     if (this.state.isEdit) {
       return (
         <>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <Row className="sticky-top ">
             <Col>
               <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
@@ -251,4 +276,4 @@ class ApplicationList extends React.Component {
   }
 }
 
-export default ApplicationList;
+export default Documentation;

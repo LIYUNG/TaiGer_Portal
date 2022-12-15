@@ -5,11 +5,9 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import PageNotFoundError from '../Utils/PageNotFoundError';
 import { valid_categories, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   getAllDocumentations,
@@ -39,7 +37,9 @@ class DocCreatePage extends React.Component {
             .fill()
             .map((x, i) => i)
         : [0], // to expand all]
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -147,13 +147,16 @@ class DocCreatePage extends React.Component {
             SetDeleteDocModel: false,
             isEdit: false,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -209,13 +212,16 @@ class DocCreatePage extends React.Component {
             editorState: '',
             isEdit: !this.state.isEdit,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -223,6 +229,14 @@ class DocCreatePage extends React.Component {
       }
     );
     this.setState((state) => ({ ...state, in_edit_mode: false }));
+  };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   render() {
@@ -233,7 +247,8 @@ class DocCreatePage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { res_status, isLoaded } = this.state;
+    const { res_status, isLoaded, res_modal_status, res_modal_message } =
+      this.state;
 
     if (!isLoaded) {
       return (
@@ -270,6 +285,13 @@ class DocCreatePage extends React.Component {
 
     return (
       <Aux>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Row className="sticky-top ">
           <Col>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>

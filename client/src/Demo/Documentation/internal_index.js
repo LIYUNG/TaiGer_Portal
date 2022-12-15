@@ -6,6 +6,7 @@ import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   getInternalDocumentationPage,
@@ -19,7 +20,9 @@ class InternaldocsPage extends React.Component {
     error: null,
     editorState: null,
     isEdit: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -81,13 +84,16 @@ class InternaldocsPage extends React.Component {
             editorState,
             isEdit: !this.state.isEdit,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -100,6 +106,15 @@ class InternaldocsPage extends React.Component {
   handleClick = () => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
     if (
       this.props.user.role !== 'Admin' &&
@@ -108,7 +123,13 @@ class InternaldocsPage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-    const { res_status, editorState, isLoaded } = this.state;
+    const {
+      res_status,
+      editorState,
+      isLoaded,
+      res_modal_status,
+      res_modal_message
+    } = this.state;
 
     if (!isLoaded && !editorState) {
       return (
@@ -127,6 +148,13 @@ class InternaldocsPage extends React.Component {
     if (this.state.isEdit) {
       return (
         <>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <DocPageEdit
             category={'category'}
             document={document}
@@ -142,6 +170,13 @@ class InternaldocsPage extends React.Component {
     } else {
       return (
         <>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <DocPageView
             document={document}
             document_title={this.state.document_title}

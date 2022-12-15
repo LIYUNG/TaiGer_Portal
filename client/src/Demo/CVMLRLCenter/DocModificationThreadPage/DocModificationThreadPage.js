@@ -313,8 +313,7 @@ class DocModificationThreadPage extends Component {
     SetFileAsFinal(
       this.state.doc_thread_id,
       this.state.student_id,
-      temp_program_id,
-      true
+      temp_program_id
     ).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -323,7 +322,11 @@ class DocModificationThreadPage extends Component {
           this.setState((state) => ({
             ...state,
             isSubmissionLoaded: true,
-            thread: { ...state.thread, isFinalVersion: data },
+            thread: {
+              ...state.thread,
+              isFinalVersion: data.isFinalVersion,
+              updatedAt: data.updatedAt
+            },
             success: success,
             SetAsFinalFileModel: false,
             res_modal_status: status

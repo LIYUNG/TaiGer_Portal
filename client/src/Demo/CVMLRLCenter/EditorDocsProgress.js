@@ -1,6 +1,4 @@
 import React from 'react';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -11,17 +9,18 @@ import {
   Modal,
   Spinner
 } from 'react-bootstrap';
-
 import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
+
 import ManualFiles from './ManualFiles';
-import { check_generaldocs } from '../Utils/checking-functions';
 import {
+  check_generaldocs,
   is_program_ml_rl_essay_finished,
   is_program_closed
 } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   deleteGenralFileThread,
@@ -51,7 +50,9 @@ class EditorDocsProgress extends React.Component {
     requirements: '',
     file: '',
     isThreadExisted: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
   componentDidMount() {
     this.setState((state) => ({
@@ -113,13 +114,16 @@ class EditorDocsProgress extends React.Component {
               student: data,
               success: success,
               deleteFileWarningModel: false,
-              res_status: status
+              res_modal_status: status
             }));
           } else {
-            this.setState({
+            const { message } = resp.data;
+            this.setState((state) => ({
+              ...state,
               isLoaded: true,
-              res_status: status
-            });
+              res_modal_message: message,
+              res_modal_status: status
+            }));
           }
         },
         (error) => {
@@ -145,13 +149,16 @@ class EditorDocsProgress extends React.Component {
               student: data,
               success: success,
               deleteFileWarningModel: false,
-              res_status: status
+              res_modal_status: status
             }));
           } else {
-            this.setState({
+            const { message } = resp.data;
+            this.setState((state) => ({
+              ...state,
               isLoaded: true,
-              res_status: status
-            });
+              res_modal_message: message,
+              res_modal_status: status
+            }));
           }
         },
         (error) => {
@@ -169,29 +176,59 @@ class EditorDocsProgress extends React.Component {
     SetFileAsFinal(
       this.state.doc_thread_id,
       this.state.student_id,
-      this.state.program_id,
-      false
+      this.state.program_id
     ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
+          let student_temp = { ...this.state.student };
+          let application_idx = student_temp.applications.findIndex(
+            (application) =>
+              application.programId._id.toString() === this.state.program_id
+          );
+
+          let thread_idx = student_temp.applications[
+            application_idx
+          ].doc_modification_thread.findIndex(
+            (thread) =>
+              thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+          );
+
+          student_temp.applications[application_idx].doc_modification_thread[
+            thread_idx
+          ].isFinalVersion = data.isFinalVersion;
+
+          student_temp.applications[application_idx].doc_modification_thread[
+            thread_idx
+          ].updatedAt = data.updatedAt;
+          student_temp.applications[application_idx].doc_modification_thread[
+            thread_idx
+          ].doc_thread_id.updatedAt = data.updatedAt;
+          console.log(
+            student_temp.applications[application_idx].doc_modification_thread[
+              thread_idx
+            ]
+          );
           this.setState((state) => ({
             ...state,
             studentId: '',
             applicationId: '',
             docName: '',
             isLoaded: true,
-            student: data,
+            student: student_temp,
             success: success,
             SetAsFinalFileModel: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -227,13 +264,16 @@ class EditorDocsProgress extends React.Component {
             student: data,
             success: success,
             SetProgramStatusModel: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -291,14 +331,17 @@ class EditorDocsProgress extends React.Component {
               student: data,
               success: success,
               file: '',
-              res_status: status
+              res_modal_status: status
             });
           } else {
             // TODO: handle frontend render if create duplicate thread
-            this.setState({
+            const { message } = resp.data;
+            this.setState((state) => ({
+              ...state,
               isLoaded: true,
-              res_status: status
-            });
+              res_modal_message: message,
+              res_modal_status: status
+            }));
           }
         })
         .catch((error) => {
@@ -323,14 +366,17 @@ class EditorDocsProgress extends React.Component {
               student: data,
               success: success,
               file: '',
-              res_status: status
+              res_modal_status: status
             });
           } else {
             // TODO: handle frontend render if create duplicate thread
-            this.setState({
+            const { message } = resp.data;
+            this.setState((state) => ({
+              ...state,
               isLoaded: true,
-              res_status: status
-            });
+              res_modal_message: message,
+              res_modal_status: status
+            }));
           }
         })
         .catch((error) => {
@@ -339,8 +385,17 @@ class EditorDocsProgress extends React.Component {
     }
   };
 
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
-    const { res_status, isLoaded } = this.state;
+    const { res_modal_status, res_modal_message, res_status, isLoaded } =
+      this.state;
 
     if (!isLoaded && !this.state.student) {
       return (
@@ -363,6 +418,13 @@ class EditorDocsProgress extends React.Component {
           in={this.props.accordionKeys[this.props.idx] === this.props.idx}
         >
           <div id="accordion1">
+            {res_modal_status >= 400 && (
+              <ModalMain
+                ConfirmError={this.ConfirmError}
+                res_modal_status={res_modal_status}
+                res_modal_message={res_modal_message}
+              />
+            )}
             <Card.Body>
               <Row className="mb-4 mx-0">
                 <Col md={8}>
@@ -613,7 +675,9 @@ class EditorDocsProgress extends React.Component {
                           </Col>
                           <Col md={1}>
                             {application.closed === 'O' ? (
-                              <p className="text-warning"><b>Close</b></p>
+                              <p className="text-warning">
+                                <b>Close</b>
+                              </p>
                             ) : (
                               <p className="text-danger">
                                 <b>Open</b>

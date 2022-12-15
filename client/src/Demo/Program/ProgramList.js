@@ -7,10 +7,11 @@ import {
   useRowSelect,
   usePagination
 } from 'react-table';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import ProgramListSubpage from './ProgramListSubpage';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { spinner_style } from '../Utils/contants';
 
 import {
@@ -271,7 +272,9 @@ function Table2({ columns, data, userId }) {
     isloaded: false,
     error: null,
     modalShowAssignWindow: false,
-    modalShowAssignSuccessWindow: false
+    modalShowAssignSuccessWindow: false,
+    res_modal_status: 0,
+    res_modal_message: ''
   });
   let [programs, setPrograms] = useState({
     programIds: [],
@@ -341,7 +344,6 @@ function Table2({ columns, data, userId }) {
       // autoResetSelectedColumn: false
     },
     useFilters, // useFilters!
-
     useGlobalFilter, // useGlobalFilter!
     usePagination,
     useRowSelect,
@@ -387,6 +389,7 @@ function Table2({ columns, data, userId }) {
     assignProgramToStudent(student_id, program_ids).then(
       (resp) => {
         const { success } = resp.data;
+        const { status } = resp;
         if (success) {
           setGlobalFilter([]);
           toggleAllRowsSelected(false);
@@ -395,10 +398,17 @@ function Table2({ columns, data, userId }) {
             isLoaded: true,
             modalShowAssignSuccessWindow: true,
             modalShowAssignWindow: false,
-            success
+            success,
+            res_modal_status: status
           }));
         } else {
-          alert(resp.data.message);
+          const { message } = resp.data;
+          setStatedataTable2((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {}
@@ -436,6 +446,13 @@ function Table2({ columns, data, userId }) {
     setStudentId(value);
   };
 
+  const ConfirmError = () => {
+    setStatedataTable2((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
   return (
     <>
       {programs.programIds.length !== 0 && (
@@ -446,6 +463,13 @@ function Table2({ columns, data, userId }) {
             </Dropdown.Item>
           </DropdownButton>
         </>
+      )}
+      {statedataTable2.res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={statedataTable2.res_modal_status}
+          res_modal_message={statedataTable2.res_modal_message}
+        />
       )}
       <Table
         className="my-0 mx-2"
@@ -690,6 +714,14 @@ function ProgramList(props) {
     );
   }, []);
 
+  if (
+    props.user.role !== 'Admin' &&
+    props.user.role !== 'Editor' &&
+    props.user.role !== 'Agent'
+  ) {
+    return <Redirect to="/dashboard/default" />;
+  }
+
   const columns = React.useMemo(
     () => [
       {
@@ -777,7 +809,7 @@ function ProgramList(props) {
       <Table2
         columns={columns}
         data={statedata.programs}
-        userId={props.userId}
+        userId={props.user._id.toString()}
       />
     </Card>
   );

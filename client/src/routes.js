@@ -21,7 +21,7 @@ const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const CVMLRLOverview = React.lazy(() =>
   import('./Demo/CVMLRLCenter/CVMLRLOverview')
 );
-const ProgramTable = React.lazy(() => import('./Demo/Program/ProgramTable'));
+const ProgramList = React.lazy(() => import('./Demo/Program/ProgramList'));
 const ApplicationsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/index')
 );
@@ -158,7 +158,7 @@ const routes = [
     path: '/programs',
     exact: true,
     name: 'Program Table',
-    component: ProgramTable
+    component: ProgramList
   },
   {
     path: '/student-applications',

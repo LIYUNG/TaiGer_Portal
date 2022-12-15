@@ -172,15 +172,9 @@ export const deleteProgramSpecificFileThread = (
 export const getCVMLRLOverview = () =>
   request.get(`/api/document-threads/overview`);
 
-export const SetFileAsFinal = (
-  documentsthreadId,
-  studentId,
-  program_id,
-  thread_only
-) =>
+export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
   request.put(`/api/document-threads/${documentsthreadId}/${studentId}`, {
-    program_id,
-    thread_only
+    program_id
   });
 
 // Course, Transcript APIs

@@ -249,7 +249,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
       return res.status(200).send({ success: true, data: student_updated });
     }
     logger.info('initGeneralMessagesThread: Document Thread already existed!');
-    throw new ErrorResponse(400, 'Document Thread already existed!');
+    throw new ErrorResponse(409, 'Document Thread already existed!');
   }
   const new_doc_thread = new Documentthread({
     student_id: studentId,
@@ -368,7 +368,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     logger.error(
       'initApplicationMessagesThread: Document Thread already existed!'
     );
-    throw new ErrorResponse(400, 'Document Thread already existed!');
+    throw new ErrorResponse(409, 'Document Thread already existed!');
   }
 
   // minor TODO: if thread not existed but some deprecated one in doc_modification_thread?
@@ -857,7 +857,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   const {
     user,
     params: { messagesThreadId, studentId },
-    body: { program_id, thread_only }
+    body: { program_id }
   } = req;
 
   const document_thread = await Documentthread.findById(messagesThreadId);
@@ -886,7 +886,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     }
 
     const application_thread = student_application.doc_modification_thread.find(
-      (thread) => thread.doc_thread_id._id == messagesThreadId
+      (thread) => thread.doc_thread_id._id.toString() === messagesThreadId
     );
     if (!application_thread) {
       logger.error('SetStatusMessagesThread: application thread not found');
@@ -896,27 +896,22 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     application_thread.isFinalVersion = !application_thread.isFinalVersion;
     application_thread.updatedAt = new Date();
     document_thread.isFinalVersion = application_thread.isFinalVersion;
+    document_thread.updatedAt = new Date();
     await document_thread.save();
     await student.save();
 
-    if (thread_only) {
-      return res
-        .status(200)
-        .send({ success: true, data: document_thread.isFinalVersion });
-    }
-
-    const student2 = await Student.findById(studentId)
-      .populate('applications.programId generaldocs_threads.doc_thread_id')
-      .populate(
-        'applications.doc_modification_thread.doc_thread_id',
-        'file_type updatedAt'
-      );
-    res.status(200).send({ success: true, data: student2 });
+    res.status(200).send({
+      success: true,
+      data: {
+        isFinalVersion: document_thread.isFinalVersion,
+        updatedAt: document_thread.updatedAt
+      }
+    });
 
     await sendSetAsFinalProgramSpecificFileForStudentEmail(
       {
-        firstname: student2.firstname,
-        lastname: student2.lastname,
+        firstname: student.firstname,
+        lastname: student.lastname,
         address: student.email
       },
       {
@@ -967,19 +962,14 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     document_thread.isFinalVersion = generaldocs_thread.isFinalVersion;
     await document_thread.save();
     await student.save();
-    if (thread_only) {
-      return res
-        .status(200)
-        .send({ success: true, data: document_thread.isFinalVersion });
-    }
+    res.status(200).send({
+      success: true,
+      data: {
+        isFinalVersion: document_thread.isFinalVersion,
+        updatedAt: document_thread.updatedAt
+      }
+    });
 
-    const student2 = await Student.findById(studentId)
-      .populate('applications.programId generaldocs_threads.doc_thread_id')
-      .populate(
-        'applications.doc_modification_thread.doc_thread_id',
-        'file_type updatedAt'
-      );
-    res.status(200).send({ success: true, data: student2 });
     await sendSetAsFinalGeneralFileForStudentEmail(
       {
         firstname: student.firstname,

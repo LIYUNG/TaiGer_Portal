@@ -485,6 +485,13 @@ class Dashboard extends React.Component {
               </Spinner>
             </div>
           )}
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <StudentDashboard
             user={this.props.user}
             role={this.props.user.role}

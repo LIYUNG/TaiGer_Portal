@@ -16,6 +16,7 @@ import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgre
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
 
@@ -32,7 +33,9 @@ class CVMLRLOverview extends React.Component {
     SetAsFinalFileModel: false,
     isFinalVersion: false,
     status: '', //reject, accept... etc
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -76,18 +79,67 @@ class CVMLRLOverview extends React.Component {
     SetFileAsFinal(
       this.state.doc_thread_id,
       this.state.student_id,
-      this.state.program_id,
-      false
+      this.state.program_id
     ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
           let temp_students = [...this.state.students];
-          let student_idx = this.state.students.findIndex(
-            (student) => student._id.toString() === data._id.toString()
+          let student_temp_idx = temp_students.findIndex(
+            (student) => student._id.toString() === this.state.student_id
           );
-          temp_students[student_idx] = data;
+          if (this.state.program_id) {
+            let application_idx = temp_students[
+              student_temp_idx
+            ].applications.findIndex(
+              (application) =>
+                application.programId._id.toString() === this.state.program_id
+            );
+
+            let thread_idx = temp_students[student_temp_idx].applications[
+              application_idx
+            ].doc_modification_thread.findIndex(
+              (thread) =>
+                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+            );
+
+            temp_students[student_temp_idx].applications[
+              application_idx
+            ].doc_modification_thread[thread_idx].isFinalVersion =
+              data.isFinalVersion;
+
+            temp_students[student_temp_idx].applications[
+              application_idx
+            ].doc_modification_thread[thread_idx].updatedAt = data.updatedAt;
+            temp_students[student_temp_idx].applications[
+              application_idx
+            ].doc_modification_thread[thread_idx].doc_thread_id.updatedAt =
+              data.updatedAt;
+            console.log(
+              temp_students[student_temp_idx].applications[application_idx]
+                .doc_modification_thread[thread_idx]
+            );
+          } else {
+            let general_doc_idx = temp_students[
+              student_temp_idx
+            ].generaldocs_threads.findIndex(
+              (thread) =>
+                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+            );
+            temp_students[student_temp_idx].generaldocs_threads[
+              general_doc_idx
+            ].isFinalVersion = data.isFinalVersion;
+
+            temp_students[student_temp_idx].generaldocs_threads[
+              general_doc_idx
+            ].updatedAt = data.updatedAt;
+
+            temp_students[student_temp_idx].generaldocs_threads[
+              general_doc_idx
+            ].doc_thread_id.updatedAt = data.updatedAt;
+          }
+
           this.setState((state) => ({
             ...state,
             docName: '',
@@ -96,13 +148,16 @@ class CVMLRLOverview extends React.Component {
             success: success,
             SetAsFinalFileModel: false,
             isFinalVersion: false,
-            res_status: status
+            res_modal_status: status
           }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -128,8 +183,18 @@ class CVMLRLOverview extends React.Component {
       isFinalVersion
     }));
   };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
-    const { res_status, isLoaded } = this.state;
+    const { res_modal_status, res_modal_message, res_status, isLoaded } =
+      this.state;
 
     const style = {
       position: 'fixed',
@@ -185,6 +250,13 @@ class CVMLRLOverview extends React.Component {
             </Card>
           </Col>
         </Row>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Row>
           <Col>
             <Tabs defaultActiveKey="open" fill={true} justify={true}>

@@ -5,7 +5,7 @@ const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { protect, permit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
 
-const { getAgents } = require('../controllers/users');
+const { getAgents } = require('../controllers/teams');
 
 const router = Router();
 

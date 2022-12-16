@@ -303,6 +303,13 @@ export default {
           icon: 'feather icon-cloud'
         },
         {
+          id: 'teams_overview',
+          title: 'TaiGer Teams',
+          type: 'item',
+          icon: 'feather icon-star',
+          url: '/teams'
+        },
+        {
           id: 'settings',
           title: 'Settings',
           type: 'item',

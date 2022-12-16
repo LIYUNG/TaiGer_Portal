@@ -95,7 +95,6 @@ export default function SignUp1({ userData }) {
                 <NavLink to="/">
                   <button
                     className="btn btn-success shadow-2 mb-3"
-                    onClick={(e) => onButtonClick(e, true)}
                     disabled={buttondisable}
                   >
                     {buttondisable ? (

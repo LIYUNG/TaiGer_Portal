@@ -333,6 +333,13 @@ export const updateApplicationPreference = (
 
 export const getMyAcademicBackground = () => request.get('/api/account/survey');
 
+// Teams
+export const getTeamMembers = () => request.get('/api/teams');
+export const getAgent = (agent_id) =>
+  request.get(`/api/teams/agents/${agent_id}`);
+export const getEditor = (editor_id) =>
+  request.get(`/api/teams/editors/${editor_id}`);
+  
 //Personal Data:
 export const updatePersonalData = (personaldata) =>
   request.post(`/api/account/profile`, { personaldata });

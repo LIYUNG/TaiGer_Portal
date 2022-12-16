@@ -83,6 +83,7 @@ class NavItem extends Component {
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Student Database' ||
+        itemTitle === 'TaiGer Teams' ||
         itemTitle === 'User List'
       ) {
         return false;
@@ -109,6 +110,7 @@ class NavItem extends Component {
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Documentation' ||
         itemTitle === 'Student Database' ||
+        itemTitle === 'TaiGer Teams' ||
         itemTitle === 'User List'
       ) {
         return false;

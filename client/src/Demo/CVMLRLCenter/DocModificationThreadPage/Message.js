@@ -49,7 +49,13 @@ class Message extends Component {
         </div>
       );
     }
-
+    let firstname = this.props.message.user_id
+      ? this.props.message.user_id.firstname
+      : 'Staff';
+    let lastname = this.props.message.user_id
+      ? this.props.message.user_id.lastname
+      : 'TaiGer';
+    const full_name = `${firstname} ${lastname}`;
     const files_info = this.props.message.file.map((file, i) => (
       <Row key={i}>
         <Col md={1} style={{ cursor: 'pointer' }}>
@@ -102,19 +108,10 @@ class Message extends Component {
         >
           <Row className="my-0">
             <Col md={1} className="me-1 my-0">
-              <Avatar
-                {...stringAvatar(
-                  this.props.message.user_id.firstname +
-                    ' ' +
-                    this.props.message.user_id.lastname
-                )}
-              />
+              <Avatar {...stringAvatar(full_name)} />
             </Col>
             <Col className="mt-2">
-              <b>
-                {this.props.message.user_id.firstname}{' '}
-                {this.props.message.user_id.lastname}
-              </b>
+              <b>{full_name}</b>
               <span style={{ float: 'right', cursor: 'pointer' }}>
                 {new Date(this.props.message.createdAt).toLocaleTimeString()}
                 {', '}

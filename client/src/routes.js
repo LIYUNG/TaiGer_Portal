@@ -21,6 +21,11 @@ const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const CVMLRLOverview = React.lazy(() =>
   import('./Demo/CVMLRLCenter/CVMLRLOverview')
 );
+
+const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/index'));
+const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
+const TaiGerOrgEditor = React.lazy(() => import('./Demo/TaiGerOrg/EditorPage'));
+const TaiGerOrgAdmin = React.lazy(() => import('./Demo/TaiGerOrg/AdminPage'));
 const ProgramList = React.lazy(() => import('./Demo/Program/ProgramList'));
 const ApplicationsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/index')
@@ -66,7 +71,9 @@ const InternaldocsPage = React.lazy(() =>
   import('./Demo/Documentation/internal_index')
 );
 const DocsPage = React.lazy(() => import('./Demo/Documentation/SingleDoc'));
-const DocsInternalPage = React.lazy(() => import('./Demo/Documentation/SingleInternalDoc'));
+const DocsInternalPage = React.lazy(() =>
+  import('./Demo/Documentation/SingleInternalDoc')
+);
 const DocCreatePage = React.lazy(() =>
   import('./Demo/Documentation/DocCreatePage')
 );
@@ -84,8 +91,6 @@ const AgentsAssignment = React.lazy(() =>
 const EditorsAssignment = React.lazy(() =>
   import('./Demo/AssignmentAgentsEditors/AssignEditors/index')
 );
-
-
 
 const routes = [
   {
@@ -315,6 +320,30 @@ const routes = [
     exact: true,
     name: '',
     component: Survey
+  },
+  {
+    path: '/teams',
+    exact: true,
+    name: '',
+    component: TaiGerOrg
+  },
+  {
+    path: '/teams/agents/:user_id',
+    exact: true,
+    name: '',
+    component: TaiGerOrgAgent
+  },
+  {
+    path: '/teams/editors/:user_id',
+    exact: true,
+    name: '',
+    component: TaiGerOrgEditor
+  },
+  {
+    path: '/teams/admins/:user_id',
+    exact: true,
+    name: '',
+    component: TaiGerOrgAdmin
   }
   // {
   //   path: "/",

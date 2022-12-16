@@ -35,6 +35,17 @@ const updateUser = asyncHandler(async (req, res) => {
   if (fields.role === Role.Admin) {
     logger.warn('User role is changed to ', fields.role);
   }
+  console.log(fields.role);
+  // TODO: if Agent or editor change role, remove their belong students!
+  // const students = await Student.updateMany(
+  //   {
+  //     agents: { $in: user_id }
+  //   },
+  //   {
+  //     $pull: { agents: user_id }
+  //   },
+  //   { multi: true }
+  // );
 
   const new_user = await User.findByIdAndUpdate(user_id, fields, {
     runValidators: true,
@@ -42,14 +53,16 @@ const updateUser = asyncHandler(async (req, res) => {
     // upsert: true,
     new: true
   }).lean();
-
+  const updated_user = await User.findById(user_id);
   res.status(200).send({ success: true, data: new_user });
+  console.log(updated_user);
+
   // Email inform user, the updated status
   await updateNotificationEmail(
     {
-      firstname: new_user.firstname,
-      lastname: new_user.lastname,
-      address: new_user.email
+      firstname: updated_user.firstname,
+      lastname: updated_user.lastname,
+      address: updated_user.email
     },
     {}
   );
@@ -162,28 +175,8 @@ const deleteUser = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-const getAgents = asyncHandler(async (req, res, next) => {
-  const agents = await Agent.find().populate('students', '_id name');
-  // if (!agents) {
-  //   logger.error('getAgents : no agents');
-  //   throw new ErrorResponse(400, 'no agents');
-  // }
-  res.status(200).send({ success: true, data: agents });
-});
-
-const getEditors = asyncHandler(async (req, res, next) => {
-  const editors = await Editor.find().populate('students', '_id name');
-  // if (!editors) {
-  //   logger.error('getgetEditorsAgents : no editors');
-  //   throw new ErrorResponse(400, 'no editors');
-  // }
-  res.status(200).send({ success: true, data: editors });
-});
-
 module.exports = {
   getUsers,
   updateUser,
-  deleteUser,
-  getAgents,
-  getEditors
+  deleteUser
 };

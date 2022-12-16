@@ -7,7 +7,7 @@ class User extends React.Component {
       return (
         <tr key={this.props.user._id}>
           <th>
-            {this.props.user.role !== 'Admin' && (
+            {/* {this.props.user.role !== 'Admin' && ( */}
               <DropdownButton
                 size="sm"
                 title="Option"
@@ -42,7 +42,7 @@ class User extends React.Component {
                   Delete
                 </Dropdown.Item>
               </DropdownButton>
-            )}
+            {/* )} */}
           </th>
           {this.props.header.map((y, k) => (
             <td key={k}>{this.props.user[y.prop]}</td>

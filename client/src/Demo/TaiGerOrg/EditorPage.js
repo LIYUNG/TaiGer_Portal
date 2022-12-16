@@ -8,6 +8,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getEditor } from '../../api';
+import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
 
 class EditorPage extends React.Component {
   state = {
@@ -17,6 +18,7 @@ class EditorPage extends React.Component {
     data: null,
     success: false,
     editor: null,
+    students: null,
     academic_background: {},
     application_preference: {},
     updateconfirmed: false,
@@ -31,7 +33,8 @@ class EditorPage extends React.Component {
         if (success) {
           this.setState({
             isLoaded: true,
-            editor: data,
+            editor: data.editor,
+            students: data.students,
             success: success,
             res_status: status
           });
@@ -61,7 +64,7 @@ class EditorPage extends React.Component {
     }
     const { res_status, isLoaded } = this.state;
 
-    if (!isLoaded && !this.state.editor) {
+    if (!isLoaded && !this.state.editor && !this.state.students) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -83,31 +86,25 @@ class EditorPage extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
+                    <Col className="my-0 mx-0 text-light">
+                      TaiGer Team Editor:{' '}
+                      <b>
+                        {this.state.editor.firstname}{' '}
+                        {this.state.editor.lastname}
+                      </b>
+                    </Col>
                   </Row>
                 </Card.Title>
               </Card.Header>
             </Card>
           </Col>
         </Row>
-        <Card>
-          <Card.Body>
-            <p>
-              Editor:{' '}
-              <b>
-                {this.state.editor.firstname} {this.state.editor.lastname}
-              </b>
-            </p>
-            Student:{' '}
-            {this.state.editor.students.map((student, i) => (
-              <p>
-                <b>
-                  {student.firstname}, {student.lastname}
-                </b>
-              </p>
-            ))}
-          </Card.Body>
-        </Card>
+        <CVMLRLOverview
+          isLoaded={this.state.isLoaded}
+          user={this.props.user}
+          success={this.state.success}
+          students={this.state.students}
+        />
       </Aux>
     );
   }

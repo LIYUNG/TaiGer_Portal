@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Spinner, Row, Col } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
 import { profile_name_list } from '../Utils/contants';
@@ -8,6 +8,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getAgent } from '../../api';
+import ApplicationOverviewTabs from '../ApplicantsOverview/ApplicationOverviewTabs';
 
 class AgentPage extends React.Component {
   state = {
@@ -16,6 +17,7 @@ class AgentPage extends React.Component {
     isLoaded: false,
     data: null,
     success: false,
+    students: null,
     agent: null,
     academic_background: {},
     application_preference: {},
@@ -31,7 +33,8 @@ class AgentPage extends React.Component {
         if (success) {
           this.setState({
             isLoaded: true,
-            agent: data,
+            students: data.students,
+            agent: data.agent,
             success: success,
             res_status: status
           });
@@ -61,7 +64,7 @@ class AgentPage extends React.Component {
     }
     const { res_status, isLoaded } = this.state;
 
-    if (!isLoaded && !this.state.agent) {
+    if (!isLoaded && !this.state.students && !this.state.agent) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -83,31 +86,24 @@ class AgentPage extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
+                    <Col className="my-0 mx-0 text-light">
+                      TaiGer Team Agent:{' '}
+                      <b>
+                        {this.state.agent.firstname} {this.state.agent.lastname}
+                      </b>
+                    </Col>
                   </Row>
                 </Card.Title>
               </Card.Header>
             </Card>
           </Col>
         </Row>
-        <Card>
-          <Card.Body>
-            <p>
-              Agent:{' '}
-              <b>
-                {this.state.agent.firstname} {this.state.agent.lastname}
-              </b>
-            </p>
-            Student:{' '}
-            {this.state.agent.students.map((student, i) => (
-              <p>
-                <b>
-                  {student.firstname}, {student.lastname}
-                </b>
-              </p>
-            ))}
-          </Card.Body>
-        </Card>
+        <ApplicationOverviewTabs
+          isLoaded={this.state.isLoaded}
+          user={this.props.user}
+          success={this.state.success}
+          students={this.state.students}
+        />
       </Aux>
     );
   }

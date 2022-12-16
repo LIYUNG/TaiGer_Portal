@@ -96,32 +96,39 @@ class Survey extends React.Component {
         </Row>
         <Card>
           <Card.Body>
-            <h4>Admin:</h4>
-            {admins.map((admin, i) => (
-              <p>
-                <b>
-                  <Link to={`/teams/admins/${admin._id.toString()}`}>
-                    {admin.firstname} {admin.lastname}
-                  </Link>
-                </b>
-              </p>
-            ))}
+            {this.props.user.role === 'Admin' && (
+              <>
+                <h4>Admin:</h4>
+                {admins.map((admin, i) => (
+                  <p key={i}>
+                    <b>
+                      <Link to={`/teams/admins/${admin._id.toString()}`}>
+                        {admin.firstname} {admin.lastname}
+                      </Link>
+                    </b>
+                  </p>
+                ))}
+              </>
+            )}
+
             <h4>Agent:</h4>
             {agents.map((agent, i) => (
-              <p>
+              <p key={i}>
                 <b>
                   <Link to={`/teams/agents/${agent._id.toString()}`}>
-                    {agent.firstname} {agent.lastname}
+                    {agent.firstname} {agent.lastname}{' '}
+                    {agent.students ? agent.students.length : 0}
                   </Link>
                 </b>
               </p>
             ))}
             <h4>Editor:</h4>
             {editors.map((editor, i) => (
-              <p>
+              <p key={i}>
                 <b>
                   <Link to={`/teams/editors/${editor._id.toString()}`}>
-                    {editor.firstname} {editor.lastname}
+                    {editor.firstname} {editor.lastname}{' '}
+                    {editor.students ? editor.students.length : 0}
                   </Link>
                 </b>
               </p>

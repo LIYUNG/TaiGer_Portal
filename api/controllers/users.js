@@ -75,6 +75,21 @@ const deleteUser = asyncHandler(async (req, res) => {
   } = req;
   const user_deleting = await User.findById(user_id);
 
+  // Delete Admin
+  if (user_deleting.role === Role.Admin) {
+    // remove agent from students
+    // const students = await Student.updateMany(
+    //   {
+    //     agents: { $in: user_id },
+    //   },
+    //   {
+    //     $pull: { agents: user_id }
+    //   },
+    //   { multi: true }
+    // );
+    await User.findByIdAndDelete(user_id);
+  }
+
   // delete from agent/editor
   if (user_deleting.role === Role.Agent) {
     // remove agent from students

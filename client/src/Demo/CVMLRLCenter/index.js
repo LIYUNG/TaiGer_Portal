@@ -1,37 +1,53 @@
 import React from 'react';
-import { Card, Spinner, Row, Col } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import {
+  Row,
+  Col,
+  Spinner,
+  Table,
+  Card,
+  Modal,
+  Button,
+  Tab,
+  Tabs
+} from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
-import { profile_name_list } from '../Utils/contants';
+import CVMLRLOverview from './CVMLRLOverview';
+import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
+import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { getTeamMembers } from '../../api';
+import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
 
-class AdminPage extends React.Component {
+class index extends React.Component {
   state = {
     error: null,
-    role: '',
     isLoaded: false,
     data: null,
     success: false,
-    admin: [],
-    academic_background: {},
-    application_preference: {},
-    updateconfirmed: false,
-    res_status: 0
+    students: null,
+    doc_thread_id: '',
+    student_id: '',
+    program_id: '',
+    SetAsFinalFileModel: false,
+    isFinalVersion: false,
+    status: '', //reject, accept... etc
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
-    getTeamMembers().then(
+    getCVMLRLOverview().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
-            admin: data,
+            students: data,
             success: success,
             res_status: status
           });
@@ -52,16 +68,9 @@ class AdminPage extends React.Component {
   }
 
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Editor'
-    ) {
-      return <Redirect to="/dashboard/default" />;
-    }
     const { res_status, isLoaded } = this.state;
 
-    if (!isLoaded && !this.state.admin) {
+    if (!isLoaded && !this.state.students) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -77,32 +86,26 @@ class AdminPage extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top ">
+        <Row className="sticky-top">
           <Col>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
-                  </Row>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  CV ML RL Overview
                 </Card.Title>
               </Card.Header>
             </Card>
           </Col>
         </Row>
-        <Card>
-          <Card.Body>
-            <p>
-              Admin:{' '}
-              <b>
-                {this.state.admin.firstname} {this.state.admin.lastname}
-              </b>
-            </p>
-          </Card.Body>
-        </Card>
+        <CVMLRLOverview
+          isLoaded={this.state.isLoaded}
+          success={this.state.success}
+          students={this.state.students}
+          user={this.props.user}
+        />
       </Aux>
     );
   }
 }
 
-export default AdminPage;
+export default index;

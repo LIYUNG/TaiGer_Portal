@@ -19,7 +19,7 @@ const Checklist = React.lazy(() => import('./Demo/CheckList/index'));
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 
 const CVMLRLOverview = React.lazy(() =>
-  import('./Demo/CVMLRLCenter/CVMLRLOverview')
+  import('./Demo/CVMLRLCenter/index')
 );
 
 const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/index'));

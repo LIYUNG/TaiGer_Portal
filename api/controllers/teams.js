@@ -38,19 +38,34 @@ const getAgents = asyncHandler(async (req, res, next) => {
 
 const getSingleAgent = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
-  const agent = await Agent.findById(agent_id).populate(
-    'students',
-    '_id firstname lastname'
+  const agent = await Agent.findById(agent_id).select(
+    'students firstname lastname'
   );
+  const students = await Student.find({
+    _id: { $in: agent.students },
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select('-notification')
+    .lean()
+    .exec();
   // if (!agents) {
   //   logger.error('getAgents : no agents');
   //   throw new ErrorResponse(400, 'no agents');
   // }
-  res.status(200).send({ success: true, data: agent });
+  res.status(200).send({ success: true, data: { students, agent } });
 });
 
 const getEditors = asyncHandler(async (req, res, next) => {
-  const editors = await Editor.find().populate('students', '_id name firstname lastname');
+  const editors = await Editor.find().populate(
+    'students',
+    '_id name firstname lastname'
+  );
   // if (!editors) {
   //   logger.error('getgetEditorsAgents : no editors');
   //   throw new ErrorResponse(400, 'no editors');
@@ -60,15 +75,25 @@ const getEditors = asyncHandler(async (req, res, next) => {
 
 const getSingleEditor = asyncHandler(async (req, res, next) => {
   const { editor_id } = req.params;
-  const editor = await Editor.findById(editor_id).populate(
-    'students',
-    '_id firstname lastname'
+  const editor = await Editor.findById(editor_id).select(
+    'students firstname lastname'
   );
+  const students = await Student.find({
+    _id: { $in: editor.students },
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select('-notification');
   // if (!editors) {
   //   logger.error('getgetEditorsAgents : no editors');
   //   throw new ErrorResponse(400, 'no editors');
   // }
-  res.status(200).send({ success: true, data: editor });
+  res.status(200).send({ success: true, data: { students, editor } });
 });
 
 module.exports = {

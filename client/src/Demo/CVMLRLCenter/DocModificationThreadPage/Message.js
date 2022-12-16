@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, Spinner, Collapse, Button, Row, Col } from 'react-bootstrap';
 import { RiMoreFill } from 'react-icons/ri';
 import { BASE_URL } from '../../../api/request';
-import EditorSimple from '../../../components/EditorJs/EditorSimple';
+// import EditorSimple from '../../../components/EditorJs/EditorSimple';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import Output from 'editorjs-react-renderer';
 import { stringAvatar } from '../../Utils/contants';
@@ -57,10 +57,31 @@ class Message extends Component {
       : 'TaiGer';
     const full_name = `${firstname} ${lastname}`;
     const files_info = this.props.message.file.map((file, i) => (
-      <Row key={i}>
-        <Col md={1} style={{ cursor: 'pointer' }}>
-          <h5>
-            <span>
+      <Card key={i} className="my-0 mx-0">
+        <Card.Body>
+          <Row>
+            <Col md={1} style={{ height: '15%', width: '15%' }}>
+              {/* <h5> */}
+              <span>
+                {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
+                <a
+                  href={`${BASE_URL}/api/document-threads/${
+                    this.props.documentsthreadId
+                  }/${this.props.message._id.toString()}/${
+                    file.path.replace(/\\/g, '/').split('/')[2]
+                  }`}
+                  target="_blank"
+                >
+                  <FileIcon
+                    // style={{ cursor: 'pointer', width: '0%', size: 12 }}
+                    extension={file.name.split('.').pop()}
+                    {...defaultStyles[file.name.split('.').pop()]}
+                  />
+                </a>
+              </span>
+              {/* </h5> */}
+            </Col>
+            <Col className="my-4" style={{ height: '15%' }}>
               {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
               <a
                 href={`${BASE_URL}/api/document-threads/${
@@ -70,30 +91,12 @@ class Message extends Component {
                 }`}
                 target="_blank"
               >
-                <FileIcon
-                  size="sm"
-                  radius={4}
-                  extension={file.name.split('.').pop()}
-                  {...defaultStyles[file.name.split('.').pop()]}
-                />
+                {file.name}
               </a>
-            </span>
-          </h5>
-        </Col>
-        <Col md={11} className="my-3">
-          {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
-          <a
-            href={`${BASE_URL}/api/document-threads/${
-              this.props.documentsthreadId
-            }/${this.props.message._id.toString()}/${
-              file.path.replace(/\\/g, '/').split('/')[2]
-            }`}
-            target="_blank"
-          >
-            {file.name}
-          </a>
-        </Col>
-      </Row>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
     ));
 
     return (
@@ -105,19 +108,26 @@ class Message extends Component {
           aria-expanded={
             this.props.accordionKeys[this.props.idx] === this.props.idx
           }
+          className="my-0 mx-0"
         >
-          <Row className="my-0">
-            <Col md={1} className="me-1 my-0">
+          <Row className="my-0 me-0">
+            <Col
+              md={1}
+              className="mx-0 my-0"
+              style={{ height: '15%', width: '15%' }}
+            >
               <Avatar {...stringAvatar(full_name)} />
             </Col>
             <Col className="mt-2">
-              <b>{full_name}</b>
-              <span style={{ float: 'right', cursor: 'pointer' }}>
-                {new Date(this.props.message.createdAt).toLocaleTimeString()}
-                {', '}
-                {new Date(this.props.message.createdAt).toLocaleDateString()}
-                <RiMoreFill className="ms-4" />
-              </span>
+              <p className="my-0">
+                <b>{full_name}</b>
+                <span style={{ float: 'right', cursor: 'pointer' }}>
+                  {new Date(this.props.message.createdAt).toLocaleTimeString()}
+                  {', '}
+                  {new Date(this.props.message.createdAt).toLocaleDateString()}
+                  <RiMoreFill className="ms-2" />
+                </span>
+              </p>
             </Col>
           </Row>
         </Card.Header>
@@ -136,7 +146,6 @@ class Message extends Component {
               handleClickCancel={this.props.handleClickCancel}
               editorState={this.state.editorState}
             /> */}
-
             {files_info}
           </Card.Body>
         </Collapse>

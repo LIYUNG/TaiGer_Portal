@@ -23,10 +23,10 @@ import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
 class CVMLRLOverview extends React.Component {
   state = {
     error: null,
-    isLoaded: false,
+    isLoaded: this.props.isLoaded,
     data: null,
-    success: false,
-    students: null,
+    success: this.props.success,
+    students: this.props.students,
     doc_thread_id: '',
     student_id: '',
     program_id: '',
@@ -38,33 +38,6 @@ class CVMLRLOverview extends React.Component {
     res_modal_status: 0
   };
 
-  componentDidMount() {
-    getCVMLRLOverview().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error: true
-        });
-      }
-    );
-  }
   closeSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,
@@ -193,8 +166,7 @@ class CVMLRLOverview extends React.Component {
   };
 
   render() {
-    const { res_modal_status, res_modal_message, res_status, isLoaded } =
-      this.state;
+    const { res_modal_status, res_modal_message, isLoaded } = this.state;
 
     const style = {
       position: 'fixed',
@@ -211,10 +183,6 @@ class CVMLRLOverview extends React.Component {
           </Spinner>
         </div>
       );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
     }
 
     const cvmlrl_progress = this.state.students.map((student, i) => (
@@ -238,18 +206,7 @@ class CVMLRLOverview extends React.Component {
       />
     ));
     return (
-      <Aux>
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  CV ML RL Overview
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+      <>
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={this.ConfirmError}
@@ -356,7 +313,7 @@ class CVMLRLOverview extends React.Component {
             )}
           </Modal.Footer>
         </Modal>
-      </Aux>
+      </>
     );
   }
 }

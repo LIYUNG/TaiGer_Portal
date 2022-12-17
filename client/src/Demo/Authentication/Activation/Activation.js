@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
-import { activation, resendActivation } from '../../../api';
+import { activation, resendActivation } from '../../../api/index';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
 
 export default function Activation(props) {

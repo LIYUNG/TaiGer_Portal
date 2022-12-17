@@ -1,14 +1,14 @@
 import React from 'react';
-import { Row, Card, Col, Table, Tabs, Tab } from 'react-bootstrap';
+import { Row, Card, Table, Tabs, Tab } from 'react-bootstrap';
+import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-// import AdminTodoList from './AdminTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import NoEditorsStudentsCard from '../MainViewTab/NoEditorsStudentsCard/NoEditorsStudentsCard';
 import NoAgentsStudentsCard from '../MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 class AdminMainView extends React.Component {
   render() {

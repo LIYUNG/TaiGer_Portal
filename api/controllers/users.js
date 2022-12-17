@@ -1,13 +1,26 @@
 const _ = require('lodash');
+const crypto = require('crypto');
 const aws = require('aws-sdk');
+const generator = require('generate-password');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Agent, Editor, Student, Role } = require('../models/User');
+const { User, Agent, Editor, Student, Guest, Role } = require('../models/User');
 const Course = require('../models/Course');
 const { Documentthread } = require('../models/Documentthread');
-const { updateNotificationEmail } = require('../services/email');
+const Token = require('../models/Token');
+const {
+  updateNotificationEmail,
+  sendInvitationEmail
+} = require('../services/email');
 const logger = require('../services/logger');
+const {
+  fieldsValidation,
+  checkUserFirstname,
+  checkUserLastname,
+  checkEmail,
+  checkPassword
+} = require('../common/validation');
 
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -18,6 +31,45 @@ const {
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
   secretAccessKey: AWS_S3_ACCESS_KEY
+});
+
+const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
+const hashToken = (token) =>
+  crypto.createHash('sha256').update(token).digest('hex');
+
+const addUser = asyncHandler(async (req, res) => {
+  await fieldsValidation(
+    checkUserFirstname,
+    checkUserLastname,
+    checkEmail
+  )(req);
+
+  const { firstname, lastname, email } = req.body;
+  const existUser = await User.findOne({ email });
+  if (existUser) {
+    logger.error('addUser: An account with this email address already exists');
+    throw new ErrorResponse(
+      409,
+      'An account with this email address already exists'
+    );
+  }
+  // TODO: check if email address exists in the world!
+  const password = generator.generate({
+    length: 10,
+    numbers: true
+  });
+  const user = await Student.create({ firstname, lastname, email, password });
+
+  const activationToken = generateRandomToken();
+  await Token.create({ userId: user._id, value: hashToken(activationToken) });
+
+  const users = await User.find({}).lean();
+  res.status(201).send({ success: true, data: users });
+
+  await sendInvitationEmail(
+    { firstname, lastname, address: email },
+    { token: activationToken, password }
+  );
 });
 
 const getUsers = asyncHandler(async (req, res) => {
@@ -191,6 +243,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  addUser,
   getUsers,
   updateUser,
   deleteUser

@@ -1,24 +1,27 @@
 import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import { Row, Col, Spinner, Card, Button } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
 import UsersList from './UsersList';
+import AddUserModal from './AddUserModal';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { getUsers } from '../../api';
+import { getUsers, addUser } from '../../api';
 
 class UsersTable extends React.Component {
   state = {
     error: null,
-    timeouterror: null,
+    addUserModalState: false,
     role: '',
     isLoaded: false,
     user: null,
-    unauthorizederror: null,
     success: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
 
   componentDidMount() {
@@ -44,38 +47,68 @@ class UsersTable extends React.Component {
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      getUsers().then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              user: data,
-              success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => this.setState({ isLoaded: true, error })
-      );
-    }
-  }
+  openAddUserModal = () => {
+    this.setState({
+      addUserModalState: true
+    });
+  };
+  cloaseAddUserModal = () => {
+    this.setState({
+      addUserModalState: false
+    });
+  };
+
+  AddUserSubmit = (e, user_information) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
+    addUser(user_information).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          console.log(data);
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            user: data,
+            success,
+            addUserModalState: false,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            addUserModalState: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => this.setState({ isLoaded: true, error })
+    );
+  };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
 
   render() {
     if (this.props.user.role !== 'Admin') {
       return <Redirect to="/dashboard/default" />;
     }
-    const { res_status, isLoaded } = this.state;
+    const { res_modal_message, res_modal_status, res_status, isLoaded } =
+      this.state;
 
-    if (!isLoaded && !this.state.data) {
+    if (!isLoaded && !this.state.user) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -91,6 +124,13 @@ class UsersTable extends React.Component {
 
     return (
       <Aux>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Row>
           <Col>
             <Card bg={'primary'} text="light">
@@ -101,20 +141,26 @@ class UsersTable extends React.Component {
               </Card.Header>
               <UsersList
                 success={this.state.success}
+                isLoaded={this.state.isLoaded}
                 user={this.state.user}
                 onSubmit2={this.onSubmit2}
                 header={window.UserlistHeader}
               />
             </Card>
-            {!this.state.isLoaded && (
-              <div style={spinner_style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Col>
         </Row>
+        <Row>
+          <Button onClick={this.openAddUserModal}>Add New User</Button>
+        </Row>
+        <AddUserModal
+          isLoaded={this.state.isLoaded}
+          addUserModalState={this.state.addUserModalState}
+          cloaseAddUserModal={this.cloaseAddUserModal}
+          firstname={this.state.firstname}
+          lastname={this.state.lastname}
+          selected_user_id={this.state.selected_user_id}
+          AddUserSubmit={this.AddUserSubmit}
+        />
       </Aux>
     );
   }

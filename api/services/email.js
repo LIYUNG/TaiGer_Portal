@@ -163,6 +163,53 @@ const deleteTemplateSuccessEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+const sendInvitationEmail = async (recipient, payload) => {
+  const subject =
+    'TaiGer Portal 電子信箱驗證 / TaiGer Portal Email verification';
+  const activationLink = queryString.stringifyUrl({
+    url: ACCOUNT_ACTIVATION_URL,
+    query: { email: recipient.address, token: payload.token }
+  });
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>請使用以下連結來啟用您的帳戶：</p>
+
+${activationLink}
+
+<p>此連結將於 20 分鐘後失效。</p>
+
+<p>但您仍可再次請求啟用連結於： ${RESEND_ACTIVATION_URL}</p>
+
+<p>以下為您的 TaiGer Portal 帳號密碼：</p>
+<p>Email: <b>${recipient.address}</b></p>
+<p>Password: <b>${payload.password}</b></p>
+
+<p>密碼為臨時，登入後請至 ${SETTINGS_URL} 盡速更換您的密碼</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Your user account has been created.</p>
+<p>Please use the following link to activate your account:</p>
+
+${activationLink}
+
+<p>This link will expire in 20 minutes.</p>
+<p>You can request another here: ${RESEND_ACTIVATION_URL}</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendConfirmationEmail = async (recipient, token) => {
   const subject =
     'TaiGer Portal 電子信箱驗證 / TaiGer Portal Email verification';
@@ -1740,6 +1787,7 @@ module.exports = {
   sendEmail,
   deleteTemplateSuccessEmail,
   uploadTemplateSuccessEmail,
+  sendInvitationEmail,
   sendConfirmationEmail,
   sendForgotPasswordEmail,
   sendPasswordResetEmail,

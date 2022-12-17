@@ -5,7 +5,7 @@ import User from './User';
 import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
 import { spinner_style } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { deleteUser, updateUser, changeUserRole } from '../../api';
 
@@ -22,8 +22,20 @@ class UsersList extends React.Component {
     modalShowNewProgram: false,
     deleteUserWarning: false,
     success: this.props.success,
-    res_status: 0
+    isLoaded: this.props.isLoaded,
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.user !== prevProps.user) {
+      this.setState({
+        data: this.props.user
+      });
+    }
+  }
+
   setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
     this.setState({
       modalShow: true,
@@ -64,6 +76,10 @@ class UsersList extends React.Component {
 
   deleteUser = (user_id) => {
     // TODO: also delete files in file system
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
     var array = [...this.state.data];
     let idx = this.state.data.findIndex((user) => user._id === user_id);
     if (idx !== -1) {
@@ -79,13 +95,16 @@ class UsersList extends React.Component {
             success,
             deleteUserWarning: false,
             data: array,
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -116,13 +135,16 @@ class UsersList extends React.Component {
             isLoaded: true,
             success,
             data: updated_user,
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
@@ -145,12 +167,16 @@ class UsersList extends React.Component {
     this.deleteUser(user_id);
   };
 
-  render() {
-    const { res_status } = this.state;
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
+  render() {
+    const { res_modal_message, res_modal_status } = this.state;
 
     const headers = (
       <tr>
@@ -171,9 +197,16 @@ class UsersList extends React.Component {
         success={this.state.success}
       />
     ));
-    
+
     return (
       <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Table
           responsive
           className="my-0 mx-0"
@@ -195,6 +228,7 @@ class UsersList extends React.Component {
           onSubmit2={this.onSubmit2}
         />
         <UserDeleteWarning
+          isLoaded={this.state.isLoaded}
           deleteUserWarning={this.state.deleteUserWarning}
           setModalHideDDelete={this.setModalHideDDelete}
           firstname={this.state.firstname}

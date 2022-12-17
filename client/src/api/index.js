@@ -9,6 +9,9 @@ export const register = (credentials) =>
 
 export const forgotPassword = ({ email }) =>
   request.post('/auth/forgot-password', { email });
+  
+export const resetPassword = ({ email, password, token }) =>
+  request.post('/auth/reset-password', { email, password, token });
 
 export const activation = (email, token) =>
   request.post('/auth/activation', { email, token });
@@ -21,6 +24,8 @@ export const verify = () => request.get('/auth/verify');
 
 // User APIs
 export const getUsers = () => request.get('/api/users');
+export const addUser = (user_information) =>
+  request.post('/api/users', user_information);
 
 export const deleteUser = (id) => request.delete(`/api/users/${id}`);
 

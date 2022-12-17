@@ -296,7 +296,7 @@ class Settings extends React.Component {
           <Col md={6}>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">Login</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">Reset Login Password</Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row className="my-0 mx-0">
@@ -364,7 +364,7 @@ class Settings extends React.Component {
                         )
                       }
                     >
-                      Submit
+                      Reset Password
                     </Button>
                   </Col>
                 </Row>

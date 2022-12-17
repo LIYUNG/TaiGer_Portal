@@ -1,9 +1,10 @@
-import './../../../assets/scss/style.scss';
-import Aux from '../../../hoc/_Aux';
 import React, { useState, useEffect } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import { login } from '../../../api';
+
+import './../../../assets/scss/style.scss';
+import Aux from '../../../hoc/_Aux';
+import { login } from '../../../api/index';
 import Reactivation from '../Activation/Reactivation';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
 

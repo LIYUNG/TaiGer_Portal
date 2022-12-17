@@ -1,6 +1,6 @@
-import React from "react";
-import { Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import React from 'react';
+import { Modal } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 class UserDeleteWarning extends React.Component {
   render() {
@@ -25,11 +25,12 @@ class UserDeleteWarning extends React.Component {
         <Modal.Footer>
           <Button
             variant="primary"
+            disabled={!this.props.isLoaded}
             onClick={() =>
               this.props.RemoveUserHandler3(this.props.selected_user_id)
             }
           >
-            Yes
+            {this.props.isLoaded ? 'Yes' : 'Loading'}
           </Button>
           <Button variant="secondary" onClick={this.props.setModalHideDDelete}>
             No

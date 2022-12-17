@@ -1,7 +1,7 @@
-const { body, param, validationResult } = require("express-validator");
-const { ObjectID } = require("mongodb");
+const { body, param, validationResult } = require('express-validator');
+const { ObjectID } = require('mongodb');
 
-const { Role } = require("../models/User");
+const { Role } = require('../models/User');
 
 const fieldsValidation =
   (...rules) =>
@@ -15,30 +15,30 @@ const fieldsValidation =
 const makeOptional = (rule) => rule.optional();
 
 // common rules
-const checkUserFirstname = body("firstname")
+const checkUserFirstname = body('firstname')
   .isString()
   .notEmpty()
-  .withMessage("First name cannot be empty");
+  .withMessage('First name cannot be empty');
 
-const checkUserLastname = body("lastname")
+const checkUserLastname = body('lastname')
   .isString()
   .notEmpty()
-  .withMessage("Last name cannot be empty");
+  .withMessage('Last name cannot be empty');
 
-const checkEmail = body("email", "Invalid email address")
+const checkEmail = body('email', 'Invalid email address')
   .normalizeEmail({ gmail_remove_dots: false })
   .isEmail();
 
-const checkPassword = body("password")
+const checkPassword = body('password')
   .isString()
   .isLength({ min: 8 })
-  .withMessage("Password must contain at least 8 characters");
+  .withMessage('Password must contain at least 8 characters');
 
-const checkUserRole = body("role", "Invalid role").isIn(Object.values(Role));
+const checkUserRole = body('role', 'Invalid role').isIn(Object.values(Role));
 
-const checkToken = body("token").isString().notEmpty();
+const checkToken = body('token').isString().notEmpty();
 
-const checkObjectID = param("id", "Invalid id").custom(ObjectID.isValid);
+const checkObjectID = param('id', 'Invalid id').custom(ObjectID.isValid);
 
 module.exports = {
   fieldsValidation,
@@ -49,5 +49,5 @@ module.exports = {
   checkPassword,
   checkUserRole,
   checkToken,
-  checkObjectID,
+  checkObjectID
 };

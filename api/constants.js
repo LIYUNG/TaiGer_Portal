@@ -26,7 +26,9 @@ const SETTINGS_URL = new URL('/settings', ORIGIN).href;
 const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 
-const TAIGER_SIGNATURE = 'Your TaiGer Consultancy Team';
+const TAIGER_SIGNATURE = '<p>Your TaiGer Consultancy Team</p>';
+// const TAIGER_SIGNATURE = `<p>Your TaiGer Consultancy Team</p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
+//   <p>Facebook: <a href="https://www.facebook.com/profile.php?id=100063557155189">https://www.facebook.com/profile.php?id=100063557155189</a></p>`;
 const SPLIT_LINE = '-------------------------------------------------------';
 const ENGLISH_BELOW = '(English version below)';
 const CONTACT_AGENT = '如果您有任何疑問，請聯絡您的顧問。';

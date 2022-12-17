@@ -16,10 +16,8 @@ import * as actionTypes from '../../../store/actions';
 
 import routes2 from '../../../route';
 import ScrollToTop from '../ScrollToTop';
-import { verify } from '../../../api';
+import { verify, logout } from '../../../api/index';
 
-// import "./app.scss";
-import { logout } from '../../../api';
 const Component = React.lazy(() =>
   import('../../../Demo/LoadingPage/LoadingPage')
 );

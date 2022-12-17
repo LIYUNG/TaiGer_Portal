@@ -4,8 +4,7 @@ import { NavLink } from 'react-router-dom';
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
-// import DEMO from "../../../store/constant";
-import { resetPassword } from '../../../api/auth';
+import { resetPassword } from '../../../api/index';
 
 export default function ResetPassword(props) {
   const query = new URLSearchParams(props.location.search);

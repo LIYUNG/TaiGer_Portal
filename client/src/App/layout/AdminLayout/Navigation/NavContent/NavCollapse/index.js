@@ -110,13 +110,18 @@ class NavCollapse extends Component {
       let itemTitle = this.props.collapse.title;
       if (this.props.collapse.icon) {
         itemTitle = (
-          <span className="pcoded-mtext">{this.props.collapse.title}</span>
+          <span className="my-0 py-0">{this.props.collapse.title}</span>
         );
       }
 
-      let navLinkClass = ['nav-link'];
+      let navLinkClass = ['nav-link my-0 py-0'];
 
-      let navItemClass = ['nav-item', 'pcoded-hasmenu', 'text-light'];
+      let navItemClass = [
+        'nav-item',
+        'pcoded-hasmenu',
+        'text-light',
+        'my-0 py-0'
+      ];
       const openIndex = isOpen.findIndex((id) => id === this.props.collapse.id);
       if (openIndex > -1) {
         navItemClass = [...navItemClass, 'active'];

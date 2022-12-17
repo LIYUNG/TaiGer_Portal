@@ -210,7 +210,7 @@ class Settings extends React.Component {
         )}
         <Row>
           <Col>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   Personal Data

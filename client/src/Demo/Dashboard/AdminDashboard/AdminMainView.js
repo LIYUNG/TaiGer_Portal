@@ -65,36 +65,36 @@ class AdminMainView extends React.Component {
     );
     return (
       <>
-        {/* <Row className="mb-2 my-2"> */}
-        <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
-          <Card.Header>
-            <Card.Title className="my-0 mx-0 text-light">
-              <BsExclamationTriangle size={18} /> To Do Tasks:
-            </Card.Title>
-          </Card.Header>
-          <Table
-            size="sm"
-            responsive
-            bordered
-            hover
-            className="my-0 mx-0"
-            variant="dark"
-            text="light"
-          >
-            <thead>
-              <tr>
-                <th>Tasks</th>
-                <th>Description</th>
-                <th>Last Update</th>
-              </tr>
-            </thead>
-            <tbody>{admin_tasks}</tbody>
-          </Table>
-        </Card>
-        {/* </Row> */}
+        <Row className="px-0 py-0 mb-2 my-0">
+          <Card className="py-0 px-0 my-0 mx-0" bg={'danger'} text={'light'}>
+            <Card.Header>
+              <Card.Title className="px-0 py-0  my-0 mx-0 text-light">
+                <BsExclamationTriangle size={18} /> To Do Tasks:
+              </Card.Title>
+            </Card.Header>
+            <Table
+              size="sm"
+              responsive
+              bordered
+              hover
+              className="px-0 my-0 mx-0"
+              variant="dark"
+              text="light"
+            >
+              <thead>
+                <tr>
+                  <th>Tasks</th>
+                  <th>Description</th>
+                  <th>Last Update</th>
+                </tr>
+              </thead>
+              <tbody>{admin_tasks}</tbody>
+            </Table>
+          </Card>
+        </Row>
         <TabProgramConflict students={this.props.students} />
-        <Row className="mb-2 my-2">
-          <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+        <Row className="px-0 mb-2 my-2">
+          <Card className="px-0 my-0 mx-0" bg={'dark'} text={'white'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">
                 Agent Reviewing
@@ -104,7 +104,7 @@ class AdminMainView extends React.Component {
               responsive
               bordered
               hover
-              className="my-0 mx-0"
+              className="px-0 my-0 mx-0"
               variant="dark"
               text="light"
               size="sm"
@@ -136,15 +136,19 @@ class AdminMainView extends React.Component {
             <Tab
               eventKey="w"
               title="Student Background Overview"
-              className="my-0 mx-0"
+              className="my-0 mx-0 py-0"
             >
-              <TabStudBackgroundDashboard
-                role={this.props.role}
-                students={this.props.students}
-                SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
-                updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-                isDashboard={this.props.isDashboard}
-              />
+              <Row className="px-0 py-0">
+                <TabStudBackgroundDashboard
+                  role={this.props.role}
+                  students={this.props.students}
+                  SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
+                  updateStudentArchivStatus={
+                    this.props.updateStudentArchivStatus
+                  }
+                  isDashboard={this.props.isDashboard}
+                />
+              </Row>
             </Tab>
             <Tab eventKey="dz" title="Agents and Editors">
               <Table

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import Message from "./Message";
+import React, { Component } from 'react';
+import Message from './Message';
 
 class MessageList extends Component {
   render() {
@@ -15,6 +15,8 @@ class MessageList extends Component {
         onTrashClick={this.props.onTrashClick}
         lastupdate={this.props.lastupdate}
         isLoaded={this.props.isLoaded}
+        user={this.props.user}
+        onDeleteSingleMessage={this.props.onDeleteSingleMessage}
       />
     ));
     return <>{thread}</>;

@@ -80,16 +80,17 @@ class UsersList extends React.Component {
       ...state,
       isLoaded: false
     }));
-    var array = [...this.state.data];
-    let idx = this.state.data.findIndex((user) => user._id === user_id);
-    if (idx !== -1) {
-      array.splice(idx, 1);
-    }
+
     deleteUser(user_id).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
+          var array = [...this.state.data];
+          let idx = this.state.data.findIndex((user) => user._id === user_id);
+          if (idx !== -1) {
+            array.splice(idx, 1);
+          }
           this.setState({
             isLoaded: true,
             success,

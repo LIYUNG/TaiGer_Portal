@@ -32,6 +32,7 @@ const {
   SetStatusMessagesThread,
   deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
+  deleteAMessageInThread,
   postImageInThread,
   postMessages
 } = require('../controllers/documents_modification');
@@ -76,10 +77,7 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     SetStatusMessagesThread
-  );
-
-router
-  .route('/:messagesThreadId/:studentId')
+  )
   .post(
     filter_archiv_user,
     postMessagesRateLimiter,
@@ -89,7 +87,17 @@ router
     MessagesThreadUpload,
     postMessages
   );
-// TODO: get image in thread
+// TODO: multitenancy: check user id match user_id in message
+router
+  .route('/delete/:messagesThreadId/:messageId')
+  .delete(
+    filter_archiv_user,
+    postMessagesImageRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
+    deleteAMessageInThread
+  );
+// Get image in thread
 router
   .route('/image/:messagesThreadId/:studentId/:file_name')
   .get(

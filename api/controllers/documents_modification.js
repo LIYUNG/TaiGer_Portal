@@ -39,55 +39,87 @@ const ThreadS3GarbageCollector = async () => {
     Bucket: AWS_S3_BUCKET_NAME,
     Delete: { Objects: [] }
   };
-  logger.info('Trying to delete message thread and folder');
+
+  const delete_files_Params = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Delete: { Objects: [] }
+  };
+
+  logger.info(
+    'Trying to delete redundant images S3 of corresponding message thread'
+  );
   for (let j = 0; j < doc_threads.length; j += 1) {
     const thread_id = doc_threads[j]._id.toString();
     const student_id = doc_threads[j].student_id.toString();
     const message_a = doc_threads[j].messages;
-    let directory = path.join(student_id, thread_id, 'img');
-    directory = directory.replace(/\\/g, '/');
-
+    let directory_img = path.join(student_id, thread_id, 'img');
+    directory_img = directory_img.replace(/\\/g, '/');
+    let directory_files = path.join(student_id, thread_id);
+    directory_files = directory_files.replace(/\\/g, '/');
     const listParamsPublic = {
       Bucket: AWS_S3_BUCKET_NAME,
       Delimiter: '/',
-      Prefix: `${directory}/`
+      Prefix: `${directory_img}/`
+    };
+    const listParamsPublic_files = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delimiter: '/',
+      Prefix: `${directory_files}/`
     };
     const listedObjectsPublic = await s3
       .listObjectsV2(listParamsPublic)
       .promise();
+
+    const listedObjectsPublic_files = await s3
+      .listObjectsV2(listParamsPublic_files)
+      .promise();
     if (listedObjectsPublic.Contents.length > 0) {
-      // console.log(listedObjectsPublic);
       listedObjectsPublic.Contents.forEach((Obj) => {
-        // console.log(Obj.LastModified);
+        let file_found = false;
         const temp_date = new Date();
-        // console.log(getNumberOfDays(Obj.LastModified, temp_date));
         if (message_a.length === 0) {
-          let file_name = encodeURIComponent(Obj.Key.split('/')[3]);
-          // console.log(`include: ${file_name}`);
           deleteParams.Delete.Objects.push({ Key: Obj.Key });
         }
         for (let i = 0; i < message_a.length; i += 1) {
-          let file_name = encodeURIComponent(Obj.Key.split('/')[3]);
+          const file_name = Obj.Key.split('/')[3];
           if (message_a[i].message.includes(file_name)) {
+            file_found = true;
             break;
           }
-
+        }
+        if (!file_found) {
+          // if until last message_a still not found, add the Key to the delete list
+          // Delete only older than 2 week
+          if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+            deleteParams.Delete.Objects.push({ Key: Obj.Key });
+          }
+        }
+      });
+    }
+    if (listedObjectsPublic_files.Contents.length > 0) {
+      listedObjectsPublic_files.Contents.forEach((Obj2) => {
+        let file_found = false;
+        const temp_date = new Date();
+        if (message_a.length === 0) {
+          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+        }
+        for (let i = 0; i < message_a.length; i += 1) {
+          const file_name = Obj2.Key.split('/')[2];
           for (let k = 0; k < message_a[i].file.length; k += 1) {
             if (message_a[i].file[k].path.includes(file_name)) {
-              break; // TODO bug here! not really break the outer loop
+              file_found = true;
+              break;
             }
           }
-
-          if (i === message_a.length - 1) {
-            // if until last message_a still not found, add the Key to the delete list
-            if (!message_a[i].message.includes(file_name)) {
-              // console.log(`include: ${file_name}`);
-              // console.log(getNumberOfDays(Obj.LastModified, temp_date));
-              // Delete only older than 2 week
-              if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-                deleteParams.Delete.Objects.push({ Key: Obj.Key });
-              }
-            }
+          if (file_found) {
+            break;
+          }
+        }
+        if (!file_found) {
+          // if until last message_a still not found, add the Key to the delete list
+          // Delete only older than 2 week
+          if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
+            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
           }
         }
       });
@@ -95,10 +127,18 @@ const ThreadS3GarbageCollector = async () => {
   }
   if (deleteParams.Delete.Objects.length > 0) {
     await s3.deleteObjects(deleteParams).promise();
-    console.log('Deleted redundant images for threads.');
-    console.log(deleteParams.Delete.Objects);
+    logger.info('Deleted redundant images for threads.');
+    logger.info(deleteParams.Delete.Objects);
   } else {
-    console.log('Nothing to be deleted for threads.');
+    logger.info('Nothing to be deleted for threads.');
+  }
+
+  if (delete_files_Params.Delete.Objects.length > 0) {
+    await s3.deleteObjects(delete_files_Params).promise();
+    logger.info('Deleted redundant file for threads.');
+    logger.info(delete_files_Params.Delete.Objects);
+  } else {
+    logger.info('Nothing to be deleted for threads.');
   }
 };
 
@@ -441,7 +481,7 @@ const getMessages = asyncHandler(async (req, res) => {
     params: { messagesThreadId }
   } = req;
   const document_thread = await Documentthread.findById(messagesThreadId)
-    .populate('student_id messages.user_id')
+    .populate('student_id messages.user_id', 'firstname lastname role')
     .populate('program_id')
     .lean()
     .exec();
@@ -466,7 +506,6 @@ const postImageInThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId }
   } = req;
-  console.log('TEST: imageurl');
   let imageurl = new URL(
     `/api/document-threads/image/${messagesThreadId}/${studentId}/${req.file.key}`, // TODO: not the match API get file!!!!
     API_ORIGIN
@@ -829,8 +868,8 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     Bucket: directory
   };
   // TODO: cache download files docx, files.
-  console.log(req.originalUrl);
-  console.log(req.url);
+  // console.log(req.originalUrl);
+  // console.log(req.url);
 
   s3.headObject(options)
     .promise()
@@ -1035,11 +1074,21 @@ const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
 
+  // Delete folder
+  let directory_img = path.join(studentId, messagesThreadId, 'img');
+  logger.info('Trying to delete message thread and folder');
+  directory_img = directory_img.replace(/\\/g, '/');
+
   const listParams = {
     Bucket: AWS_S3_BUCKET_NAME,
     Prefix: directory
   };
+  const listParams_img = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Prefix: directory_img
+  };
   const listedObjects = await s3.listObjectsV2(listParams).promise();
+  const listedObjects_img = await s3.listObjectsV2(listParams_img).promise();
 
   if (listedObjects.Contents.length > 0) {
     const deleteParams = {
@@ -1053,6 +1102,22 @@ const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
     });
 
     await s3.deleteObjects(deleteParams).promise();
+
+    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+  }
+
+  if (listedObjects_img.Contents.length > 0) {
+    const deleteParams_img = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
+
+    listedObjects_img.Contents.forEach(({ Key }) => {
+      deleteParams_img.Delete.Objects.push({ Key });
+      logger.info('Deleting img', Key);
+    });
+
+    await s3.deleteObjects(deleteParams_img).promise();
 
     // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
   }
@@ -1098,11 +1163,21 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
 
+  // Delete folder
+  let directory_img = path.join(studentId, messagesThreadId, 'img');
+  logger.info('Trying to delete message thread and folder');
+  directory_img = directory_img.replace(/\\/g, '/');
+
   const listParams = {
     Bucket: AWS_S3_BUCKET_NAME,
     Prefix: directory
   };
+  const listParams_img = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Prefix: directory_img
+  };
   const listedObjects = await s3.listObjectsV2(listParams).promise();
+  const listedObjects_img = await s3.listObjectsV2(listParams_img).promise();
 
   if (listedObjects.Contents.length > 0) {
     const deleteParams = {
@@ -1116,31 +1191,28 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
     });
 
     await s3.deleteObjects(deleteParams).promise();
-
+    logger.info(
+      `Deleted application thread files for thread ${messagesThreadId}`
+    );
+    logger.info(deleteParams.Delete.Objects);
     // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
   }
   // Delete images in Public S3 bucket. (student folder)
-  const listParamsPublic = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Prefix: directory
-  };
-  const listedObjectsPublic = await s3
-    .listObjectsV2(listParamsPublic)
-    .promise();
-
-  if (listedObjectsPublic.Contents.length > 0) {
-    const deleteParams = {
+  if (listedObjects_img.Contents.length > 0) {
+    const deleteParams_img = {
       Bucket: AWS_S3_BUCKET_NAME,
       Delete: { Objects: [] }
     };
 
-    listedObjectsPublic.Contents.forEach(({ Key }) => {
-      deleteParams.Delete.Objects.push({ Key });
-      logger.info('Deleting ', Key);
+    listedObjects_img.Contents.forEach(({ Key }) => {
+      deleteParams_img.Delete.Objects.push({ Key });
+      logger.info('Deleting img', Key);
     });
-
-    await s3.deleteObjects(deleteParams).promise();
-
+    await s3.deleteObjects(deleteParams_img).promise();
+    logger.info(
+      `Deleted application thread images for thread ${messagesThreadId}`
+    );
+    logger.info(deleteParams_img.Delete.Objects);
     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
   }
 
@@ -1165,60 +1237,42 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: student2 });
 });
 
-// (-) TODO email : notification
+// (-) TODO email : no notification needed
 const deleteAMessageInThread = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { messagesThreadId, messageId, studentId }
+    params: { messagesThreadId, messageId }
   } = req;
-
-  const student = await Student.findById(studentId);
-  if (!student) {
-    logger.error('deleteAMessageInThread : Invalid student id');
-    throw new ErrorResponse(400, 'Invalid student id');
-  }
 
   const thread = await Documentthread.findById(messagesThreadId);
   if (!thread) {
     logger.error('deleteAMessageInThread : Invalid message thread id');
     throw new ErrorResponse(400, 'Invalid message thread id');
   }
+  const msg = thread.messages.find(
+    (message) => message._id.toString() === messageId
+  );
 
-  if (thread) {
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-    const message = thread.messages.find((msg) => msg._id == messageId);
-    message.file.forEach(({ path }) => {
-      deleteParams.Delete.Objects.push({ Key: path });
-      logger.info(path);
-    });
-
-    await s3.deleteObject(deleteParams).promise();
-    // s3.deleteObject(options, (error, data) => {
-    //   if (error) {
-    //     console.log(err);
-    //   } else {
-    //    console.log("Successfully deleted file from bucket");
-    //   }
-    // });
-    // TODO: To be test
-    await Documentthread.findByIdAndUpdate(messagesThreadId, {
-      $pull: {
-        messages: { _id: messageId }
-      }
-    });
-    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+  if (!msg) {
+    logger.error('deleteAMessageInThread : Invalid message id');
+    throw new ErrorResponse(400, 'Invalid message id');
+  }
+  // Prevent multitenant
+  if (msg.user_id.toString() !== user._id.toString()) {
+    logger.error(
+      'deleteAMessageInThread : You can only delete your own message.'
+    );
+    throw new ErrorResponse(409, 'You can only delete your own message.');
   }
 
-  const student2 = await Student.findById(studentId)
-    .populate('applications.programId generaldocs_threads.doc_thread_id')
-    .populate(
-      'applications.doc_modification_thread.doc_thread_id',
-      'file_type updatedAt'
-    );
-  res.status(200).send({ success: true, data: student2 });
+  // Don't need so delete in S3 , will delete by garbage collector
+  await Documentthread.findByIdAndUpdate(messagesThreadId, {
+    $pull: {
+      messages: { _id: messageId }
+    }
+  });
+
+  res.status(200).send({ success: true });
 });
 
 module.exports = {

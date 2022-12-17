@@ -393,7 +393,7 @@ class BaseDocument_StudentView extends React.Component {
         <Row>
           <Table
             responsive
-            className="my-0 mx-0"
+            className="py-0 my-0 mx-0"
             variant="dark"
             text="light"
             size="sm"

@@ -127,7 +127,7 @@ class BaseDocuments extends React.Component {
     return (
       <Aux>
         {/* <Row className="sticky-top"> */}
-        <Row>
+        <Row className="pt-0">
           {this.props.user.role === 'Admin' ||
           this.props.user.role === 'Agent' ||
           this.props.user.role === 'Editor' ? (

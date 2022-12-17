@@ -9,7 +9,7 @@ export const register = (credentials) =>
 
 export const forgotPassword = ({ email }) =>
   request.post('/auth/forgot-password', { email });
-  
+
 export const resetPassword = ({ email, password, token }) =>
   request.post('/auth/reset-password', { email, password, token });
 
@@ -282,6 +282,10 @@ export const getMessageFileDownload = (documentsthreadId, messageId, fileId) =>
 
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);
+export const deleteAMessageInThread = (documentsthreadId, messageId) =>
+  request.delete(
+    `/api/document-threads/delete/${documentsthreadId}/${messageId}`
+  );
 export const initGeneralMessageThread = (studentId, document_catgory) =>
   request.post(
     `/api/document-threads/init/general/${studentId}/${document_catgory}`
@@ -344,7 +348,7 @@ export const getAgent = (agent_id) =>
   request.get(`/api/teams/agents/${agent_id}`);
 export const getEditor = (editor_id) =>
   request.get(`/api/teams/editors/${editor_id}`);
-  
+
 //Personal Data:
 export const updatePersonalData = (personaldata) =>
   request.post(`/api/account/profile`, { personaldata });

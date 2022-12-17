@@ -279,11 +279,12 @@ class SingleStudentPage extends React.Component {
           id="uncontrolled-tab-example"
           fill={true}
           justify={true}
+          className="py-0 my-0 mx-0"
         >
           <Tab eventKey="profile" title="Profile Overview">
             <Table
               responsive
-              className="my-2 mx-0"
+              className="px-0 py-0 my-2 mx-0"
               variant="dark"
               text="light"
               size="sm"

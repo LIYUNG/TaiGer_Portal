@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+// import { Row, Col, Button } from 'react-bootstrap';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Embed from '@editorjs/embed';
 import ImageTool from '@editorjs/image';
 import Table from '@editorjs/table';
-import Marker from '@editorjs/marker';
+// import Marker from '@editorjs/marker';
 import InlineCode from '@editorjs/inline-code';
-import Link from '@editorjs/link';
+// import Link from '@editorjs/link';
 import Delimiter from '@editorjs/delimiter';
 import CodeTool from '@editorjs/code';
-import Quote from '@editorjs/quote';
+// import Quote from '@editorjs/quote';
 import Underline from '@editorjs/underline';
 import ColorPlugin from 'editorjs-text-color-plugin';
-import AttachesTool from '@editorjs/attaches';
+// import AttachesTool from '@editorjs/attaches';
 import TextAlign from '@canburaks/text-align-editorjs';
 
 import { uploadImage, uploadDocumentThreadImage } from '../../api';
@@ -91,7 +91,7 @@ const EditorSimple = (props) => {
 
         underline: Underline,
         code: CodeTool,
-        quote: Quote,
+        // quote: Quote,
         table: {
           class: Table,
           inlineToolbar: true,

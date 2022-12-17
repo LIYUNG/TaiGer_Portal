@@ -14,6 +14,7 @@ import {
   deleteDoc,
   SubmitMessageWithAttachment,
   getMessagThread,
+  deleteAMessageInThread,
   SetFileAsFinal
 } from '../../../api';
 
@@ -28,7 +29,7 @@ class DocModificationThreadPage extends Component {
     isSubmissionLoaded: true,
     articles: [],
     isEdit: false,
-    thread: [],
+    thread: null,
     editFormOpen: false,
     defaultStep: 1,
     buttonDisabled: false,
@@ -347,6 +348,58 @@ class DocModificationThreadPage extends Component {
     );
   };
 
+  onDeleteSingleMessage = (e, message_id) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      isLoaded: false
+    }));
+    deleteAMessageInThread(this.state.documentsthreadId, message_id).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          // TODO: remove that message
+          var new_messages = [...this.state.thread.messages];
+          let idx = this.state.thread.messages.findIndex(
+            (message) => message._id.toString() === message_id
+          );
+          if (idx !== -1) {
+            new_messages.splice(idx, 1);
+          }
+          this.setState((state) => ({
+            ...state,
+            success,
+            isLoaded: true,
+            thread: {
+              ...this.state.thread,
+              messages: new_messages
+            },
+            buttonDisabled: false,
+            // accordionKeys: [
+            //   ...this.state.accordionKeys,
+            //   new_messages.length - 1
+            // ],
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          this.setState({
+            isLoaded: true,
+            buttonDisabled: false,
+            res_modal_message: message,
+            res_modal_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState({ error });
+      }
+    );
+    this.setState((state) => ({ ...state, in_edit_mode: false }));
+  };
+
   render() {
     const {
       isLoaded,
@@ -356,7 +409,7 @@ class DocModificationThreadPage extends Component {
       res_modal_message
     } = this.state;
 
-    if (!isLoaded && !this.state.data) {
+    if (!isLoaded && !this.state.thread) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -526,6 +579,8 @@ class DocModificationThreadPage extends Component {
             thread={this.state.thread}
             onTrashClick={this.handleTrashClick}
             isLoaded={this.state.isLoaded}
+            user={this.props.user}
+            onDeleteSingleMessage={this.onDeleteSingleMessage}
           />
         </Row>
         {this.props.user.archiv !== true ? (

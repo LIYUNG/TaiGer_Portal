@@ -17,6 +17,7 @@ import ButtonSetAccepted from '../AgentCenter/ButtonSetAccepted';
 import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
 import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
 import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
+import BaseDocument_StudentView from '../AgentCenter/BaseDocument_StudentView';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import SurveyComponent from '../Survey/SurveyComponent';
@@ -32,12 +33,8 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   getStudentAndDocLinks,
-  updateProfileDocumentStatus,
-  uploadforstudent,
   updateAcademicBackground,
-  updateLanguageSkill,
-  deleteFile,
-  updateDocumentationHelperLink
+  updateLanguageSkill
 } from '../../api';
 
 class SingleStudentPage extends React.Component {
@@ -93,131 +90,6 @@ class SingleStudentPage extends React.Component {
       }
     );
   }
-
-  onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {
-    this.setState((state) => ({
-      isLoaded: {
-        ...state.isLoaded,
-        [category]: false
-      }
-    }));
-    updateProfileDocumentStatus(category, student_id, status, feedback).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          //Start the timer
-          this.setState((state) => ({
-            ...state,
-            student: data,
-            success,
-            isLoaded: {
-              ...state.isLoaded,
-              [category]: true
-            },
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          this.setState((state) => ({
-            isLoaded: {
-              ...state.isLoaded,
-              [category]: true
-            },
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      }
-    );
-  };
-
-  handleGeneralDocSubmit = (e, fileCategory, studentId) => {
-    e.preventDefault();
-    this.onSubmitGeneralFile(e, e.target.files[0], fileCategory, studentId);
-  };
-
-  onSubmitGeneralFile = (e, NewFile, category, student_id) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('file', NewFile);
-    this.setState((state) => ({
-      isLoaded: {
-        ...state.isLoaded,
-        [category]: false
-      }
-    }));
-    uploadforstudent(category, student_id, formData).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          //Start the timer
-          this.setState((state) => ({
-            ...state,
-            student: data, // res.data = {success: true, data:{...}}
-            success,
-            category: '',
-            isLoaded: {
-              ...state.isLoaded,
-              [category]: true
-            },
-            file: '',
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          this.setState((state) => ({
-            isLoaded: {
-              ...state.isLoaded,
-              [category]: true
-            },
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      }
-    );
-  };
-
-  updateDocLink = (link, key) => {
-    updateDocumentationHelperLink(link, key, 'base-documents').then(
-      (resp) => {
-        const { helper_link, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            isLoaded2: true,
-            base_docs_link: helper_link,
-            success: success,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
-            isLoaded2: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {}
-    );
-  };
 
   handleSubmit_AcademicBackground_root = (e, university, student_id) => {
     e.preventDefault();
@@ -301,58 +173,6 @@ class SingleStudentPage extends React.Component {
     );
   };
 
-  onDeleteFilefromstudent = (category, student_id) => {
-    // e.preventDefault();
-    var student = { ...this.state.student };
-    var idx = student.profile.findIndex((doc) => doc.name === category);
-    this.setState((state) => ({
-      isLoaded: {
-        ...state.isLoaded,
-        [category]: false
-      }
-    }));
-    deleteFile(category, student_id).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          student.profile[idx] = data;
-
-          this.setState((state) => ({
-            ...state,
-            student_id: '',
-            category: '',
-            isLoaded: {
-              ...state.isLoaded,
-              [category]: true
-            },
-            student: student,
-            success: success,
-            deleteFileWarningModel: false,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
-            isLoaded: {
-              ...state.isLoaded,
-              [category]: true
-            },
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      }
-    );
-  };
-
   ConfirmError = () => {
     this.setState((state) => ({
       ...state,
@@ -381,7 +201,7 @@ class SingleStudentPage extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    
+
     if (!ready && !this.state.student) {
       return (
         <div style={spinner_style}>
@@ -391,161 +211,6 @@ class SingleStudentPage extends React.Component {
         </div>
       );
     }
-
-
-
-    let value2 = Object.values(window.profile_list);
-    let keys2 = Object.keys(window.profile_list);
-    let object_init = {};
-    let object_message = {};
-    let object_date_init = {};
-    let object_time_init = {};
-    for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = { status: 'missing', link: '', path: '' };
-      object_message[keys2[i]] = '';
-      object_date_init[keys2[i]] = '';
-      object_time_init[keys2[i]] = '';
-    }
-    // TODO: what if this.state.student.profile[i].name key not in base_docs_link[i].key?
-    if (base_docs_link) {
-      for (let i = 0; i < base_docs_link.length; i++) {
-        object_init[base_docs_link[i].key].link = base_docs_link[i].link;
-      }
-    }
-    if (this.state.student.profile) {
-      for (let i = 0; i < this.state.student.profile.length; i++) {
-        let document_split = this.state.student.profile[i].path.replace(
-          /\\/g,
-          '/'
-        );
-        if (this.state.student.profile[i].status === 'uploaded') {
-          object_init[this.state.student.profile[i].name].status = 'uploaded';
-          object_init[this.state.student.profile[i].name].path =
-            document_split.split('/')[1];
-        } else if (this.state.student.profile[i].status === 'accepted') {
-          object_init[this.state.student.profile[i].name].status = 'accepted';
-          object_init[this.state.student.profile[i].name].path =
-            document_split.split('/')[1];
-        } else if (this.state.student.profile[i].status === 'rejected') {
-          object_init[this.state.student.profile[i].name].status = 'rejected';
-          object_init[this.state.student.profile[i].name].path =
-            document_split.split('/')[1];
-        } else if (this.state.student.profile[i].status === 'notneeded') {
-          object_init[this.state.student.profile[i].name].status = 'notneeded';
-        } else if (this.state.student.profile[i].status === 'missing') {
-          object_init[this.state.student.profile[i].name].status = 'missing';
-        }
-        object_message[this.state.student.profile[i].name] = this.state.student
-          .profile[i].feedback
-          ? this.state.student.profile[i].feedback
-          : '';
-        object_date_init[this.state.student.profile[i].name] = new Date(
-          this.state.student.profile[i].updatedAt
-        ).toLocaleDateString();
-        object_time_init[this.state.student.profile[i].name] = new Date(
-          this.state.student.profile[i].updatedAt
-        ).toLocaleTimeString();
-      }
-    } else {
-    }
-    var documentlist22;
-    documentlist22 = keys2.map((k, i) =>
-      object_init[k].status === 'uploaded' ? (
-        <ButtonSetUploaded
-          key={i + 1}
-          updateDocLink={this.updateDocLink}
-          link={object_init[k].link}
-          path={object_init[k].path}
-          role={this.props.user.role}
-          isLoaded={this.state.isLoaded[k]}
-          docName={value2[i]}
-          date={object_date_init[k]}
-          time={object_time_init[k]}
-          k={k}
-          student_id={this.state.student._id}
-          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-          SubmitGeneralFile={this.props.SubmitGeneralFile}
-        />
-      ) : object_init[k].status === 'accepted' ? (
-        <ButtonSetAccepted
-          key={i + 1}
-          updateDocLink={this.updateDocLink}
-          link={object_init[k].link}
-          path={object_init[k].path}
-          role={this.props.user.role}
-          isLoaded={this.state.isLoaded[k]}
-          docName={value2[i]}
-          date={object_date_init[k]}
-          time={object_time_init[k]}
-          k={k}
-          student_id={this.state.student._id}
-          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-          SubmitGeneralFile={this.props.SubmitGeneralFile}
-          deleteFileWarningModel={this.props.deleteFileWarningModel}
-        />
-      ) : object_init[k].status === 'rejected' ? (
-        <ButtonSetRejected
-          key={i + 1}
-          updateDocLink={this.updateDocLink}
-          link={object_init[k].link}
-          path={object_init[k].path}
-          role={this.props.user.role}
-          isLoaded={this.state.isLoaded[k]}
-          docName={value2[i]}
-          date={object_date_init[k]}
-          time={object_time_init[k]}
-          k={k}
-          message={object_message[k]}
-          student_id={this.state.student._id}
-          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-          SubmitGeneralFile={this.props.SubmitGeneralFile}
-          deleteFileWarningModel={this.props.deleteFileWarningModel}
-        />
-      ) : object_init[k].status === 'notneeded' ? (
-        (this.props.user.role === 'Admin' ||
-          this.props.user.role === 'Agent' ||
-          this.props.user.role === 'Edior') && (
-          <ButtonSetNotNeeded
-            key={i + 1}
-            updateDocLink={this.updateDocLink}
-            link={object_init[k].link}
-            role={this.props.user.role}
-            isLoaded={this.state.isLoaded[k]}
-            docName={value2[i]}
-            date={object_date_init[k]}
-            time={object_time_init[k]}
-            k={k}
-            student_id={this.state.student._id}
-            onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-            SubmitGeneralFile={this.props.SubmitGeneralFile}
-            deleteFileWarningModel={this.props.deleteFileWarningModel}
-            handleGeneralDocSubmit={this.handleGeneralDocSubmit}
-          />
-        )
-      ) : (
-        <ButtonSetMissing
-          key={i + 1}
-          updateDocLink={this.updateDocLink}
-          link={object_init[k].link}
-          role={this.props.user.role}
-          isLoaded={this.state.isLoaded[k]}
-          docName={value2[i]}
-          date={object_date_init[k]}
-          time={object_time_init[k]}
-          k={k}
-          message={object_message[k]}
-          student_id={this.state.student._id}
-          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-          SubmitGeneralFile={this.SubmitGeneralFile}
-          handleGeneralDocSubmit={this.handleGeneralDocSubmit}
-        />
-      )
-    );
 
     return (
       <>
@@ -618,7 +283,7 @@ class SingleStudentPage extends React.Component {
           <Tab eventKey="profile" title="Profile Overview">
             <Table
               responsive
-              className="my-2 mx0"
+              className="my-2 mx-0"
               variant="dark"
               text="light"
               size="sm"
@@ -634,29 +299,12 @@ class SingleStudentPage extends React.Component {
                 <StudentsAgentEditor student={this.state.student} />
               </tbody>
             </Table>
-            <Row>
-              <Table
-                responsive
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>File Name:</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>{documentlist22}</tbody>
-              </Table>
-            </Row>
-            <Row>{SYMBOL_EXPLANATION}</Row>
+            <BaseDocument_StudentView
+              base_docs_link={base_docs_link}
+              student={this.state.student}
+              user={this.props.user}
+              SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+            />
           </Tab>
           <Tab eventKey="CV_ML_RL" title="CV ML RL">
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>

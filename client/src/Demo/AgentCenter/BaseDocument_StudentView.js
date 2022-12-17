@@ -16,7 +16,8 @@ import {
 import {
   uploadforstudent,
   updateProfileDocumentStatus,
-  deleteFile
+  deleteFile,
+  updateDocumentationHelperLink
 } from '../../api';
 
 class BaseDocument_StudentView extends React.Component {
@@ -146,9 +147,9 @@ class BaseDocument_StudentView extends React.Component {
     }));
   };
 
-  handleGeneralDocSubmit = (e, studentId, fileCategory) => {
+  handleGeneralDocSubmit = (e, fileCategory, studentId) => {
     e.preventDefault();
-    this.onSubmitGeneralFile(e, e.target.files[0], studentId, fileCategory);
+    this.onSubmitGeneralFile(e, e.target.files[0], fileCategory, studentId);
   };
 
   onSubmitGeneralFile = (e, NewFile, category, student_id) => {
@@ -198,6 +199,33 @@ class BaseDocument_StudentView extends React.Component {
           error
         });
       }
+    );
+  };
+
+  updateDocLink = (link, key) => {
+    updateDocumentationHelperLink(link, key, 'base-documents').then(
+      (resp) => {
+        const { helper_link, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded2: true,
+            base_docs_link: helper_link,
+            success: success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded2: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {}
     );
   };
 
@@ -272,9 +300,10 @@ class BaseDocument_StudentView extends React.Component {
       object_init[k].status === 'uploaded' ? (
         <ButtonSetUploaded
           key={i + 1}
-          role={this.props.role}
+          updateDocLink={this.updateDocLink}
           link={object_init[k].link}
           path={object_init[k].path}
+          role={this.props.user.role}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -287,9 +316,10 @@ class BaseDocument_StudentView extends React.Component {
       ) : object_init[k].status === 'accepted' ? (
         <ButtonSetAccepted
           key={i + 1}
-          role={this.props.role}
+          updateDocLink={this.updateDocLink}
           link={object_init[k].link}
           path={object_init[k].path}
+          role={this.props.user.role}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -303,9 +333,10 @@ class BaseDocument_StudentView extends React.Component {
       ) : object_init[k].status === 'rejected' ? (
         <ButtonSetRejected
           key={i + 1}
-          role={this.props.role}
+          updateDocLink={this.updateDocLink}
           link={object_init[k].link}
           path={object_init[k].path}
+          role={this.props.user.role}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -318,11 +349,13 @@ class BaseDocument_StudentView extends React.Component {
           deleteFileWarningModel={this.state.deleteFileWarningModel}
         />
       ) : object_init[k].status === 'notneeded' ? (
-        (this.props.role === 'Admin' || this.props.role === 'Agent') && (
+        (this.props.user.role === 'Admin' ||
+          this.props.user.role === 'Agent') && (
           <ButtonSetNotNeeded
             key={i + 1}
-            role={this.props.role}
+            updateDocLink={this.updateDocLink}
             link={object_init[k].link}
+            role={this.props.user.role}
             isLoaded={this.state.isLoaded[k]}
             docName={value2[i]}
             date={object_date_init[k]}
@@ -332,13 +365,15 @@ class BaseDocument_StudentView extends React.Component {
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
             onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             deleteFileWarningModel={this.state.deleteFileWarningModel}
+            handleGeneralDocSubmit={this.handleGeneralDocSubmit}
           />
         )
       ) : (
         <ButtonSetMissing
           key={i + 1}
-          role={this.props.role}
+          updateDocLink={this.updateDocLink}
           link={object_init[k].link}
+          role={this.props.user.role}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -355,45 +390,32 @@ class BaseDocument_StudentView extends React.Component {
 
     return (
       <>
-        <Card
-          className="mb-2 mx-0"
-          bg={'dark'}
-          text={'light'}
-          key={this.props.idx}
-        >
-          <Card.Header>
-            <Card.Title className="my-0 mx-0 text-light">
-              {this.state.student.firstname}
-              {' ,'}
-              {this.state.student.lastname}
-            </Card.Title>
-          </Card.Header>
-          <Row>
-            <Table
-              responsive
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>File Name:</th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>{file_information}</tbody>
-            </Table>
-          </Row>
-          <Row>
-            <Col className="md-4">{this.props.SYMBOL_EXPLANATION}</Col>
-          </Row>
-        </Card>
+        <Row>
+          <Table
+            responsive
+            className="my-0 mx-0"
+            variant="dark"
+            text="light"
+            size="sm"
+          >
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>File Name:</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>{file_information}</tbody>
+          </Table>
+        </Row>
+        <Row>
+          <Col className="md-4">{this.props.SYMBOL_EXPLANATION}</Col>
+        </Row>
+
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={this.ConfirmError}

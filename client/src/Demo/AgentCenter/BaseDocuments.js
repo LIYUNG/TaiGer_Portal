@@ -29,7 +29,6 @@ class BaseDocuments extends React.Component {
     category: '',
     feedback: '',
     expand: false,
-    CommentModel: false,
     accordionKeys:
       this.props.user.students &&
       (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
@@ -107,21 +106,21 @@ class BaseDocuments extends React.Component {
 
     const student_profile_student_view = this.state.students.map(
       (student, i) => (
-        <BaseDocument_StudentView
-          key={i}
-          idx={i}
-          base_docs_link={base_docs_link}
-          student={student}
-          role={this.props.user.role}
-          user={this.props.user}
-          SubmitGeneralFile={this.SubmitGeneralFile}
-          onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
-          onDeleteFilefromstudent={this.onDeleteFilefromstudent}
-          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-          isLoaded={isLoaded}
-          deleteFileWarningModel={this.state.deleteFileWarningModel}
-          CommentModel={this.state.CommentModel}
-        />
+        <Card className="mb-2 mx-0" bg={'dark'} text={'light'} key={i}>
+          <Card.Header>
+            <Card.Title className="my-0 mx-0 text-light">
+              {student.firstname}
+              {' ,'}
+              {student.lastname}
+            </Card.Title>
+          </Card.Header>
+          <BaseDocument_StudentView
+            base_docs_link={base_docs_link}
+            student={student}
+            user={this.props.user}
+            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+          />
+        </Card>
       )
     );
 

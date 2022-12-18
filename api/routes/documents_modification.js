@@ -12,6 +12,9 @@ const {
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const {
+  InnerTaigerMultitenantFilter
+} = require('../middlewares/InnerTaigerMultitenantFilter');
+const {
   doc_thread_ops_validator
 } = require('../middlewares/docs_thread_operation_validation');
 
@@ -56,6 +59,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     initGeneralMessagesThread
   );
 
@@ -66,6 +70,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     initApplicationMessagesThread
   );
 
@@ -76,6 +81,7 @@ router
     SetStatusMessagesThreadRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     SetStatusMessagesThread
   )
   .post(
@@ -136,6 +142,7 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor),
     multitenant_filter,
     doc_thread_ops_validator,
+    InnerTaigerMultitenantFilter,
     deleteGeneralMessagesThread
   );
 
@@ -157,6 +164,7 @@ router
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     doc_thread_ops_validator,
     deleteProgramSpecificMessagesThread
   );

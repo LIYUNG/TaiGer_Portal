@@ -183,33 +183,47 @@ class EditorDocsProgress extends React.Component {
         const { status } = resp;
         if (success) {
           let student_temp = { ...this.state.student };
-          let application_idx = student_temp.applications.findIndex(
-            (application) =>
-              application.programId._id.toString() === this.state.program_id
-          );
+          if (this.state.program_id) {
+            let application_idx = student_temp.applications.findIndex(
+              (application) =>
+                application.programId._id.toString() === this.state.program_id
+            );
 
-          let thread_idx = student_temp.applications[
-            application_idx
-          ].doc_modification_thread.findIndex(
-            (thread) =>
-              thread.doc_thread_id._id.toString() === this.state.doc_thread_id
-          );
+            let thread_idx = student_temp.applications[
+              application_idx
+            ].doc_modification_thread.findIndex(
+              (thread) =>
+                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+            );
 
-          student_temp.applications[application_idx].doc_modification_thread[
-            thread_idx
-          ].isFinalVersion = data.isFinalVersion;
-
-          student_temp.applications[application_idx].doc_modification_thread[
-            thread_idx
-          ].updatedAt = data.updatedAt;
-          student_temp.applications[application_idx].doc_modification_thread[
-            thread_idx
-          ].doc_thread_id.updatedAt = data.updatedAt;
-          console.log(
             student_temp.applications[application_idx].doc_modification_thread[
               thread_idx
-            ]
-          );
+            ].isFinalVersion = data.isFinalVersion;
+
+            student_temp.applications[application_idx].doc_modification_thread[
+              thread_idx
+            ].updatedAt = data.updatedAt;
+            student_temp.applications[application_idx].doc_modification_thread[
+              thread_idx
+            ].doc_thread_id.updatedAt = data.updatedAt;
+            console.log(
+              student_temp.applications[application_idx]
+                .doc_modification_thread[thread_idx]
+            );
+          } else {
+            let general_doc_idx = student_temp.generaldocs_threads.findIndex(
+              (docs) =>
+                docs.doc_thread_id._id.toString() === this.state.doc_thread_id
+            );
+            student_temp.generaldocs_threads[general_doc_idx].isFinalVersion =
+              data.isFinalVersion;
+            student_temp.generaldocs_threads[general_doc_idx].updatedAt =
+              data.updatedAt;
+            student_temp.generaldocs_threads[
+              general_doc_idx
+            ].doc_thread_id.updatedAt = data.updatedAt;
+          }
+
           this.setState((state) => ({
             ...state,
             studentId: '',
@@ -860,17 +874,18 @@ class EditorDocsProgress extends React.Component {
               disabled={!isLoaded}
               onClick={this.ConfirmDeleteDiscussionThreadHandler}
             >
-              Yes
+              {isLoaded ? (
+                'Yes'
+              ) : (
+                <div style={spinner_style}>
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              )}
             </Button>
 
             <Button onClick={this.closeWarningWindow}>No</Button>
-            {!isLoaded && (
-              <div style={spinner_style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Modal.Footer>
         </Modal>
         <Modal
@@ -893,17 +908,18 @@ class EditorDocsProgress extends React.Component {
               disabled={!isLoaded}
               onClick={this.ConfirmSetAsFinalFileHandler}
             >
-              Yes
+              {isLoaded ? (
+                'Yes'
+              ) : (
+                <div style={spinner_style}>
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              )}
             </Button>
 
             <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
-            {!isLoaded && (
-              <div style={spinner_style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Modal.Footer>
         </Modal>
         <Modal

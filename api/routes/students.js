@@ -7,6 +7,9 @@ const {
 } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
+const {
+  InnerTaigerMultitenantFilter
+} = require('../middlewares/InnerTaigerMultitenantFilter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const {
   ProfilefileUpload,
@@ -152,6 +155,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     createApplication
   );
 
@@ -162,6 +166,7 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     ToggleProgramStatus
   );
 
@@ -172,6 +177,7 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     updateVPDFileNecessity
   )
   .get(
@@ -186,6 +192,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     VPDfileUpload,
     saveVPDFilePath
   )
@@ -194,6 +201,7 @@ router
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     deleteVPDFile
   );
 
@@ -203,6 +211,7 @@ router
     filter_archiv_user,
     permit(Role.Admin, Role.Agent),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     deleteApplication
   );
 
@@ -223,6 +232,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     ProfilefileUpload,
     saveProfileFilePath
   )
@@ -231,6 +241,7 @@ router
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     deleteProfileFile
   );
 
@@ -241,6 +252,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Agent),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     updateProfileDocumentStatus
   );
 module.exports = router;

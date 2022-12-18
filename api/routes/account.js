@@ -10,6 +10,9 @@ const {
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
+const {
+  InnerTaigerMultitenantFilter
+} = require('../middlewares/InnerTaigerMultitenantFilter');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 const { TemplatefileUpload } = require('../middlewares/file-upload');
@@ -80,6 +83,7 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     UpdateStudentApplications
   );
 
@@ -91,6 +95,7 @@ router
     TranscriptAnalyserRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     processTranscript_test
   );
 
@@ -140,6 +145,7 @@ router
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     updateAcademicBackground
   );
 
@@ -150,6 +156,7 @@ router
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     updateLanguageSkill
   );
 
@@ -160,6 +167,7 @@ router
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     updateApplicationPreferenceSkill
   );
 

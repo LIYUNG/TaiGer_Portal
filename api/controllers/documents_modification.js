@@ -999,6 +999,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
     generaldocs_thread.updatedAt = new Date();
     document_thread.isFinalVersion = generaldocs_thread.isFinalVersion;
+    document_thread.updatedAt = new Date();
     await document_thread.save();
     await student.save();
     res.status(200).send({

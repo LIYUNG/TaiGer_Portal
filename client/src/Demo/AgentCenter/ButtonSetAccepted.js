@@ -8,6 +8,8 @@ import {
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { FiExternalLink } from 'react-icons/fi';
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+
 class ButtonSetAccepted extends React.Component {
   state = {
     student: this.props.student,
@@ -229,28 +231,33 @@ class ButtonSetAccepted extends React.Component {
             <td></td>
             <td>
               <Col>
-                <Form
-                  onSubmit={(e) =>
-                    this.onDeleteFileWarningPopUp(
-                      e,
-                      this.props.k,
-                      this.props.student_id,
-                      this.props.docName
-                    )
-                  }
-                >
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button
-                      variant={deleteStyle}
-                      size="sm"
-                      type="submit"
-                      title="Delete"
-                      disabled={!this.state.isLoaded}
-                    >
-                      <AiOutlineDelete size={16} />
-                    </Button>
-                  </Form.Group>
-                </Form>
+                {shownButtonMyOwnStudent(
+                  this.props.user,
+                  this.props.student_id
+                ) && (
+                  <Form
+                    onSubmit={(e) =>
+                      this.onDeleteFileWarningPopUp(
+                        e,
+                        this.props.k,
+                        this.props.student_id,
+                        this.props.docName
+                      )
+                    }
+                  >
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                      <Button
+                        variant={deleteStyle}
+                        size="sm"
+                        type="submit"
+                        title="Delete"
+                        disabled={!this.state.isLoaded}
+                      >
+                        <AiOutlineDelete size={16} />
+                      </Button>
+                    </Form.Group>
+                  </Form>
+                )}
               </Col>
             </td>
           </>

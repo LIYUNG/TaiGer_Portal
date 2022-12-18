@@ -88,6 +88,7 @@ class UniAssistList extends React.Component {
         <UniAssistListCard
           student={this.state.student}
           role={this.props.user.role}
+          user={this.props.user}
         />
       </>
     );

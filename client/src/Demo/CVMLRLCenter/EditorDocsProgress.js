@@ -453,7 +453,7 @@ class EditorDocsProgress extends React.Component {
               <ManualFiles
                 onDeleteFileThread={this.onDeleteFileThread}
                 handleAsFinalFile={this.handleAsFinalFile}
-                role={this.props.role}
+                user={this.props.user}
                 student={this.state.student}
                 filetype={'General'}
                 initGeneralFileThread={this.initGeneralFileThread}
@@ -688,7 +688,7 @@ class EditorDocsProgress extends React.Component {
                         <ManualFiles
                           onDeleteFileThread={this.onDeleteFileThread}
                           handleAsFinalFile={this.handleAsFinalFile}
-                          role={this.props.role}
+                          user={this.props.user}
                           student={this.state.student}
                           application={application}
                           filetype={'ProgramSpecific'}

@@ -3,6 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getNumberOfDays } from '../../../Utils/contants';
 import { application_deadline_calculator } from '../../../Utils/checking-functions';
+
 class ApplicationProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);
@@ -184,64 +185,78 @@ class ApplicationProgress extends React.Component {
       <>
         <tr>
           <td>
-            <DropdownButton
-              size="sm"
-              // title="Option"
-              title={
-                <span>
-                  <i className="fa fa-edit"></i>
-                </span>
-              }
-              variant="primary"
-              id={`dropdown-variants-${this.props.student._id}`}
-              key={this.props.student._id}
-            >
-              {this.props.role !== 'Editor' && !this.props.isArchivPage ? (
-                <Dropdown.Item eventKey="3">
-                  <Link
-                    to={'/student-applications/' + this.props.student._id}
-                    style={{ textDecoration: 'none' }}
+            {/* If my own student */}
+            {(this.props.user.role === 'Admin' ||
+              ((this.props.user.role === 'Agent' ||
+                this.props.user.role === 'Editor') &&
+                this.props.user.students &&
+                this.props.user.students.findIndex(
+                  (student) =>
+                    student._id.toString() === this.props.student._id.toString()
+                ) !== -1)) && (
+              <DropdownButton
+                size="sm"
+                // title="Option"
+                title={
+                  <span>
+                    <i className="fa fa-edit"></i>
+                  </span>
+                }
+                variant="primary"
+                id={`dropdown-variants-${this.props.student._id}`}
+                key={this.props.student._id}
+              >
+                {this.props.user.role !== 'Editor' &&
+                !this.props.isArchivPage ? (
+                  <Dropdown.Item eventKey="3">
+                    <Link
+                      to={'/student-applications/' + this.props.student._id}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      Edit Program
+                    </Link>
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+                {this.props.isDashboard &&
+                this.props.user.role !== 'Student' &&
+                this.props.user.role !== 'Guest' ? (
+                  <Dropdown.Item
+                    eventKey="5"
+                    onClick={() =>
+                      this.updateStudentArchivStatus(
+                        this.props.student._id,
+                        true
+                      )
+                    }
                   >
-                    Edit Program
-                  </Link>
-                </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-              {this.props.isDashboard &&
-              this.props.role !== 'Student' &&
-              this.props.role !== 'Guest' ? (
-                <Dropdown.Item
-                  eventKey="5"
-                  onClick={() =>
-                    this.updateStudentArchivStatus(this.props.student._id, true)
-                  }
-                >
-                  Move to Archiv
-                </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-              {this.props.isArchivPage &&
-              this.props.role !== 'Student' &&
-              this.props.role !== 'Guest' ? (
-                <Dropdown.Item
-                  eventKey="6"
-                  onClick={() =>
-                    this.updateStudentArchivStatus(
-                      this.props.student._id,
-                      false
-                    )
-                  }
-                >
-                  Move to Active
-                </Dropdown.Item>
-              ) : (
-                <></>
-              )}
-            </DropdownButton>
+                    Move to Archiv
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+                {this.props.isArchivPage &&
+                this.props.user.role !== 'Student' &&
+                this.props.user.role !== 'Guest' ? (
+                  <Dropdown.Item
+                    eventKey="6"
+                    onClick={() =>
+                      this.updateStudentArchivStatus(
+                        this.props.student._id,
+                        false
+                      )
+                    }
+                  >
+                    Move to Active
+                  </Dropdown.Item>
+                ) : (
+                  <></>
+                )}
+              </DropdownButton>
+            )}
           </td>
-          {this.props.role !== 'Student' ? (
+          {this.props.user.role !== 'Student' ? (
             <td>
               <Link
                 to={
@@ -260,7 +275,7 @@ class ApplicationProgress extends React.Component {
           ) : (
             <></>
           )}
-          {this.props.role !== 'Student' ? (
+          {this.props.user.role !== 'Student' ? (
             <td title="Selected / Should be selected">
               {this.props.student.applying_program_count ? (
                 this.props.student.applications.length <

@@ -716,7 +716,7 @@
 
             > a {
                 text-align: left;
-                padding: 7px 15px;
+                padding: 7px 10px;
                 margin: 5px 0 0;
                 display: block;
                 border-radius: 0;
@@ -739,7 +739,7 @@
 
                     + .pcoded-mtext {
                         position: absolute;
-                        top: 11px;
+                        top: 4px;
                     }
                 }
             }
@@ -784,7 +784,7 @@
                     li {
                         > a {
                             text-align: left;
-                            padding: 7px 7px 7px 60px;
+                            padding: 7px 7px 7px 30px;
                             margin: 0;
                             display: block;
 
@@ -815,9 +815,9 @@
             }
 
             &.pcoded-menu-caption {
-                font-size: 10px;
+                font-size: 14px;
                 font-weight: 600;
-                padding: 25px 20px 5px;
+                padding: 15px 10px 5px;
                 text-transform: uppercase;
                 position: relative;
             }
@@ -838,7 +838,7 @@
 
     .pcoded-submenu {
         background: darken($header-dark-background,3%);
-        padding: 15px 0;
+        padding: 7px 0;
     }
 
     a {

@@ -4,6 +4,8 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import { BsDash } from 'react-icons/bs';
 import { FiExternalLink } from 'react-icons/fi';
 
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+
 class ButtonSetNotNeeded extends React.Component {
   state = {
     student: this.props.student,
@@ -140,22 +142,27 @@ class ButtonSetNotNeeded extends React.Component {
                   </Spinner>
                 </div>
               ) : (
-                <Form.Group controlId={`${this.props.k}`}>
-                  <Form.Label>
-                    <IoMdCloudUpload color={'white'} size={32} />
-                  </Form.Label>
-                  <Form.Control
-                    hidden
-                    type="file"
-                    onChange={(e) =>
-                      this.handleGeneralDocSubmit(
-                        e,
-                        this.props.k,
-                        this.props.student_id
-                      )
-                    }
-                  />
-                </Form.Group>
+                shownButtonMyOwnStudent(
+                  this.props.user,
+                  this.props.student_id
+                ) && (
+                  <Form.Group controlId={`${this.props.k}`}>
+                    <Form.Label>
+                      <IoMdCloudUpload color={'white'} size={32} />
+                    </Form.Label>
+                    <Form.Control
+                      hidden
+                      type="file"
+                      onChange={(e) =>
+                        this.handleGeneralDocSubmit(
+                          e,
+                          this.props.k,
+                          this.props.student_id
+                        )
+                      }
+                    />
+                  </Form.Group>
+                )
               )}
             </td>
             <td></td>
@@ -163,22 +170,27 @@ class ButtonSetNotNeeded extends React.Component {
         )}
         <td>
           <Col>
-            <Form
-              onSubmit={(e) =>
-                this.onUpdateProfileDocStatus(
-                  e,
-                  this.props.k,
-                  this.props.student_id,
-                  'missing'
-                )
-              }
-            >
-              <Form.Group controlId={`${this.props.k}`}>
-                <Button size="sm" type="submit">
-                  Set Needed
-                </Button>
-              </Form.Group>
-            </Form>
+            {shownButtonMyOwnStudent(
+              this.props.user,
+              this.props.student_id
+            ) && (
+              <Form
+                onSubmit={(e) =>
+                  this.onUpdateProfileDocStatus(
+                    e,
+                    this.props.k,
+                    this.props.student_id,
+                    'missing'
+                  )
+                }
+              >
+                <Form.Group controlId={`${this.props.k}`}>
+                  <Button size="sm" type="submit">
+                    Set Needed
+                  </Button>
+                </Form.Group>
+              </Form>
+            )}
           </Col>
         </td>
         <td></td>

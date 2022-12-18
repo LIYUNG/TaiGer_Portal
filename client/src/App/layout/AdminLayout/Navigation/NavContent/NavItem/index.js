@@ -21,7 +21,6 @@ class NavItem extends Component {
         itemTitle === 'Charts' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
-        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Map' ||
         itemTitle === 'Tasks Overview'
       ) {
@@ -39,7 +38,6 @@ class NavItem extends Component {
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
-        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
         itemTitle === 'User List'
@@ -59,7 +57,6 @@ class NavItem extends Component {
         itemTitle === 'Interview Training' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Statistics' ||
-        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
         itemTitle === 'User List'
@@ -79,7 +76,6 @@ class NavItem extends Component {
         itemTitle === 'Interview Training' ||
         itemTitle === 'Map' ||
         itemTitle === 'TaiGer Admissions' ||
-        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Student Database' ||
@@ -106,7 +102,6 @@ class NavItem extends Component {
         itemTitle === 'TaiGer Admissions' ||
         itemTitle === 'Map' ||
         itemTitle === 'Archiv Students' ||
-        itemTitle === 'TaiGer AI' ||
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Documentation' ||
         itemTitle === 'Student Database' ||
@@ -124,7 +119,9 @@ class NavItem extends Component {
     let subContent;
     if (this.menuItemFilterByRole(itemTitle)) {
       if (this.props.item.icon) {
-        itemTitle = <span className="mt-0 py-0">{this.props.item.title}</span>;
+        itemTitle = (
+          <span className="pcoded-mtext">{this.props.item.title}</span>
+        );
       }
 
       if (this.props.item.target) {

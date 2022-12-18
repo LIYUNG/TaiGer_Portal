@@ -4,11 +4,9 @@ import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import AgentTodoList from './AgentTodoList';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import AgentTasks from '../MainViewTab/AgentTasks/index';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
-import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 
 import { updateAgentBanner } from '../../../api';
@@ -92,9 +90,6 @@ class AgentMainView extends React.Component {
     );
   };
   render() {
-    const agent_todo = this.props.students.map((student, i) => (
-      <AgentTodoList key={i} student={student} />
-    ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
@@ -106,9 +101,6 @@ class AgentMainView extends React.Component {
 
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing key={i} role={this.props.role} student={student} />
-    ));
-    const application_progress = this.props.students.map((student, i) => (
-      <ApplicationProgress key={i} student={student} />
     ));
 
     const agent_tasks = this.props.students.map((student, i) => (

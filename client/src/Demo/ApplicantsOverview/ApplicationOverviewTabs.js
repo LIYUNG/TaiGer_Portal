@@ -86,6 +86,7 @@ class ApplicationOverviewTabs extends React.Component {
     const application_progress = this.state.students.map((student, i) => (
       <ApplicationProgress
         key={i}
+        user={this.props.user}
         role={this.props.user.role}
         student={student}
         updateStudentArchivStatus={this.updateStudentArchivStatus}

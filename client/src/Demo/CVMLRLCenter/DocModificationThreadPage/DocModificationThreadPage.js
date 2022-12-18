@@ -8,6 +8,7 @@ import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style } from '../../Utils/contants';
+import { shownButtonMyOwnStudent } from '../../Utils/checking-functions';
 
 import {
   getTemplateDownload,
@@ -635,47 +636,57 @@ class DocModificationThreadPage extends Component {
           this.props.user.role === 'Admin') &&
           (!this.state.thread.isFinalVersion ? (
             <Row className="mt-2">
-              <Button
-                variant="success"
-                onClick={(e) =>
-                  this.handleAsFinalFile(
-                    this.state.thread._id,
-                    this.state.thread.student_id._id,
-                    this.state.thread.program_id,
-                    this.state.thread.isFinalVersion
-                  )
-                }
-              >
-                {isSubmissionLoaded ? (
-                  'Mark as finished'
-                ) : (
-                  <Spinner animation="border" role="status" size="sm">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                )}
-              </Button>
+              {shownButtonMyOwnStudent(
+                this.props.user,
+                this.state.thread.student_id._id
+              ) && (
+                <Button
+                  variant="success"
+                  onClick={(e) =>
+                    this.handleAsFinalFile(
+                      this.state.thread._id,
+                      this.state.thread.student_id._id,
+                      this.state.thread.program_id,
+                      this.state.thread.isFinalVersion
+                    )
+                  }
+                >
+                  {isSubmissionLoaded ? (
+                    'Mark as finished'
+                  ) : (
+                    <Spinner animation="border" role="status" size="sm">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  )}
+                </Button>
+              )}
             </Row>
           ) : (
             <Row className="mt-2">
-              <Button
-                variant="danger"
-                onClick={(e) =>
-                  this.handleAsFinalFile(
-                    this.state.thread._id,
-                    this.state.thread.student_id._id,
-                    this.state.thread.program_id,
-                    this.state.thread.isFinalVersion
-                  )
-                }
-              >
-                {isSubmissionLoaded ? (
-                  'Mark as open'
-                ) : (
-                  <Spinner animation="border" role="status" size="sm">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                )}
-              </Button>
+              {shownButtonMyOwnStudent(
+                this.props.user,
+                this.state.thread.student_id._id
+              ) && (
+                <Button
+                  variant="danger"
+                  onClick={(e) =>
+                    this.handleAsFinalFile(
+                      this.state.thread._id,
+                      this.state.thread.student_id._id,
+                      this.state.thread.program_id,
+                      this.state.thread.isFinalVersion
+                    )
+                  }
+                >
+                  {isSubmissionLoaded ? (
+                    'Mark as open'
+                  ) : (
+                    <Spinner animation="border" role="status" size="sm">
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  )}
+                </Button>
+              )}
             </Row>
           ))}
         <Modal

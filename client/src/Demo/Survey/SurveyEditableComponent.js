@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Offcanvas
-} from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import { convertDate } from '../Utils/contants';
@@ -16,7 +9,8 @@ import { FiExternalLink } from 'react-icons/fi';
 import {
   check_academic_background_filled,
   check_languages_filled,
-  check_application_preference_filled
+  check_application_preference_filled,
+  shownButtonMyOwnStudent
 } from '../Utils/checking-functions';
 import {
   APPLICATION_YEARS_FUTURE,
@@ -171,6 +165,7 @@ class SurveyEditableComponent extends React.Component {
         </div>
       );
     }
+
 
     return (
       <Aux>
@@ -625,18 +620,24 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          <Button
-                            variant="primary"
-                            disabled={!this.state.changed_academic}
-                            onClick={(e) =>
-                              this.props.handleSubmit_AcademicBackground_root(
-                                e,
-                                this.state.academic_background.university
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
+                          {shownButtonMyOwnStudent(
+                            this.props.user,
+                            this.props.student_id
+                          ) && (
+                            <Button
+                              variant="primary"
+                              disabled={!this.state.changed_academic}
+                              onClick={(e) =>
+                                this.props.handleSubmit_AcademicBackground_root(
+                                  e,
+                                  this.state.academic_background.university
+                                )
+                              }
+                            >
+                              Update
+                            </Button>
+                          )}
+
                           <br />
                         </>
                       ) : (
@@ -822,18 +823,21 @@ class SurveyEditableComponent extends React.Component {
                   {this.props.user.archiv !== true && (
                     <Col md={2}>
                       <br />
-                      <Button
-                        variant="primary"
-                        disabled={!this.state.changed_application_preference}
-                        onClick={(e) =>
-                          this.props.handleSubmit_ApplicationPreference(
-                            e,
-                            this.state.application_preference
-                          )
-                        }
-                      >
-                        Update
-                      </Button>
+                      {shownButtonMyOwnStudent(this.props.user, this.props.student_id) && (
+                        <Button
+                          variant="primary"
+                          disabled={!this.state.changed_application_preference}
+                          onClick={(e) =>
+                            this.props.handleSubmit_ApplicationPreference(
+                              e,
+                              this.state.application_preference
+                            )
+                          }
+                        >
+                          Update
+                        </Button>
+                      )}
+
                       <br />
                     </Col>
                   )}
@@ -1158,18 +1162,24 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          <Button
-                            variant="primary"
-                            disabled={!this.state.changed_language}
-                            onClick={(e) =>
-                              this.props.handleSubmit_Language_root(
-                                e,
-                                this.state.academic_background.language
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
+                          {shownButtonMyOwnStudent(
+                            this.props.user,
+                            this.props.student_id
+                          ) && (
+                            <Button
+                              variant="primary"
+                              disabled={!this.state.changed_language}
+                              onClick={(e) =>
+                                this.props.handleSubmit_Language_root(
+                                  e,
+                                  this.state.academic_background.language
+                                )
+                              }
+                            >
+                              Update
+                            </Button>
+                          )}
+
                           <br />
                         </>
                       ) : (

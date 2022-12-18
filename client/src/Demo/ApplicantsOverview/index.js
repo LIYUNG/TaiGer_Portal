@@ -3,12 +3,7 @@ import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
-import ApplicationFilesProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationFilesProgress';
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
-import { isProgramNotSelectedEnough } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
@@ -106,41 +101,6 @@ class ApplicantSOverview extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
-    const listStudentProgramNotSelected = this.state.students.map(
-      (student, i) => (
-        <div key={i}>
-          {student.applications &&
-            student.applications.length < student.applying_program_count && (
-              <li className="text-light">
-                {student.firstname} {student.lastname}
-              </li>
-            )}
-        </div>
-      )
-    );
-
-    const application_progress = this.state.students.map((student, i) => (
-      <ApplicationProgress
-        key={i}
-        role={this.props.user.role}
-        student={student}
-        updateStudentArchivStatus={this.updateStudentArchivStatus}
-        isDashboard={true}
-      />
-    ));
-
-    const application_documents_overview = this.state.students.map(
-      (student, i) => (
-        <ApplicationFilesProgress
-          key={i}
-          role={this.props.user.role}
-          student={student}
-          updateStudentArchivStatus={this.updateStudentArchivStatus}
-          isDashboard={true}
-        />
-      )
-    );
 
     return (
       <Aux>

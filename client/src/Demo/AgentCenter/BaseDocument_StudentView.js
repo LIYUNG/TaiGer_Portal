@@ -304,6 +304,7 @@ class BaseDocument_StudentView extends React.Component {
           link={object_init[k].link}
           path={object_init[k].path}
           role={this.props.user.role}
+          user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -320,6 +321,7 @@ class BaseDocument_StudentView extends React.Component {
           link={object_init[k].link}
           path={object_init[k].path}
           role={this.props.user.role}
+          user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -337,6 +339,7 @@ class BaseDocument_StudentView extends React.Component {
           link={object_init[k].link}
           path={object_init[k].path}
           role={this.props.user.role}
+          user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}
@@ -356,6 +359,7 @@ class BaseDocument_StudentView extends React.Component {
             updateDocLink={this.updateDocLink}
             link={object_init[k].link}
             role={this.props.user.role}
+            user={this.props.user}
             isLoaded={this.state.isLoaded[k]}
             docName={value2[i]}
             date={object_date_init[k]}
@@ -374,6 +378,7 @@ class BaseDocument_StudentView extends React.Component {
           updateDocLink={this.updateDocLink}
           link={object_init[k].link}
           role={this.props.user.role}
+          user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
           date={object_date_init[k]}

@@ -8,7 +8,7 @@ import {
   AiOutlineWarning,
   AiOutlineDelete
 } from 'react-icons/ai';
-import { Link } from 'react-router-dom';
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
 import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetUploaded extends React.Component {
@@ -202,44 +202,54 @@ class ButtonSetUploaded extends React.Component {
           <>
             <td>
               <Col md>
-                <Button
-                  variant={acceptStyle}
-                  size="sm"
-                  type="submit"
-                  title="Mark as finshed"
-                  disabled={!this.state.isLoaded}
-                  onClick={(e) =>
-                    this.onUpdateProfileDocStatus(
-                      e,
-                      this.props.k,
-                      this.props.student_id,
-                      'accepted'
-                    )
-                  }
-                >
-                  <AiOutlineCheck />
-                </Button>
+                {shownButtonMyOwnStudent(
+                  this.props.user,
+                  this.props.student_id
+                ) && (
+                  <Button
+                    variant={acceptStyle}
+                    size="sm"
+                    type="submit"
+                    title="Mark as finshed"
+                    disabled={!this.state.isLoaded}
+                    onClick={(e) =>
+                      this.onUpdateProfileDocStatus(
+                        e,
+                        this.props.k,
+                        this.props.student_id,
+                        'accepted'
+                      )
+                    }
+                  >
+                    <AiOutlineCheck />
+                  </Button>
+                )}
               </Col>
             </td>
             <td>
               <Col md>
-                <Button
-                  variant={rejectStyle}
-                  size="sm"
-                  type="submit"
-                  title="Mark as reject"
-                  disabled={!this.state.isLoaded}
-                  onClick={(e) =>
-                    this.onUpdateProfileDocStatus(
-                      e,
-                      this.props.k,
-                      this.props.student_id,
-                      'rejected'
-                    )
-                  }
-                >
-                  <AiOutlineWarning size={16} />
-                </Button>
+                {shownButtonMyOwnStudent(
+                  this.props.user,
+                  this.props.student_id
+                ) && (
+                  <Button
+                    variant={rejectStyle}
+                    size="sm"
+                    type="submit"
+                    title="Mark as reject"
+                    disabled={!this.state.isLoaded}
+                    onClick={(e) =>
+                      this.onUpdateProfileDocStatus(
+                        e,
+                        this.props.k,
+                        this.props.student_id,
+                        'rejected'
+                      )
+                    }
+                  >
+                    <AiOutlineWarning size={16} />
+                  </Button>
+                )}
               </Col>
             </td>
             <td></td>
@@ -250,23 +260,28 @@ class ButtonSetUploaded extends React.Component {
         ) : (
           <td>
             <Col md>
-              <Button
-                variant={deleteStyle}
-                size="sm"
-                type="submit"
-                title="Delete"
-                disabled={!this.state.isLoaded}
-                onClick={(e) =>
-                  this.onDeleteFileWarningPopUp(
-                    e,
-                    this.props.k,
-                    this.props.student_id,
-                    this.props.docName
-                  )
-                }
-              >
-                <AiOutlineDelete size={16} />
-              </Button>
+              {shownButtonMyOwnStudent(
+                this.props.user,
+                this.props.student_id
+              ) && (
+                <Button
+                  variant={deleteStyle}
+                  size="sm"
+                  type="submit"
+                  title="Delete"
+                  disabled={!this.state.isLoaded}
+                  onClick={(e) =>
+                    this.onDeleteFileWarningPopUp(
+                      e,
+                      this.props.k,
+                      this.props.student_id,
+                      this.props.docName
+                    )
+                  }
+                >
+                  <AiOutlineDelete size={16} />
+                </Button>
+              )}
             </Col>
           </td>
         )}

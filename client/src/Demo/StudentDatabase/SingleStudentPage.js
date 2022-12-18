@@ -12,11 +12,6 @@ import {
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
-import ButtonSetUploaded from '../AgentCenter/ButtonSetUploaded';
-import ButtonSetAccepted from '../AgentCenter/ButtonSetAccepted';
-import ButtonSetRejected from '../AgentCenter/ButtonSetRejected';
-import ButtonSetNotNeeded from '../AgentCenter/ButtonSetNotNeeded';
-import ButtonSetMissing from '../AgentCenter/ButtonSetMissing';
 import BaseDocument_StudentView from '../AgentCenter/BaseDocument_StudentView';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
@@ -265,6 +260,7 @@ class SingleStudentPage extends React.Component {
                   <tbody>
                     <ApplicationProgress
                       role={this.props.user.role}
+                      user={this.props.user}
                       student={this.state.student}
                       isLoaded={this.state.isLoaded2}
                     />
@@ -297,7 +293,10 @@ class SingleStudentPage extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                <StudentsAgentEditor student={this.state.student} />
+                <StudentsAgentEditor
+                  role={this.props.user.role}
+                  student={this.state.student}
+                />
               </tbody>
             </Table>
             <BaseDocument_StudentView
@@ -314,33 +313,22 @@ class SingleStudentPage extends React.Component {
                 idx={0}
                 accordionKeys={[0]}
                 singleExpandtHandler={this.singleExpandtHandler}
-                role={this.props.user.role}
+                user={this.props.user}
               />
             </Card>
           </Tab>
           <Tab eventKey="program_portal" title="Portal">
-            <Row>
-              Coming Soon!
-              {/* <Table responsive>
-                <Task student_id={this.state.student._id} />
-              </Table> */}
-            </Row>
+            <Row>Coming Soon!</Row>
           </Tab>
           <Tab eventKey="uni-assist" title="Uni-Assist">
             <Row>
               <UniAssistListCard
                 student={this.state.student}
                 role={this.props.user.role}
+                user={this.props.user}
               />
             </Row>
           </Tab>
-          {/* <Tab eventKey="status" title="Status">
-            <Row>
-              <Table responsive>
-                <Task student_id={this.state.student._id} />
-              </Table>
-            </Row>
-          </Tab> */}
           <Tab eventKey="background" title="Background">
             <SurveyComponent
               role={this.props.user.role}
@@ -349,6 +337,7 @@ class SingleStudentPage extends React.Component {
               academic_background={this.state.student.academic_background}
               application_preference={this.state.student.application_preference}
               isLoaded={this.state.isLoaded2}
+              student={this.state.student}
               student_id={this.state.student._id}
               singlestudentpage_fromtaiger={true}
               handleSubmit_AcademicBackground_root={
@@ -369,29 +358,6 @@ class SingleStudentPage extends React.Component {
               </Card.Body>
             </Card>
           </Tab>
-          {/* <Tab eventKey="applied-schools" title="Applied Schools">
-            <Table responsive>
-              <thead>
-                <tr>
-                  <>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th>University</th>
-                    <th>Programs</th>
-                    <th>Deadline</th>
-                  </>
-                  {window.programstatuslist.map((doc, index) => (
-                    <th key={index}>{doc.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              <ApplicationProgress
-                role={this.props.user.role}
-                student={this.state.student}
-                isLoaded={this.state.ready}
-              />
-            </Table>
-          </Tab> */}
         </Tabs>
       </>
     );

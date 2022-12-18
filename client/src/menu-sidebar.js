@@ -182,14 +182,6 @@ export default {
           icon: 'feather icon-download'
         },
         {
-          id: 'taigerai',
-          title: 'TaiGer AI',
-          type: 'item',
-          url: '/taigerai',
-          classes: 'nav-item',
-          icon: 'feather icon-box'
-        },
-        {
           id: 'admissions_overview',
           title: 'TaiGer Admissions',
           type: 'item',
@@ -215,6 +207,7 @@ export default {
               title: 'Base Documents',
               type: 'item',
               url: '/docs/base-documents',
+              icon: 'feather icon-help-circle',
               target: false,
               breadcrumbs: false
             },
@@ -223,6 +216,7 @@ export default {
               title: 'CV/ML/RL',
               type: 'item',
               url: '/docs/cv-ml-rl',
+              icon: 'feather icon-help-circle',
               target: false,
               breadcrumbs: false
             },
@@ -256,6 +250,7 @@ export default {
               title: 'Uni-Assist',
               type: 'item',
               url: '/docs/uniassist',
+              icon: 'feather icon-help-circle',
               target: false,
               breadcrumbs: false
             },
@@ -264,6 +259,7 @@ export default {
               title: 'Internal Docs',
               type: 'item',
               url: '/docs/taiger/internal',
+              icon: 'feather icon-help-circle',
               target: false,
               breadcrumbs: false
             }
@@ -281,6 +277,7 @@ export default {
               title: 'Docs Database',
               type: 'item',
               url: '/internal/database/public-docs',
+              icon: 'feather icon-help-circle',
               target: false,
               breadcrumbs: false
             },
@@ -289,6 +286,7 @@ export default {
               title: 'Internal Docs Database',
               type: 'item',
               url: '/internal/database/internal-docs',
+              icon: 'feather icon-help-circle',
               target: false,
               breadcrumbs: false
             }
@@ -367,24 +365,13 @@ export default {
         //   },
         // },
       ]
-    }
+    },
     // {
-    //     id: 'ui-forms',
-    //     title: 'Forms & Tables',
-    //     type: 'group',
-    //     icon: 'icon-group',
-    //     children: [
-
-    //     ]
-    // },
-    // {
-    //     id: 'pages',
-    //     title: 'Pages',
-    //     type: 'group',
-    //     icon: 'icon-pages',
-    //     children: [
-
-    //     ]
+    //   id: 'taiger_internal_sidebar',
+    //   title: 'Taiger Internal',
+    //   type: 'group',
+    //   icon: 'icon-navigation',
+    //   children: []
     // }
   ]
 };

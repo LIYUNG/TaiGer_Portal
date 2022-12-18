@@ -51,6 +51,7 @@ class StudentsAgentEditor extends React.Component {
     this.props.submitUpdateEditorlist(e, updateEditorList, student_id);
   };
 
+  c;
   render() {
     let studentsAgent;
     let studentsEditor;
@@ -62,10 +63,15 @@ class StudentsAgentEditor extends React.Component {
     } else {
       studentsAgent = this.props.student.agents.map((agent, i) => (
         <div key={agent._id}>
-          <p className="mb-1 text-info">
-            {agent.firstname}
-            {', '}
-            {agent.lastname}
+          <p className="mb-0 text-info">
+            <Link
+              to={`/teams/agents/${agent._id.toString()}`}
+              className="mb-0 text-info"
+            >
+              {agent.firstname}
+              {', '}
+              {agent.lastname}
+            </Link>
           </p>
           <p className="mb-0 text-muted">{agent.email}</p>
         </div>
@@ -80,9 +86,14 @@ class StudentsAgentEditor extends React.Component {
       studentsEditor = this.props.student.editors.map((editor, i) => (
         <div key={editor._id}>
           <p className="mb-1 text-info">
-            {editor.firstname}
-            {', '}
-            {editor.lastname}
+            <Link
+              to={`/teams/editors/${editor._id.toString()}`}
+              className="mb-0 text-info"
+            >
+              {editor.firstname}
+              {', '}
+              {editor.lastname}
+            </Link>
           </p>
           <p className="mb-0 text-muted">{editor.email}</p>
         </div>

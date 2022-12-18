@@ -1,6 +1,5 @@
 import React from 'react';
 import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
-import { BASE_URL } from '../../api/request';
 import {
   AiOutlineDownload,
   AiOutlineCheck,
@@ -8,8 +7,12 @@ import {
   AiOutlineComment,
   AiOutlineDelete
 } from 'react-icons/ai';
-import { updateProfileDocumentStatus, deleteFile } from '../../api';
 import { FiExternalLink } from 'react-icons/fi';
+
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { BASE_URL } from '../../api/request';
+
+import { updateProfileDocumentStatus, deleteFile } from '../../api';
 
 class ButtonSetRejected extends React.Component {
   state = {
@@ -249,23 +252,28 @@ class ButtonSetRejected extends React.Component {
         {this.props.role === 'Agent' || this.props.role === 'Admin' ? (
           <td>
             <Col>
-              <Button
-                variant={acceptStyle}
-                size="sm"
-                type="submit"
-                title="Mark as finshed"
-                disabled={!this.state.isLoaded}
-                onClick={(e) =>
-                  this.onUpdateProfileDocStatus(
-                    e,
-                    this.props.k,
-                    this.props.student_id,
-                    'accepted'
-                  )
-                }
-              >
-                <AiOutlineCheck />
-              </Button>
+              {shownButtonMyOwnStudent(
+                this.props.user,
+                this.props.student_id
+              ) && (
+                <Button
+                  variant={acceptStyle}
+                  size="sm"
+                  type="submit"
+                  title="Mark as finished"
+                  disabled={!this.state.isLoaded}
+                  onClick={(e) =>
+                    this.onUpdateProfileDocStatus(
+                      e,
+                      this.props.k,
+                      this.props.student_id,
+                      'accepted'
+                    )
+                  }
+                >
+                  <AiOutlineCheck />
+                </Button>
+              )}
             </Col>
           </td>
         ) : (
@@ -292,23 +300,28 @@ class ButtonSetRejected extends React.Component {
           <>
             <td>
               <Col>
-                <Button
-                  variant={deleteStyle}
-                  size="sm"
-                  type="submit"
-                  title="Delete"
-                  disabled={!this.state.isLoaded}
-                  onClick={(e) =>
-                    this.onDeleteFileWarningPopUp(
-                      e,
-                      this.props.k,
-                      this.props.student_id,
-                      this.props.docName
-                    )
-                  }
-                >
-                  <AiOutlineDelete size={16} />
-                </Button>
+                {shownButtonMyOwnStudent(
+                  this.props.user,
+                  this.props.student_id
+                ) && (
+                  <Button
+                    variant={deleteStyle}
+                    size="sm"
+                    type="submit"
+                    title="Delete"
+                    disabled={!this.state.isLoaded}
+                    onClick={(e) =>
+                      this.onDeleteFileWarningPopUp(
+                        e,
+                        this.props.k,
+                        this.props.student_id,
+                        this.props.docName
+                      )
+                    }
+                  >
+                    <AiOutlineDelete size={16} />
+                  </Button>
+                )}
               </Col>
             </td>
           </>
@@ -417,12 +430,8 @@ class ButtonSetRejected extends React.Component {
           {this.props.role === 'Student' ? (
             <>
               <Modal.Body>
-                <p>
-                  {this.state.comments}
-                </p>
-                <p>
-                  Please delete the old file before upload the new file.
-                </p>
+                <p>{this.state.comments}</p>
+                <p>Please delete the old file before upload the new file.</p>
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeCommentWindow}>Ok</Button>
@@ -447,25 +456,31 @@ class ButtonSetRejected extends React.Component {
                 </Form.Group>
               </Modal.Body>
               <Modal.Footer>
-                <Button
-                  disabled={this.state.comments === ''}
-                  onClick={(e) => this.onUpdateRejectMessageStudent(e)}
-                >
-                  {!this.state.isLoaded ? (
-                    <div>
-                      <Spinner
-                        animation="border"
-                        role="status"
-                        variant="light"
-                        size="sm"
-                      >
-                        <span className="visually-hidden"></span>
-                      </Spinner>
-                    </div>
-                  ) : (
-                    'Update'
-                  )}
-                </Button>
+                {shownButtonMyOwnStudent(
+                  this.props.user,
+                  this.props.student_id
+                ) && (
+                  <Button
+                    disabled={this.state.comments === ''}
+                    onClick={(e) => this.onUpdateRejectMessageStudent(e)}
+                  >
+                    {!this.state.isLoaded ? (
+                      <div>
+                        <Spinner
+                          animation="border"
+                          role="status"
+                          variant="light"
+                          size="sm"
+                        >
+                          <span className="visually-hidden"></span>
+                        </Spinner>
+                      </div>
+                    ) : (
+                      'Update'
+                    )}
+                  </Button>
+                )}
+
                 <Button onClick={this.closeCommentWindow}>Close</Button>
               </Modal.Footer>
             </>

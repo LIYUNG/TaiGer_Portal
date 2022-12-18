@@ -110,7 +110,7 @@ class NavCollapse extends Component {
       let itemTitle = this.props.collapse.title;
       if (this.props.collapse.icon) {
         itemTitle = (
-          <span className="my-0 py-0">{this.props.collapse.title}</span>
+          <span className="pcoded-mtext">{this.props.collapse.title}</span>
         );
       }
 

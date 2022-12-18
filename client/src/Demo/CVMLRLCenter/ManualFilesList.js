@@ -19,7 +19,7 @@ class ManualFilesList extends Component {
               }
               onDeleteFileThread={this.props.onDeleteFileThread}
               handleAsFinalFile={this.props.handleAsFinalFile}
-              role={this.props.role}
+              user={this.props.user}
             />
           ))
         : '';
@@ -39,7 +39,7 @@ class ManualFilesList extends Component {
                 }
                 handleAsFinalFile={this.props.handleAsFinalFile}
                 onDeleteFileThread={this.props.onDeleteFileThread}
-                role={this.props.role}
+                user={this.props.user}
               />
             ))
           : '';

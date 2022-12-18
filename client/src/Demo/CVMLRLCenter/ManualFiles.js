@@ -1,7 +1,7 @@
 import React from 'react';
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
-import { Row, Col, Tabs, Tab, Table } from 'react-bootstrap';
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
 
 class ManualFiles extends React.Component {
   state = {
@@ -56,18 +56,24 @@ class ManualFiles extends React.Component {
           student={this.props.student}
           onDeleteFileThread={this.props.onDeleteFileThread}
           handleAsFinalFile={this.props.handleAsFinalFile}
-          role={this.props.role}
+          user={this.props.user}
           application={this.props.application}
         />
 
-        {this.props.role === 'Student' || this.props.role === 'Guest' ? (
+        {this.props.user.role === 'Student' ||
+        this.props.user.role === 'Guest' ? (
           <></>
         ) : (
           (!this.props.application ||
             (this.props.application &&
-              this.props.application.closed !== 'O')) && (
+              this.props.application.closed !== 'O')) &&
+          shownButtonMyOwnStudent(
+            this.props.user,
+            this.props.student._id.toString()
+          ) && (
             <ToggleableUploadFileForm
-              role={this.props.role}
+              role={this.props.user.role}
+              user={this.props.user}
               student={this.props.student}
               handleSelect={this.handleSelect}
               handleCreateGeneralMessageThread={

@@ -1,3 +1,24 @@
+export const shownButtonMyOwnStudent = (user, student_id) => {
+  if (
+    user.role === 'Admin' ||
+    user.role === 'Student' ||
+    user.role === 'Guest'
+  ) {
+    return true;
+  }
+
+  if (user.students) {
+    if (
+      user.students.findIndex(
+        (student) => student._id.toString() === student_id
+      ) !== -1
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
+
 export const check_english_language_passed = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;

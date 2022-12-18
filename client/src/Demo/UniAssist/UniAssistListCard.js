@@ -4,6 +4,7 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -12,7 +13,6 @@ import {
   uploadVPDforstudent,
   deleteVPDFile,
   downloadVPDProfile,
-  getStudent,
   SetAsNotNeeded
 } from '../../api';
 
@@ -327,45 +327,54 @@ class UniAssistListCard extends React.Component {
                       ] ? (
                         <>
                           <Col md={1}>
-                            <Form.Group
-                              controlId={`${application.programId._id.toString()}`}
-                            >
-                              <Form.Label>
-                                <IoMdCloudUpload
-                                  color={'lightgray'}
-                                  size={32}
+                            {shownButtonMyOwnStudent(
+                              this.props.user,
+                              this.props.student._id.toString()
+                            ) && (
+                              <Form.Group
+                                controlId={`${application.programId._id.toString()}`}
+                              >
+                                <Form.Label>
+                                  <IoMdCloudUpload
+                                    color={'lightgray'}
+                                    size={32}
+                                  />
+                                </Form.Label>
+                                <Form.Control
+                                  hidden
+                                  type="file"
+                                  onChange={(e) =>
+                                    this.handleUniAssistDocSubmit(
+                                      e,
+                                      this.state.student._id.toString(),
+                                      application.programId._id.toString()
+                                    )
+                                  }
                                 />
-                              </Form.Label>
-                              <Form.Control
-                                hidden
-                                type="file"
-                                onChange={(e) =>
-                                  this.handleUniAssistDocSubmit(
-                                    e,
-                                    this.state.student._id.toString(),
-                                    application.programId._id.toString()
-                                  )
-                                }
-                              />
-                            </Form.Group>
+                              </Form.Group>
+                            )}
                           </Col>
                           <Col>
                             {(this.props.role === 'Agent' ||
-                              this.props.role === 'Admin') && (
-                              <Button
-                                size={'sm'}
-                                color={'lightgray'}
-                                onClick={(e) =>
-                                  this.opensetAsNotNeededWindow(
-                                    e,
-                                    this.state.student._id.toString(),
-                                    application.programId._id.toString()
-                                  )
-                                }
-                              >
-                                Set Not Needed
-                              </Button>
-                            )}
+                              this.props.role === 'Admin') &&
+                              shownButtonMyOwnStudent(
+                                this.props.user,
+                                this.props.student._id.toString()
+                              ) && (
+                                <Button
+                                  size={'sm'}
+                                  color={'lightgray'}
+                                  onClick={(e) =>
+                                    this.opensetAsNotNeededWindow(
+                                      e,
+                                      this.state.student._id.toString(),
+                                      application.programId._id.toString()
+                                    )
+                                  }
+                                >
+                                  Set Not Needed
+                                </Button>
+                              )}
                           </Col>
                         </>
                       ) : (
@@ -404,24 +413,29 @@ class UniAssistListCard extends React.Component {
                       </Button>
                     </Col>
                     <Col>
-                      <Button
-                        onClick={(e) =>
-                          this.onDeleteVPDFileWarningPopUp(
-                            e,
-                            this.state.student._id.toString(),
-                            application.programId._id.toString()
-                          )
-                        }
-                        disabled={
-                          !this.state.isLoaded2[
-                            application.programId._id.toString()
-                          ]
-                        }
-                        variant={'danger'}
-                        size={'sm'}
-                      >
-                        <AiOutlineDelete size={16} />
-                      </Button>
+                      {shownButtonMyOwnStudent(
+                        this.props.user,
+                        this.props.student._id.toString()
+                      ) && (
+                        <Button
+                          onClick={(e) =>
+                            this.onDeleteVPDFileWarningPopUp(
+                              e,
+                              this.state.student._id.toString(),
+                              application.programId._id.toString()
+                            )
+                          }
+                          disabled={
+                            !this.state.isLoaded2[
+                              application.programId._id.toString()
+                            ]
+                          }
+                          variant={'danger'}
+                          size={'sm'}
+                        >
+                          <AiOutlineDelete size={16} />
+                        </Button>
+                      )}
                     </Col>
                   </>
                 )}
@@ -453,42 +467,54 @@ class UniAssistListCard extends React.Component {
                     ] ? (
                       <>
                         <Col md={1}>
-                          <Form.Group
-                            controlId={`${application.programId._id.toString()}`}
-                          >
-                            <Form.Label>
-                              <IoMdCloudUpload color={'lightgray'} size={32} />
-                            </Form.Label>
-                            <Form.Control
-                              hidden
-                              type="file"
-                              onChange={(e) =>
-                                this.handleUniAssistDocSubmit(
-                                  e,
-                                  this.state.student._id.toString(),
-                                  application.programId._id.toString()
-                                )
-                              }
-                            />
-                          </Form.Group>
+                          {shownButtonMyOwnStudent(
+                            this.props.user,
+                            this.props.student._id.toString()
+                          ) && (
+                            <Form.Group
+                              controlId={`${application.programId._id.toString()}`}
+                            >
+                              <Form.Label>
+                                <IoMdCloudUpload
+                                  color={'lightgray'}
+                                  size={32}
+                                />
+                              </Form.Label>
+                              <Form.Control
+                                hidden
+                                type="file"
+                                onChange={(e) =>
+                                  this.handleUniAssistDocSubmit(
+                                    e,
+                                    this.state.student._id.toString(),
+                                    application.programId._id.toString()
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          )}
                         </Col>
                         <Col>
                           {(this.props.role === 'Agent' ||
-                            this.props.role === 'Admin') && (
-                            <Button
-                              size={'sm'}
-                              color={'lightgray'}
-                              onClick={(e) =>
-                                this.opensetAsNotNeededWindow(
-                                  e,
-                                  this.state.student._id.toString(),
-                                  application.programId._id.toString()
-                                )
-                              }
-                            >
-                              Set Not Needed
-                            </Button>
-                          )}
+                            this.props.role === 'Admin') &&
+                            shownButtonMyOwnStudent(
+                              this.props.user,
+                              this.props.student._id.toString()
+                            ) && (
+                              <Button
+                                size={'sm'}
+                                color={'lightgray'}
+                                onClick={(e) =>
+                                  this.opensetAsNotNeededWindow(
+                                    e,
+                                    this.state.student._id.toString(),
+                                    application.programId._id.toString()
+                                  )
+                                }
+                              >
+                                Set Not Needed
+                              </Button>
+                            )}
                         </Col>
                       </>
                     ) : (
@@ -516,63 +542,77 @@ class UniAssistListCard extends React.Component {
                     </Col>
                     <Col>
                       {(this.props.role === 'Agent' ||
-                        this.props.role === 'Admin') && (
-                        <Button
-                          size={'sm'}
-                          color={'lightgray'}
-                          onClick={(e) =>
-                            this.opensetAsNotNeededWindow(
-                              e,
-                              this.state.student._id.toString(),
-                              application.programId._id.toString()
-                            )
-                          }
-                        >
-                          Set needed
-                        </Button>
-                      )}
+                        this.props.role === 'Admin') &&
+                        shownButtonMyOwnStudent(
+                          this.props.user,
+                          this.props.student._id.toString()
+                        ) && (
+                          <Button
+                            size={'sm'}
+                            color={'lightgray'}
+                            onClick={(e) =>
+                              this.opensetAsNotNeededWindow(
+                                e,
+                                this.state.student._id.toString(),
+                                application.programId._id.toString()
+                              )
+                            }
+                          >
+                            Set needed
+                          </Button>
+                        )}
                     </Col>
                   </>
                 ) : (
                   <>
                     <Col md={2}>
-                      <Button
-                        onClick={(e) =>
-                          this.handleUniAssistDocDownload(
-                            e,
-                            this.state.student._id.toString(),
-                            application.programId._id.toString()
-                          )
-                        }
-                        disabled={
-                          !this.state.isLoaded2[
-                            application.programId._id.toString()
-                          ]
-                        }
-                        size={'sm'}
-                      >
-                        <AiOutlineDownload size={16} />
-                      </Button>
+                      {shownButtonMyOwnStudent(
+                        this.props.user,
+                        this.props.student._id.toString()
+                      ) && (
+                        <Button
+                          onClick={(e) =>
+                            this.handleUniAssistDocDownload(
+                              e,
+                              this.state.student._id.toString(),
+                              application.programId._id.toString()
+                            )
+                          }
+                          disabled={
+                            !this.state.isLoaded2[
+                              application.programId._id.toString()
+                            ]
+                          }
+                          size={'sm'}
+                        >
+                          <AiOutlineDownload size={16} />
+                        </Button>
+                      )}
                     </Col>
                     <Col>
-                      <Button
-                        onClick={(e) =>
-                          this.onDeleteVPDFileWarningPopUp(
-                            e,
-                            this.state.student._id.toString(),
-                            application.programId._id.toString()
-                          )
-                        }
-                        disabled={
-                          !this.state.isLoaded2[
-                            application.programId._id.toString()
-                          ]
-                        }
-                        variant={'danger'}
-                        size={'sm'}
-                      >
-                        <AiOutlineDelete size={16} />
-                      </Button>
+                      {shownButtonMyOwnStudent(
+                        this.props.user,
+                        this.props.student._id.toString()
+                      ) && (
+                        <Button
+                          onClick={(e) =>
+                            this.onDeleteVPDFileWarningPopUp(
+                              e,
+                              this.state.student._id.toString(),
+                              application.programId._id.toString()
+                            )
+                          }
+                          disabled={
+                            !this.state.isLoaded2[
+                              application.programId._id.toString()
+                            ]
+                          }
+                          variant={'danger'}
+                          size={'sm'}
+                        >
+                          <AiOutlineDelete size={16} />
+                        </Button>
+                      )}
                     </Col>
                   </>
                 )}

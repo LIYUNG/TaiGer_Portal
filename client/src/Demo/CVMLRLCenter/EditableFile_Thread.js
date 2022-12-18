@@ -2,15 +2,10 @@ import React, { Component } from 'react';
 import { Col, Row, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-import {
-  // AiOutlineDownload,
-  AiOutlineDelete,
-  AiOutlineCheck,
-  // AiOutlineComment,
-  AiOutlineUndo
-  // AiFillMessage
-} from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
+
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 
 class EditableFile_Thread extends Component {
@@ -72,52 +67,55 @@ class EditableFile_Thread extends Component {
       <>
         <Row>
           <Col md={1}>
-            {this.props.role === 'Student' || this.props.role === 'Guest' ? (
-              this.props.thread.isFinalVersion && (
-                <IoCheckmarkCircle
+            {shownButtonMyOwnStudent(
+              this.props.user,
+              this.props.student._id.toString()
+            ) &&
+              (this.props.user.role === 'Student' ||
+              this.props.user.role === 'Guest' ? (
+                this.props.thread.isFinalVersion && (
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    title="Final Version"
+                    // onMouseEnter={this.MouseOver}
+                  />
+                )
+              ) : this.props.thread.isFinalVersion ? (
+                <>
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    title="Final Version"
+                    // onMouseEnter={this.MouseOver}
+                  />
+                </>
+              ) : (
+                <AiOutlineCheck
                   size={24}
-                  color="limegreen"
-                  title="Final Version"
-                  // onMouseEnter={this.MouseOver}
+                  color="white"
+                  style={{ cursor: 'pointer' }}
+                  title="Set as final version"
+                  onClick={() =>
+                    this.handleAsFinalFileThread(documenName, true)
+                  }
                 />
-              )
-            ) : this.props.thread.isFinalVersion ? (
-              <>
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="Final Version"
-                  // onMouseEnter={this.MouseOver}
-                />
-              </>
-            ) : (
-              // <Button
-              //   size="sm"
-              //   title="As final version"
-              //   onClick={() => this.handleAsFinalFileThread(documenName)}
-              // >
-              <AiOutlineCheck
-                size={24}
-                color="white"
-                style={{ cursor: 'pointer' }}
-                title="Set as final version"
-                onClick={() => this.handleAsFinalFileThread(documenName,true)}
-              />
-              // </Button>
-            )}
+              ))}
           </Col>
-
           <Col md={1}>
             {this.props.thread.isFinalVersion ? (
-              this.props.role === 'Student' || this.props.role === 'Guest' ? (
-                <p className='text-warning'>Closed</p>
+              this.props.user.role === 'Student' ||
+              this.props.user.role === 'Guest' ? (
+                <p className="text-warning">Closed</p>
               ) : (
                 <AiOutlineUndo
                   size={24}
                   color="red"
                   title="Un do Final Version"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => this.handleAsFinalFileThread(documenName,false)}
+                  onClick={() =>
+                    this.handleAsFinalFileThread(documenName, false)
+                  }
                 />
               )
             ) : (
@@ -141,19 +139,25 @@ class EditableFile_Thread extends Component {
               {convertDate(this.props.thread.doc_thread_id.updatedAt)}
             </p>
           </Col>
-          {this.props.role === 'Student' || this.props.role === 'Guest' ? (
+          {this.props.user.role === 'Student' ||
+          this.props.user.role === 'Guest' ? (
             <></>
           ) : (
             <Col md={1}>
-              <Button
-                size="sm"
-                style={{ cursor: 'pointer' }}
-                title="Delete"
-                variant="danger"
-                onClick={this.handleDeleteFileThread}
-              >
-                <AiOutlineDelete size={20} />
-              </Button>
+              {shownButtonMyOwnStudent(
+                this.props.user,
+                this.props.student._id.toString()
+              ) && (
+                <Button
+                  size="sm"
+                  style={{ cursor: 'pointer' }}
+                  title="Delete"
+                  variant="danger"
+                  onClick={this.handleDeleteFileThread}
+                >
+                  <AiOutlineDelete size={20} />
+                </Button>
+              )}
             </Col>
           )}
         </Row>

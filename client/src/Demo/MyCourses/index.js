@@ -6,6 +6,7 @@ import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
 import {
@@ -361,9 +362,14 @@ export default function MyCourses(props) {
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
               <Row className="mx-1">
-                <Button onClick={onSubmit} disabled={statedata.isUpdating}>
-                  {statedata.isUpdating ? 'Updating' : 'Update'}
-                </Button>
+                {shownButtonMyOwnStudent(
+                  props.user,
+                  statedata.student._id.toString()
+                ) && (
+                  <Button onClick={onSubmit} disabled={statedata.isUpdating}>
+                    {statedata.isUpdating ? 'Updating' : 'Update'}
+                  </Button>
+                )}
               </Row>
             </Card.Body>
           </Card>
@@ -406,9 +412,17 @@ export default function MyCourses(props) {
                 </Row>
                 <br />
                 <Row className="mx-1">
-                  <Button onClick={onAnalyse} disabled={statedata.isAnalysing}>
-                    {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
-                  </Button>
+                  {shownButtonMyOwnStudent(
+                    props.user,
+                    statedata.student._id.toString()
+                  ) && (
+                    <Button
+                      onClick={onAnalyse}
+                      disabled={statedata.isAnalysing}
+                    >
+                      {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
+                    </Button>
+                  )}
                 </Row>
                 <Row className="my-2"></Row>
                 <Row>

@@ -4,6 +4,8 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { FiExternalLink } from 'react-icons/fi';
 
+import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+
 class ButtonSetMissing extends React.Component {
   state = {
     student: this.props.student,
@@ -138,22 +140,27 @@ class ButtonSetMissing extends React.Component {
                 </Spinner>
               </div>
             ) : (
-              <Form.Group controlId={`${this.props.k}`}>
-                <Form.Label>
-                  <IoMdCloudUpload color={'white'} size={32} />
-                </Form.Label>
-                <Form.Control
-                  hidden
-                  type="file"
-                  onChange={(e) =>
-                    this.handleGeneralDocSubmit(
-                      e,
-                      this.props.k,
-                      this.props.student_id
-                    )
-                  }
-                />
-              </Form.Group>
+              shownButtonMyOwnStudent(
+                this.props.user,
+                this.props.student_id
+              ) && (
+                <Form.Group controlId={`${this.props.k}`}>
+                  <Form.Label>
+                    <IoMdCloudUpload color={'white'} size={32} />
+                  </Form.Label>
+                  <Form.Control
+                    hidden
+                    type="file"
+                    onChange={(e) =>
+                      this.handleGeneralDocSubmit(
+                        e,
+                        this.props.k,
+                        this.props.student_id
+                      )
+                    }
+                  />
+                </Form.Group>
+              )
             )}
           </td>
         ) : (
@@ -163,22 +170,27 @@ class ButtonSetMissing extends React.Component {
         {this.props.role === 'Admin' || this.props.role === 'Agent' ? (
           <td>
             <Col md>
-              <Form
-                onSubmit={(e) =>
-                  this.onUpdateProfileDocStatus(
-                    e,
-                    this.props.k,
-                    this.props.student_id,
-                    'notneeded'
-                  )
-                }
-              >
-                <Form.Group controlId={`${this.props.k}`}>
-                  <Button variant={'secondary'} size="sm" type="submit">
-                    Set notneeded
-                  </Button>
-                </Form.Group>
-              </Form>
+              {shownButtonMyOwnStudent(
+                this.props.user,
+                this.props.student_id
+              ) && (
+                <Form
+                  onSubmit={(e) =>
+                    this.onUpdateProfileDocStatus(
+                      e,
+                      this.props.k,
+                      this.props.student_id,
+                      'notneeded'
+                    )
+                  }
+                >
+                  <Form.Group controlId={`${this.props.k}`}>
+                    <Button variant={'secondary'} size="sm" type="submit">
+                      Set notneeded
+                    </Button>
+                  </Form.Group>
+                </Form>
+              )}
             </Col>
           </td>
         ) : (

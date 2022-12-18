@@ -1555,7 +1555,8 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
       _id,
       {
         firstname: personaldata.firstname,
-        lastname: personaldata.lastname
+        lastname: personaldata.lastname,
+        birthday: personaldata.birthday
       },
       { upsert: true, new: true }
     );
@@ -1564,7 +1565,8 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
       success: true,
       data: {
         firstname: updatedStudent.firstname,
-        lastname: updatedStudent.lastname
+        lastname: updatedStudent.lastname,
+        birthday: personaldata.birthday
       }
     });
     await updatePersonalDataEmail(

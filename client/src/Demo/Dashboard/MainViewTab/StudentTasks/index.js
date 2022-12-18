@@ -208,7 +208,22 @@ class StudentTasks extends React.Component {
                 Uni-Assist
               </Link>
             </td>
-            <td>Please Uni-Assist to apply and get VPD</td>
+            <td>Please go to Uni-Assist to apply and get VPD</td>
+            <td></td>
+          </tr>
+        )}
+        {this.props.student.birthday === '' && (
+          <tr>
+            <td>
+              <Link
+                to={'/settings'}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                Personal Data
+              </Link>
+            </td>
+            <td>Please go to Personal Data to fill your birthday.</td>
             <td></td>
           </tr>
         )}

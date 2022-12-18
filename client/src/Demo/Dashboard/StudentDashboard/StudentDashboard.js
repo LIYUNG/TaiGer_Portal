@@ -198,7 +198,7 @@ class StudentDashboard extends React.Component {
           !check_academic_background_filled(student.academic_background) && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -232,7 +232,7 @@ class StudentDashboard extends React.Component {
           !is_all_uni_assist_vpd_uploaded(student) && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -268,7 +268,7 @@ class StudentDashboard extends React.Component {
           !student.notification.isRead_new_agent_assigned && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'primary'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'primary'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -293,7 +293,7 @@ class StudentDashboard extends React.Component {
           !student.notification.isRead_new_editor_assigned && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'primary'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'primary'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -319,7 +319,7 @@ class StudentDashboard extends React.Component {
           !student.notification.isRead_new_cvmlrl_messsage && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -352,7 +352,7 @@ class StudentDashboard extends React.Component {
           !student.notification.isRead_new_cvmlrl_tasks_created && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -388,7 +388,7 @@ class StudentDashboard extends React.Component {
           !check_applications_to_decided(student) && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -421,7 +421,7 @@ class StudentDashboard extends React.Component {
           !this.check_base_documents(student) && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}
@@ -454,7 +454,7 @@ class StudentDashboard extends React.Component {
           this.check_base_documents_rejected(student) && (
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
                   <p
                     className="text-light my-3 mx-3"
                     style={{ textAlign: 'left' }}

@@ -111,7 +111,7 @@ class AdminMainView extends React.Component {
             >
               <thead>
                 <tr>
-                  <th>First-/Lastname</th>
+                  <th>First-/Lastname,Birthday,Target</th>
                   <th>Survey</th>
                   <th>Language</th>
                   <th>Base Documents</th>

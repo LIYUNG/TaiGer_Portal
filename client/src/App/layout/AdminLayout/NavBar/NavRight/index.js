@@ -32,37 +32,37 @@ class NavRight extends Component {
           <Col>
             <ul className="navbar-nav ml-auto my-0 py-0">
               <li className={this.props.rtlLayout ? 'mr-0' : 'm-l-0'}>
-                <Link to={DEMO.SETTINGS} style={{ textDecoration: 'none' }}>
-                  <Row>
-                    {this.props.userdata.firstname}{' '}
-                    {this.props.userdata.lastname}{' '}
-                    <Avatar
-                      {...stringAvatar(
-                        this.props.userdata.firstname +
-                          ' ' +
-                          this.props.userdata.lastname
-                      )}
-                      className="mt-3 mx-2"
-                      title={
-                        this.props.userdata.firstname +
-                        ' ' +
-                        this.props.userdata.lastname
-                      }
-                    />
-                  </Row>
-                </Link>
+                <Link
+                  to={DEMO.SETTINGS}
+                  style={{ textDecoration: 'none' }}
+                ></Link>
               </li>
               {/* <Button></Button> */}
               <li className="py-0">
                 <Dropdown variant="default">
                   <Dropdown.Toggle variant="default" id="dropdown-basic">
-                    {`${this.props.userdata.firstname} ${this.props.userdata.lastname}`}
+                    {' '}
+                    <Row>
+                      {/* {this.props.userdata.firstname}{' '}
+                    {this.props.userdata.lastname}{' '} */}
+                      <Avatar
+                        {...stringAvatar(
+                          this.props.userdata.firstname +
+                            ' ' +
+                            this.props.userdata.lastname
+                        )}
+                        className="mt-3 mx-2"
+                        title={
+                          this.props.userdata.firstname +
+                          ' ' +
+                          this.props.userdata.lastname
+                        }
+                      />{' '}
+                      {`${this.props.userdata.firstname} ${this.props.userdata.lastname}`}
+                    </Row>
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-                    <Link to="/base-documents">
-                      <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                    </Link>{' '}
                     <Link to="/settings">
                       <Dropdown.Item href="#/action-2">
                         My Settings

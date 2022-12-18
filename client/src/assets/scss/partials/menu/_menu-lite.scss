@@ -320,7 +320,8 @@
             position: absolute;
             border: none;
             margin-top: -6px;
-            min-width: 290px;
+            line-height: 20px;
+            min-width: 200px;
 
             &.show {
                 &:before {
@@ -751,7 +752,7 @@
                         font-size: 15px;
                         border: none;
                         position: absolute;
-                        top: 11px;
+                        top: 6px;
                         right: 20px;
                         transition: 0.3s ease-in-out;
                     }

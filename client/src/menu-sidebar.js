@@ -142,7 +142,7 @@ export default {
           id: 'applications-overview',
           title: 'Applications Overview',
           type: 'item',
-          icon: 'feather icon-list',
+          icon: 'feather icon-book',
           url: '/student-applications'
         },
         {
@@ -309,14 +309,14 @@ export default {
           icon: 'feather icon-star',
           url: '/teams'
         },
-        {
-          id: 'settings',
-          title: 'Settings',
-          type: 'item',
-          url: '/settings',
-          classes: 'nav-item',
-          icon: 'feather icon-settings'
-        },
+        // {
+        //   id: 'settings',
+        //   title: 'Settings',
+        //   type: 'item',
+        //   url: '/settings',
+        //   classes: 'nav-item',
+        //   icon: 'feather icon-settings'
+        // },
         {
           id: 'menu-level',
           title: 'Menu Levels',

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
@@ -20,7 +22,8 @@ class Settings extends React.Component {
     changed_personaldata: false,
     personaldata: {
       firstname: this.props.user.firstname,
-      lastname: this.props.user.lastname
+      lastname: this.props.user.lastname,
+      birthday: this.props.user.birthday
     },
     credentials: {
       current_password: '',
@@ -217,6 +220,29 @@ class Settings extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
+                {this.state.personaldata.birthday === '' && (
+                  <Row>
+                    <Col>
+                      <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                        <p
+                          className="text-light my-3 mx-3"
+                          style={{ textAlign: 'left' }}
+                        >
+                          <BsExclamationTriangle size={18} />
+                          <b className="mx-2">Reminder:</b> Please fill your
+                          birthday:{' '}
+                          <Link
+                            to={'/settings'}
+                            style={{ textDecoration: 'none' }}
+                            className="text-info"
+                          >
+                            Survey
+                          </Link>{' '}
+                        </p>
+                      </Card>
+                    </Col>
+                  </Row>
+                )}
                 <Row>
                   <Col>
                     <Form.Group controlId="firstname">
@@ -243,6 +269,7 @@ class Settings extends React.Component {
                       /> */}
                       <p className="text-primary">{this.props.user.email}</p>
                     </Form.Group>
+
                     {/* <p>{this.props.user.email}</p> */}
                     {/* <Form.Group controlId="birthday">
                       <Form.Label className="my-0 mx-0 text-light">Birthday Date</Form.Label>
@@ -261,8 +288,17 @@ class Settings extends React.Component {
                         onChange={(e) => this.handleChange_PersonalData(e)}
                       />
                     </Form.Group>
-                    <br />
-                    <br />
+                    <Form.Group className="my-2" controlId="birthday">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Birthday
+                      </Form.Label>
+                      <Form.Control
+                        type="date"
+                        placeholder="1999/01/01"
+                        defaultValue={this.state.personaldata.birthday}
+                        onChange={(e) => this.handleChange_PersonalData(e)}
+                      />
+                    </Form.Group>
                     <Button
                       variant="primary"
                       disabled={
@@ -296,7 +332,9 @@ class Settings extends React.Component {
           <Col md={6}>
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">Reset Login Password</Card.Title>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Reset Login Password
+                </Card.Title>
               </Card.Header>
               <Card.Body>
                 <Row className="my-0 mx-0">

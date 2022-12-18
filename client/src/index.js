@@ -467,8 +467,16 @@ window.UserlistHeader = [
     prop: 'lastname'
   },
   {
+    name: 'Birthday',
+    prop: 'birthday'
+  },
+  {
     name: 'Email Address',
     prop: 'email'
+  },
+  {
+    name: 'Activated',
+    prop: 'isAccountActivated'
   },
   {
     name: 'User Type',

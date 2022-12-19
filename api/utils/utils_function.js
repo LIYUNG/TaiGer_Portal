@@ -55,7 +55,8 @@ const TasksReminderEmails = async () => {
   }
   for (let j = 0; j < agents.length; j += 1) {
     const agent_students = await Student.find({
-      _id: { $in: agents[j].students },
+      // _id: { $in: agents[j].students },
+      agents: agents[j]._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
       .populate('agents editors', 'firstname lastname email')
@@ -80,7 +81,8 @@ const TasksReminderEmails = async () => {
   }
   for (let j = 0; j < editors.length; j += 1) {
     const editor_students = await Student.find({
-      _id: { $in: editors[j].students },
+      // _id: { $in: editors[j].students },
+      editors: editors[j]._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
       .populate('agents editors', 'firstname lastname email')

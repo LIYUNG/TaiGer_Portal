@@ -29,11 +29,6 @@ class BaseDocuments extends React.Component {
     category: '',
     feedback: '',
     expand: false,
-    accordionKeys:
-      this.props.user.students &&
-      (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-        ? new Array(this.props.user.students.length).fill().map((x, i) => i)
-        : [0], // to expand all]
     res_status: 0,
     res_modal_status: ''
   };

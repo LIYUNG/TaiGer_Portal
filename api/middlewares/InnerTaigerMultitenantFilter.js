@@ -8,6 +8,11 @@ const InnerTaigerMultitenantFilter = (req, res, next) => {
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
     if (
+      // TODO: if students<< only active student!
+      // Another way to check:
+      // student  = await Student.findById(studentId).select("agents editors")
+      // check student.agents or editors include user._id?
+      //
       user.students.findIndex(
         (student) => student._id.toString() === studentId
       ) === -1

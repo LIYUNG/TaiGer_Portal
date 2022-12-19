@@ -170,7 +170,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
-      _id: { $in: user.students },
+      agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
       .populate(
@@ -194,7 +194,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Editor) {
     const students = await Student.find({
-      _id: { $in: user.students },
+      editors: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
       .populate(

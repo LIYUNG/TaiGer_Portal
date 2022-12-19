@@ -2,7 +2,10 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getNumberOfDays } from '../../../Utils/contants';
-import { application_deadline_calculator } from '../../../Utils/checking-functions';
+import {
+  shownButtonMyOwnStudent,
+  application_deadline_calculator
+} from '../../../Utils/checking-functions';
 
 class ApplicationProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
@@ -186,14 +189,10 @@ class ApplicationProgress extends React.Component {
         <tr>
           <td>
             {/* If my own student */}
-            {(this.props.user.role === 'Admin' ||
-              ((this.props.user.role === 'Agent' ||
-                this.props.user.role === 'Editor') &&
-                this.props.user.students &&
-                this.props.user.students.findIndex(
-                  (student) =>
-                    student._id.toString() === this.props.student._id.toString()
-                ) !== -1)) && (
+            {shownButtonMyOwnStudent(
+              this.props.user,
+              this.props.student._id.toString()
+            ) && (
               <DropdownButton
                 size="sm"
                 // title="Option"

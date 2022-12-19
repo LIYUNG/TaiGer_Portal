@@ -41,8 +41,10 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
   const agent = await Agent.findById(agent_id).select(
     'students firstname lastname'
   );
+  // TODO: query by agents field: student.agents include agent_id
   const students = await Student.find({
-    _id: { $in: agent.students },
+    // _id: { $in: agent.students },
+    agents: agent_id,
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
     .populate('agents editors', 'firstname lastname email')
@@ -78,8 +80,10 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
   const editor = await Editor.findById(editor_id).select(
     'students firstname lastname'
   );
+  // TODO: query by agents field: student.editors include editor_id
   const students = await Student.find({
-    _id: { $in: editor.students },
+    // _id: { $in: editor.students },
+    editors: editor_id,
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
     .populate('agents editors', 'firstname lastname email')

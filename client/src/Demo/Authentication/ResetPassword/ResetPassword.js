@@ -126,7 +126,7 @@ export default function ResetPassword(props) {
                   Reset
                 </button>
                 <p className="mb-0 text-muted">
-                  Allready have an account?{' '}
+                  Already have an account?{' '}
                   <NavLink to="/login" className="mb-0 text-muted">
                     Login
                   </NavLink>

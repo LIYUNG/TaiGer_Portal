@@ -30,13 +30,6 @@ class DocCreatePage extends React.Component {
     isEdit: false,
     expand: true,
     editorState: '',
-    accordionKeys:
-      Object.keys(window.checklist) &&
-      (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-        ? new Array(Object.keys(window.checklist).length)
-            .fill()
-            .map((x, i) => i)
-        : [0], // to expand all]
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -69,39 +62,6 @@ class DocCreatePage extends React.Component {
       }
     );
   }
-
-  singleExpandtHandler = (idx) => {
-    let accordionKeys = [...this.state.accordionKeys];
-    accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
-    this.setState((state) => ({
-      ...state,
-      accordionKeys: accordionKeys
-    }));
-  };
-
-  AllCollapsetHandler = () => {
-    const checklist = Object.keys(window.checklist);
-    this.setState((state) => ({
-      ...state,
-      expand: false,
-      accordionKeys:
-        checklist &&
-        (this.props.user.role === 'Editor' || this.props.user.role === 'Agent')
-          ? new Array(checklist.length).fill().map((x, i) => -1)
-          : [-1] // to expand all]
-    }));
-  };
-
-  AllExpandtHandler = () => {
-    const checklist = Object.keys(window.checklist);
-    this.setState((state) => ({
-      ...state,
-      expand: true,
-      accordionKeys:
-        checklist && new Array(checklist.length).fill().map((x, i) => i)
-      // to expand all]
-    }));
-  };
 
   handleChange_doc_title = (e) => {
     const { value } = e.target;
@@ -300,23 +260,6 @@ class DocCreatePage extends React.Component {
                   <Row>
                     <Col className="my-0 mx-0 text-light">
                       All Documentations
-                    </Col>
-                    <Col md={{ span: 2, offset: 0 }}>
-                      {this.state.expand ? (
-                        <Button
-                          size="sm"
-                          onClick={() => this.AllCollapsetHandler()}
-                        >
-                          Collaspse
-                        </Button>
-                      ) : (
-                        <Button
-                          size={'sm'}
-                          onClick={() => this.AllExpandtHandler()}
-                        >
-                          Expand
-                        </Button>
-                      )}
                     </Col>
                   </Row>
                 </Card.Title>

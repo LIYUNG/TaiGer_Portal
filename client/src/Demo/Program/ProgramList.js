@@ -684,6 +684,13 @@ function ProgramList(props) {
     res_status: 0
   });
 
+  if (
+    props.user.role !== 'Admin' &&
+    props.user.role !== 'Agent'
+  ) {
+    return <Redirect to="/dashboard/default" />;
+  }
+
   useEffect(() => {
     getPrograms().then(
       (resp) => {
@@ -713,14 +720,6 @@ function ProgramList(props) {
         }))
     );
   }, []);
-
-  if (
-    props.user.role !== 'Admin' &&
-    props.user.role !== 'Editor' &&
-    props.user.role !== 'Agent'
-  ) {
-    return <Redirect to="/dashboard/default" />;
-  }
 
   const columns = React.useMemo(
     () => [

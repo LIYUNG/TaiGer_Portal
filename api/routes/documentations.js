@@ -72,13 +72,13 @@ router
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Agent),
     updateInternalDocumentation
   )
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Agent),
     deleteInternalDocumentation
   );
 

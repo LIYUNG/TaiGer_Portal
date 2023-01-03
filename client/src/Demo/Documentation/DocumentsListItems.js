@@ -111,15 +111,18 @@ class DocumentsListItems extends React.Component {
       <>
         <Row>
           <Col sm={10}>
-            <HiX
-              size={24}
-              color="red"
-              title="Delete"
-              style={{ cursor: 'pointer' }}
-              onClick={() =>
-                this.props.openDeleteDocModalWindow(this.props.document)
-              }
-            />
+            {(this.props.role === 'Agent' || this.props.role === 'Admin') && (
+              <HiX
+                size={24}
+                color="red"
+                title="Delete"
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  this.props.openDeleteDocModalWindow(this.props.document)
+                }
+              />
+            )}
+
             {this.props.idx}
             {'. '}
             <Link to={`${this.props.path}/${this.props.document._id}`}>

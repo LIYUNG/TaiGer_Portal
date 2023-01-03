@@ -1043,31 +1043,46 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   analysed_transcript_excel_split = analysed_transcript_excel_split.split('/');
   const fileKey = analysed_transcript_excel_split[1];
   let directory = analysed_transcript_excel_split[0];
-  logger.info('Trying to download transcript excel file', fileKey);
+  logger.info(`Trying to download transcript excel file ${fileKey}`);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');
   const options = {
     Key: fileKey,
     Bucket: directory
   };
+  s3.getObject(options, function (err, data) {
+    // Handle any error and exit
+    if (err) return err;
 
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(fileKey);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error('downloadXLSX: ', error);
-      }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
-    });
+    // No error happened
+    // Convert Body from a Buffer to a String
+    let fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    // console.log(fileKey);
+    console.log(fileKey_converted);
+    res.attachment(fileKey_converted);
+    return res.end(data.Body);
+
+    // const fileStream = data.createReadStream();
+    // fileStream.pipe(res);
+  });
+
+  // s3.headObject(options)
+  //   .promise()
+  //   .then(() => {
+  //     // This will not throw error anymore
+  //     res.attachment(fileKey);
+  //     // const fileStream = s3.getObject(options).createReadStream();
+  //     // fileStream.pipe(res);
+  //   })
+  //   .catch((error) => {
+  //     if (error.statusCode === 404) {
+  //       // Catching NoSuchKey
+  //       logger.error('downloadXLSX: ', error);
+  //     }
+  //     return res
+  //       .status(error.statusCode)
+  //       .json({ success: false, message: error.message });
+  //   });
 });
 
 const removeNotification = asyncHandler(async (req, res, next) => {

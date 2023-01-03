@@ -224,7 +224,10 @@ export default function MyCourses(props) {
     }));
     analyzedFileDownload_test(statedata.student._id.toString()).then((resp) => {
       // TODO: timeout? success?
-      const actualFileName = resp.headers['content-disposition'].split('"')[1];
+
+      const actualFileName = decodeURIComponent(
+        resp.headers['content-disposition'].split('"')[1]
+      ); //  檔名中文亂碼 solved
       const { data: blob } = resp;
       if (blob.size === 0) return;
 

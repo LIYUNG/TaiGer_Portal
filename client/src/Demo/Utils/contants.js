@@ -51,6 +51,7 @@ export const SYMBOL_EXPLANATION = (
 );
 
 export const study_group = [
+  { key: 'boe', value: 'Biomedical Engineering' },
   { key: 'ee', value: 'Eletrical/Electronics Engineering' },
   { key: 'cs', value: 'Computer Science' },
   { key: 'mgm', value: 'Business/Management' },

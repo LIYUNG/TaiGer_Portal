@@ -3,13 +3,14 @@ import sys
 import json
 import os
 import pandas as pd
-from database.ElectricalEngineering.EE_sorter import *
-from database.ComputerScience.CS_sorter import *
-from database.MechanicalEngineering.ME_sorter import *
-from database.MaterialsScience.MTL_sorter import *
-from database.Management.MGM_sorter import *
-from database.DataScience_BusinessIntelligence.DSBI_sorter import *
-from database.TransportationEngineering.TE_sorter import *
+from database.BiomedicalEngineering.BOE_sorter import BOE_sorter
+from database.ElectricalEngineering.EE_sorter import EE_sorter
+from database.ComputerScience.CS_sorter import CS_sorter
+from database.MechanicalEngineering.ME_sorter import ME_sorter
+from database.MaterialsScience.MTL_sorter import MTL_sorter
+from database.Management.MGM_sorter import MGM_sorter
+from database.DataScience_BusinessIntelligence.DSBI_sorter import DSBI_sorter
+from database.TransportationEngineering.TE_sorter import TE_sorter
 
 file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)
@@ -27,6 +28,9 @@ if __name__ == "__main__":
     program_selection_path = ''
     if sys.argv[2] == 'cs':
         program_selection_path = file_path + '/database/ComputerScience/CS_Programs.xlsx'
+    elif sys.argv[2] == 'boe':
+        program_selection_path = file_path + \
+            '/database/BiomedicalEngineering/BOE_Programs.xlsx'
     elif sys.argv[2] == 'ee':
         program_selection_path = file_path + \
             '/database/ElectricalEngineering/EE_Programs.xlsx'
@@ -64,6 +68,8 @@ if __name__ == "__main__":
     # EE_sorter(program_idx, obj_arr, 'EE', studentId)
     if sys.argv[2] == 'cs':
         CS_sorter(program_idx, obj_arr, 'CS', studentId, student_name)
+    elif sys.argv[2] == 'boe':
+        BOE_sorter(program_idx, obj_arr, 'BOE', studentId, student_name)
     elif sys.argv[2] == 'ee':
         EE_sorter(program_idx, obj_arr, 'EE', studentId, student_name)
     elif sys.argv[2] == 'me':

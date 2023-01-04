@@ -5,6 +5,8 @@ const { app } = require('./app');
 const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {
   PORT,
+  isProd,
+  isDev,
   HTTPS_KEY,
   HTTPS_CERT,
   HTTPS_CA,
@@ -37,13 +39,7 @@ const launch = async () => {
     logger.error('Failed to connect to database: ', err);
     process.exit(1);
   }
-  // app.listen(PORT, () => {
-  //    console.log(`Server running on port ${PORT}`);
-  //  });
-  // TODO: launch both http and https server?
-  logger.info(`HTTPS_CA: ${HTTPS_CA}`);
-  logger.info(`HTTPS_CERT: ${HTTPS_CERT}`);
-  logger.info(`HTTPS_KEY: ${HTTPS_KEY}`);
+
   // setInterval(foo, 1000 * 100);
 
   //   *    *    *    *    *    *
@@ -84,24 +80,38 @@ const launch = async () => {
   //   WEEKLY_TASKS_REMINDER_SCHEDULE,
   //   TasksReminderEmails
   // );
-  https
-    .createServer(
-      {
-        key: fs.readFileSync(HTTPS_KEY, 'utf8'),
-        cert: fs.readFileSync(HTTPS_CERT, 'utf8'),
-        ca: fs.readFileSync(HTTPS_CA, 'utf8')
-      },
-      app
-    )
-    .listen(HTTPS_PORT, function () {
-      logger.info(
-        'Example app listening on port ' +
-          HTTPS_PORT +
-          ' ! Go to https://localhost:' +
-          HTTPS_PORT +
-          '/'
-      );
+  console.log(`isProd : ${isProd()}`);
+  console.log(`isDev : ${isDev()}`);
+  if (isProd()) {
+    // launch http server
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
+  } else {
+    // local development
+    // launch https server
+    logger.info(`HTTPS_CA: ${HTTPS_CA}`);
+    logger.info(`HTTPS_CERT: ${HTTPS_CERT}`);
+    logger.info(`HTTPS_KEY: ${HTTPS_KEY}`);
+    https
+      .createServer(
+        {
+          key: fs.readFileSync(HTTPS_KEY, 'utf8'),
+          cert: fs.readFileSync(HTTPS_CERT, 'utf8'),
+          ca: fs.readFileSync(HTTPS_CA, 'utf8')
+        },
+        app
+      )
+      .listen(HTTPS_PORT, function () {
+        logger.info(
+          'Example app listening on port ' +
+            HTTPS_PORT +
+            ' ! Go to https://localhost:' +
+            HTTPS_PORT +
+            '/'
+        );
+      });
+  }
 };
 
 launch();

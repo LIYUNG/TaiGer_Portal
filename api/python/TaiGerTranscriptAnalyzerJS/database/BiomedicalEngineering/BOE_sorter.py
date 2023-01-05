@@ -10,7 +10,8 @@ import os
 env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
 
-def BOE_sorter(program_idx, file_path, abbrev, studentId, student_name):
+
+def BOE_sorter(program_idx, file_path, abbrev, Generated_Version):
     basic_classification_en = {
         '線性代數': [BOE_MATH_LIN_ALGE_KEY_WORDS_EN, BOE_MATH_LIN_ALGE_ANTI_KEY_WORDS_EN],
         '數值分析': [BOE_MATH_NUM_METHOD_KEY_WORDS_EN, BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS_EN],
@@ -31,7 +32,9 @@ def BOE_sorter(program_idx, file_path, abbrev, studentId, student_name):
         '量子物理': [BOE_QUANTUM_PHYSICS_KEY_WORDS_EN, BOE_QUANTUM_PHYSICS_ANTI_KEY_WORDS_EN],
         '天文物理': [BOE_ASTRO_PHYSICS_KEY_WORDS_EN, BOE_ASTRO_PHYSICS_ANTI_KEY_WORDS_EN],
         '生物化學': [BOE_BIO_CHEMISTRY_KEY_WORDS_EN, BOE_BIO_CHEMISTRY_ANTI_KEY_WORDS_EN],
+        '物理化學': [BOE_PHYSIK_CHEMISTRY_KEY_WORDS_EN, BOE_PHYSIK_CHEMISTRY_ANTI_KEY_WORDS_EN],
         '電磁學': [BOE_ELECTRO_MAGNET_KEY_WORDS_EN, BOE_ELECTRO_MAGNET_ANTI_KEY_WORDS_EN],
+        '熱力學': [BOE_THERMALDYNAMICS_KEY_WORDS_EN, BOE_THERMALDYNAMICS_ANTI_KEY_WORDS_EN],
         '其他': [USELESS_COURSES_KEY_WORDS_EN, USELESS_COURSES_ANTI_KEY_WORDS_EN], }
 
     basic_classification_zh = {
@@ -54,8 +57,10 @@ def BOE_sorter(program_idx, file_path, abbrev, studentId, student_name):
         '量子物理': [BOE_QUANTUM_PHYSICS_KEY_WORDS, BOE_QUANTUM_PHYSICS_ANTI_KEY_WORDS],
         '天文物理': [BOE_ASTRO_PHYSICS_KEY_WORDS, BOE_ASTRO_PHYSICS_ANTI_KEY_WORDS],
         '生物化學': [BOE_BIO_CHEMISTRY_KEY_WORDS, BOE_BIO_CHEMISTRY_ANTI_KEY_WORDS],
+        '物理化學': [BOE_PHYSIK_CHEMISTRY_KEY_WORDS, BOE_PHYSIK_CHEMISTRY_ANTI_KEY_WORDS],
         '電磁學': [BOE_ELECTRO_MAGNET_KEY_WORDS, BOE_ELECTRO_MAGNET_ANTI_KEY_WORDS],
+        '熱力學': [BOE_THERMALDYNAMICS_KEY_WORDS, BOE_THERMALDYNAMICS_ANTI_KEY_WORDS],
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, file_path, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, Generated_Version)

@@ -65,7 +65,9 @@ def RWTH_BIO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_ca
         PROG_SPEC_ENGINEERING_PHYSICS_PARAM,  # 量子物理
         PROG_SPEC_OTHERS,  # 天文物理
         PROG_SPEC_CHEMISTRY_PARAM,  # 生物化學
+        PROG_SPEC_CHEMISTRY_PARAM,  # 物理化學
         PROG_SPEC_ENGINEERING_PHYSICS_PARAM,  # 電磁
+        PROG_SPEC_ENGINEERING_PHYSICS_PARAM,  # 熱力學
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -136,17 +138,19 @@ def TUM_BIO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_cat
         PROG_SPEC_INTRO_EXP_PHYSIK_PARAM,  # 普通物理
         PROG_SPEC_OTHERS,  # 材料科學
         PROG_SPEC_OTHERS,  # 通訊與信號處理
-        PROG_SPEC_OTHERS,  # 機械
+        PROG_SPEC_THEORETISCH_PHYSIK_PARAM,  # 機械
         PROG_SPEC_CHEMIE_BIOLOGY_PARAM,  # 生物學
         PROG_SPEC_OTHERS,  # 生醫
-        PROG_SPEC_OTHERS,  # 機率與統計
+        PROG_SPEC_THEORETISCH_PHYSIK_PARAM,  # 機率與統計
         PROG_SPEC_OTHERS,  # 進階化學
         PROG_SPEC_CHEMIE_BIOLOGY_PARAM,  # 無機化學
         PROG_SPEC_INTRO_EXP_PHYSIK_PARAM,  # 進階物理
         PROG_SPEC_THEORETISCH_PHYSIK_PARAM,  # 量子物理
         PROG_SPEC_ADV_EXP_PHYSIK_PARAM,  # 天文物理
         PROG_SPEC_CHEMIE_BIOLOGY_PARAM,  # 生物化學
+        PROG_SPEC_CHEMIE_BIOLOGY_PARAM,  # 物理化學
         PROG_SPEC_THEORETISCH_PHYSIK_PARAM,  # 電磁
+        PROG_SPEC_INTRO_EXP_PHYSIK_PARAM,  # 熱力學
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -229,11 +233,13 @@ def TUM_NEURO_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_categ
         PROG_SPEC_STATISTIK_PARAM,  # 機率與統計
         PROG_SPEC_OTHERS,  # 進階化學
         PROG_SPEC_INORG_CHEMISTRY_PARAM,  # 無機化學
-        PROG_SPEC_PHY_CHEMISTRY_PARAM,  # 進階物理
+        PROG_SPEC_PHYSIK_PARAM,  # 進階物理
         PROG_SPEC_OTHERS,  # 量子物理
         PROG_SPEC_OTHERS,  # 天文物理
         PROG_SPEC_BIO_CHEMISTRY_PARAM,  # 生物化學
+        PROG_SPEC_PHY_CHEMISTRY_PARAM,  # 物理化學
         PROG_SPEC_OTHERS,  # 電磁
+        PROG_SPEC_PHY_CHEMISTRY_PARAM,  # 熱力學
         PROG_SPEC_OTHERS  # 其他
     ]
 

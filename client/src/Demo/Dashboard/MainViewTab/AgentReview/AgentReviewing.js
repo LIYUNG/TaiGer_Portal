@@ -340,7 +340,7 @@ class AgentReviewing extends React.Component {
                     <BsFillExclamationCircleFill
                       size={23}
                       color="red"
-                      title="Not assigned yet"
+                      title="Not created yet"
                       className="mx-2"
                     />
                   </p>

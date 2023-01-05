@@ -61,7 +61,7 @@ BOE_INORGANIC_CHEMISTRY_KEY_WORDS = ['無機化學', '無機化學實驗']
 BOE_INORGANIC_CHEMISTRY_ANTI_KEY_WORDS = [
     'asdgladfj;l', '管理', '文明', '服務', '微積分']
 
-BOE_ADVANCED_PHYSICS_KEY_WORDS = ['熱力', '固態物理', '近代物理']
+BOE_ADVANCED_PHYSICS_KEY_WORDS = ['固態物理', '近代物理']
 BOE_ADVANCED_PHYSICS_ANTI_KEY_WORDS = [
     'asdgladfj;l']
 
@@ -76,8 +76,14 @@ BOE_ASTRO_PHYSICS_ANTI_KEY_WORDS = [
 BOE_BIO_CHEMISTRY_KEY_WORDS = ['生物化學']
 BOE_BIO_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l']
 
+BOE_PHYSIK_CHEMISTRY_KEY_WORDS = ['物理化學']
+BOE_PHYSIK_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l']
+
 BOE_ELECTRO_MAGNET_KEY_WORDS = ['電磁']
 BOE_ELECTRO_MAGNET_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
+
+BOE_THERMALDYNAMICS_KEY_WORDS = ['熱力']
+BOE_THERMALDYNAMICS_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
 
 USELESS_COURSES_KEY_WORDS = ['asdgladfj;l']
 USELESS_COURSES_ANTI_KEY_WORDS = ['asdgladfj;l']
@@ -140,7 +146,7 @@ BOE_INORGANIC_CHEMISTRY_KEY_WORDS_EN = ['inorganic chemis']
 BOE_INORGANIC_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 BOE_ADVANCED_PHYSICS_KEY_WORDS_EN = [
-    'thermodynam', 'solid state', 'modern phy']
+    'solid state', 'modern phy']
 BOE_ADVANCED_PHYSICS_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l']
 
@@ -157,8 +163,15 @@ BOE_ASTRO_PHYSICS_ANTI_KEY_WORDS_EN = [
 BOE_BIO_CHEMISTRY_KEY_WORDS_EN = ['biochemistr']
 BOE_BIO_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
+BOE_PHYSIK_CHEMISTRY_KEY_WORDS_EN = ['physical chemis']
+BOE_PHYSIK_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
 BOE_ELECTRO_MAGNET_KEY_WORDS_EN = ['electromagne', 'magne']
 BOE_ELECTRO_MAGNET_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階']
+
+BOE_THERMALDYNAMICS_KEY_WORDS_EN = ['thermodyna']
+BOE_THERMALDYNAMICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '進階']
+
 
 USELESS_COURSES_KEY_WORDS_EN = ['asdgladfj;l']
 USELESS_COURSES_ANTI_KEY_WORDS_EN = ['asdgladfj;l']

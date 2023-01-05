@@ -1,12 +1,10 @@
 const path = require('path');
-const fs = require('fs');
 const { spawn } = require('child_process');
 const aws = require('aws-sdk');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Student, User, Agent } = require('../models/User');
 const { Template } = require('../models/Template');
 const Course = require('../models/Course');
-const { UPLOAD_PATH } = require('../config');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const { Documentthread } = require('../models/Documentthread');
 const { ErrorResponse } = require('../common/errors');
@@ -171,7 +169,6 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   const template = await Template.findOne({ category_name });
   // AWS S3
   // download the file via aws s3 here
-  // var fileKey = path.join(UPLOAD_PATH, document.path);
   let document_split = template.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
   const fileKey = document_split[1];
@@ -316,6 +313,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         // if not notified yet:
         if (!temp_student) {
           agent.agent_notification.isRead_new_base_docs_uploaded.push({
+            // eslint-disable-next-line no-underscore-dangle
             student_id: student._id.toString(),
             student_firstname: student.firstname,
             student_lastname: student.lastname
@@ -525,7 +523,6 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, 'File not uploaded yet');
   }
 
-  // var fileKey = path.join(UPLOAD_PATH, document.path);
   let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
   document_split = document_split.split('/');
   const fileKey = document_split[1];
@@ -583,7 +580,6 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, 'File not uploaded yet');
   }
 
-  // var fileKey = path.join(UPLOAD_PATH, document.path);
   let document_split = document.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
   const fileKey = document_split[1];
@@ -1022,6 +1018,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 
   let course;
   if (user.role === Role.Student || user.role === 'Guest') {
+    // eslint-disable-next-line no-underscore-dangle
     course = await Course.findOne({ student_id: user._id.toString() });
   } else {
     course = await Course.findOne({ student_id: studentId });
@@ -1050,15 +1047,13 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     Key: fileKey,
     Bucket: directory
   };
-  s3.getObject(options, function (err, data) {
+  s3.getObject(options, (err, data) => {
     // Handle any error and exit
     if (err) return err;
 
     // No error happened
     // Convert Body from a Buffer to a String
-    let fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
-    // console.log(fileKey);
-    console.log(fileKey_converted);
+    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
     res.attachment(fileKey_converted);
     return res.end(data.Body);
 
@@ -1088,6 +1083,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 const removeNotification = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { notification_key } = req.body;
+  // eslint-disable-next-line no-underscore-dangle
   const me = await User.findById(user._id.toString())
     .populate('applications.programId agents editors')
     .populate(
@@ -1103,6 +1099,7 @@ const removeNotification = asyncHandler(async (req, res, next) => {
 const removeAgentNotification = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { notification_key, student_id } = req.body;
+  // eslint-disable-next-line no-underscore-dangle
   const me = await Agent.findById(user._id.toString());
   const idx = me.agent_notification[`${notification_key}`].findIndex(
     (student_obj) => student_obj.student_id === student_id
@@ -1150,6 +1147,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   // const { _id } = student;
   let student_id;
   if (user.role === Role.Student || user.role === Role.Guest) {
+    // eslint-disable-next-line no-underscore-dangle
     student_id = user._id.toString();
   } else {
     student_id = studentId;
@@ -1359,10 +1357,8 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         ects_conversion_doc.updatedAt = new Date();
         ects_conversion_doc.path = '';
         updatedStudent.profile.push(ects_conversion_doc);
-      } else {
-        if (ects_conversion_doc.status === DocumentStatus.NotNeeded) {
-          ects_conversion_doc.status = DocumentStatus.Missing;
-        }
+      } else if (ects_conversion_doc.status === DocumentStatus.NotNeeded) {
+        ects_conversion_doc.status = DocumentStatus.Missing;
       }
       await updatedStudent.save();
     }
@@ -1433,27 +1429,21 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
       german_certificate_doc.updatedAt = new Date();
       german_certificate_doc.path = '';
       updatedStudent.profile.push(german_certificate_doc);
-    } else {
-      if (german_certificate_doc.status === DocumentStatus.Missing) {
-        german_certificate_doc.status = DocumentStatus.NotNeeded;
-      }
+    } else if (german_certificate_doc.status === DocumentStatus.Missing) {
+      german_certificate_doc.status = DocumentStatus.NotNeeded;
     }
-  } else {
-    if (!german_certificate_doc) {
-      // Set not needed
-      german_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.German_Certificate
-      });
-      german_certificate_doc.status = DocumentStatus.Missing;
-      german_certificate_doc.required = true;
-      german_certificate_doc.updatedAt = new Date();
-      german_certificate_doc.path = '';
-      updatedStudent.profile.push(german_certificate_doc);
-    } else {
-      if (german_certificate_doc.status === DocumentStatus.NotNeeded) {
-        german_certificate_doc.status = DocumentStatus.Missing;
-      }
-    }
+  } else if (!german_certificate_doc) {
+    // Set not needed
+    german_certificate_doc = updatedStudent.profile.create({
+      name: profile_name_list.German_Certificate
+    });
+    german_certificate_doc.status = DocumentStatus.Missing;
+    german_certificate_doc.required = true;
+    german_certificate_doc.updatedAt = new Date();
+    german_certificate_doc.path = '';
+    updatedStudent.profile.push(german_certificate_doc);
+  } else if (german_certificate_doc.status === DocumentStatus.NotNeeded) {
+    german_certificate_doc.status = DocumentStatus.Missing;
   }
 
   if (updatedStudent.academic_background.language.english_isPassed === '--') {
@@ -1528,6 +1518,7 @@ const updateApplicationPreferenceSkill = asyncHandler(
     // const { _id } = student;
     let student_id;
     if (user.role === Role.Student || user.role === Role.Guest) {
+      // eslint-disable-next-line no-underscore-dangle
       student_id = user._id;
     } else {
       student_id = studentId;

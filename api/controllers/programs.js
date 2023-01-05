@@ -6,7 +6,6 @@ const logger = require('../services/logger');
 const { myCache } = require('../cache/node-cache');
 
 const getPrograms = asyncHandler(async (req, res) => {
-  console.log(req.originalUrl);
   const value = myCache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
@@ -42,7 +41,6 @@ const getProgram = asyncHandler(async (req, res) => {
     }
   }
 
-  console.log(req.originalUrl);
   const value = myCache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
@@ -66,7 +64,7 @@ const createProgram = asyncHandler(async (req, res) => {
   const new_program = req.body;
 
   new_program.updatedAt = new Date();
-  new_program.whoupdated = user.firstname + ' ' + user.lastname;
+  new_program.whoupdated = `${user.firstname} ${user.lastname}`;
   const program = await Program.create(new_program);
   return res.status(201).send({ success: true, data: program });
 });
@@ -76,7 +74,7 @@ const updateProgram = asyncHandler(async (req, res) => {
   const fields = req.body;
 
   fields.updatedAt = new Date();
-  fields.whoupdated = user.firstname + ' ' + user.lastname;
+  fields.whoupdated = `${user.firstname} ${user.lastname}`;
   const program = await Program.findByIdAndUpdate(
     req.params.programId,
     fields,

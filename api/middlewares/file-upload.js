@@ -1,11 +1,11 @@
-const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
+const uuid = require('uuid');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
-const { Role, Student, User } = require('../models/User');
-const { asyncHandler } = require('../middlewares/error-handler');
-const uuid = require('uuid');
+const { Student } = require('../models/User');
 const { ErrorResponse } = require('../common/errors');
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -29,37 +29,28 @@ const ALLOWED_MIME_PDF_TYPES = ['application/pdf'];
 
 const ALLOWED_MIME_IMAGE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 
-var aws = require('aws-sdk');
-var multerS3 = require('multer-s3');
-
-var s3 = new aws.S3({
+const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
   secretAccessKey: AWS_S3_ACCESS_KEY
 });
 
-const some_str = () => {
-  return 'GeneralDocsEdit';
-};
-
 // Template file upload
 const template_storage_s3 = multerS3({
   s3,
-  bucket: function (req, file, cb) {
-    var { category_name } = req.params;
-
-    var directory = path.join(AWS_S3_BUCKET_NAME, 'taiger_template');
+  bucket: (req, file, cb) => {
+    let directory = path.join(AWS_S3_BUCKET_NAME, 'taiger_template');
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },
-  metadata: function (req, file, cb) {
-    var { category_name } = req.params;
-    var directory = 'taiger_template';
+  metadata: (req, file, cb) => {
+    const directory = 'taiger_template';
     cb(null, { fieldName: file.fieldname, path: directory });
   },
-  key: function (req, file, cb) {
-    var { category_name } = req.params;
-    var temp_name =
-      category_name + '_TaiGer_Template' + path.extname(file.originalname);
+  key: (req, file, cb) => {
+    const { category_name } = req.params;
+    const temp_name = `${category_name}_TaiGer_Template${path.extname(
+      file.originalname
+    )}`;
     cb(null, temp_name);
   }
 });
@@ -68,14 +59,16 @@ const upload_template_s3 = multer({
   storage: template_storage_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(
           415,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
-    const fileSize = parseInt(req.headers['content-length']);
+    }
+
+    const fileSize = parseInt(req.headers['content-length'], 10);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
@@ -91,8 +84,9 @@ const upload_template_s3 = multer({
 // VPD file upload
 const storage_vpd_s3 = multerS3({
   s3,
-  bucket: function (req, file, cb) {
-    var { studentId } = req.params;
+  bucket: (req, file, cb) => {
+    let { studentId } = req.params;
+    // eslint-disable-next-line no-underscore-dangle
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
@@ -101,8 +95,9 @@ const storage_vpd_s3 = multerS3({
     directory = directory.replace(/\\/g, '/');
     cb(null, directory);
   },
-  metadata: function (req, file, cb) {
-    var { studentId } = req.params;
+  metadata: (req, file, cb) => {
+    let { studentId } = req.params;
+    // eslint-disable-next-line no-underscore-dangle
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
@@ -111,22 +106,16 @@ const storage_vpd_s3 = multerS3({
     // var directory = studentId;
     cb(null, { fieldName: file.fieldname, path: directory });
   },
-  key: function (req, file, cb) {
-    var { studentId, program_id } = req.params;
+  key: (req, file, cb) => {
+    const { studentId, program_id } = req.params;
 
-    Student.findById(studentId).then(function (student) {
+    Student.findById(studentId).then((student) => {
       if (student) {
         Program.findById(program_id).then((program) => {
-          let program_name = program.school + ' ' + program.program_name;
-          var temp_name =
-            student.lastname +
-            '_' +
-            student.firstname +
-            '_' +
-            program_name +
-            '_' +
-            'VPD' +
-            path.extname(file.originalname);
+          const program_name = `${program.school} ${program.program_name}`;
+          let temp_name = `${student.lastname}_${
+            student.firstname
+          }_${program_name}_VPD${path.extname(file.originalname)}`;
           temp_name = temp_name.replace(/ /g, '_');
           cb(null, temp_name);
         });
@@ -138,48 +127,46 @@ const storage_vpd_s3 = multerS3({
 // Profile file upload
 const storage_profile_s3 = multerS3({
   s3,
-  bucket: function (req, file, cb) {
-    var { studentId } = req.params;
+  bucket: (req, file, cb) => {
+    let { studentId } = req.params;
+    // eslint-disable-next-line no-underscore-dangle
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
-    var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
+    let directory = path.join(AWS_S3_BUCKET_NAME, studentId);
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },
-  metadata: function (req, file, cb) {
-    var { studentId } = req.params;
+  metadata: (req, file, cb) => {
+    let { studentId } = req.params;
+    // eslint-disable-next-line no-underscore-dangle
     if (!studentId) studentId = String(req.user._id);
 
     // TODO: check studentId exist
-    var directory = studentId;
+    const directory = studentId;
     cb(null, { fieldName: file.fieldname, path: directory });
   },
-  key: function (req, file, cb) {
+  key: (req, file, cb) => {
     // cb(null, file.originalname + "-" + Date.now().toString());
     // cb(null, file.originalname);
-    var { studentId } = req.params;
+    const { studentId } = req.params;
 
     Student.findOne({ _id: studentId })
       .populate('applications.programId')
       .lean()
       .exec()
-      .then(function (student) {
+      .then((student) => {
         if (student) {
-          var temp_name =
-            student.lastname +
-            '_' +
-            student.firstname +
-            '_' +
-            req.params.category +
-            path.extname(file.originalname);
+          const temp_name = `${student.lastname}_${student.firstname}_${
+            req.params.category
+          }${path.extname(file.originalname)}`;
 
           return {
             fileName: temp_name
           };
         }
       })
-      .then(function (resp) {
+      .then((resp) => {
         cb(null, resp.fileName);
       });
   }
@@ -187,17 +174,17 @@ const storage_profile_s3 = multerS3({
 
 const doc_image_s3 = multerS3({
   s3,
-  bucket: function (req, file, cb) {
-    var directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
+  bucket: (req, file, cb) => {
+    let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },
-  metadata: function (req, file, cb) {
-    var directory = 'Documentations';
+  metadata: (req, file, cb) => {
+    const directory = 'Documentations';
     cb(null, { fieldName: file.fieldname, path: directory });
   },
-  key: function (req, file, cb) {
-    var id = uuid.v4();
+  key: (req, file, cb) => {
+    const id = uuid.v4();
     const fileName = id + path.extname(file.originalname);
     cb(null, fileName);
   }
@@ -205,15 +192,15 @@ const doc_image_s3 = multerS3({
 
 const doc_docs_s3 = multerS3({
   s3,
-  bucket: function (req, file, cb) {
-    var directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
+  bucket: (req, file, cb) => {
+    let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },
-  metadata: function (req, file, cb) {
+  metadata: (req, file, cb) => {
     cb(null, { fieldName: file.fieldname, path: '' });
   },
-  key: function (req, file, cb) {
+  key: (req, file, cb) => {
     // var id = uuid.v4();
     // const fileName = id + path.extname(file.originalname);
     const fileName = file.originalname;
@@ -230,7 +217,7 @@ const upload_doc_image_s3 = multer({
         new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
       );
     }
-    const fileSize = parseInt(req.headers['content-length']);
+    const fileSize = parseInt(req.headers['content-length'], 10);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
@@ -247,11 +234,13 @@ const upload_doc_docs_s3 = multer({
   storage: doc_docs_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
       );
-    const fileSize = parseInt(req.headers['content-length']);
+    }
+
+    const fileSize = parseInt(req.headers['content-length'], 10);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
@@ -271,7 +260,7 @@ const upload_vpd_s3 = multer({
     if (!ALLOWED_MIME_PDF_TYPES.includes(file.mimetype)) {
       return cb(new ErrorResponse(415, 'Only .pdf format is allowed'));
     }
-    const fileSize = parseInt(req.headers['content-length']);
+    const fileSize = parseInt(req.headers['content-length'], 10);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
@@ -294,14 +283,16 @@ const upload_profile_s3 = multer({
   storage: storage_profile_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
         new ErrorResponse(
           415,
           'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
-    const fileSize = parseInt(req.headers['content-length']);
+    }
+
+    const fileSize = parseInt(req.headers['content-length'], 10);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
@@ -317,14 +308,14 @@ const upload_profile_s3 = multer({
 // Message thread file upload (general)
 const storage_messagesthread_file_s3 = multerS3({
   s3,
-  bucket: function (req, file, cb) {
+  bucket: (req, file, cb) => {
     const { messagesThreadId, studentId } = req.params;
     // TODO: check studentId and messagesThreadId exist
     let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
     directory = directory.replace(/\\/g, '/');
     cb(null, directory);
   },
-  metadata: function (req, file, cb) {
+  metadata: (req, file, cb) => {
     const { messagesThreadId, studentId } = req.params;
 
     // TODO: check studentId and messagesThreadId exist
@@ -332,27 +323,29 @@ const storage_messagesthread_file_s3 = multerS3({
     directory = directory.replace(/\\/g, '/'); // g>> replace all!
     cb(null, { fieldName: file.fieldname, path: directory });
   },
-  key: function (req, file, cb) {
+  key: (req, file, cb) => {
     // cb(null, file.originalname + "-" + Date.now().toString());
     // cb(null, file.originalname);
-    var { messagesThreadId, studentId } = req.params;
+    const { messagesThreadId } = req.params;
     Documentthread.findById(messagesThreadId)
       .populate('student_id')
-      .then(function (thread) {
+      .then((thread) => {
         if (!thread) {
           throw new ErrorResponse(400, 'Invalid message thread id');
         }
         let program_name = '';
         if (thread.program_id) {
           Program.findById(thread.program_id).then((program) => {
-            program_name = program.school + '_' + program.program_name;
-            var r2 = /[^\d]/;
-            var version_number_max = 0;
+            program_name = `${program.school}_${program.program_name}`;
+            let version_number_max = 0;
 
             thread.messages.forEach((message) => {
-              message.file.forEach((file) => {
-                var fileversion = 0;
-                fileversion = parseInt(file.name.replace(/[^\d]/g, ''));
+              message.file.forEach((file_data) => {
+                let fileversion = 0;
+                fileversion = parseInt(
+                  file_data.name.replace(/[^\d]/g, ''),
+                  10
+                );
 
                 if (fileversion > version_number_max) {
                   version_number_max = fileversion; // get the max version number
@@ -360,31 +353,23 @@ const storage_messagesthread_file_s3 = multerS3({
               });
             });
 
-            var version_number = parseInt(version_number_max) + 1;
-            var same_file_name = true;
-            var temp_name =
-              thread.student_id.lastname +
-              '_' +
-              thread.student_id.firstname +
-              '_' +
-              program_name +
-              '_' +
-              thread.file_type +
-              '_v' +
-              version_number.toString() +
-              `${path.extname(file.originalname)}`;
+            const version_number = parseInt(version_number_max, 10) + 1;
+            let temp_name = `${thread.student_id.lastname}_${
+              thread.student_id.firstname
+            }_${program_name}_${
+              thread.file_type
+            }_v${version_number.toString()}${path.extname(file.originalname)}`;
             temp_name = temp_name.replace(/ /g, '_');
 
             cb(null, temp_name);
           });
         } else {
-          var r2 = /[^\d]/;
-          var version_number_max = 0;
+          let version_number_max = 0;
 
           thread.messages.forEach((message) => {
-            message.file.forEach((file) => {
-              var fileversion = 0;
-              fileversion = parseInt(file.name.replace(/[^\d]/g, ''));
+            message.file.forEach((file_data) => {
+              let fileversion = 0;
+              fileversion = parseInt(file_data.name.replace(/[^\d]/g, ''), 10);
 
               if (fileversion > version_number_max) {
                 version_number_max = fileversion; // get the max version number
@@ -392,17 +377,12 @@ const storage_messagesthread_file_s3 = multerS3({
             });
           });
 
-          var version_number = parseInt(version_number_max) + 1;
-          var same_file_name = true;
-          var temp_name =
-            thread.student_id.lastname +
-            '_' +
-            thread.student_id.firstname +
-            '_' +
-            thread.file_type +
-            '_v' +
-            version_number.toString() +
-            `${path.extname(file.originalname)}`;
+          const version_number = parseInt(version_number_max, 10) + 1;
+          let temp_name = `${thread.student_id.lastname}_${
+            thread.student_id.firstname
+          }_${thread.file_type}_v${version_number.toString()}${path.extname(
+            file.originalname
+          )}`;
           temp_name = temp_name.replace(/ /g, '_');
           cb(null, temp_name);
         }
@@ -413,7 +393,7 @@ const storage_messagesthread_file_s3 = multerS3({
 // Message thread image upload (general)
 const storage_messagesthread_image_s3 = multerS3({
   s3,
-  bucket: function (req, file, cb) {
+  bucket: (req, file, cb) => {
     const { messagesThreadId, studentId } = req.params;
     let directory = path.join(
       AWS_S3_BUCKET_NAME,
@@ -424,14 +404,14 @@ const storage_messagesthread_image_s3 = multerS3({
     directory = directory.replace(/\\/g, '/');
     cb(null, directory);
   },
-  metadata: function (req, file, cb) {
+  metadata: (req, file, cb) => {
     const { messagesThreadId, studentId } = req.params;
     let directory = path.join(studentId, messagesThreadId);
     directory = directory.replace(/\\/g, '/'); // g>> replace all!
     cb(null, { fieldName: file.fieldname, path: directory });
   },
-  key: function (req, file, cb) {
-    var id = uuid.v4();
+  key: (req, file, cb) => {
+    const id = uuid.v4();
     const fileName = id + path.extname(file.originalname);
     cb(null, fileName);
   }
@@ -449,7 +429,7 @@ const upload_messagesthread_file_s3 = multer({
         )
       );
     }
-    const fileSize = parseInt(req.headers['content-length']);
+    const fileSize = parseInt(req.headers['content-length'], 10);
     if (fileSize > MAX_DOC_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
@@ -471,7 +451,7 @@ const upload_messagesthread_image_s3 = multer({
         new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
       );
     }
-    const fileSize = parseInt(req.headers['content-length']);
+    const fileSize = parseInt(req.headers['content-length'], 10);
     if (fileSize > MAX_FILE_SIZE_MB) {
       return cb(
         new ErrorResponse(
@@ -485,10 +465,10 @@ const upload_messagesthread_image_s3 = multer({
 });
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: (req, file, cb) => {
     cb(null, 'upload/');
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     cb(null, file.originalname);
   }
 });

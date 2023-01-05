@@ -53,7 +53,6 @@ class AgentMainView extends React.Component {
   removeAgentBanner = (e, notification_key, student_id) => {
     e.preventDefault();
     const temp_user = { ...this.state.user };
-    console.log(temp_user);
     const idx = temp_user.agent_notification[`${notification_key}`].findIndex(
       (student_obj) => student_obj.student_id === student_id
     );

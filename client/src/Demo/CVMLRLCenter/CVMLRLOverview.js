@@ -89,10 +89,6 @@ class CVMLRLOverview extends React.Component {
               application_idx
             ].doc_modification_thread[thread_idx].doc_thread_id.updatedAt =
               data.updatedAt;
-            console.log(
-              temp_students[student_temp_idx].applications[application_idx]
-                .doc_modification_thread[thread_idx]
-            );
           } else {
             let general_doc_idx = temp_students[
               student_temp_idx

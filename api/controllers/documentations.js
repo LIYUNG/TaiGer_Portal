@@ -1,8 +1,8 @@
 const _ = require('lodash');
 const aws = require('aws-sdk');
-const { ErrorResponse } = require('../common/errors');
 const path = require('path');
-const { Role, Agent, Student, Editor } = require('../models/User');
+const { ErrorResponse } = require('../common/errors');
+const { Role } = require('../models/User');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const Documentation = require('../models/Documentation');
@@ -15,8 +15,6 @@ const {
   API_ORIGIN,
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
-  AWS_S3_PUBLIC_BUCKET,
-  AWS_S3_BUCKET_NAME,
   AWS_S3_PUBLIC_BUCKET_NAME
 } = require('../config');
 
@@ -262,7 +260,7 @@ const getDocFile = asyncHandler(async (req, res) => {
   if (value === undefined) {
     // cache miss
     console.log(`cache miss: ${req.originalUrl}`);
-    s3.getObject(options, function (err, data) {
+    s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (err) return err;
 

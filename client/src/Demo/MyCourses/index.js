@@ -148,7 +148,6 @@ export default function MyCourses(props) {
         }
       },
       (error) => {
-        console.log(error);
         setStatedata((state) => ({
           ...state,
           isLoaded: true,

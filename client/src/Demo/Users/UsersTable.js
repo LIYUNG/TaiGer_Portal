@@ -69,7 +69,6 @@ class UsersTable extends React.Component {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          console.log(data);
           this.setState((state) => ({
             ...state,
             isLoaded: true,

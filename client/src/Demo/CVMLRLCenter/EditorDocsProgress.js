@@ -206,10 +206,6 @@ class EditorDocsProgress extends React.Component {
             student_temp.applications[application_idx].doc_modification_thread[
               thread_idx
             ].doc_thread_id.updatedAt = data.updatedAt;
-            console.log(
-              student_temp.applications[application_idx]
-                .doc_modification_thread[thread_idx]
-            );
           } else {
             let general_doc_idx = student_temp.generaldocs_threads.findIndex(
               (docs) =>

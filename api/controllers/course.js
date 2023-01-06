@@ -24,7 +24,9 @@ const getCourse = asyncHandler(async (req, res) => {
         student_id: {
           _id: student._id,
           firstname: student.firstname,
-          lastname: student.lastname
+          lastname: student.lastname,
+          agents: student.agents,
+          editors: student.editors
         },
         table_data_string: '[{}]'
       }
@@ -32,7 +34,7 @@ const getCourse = asyncHandler(async (req, res) => {
   }
   const courses2 = await Course.findOne({
     student_id: studentId
-  }).populate('student_id', 'firstname lastname');
+  }).populate('student_id', 'firstname lastname agents editors');
   return res.send({ success: true, data: courses2 });
 });
 

@@ -8,14 +8,14 @@ import {
   AiOutlineWarning,
   AiOutlineDelete
 } from 'react-icons/ai';
-import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetUploaded extends React.Component {
   state = {
     student: this.props.student,
     link: this.props.link,
-    student_id: '',
+    student_id: this.props.student._id.toString(),
     category: '',
     docName: '',
     comments: '',
@@ -181,7 +181,7 @@ class ButtonSetUploaded extends React.Component {
         <td>
           <Col md>
             <a
-              href={`${BASE_URL}/api/students/${this.props.student_id.toString()}/files/${
+              href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
                 this.props.path
               }`}
               target="_blank"
@@ -202,10 +202,7 @@ class ButtonSetUploaded extends React.Component {
           <>
             <td>
               <Col md>
-                {shownButtonMyOwnStudent(
-                  this.props.user,
-                  this.props.student_id
-                ) && (
+                {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
                     variant={acceptStyle}
                     size="sm"
@@ -216,7 +213,7 @@ class ButtonSetUploaded extends React.Component {
                       this.onUpdateProfileDocStatus(
                         e,
                         this.props.k,
-                        this.props.student_id,
+                        this.state.student_id,
                         'accepted'
                       )
                     }
@@ -228,10 +225,7 @@ class ButtonSetUploaded extends React.Component {
             </td>
             <td>
               <Col md>
-                {shownButtonMyOwnStudent(
-                  this.props.user,
-                  this.props.student_id
-                ) && (
+                {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
                     variant={rejectStyle}
                     size="sm"
@@ -242,7 +236,7 @@ class ButtonSetUploaded extends React.Component {
                       this.onUpdateProfileDocStatus(
                         e,
                         this.props.k,
-                        this.props.student_id,
+                        this.state.student_id,
                         'rejected'
                       )
                     }
@@ -260,10 +254,7 @@ class ButtonSetUploaded extends React.Component {
         ) : (
           <td>
             <Col md>
-              {shownButtonMyOwnStudent(
-                this.props.user,
-                this.props.student_id
-              ) && (
+              {showButtonIfMyStudent(this.props.user, this.state.student) && (
                 <Button
                   variant={deleteStyle}
                   size="sm"
@@ -274,7 +265,7 @@ class ButtonSetUploaded extends React.Component {
                     this.onDeleteFileWarningPopUp(
                       e,
                       this.props.k,
-                      this.props.student_id,
+                      this.state.student_id,
                       this.props.docName
                     )
                   }

@@ -310,7 +310,7 @@ class BaseDocument_StudentView extends React.Component {
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
-          student_id={this.state.student._id}
+          student={this.state.student}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
         />
@@ -327,7 +327,7 @@ class BaseDocument_StudentView extends React.Component {
           date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
-          student_id={this.state.student._id}
+          student={this.state.student}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           deleteFileWarningModel={this.state.deleteFileWarningModel}
@@ -346,7 +346,7 @@ class BaseDocument_StudentView extends React.Component {
           time={object_time_init[k]}
           k={k}
           message={object_message[k]}
-          student_id={this.state.student._id}
+          student={this.state.student}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           deleteFileWarningModel={this.state.deleteFileWarningModel}
@@ -365,7 +365,7 @@ class BaseDocument_StudentView extends React.Component {
             date={object_date_init[k]}
             time={object_time_init[k]}
             k={k}
-            student_id={this.state.student._id}
+            student={this.state.student}
             onDeleteFilefromstudent={this.onDeleteFilefromstudent}
             onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
             deleteFileWarningModel={this.state.deleteFileWarningModel}
@@ -385,7 +385,7 @@ class BaseDocument_StudentView extends React.Component {
           time={object_time_init[k]}
           k={k}
           message={object_message[k]}
-          student_id={this.state.student._id}
+          student={this.state.student}
           onDeleteFilefromstudent={this.onDeleteFilefromstudent}
           onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           handleGeneralDocSubmit={this.handleGeneralDocSubmit}

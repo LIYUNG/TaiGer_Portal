@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 
-import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 
 class EditableFile_Thread extends Component {
@@ -67,10 +67,7 @@ class EditableFile_Thread extends Component {
       <>
         <Row>
           <Col md={1}>
-            {shownButtonMyOwnStudent(
-              this.props.user,
-              this.props.student._id.toString()
-            ) &&
+            {showButtonIfMyStudent(this.props.user, this.props.student) &&
               (this.props.user.role === 'Student' ||
               this.props.user.role === 'Guest' ? (
                 this.props.thread.isFinalVersion && (
@@ -104,10 +101,9 @@ class EditableFile_Thread extends Component {
           </Col>
           <Col md={1}>
             {this.props.thread.isFinalVersion ? (
-              this.props.user.role === 'Student' ||
-              this.props.user.role === 'Guest' ? (
-                <p className="text-warning">Closed</p>
-              ) : (
+              this.props.user.role !== 'Student' &&
+              this.props.user.role !== 'Guest' &&
+              showButtonIfMyStudent(this.props.user, this.props.student) ? (
                 <AiOutlineUndo
                   size={24}
                   color="red"
@@ -117,6 +113,8 @@ class EditableFile_Thread extends Component {
                     this.handleAsFinalFileThread(documenName, false)
                   }
                 />
+              ) : (
+                <p className="text-warning">Closed</p>
               )
             ) : (
               <></>
@@ -144,10 +142,7 @@ class EditableFile_Thread extends Component {
             <></>
           ) : (
             <Col md={1}>
-              {shownButtonMyOwnStudent(
-                this.props.user,
-                this.props.student._id.toString()
-              ) && (
+              {showButtonIfMyStudent(this.props.user, this.props.student) && (
                 <Button
                   size="sm"
                   style={{ cursor: 'pointer' }}

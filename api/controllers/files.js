@@ -1129,6 +1129,8 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   res.status(200).send({
     success: true,
     data: {
+      agents: me.agents,
+      editors: me.editors,
       academic_background: me.academic_background,
       application_preference: me.application_preference
     },

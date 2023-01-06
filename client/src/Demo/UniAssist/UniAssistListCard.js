@@ -4,7 +4,7 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
-import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -327,9 +327,9 @@ class UniAssistListCard extends React.Component {
                       ] ? (
                         <>
                           <Col md={1}>
-                            {shownButtonMyOwnStudent(
+                            {showButtonIfMyStudent(
                               this.props.user,
-                              this.props.student._id.toString()
+                              this.props.student
                             ) && (
                               <Form.Group
                                 controlId={`${application.programId._id.toString()}`}
@@ -357,9 +357,9 @@ class UniAssistListCard extends React.Component {
                           <Col>
                             {(this.props.role === 'Agent' ||
                               this.props.role === 'Admin') &&
-                              shownButtonMyOwnStudent(
+                              showButtonIfMyStudent(
                                 this.props.user,
-                                this.props.student._id.toString()
+                                this.props.student
                               ) && (
                                 <Button
                                   size={'sm'}
@@ -413,9 +413,9 @@ class UniAssistListCard extends React.Component {
                       </Button>
                     </Col>
                     <Col>
-                      {shownButtonMyOwnStudent(
+                      {showButtonIfMyStudent(
                         this.props.user,
-                        this.props.student._id.toString()
+                        this.props.student
                       ) && (
                         <Button
                           onClick={(e) =>
@@ -467,9 +467,9 @@ class UniAssistListCard extends React.Component {
                     ] ? (
                       <>
                         <Col md={1}>
-                          {shownButtonMyOwnStudent(
+                          {showButtonIfMyStudent(
                             this.props.user,
-                            this.props.student._id.toString()
+                            this.props.student
                           ) && (
                             <Form.Group
                               controlId={`${application.programId._id.toString()}`}
@@ -497,9 +497,9 @@ class UniAssistListCard extends React.Component {
                         <Col>
                           {(this.props.role === 'Agent' ||
                             this.props.role === 'Admin') &&
-                            shownButtonMyOwnStudent(
+                            showButtonIfMyStudent(
                               this.props.user,
-                              this.props.student._id.toString()
+                              this.props.student
                             ) && (
                               <Button
                                 size={'sm'}
@@ -543,9 +543,9 @@ class UniAssistListCard extends React.Component {
                     <Col>
                       {(this.props.role === 'Agent' ||
                         this.props.role === 'Admin') &&
-                        shownButtonMyOwnStudent(
+                        showButtonIfMyStudent(
                           this.props.user,
-                          this.props.student._id.toString()
+                          this.props.student
                         ) && (
                           <Button
                             size={'sm'}
@@ -566,9 +566,9 @@ class UniAssistListCard extends React.Component {
                 ) : (
                   <>
                     <Col md={2}>
-                      {shownButtonMyOwnStudent(
+                      {showButtonIfMyStudent(
                         this.props.user,
-                        this.props.student._id.toString()
+                        this.props.student
                       ) && (
                         <Button
                           onClick={(e) =>
@@ -590,9 +590,9 @@ class UniAssistListCard extends React.Component {
                       )}
                     </Col>
                     <Col>
-                      {shownButtonMyOwnStudent(
+                      {showButtonIfMyStudent(
                         this.props.user,
-                        this.props.student._id.toString()
+                        this.props.student
                       ) && (
                         <Button
                           onClick={(e) =>

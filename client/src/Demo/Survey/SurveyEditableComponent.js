@@ -10,7 +10,7 @@ import {
   check_academic_background_filled,
   check_languages_filled,
   check_application_preference_filled,
-  shownButtonMyOwnStudent
+  showButtonIfMyStudent
 } from '../Utils/checking-functions';
 import {
   APPLICATION_YEARS_FUTURE,
@@ -165,8 +165,10 @@ class SurveyEditableComponent extends React.Component {
         </div>
       );
     }
-
-
+    const isReadonly = !showButtonIfMyStudent(this.props.user, {
+      agents: this.props.agents,
+      editors: this.props.editors
+    });
     return (
       <Aux>
         {(!check_academic_background_filled(this.props.academic_background) ||
@@ -272,6 +274,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="text"
+                        readOnly={isReadonly}
                         placeholder="Taipei First Girls' High School"
                         onChange={(e) => this.handleChange_Academic(e)}
                         defaultValue={
@@ -295,6 +298,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         as="select"
+                        disabled={isReadonly}
                         defaultValue={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
@@ -331,6 +335,7 @@ class SurveyEditableComponent extends React.Component {
                           </Form.Label>
                           <Form.Control
                             type="text"
+                            readOnly={isReadonly}
                             placeholder="2022"
                             defaultValue={
                               this.state.academic_background.university &&
@@ -361,6 +366,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         type="text"
                         placeholder="National Taiwan University / Not study yet"
+                        readOnly={isReadonly}
                         onChange={(e) => this.handleChange_Academic(e)}
                         defaultValue={
                           this.state.academic_background.university &&
@@ -380,6 +386,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="text"
+                        readOnly={isReadonly}
                         placeholder="B.Sc, Mechanical Engineering / Not study yet"
                         defaultValue={
                           this.state.academic_background.university &&
@@ -403,6 +410,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         as="select"
+                        disabled={isReadonly}
                         defaultValue={
                           this.state.academic_background.university &&
                           this.state.academic_background.university.isGraduated
@@ -436,6 +444,7 @@ class SurveyEditableComponent extends React.Component {
                           </Form.Label>
                           <Form.Control
                             as="select"
+                            disabled={isReadonly}
                             value={
                               this.state.academic_background.university &&
                               this.state.academic_background.university
@@ -484,6 +493,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="number"
+                        readOnly={isReadonly}
                         placeholder="4.3"
                         defaultValue={
                           this.state.academic_background.university &&
@@ -524,6 +534,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="number"
+                        readOnly={isReadonly}
                         placeholder="1.7"
                         defaultValue={
                           this.state.academic_background.university &&
@@ -567,6 +578,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="number"
+                        readOnly={isReadonly}
                         placeholder="3.8"
                         defaultValue={
                           this.state.academic_background.university &&
@@ -620,10 +632,10 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          {shownButtonMyOwnStudent(
-                            this.props.user,
-                            this.props.student_id
-                          ) && (
+                          {showButtonIfMyStudent(this.props.user, {
+                            agents: this.props.agents,
+                            editors: this.props.editors
+                          }) && (
                             <Button
                               variant="primary"
                               disabled={!this.state.changed_academic}
@@ -678,6 +690,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         as="select"
+                        disabled={isReadonly}
                         defaultValue={
                           this.state.application_preference &&
                           this.state.application_preference
@@ -703,6 +716,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         as="select"
+                        disabled={isReadonly}
                         defaultValue={
                           this.state.application_preference &&
                           this.state.application_preference
@@ -740,6 +754,7 @@ class SurveyEditableComponent extends React.Component {
                         </Form.Label>
                         <Form.Control
                           type="text"
+                          readOnly={isReadonly}
                           placeholder="M.Sc. Data Science, MBA, etc."
                           defaultValue={
                             this.state.application_preference &&
@@ -762,6 +777,7 @@ class SurveyEditableComponent extends React.Component {
                           Considering universities outsid Germany?
                         </Form.Label>
                         <Form.Control
+                          disabled={isReadonly}
                           as="select"
                           defaultValue={
                             this.state.application_preference &&
@@ -790,6 +806,7 @@ class SurveyEditableComponent extends React.Component {
                         </Form.Label>
                         <Form.Control
                           as="select"
+                          disabled={isReadonly}
                           defaultValue={
                             this.state.application_preference &&
                             this.state.application_preference
@@ -823,7 +840,10 @@ class SurveyEditableComponent extends React.Component {
                   {this.props.user.archiv !== true && (
                     <Col md={2}>
                       <br />
-                      {shownButtonMyOwnStudent(this.props.user, this.props.student_id) && (
+                      {showButtonIfMyStudent(this.props.user, {
+                        agents: this.props.agents,
+                        editors: this.props.editors
+                      }) && (
                         <Button
                           variant="primary"
                           disabled={!this.state.changed_application_preference}
@@ -859,6 +879,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         as="select"
+                        disabled={isReadonly}
                         value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
@@ -889,6 +910,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               as="select"
+                              disabled={isReadonly}
                               value={
                                 this.state.academic_background.language &&
                                 this.state.academic_background.language
@@ -913,6 +935,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               type="text"
+                              readOnly={isReadonly}
                               placeholder="(i.e. TOEFL: 94, or IELTS: 6.5) "
                               value={
                                 this.state.academic_background.language &&
@@ -944,6 +967,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               as="select"
+                              disabled={isReadonly}
                               value={
                                 this.state.academic_background.language &&
                                 this.state.academic_background.language
@@ -967,6 +991,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               type="date"
+                              readOnly={isReadonly}
                               value={
                                 this.state.academic_background.language &&
                                 this.state.academic_background.language
@@ -995,6 +1020,7 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Label>
                       <Form.Control
                         as="select"
+                        disabled={isReadonly}
                         value={
                           this.state.academic_background.language &&
                           this.state.academic_background.language
@@ -1025,6 +1051,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               as="select"
+                              disabled={isReadonly}
                               value={
                                 this.state.academic_background.language &&
                                 this.state.academic_background.language
@@ -1060,6 +1087,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               type="text"
+                              readOnly={isReadonly}
                               placeholder="(i.e. TestDaF: 4, or DSH: 2) "
                               value={
                                 this.state.academic_background.language &&
@@ -1091,6 +1119,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               as="select"
+                              disabled={isReadonly}
                               value={
                                 this.state.academic_background.language &&
                                 this.state.academic_background.language
@@ -1126,6 +1155,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Label>
                             <Form.Control
                               type="date"
+                              readOnly={isReadonly}
                               value={
                                 this.state.academic_background.language &&
                                 this.state.academic_background.language
@@ -1162,10 +1192,10 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          {shownButtonMyOwnStudent(
-                            this.props.user,
-                            this.props.student_id
-                          ) && (
+                          {showButtonIfMyStudent(this.props.user, {
+                            agents: this.props.agents,
+                            editors: this.props.editors
+                          }) && (
                             <Button
                               variant="primary"
                               disabled={!this.state.changed_language}

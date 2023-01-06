@@ -334,6 +334,8 @@ class SingleStudentPage extends React.Component {
               role={this.props.user.role}
               survey_link={this.state.survey_link}
               user={this.props.user}
+              agents={this.state.student.agents}
+              editors={this.state.student.editors}
               academic_background={this.state.student.academic_background}
               application_preference={this.state.student.application_preference}
               isLoaded={this.state.isLoaded2}

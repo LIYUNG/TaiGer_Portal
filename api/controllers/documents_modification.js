@@ -49,6 +49,7 @@ const ThreadS3GarbageCollector = async () => {
     'Trying to delete redundant images S3 of corresponding message thread'
   );
   for (let j = 0; j < doc_threads.length; j += 1) {
+    // eslint-disable-next-line no-underscore-dangle
     const thread_id = doc_threads[j]._id.toString();
     const student_id = doc_threads[j].student_id.toString();
     const message_a = doc_threads[j].messages;
@@ -481,7 +482,8 @@ const getMessages = asyncHandler(async (req, res) => {
     params: { messagesThreadId }
   } = req;
   const document_thread = await Documentthread.findById(messagesThreadId)
-    .populate('student_id messages.user_id', 'firstname lastname role')
+    .populate('student_id', 'firstname lastname role agents editors')
+    .populate('messages.user_id', 'firstname lastname role')
     .populate('program_id')
     .lean()
     .exec();

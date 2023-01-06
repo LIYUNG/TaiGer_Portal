@@ -266,7 +266,7 @@ const getDocFile = asyncHandler(async (req, res) => {
 
       // No error happened
       // Convert Body from a Buffer to a String
-      let objectData = data.Body.toString('utf-8'); // Use the encoding necessary
+      const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
       const success = myCache.set(req.originalUrl, data.Body);
       if (success) {
         console.log('cache set successfully');

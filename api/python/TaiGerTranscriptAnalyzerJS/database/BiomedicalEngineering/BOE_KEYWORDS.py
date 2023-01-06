@@ -10,7 +10,7 @@ DIFFERENTIATE_KEY_WORDS = 2
 BOE_MATH_LIN_ALGE_KEY_WORDS = ['線性代數', '代數']
 BOE_MATH_LIN_ALGE_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務']
 
-BOE_MATH_NUM_METHOD_KEY_WORDS = ['數值方法', '數值', '離散', '工程數學','Matlab']
+BOE_MATH_NUM_METHOD_KEY_WORDS = ['數值方法', '數值', '離散', '工程數學', 'Matlab']
 BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS = [
     'asdgladfj;l', '管理', '文明', '服務', '微積分', '認識']
 
@@ -42,11 +42,12 @@ BOE_MECHANIK_KEY_WORDS = ['力學', '機動', '應力', '靜力', '動力', '振
 BOE_MECHANIK_ANTI_KEY_WORDS = [
     '熱力', '流體', '車輛', '氣動', '量子', '聲學', '廠']
 
-BOE_BIOLOGY_KEY_WORDS = ['生物學', '解剖學', '生理學', '遺傳學',
+BOE_BIOLOGY_KEY_WORDS = ['生物學', '解剖學', '生理學', '遺傳學', '普通生物',
                          '細胞生物', '生物統計', '微生物', '分子生物', '免疫', '生物動力']
 BOE_BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l', '力學']
 
-BOE_BIO_MEDICAL_KEY_WORDS = ['醫學工程', '臨床工程', '臨床醫學', '測量', '醫學資訊', '生理訊號']
+BOE_BIO_MEDICAL_KEY_WORDS = ['醫學工程', '臨床工程',
+                             '臨床醫學', '測量', '醫學資訊', '生理訊號', '生醫工程']
 BOE_BIO_MEDICAL_ANTI_KEY_WORDS = ['asdgladfj;l', 'mechanics']
 
 BOE_MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
@@ -95,7 +96,7 @@ USELESS_COURSES_ANTI_KEY_WORDS = ['asdgladfj;l']
 BOE_MATH_LIN_ALGE_KEY_WORDS_EN = ['linear algebra']
 BOE_MATH_LIN_ALGE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-BOE_MATH_NUM_METHOD_KEY_WORDS_EN = ['numerical','discrete','matlab','']
+BOE_MATH_NUM_METHOD_KEY_WORDS_EN = ['numerical', 'discrete', 'matlab', '']
 BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
 
 BOE_CALCULUS_KEY_WORDS_EN = ['calculus']
@@ -156,7 +157,7 @@ BOE_QUANTUM_PHYSICS_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l']
 
 BOE_ASTRO_PHYSICS_KEY_WORDS_EN = [
-    'astro','plasma']
+    'astro', 'plasma']
 BOE_ASTRO_PHYSICS_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l']
 

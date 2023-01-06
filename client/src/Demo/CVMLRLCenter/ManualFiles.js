@@ -1,7 +1,7 @@
 import React from 'react';
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
-import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { showButtonIfMyStudent } from '../Utils/checking-functions';
 
 class ManualFiles extends React.Component {
   state = {
@@ -67,10 +67,7 @@ class ManualFiles extends React.Component {
           (!this.props.application ||
             (this.props.application &&
               this.props.application.closed !== 'O')) &&
-          shownButtonMyOwnStudent(
-            this.props.user,
-            this.props.student._id.toString()
-          ) && (
+          showButtonIfMyStudent(this.props.user, this.props.student) && (
             <ToggleableUploadFileForm
               role={this.props.user.role}
               user={this.props.user}

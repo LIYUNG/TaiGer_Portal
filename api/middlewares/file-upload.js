@@ -38,7 +38,7 @@ const s3 = new aws.S3({
 const template_storage_s3 = multerS3({
   s3,
   bucket: (req, file, cb) => {
-    let directory = path.join(AWS_S3_BUCKET_NAME, 'taiger_template');
+    let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'taiger_template');
     directory = directory.replace(/\\/, '/');
     cb(null, directory);
   },

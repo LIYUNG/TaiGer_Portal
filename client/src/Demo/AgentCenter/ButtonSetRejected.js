@@ -9,7 +9,7 @@ import {
 } from 'react-icons/ai';
 import { FiExternalLink } from 'react-icons/fi';
 
-import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import { BASE_URL } from '../../api/request';
 
 import { updateProfileDocumentStatus, deleteFile } from '../../api';
@@ -18,7 +18,7 @@ class ButtonSetRejected extends React.Component {
   state = {
     student: this.props.student,
     link: this.props.link,
-    student_id: '',
+    student_id: this.props.student._id.toString(),
     category: '',
     docName: '',
     feedback: '',
@@ -238,7 +238,7 @@ class ButtonSetRejected extends React.Component {
         <td>
           <Col>
             <a
-              href={`${BASE_URL}/api/students/${this.props.student_id.toString()}/files/${
+              href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
                 this.props.path
               }`}
               target="_blank"
@@ -252,10 +252,7 @@ class ButtonSetRejected extends React.Component {
         {this.props.role === 'Agent' || this.props.role === 'Admin' ? (
           <td>
             <Col>
-              {shownButtonMyOwnStudent(
-                this.props.user,
-                this.props.student_id
-              ) && (
+              {showButtonIfMyStudent(this.props.user, this.state.student) && (
                 <Button
                   variant={acceptStyle}
                   size="sm"
@@ -266,7 +263,7 @@ class ButtonSetRejected extends React.Component {
                     this.onUpdateProfileDocStatus(
                       e,
                       this.props.k,
-                      this.props.student_id,
+                      this.state.student_id,
                       'accepted'
                     )
                   }
@@ -287,7 +284,7 @@ class ButtonSetRejected extends React.Component {
             disabled={!this.state.isLoaded}
             title="Show Comments"
             onClick={(e) =>
-              this.openCommentWindow(this.props.student_id, this.props.k)
+              this.openCommentWindow(this.state.student_id, this.props.k)
             }
           >
             <AiOutlineComment size={20} />
@@ -300,10 +297,7 @@ class ButtonSetRejected extends React.Component {
           <>
             <td>
               <Col>
-                {shownButtonMyOwnStudent(
-                  this.props.user,
-                  this.props.student_id
-                ) && (
+                {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
                     variant={deleteStyle}
                     size="sm"
@@ -314,7 +308,7 @@ class ButtonSetRejected extends React.Component {
                       this.onDeleteFileWarningPopUp(
                         e,
                         this.props.k,
-                        this.props.student_id,
+                        this.state.student_id,
                         this.props.docName
                       )
                     }
@@ -456,10 +450,7 @@ class ButtonSetRejected extends React.Component {
                 </Form.Group>
               </Modal.Body>
               <Modal.Footer>
-                {shownButtonMyOwnStudent(
-                  this.props.user,
-                  this.props.student_id
-                ) && (
+                {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
                     disabled={this.state.comments === ''}
                     onClick={(e) => this.onUpdateRejectMessageStudent(e)}

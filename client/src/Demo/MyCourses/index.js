@@ -6,7 +6,7 @@ import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { showButtonIfMyStudentB } from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
 import {
@@ -49,6 +49,7 @@ export default function MyCourses(props) {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
+          console.log(data.student_id);
           const course_from_database = data.table_data_string
             ? JSON.parse(data.table_data_string)
             : {};
@@ -364,10 +365,7 @@ export default function MyCourses(props) {
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
               <Row className="mx-1">
-                {shownButtonMyOwnStudent(
-                  props.user,
-                  statedata.student._id.toString()
-                ) && (
+                {showButtonIfMyStudentB(props.user, statedata.student) && (
                   <Button onClick={onSubmit} disabled={statedata.isUpdating}>
                     {statedata.isUpdating ? 'Updating' : 'Update'}
                   </Button>
@@ -392,40 +390,39 @@ export default function MyCourses(props) {
                   </Col>
                 </Row>
                 <br />
-                <Row>
-                  <Col>
-                    <Form.Group controlId="study_group">
-                      <Form.Label>Select target group</Form.Label>
-                      <Form.Control
-                        as="select"
-                        onChange={(e) => handleChange_study_group(e)}
-                      >
-                        <option value={''}>Select Study Group</option>
-                        {study_group.map((cat, i) => (
-                          <option value={cat.key} key={i}>
-                            {cat.value}
-                          </option>
-                        ))}
-                        {/* <option value={'X'}>No</option>
+                {showButtonIfMyStudentB(props.user, statedata.student) && (
+                  <>
+                    <Row>
+                      <Col>
+                        <Form.Group controlId="study_group">
+                          <Form.Label>Select target group</Form.Label>
+                          <Form.Control
+                            as="select"
+                            onChange={(e) => handleChange_study_group(e)}
+                          >
+                            <option value={''}>Select Study Group</option>
+                            {study_group.map((cat, i) => (
+                              <option value={cat.key} key={i}>
+                                {cat.value}
+                              </option>
+                            ))}
+                            {/* <option value={'X'}>No</option>
                             <option value={'O'}>Yes</option> */}
-                      </Form.Control>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <br />
-                <Row className="mx-1">
-                  {shownButtonMyOwnStudent(
-                    props.user,
-                    statedata.student._id.toString()
-                  ) && (
-                    <Button
-                      onClick={onAnalyse}
-                      disabled={statedata.isAnalysing}
-                    >
-                      {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
-                    </Button>
-                  )}
-                </Row>
+                          </Form.Control>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <br />
+                    <Row className="mx-1">
+                      <Button
+                        onClick={onAnalyse}
+                        disabled={statedata.isAnalysing}
+                      >
+                        {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
+                      </Button>
+                    </Row>
+                  </>
+                )}
                 <Row className="my-2"></Row>
                 <Row>
                   <Col md={2}>

@@ -1,4 +1,4 @@
-export const shownButtonMyOwnStudent = (user, student_id) => {
+export const showButtonIfMyStudent = (user, student) => {
   if (
     user.role === 'Admin' ||
     user.role === 'Student' ||
@@ -6,16 +6,49 @@ export const shownButtonMyOwnStudent = (user, student_id) => {
   ) {
     return true;
   }
-
-  if (user.students) {
-    if (
-      user.students.findIndex(
-        (student) => student._id.toString() === student_id
-      ) !== -1
-    ) {
-      return true;
-    }
+  // check user as Agetn Editor, if student belongs to him/her
+  if (
+    student.agents.findIndex((agent) =>
+      typeof agent === String
+        ? user._id.toString() === agent
+        : user._id.toString() === agent._id.toString()
+    ) !== -1 ||
+    student.editors.findIndex((editor) =>
+      typeof editor === String
+        ? user._id.toString() === editor
+        : user._id.toString() === editor._id.toString()
+    ) !== -1
+  ) {
+    return true;
   }
+
+  return false;
+};
+
+export const showButtonIfMyStudentB = (user, student) => {
+  if (
+    user.role === 'Admin' ||
+    user.role === 'Student' ||
+    user.role === 'Guest'
+  ) {
+    return true;
+  }
+  // check user as Agetn Editor, if student belongs to him/her
+  if (
+    student.agents.findIndex((agent) =>
+      typeof agent === String
+        ? user._id.toString() === agent
+        : user._id.toString() === agent.toString()
+    ) !== -1 ||
+    student.editors.findIndex((editor) =>
+      typeof editor === String
+        ? user._id.toString() === editor
+        : user._id.toString() === editor.toString()
+    ) !== -1
+  ) {
+    return true;
+  }
+
   return false;
 };
 

@@ -23,6 +23,8 @@ class SurveyComponent extends React.Component {
     success: false,
     academic_background: this.props.academic_background,
     application_preference: this.props.application_preference,
+    editors: this.props.editors,
+    agents: this.props.agents,
     survey_link: this.props.survey_link,
     updateconfirmed: false,
     changed_academic: false,
@@ -245,6 +247,8 @@ class SurveyComponent extends React.Component {
         <SurveyEditableComponent
           academic_background={this.state.academic_background}
           application_preference={this.state.application_preference}
+          agents={this.state.agents}
+          editors={this.state.editors}
           user={this.props.user}
           student_id={this.state.student_id}
           handleSubmit_AcademicBackground={this.handleSubmit_AcademicBackground}

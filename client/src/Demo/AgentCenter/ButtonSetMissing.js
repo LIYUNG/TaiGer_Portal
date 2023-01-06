@@ -4,13 +4,13 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { FiExternalLink } from 'react-icons/fi';
 
-import { shownButtonMyOwnStudent } from '../Utils/checking-functions';
+import { showButtonIfMyStudent } from '../Utils/checking-functions';
 
 class ButtonSetMissing extends React.Component {
   state = {
     student: this.props.student,
     link: this.props.link,
-    student_id: '',
+    student_id: this.props.student._id.toString(),
     category: '',
     comments: '',
     file: '',
@@ -97,8 +97,6 @@ class ButtonSetMissing extends React.Component {
   };
 
   render() {
-    const deleteStyle = 'danger';
-    const graoutStyle = 'light';
     var ButttonRow_Rejected;
     ButttonRow_Rejected = (
       <tr>
@@ -140,10 +138,7 @@ class ButtonSetMissing extends React.Component {
                 </Spinner>
               </div>
             ) : (
-              shownButtonMyOwnStudent(
-                this.props.user,
-                this.props.student_id
-              ) && (
+              showButtonIfMyStudent(this.props.user, this.props.student) && (
                 <Form.Group controlId={`${this.props.k}`}>
                   <Form.Label>
                     <IoMdCloudUpload color={'white'} size={32} />
@@ -155,7 +150,7 @@ class ButtonSetMissing extends React.Component {
                       this.handleGeneralDocSubmit(
                         e,
                         this.props.k,
-                        this.props.student_id
+                        this.state.student_id
                       )
                     }
                   />
@@ -170,16 +165,13 @@ class ButtonSetMissing extends React.Component {
         {this.props.role === 'Admin' || this.props.role === 'Agent' ? (
           <td>
             <Col md>
-              {shownButtonMyOwnStudent(
-                this.props.user,
-                this.props.student_id
-              ) && (
+              {showButtonIfMyStudent(this.props.user, this.props.student) && (
                 <Form
                   onSubmit={(e) =>
                     this.onUpdateProfileDocStatus(
                       e,
                       this.props.k,
-                      this.props.student_id,
+                      this.state.student_id,
                       'notneeded'
                     )
                   }

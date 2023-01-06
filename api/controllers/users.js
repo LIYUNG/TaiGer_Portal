@@ -174,6 +174,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     console.log('delete editor user');
     console.log(students);
   }
+
   if (
     user_deleting.role === Role.Student ||
     user_deleting.role === Role.Guest

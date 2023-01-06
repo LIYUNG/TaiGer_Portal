@@ -34,6 +34,8 @@ class Survey extends React.Component {
           );
           this.setState({
             isLoaded: true,
+            agents: data.agents,
+            editors: data.editors,
             academic_background: data.academic_background,
             application_preference: data.application_preference,
             survey_link: granding_system_doc_link.link,
@@ -85,6 +87,8 @@ class Survey extends React.Component {
           role={this.props.user.role}
           academic_background={this.state.academic_background}
           application_preference={this.state.application_preference}
+          agents={this.state.agents}
+          editors={this.state.editors}
           survey_link={this.state.survey_link}
           isLoaded={this.state.isLoaded}
           user={this.props.user}

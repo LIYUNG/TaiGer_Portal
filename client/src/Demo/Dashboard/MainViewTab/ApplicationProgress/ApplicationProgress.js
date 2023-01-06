@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getNumberOfDays } from '../../../Utils/contants';
 import {
-  shownButtonMyOwnStudent,
+  showButtonIfMyStudent,
   application_deadline_calculator
 } from '../../../Utils/checking-functions';
 
@@ -189,9 +189,9 @@ class ApplicationProgress extends React.Component {
         <tr>
           <td>
             {/* If my own student */}
-            {shownButtonMyOwnStudent(
+            {showButtonIfMyStudent(
               this.props.user,
-              this.props.student._id.toString()
+              this.props.student
             ) && (
               <DropdownButton
                 size="sm"

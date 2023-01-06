@@ -8,7 +8,7 @@ import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style } from '../../Utils/contants';
-import { shownButtonMyOwnStudent } from '../../Utils/checking-functions';
+import { showButtonIfMyStudentB } from '../../Utils/checking-functions';
 
 import {
   getTemplateDownload,
@@ -448,7 +448,6 @@ class DocModificationThreadPage extends Component {
         ' - ' +
         this.state.thread.file_type;
     }
-
     return (
       <Aux>
         {!isLoaded && (
@@ -636,9 +635,9 @@ class DocModificationThreadPage extends Component {
           this.props.user.role === 'Admin') &&
           (!this.state.thread.isFinalVersion ? (
             <Row className="mt-2">
-              {shownButtonMyOwnStudent(
+              {showButtonIfMyStudentB(
                 this.props.user,
-                this.state.thread.student_id._id
+                this.state.thread.student_id
               ) && (
                 <Button
                   variant="success"
@@ -663,9 +662,9 @@ class DocModificationThreadPage extends Component {
             </Row>
           ) : (
             <Row className="mt-2">
-              {shownButtonMyOwnStudent(
+              {showButtonIfMyStudentB(
                 this.props.user,
-                this.state.thread.student_id._id
+                this.state.thread.student_id
               ) && (
                 <Button
                   variant="danger"

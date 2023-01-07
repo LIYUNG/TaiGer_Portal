@@ -69,7 +69,7 @@ class AdminMainView extends React.Component {
           <Card className="py-0 px-0 my-0 mx-0" bg={'danger'} text={'light'}>
             <Card.Header>
               <Card.Title className="px-0 py-0  my-0 mx-0 text-light">
-                <BsExclamationTriangle size={18} /> To Do Tasks:
+                <BsExclamationTriangle size={18} /> Admin To Do Tasks:
               </Card.Title>
             </Card.Header>
             <Table

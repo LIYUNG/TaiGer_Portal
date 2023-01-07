@@ -56,16 +56,16 @@ const launch = async () => {
 
   // every 1. of month clean up the documents screenshots, redundant attachment.
   logger.info(`Clean up period: ${CLEAN_UP_SCHEDULE}`);
-  const job = schedule.scheduleJob(
-    CLEAN_UP_SCHEDULE,
-    DocumentationS3GarbageCollector
-  );
+  // const job = schedule.scheduleJob(
+  //   CLEAN_UP_SCHEDULE,
+  //   DocumentationS3GarbageCollector
+  // );
 
-  // every 1. of month clean up the redundant screenshots,for thg thread.
-  const job2 = schedule.scheduleJob(
-    CLEAN_UP_SCHEDULE,
-    ThreadS3GarbageCollector
-  );
+  // every 1. of month clean up the redundant screenshots,for the thread.
+  // const job2 = schedule.scheduleJob(
+  //   CLEAN_UP_SCHEDULE,
+  //   ThreadS3GarbageCollector
+  // );
 
   // every Friday, send tasks reminder emails to agents, editor and student
   logger.info(`Reminder period: ${WEEKLY_TASKS_REMINDER_SCHEDULE}`);

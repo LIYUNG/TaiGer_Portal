@@ -39,6 +39,7 @@ const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) =>
   crypto.createHash('sha256').update(token).digest('hex');
 
+// If user deleted, but some files still remain in S3, this function is to address this issue.
 const UserS3GarbageCollector = async () => {
   logger.info('Trying to delete redundant file for deleted users.');
   const listParamsPublic = {
@@ -149,7 +150,6 @@ const updateUser = asyncHandler(async (req, res) => {
   );
 });
 
-// () TODO: delete user without deleting their files causing storage leak
 const deleteUser = asyncHandler(async (req, res) => {
   const {
     params: { user_id }

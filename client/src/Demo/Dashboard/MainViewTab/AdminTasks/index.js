@@ -23,7 +23,7 @@ class AdminTasks extends React.Component {
     const missing_number_of_applications_students = this.props.students.map(
       (student, i) =>
         is_num_Program_Not_specified(student) && (
-          <tr>
+          <tr key={i}>
             <td>
               <Link
                 to={'/student-applications/' + student._id.toString()}

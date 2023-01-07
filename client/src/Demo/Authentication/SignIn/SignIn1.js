@@ -152,10 +152,10 @@ export default function Signin1({ setUserdata }) {
                 <NavLink to="/forgot-password">
                   <p className="text-muted">Reset</p>
                 </NavLink>
-                <p className="mb-2 text-light">New in TaiGer Portal?</p>
+                {/* <p className="mb-2 text-light">New in TaiGer Portal?</p>
                 <NavLink to="/sign-up">
                   <p className="text-muted">Sign up</p>
-                </NavLink>
+                </NavLink> */}
               </div>
             </form>
           </div>

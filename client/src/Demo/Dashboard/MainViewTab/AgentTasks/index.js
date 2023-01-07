@@ -20,7 +20,7 @@ import {
   is_all_uni_assist_vpd_uploaded,
   is_program_ready_to_submit,
   is_program_closed,
-  check_base_documents
+  are_base_documents_missing
 } from '../../../Utils/checking-functions';
 class AgentTasks extends React.Component {
   
@@ -241,7 +241,7 @@ class AgentTasks extends React.Component {
             <td></td>
           </tr>
         )}
-        {!check_base_documents(this.props.student) && (
+        {are_base_documents_missing(this.props.student) && (
           <tr>
             <td>
               <Link

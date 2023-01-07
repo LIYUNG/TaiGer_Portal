@@ -12,7 +12,7 @@ import {
   check_academic_background_filled,
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded,
-  check_base_documents,
+  are_base_documents_missing,
   check_base_documents_rejected
 } from '../../Utils/checking-functions';
 import { spinner_style } from '../../Utils/contants';
@@ -351,7 +351,7 @@ class StudentDashboard extends React.Component {
           )}
         {student.notification &&
           !student.notification.isRead_base_documents_missing &&
-          !check_base_documents(student) && (
+          are_base_documents_missing(student) && (
             <Row>
               <Col>
                 <Card className="my-1 mx-0" bg={'danger'} text={'light'}>

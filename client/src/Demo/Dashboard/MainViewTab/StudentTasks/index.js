@@ -15,7 +15,7 @@ import {
   check_languages_filled,
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded,
-  check_base_documents
+  are_base_documents_missing
 } from '../../../Utils/checking-functions';
 class StudentTasks extends React.Component {
  
@@ -193,7 +193,7 @@ class StudentTasks extends React.Component {
             <td></td>
           </tr>
         )}
-        {!check_base_documents(this.props.student) && (
+        {are_base_documents_missing(this.props.student) && (
           <tr>
             <td>
               <Link

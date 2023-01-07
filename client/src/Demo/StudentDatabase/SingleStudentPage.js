@@ -29,7 +29,8 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   getStudentAndDocLinks,
   updateAcademicBackground,
-  updateLanguageSkill
+  updateLanguageSkill,
+  updateApplicationPreference
 } from '../../api';
 
 class SingleStudentPage extends React.Component {
@@ -162,6 +163,47 @@ class SingleStudentPage extends React.Component {
       (error) => {
         this.setState({
           isLoaded2: true,
+          error: true
+        });
+      }
+    );
+  };
+
+  handleSubmit_ApplicationPreference_root = (
+    e,
+    application_preference,
+    student_id
+  ) => {
+    e.preventDefault();
+    updateApplicationPreference(application_preference, student_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded2: true,
+            student: {
+              ...state.student,
+              application_preference: data
+            },
+            success: success,
+            updateconfirmed: true,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
           error: true
         });
       }
@@ -346,6 +388,9 @@ class SingleStudentPage extends React.Component {
                 this.handleSubmit_AcademicBackground_root
               }
               handleSubmit_Language_root={this.handleSubmit_Language_root}
+              handleSubmit_ApplicationPreference_root={
+                this.handleSubmit_ApplicationPreference_root
+              }
               updateconfirmed={this.state.updateconfirmed}
             />
           </Tab>

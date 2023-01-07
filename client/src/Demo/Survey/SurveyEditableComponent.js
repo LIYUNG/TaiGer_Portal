@@ -54,6 +54,15 @@ class SurveyEditableComponent extends React.Component {
         changed_language: false
       }));
     }
+    if (
+      prevProps.application_preference !==
+      this.props.application_preference
+    ) {
+      this.setState((state) => ({
+        ...state,
+        changed_application_preference: false
+      }));
+    }
   }
   closeOffcanvasWindow = () => {
     this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
@@ -840,25 +849,49 @@ class SurveyEditableComponent extends React.Component {
                   {this.props.user.archiv !== true && (
                     <Col md={2}>
                       <br />
-                      {showButtonIfMyStudent(this.props.user, {
-                        agents: this.props.agents,
-                        editors: this.props.editors
-                      }) && (
-                        <Button
-                          variant="primary"
-                          disabled={!this.state.changed_application_preference}
-                          onClick={(e) =>
-                            this.props.handleSubmit_ApplicationPreference(
-                              e,
-                              this.state.application_preference
-                            )
-                          }
-                        >
-                          Update
-                        </Button>
-                      )}
+                      {this.props.singlestudentpage_fromtaiger ? (
+                        <>
+                          {showButtonIfMyStudent(this.props.user, {
+                            agents: this.props.agents,
+                            editors: this.props.editors
+                          }) && (
+                            <Button
+                              variant="primary"
+                              disabled={
+                                !this.state.changed_application_preference
+                              }
+                              onClick={(e) =>
+                                this.props.handleSubmit_ApplicationPreference_root(
+                                  e,
+                                  this.state.application_preference
+                                )
+                              }
+                            >
+                              Update
+                            </Button>
+                          )}
+                          <br />
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            variant="primary"
+                            disabled={
+                              !this.state.changed_application_preference
+                            }
+                            onClick={(e) =>
+                              this.props.handleSubmit_ApplicationPreference(
+                                e,
+                                this.state.application_preference
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
 
-                      <br />
+                          <br />
+                        </>
+                      )}
                     </Col>
                   )}
                 </Row>
@@ -1209,7 +1242,6 @@ class SurveyEditableComponent extends React.Component {
                               Update
                             </Button>
                           )}
-
                           <br />
                         </>
                       ) : (

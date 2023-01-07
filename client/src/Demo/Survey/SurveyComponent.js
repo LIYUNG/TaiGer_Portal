@@ -39,16 +39,21 @@ class SurveyComponent extends React.Component {
       this.setState((state) => ({
         ...state,
         academic_background: this.props.academic_background,
+        application_preference: this.props.application_preference,
         student_id: this.props.user._id
       }));
     }
   }
   componentDidUpdate(prevProps) {
     // 常見用法（別忘了比較 prop）：
-    if (prevProps.academic_background !== this.props.academic_background) {
+    if (
+      prevProps.academic_background !== this.props.academic_background ||
+      prevProps.application_preference !== this.props.application_preference
+    ) {
       this.setState((state) => ({
         ...state,
         academic_background: this.props.academic_background,
+        application_preference: this.props.application_preference,
         updateconfirmed: this.props.updateconfirmed
       }));
     }
@@ -199,6 +204,13 @@ class SurveyComponent extends React.Component {
   handleSubmit_Language_root = (e, language) => {
     this.props.handleSubmit_Language_root(e, language, this.state.student_id);
   };
+  handleSubmit_ApplicationPreference_root = (e, application_preference) => {
+    this.props.handleSubmit_ApplicationPreference_root(
+      e,
+      application_preference,
+      this.state.student_id
+    );
+  };
 
   updateDocLink = (link, key) => {
     updateDocumentationHelperLink(link, key, 'survey').then(
@@ -261,6 +273,7 @@ class SurveyComponent extends React.Component {
             this.handleSubmit_AcademicBackground_root
           }
           handleSubmit_Language_root={this.handleSubmit_Language_root}
+          handleSubmit_ApplicationPreference_root={this.handleSubmit_ApplicationPreference_root}
           updateDocLink={this.updateDocLink}
           survey_link={this.state.survey_link}
         />

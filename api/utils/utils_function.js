@@ -26,9 +26,33 @@ const s3 = new aws.S3({
   secretAccessKey: AWS_S3_ACCESS_KEY
 });
 
+const emptyS3Directory = async (bucket, dir) => {
+  const listParams = {
+    Bucket: bucket,
+    Prefix: dir
+  };
+
+  const listedObjects = await s3.listObjectsV2(listParams).promise();
+
+  if (listedObjects.Contents.length === 0) return;
+
+  const deleteParams = {
+    Bucket: bucket,
+    Delete: { Objects: [] }
+  };
+
+  listedObjects.Contents.forEach(({ Key }) => {
+    deleteParams.Delete.Objects.push({ Key });
+  });
+  logger.warn(JSON.stringify(deleteParams));
+  await s3.deleteObjects(deleteParams).promise();
+
+  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+};
+
 const TasksReminderEmails = async () => {
-    // Only inform active student
-    // TODO: deactivate or change email frequency (default 1 week.)
+  // Only inform active student
+  // TODO: deactivate or change email frequency (default 1 week.)
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -107,5 +131,6 @@ const TasksReminderEmails = async () => {
 };
 
 module.exports = {
+  emptyS3Directory,
   TasksReminderEmails
 };

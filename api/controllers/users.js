@@ -5,9 +5,10 @@ const generator = require('generate-password');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Agent, Editor, Student, Guest, Role } = require('../models/User');
+const { User, Agent, Editor, Student, Role } = require('../models/User');
 const Course = require('../models/Course');
 const { Documentthread } = require('../models/Documentthread');
+const { emptyS3Directory } = require('../utils/utils_function');
 const Token = require('../models/Token');
 const {
   updateNotificationEmail,
@@ -25,6 +26,7 @@ const {
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
+  AWS_S3_PUBLIC_BUCKET_NAME,
   AWS_S3_BUCKET_NAME
 } = require('../config');
 
@@ -36,6 +38,33 @@ const s3 = new aws.S3({
 const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) =>
   crypto.createHash('sha256').update(token).digest('hex');
+
+const UserS3GarbageCollector = async () => {
+  logger.info('Trying to delete redundant file for deleted users.');
+  const listParamsPublic = {
+    Bucket: AWS_S3_BUCKET_NAME,
+    Delimiter: '/',
+    Prefix: ''
+  };
+  const listedObjectsPublic = await s3
+    .listObjectsV2(listParamsPublic)
+    .promise();
+  if (listedObjectsPublic.CommonPrefixes.length > 0) {
+    for (let i = 0; i < listedObjectsPublic.CommonPrefixes.length; i += 1) {
+      const Obj = listedObjectsPublic.CommonPrefixes[i];
+      const student_id = Obj.Prefix.replace('/', '');
+      try {
+        const student = await User.findById(student_id);
+        if (!student) {
+          // Obj.Prefix = folder_name/
+          emptyS3Directory(AWS_S3_BUCKET_NAME, `${Obj.Prefix}`);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+};
 
 const addUser = asyncHandler(async (req, res) => {
   await fieldsValidation(
@@ -179,31 +208,9 @@ const deleteUser = asyncHandler(async (req, res) => {
     user_deleting.role === Role.Student ||
     user_deleting.role === Role.Guest
   ) {
-    // TODO: delete all S3 data of the student
-    // TODO: only root path of student folder is deleted. recursive (subfolder not deleted)
+    // Delete all S3 data of the student
     logger.info('Trying to delete student and their S3 files');
-    const listParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delimiter: '/',
-      Prefix: `${user_id}/`
-    };
-    const listedObjects = await s3.listObjectsV2(listParams).promise();
-    // const listedObjects_vpd = await s3.listObjectsV2(listParams_vpd).promise();
-    console.log(listedObjects);
-    if (listedObjects.Contents.length > 0) {
-      const deleteParams = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delete: { Objects: [] }
-      };
-
-      listedObjects.Contents.forEach(({ Key }) => {
-        deleteParams.Delete.Objects.push({ Key });
-        logger.info('Deleting ', Key);
-      });
-
-      await s3.deleteObjects(deleteParams).promise();
-      // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-    }
+    emptyS3Directory(AWS_S3_BUCKET_NAME, `${user_id}/`);
 
     // Delete thread that user has
     await Documentthread.deleteMany({ student_id: user_id });
@@ -244,6 +251,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  UserS3GarbageCollector,
   addUser,
   getUsers,
   updateUser,

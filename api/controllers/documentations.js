@@ -32,7 +32,6 @@ const valid_categories = [
   'uniassist',
   'visa'
 ];
-
 const DocumentationS3GarbageCollector = async () => {
   const doc = await Documentation.find();
   const listParamsPublic = {

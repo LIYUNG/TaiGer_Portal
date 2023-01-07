@@ -23,6 +23,7 @@ const {
   ThreadS3GarbageCollector
 } = require('./controllers/documents_modification');
 const { TasksReminderEmails } = require('./utils/utils_function');
+const { UserS3GarbageCollector } = require('./controllers/users');
 
 process.on('SIGINT', () => {
   disconnectFromDatabase(() => {
@@ -72,6 +73,9 @@ const launch = async () => {
     WEEKLY_TASKS_REMINDER_SCHEDULE,
     TasksReminderEmails
   );
+  // TODO: could also manually activate the following (the following is working!)
+  // logger.info(`Clean up User deprecated period: ${WEEKLY_TASKS_REMINDER_SCHEDULE}`);
+  // const job4 = schedule.scheduleJob(CLEAN_UP_SCHEDULE, UserS3GarbageCollector);
 
   // everyday, send emergency tasks (deadline within 1 month)
   // reminder emails to agents, editor and student

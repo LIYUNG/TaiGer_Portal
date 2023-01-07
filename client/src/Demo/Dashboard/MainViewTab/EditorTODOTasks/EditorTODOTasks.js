@@ -43,9 +43,7 @@ class EditorTODOTasks extends React.Component {
                     {this.props.student.lastname}
                   </Link>
                 </td>
-                <td>
-                  {return_thread_status(this.props.user, generaldocs_threads)}
-                </td>
+                {return_thread_status(this.props.user, generaldocs_threads)}
                 <td>
                   <Link
                     to={
@@ -97,12 +95,10 @@ class EditorTODOTasks extends React.Component {
                           {this.props.student.lastname}
                         </Link>
                       </td>
-                      <td>
-                        {return_thread_status(
-                          this.props.user,
-                          application_doc_thread
-                        )}
-                      </td>
+                      {return_thread_status(
+                        this.props.user,
+                        application_doc_thread
+                      )}
                       <td>
                         <Link
                           to={

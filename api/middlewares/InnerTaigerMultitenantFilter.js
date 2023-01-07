@@ -8,7 +8,6 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
     const student = await Student.findById(studentId).select('agents editors');
-    console.log(student);
     if (
       student.agents.findIndex(
         (agent_id) => agent_id.toString() === user._id.toString()
@@ -17,7 +16,6 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
         (editor_id) => editor_id.toString() === user._id.toString()
       ) === -1
     ) {
-      console.log('Not found');
       return next(
         new ErrorResponse(403, 'Not allowed to access other students.')
       );

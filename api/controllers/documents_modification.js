@@ -6,6 +6,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { AWS_S3_PUBLIC_BUCKET, API_ORIGIN } = require('../config');
 const { Documentthread } = require('../models/Documentthread');
+const { emptyS3Directory } = require('../utils/utils_function');
 const {
   sendNewApplicationMessageInThreadEmail,
   sendNewGeneraldocMessageInThreadEmail,
@@ -274,20 +275,14 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     if (!thread_in_student_generaldoc_existed) {
       // console.log('Pass 1.1');
       const app = student.generaldocs_threads.create({
-        doc_thread_id: doc_thread_existed._id,
+        doc_thread_id: doc_thread_existed,
         updatedAt: new Date(),
         createdAt: new Date()
       });
       student.generaldocs_threads.push(app);
       student.notification.isRead_new_cvmlrl_tasks_created = false;
       await student.save();
-      const student_updated = await Student.findById(studentId)
-        .populate('applications.programId generaldocs_threads.doc_thread_id')
-        .populate(
-          'applications.doc_modification_thread.doc_thread_id',
-          'file_type updatedAt'
-        );
-      return res.status(200).send({ success: true, data: student_updated });
+      return res.status(200).send({ success: true, data: app });
     }
     logger.info('initGeneralMessagesThread: Document Thread already existed!');
     throw new ErrorResponse(409, 'Document Thread already existed!');
@@ -300,7 +295,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   });
 
   const temp = student.generaldocs_threads.create({
-    doc_thread_id: new_doc_thread._id,
+    doc_thread_id: new_doc_thread,
     updatedAt: new Date(),
     createdAt: new Date()
   });
@@ -311,13 +306,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   await student.save();
   await new_doc_thread.save();
 
-  const student2 = await Student.findById(studentId)
-    .populate('applications.programId generaldocs_threads.doc_thread_id')
-    .populate(
-      'applications.doc_modification_thread.doc_thread_id',
-      'file_type updatedAt'
-    );
-  res.status(200).send({ success: true, data: student2 });
+  res.status(200).send({ success: true, data: temp });
   // TODO: Email notification
   let documentname = document_category;
   for (let i = 0; i < student.editors.length; i += 1) {
@@ -389,7 +378,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     if (!thread_in_student_application_existed) {
       // console.log('Pass 1.1');
       const app = application.doc_modification_thread.create({
-        doc_thread_id: doc_thread_existed._id,
+        doc_thread_id: doc_thread_existed,
         updatedAt: new Date(),
         createdAt: new Date()
       });
@@ -397,13 +386,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       student.notification.isRead_new_cvmlrl_tasks_created = false;
 
       await student.save();
-      const student_updated = await Student.findById(studentId)
-        .populate('applications.programId generaldocs_threads.doc_thread_id')
-        .populate(
-          'applications.doc_modification_thread.doc_thread_id',
-          'file_type updatedAt'
-        );
-      return res.status(200).send({ success: true, data: student_updated });
+      return res.status(200).send({ success: true, data: app });
     }
     // console.log('Pass 1.2');
     logger.error(
@@ -425,7 +408,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     ({ programId }) => programId._id == program_id
   );
   const temp = student.applications[idx].doc_modification_thread.create({
-    doc_thread_id: new_doc_thread._id,
+    doc_thread_id: new_doc_thread,
     updatedAt: new Date(),
     createdAt: new Date()
   });
@@ -442,7 +425,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       'applications.doc_modification_thread.doc_thread_id',
       'file_type updatedAt'
     );
-  res.status(200).send({ success: true, data: student2 });
+  res.status(200).send({ success: true, data: temp });
 
   let documentname =
     document_category +
@@ -1077,53 +1060,7 @@ const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
 
-  // Delete folder
-  let directory_img = path.join(studentId, messagesThreadId, 'img');
-  logger.info('Trying to delete message thread and folder');
-  directory_img = directory_img.replace(/\\/g, '/');
-
-  const listParams = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Prefix: directory
-  };
-  const listParams_img = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Prefix: directory_img
-  };
-  const listedObjects = await s3.listObjectsV2(listParams).promise();
-  const listedObjects_img = await s3.listObjectsV2(listParams_img).promise();
-
-  if (listedObjects.Contents.length > 0) {
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    listedObjects.Contents.forEach(({ Key }) => {
-      deleteParams.Delete.Objects.push({ Key });
-      logger.info('Deleting ', Key);
-    });
-
-    await s3.deleteObjects(deleteParams).promise();
-
-    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-  }
-
-  if (listedObjects_img.Contents.length > 0) {
-    const deleteParams_img = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    listedObjects_img.Contents.forEach(({ Key }) => {
-      deleteParams_img.Delete.Objects.push({ Key });
-      logger.info('Deleting img', Key);
-    });
-
-    await s3.deleteObjects(deleteParams_img).promise();
-
-    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-  }
+  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
   await Documentthread.findByIdAndDelete(messagesThreadId);
   await Student.findByIdAndUpdate(studentId, {
     $pull: {
@@ -1131,13 +1068,7 @@ const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
     }
   });
 
-  const student2 = await Student.findById(studentId)
-    .populate('applications.programId generaldocs_threads.doc_thread_id')
-    .populate(
-      'applications.doc_modification_thread.doc_thread_id',
-      'file_type updatedAt'
-    );
-  res.status(200).send({ success: true, data: student2 });
+  res.status(200).send({ success: true });
 });
 
 // (-) TODO email : notification
@@ -1165,59 +1096,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   let directory = path.join(studentId, messagesThreadId);
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
-
-  // Delete folder
-  let directory_img = path.join(studentId, messagesThreadId, 'img');
-  logger.info('Trying to delete message thread and folder');
-  directory_img = directory_img.replace(/\\/g, '/');
-
-  const listParams = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Prefix: directory
-  };
-  const listParams_img = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Prefix: directory_img
-  };
-  const listedObjects = await s3.listObjectsV2(listParams).promise();
-  const listedObjects_img = await s3.listObjectsV2(listParams_img).promise();
-
-  if (listedObjects.Contents.length > 0) {
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    listedObjects.Contents.forEach(({ Key }) => {
-      deleteParams.Delete.Objects.push({ Key });
-      logger.info('Deleting ', Key);
-    });
-
-    await s3.deleteObjects(deleteParams).promise();
-    logger.info(
-      `Deleted application thread files for thread ${messagesThreadId}`
-    );
-    logger.info(deleteParams.Delete.Objects);
-    // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-  }
-  // Delete images in Public S3 bucket. (student folder)
-  if (listedObjects_img.Contents.length > 0) {
-    const deleteParams_img = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    listedObjects_img.Contents.forEach(({ Key }) => {
-      deleteParams_img.Delete.Objects.push({ Key });
-      logger.info('Deleting img', Key);
-    });
-    await s3.deleteObjects(deleteParams_img).promise();
-    logger.info(
-      `Deleted application thread images for thread ${messagesThreadId}`
-    );
-    logger.info(deleteParams_img.Delete.Objects);
-    // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
-  }
+  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
 
   await Student.findOneAndUpdate(
     { _id: studentId, 'applications.programId': program_id },
@@ -1231,13 +1110,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   );
   await Documentthread.findByIdAndDelete(messagesThreadId);
 
-  const student2 = await Student.findById(studentId)
-    .populate('applications.programId generaldocs_threads.doc_thread_id')
-    .populate(
-      'applications.doc_modification_thread.doc_thread_id',
-      'file_type updatedAt'
-    );
-  res.status(200).send({ success: true, data: student2 });
+  res.status(200).send({ success: true });
 });
 
 // (-) TODO email : no notification needed

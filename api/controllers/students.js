@@ -357,22 +357,16 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < agentsId_arr.length; i += 1) {
     if (agentsId[agentsId_arr[i]]) {
       updated_agent_id.push(agentsId_arr[i]);
-      const agent = await Agent.findByIdAndUpdate(
-        agentsId_arr[i],
-        {
-          $addToSet: { students: studentId }
-        },
-        { new: true }
-      );
+      const agent = await Agent.findById(agentsId_arr[i]);
       updated_agent.push({
         firstname: agent.firstname,
         lastname: agent.lastname,
         email: agent.email
       });
     } else {
-      await Agent.findByIdAndUpdate(agentsId_arr[i], {
-        $pull: { students: studentId }
-      });
+      // await Agent.findByIdAndUpdate(agentsId_arr[i], {
+      //   $pull: { students: studentId }
+      // });
     }
   }
 

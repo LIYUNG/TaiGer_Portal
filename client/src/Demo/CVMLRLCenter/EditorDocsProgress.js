@@ -103,15 +103,24 @@ class EditorDocsProgress extends React.Component {
         this.state.student_id
       ).then(
         (resp) => {
-          const { data, success } = resp.data;
+          const { success } = resp.data;
           const { status } = resp;
           if (success) {
+            let student_temp = { ...this.state.student };
+            let general_docs_idx = student_temp.generaldocs_threads.findIndex(
+              (thread) =>
+                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+            );
+            if (general_docs_idx !== -1) {
+              student_temp.generaldocs_threads.splice(general_docs_idx, 1);
+            }
+
             this.setState((state) => ({
               ...state,
               student_id: '',
               doc_thread_id: '',
               isLoaded: true,
-              student: data,
+              student: student_temp,
               success: success,
               deleteFileWarningModel: false,
               res_modal_status: status
@@ -137,16 +146,32 @@ class EditorDocsProgress extends React.Component {
         this.state.student_id
       ).then(
         (resp) => {
-          const { data, success } = resp.data;
+          const { success } = resp.data;
           const { status } = resp;
           if (success) {
+            let student_temp = { ...this.state.student };
+            let application_idx = student_temp.applications.findIndex(
+              (application) =>
+                application.programId._id.toString() === this.state.program_id
+            );
+            let doc_thread_idx = student_temp.applications[
+              application_idx
+            ].doc_modification_thread.findIndex(
+              (thread) =>
+                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+            );
+            if (doc_thread_idx !== -1) {
+              student_temp.applications[
+                application_idx
+              ].doc_modification_thread.splice(doc_thread_idx, 1);
+            }
             this.setState((state) => ({
               ...state,
               student_id: '',
               program_id: '',
               doc_thread_id: '',
               isLoaded: true,
-              student: data,
+              student: student_temp,
               success: success,
               deleteFileWarningModel: false,
               res_modal_status: status
@@ -322,7 +347,7 @@ class EditorDocsProgress extends React.Component {
   initProgramSpecificFileThread = (
     e,
     studentId,
-    applicationId,
+    programId,
     document_catgory,
     thread_name
   ) => {
@@ -331,14 +356,23 @@ class EditorDocsProgress extends React.Component {
       alert('Please select file group');
     } else {
       e.preventDefault();
-      initApplicationMessageThread(studentId, applicationId, document_catgory)
+      initApplicationMessageThread(studentId, programId, document_catgory)
         .then((resp) => {
           const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
+            let student_temp = { ...this.state.student };
+            let application_idx = student_temp.applications.findIndex(
+              (application) =>
+                application.programId._id.toString() === programId
+            );
+            student_temp.applications[
+              application_idx
+            ].doc_modification_thread.push(data);
+
             this.setState({
               isLoaded: true, //false to reload everything
-              student: data,
+              student: student_temp,
               success: success,
               file: '',
               res_modal_status: status
@@ -371,9 +405,11 @@ class EditorDocsProgress extends React.Component {
           const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
+            let student_temp = { ...this.state.student };
+            student_temp.generaldocs_threads.push(data);
             this.setState({
               isLoaded: true, //false to reload everything
-              student: data,
+              student: student_temp,
               success: success,
               file: '',
               res_modal_status: status

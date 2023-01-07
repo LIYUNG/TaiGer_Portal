@@ -38,7 +38,6 @@ class UniAssistListCard extends React.Component {
         `${this.props.student.applications[i].programId._id.toString()}`
       ] = true;
     }
-    // console.log(temp_isLoaded);
     this.setState({
       isLoaded2: temp_isLoaded
     });

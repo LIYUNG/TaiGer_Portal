@@ -49,7 +49,6 @@ export default function MyCourses(props) {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          console.log(data.student_id);
           const course_from_database = data.table_data_string
             ? JSON.parse(data.table_data_string)
             : {};

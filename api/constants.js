@@ -86,6 +86,7 @@ const profile_list = {
   Course_Description: 'Course Description',
   Internship: 'Internship Certificate',
   Employment_Certificate: 'Employment Certificate',
+  Passport_Photo: 'Passport Photo',
   Passport: 'Passport Copy',
   Others: 'Others'
 };

@@ -14,45 +14,11 @@ import {
   check_application_preference_filled,
   check_languages_filled,
   check_applications_to_decided,
-  is_all_uni_assist_vpd_uploaded
+  is_all_uni_assist_vpd_uploaded,
+  check_base_documents
 } from '../../../Utils/checking-functions';
 class StudentTasks extends React.Component {
-  check_base_documents = (student) => {
-    let documentlist2_keys = Object.keys(window.profile_list);
-    let object_init = {};
-    for (let i = 0; i < documentlist2_keys.length; i++) {
-      object_init[documentlist2_keys[i]] = 'missing';
-    }
-    if (student.profile === undefined) {
-      return false;
-    }
-    if (student.profile.length === 0) {
-      return false;
-    }
-    if (student.profile) {
-      for (let i = 0; i < student.profile.length; i++) {
-        if (student.profile[i].status === 'uploaded') {
-          object_init[student.profile[i].name] = 'uploaded';
-        } else if (student.profile[i].status === 'accepted') {
-          object_init[student.profile[i].name] = 'accepted';
-        } else if (student.profile[i].status === 'rejected') {
-          object_init[student.profile[i].name] = 'rejected';
-        } else if (student.profile[i].status === 'missing') {
-          object_init[student.profile[i].name] = 'missing';
-        } else if (student.profile[i].status === 'notneeded') {
-          object_init[student.profile[i].name] = 'notneeded';
-        }
-      }
-    } else {
-      return false;
-    }
-    for (let i = 0; i < documentlist2_keys.length; i++) {
-      if (object_init[documentlist2_keys[i]] === 'missing') {
-        return false;
-      }
-    }
-    return true;
-  };
+ 
   render() {
     let unread_general_generaldocs = <></>;
     let unread_applications_docthread = <></>;
@@ -227,7 +193,7 @@ class StudentTasks extends React.Component {
             <td></td>
           </tr>
         )}
-        {!this.check_base_documents(this.props.student) && (
+        {!check_base_documents(this.props.student) && (
           <tr>
             <td>
               <Link

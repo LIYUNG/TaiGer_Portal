@@ -14,6 +14,7 @@ import { ImCheckmark } from 'react-icons/im';
 
 import ManualFiles from './ManualFiles';
 import {
+  showButtonIfMyStudent,
   check_generaldocs,
   is_program_ml_rl_essay_finished,
   is_program_closed
@@ -565,42 +566,57 @@ class EditorDocsProgress extends React.Component {
                               {is_program_closed(application) ? (
                                 <>
                                   <Col md={1}>
-                                    <ImCheckmark
-                                      size={24}
-                                      color="limegreen"
-                                      title="This program is closed"
-                                    />
+                                    {showButtonIfMyStudent(
+                                      this.props.user,
+                                      this.state.student
+                                    ) && (
+                                      <ImCheckmark
+                                        size={24}
+                                        color="limegreen"
+                                        title="This program is closed"
+                                      />
+                                    )}
                                   </Col>
                                   <Col md={1}>
-                                    <AiOutlineUndo
-                                      size={24}
-                                      color="red"
-                                      title="Re-open this program as it was not submitted"
-                                      style={{ cursor: 'pointer' }}
-                                      onClick={() =>
-                                        this.handleProgramStatus(
-                                          this.state.student._id.toString(),
-                                          application.programId._id.toString()
-                                        )
-                                      }
-                                    />
+                                    {showButtonIfMyStudent(
+                                      this.props.user,
+                                      this.state.student
+                                    ) && (
+                                      <AiOutlineUndo
+                                        size={24}
+                                        color="red"
+                                        title="Re-open this program as it was not submitted"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() =>
+                                          this.handleProgramStatus(
+                                            this.state.student._id.toString(),
+                                            application.programId._id.toString()
+                                          )
+                                        }
+                                      />
+                                    )}
                                   </Col>
                                 </>
                               ) : (
                                 <>
                                   <Col md={1}>
-                                    <AiOutlineCheck
-                                      size={24}
-                                      color="white"
-                                      style={{ cursor: 'pointer' }}
-                                      title="Close this program - marked as finished."
-                                      onClick={() =>
-                                        this.handleProgramStatus(
-                                          this.state.student._id.toString(),
-                                          application.programId._id.toString()
-                                        )
-                                      }
-                                    />
+                                    {showButtonIfMyStudent(
+                                      this.props.user,
+                                      this.state.student
+                                    ) && (
+                                      <AiOutlineCheck
+                                        size={24}
+                                        color="white"
+                                        style={{ cursor: 'pointer' }}
+                                        title="Close this program - marked as finished."
+                                        onClick={() =>
+                                          this.handleProgramStatus(
+                                            this.state.student._id.toString(),
+                                            application.programId._id.toString()
+                                          )
+                                        }
+                                      />
+                                    )}
                                   </Col>
                                   <Col md={1}></Col>
                                 </>

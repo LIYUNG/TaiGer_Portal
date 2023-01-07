@@ -173,10 +173,10 @@ class ApplicationProgress extends React.Component {
                   .expected_application_date &&
                 getNumberOfDays(
                   today,
-                  this.props.student.application_preference
-                    .expected_application_date +
-                    '-' +
-                    application.programId.application_deadline
+                  application_deadline_calculator(
+                    this.props.student,
+                    application
+                  )
                 )
               : '-'}
           </p>

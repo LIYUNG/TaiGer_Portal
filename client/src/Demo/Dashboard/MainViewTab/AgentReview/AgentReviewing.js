@@ -114,7 +114,7 @@ class AgentReviewing extends React.Component {
         : '';
     return (
       <>
-        <tr className="my-0">
+        <tr className="my-0 mx-0 py-0">
           <td>
             <Link
               to={'/student-database/' + this.props.student._id + '/profile'}
@@ -144,7 +144,7 @@ class AgentReviewing extends React.Component {
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                 </p>
               ) : (
@@ -152,7 +152,7 @@ class AgentReviewing extends React.Component {
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                 </p>
               )}
@@ -198,7 +198,7 @@ class AgentReviewing extends React.Component {
                           size={24}
                           color="limegreen"
                           title="complete"
-                          className="mx-2"
+                          className="my-0 mx-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -214,7 +214,7 @@ class AgentReviewing extends React.Component {
                         <AiFillQuestionCircle
                           size={24}
                           color="lightgray"
-                          className="mx-2"
+                          className="my-0 mx-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -251,7 +251,7 @@ class AgentReviewing extends React.Component {
                           size={24}
                           color="limegreen"
                           title="complete"
-                          className="mx-2"
+                          className="my-0 mx-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -267,7 +267,7 @@ class AgentReviewing extends React.Component {
                         <AiFillQuestionCircle
                           size={24}
                           color="lightgray"
-                          className="mx-2"
+                          className="my-0 mx-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -304,7 +304,7 @@ class AgentReviewing extends React.Component {
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                   {total_accepted_base_docs_needed}/{total_base_docs_needed}
                 </p>
@@ -313,7 +313,7 @@ class AgentReviewing extends React.Component {
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                   {total_accepted_base_docs_needed}/{total_base_docs_needed}
                 </p>
@@ -332,7 +332,7 @@ class AgentReviewing extends React.Component {
                       size={24}
                       color="lightgray"
                       title="Working"
-                      className="mx-2"
+                      className="my-0 mx-2"
                     />
                   </p>
                 ) : (
@@ -341,7 +341,7 @@ class AgentReviewing extends React.Component {
                       size={23}
                       color="red"
                       title="Not created yet"
-                      className="mx-2"
+                      className="my-0 mx-2"
                     />
                   </p>
                 )
@@ -351,7 +351,7 @@ class AgentReviewing extends React.Component {
                     size={24}
                     color="limegreen"
                     title="complete"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                 </p>
               )}
@@ -368,7 +368,7 @@ class AgentReviewing extends React.Component {
                     <IoCheckmarkCircle
                       size={24}
                       color="limegreen"
-                      className="mx-2"
+                      className="my-0 mx-2"
                       title="Complete"
                     />
                   </p>
@@ -377,7 +377,7 @@ class AgentReviewing extends React.Component {
                     <AiFillQuestionCircle
                       size={24}
                       color="lightgray"
-                      className="mx-2"
+                      className="my-0 mx-2"
                     />
                     ({numb_uni_assist_vpd_uploaded}/{numb_uni_assist_vpd_needed}
                     )
@@ -401,7 +401,7 @@ class AgentReviewing extends React.Component {
                     size={24}
                     color="limegreen"
                     title="complete"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                   (
                   {num_apps_decided >
@@ -418,7 +418,7 @@ class AgentReviewing extends React.Component {
                     size={24}
                     color="lightgray"
                     title="incomplete"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                   (
                   {num_apps_decided >
@@ -446,7 +446,7 @@ class AgentReviewing extends React.Component {
                         size={24}
                         color="limegreen"
                         title="complete"
-                        className="mx-2"
+                        className="my-0 mx-2"
                       />
                       <b>({num_apps_closed}</b>
                     </>
@@ -455,7 +455,7 @@ class AgentReviewing extends React.Component {
                       <AiFillQuestionCircle
                         size={24}
                         color="lightgray"
-                        className="mx-2"
+                        className="my-0 mx-2"
                       />
                       ({num_apps_closed}
                     </>
@@ -467,7 +467,7 @@ class AgentReviewing extends React.Component {
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
-                    className="mx-2"
+                    className="my-0 mx-2"
                   />
                   (
                   {num_apps_closed >

@@ -189,14 +189,14 @@ class AgentMainView extends React.Component {
                 responsive
                 bordered
                 hover
-                className="my-0 mx-0"
+                className="px-0 my-0 mx-0"
                 variant="dark"
                 text="light"
                 size="sm"
               >
                 <thead>
                   <tr>
-                    <th>First-/Lastname</th>
+                    <th>First-/Lastname,Birthday,Target</th>
                     <th>Survey</th>
                     <th>Language</th>
                     <th>Base Documents</th>

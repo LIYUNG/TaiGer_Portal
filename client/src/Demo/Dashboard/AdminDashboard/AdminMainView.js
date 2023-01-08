@@ -68,7 +68,7 @@ class AdminMainView extends React.Component {
         <Row className="px-0 py-0 mb-2 my-0">
           <Card className="py-0 px-0 my-0 mx-0" bg={'danger'} text={'light'}>
             <Card.Header>
-              <Card.Title className="px-0 py-0  my-0 mx-0 text-light">
+              <Card.Title className="px-0 py-0 my-0 mx-0 text-light">
                 <BsExclamationTriangle size={18} /> Admin To Do Tasks:
               </Card.Title>
             </Card.Header>
@@ -104,7 +104,7 @@ class AdminMainView extends React.Component {
               responsive
               bordered
               hover
-              className="px-0 my-0 mx-0"
+              className="px-0 my-0 mx-0 py-0"
               variant="dark"
               text="light"
               size="sm"

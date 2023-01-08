@@ -556,7 +556,7 @@ class SingleStudentPage extends React.Component {
             </Card>
           </Tab>
           <Tab eventKey="program_portal" title="Portal">
-            <Row>Coming Soon!</Row>
+            {/* <Row>Coming Soon!</Row> */}
             <Card className="my-0 mx-0">
               <Card.Body>
                 <Row>

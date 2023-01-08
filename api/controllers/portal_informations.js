@@ -13,14 +13,19 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
   } = req;
 
   const student = await Student.findById(studentId)
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
     .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
+      'applications.programId',
+      'school program_name application_portal_a application_portal_b'
     )
+    .select('-applications.doc_modification_thread')
     .lean();
-  res.status(200).send({ success: true, data: student });
+  res.status(200).send({
+    success: true,
+    data: {
+      applications: student.applications,
+      student: { firstname: student.firstname, lastname: student.lastname }
+    }
+  });
 });
 
 const createPortalCredentials = asyncHandler(async (req, res) => {

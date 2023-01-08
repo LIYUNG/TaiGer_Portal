@@ -19,11 +19,12 @@ class EditableFile_Thread extends Component {
     );
   };
 
-  handleDeleteFileThread = () => {
+  handleDeleteFileThread = (documenName) => {
     this.props.onDeleteFileThread(
       this.props.thread.doc_thread_id._id,
       this.props.application,
-      this.props.student._id
+      this.props.student._id,
+      documenName
     );
   };
 
@@ -148,7 +149,7 @@ class EditableFile_Thread extends Component {
                   style={{ cursor: 'pointer' }}
                   title="Delete"
                   variant="danger"
-                  onClick={this.handleDeleteFileThread}
+                  onClick={() => this.handleDeleteFileThread(documenName)}
                 >
                   <AiOutlineDelete size={20} />
                 </Button>

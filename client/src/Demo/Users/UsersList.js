@@ -12,6 +12,7 @@ import { deleteUser, updateUser, changeUserRole } from '../../api';
 class UsersList extends React.Component {
   state = {
     modalShow: false,
+    delete_field: '',
     timeouterror: null,
     unauthorizederror: null,
     firstname: '',
@@ -54,7 +55,8 @@ class UsersList extends React.Component {
 
   setModalHideDDelete = () => {
     this.setState({
-      deleteUserWarning: false
+      deleteUserWarning: false,
+      delete_field: ''
     });
   };
 
@@ -94,6 +96,7 @@ class UsersList extends React.Component {
           this.setState({
             isLoaded: true,
             success,
+            delete_field: '',
             deleteUserWarning: false,
             data: array,
             res_modal_status: status
@@ -116,7 +119,9 @@ class UsersList extends React.Component {
       }
     );
   };
-
+  onChangeDeleteField = (e) => {
+    this.setState({ delete_field: e.target.value });
+  };
   assignUserAs = (user_data) => {
     var updated_user = this.state.data.map((user) => {
       if (user._id === user_data._id) {
@@ -231,6 +236,8 @@ class UsersList extends React.Component {
         <UserDeleteWarning
           isLoaded={this.state.isLoaded}
           deleteUserWarning={this.state.deleteUserWarning}
+          onChangeDeleteField={this.onChangeDeleteField}
+          delete_field={this.state.delete_field}
           setModalHideDDelete={this.setModalHideDDelete}
           firstname={this.state.firstname}
           lastname={this.state.lastname}

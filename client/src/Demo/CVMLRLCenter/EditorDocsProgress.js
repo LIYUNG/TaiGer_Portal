@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Row,
   Col,
+  Form,
   Button,
   Card,
   Collapse,
@@ -34,8 +35,7 @@ import {
 
 class EditorDocsProgress extends React.Component {
   state = {
-    timeouterror: null,
-    unauthorizederror: null,
+    delete_field: '',
     student: this.props.student,
     deleteFileWarningModel: false,
     SetProgramStatusModel: false,
@@ -90,7 +90,11 @@ class EditorDocsProgress extends React.Component {
     this.setState((state) => ({ ...state, isThreadExisted: false }));
   };
   closeWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
+    this.setState((state) => ({
+      ...state,
+      deleteFileWarningModel: false,
+      delete_field: ''
+    }));
   };
 
   ConfirmDeleteDiscussionThreadHandler = () => {
@@ -123,6 +127,7 @@ class EditorDocsProgress extends React.Component {
               isLoaded: true,
               student: student_temp,
               success: success,
+              delete_field: '',
               deleteFileWarningModel: false,
               res_modal_status: status
             }));
@@ -335,12 +340,17 @@ class EditorDocsProgress extends React.Component {
     }));
   };
 
-  onDeleteFileThread = (doc_thread_id, application, studentId) => {
+  onChangeDeleteField = (e) => {
+    this.setState({ delete_field: e.target.value });
+  };
+
+  onDeleteFileThread = (doc_thread_id, application, studentId, docName) => {
     this.setState((state) => ({
       ...state,
       doc_thread_id,
       program_id: application ? application.programId._id : null,
       student_id: studentId,
+      docName,
       deleteFileWarningModel: true
     }));
   };
@@ -915,11 +925,28 @@ class EditorDocsProgress extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Do you want to delete {this.state.applicationId}?
+            Do you want to delete <b>{this.state.docName}</b>?
+            <Form.Group
+              // controlId="target_application_field"
+              className="my-0 mx-0"
+            >
+              <Form.Label className="my-1 mx-0">
+                Please enter{' '}
+                <i>
+                  <b>delete</b>
+                </i>{' '}
+                in order to delete the user.
+              </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="delete"
+                onChange={(e) => this.onChangeDeleteField(e)}
+              />
+            </Form.Group>
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!isLoaded}
+              disabled={!isLoaded || this.state.delete_field !== 'delete'}
               onClick={this.ConfirmDeleteDiscussionThreadHandler}
             >
               {isLoaded ? (

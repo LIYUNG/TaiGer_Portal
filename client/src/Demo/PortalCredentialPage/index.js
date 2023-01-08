@@ -14,14 +14,13 @@ export default function PortalCredentialPage(props) {
   let [statedata, setStatedata] = useState({
     error: null,
     isLoaded: false,
-    coursesdata: {},
     applications: [],
     analysis: {},
     confirmModalWindowOpen: false,
     analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
-    credentials: { account: '', password: '' },
+    credentials: {},
     isUpdating: false,
     isDownloading: false,
     res_status: 0,
@@ -38,11 +37,37 @@ export default function PortalCredentialPage(props) {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
+          let credentials_temp = {};
+          if (data.applications) {
+            for (let i = 0; i < data.applications.length; i += 1) {
+              credentials_temp[data.applications[i].programId._id.toString()] =
+                {
+                  account_portal_a: data.applications[i].portal_credentials
+                    ? data.applications[i].portal_credentials
+                        .application_portal_a.account
+                    : '',
+                  account_portal_b: data.applications[i].portal_credentials
+                    ? data.applications[i].portal_credentials
+                        .application_portal_b.account
+                    : '',
+                  password_portal_a: data.applications[i].portal_credentials
+                    ? data.applications[i].portal_credentials
+                        .application_portal_a.password
+                    : '',
+                  password_portal_b: data.applications[i].portal_credentials
+                    ? data.applications[i].portal_credentials
+                        .application_portal_b.password
+                    : ''
+                };
+            }
+          }
+
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             applications: data.applications, // populated
             student: data.student, // populated
+            credentials: credentials_temp,
             success: success,
             res_status: status
           }));
@@ -67,47 +92,55 @@ export default function PortalCredentialPage(props) {
   const onChange = (e) => {
     e.persist();
     const event_id = e.target.id;
-    console.log(event_id);
     const program_id = event_id.split('_')[0];
-    console.log(program_id);
     if (event_id.includes('account')) {
-      console.log('account');
       if (event_id.includes('application_portal_a')) {
         setStatedata((state) => ({
           ...state,
-          [program_id]: {
-            ...state[program_id],
-            account_portal_a: e.target.value
+          credentials: {
+            ...state.credentials,
+            [program_id]: {
+              ...state.credentials[program_id],
+              account_portal_a: e.target.value
+            }
           }
         }));
       }
       if (event_id.includes('application_portal_b')) {
         setStatedata((state) => ({
           ...state,
-          [program_id]: {
-            ...state[program_id],
-            account_portal_b: e.target.value
+          credentials: {
+            ...state.credentials,
+            [program_id]: {
+              ...state.credentials[program_id],
+              account_portal_b: e.target.value
+            }
           }
         }));
       }
     }
     if (event_id.includes('password')) {
-      console.log('password');
       if (event_id.includes('application_portal_a')) {
         setStatedata((state) => ({
           ...state,
-          [program_id]: {
-            ...state[program_id],
-            password_portal_a: e.target.value
+          credentials: {
+            ...state.credentials,
+            [program_id]: {
+              ...state.credentials[program_id],
+              password_portal_a: e.target.value
+            }
           }
         }));
       }
       if (event_id.includes('application_portal_b')) {
         setStatedata((state) => ({
           ...state,
-          [program_id]: {
-            ...state[program_id],
-            password_portal_b: e.target.value
+          credentials: {
+            ...state.credentials,
+            [program_id]: {
+              ...state.credentials[program_id],
+              password_portal_b: e.target.value
+            }
           }
         }));
       }
@@ -115,7 +148,6 @@ export default function PortalCredentialPage(props) {
   };
 
   const onSubmit = (student_id, program_id, credentials) => {
-    console.log(statedata[program_id]);
     setStatedata((state) => ({
       ...state,
       isUpdating: true
@@ -256,7 +288,9 @@ export default function PortalCredentialPage(props) {
                             onSubmit(
                               statedata.student._id.toString(),
                               application.programId._id.toString(),
-                              statedata[application.programId._id.toString()]
+                              statedata.credentials[
+                                application.programId._id.toString()
+                              ]
                             )
                           }
                           disabled={statedata.isUpdating}
@@ -291,11 +325,9 @@ export default function PortalCredentialPage(props) {
                                 placeholder="account"
                                 onChange={(e) => onChange(e)}
                                 defaultValue={
-                                  application.portal_credentials &&
-                                  application.portal_credentials
-                                    .application_portal_a &&
-                                  application.portal_credentials
-                                    .application_portal_a.account
+                                  statedata.credentials[
+                                    application.programId._id.toString()
+                                  ].account_portal_a
                                 }
                               />
                             </Form.Group>
@@ -310,11 +342,9 @@ export default function PortalCredentialPage(props) {
                                 placeholder="password"
                                 onChange={(e) => onChange(e)}
                                 defaultValue={
-                                  application.portal_credentials &&
-                                  application.portal_credentials
-                                    .application_portal_a &&
-                                  application.portal_credentials
-                                    .application_portal_a.password
+                                  statedata.credentials[
+                                    application.programId._id.toString()
+                                  ].password_portal_a
                                 }
                               />
                             </Form.Group>
@@ -341,11 +371,9 @@ export default function PortalCredentialPage(props) {
                                 placeholder="account"
                                 onChange={(e) => onChange(e)}
                                 defaultValue={
-                                  application.portal_credentials &&
-                                  application.portal_credentials
-                                    .application_portal_b &&
-                                  application.portal_credentials
-                                    .application_portal_b.account
+                                  statedata.credentials[
+                                    application.programId._id.toString()
+                                  ].account_portal_a
                                 }
                               />
                             </Form.Group>
@@ -360,11 +388,9 @@ export default function PortalCredentialPage(props) {
                                 placeholder="password"
                                 onChange={(e) => onChange(e)}
                                 defaultValue={
-                                  application.portal_credentials &&
-                                  application.portal_credentials
-                                    .application_portal_b &&
-                                  application.portal_credentials
-                                    .application_portal_b.password
+                                  statedata.credentials[
+                                    application.programId._id.toString()
+                                  ].password_portal_b
                                 }
                               />
                             </Form.Group>
@@ -398,7 +424,7 @@ export default function PortalCredentialPage(props) {
             Confirmation
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>Update transcript successfully</Modal.Body>
+        <Modal.Body>Update portal credentials successfully</Modal.Body>
         <Modal.Footer>
           <Button onClick={closeModal}>Close</Button>
         </Modal.Footer>

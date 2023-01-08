@@ -93,6 +93,14 @@ export default {
           icon: 'feather icon-eye'
         },
         {
+          id: 'application_portal_management',
+          title: 'Portals Management',
+          type: 'item',
+          url: '/portal-informations',
+          classes: 'nav-item',
+          icon: 'feather icon-layout'
+        },
+        {
           id: 'uni_assist_tasks',
           title: 'Uni-Assist Tasks',
           type: 'item',
@@ -365,7 +373,7 @@ export default {
         //   },
         // },
       ]
-    },
+    }
     // {
     //   id: 'taiger_internal_sidebar',
     //   title: 'Taiger Internal',

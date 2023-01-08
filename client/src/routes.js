@@ -295,6 +295,12 @@ const routes = [
     component: UniAssist
   },
   {
+    path: '/portal-informations',
+    exact: true,
+    name: 'Portal Information',
+    component: PortalCredentialPage
+  },
+  {
     path: '/portal-informations/:student_id',
     exact: true,
     name: 'Portal Information',

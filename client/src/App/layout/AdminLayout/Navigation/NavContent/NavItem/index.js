@@ -15,6 +15,7 @@ class NavItem extends Component {
       if (
         itemTitle === 'My Courses' ||
         itemTitle === 'Academic Survey' ||
+        itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Check List' ||
@@ -33,6 +34,7 @@ class NavItem extends Component {
         itemTitle === 'My Courses' ||
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'Check List' ||
         itemTitle === 'My Tasks Overview' ||
@@ -52,6 +54,7 @@ class NavItem extends Component {
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Check List' ||
+        itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Interview Training' ||

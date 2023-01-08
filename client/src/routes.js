@@ -6,6 +6,9 @@ window.$ = $;
 global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
+const DashboardStudentView = React.lazy(() =>
+  import('./Demo/Dashboard/DashboardStudentView')
+);
 const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
 const UIBasicBreadcrumbPagination = React.lazy(() =>
   import('./Demo/UIElements/Basic/BreadcrumbPagination')
@@ -107,6 +110,12 @@ const routes = [
     exact: true,
     name: 'AssignEditors',
     component: EditorsAssignment
+  },
+  {
+    path: '/dashboard/student-view/:student_id',
+    exact: true,
+    name: 'DashboardStudent',
+    component: DashboardStudentView
   },
   {
     path: '/dashboard/default',

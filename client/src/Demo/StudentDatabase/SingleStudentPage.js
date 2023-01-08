@@ -446,13 +446,34 @@ class SingleStudentPage extends React.Component {
         <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
+              {/* <Card.Header>
                 <Card.Title className="text-light">
                   {this.state.student.firstname}
                   {' ,'}
                   {this.state.student.lastname}
                 </Card.Title>
-              </Card.Header>
+              </Card.Header> */}
+              <h4
+                className="text-light mt-4 ms-4"
+                style={{ textAlign: 'left' }}
+              >
+                {this.state.student.firstname}
+                {' ,'}
+                {this.state.student.lastname}
+
+                <span style={{ float: 'right', cursor: 'pointer' }}>
+                  <Link
+                    to={`/dashboard/student-view/${this.props.match.params.studentId}`}
+                  >
+                    <Button
+                      size="sm"
+                      className="text-light mb-3 me-4" // onClick={(e) =>
+                    >
+                      Switch to Student View
+                    </Button>
+                  </Link>
+                </span>
+              </h4>
             </Card>
           </Col>
         </Row>
@@ -560,7 +581,9 @@ class SingleStudentPage extends React.Component {
             <Card className="my-0 mx-0">
               <Card.Body>
                 <Row>
-                  <Link to={`/portal-informations/${this.state.student._id.toString()}`}>
+                  <Link
+                    to={`/portal-informations/${this.state.student._id.toString()}`}
+                  >
                     <Button>Go to Portal Credentials</Button>
                   </Link>
                 </Row>

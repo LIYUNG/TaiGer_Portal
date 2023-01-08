@@ -182,6 +182,12 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
     program_id
   });
 
+// Portal Informations APIs
+export const getPortalCredentials = (student_id) =>
+  request.get(`/api/portal-informations/${student_id}`);
+export const postPortalCredentials = (student_id, file) =>
+  request.post(`/api/portal-informations/${student_id}`, file);
+
 // Course, Transcript APIs
 export const getMycourses = (student_id) =>
   request.get(`/api/courses/${student_id}`);

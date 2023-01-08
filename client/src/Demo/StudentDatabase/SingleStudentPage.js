@@ -557,6 +557,15 @@ class SingleStudentPage extends React.Component {
           </Tab>
           <Tab eventKey="program_portal" title="Portal">
             <Row>Coming Soon!</Row>
+            <Card className="my-0 mx-0">
+              <Card.Body>
+                <Row>
+                  <Link to={`/portal-informations/${this.state.student._id.toString()}`}>
+                    <Button>Go to Portal Credentials</Button>
+                  </Link>
+                </Row>
+              </Card.Body>
+            </Card>
           </Tab>
           <Tab eventKey="uni-assist" title="Uni-Assist">
             <Row>

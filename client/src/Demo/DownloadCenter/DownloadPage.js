@@ -128,48 +128,6 @@ class DownloadPage extends React.Component {
     );
   };
 
-  onDownloadFilefromstudent = (e, category) => {
-    e.preventDefault();
-    getTemplateDownload(category).then(
-      (resp) => {
-        const actualFileName =
-          resp.headers['content-disposition'].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-
-        var filetype = actualFileName.split('.'); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === 'pdf') {
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: 'application/pdf' })
-          );
-
-          // Open the URL on new Window
-          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
-          newWindow.document.title = actualFileName;
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert('The file is not available.');
-      }
-    );
-  };
-
   render() {
     if (
       this.props.user.role !== 'Admin' &&
@@ -216,7 +174,6 @@ class DownloadPage extends React.Component {
                 onFileChange={this.onFileChange}
                 templatelist={window.templatelist}
                 onDeleteTemplateFile={this.onDeleteTemplateFile}
-                onDownloadFilefromstudent={this.onDownloadFilefromstudent}
               />
             </Card>
           </Col>

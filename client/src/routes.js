@@ -11,6 +11,9 @@ const UIBasicBreadcrumbPagination = React.lazy(() =>
   import('./Demo/UIElements/Basic/BreadcrumbPagination')
 );
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
+;
+const PortalCredentialPage = React.lazy(() => import('./Demo/PortalCredentialPage/index'));
+;
 const BaseDocuments = React.lazy(() =>
   import('./Demo/AgentCenter/BaseDocuments')
 );
@@ -290,6 +293,12 @@ const routes = [
     exact: true,
     name: 'Uni Assist Tasks',
     component: UniAssist
+  },
+  {
+    path: '/portal-informations/:student_id',
+    exact: true,
+    name: 'Portal Information',
+    component: PortalCredentialPage
   },
   {
     path: '/cv-ml-rl-center',

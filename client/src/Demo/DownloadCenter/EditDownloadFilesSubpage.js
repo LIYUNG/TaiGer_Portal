@@ -7,7 +7,15 @@ class EditDownloadFilesSubpage extends React.Component {
   state = {
     isLoaded: this.props.isLoaded
   };
-
+  componentDidUpdate(prevProps) {
+    // 常見用法（別忘了比較 prop）：
+    if (prevProps.isLoaded !== this.props.isLoaded) {
+      this.setState((state) => ({
+        ...state,
+        isLoaded: true
+      }));
+    }
+  }
   submitFile = (e, prop) => {
     e.preventDefault();
     this.setState((state) => ({
@@ -33,45 +41,23 @@ class EditDownloadFilesSubpage extends React.Component {
       return (
         <tr key={i + 1}>
           <td>{template.name}</td>
-          {this.props.role !== 'Student' ? (
-            object_init[template.prop] === 'uploaded' ? (
-              <>
-                {this.props.role === 'Admin' ? (
-                  <td>
-                    <Col>
-                      <Button
-                        variant={deleteStyle}
-                        size="sm"
-                        type="submit"
-                        title="Delete"
-                        disabled={!this.props.isLoaded}
-                        onClick={(e) =>
-                          this.props.onDeleteTemplateFile(e, template.prop)
-                        }
-                      >
-                        <AiOutlineDelete size={16} />
-                      </Button>
-                    </Col>
-                  </td>
+          <td>
+            {this.props.role === 'Admin' && (
+              <Col>
+                {object_init[template.prop] === 'uploaded' ? (
+                  <Button
+                    variant={deleteStyle}
+                    size="sm"
+                    type="submit"
+                    title="Delete"
+                    disabled={!this.props.isLoaded}
+                    onClick={(e) =>
+                      this.props.onDeleteTemplateFile(e, template.prop)
+                    }
+                  >
+                    <AiOutlineDelete size={16} />
+                  </Button>
                 ) : (
-                  <td></td>
-                )}
-                <td></td>
-                <td>
-                  <Col>
-                    <a
-                      href={`${BASE_URL}/api/account/files/template/${template.prop}`}
-                      target="_blank"
-                      className="text-info"
-                    >
-                      <Button size="sm">Download</Button>
-                    </a>
-                  </Col>
-                </td>
-              </>
-            ) : (
-              <>
-                <td>
                   <Col>
                     <Form.Group controlId="formFile">
                       <Form.Control
@@ -80,57 +66,46 @@ class EditDownloadFilesSubpage extends React.Component {
                       />
                     </Form.Group>
                   </Col>
-                </td>
-                <td>
-                  <Col>
-                    <Form onSubmit={(e) => this.submitFile(e, template.prop)}>
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button size="sm" type="submit">
-                          {!this.state.isLoaded ? (
-                            <div>
-                              <Spinner
-                                size="sm"
-                                animation="border"
-                                role="status"
-                                variant="light"
-                              >
-                                <span className="visually-hidden"></span>
-                              </Spinner>
-                            </div>
-                          ) : (
-                            'Upload'
-                          )}
-                        </Button>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                </td>
-                <td></td>
-              </>
-            )
-          ) : object_init[template.prop] === 'uploaded' ? (
-            <>
-              <td></td>
-              <td>
-                <Col>
-                  <a
-                    href={`${BASE_URL}/api/account/files/template/${template.prop}`}
-                    target="_blank"
-                    className="text-info"
-                  >
-                    <Button size="sm">Download</Button>
-                  </a>
-                </Col>
-              </td>
-              <td></td>
-            </>
-          ) : (
-            <>
-              <td></td>
-              <td></td>
-              <td></td>
-            </>
-          )}
+                )}
+              </Col>
+            )}
+          </td>
+          <td>
+            {object_init[template.prop] === 'uploaded' ? (
+              <Col>
+                <a
+                  href={`${BASE_URL}/api/account/files/template/${template.prop}`}
+                  target="_blank"
+                  className="text-info"
+                >
+                  <Button size="sm">Download</Button>
+                </a>
+              </Col>
+            ) : (
+              <Col>
+                <Form onSubmit={(e) => this.submitFile(e, template.prop)}>
+                  <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Button size="sm" type="submit">
+                      {!this.state.isLoaded ? (
+                        <div>
+                          <Spinner
+                            size="sm"
+                            animation="border"
+                            role="status"
+                            variant="light"
+                          >
+                            <span className="visually-hidden"></span>
+                          </Spinner>
+                        </div>
+                      ) : (
+                        'Upload'
+                      )}
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Col>
+            )}
+          </td>
         </tr>
       );
     });

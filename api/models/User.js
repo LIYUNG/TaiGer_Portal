@@ -286,6 +286,16 @@ const applicationSchema = new Schema({
     },
     updatedAt: Date
   },
+  portal_credentials: {
+    type: String,
+    select: false,
+    trim: true,
+    portal_credentials: {
+      type: String,
+      select: false,
+      trim: true
+    }
+  },
   doc_modification_thread: [
     {
       isFinalVersion: {

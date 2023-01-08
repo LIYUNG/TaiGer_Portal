@@ -14,6 +14,7 @@ export default function PortalCredentialPage(props) {
   let [statedata, setStatedata] = useState({
     error: null,
     isLoaded: false,
+    isUpdateLoaded: {},
     applications: [],
     analysis: {},
     confirmModalWindowOpen: false,
@@ -38,8 +39,12 @@ export default function PortalCredentialPage(props) {
         const { status } = resp;
         if (success) {
           let credentials_temp = {};
+          let isUpdateLoaded_temp = {};
           if (data.applications) {
             for (let i = 0; i < data.applications.length; i += 1) {
+              isUpdateLoaded_temp[
+                data.applications[i].programId._id.toString()
+              ] = true;
               credentials_temp[data.applications[i].programId._id.toString()] =
                 {
                   account_portal_a: data.applications[i].portal_credentials
@@ -68,6 +73,7 @@ export default function PortalCredentialPage(props) {
             applications: data.applications, // populated
             student: data.student, // populated
             credentials: credentials_temp,
+            isUpdateLoaded: isUpdateLoaded_temp,
             success: success,
             res_status: status
           }));
@@ -150,7 +156,7 @@ export default function PortalCredentialPage(props) {
   const onSubmit = (student_id, program_id, credentials) => {
     setStatedata((state) => ({
       ...state,
-      isUpdating: true
+      isUpdateLoaded: { ...state.isUpdateLoaded, [program_id]: false }
     }));
     postPortalCredentials(student_id, program_id, credentials).then(
       (resp) => {
@@ -161,6 +167,7 @@ export default function PortalCredentialPage(props) {
             ...state,
             isLoaded: true,
             confirmModalWindowOpen: true,
+            isUpdateLoaded: { ...state.isUpdateLoaded, [program_id]: true },
             success: success,
             isUpdating: false,
             res_modal_status: status
@@ -293,9 +300,17 @@ export default function PortalCredentialPage(props) {
                               ]
                             )
                           }
-                          disabled={statedata.isUpdating}
+                          disabled={
+                            !statedata.isUpdateLoaded[
+                              application.programId._id.toString()
+                            ]
+                          }
                         >
-                          {statedata.isUpdating ? 'Updating' : 'Update'}
+                          {!statedata.isUpdateLoaded[
+                            application.programId._id.toString()
+                          ]
+                            ? 'Updating'
+                            : 'Update'}
                         </Button>
                       )}
                   </div>

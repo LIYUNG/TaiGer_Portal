@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
-import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
-
+import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -9,7 +8,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { showButtonIfMyStudentB } from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
-import { getPortalCredentials, postMycourses } from '../../api';
+import { getPortalCredentials, postPortalCredentials } from '../../api';
 
 export default function PortalCredentialPage(props) {
   let [statedata, setStatedata] = useState({
@@ -22,6 +21,7 @@ export default function PortalCredentialPage(props) {
     analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
+    credentials: { account: '', password: '' },
     isUpdating: false,
     isDownloading: false,
     res_status: 0,
@@ -64,34 +64,70 @@ export default function PortalCredentialPage(props) {
     );
   }, []);
 
-  const onChange = (new_data) => {
-    setStatedata((state) => ({
-      ...state,
-      coursesdata: new_data
-    }));
+  const onChange = (e) => {
+    e.persist();
+    const event_id = e.target.id;
+    console.log(event_id);
+    const program_id = event_id.split('_')[0];
+    console.log(program_id);
+    if (event_id.includes('account')) {
+      console.log('account');
+      if (event_id.includes('application_portal_a')) {
+        setStatedata((state) => ({
+          ...state,
+          [program_id]: {
+            ...state[program_id],
+            account_portal_a: e.target.value
+          }
+        }));
+      }
+      if (event_id.includes('application_portal_b')) {
+        setStatedata((state) => ({
+          ...state,
+          [program_id]: {
+            ...state[program_id],
+            account_portal_b: e.target.value
+          }
+        }));
+      }
+    }
+    if (event_id.includes('password')) {
+      console.log('password');
+      if (event_id.includes('application_portal_a')) {
+        setStatedata((state) => ({
+          ...state,
+          [program_id]: {
+            ...state[program_id],
+            password_portal_a: e.target.value
+          }
+        }));
+      }
+      if (event_id.includes('application_portal_b')) {
+        setStatedata((state) => ({
+          ...state,
+          [program_id]: {
+            ...state[program_id],
+            password_portal_b: e.target.value
+          }
+        }));
+      }
+    }
   };
 
-  const onSubmit = () => {
-    const coursesdata_string = JSON.stringify(statedata.coursesdata);
+  const onSubmit = (student_id, program_id, credentials) => {
+    console.log(statedata[program_id]);
     setStatedata((state) => ({
       ...state,
       isUpdating: true
     }));
-    postMycourses(statedata.student._id.toString(), {
-      student_id: statedata.student._id.toString(),
-      name: statedata.student.firstname,
-      table_data_string: coursesdata_string
-    }).then(
+    postPortalCredentials(student_id, program_id, credentials).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          const course_from_database = JSON.parse(data.table_data_string);
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
-            updatedAt: data.updatedAt,
-            coursesdata: course_from_database,
             confirmModalWindowOpen: true,
             success: success,
             isUpdating: false,
@@ -187,25 +223,48 @@ export default function PortalCredentialPage(props) {
               <Row>
                 <Col>
                   <p>
-                    Please share your portal credentials here if you want your
-                    agents helping you to review your application in
-                    universities' application portals.
+                    Please share your universities' application portals
+                    credentials here if you want your agent(s) helping you
+                    review your applications in universities' application
+                    portals.
                   </p>
                   <p>
                     <b>If you don't want to share, </b>left it blank.
                   </p>
                 </Col>
               </Row>
-              <br />
               {statedata.applications.map((application, i) => (
                 <>
-                  <h5>
-                    <b>
-                      {application.programId.school}
-                      {'-'}
-                      {application.programId.program_name}
-                    </b>
-                  </h5>
+                  <hr></hr>
+                  <div>
+                    <a
+                      href={`/programs/${application.programId._id.toString()}`}
+                      target="_blank"
+                    >
+                      <b>
+                        {application.programId.school}
+                        {' - '}
+                        {application.programId.program_name}
+                      </b>
+                    </a>{' '}
+                    {showButtonIfMyStudentB(props.user, statedata.student) &&
+                      (application.programId.application_portal_a ||
+                        application.programId.application_portal_b) && (
+                        <Button
+                          size="sm"
+                          onClick={(e) =>
+                            onSubmit(
+                              statedata.student._id.toString(),
+                              application.programId._id.toString(),
+                              statedata[application.programId._id.toString()]
+                            )
+                          }
+                          disabled={statedata.isUpdating}
+                        >
+                          {statedata.isUpdating ? 'Updating' : 'Update'}
+                        </Button>
+                      )}
+                  </div>
                   {(application.programId.application_portal_a ||
                     application.programId.application_portal_b) && (
                     <>
@@ -222,8 +281,44 @@ export default function PortalCredentialPage(props) {
                       </Row>
                       {application.programId.application_portal_a && (
                         <Row>
-                          <Col md={4}>account_a</Col>
-                          <Col md={3}>password_a</Col>
+                          <Col md={4}>
+                            <Form.Group
+                              controlId={`${application.programId._id.toString()}_application_portal_a_account`}
+                              className="my-0 mx-0"
+                            >
+                              <Form.Control
+                                type="text"
+                                placeholder="account"
+                                onChange={(e) => onChange(e)}
+                                defaultValue={
+                                  application.portal_credentials &&
+                                  application.portal_credentials
+                                    .application_portal_a &&
+                                  application.portal_credentials
+                                    .application_portal_a.account
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col md={3}>
+                            <Form.Group
+                              controlId={`${application.programId._id.toString()}_application_portal_a_password`}
+                              className="my-0 mx-0"
+                            >
+                              <Form.Control
+                                type="text"
+                                placeholder="password"
+                                onChange={(e) => onChange(e)}
+                                defaultValue={
+                                  application.portal_credentials &&
+                                  application.portal_credentials
+                                    .application_portal_a &&
+                                  application.portal_credentials
+                                    .application_portal_a.password
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
                           <Col md={5}>
                             <a
                               href={`${application.programId.application_portal_a}`}
@@ -236,8 +331,44 @@ export default function PortalCredentialPage(props) {
                       )}
                       {application.programId.application_portal_b && (
                         <Row>
-                          <Col md={4}>account_b</Col>
-                          <Col md={3}>password_b</Col>
+                          <Col md={4}>
+                            <Form.Group
+                              controlId={`${application.programId._id.toString()}_application_portal_b_account`}
+                              className="my-1 mx-0"
+                            >
+                              <Form.Control
+                                type="text"
+                                placeholder="account"
+                                onChange={(e) => onChange(e)}
+                                defaultValue={
+                                  application.portal_credentials &&
+                                  application.portal_credentials
+                                    .application_portal_b &&
+                                  application.portal_credentials
+                                    .application_portal_b.account
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col md={3}>
+                            <Form.Group
+                              controlId={`${application.programId._id.toString()}_application_portal_b_password`}
+                              className="my-1 mx-0"
+                            >
+                              <Form.Control
+                                type="text"
+                                placeholder="password"
+                                onChange={(e) => onChange(e)}
+                                defaultValue={
+                                  application.portal_credentials &&
+                                  application.portal_credentials
+                                    .application_portal_b &&
+                                  application.portal_credentials
+                                    .application_portal_b.password
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
                           <Col md={5}>
                             <a
                               href={`${application.programId.application_portal_b}`}
@@ -252,16 +383,6 @@ export default function PortalCredentialPage(props) {
                   )}
                 </>
               ))}
-              <Row className="my-2">
-                <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
-              </Row>
-              <Row className="mx-1">
-                {showButtonIfMyStudentB(props.user, statedata.student) && (
-                  <Button onClick={onSubmit} disabled={statedata.isUpdating}>
-                    {statedata.isUpdating ? 'Updating' : 'Update'}
-                  </Button>
-                )}
-              </Row>
             </Card.Body>
           </Card>
         </Col>

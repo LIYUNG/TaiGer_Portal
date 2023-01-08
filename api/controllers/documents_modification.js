@@ -166,7 +166,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         'file_type isFinalVersion updatedAt'
       )
       .select(
-        'applications applications generaldocs_threads firstname lastname application_preference'
+        'applications generaldocs_threads firstname lastname application_preference '
       )
       .lean();
     res.status(200).send({ success: true, data: students });

@@ -287,13 +287,13 @@ const applicationSchema = new Schema({
     updatedAt: Date
   },
   portal_credentials: {
-    type: String,
-    select: false,
-    trim: true,
-    portal_credentials: {
-      type: String,
-      select: false,
-      trim: true
+    application_portal_a: {
+      account: { type: String, select: false, trim: true },
+      password: { type: String, select: false, trim: true }
+    },
+    application_portal_b: {
+      account: { type: String, select: false, trim: true },
+      password: { type: String, select: false, trim: true }
     }
   },
   doc_modification_thread: [

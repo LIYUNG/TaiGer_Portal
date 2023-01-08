@@ -17,33 +17,46 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
       'applications.programId',
       'school program_name application_portal_a application_portal_b'
     )
-    .select('-applications.doc_modification_thread')
+    .select(
+      'firstname lastname applications.portal_credentials.application_portal_a applications.portal_credentials.application_portal_b'
+    )
     .lean();
   res.status(200).send({
     success: true,
     data: {
       applications: student.applications,
-      student: { firstname: student.firstname, lastname: student.lastname }
+      student: {
+        _id: student._id,
+        firstname: student.firstname,
+        lastname: student.lastname
+      }
     }
   });
 });
 
 const createPortalCredentials = asyncHandler(async (req, res) => {
-  const { studentId } = req.params;
-  const fields = req.body;
-  const courses = await Course.findOne({ student_id: studentId });
-  fields.updatedAt = new Date();
-  if (!courses) {
-    const newDoc = await Course.create(fields);
-    const courses3 = await Course.findOne({
-      student_id: studentId
-    }).populate('student_id', 'firstname lastname');
-    return res.send({ success: true, data: courses3 });
-  }
-  const courses2 = await Course.findOneAndUpdate(studentId, fields, {
-    new: true
-  }).populate('student_id', 'firstname lastname');
-  return res.send({ success: true, data: courses2 });
+  const { studentId, programId } = req.params;
+  const credentials = req.body;
+    // console.log(credentials);
+  const student = await Student.findById(studentId);
+  const application = student.applications.find(
+    (application) => application.programId.toString() === programId
+  );
+  //   console.log(application);
+  const portal_credentials = {
+    application_portal_a: {
+      account: credentials.account_portal_a,
+      password: credentials.password_portal_a
+    },
+    application_portal_b: {
+      account: credentials.account_portal_b,
+      password: credentials.password_portal_b
+    }
+  };
+  application.portal_credentials = portal_credentials;
+  await student.save();
+//   console.log(student);
+  return res.send({ success: true, data: student });
 });
 
 module.exports = {

@@ -233,7 +233,7 @@ window.profile_list = {
 
 window.academic_background_header = {
   School: 'School / Program',
-  // Program: 'Program',
+  Application_Fields: 'Target',
   English_German: 'English/German',
   Score: 'Score',
   Next_Test_Date: 'Next Test Date'

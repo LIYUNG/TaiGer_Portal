@@ -166,7 +166,8 @@ class StudentBaseDocumentsStatus extends React.Component {
     return (
       <>
         <tr>
-          <td style={current_style} title={current_title}>
+          <td></td>
+          <td style={current_style} title={current_title} className="long">
             <Link
               to={'/student-database/' + this.props.student._id + '/profile'}
               style={{ textDecoration: 'none' }}

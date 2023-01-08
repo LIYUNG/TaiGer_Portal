@@ -27,6 +27,9 @@ class StudDocsDashboard extends React.Component {
   };
 
   render() {
+    const target_application_field = this.props.student.application_preference
+      ? this.props.student.application_preference.target_application_field
+      : '';
     return (
       <>
         <tr>
@@ -98,6 +101,7 @@ class StudDocsDashboard extends React.Component {
                 .attended_university_program
             }
           </td>
+          <td>{target_application_field}</td>
           <td>
             {
               this.props.student.academic_background.language

@@ -128,11 +128,17 @@ class BaseDocuments extends React.Component {
           this.props.user.role === 'Editor' ? (
             // <Card bg={'dark'} text={'light'}>
             <Card className="mb-0 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header as="h5">Base Documents</Card.Header>{' '}
+              {/* <Card.Header as="h5">Base Documents</Card.Header> */}
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Base Documents
+                </Card.Title>
+              </Card.Header>
               <Table
                 size="sm"
                 responsive
                 hover
+                // bordered
                 // className="mt-2 mx-0"
                 // style={{
                 //   background: 'black'
@@ -141,11 +147,30 @@ class BaseDocuments extends React.Component {
               >
                 <thead>
                   <tr className="my-0 mx-0 text-light">
-                    <>
-                      <th style={spinner_style2}>First-, Last Name</th>
-                    </>
+                    <th
+                      className="headcol"
+                      style={{
+                        background: 'black'
+                      }}
+                    >
+                      First-, Last <br /> Name
+                    </th>
+                    <th
+                      style={{
+                        background: 'black',
+                        color: 'black'
+                      }}
+                    >
+                      First-, Last Na
+                    </th>
                     {profile_list_keys.map((doc_name, index) => (
-                      <th key={index} style={spinner_style2}>
+                      <th
+                        style={{
+                          background: 'black'
+                        }}
+                        key={index}
+                        // style={spinner_style2}
+                      >
                         {split_header(doc_name)}
                       </th>
                     ))}

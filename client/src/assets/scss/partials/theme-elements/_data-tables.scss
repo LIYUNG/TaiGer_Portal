@@ -5,23 +5,50 @@
     color: #888;
     td,
     th {
-        border-top: 1px solid $theme-border;
+        border-top: 0px solid $theme-border;
         white-space: nowrap;
         padding: 1.05rem 0.65rem;
     }
 
+    // div {
+    //     width: 500px;
+    //     overflow-x: scroll;
+    //     margin-left: 5em;
+    //     overflow-y: visible;
+    //     padding: 0;
+    // }
+
     thead th {
         border-bottom: 1px solid $theme-border;
     }
-
+    
     tbody + tbody {
         border-top: 1px solid $theme-border;
+        border-bottom: 1px solid $theme-border;
     }
 
     &.table-sm {
         th, td {
             padding: 0.35rem;
         }
+    }
+    th.headcol {
+        position: absolute;
+        width: 8em;
+        left: 1;
+        // top: auto;
+        // border-top-width: 1px;
+        /*only relevant for first row*/
+        // margin-top: -1px;
+        /*compensate for top border*/
+    }
+
+    td.long {
+        // letter-spacing: 1em;
+        position: absolute;
+        left: 0.86em;
+        width: 8em;
+        margin: 1;
     }
 }
 /* Border versions */

@@ -763,8 +763,9 @@ class SurveyEditableComponent extends React.Component {
                         </Form.Label>
                         <Form.Control
                           type="text"
+                          maxLength={40}
                           readOnly={isReadonly}
-                          placeholder="M.Sc. Data Science, MBA, etc."
+                          placeholder="Data Science, Comupter Science, etc. (max. 40 characters)"
                           defaultValue={
                             this.state.application_preference &&
                             this.state.application_preference

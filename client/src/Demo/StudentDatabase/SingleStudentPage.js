@@ -30,13 +30,21 @@ import {
   getStudentAndDocLinks,
   updateAcademicBackground,
   updateLanguageSkill,
-  updateApplicationPreference
+  updateApplicationPreference,
+  getAgents,
+  updateAgents,
+  getEditors,
+  updateEditors
 } from '../../api';
 
 class SingleStudentPage extends React.Component {
   state = {
     isLoaded: {},
     isLoaded2: false,
+    agent_list: [],
+    editor_list: [],
+    updateAgentList: {},
+    updateEditorList: {},
     student: null,
     base_docs_link: null,
     survey_link: null,
@@ -46,6 +54,7 @@ class SingleStudentPage extends React.Component {
     res_modal_message: '',
     res_modal_status: 0
   };
+
   componentDidMount() {
     let keys2 = Object.keys(window.profile_wtih_doc_link_list);
     let temp_isLoaded = {};
@@ -86,6 +95,182 @@ class SingleStudentPage extends React.Component {
       }
     );
   }
+
+  editAgent = (student) => {
+    getAgents().then(
+      (resp) => {
+        // TODO: check success
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          const agents = data; //get all agent
+          const { agents: student_agents } = student;
+          const updateAgentList = agents.reduce(
+            (prev, { _id }) => ({
+              ...prev,
+              [_id]: student_agents
+                ? student_agents.findIndex(
+                    (student_agent) => student_agent._id === _id
+                  ) > -1
+                : false
+            }),
+            {}
+          );
+
+          this.setState((state) => ({
+            ...state,
+            agent_list: agents,
+            updateAgentList,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {}
+    );
+  };
+
+  editEditor = (student) => {
+    getEditors().then(
+      (resp) => {
+        // TODO: check success
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          const editors = data;
+          const { editors: student_editors } = student;
+          const updateEditorList = editors.reduce(
+            (prev, { _id }) => ({
+              ...prev,
+              [_id]: student_editors
+                ? student_editors.findIndex(
+                    (student_editor) => student_editor._id === _id
+                  ) > -1
+                : false
+            }),
+            {}
+          );
+
+          this.setState((state) => ({
+            ...state,
+            editor_list: editors,
+            updateEditorList,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {}
+    );
+  };
+
+  handleChangeAgentlist = (e) => {
+    const { value, checked } = e.target;
+    this.setState((prevState) => ({
+      updateAgentList: {
+        ...prevState.updateAgentList,
+        [value]: checked
+      }
+    }));
+  };
+
+  handleChangeEditorlist = (e) => {
+    const { value, checked } = e.target;
+    this.setState((prevState) => ({
+      updateEditorList: {
+        ...prevState.updateEditorList,
+        [value]: checked
+      }
+    }));
+  };
+
+  submitUpdateAgentlist = (e, updateAgentList, student_id) => {
+    e.preventDefault();
+    this.UpdateAgentlist(e, updateAgentList, student_id);
+  };
+
+  submitUpdateEditorlist = (e, updateEditorList, student_id) => {
+    e.preventDefault();
+    this.UpdateEditorlist(e, updateEditorList, student_id);
+  };
+
+  UpdateAgentlist = (e, updateAgentList, student_id) => {
+    e.preventDefault();
+    updateAgents(updateAgentList, student_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          var students_temp = { ...this.state.student };
+          students_temp = data; // datda is single student updated
+          this.setState({
+            isLoaded: true, //false to reload everything
+            student: students_temp,
+            success: success,
+            updateAgentList: [],
+            res_modal_status: status
+          });
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        alert('UpdateAgentlist is failed.');
+      }
+    );
+  };
+
+  UpdateEditorlist = (e, updateEditorList, student_id) => {
+    e.preventDefault();
+    updateEditors(updateEditorList, student_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          var students_temp = { ...this.state.student };
+          students_temp = data; // datda is single student updated
+          this.setState({
+            isLoaded: true, //false to reload everything
+            student: students_temp,
+            success: success,
+            updateAgentList: [],
+            res_modal_status: status
+          });
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        alert('UpdateEditorlist is failed.');
+      }
+    );
+  };
 
   handleSubmit_AcademicBackground_root = (e, university, student_id) => {
     e.preventDefault();
@@ -321,7 +506,7 @@ class SingleStudentPage extends React.Component {
         >
           <Tab eventKey="profile" title="Profile Overview">
             <Table
-              responsive
+              // responsive
               className="px-0 py-0 my-2 mx-0"
               variant="dark"
               text="light"
@@ -329,6 +514,7 @@ class SingleStudentPage extends React.Component {
             >
               <thead>
                 <tr>
+                  <th></th>
                   <th>First-, Last Name</th>
                   <th>Agents</th>
                   <th>Editors</th>
@@ -338,6 +524,16 @@ class SingleStudentPage extends React.Component {
                 <StudentsAgentEditor
                   role={this.props.user.role}
                   student={this.state.student}
+                  editAgent={this.editAgent}
+                  editEditor={this.editEditor}
+                  agent_list={this.state.agent_list}
+                  editor_list={this.state.editor_list}
+                  updateAgentList={this.state.updateAgentList}
+                  handleChangeAgentlist={this.handleChangeAgentlist}
+                  submitUpdateAgentlist={this.submitUpdateAgentlist}
+                  updateEditorList={this.state.updateEditorList}
+                  handleChangeEditorlist={this.handleChangeEditorlist}
+                  submitUpdateEditorlist={this.submitUpdateEditorlist}
                 />
               </tbody>
             </Table>

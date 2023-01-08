@@ -7,7 +7,7 @@
     th {
         border-top: 0px solid $theme-border;
         white-space: nowrap;
-        padding: 1.05rem 0.65rem;
+        padding: 0.65rem 0.65rem;
     }
 
     // div {
@@ -29,12 +29,12 @@
 
     &.table-sm {
         th, td {
-            padding: 0.35rem;
+            padding: 0.15rem;
         }
     }
     th.headcol {
         position: absolute;
-        width: 8em;
+        // width: 8em;
         left: 1;
         // top: auto;
         // border-top-width: 1px;
@@ -46,8 +46,9 @@
     td.long {
         // letter-spacing: 1em;
         position: absolute;
-        left: 0.86em;
-        width: 8em;
+        // left: 0.86em;
+        // width: 8em;
+        width: flex;
         margin: 1;
     }
 }

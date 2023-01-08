@@ -388,7 +388,7 @@ export default function PortalCredentialPage(props) {
                                 defaultValue={
                                   statedata.credentials[
                                     application.programId._id.toString()
-                                  ].account_portal_a
+                                  ].account_portal_b
                                 }
                               />
                             </Form.Group>

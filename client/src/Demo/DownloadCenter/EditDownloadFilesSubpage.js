@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Table, Col, Form, Spinner } from 'react-bootstrap';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { IoMdCloudUpload } from 'react-icons/io';
+import { BASE_URL } from '../../api/request';
+
 class EditDownloadFilesSubpage extends React.Component {
   state = {
     isLoaded: this.props.isLoaded
@@ -58,17 +59,13 @@ class EditDownloadFilesSubpage extends React.Component {
                 <td></td>
                 <td>
                   <Col>
-                    <Form
-                      onSubmit={(e) =>
-                        this.props.onDownloadFilefromstudent(e, template.prop)
-                      }
+                    <a
+                      href={`${BASE_URL}/api/account/files/template/${template.prop}`}
+                      target="_blank"
+                      className="text-info"
                     >
-                      <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Button size="sm" type="submit">
-                          Download
-                        </Button>
-                      </Form.Group>
-                    </Form>
+                      <Button size="sm">Download</Button>
+                    </a>
                   </Col>
                 </td>
               </>
@@ -77,9 +74,6 @@ class EditDownloadFilesSubpage extends React.Component {
                 <td>
                   <Col>
                     <Form.Group controlId="formFile">
-                      {/* <Form.Label>
-                        <IoMdCloudUpload color={'white'} size={32} />
-                      </Form.Label> */}
                       <Form.Control
                         type="file"
                         onChange={(e) => this.props.onFileChange(e)}
@@ -119,17 +113,13 @@ class EditDownloadFilesSubpage extends React.Component {
               <td></td>
               <td>
                 <Col>
-                  <Form
-                    onSubmit={(e) =>
-                      this.props.onDownloadFilefromstudent(e, template.prop)
-                    }
+                  <a
+                    href={`${BASE_URL}/api/account/files/template/${template.prop}`}
+                    target="_blank"
+                    className="text-info"
                   >
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        Download
-                      </Button>
-                    </Form.Group>
-                  </Form>
+                    <Button size="sm">Download</Button>
+                  </a>
                 </Col>
               </td>
               <td></td>

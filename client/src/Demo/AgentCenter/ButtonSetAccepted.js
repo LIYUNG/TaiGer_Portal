@@ -196,7 +196,7 @@ class ButtonSetAccepted extends React.Component {
               }`}
               target="_blank"
             >
-              <Button size="sm" type="submit" title="Download">
+              <Button size="sm" title="Download">
                 <AiOutlineDownload size={16} />
               </Button>
             </a>

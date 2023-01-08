@@ -9,6 +9,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style } from '../../Utils/contants';
 import { showButtonIfMyStudentB } from '../../Utils/checking-functions';
+import { BASE_URL } from '../../../api/request';
 
 import {
   getTemplateDownload,
@@ -508,12 +509,13 @@ class DocModificationThreadPage extends Component {
                   Download template:{' '}
                   {template_obj ? (
                     <b
-                      style={{ cursor: 'pointer' }}
-                      onClick={(e) =>
-                        this.onDownloadTemplate(e, template_obj.prop)
-                      }
                     >
-                      Link
+                      <a
+                        href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
+                        target="_blank"
+                      >
+                        Link
+                      </a>
                     </b>
                   ) : (
                     <>Not available</>

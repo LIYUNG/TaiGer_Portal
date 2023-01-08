@@ -32,7 +32,8 @@ const {
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME
+  AWS_S3_BUCKET_NAME,
+  AWS_S3_PUBLIC_BUCKET_NAME
 } = require('../config');
 const logger = require('../services/logger');
 
@@ -162,6 +163,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
     params: { category_name }
   } = req;
   // Check authorized role
+  console.log("test")
   if (user.role === Role.Guest) {
     logger.error('downloadTemplateFile: Invalid role!');
     throw new ErrorResponse(400, 'Invalid role');
@@ -174,7 +176,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   const fileKey = document_split[1];
   let directory = document_split[0];
   logger.info('Trying to download template file', fileKey);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');
   const options = {
     Key: fileKey,

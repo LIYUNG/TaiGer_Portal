@@ -102,8 +102,8 @@ class StudentsAgentEditor extends React.Component {
     return (
       <>
         <tr>
-          {this.props.role === 'Admin' && !this.props.isArchivPage && (
-            <td>
+          <td>
+            {this.props.role === 'Admin' && !this.props.isArchivPage && (
               <DropdownButton
                 size="sm"
                 title="Option"
@@ -124,8 +124,8 @@ class StudentsAgentEditor extends React.Component {
                   Edit Editor
                 </Dropdown.Item>
               </DropdownButton>
-            </td>
-          )}
+            )}
+          </td>
           {this.props.role !== 'Student' ? (
             <td>
               <p className="mb-1">

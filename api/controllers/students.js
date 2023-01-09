@@ -681,9 +681,13 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId).populate(
-    'applications.programId'
-  );
+  const student = await Student.findById(studentId)
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
+    )
+    .lean();
   if (!student) {
     logger.error('deleteApplication: Invalid student id');
     throw new ErrorResponse(400, 'Invalid student id');
@@ -696,16 +700,29 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     logger.error('deleteApplication: Invalid application id');
     throw new ErrorResponse(400, 'Invalid application id');
   }
+
+  // TODO: checking if delete is safe?
+  for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
+    if (
+      application.doc_modification_thread[i].doc_thread_id.messages.length !== 0
+    ) {
+      throw new ErrorResponse(
+        409,
+        `Some ML/RL/Essay discussion threads are existed and not empty. 
+        Please make sure the non-empty discussion threads are ready to be deleted and delete those thread first and then delete this application.`
+      );
+    }
+  }
   try {
     // remove uploaded files before remove program in database
     let messagesThreadId;
     let directory;
     for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
       messagesThreadId =
-        application.doc_modification_thread[i].doc_thread_id.toString();
+        application.doc_modification_thread[i].doc_thread_id._id.toString();
       directory = path.join(
         studentId,
-        application.doc_modification_thread[i].doc_thread_id.toString()
+        application.doc_modification_thread[i].doc_thread_id._id.toString()
       );
       logger.info('Trying to delete message threads and S3 thread folders');
       directory = directory.replace(/\\/g, '/');

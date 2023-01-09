@@ -100,7 +100,6 @@ router
     filter_archiv_user,
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
-    multitenant_filter,
     deleteAMessageInThread
   );
 // Get image in thread

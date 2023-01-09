@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
+import { convertDate } from '../Utils/contants';
 class User extends React.Component {
   render() {
     if (this.props.success) {
@@ -52,6 +53,7 @@ class User extends React.Component {
                 : this.props.user[y.prop]}
             </td>
           ))}
+          <td>{convertDate(this.props.user.lastLoginAt)}</td>
         </tr>
       );
     } else {

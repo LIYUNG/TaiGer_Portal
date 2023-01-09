@@ -239,7 +239,8 @@ const UserSchema = new Schema(
         },
         updatedAt: Date
       }
-    }
+    },
+    lastLoginAt: Date
   },
   options
 );

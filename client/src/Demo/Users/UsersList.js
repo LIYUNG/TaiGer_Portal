@@ -190,6 +190,7 @@ class UsersList extends React.Component {
         {this.props.header.map((x, i) => (
           <th key={i}>{x.name}</th>
         ))}
+        <th>Last Login</th>
       </tr>
     );
 

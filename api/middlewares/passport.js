@@ -21,7 +21,9 @@ passport.use(
         if (user.isAccountActivated !== true) {
           return done(null, 'inactivated');
         }
-
+        // Log: login success
+        user['lastLoginAt'] = Date();
+        await user.save();
         return done(null, user);
       } catch (err) {
         return done(err);

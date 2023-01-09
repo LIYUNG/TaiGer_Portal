@@ -147,12 +147,14 @@ class StudentDashboard extends React.Component {
                       Survey
                     </Link>{' '}
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(e, 'isRead_survey_not_complete')
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(e, 'isRead_survey_not_complete')
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -181,15 +183,17 @@ class StudentDashboard extends React.Component {
                       Uni-Assist
                     </Link>{' '}
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(
-                            e,
-                            'isRead_uni_assist_task_assigned'
-                          )
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(
+                              e,
+                              'isRead_uni_assist_task_assigned'
+                            )
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -209,12 +213,14 @@ class StudentDashboard extends React.Component {
                     <RiInformationLine size={18} />
                     <b className="mx-2">Info:</b> New agent are assigned to you.{' '}
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(e, 'isRead_new_agent_assigned')
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(e, 'isRead_new_agent_assigned')
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -235,12 +241,14 @@ class StudentDashboard extends React.Component {
                     <b className="mx-2">Info:</b> New editor are assigned to
                     you.{' '}
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(e, 'isRead_new_editor_assigned')
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(e, 'isRead_new_editor_assigned')
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -268,12 +276,14 @@ class StudentDashboard extends React.Component {
                       CV/ML/RL Center
                     </Link>{' '}
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(e, 'isRead_new_cvmlrl_messsage')
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(e, 'isRead_new_cvmlrl_messsage')
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -301,15 +311,17 @@ class StudentDashboard extends React.Component {
                       CV/ML/RL Center
                     </Link>{' '}
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(
-                            e,
-                            'isRead_new_cvmlrl_tasks_created'
-                          )
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(
+                              e,
+                              'isRead_new_cvmlrl_tasks_created'
+                            )
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -337,12 +349,14 @@ class StudentDashboard extends React.Component {
                       My Applications
                     </Link>{' '}
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(e, 'isRead_new_programs_assigned')
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(e, 'isRead_new_programs_assigned')
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -370,12 +384,17 @@ class StudentDashboard extends React.Component {
                       My Base Documents
                     </Link>
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(e, 'isRead_base_documents_missing')
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(
+                              e,
+                              'isRead_base_documents_missing'
+                            )
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>
@@ -403,12 +422,17 @@ class StudentDashboard extends React.Component {
                       My Base Documents
                     </Link>
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeBanner(e, 'isRead_base_documents_rejected')
-                        }
-                      />
+                      {!this.props.ReadOnlyMode && (
+                        <BsX
+                          size={18}
+                          onClick={(e) =>
+                            this.removeBanner(
+                              e,
+                              'isRead_base_documents_rejected'
+                            )
+                          }
+                        />
+                      )}
                     </span>
                   </p>
                 </Card>

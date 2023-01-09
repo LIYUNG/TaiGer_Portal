@@ -61,7 +61,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
-    .select('-notification -taigerai')
+    .select('-taigerai')
     .lean();
   const base_docs_link = await Basedocumentationslink.find({
     category: 'base-documents'

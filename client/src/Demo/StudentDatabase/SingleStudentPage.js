@@ -18,6 +18,7 @@ import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import SurveyComponent from '../Survey/SurveyComponent';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
+import StudentDashboard from '../Dashboard/StudentDashboard/StudentDashboard';
 import {
   SYMBOL_EXPLANATION,
   profile_name_list,
@@ -41,6 +42,7 @@ class SingleStudentPage extends React.Component {
   state = {
     isLoaded: {},
     isLoaded2: false,
+    taiger_view: true,
     agent_list: [],
     editor_list: [],
     updateAgentList: {},
@@ -395,6 +397,12 @@ class SingleStudentPage extends React.Component {
     );
   };
 
+  onChangeView = () => {
+    this.setState((state) => ({
+      ...state,
+      taiger_view: !this.state.taiger_view
+    }));
+  };
   ConfirmError = () => {
     this.setState((state) => ({
       ...state,
@@ -443,47 +451,84 @@ class SingleStudentPage extends React.Component {
             res_modal_message={res_modal_message}
           />
         )}
-        <Row>
-          <Col>
-            <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-              {/* <Card.Header>
-                <Card.Title className="text-light">
-                  {this.state.student.firstname}
-                  {' ,'}
-                  {this.state.student.lastname}
-                </Card.Title>
-              </Card.Header> */}
-              <h4
-                className="text-light mt-4 ms-4"
-                style={{ textAlign: 'left' }}
-              >
-                {this.state.student.firstname}
-                {' ,'}
-                {this.state.student.lastname}
-
-                <span style={{ float: 'right', cursor: 'pointer' }}>
-                  <Link
-                    to={`/dashboard/student-view/${this.props.match.params.studentId}`}
+        {this.state.taiger_view ? (
+          <>
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+                  <h4
+                    className="text-light mt-4 ms-4"
+                    style={{ textAlign: 'left' }}
                   >
-                    <Button
+                    {this.state.student.firstname}
+                    {' ,'}
+                    {this.state.student.lastname}
+
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <Button
+                        size="sm"
+                        className="text-light mb-3 me-4" // onClick={(e) =>
+                        onClick={this.onChangeView}
+                      >
+                        Switch to Student View
+                      </Button>
+                    </span>
+                  </h4>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Card className="my-1 mx-0" bg={'dark'} text={'white'}>
+                  <Card.Body>
+                    <Table
+                      responsive
+                      className="my-0 mx-0"
+                      variant="dark"
+                      text="light"
                       size="sm"
-                      className="text-light mb-3 me-4" // onClick={(e) =>
                     >
-                      Switch to Student View
-                    </Button>
-                  </Link>
-                </span>
-              </h4>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Card className="my-1 mx-0" bg={'dark'} text={'white'}>
-              <Card.Body>
+                      <thead>
+                        <tr>
+                          <th></th>
+                          {this.props.user.role === 'Student' ||
+                          this.props.user.role === 'Guest' ? (
+                            <></>
+                          ) : (
+                            <>
+                              <th>First-, Last Name</th>
+                              <th>#</th>
+                            </>
+                          )}
+                          {window.programstatuslist.map((doc, index) => (
+                            <th key={index}>{doc.name}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ApplicationProgress
+                          role={this.props.user.role}
+                          user={this.props.user}
+                          student={this.state.student}
+                          isLoaded={this.state.isLoaded2}
+                        />
+                      </tbody>
+                    </Table>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <Tabs
+              defaultActiveKey={this.props.match.params.tab}
+              id="uncontrolled-tab-example"
+              fill={true}
+              justify={true}
+              className="py-0 my-0 mx-0"
+            >
+              <Tab eventKey="profile" title="Profile Overview">
                 <Table
-                  responsive
-                  className="my-0 mx-0"
+                  // responsive
+                  className="px-0 py-0 my-2 mx-0"
                   variant="dark"
                   text="light"
                   size="sm"
@@ -491,149 +536,142 @@ class SingleStudentPage extends React.Component {
                   <thead>
                     <tr>
                       <th></th>
-                      {this.props.user.role === 'Student' ||
-                      this.props.user.role === 'Guest' ? (
-                        <></>
-                      ) : (
-                        <>
-                          <th>First-, Last Name</th>
-                          <th>#</th>
-                        </>
-                      )}
-                      {window.programstatuslist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
+                      <th>First-, Last Name</th>
+                      <th>Agents</th>
+                      <th>Editors</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <ApplicationProgress
+                    <StudentsAgentEditor
                       role={this.props.user.role}
-                      user={this.props.user}
                       student={this.state.student}
-                      isLoaded={this.state.isLoaded2}
+                      editAgent={this.editAgent}
+                      editEditor={this.editEditor}
+                      agent_list={this.state.agent_list}
+                      editor_list={this.state.editor_list}
+                      updateAgentList={this.state.updateAgentList}
+                      handleChangeAgentlist={this.handleChangeAgentlist}
+                      submitUpdateAgentlist={this.submitUpdateAgentlist}
+                      updateEditorList={this.state.updateEditorList}
+                      handleChangeEditorlist={this.handleChangeEditorlist}
+                      submitUpdateEditorlist={this.submitUpdateEditorlist}
                     />
                   </tbody>
                 </Table>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <Tabs
-          defaultActiveKey={this.props.match.params.tab}
-          id="uncontrolled-tab-example"
-          fill={true}
-          justify={true}
-          className="py-0 my-0 mx-0"
-        >
-          <Tab eventKey="profile" title="Profile Overview">
-            <Table
-              // responsive
-              className="px-0 py-0 my-2 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>First-, Last Name</th>
-                  <th>Agents</th>
-                  <th>Editors</th>
-                </tr>
-              </thead>
-              <tbody>
-                <StudentsAgentEditor
-                  role={this.props.user.role}
+                <BaseDocument_StudentView
+                  base_docs_link={base_docs_link}
                   student={this.state.student}
-                  editAgent={this.editAgent}
-                  editEditor={this.editEditor}
-                  agent_list={this.state.agent_list}
-                  editor_list={this.state.editor_list}
-                  updateAgentList={this.state.updateAgentList}
-                  handleChangeAgentlist={this.handleChangeAgentlist}
-                  submitUpdateAgentlist={this.submitUpdateAgentlist}
-                  updateEditorList={this.state.updateEditorList}
-                  handleChangeEditorlist={this.handleChangeEditorlist}
-                  submitUpdateEditorlist={this.submitUpdateEditorlist}
+                  user={this.props.user}
+                  SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
                 />
-              </tbody>
-            </Table>
-            <BaseDocument_StudentView
-              base_docs_link={base_docs_link}
+              </Tab>
+              <Tab eventKey="CV_ML_RL" title="CV ML RL">
+                <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+                  <EditorDocsProgress
+                    student={this.state.student}
+                    idx={0}
+                    accordionKeys={[0]}
+                    singleExpandtHandler={this.singleExpandtHandler}
+                    user={this.props.user}
+                  />
+                </Card>
+              </Tab>
+              <Tab eventKey="program_portal" title="Portal">
+                {/* <Row>Coming Soon!</Row> */}
+                <Card className="my-0 mx-0">
+                  <Card.Body>
+                    <Row>
+                      <Link
+                        to={`/portal-informations/${this.state.student._id.toString()}`}
+                      >
+                        <Button>Go to Portal Credentials</Button>
+                      </Link>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Tab>
+              <Tab eventKey="uni-assist" title="Uni-Assist">
+                <Row>
+                  <UniAssistListCard
+                    student={this.state.student}
+                    role={this.props.user.role}
+                    user={this.props.user}
+                  />
+                </Row>
+              </Tab>
+              <Tab eventKey="background" title="Background">
+                <SurveyComponent
+                  role={this.props.user.role}
+                  survey_link={this.state.survey_link}
+                  user={this.props.user}
+                  agents={this.state.student.agents}
+                  editors={this.state.student.editors}
+                  academic_background={this.state.student.academic_background}
+                  application_preference={
+                    this.state.student.application_preference
+                  }
+                  isLoaded={this.state.isLoaded2}
+                  student={this.state.student}
+                  student_id={this.state.student._id}
+                  singlestudentpage_fromtaiger={true}
+                  handleSubmit_AcademicBackground_root={
+                    this.handleSubmit_AcademicBackground_root
+                  }
+                  handleSubmit_Language_root={this.handleSubmit_Language_root}
+                  handleSubmit_ApplicationPreference_root={
+                    this.handleSubmit_ApplicationPreference_root
+                  }
+                  updateconfirmed={this.state.updateconfirmed}
+                />
+              </Tab>
+              <Tab eventKey="Courses_Table" title="Courses Table">
+                <Card className="my-0 mx-0">
+                  <Card.Body>
+                    <Row>
+                      <Link
+                        to={`/my-courses/${this.state.student._id.toString()}`}
+                      >
+                        <Button>Go to Courses Table </Button>
+                      </Link>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Tab>
+            </Tabs>
+          </>
+        ) : (
+          <>
+            <Row>
+              <Col>
+                <Card className="my-2 mx-0" bg={'secondary'} text={'light'}>
+                  <h4
+                    className="text-light mt-4 ms-4"
+                    style={{ textAlign: 'left' }}
+                  >
+                    Student View: {this.state.student.firstname}{' '}
+                    {this.state.student.lastname}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <Button
+                        size="sm"
+                        className="text-light mb-3 me-4"
+                        onClick={this.onChangeView}
+                      >
+                        Switch Back
+                      </Button>
+                    </span>
+                  </h4>
+                </Card>
+              </Col>
+            </Row>
+            <StudentDashboard
+              user={this.state.student}
+              role={this.state.student.role}
               student={this.state.student}
-              user={this.props.user}
+              ReadOnlyMode={true}
               SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             />
-          </Tab>
-          <Tab eventKey="CV_ML_RL" title="CV ML RL">
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <EditorDocsProgress
-                student={this.state.student}
-                idx={0}
-                accordionKeys={[0]}
-                singleExpandtHandler={this.singleExpandtHandler}
-                user={this.props.user}
-              />
-            </Card>
-          </Tab>
-          <Tab eventKey="program_portal" title="Portal">
-            {/* <Row>Coming Soon!</Row> */}
-            <Card className="my-0 mx-0">
-              <Card.Body>
-                <Row>
-                  <Link
-                    to={`/portal-informations/${this.state.student._id.toString()}`}
-                  >
-                    <Button>Go to Portal Credentials</Button>
-                  </Link>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Tab>
-          <Tab eventKey="uni-assist" title="Uni-Assist">
-            <Row>
-              <UniAssistListCard
-                student={this.state.student}
-                role={this.props.user.role}
-                user={this.props.user}
-              />
-            </Row>
-          </Tab>
-          <Tab eventKey="background" title="Background">
-            <SurveyComponent
-              role={this.props.user.role}
-              survey_link={this.state.survey_link}
-              user={this.props.user}
-              agents={this.state.student.agents}
-              editors={this.state.student.editors}
-              academic_background={this.state.student.academic_background}
-              application_preference={this.state.student.application_preference}
-              isLoaded={this.state.isLoaded2}
-              student={this.state.student}
-              student_id={this.state.student._id}
-              singlestudentpage_fromtaiger={true}
-              handleSubmit_AcademicBackground_root={
-                this.handleSubmit_AcademicBackground_root
-              }
-              handleSubmit_Language_root={this.handleSubmit_Language_root}
-              handleSubmit_ApplicationPreference_root={
-                this.handleSubmit_ApplicationPreference_root
-              }
-              updateconfirmed={this.state.updateconfirmed}
-            />
-          </Tab>
-          <Tab eventKey="Courses_Table" title="Courses Table">
-            <Card className="my-0 mx-0">
-              <Card.Body>
-                <Row>
-                  <Link to={`/my-courses/${this.state.student._id.toString()}`}>
-                    <Button>Go to Courses Table </Button>
-                  </Link>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Tab>
-        </Tabs>
+          </>
+        )}
       </>
     );
   }

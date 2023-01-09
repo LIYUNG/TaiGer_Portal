@@ -187,7 +187,7 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
                 else:
                     # failed subject not count
                     if((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
-                        or "Fail" in temp_string or "W" in temp_string or "F" in temp_string or "fail" in temp_string or "退選" in temp_string or "withdraw" in temp_string):
+                        or "Fail" in str(temp_string) or "W" in str(temp_string) or "F" in str(temp_string) or "fail" in str(temp_string) or "退選" in str(temp_string) or "withdraw" in str(temp_string)):
                         continue
                     if isfloat(temp_string):
                         temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),

@@ -44,6 +44,7 @@ export default function MyCourses(props) {
     const student_id = props.match.params.student_id
       ? props.match.params.student_id
       : props.user._id.toString();
+    //TODO: what if student_id not found : handle status 500
     getMycourses(student_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -74,7 +75,8 @@ export default function MyCourses(props) {
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          error: true
+          error,
+          res_status: 500
         }));
       }
     );
@@ -151,6 +153,9 @@ export default function MyCourses(props) {
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: message,
           isUpdating: false
         }));
         alert('Course Update failed. Please try later.');
@@ -437,7 +442,7 @@ export default function MyCourses(props) {
                         'No analysis yet'
                       )}
                     </p>
-                  </Col>{' '}
+                  </Col>
                   <Col>
                     <p className="my-2">
                       Last analysis at:{' '}

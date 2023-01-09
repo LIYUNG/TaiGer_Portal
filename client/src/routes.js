@@ -21,6 +21,9 @@ const BaseDocuments = React.lazy(() =>
 const Checklist = React.lazy(() => import('./Demo/CheckList/index'));
 
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
+const MyCoursesAnalysis = React.lazy(() =>
+  import('./Demo/MyCourses/CourseAnalysis')
+);
 
 const CVMLRLOverview = React.lazy(() =>
   import('./Demo/CVMLRLCenter/index')
@@ -270,6 +273,12 @@ const routes = [
     exact: true,
     name: 'Check List',
     component: Checklist
+  },
+  {
+    path: '/my-courses/analysis/:student_id',
+    exact: true,
+    name: 'My MyCourses Analysis',
+    component: MyCoursesAnalysis
   },
   {
     path: '/my-courses/:student_id',

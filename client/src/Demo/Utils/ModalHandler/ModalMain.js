@@ -111,6 +111,20 @@ class ModalMain extends React.Component {
             <Button onClick={this.props.ConfirmError}>Ok</Button>
           </Modal.Footer>
         </Modal>
+        <Modal
+          show={res_modal_status === 500}
+          onHide={this.props.ConfirmError}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{res_modal_message}</Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.props.ConfirmError}>Ok</Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
   }

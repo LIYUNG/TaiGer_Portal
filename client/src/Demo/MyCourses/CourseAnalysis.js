@@ -52,28 +52,49 @@ export default function CourseAnalysis(props) {
     analyzedFileDownload_test(student_id).then(
       (resp) => {
         // TODO: timeout? success?
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-        handleFile(blob).then((wb) => {
-          const sheets = readDataFormExcel(wb);
-          const sheetNames = Object.keys(sheets);
+        const { status } = resp;
+        if (status < 300) {
+          const actualFileName = decodeURIComponent(
+            resp.headers['content-disposition'].split('"')[1]
+          );
+          const temp = actualFileName.split('_');
+          const lastname = temp[3].split('.');
+          const student_name_temp = `${temp[2]} - ${lastname[0]}`;
+          console.log(student_name_temp);
+          const { data: blob } = resp;
+          if (blob.size === 0) return;
+          handleFile(blob).then((wb) => {
+            const sheets = readDataFormExcel(wb);
+            const sheetNames = Object.keys(sheets);
+            setStatedata((state) => ({
+              ...state,
+              sheets,
+              student_name: student_name_temp,
+              isLoaded: true,
+              sheetNames,
+              res_modal_status: status,
+              isUpdating: false
+            }));
+          });
+        } else {
+          const { statusText } = resp;
           setStatedata((state) => ({
             ...state,
-            sheets,
             isLoaded: true,
-            sheetNames,
-            res_modal_status: 200,
+            res_modal_status: status,
+            res_modal_message: statusText,
             isUpdating: false
           }));
-        });
+        }
       },
       (error) => {
+          const { statusText } = resp;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: message,
+          res_modal_message: statusText,
           isUpdating: false
         }));
       }
@@ -166,8 +187,7 @@ export default function CourseAnalysis(props) {
               <Card.Title>
                 <Row>
                   <Col className="my-0 mx-0 text-light">
-                    {/* {statedata.student.firstname} {statedata.student.lastname}{' '} */}
-                    Courses
+                    {statedata.student_name} Courses Analysis
                   </Col>
                 </Row>
               </Card.Title>
@@ -185,18 +205,19 @@ export default function CourseAnalysis(props) {
               <Row>
                 <Col>
                   <p>
-                    Please fill the courses you have taken. (Ignore if you are
-                    high school student)
-                  </p>
-                  <p>
-                    <b>Only Bachelor's courses </b>are considered in this table.
+                    The courses analysis for each program as reference.{' '}
+                    <b>The results are not garanteed.</b>
                   </p>
                 </Col>
               </Row>
               <br />
               <Tabs>
                 {statedata.sheetNames.map((sheetName, i) => (
-                  <Tab eventKey={`${sheetName}`} title={`${sheetName}`}>
+                  <Tab
+                    key={`${sheetName}`}
+                    eventKey={`${sheetName}`}
+                    title={`${sheetName}`}
+                  >
                     <DataSheetGrid
                       height={6000}
                       disableContextMenu={true}
@@ -231,7 +252,6 @@ export default function CourseAnalysis(props) {
                   //   </Tab>
                 ))}
               </Tabs>
-
               <Row className="my-2">
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>

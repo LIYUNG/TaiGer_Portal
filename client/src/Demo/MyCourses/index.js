@@ -226,45 +226,69 @@ export default function MyCourses(props) {
       ...state,
       isDownloading: true
     }));
-    analyzedFileDownload_test(statedata.student._id.toString()).then((resp) => {
-      // TODO: timeout? success?
+    analyzedFileDownload_test(statedata.student._id.toString()).then(
+      (resp) => {
+        // TODO: timeout? success?
+        const { status } = resp;
+        if (status < 300) {
+          const actualFileName = decodeURIComponent(
+            resp.headers['content-disposition'].split('"')[1]
+          ); //  檔名中文亂碼 solved
+          const { data: blob } = resp;
+          if (blob.size === 0) return;
 
-      const actualFileName = decodeURIComponent(
-        resp.headers['content-disposition'].split('"')[1]
-      ); //  檔名中文亂碼 solved
-      const { data: blob } = resp;
-      if (blob.size === 0) return;
+          var filetype = actualFileName.split('.'); //split file name
+          filetype = filetype.pop(); //get the file type
 
-      var filetype = actualFileName.split('.'); //split file name
-      filetype = filetype.pop(); //get the file type
+          if (filetype === 'pdf') {
+            const url = window.URL.createObjectURL(
+              new Blob([blob], { type: 'application/pdf' })
+            );
 
-      if (filetype === 'pdf') {
-        const url = window.URL.createObjectURL(
-          new Blob([blob], { type: 'application/pdf' })
-        );
+            //Open the URL on new Window
+            window.open(url); //TODO: having a reasonable file name, pdf viewer
+          } else {
+            //if not pdf, download instead.
 
-        //Open the URL on new Window
-        window.open(url); //TODO: having a reasonable file name, pdf viewer
-      } else {
-        //if not pdf, download instead.
+            const url = window.URL.createObjectURL(new Blob([blob]));
 
-        const url = window.URL.createObjectURL(new Blob([blob]));
-
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', actualFileName);
-        // Append to html link element page
-        document.body.appendChild(link);
-        // Start download
-        link.click();
-        // Clean up and remove the link
-        link.parentNode.removeChild(link);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', actualFileName);
+            // Append to html link element page
+            document.body.appendChild(link);
+            // Start download
+            link.click();
+            // Clean up and remove the link
+            link.parentNode.removeChild(link);
+            setStatedata((state) => ({
+              ...state,
+              isDownloading: false
+            }));
+          }
+        } else {
+          const { statusText } = resp;
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: statusText,
+            isDownloading: false
+          }));
+        }
+      },
+      (error) => {
+        const { statusText } = resp;
         setStatedata((state) => ({
           ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText,
           isDownloading: false
         }));
       }
-    });
+    );
   };
 
   const closeModal = () => {

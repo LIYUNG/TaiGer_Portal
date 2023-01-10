@@ -22,7 +22,8 @@ import StudentDashboard from '../Dashboard/StudentDashboard/StudentDashboard';
 import {
   SYMBOL_EXPLANATION,
   profile_name_list,
-  spinner_style
+  spinner_style,
+  convertDate
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -462,12 +463,16 @@ class SingleStudentPage extends React.Component {
                   >
                     {this.state.student.firstname}
                     {' ,'}
-                    {this.state.student.lastname}
-
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                    {this.state.student.lastname}.
+                    <span
+                      className="text-light mb-1 me-2"
+                      style={{ float: 'right', cursor: 'pointer' }}
+                    >
+                      Last Login: {convertDate(this.state.student.lastLoginAt)}
                       <Button
                         size="sm"
-                        className="text-light mb-3 me-4" // onClick={(e) =>
+                        className="ms-2 mt-0"
+                        // onClick={(e) =>
                         onClick={this.onChangeView}
                       >
                         Switch to Student View

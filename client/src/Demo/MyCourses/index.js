@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
-
+import { Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -432,12 +432,20 @@ export default function MyCourses(props) {
                   <Col md={2}>
                     <p>
                       {statedata.analysis && statedata.analysis.isAnalysed ? (
-                        <Button
-                          onClick={onDownload}
-                          disabled={statedata.isDownloading}
-                        >
-                          Download
-                        </Button>
+                        <>
+                          <Button
+                            onClick={onDownload}
+                            disabled={statedata.isDownloading}
+                          >
+                            Download
+                          </Button>
+                          <Link
+                            to={`/my-courses/analysis/${statedata.student._id.toString()}`}
+                            target="_blank"
+                          >
+                            View Online
+                          </Link>
+                        </>
                       ) : (
                         'No analysis yet'
                       )}

@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Spinner,
+  Button,
+  Card,
+  Tab,
+  Tabs,
+  Table
+} from 'react-bootstrap';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import * as XLSX from 'xlsx/xlsx.mjs';
 
@@ -19,6 +28,8 @@ export default function CourseAnalysis(props) {
     coursesdata: {},
     analysis: {},
     confirmModalWindowOpen: false,
+    sheets: {},
+    sheetNames: [],
     analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
@@ -41,19 +52,20 @@ export default function CourseAnalysis(props) {
     analyzedFileDownload_test(student_id).then(
       (resp) => {
         // TODO: timeout? success?
-
-        const actualFileName = decodeURIComponent(
-          resp.headers['content-disposition'].split('"')[1]
-        ); //  檔名中文亂碼 solved
         const { data: blob } = resp;
         if (blob.size === 0) return;
-        convertBlobToBase64(blob).then((data) => {
-          readDataFormExcel(data);
-        //   const wb = XLSX.read(data);
-        //   console.log(wb.SheetNames);
-        //   console.log(wb);
+        handleFile(blob).then((wb) => {
+          const sheets = readDataFormExcel(wb);
+          const sheetNames = Object.keys(sheets);
+          setStatedata((state) => ({
+            ...state,
+            sheets,
+            isLoaded: true,
+            sheetNames,
+            res_modal_status: 200,
+            isUpdating: false
+          }));
         });
-        return blob;
       },
       (error) => {
         setStatedata((state) => ({
@@ -68,30 +80,35 @@ export default function CourseAnalysis(props) {
     );
   }, []);
 
-  const convertBlobToBase64 = async (blob) => {
-    // blob data
-    return await blobToBase64(blob);
-  };
-
-  const blobToBase64 = (blob) =>
-    new Promise((resolve, reject) => {
+  const readAsArrayBuffer = (blob) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+      reader.onload = (event) => {
+        resolve(event.target?.result);
+      };
+      reader.readAsArrayBuffer(blob);
     });
+  };
 
   const handleFile = async (blob) => {
     if (!blob) return;
-    const data = await blob.arrayBuffer();
-    const mySheetData = readDataFormExcel(data);
+    const data = await readAsArrayBuffer(blob);
+    return data;
   };
+
   const readDataFormExcel = (data) => {
     const wb = XLSX.read(data);
     console.log(wb);
+    var mySheetData = {};
     for (let i = 0; i < wb.SheetNames.length; i += 1) {
+      let sheetName = wb.SheetNames[i];
+      const worksheet = wb.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      mySheetData[sheetName] = jsonData;
       console.log(wb.SheetNames[i]);
     }
+    console.log(mySheetData);
+    return mySheetData;
   };
   const ConfirmError = () => {
     setStatedata((state) => ({
@@ -101,56 +118,24 @@ export default function CourseAnalysis(props) {
     }));
   };
 
-  const onAnalyse = () => {
-    if (statedata.study_group === '') {
-      alert('Please select study group');
-      return;
-    }
-    setStatedata((state) => ({
-      ...state,
-      isAnalysing: true
-    }));
-    transcriptanalyser_test(
-      statedata.student._id.toString(),
-      statedata.study_group
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            analysis: data,
-            analysisSuccessModalWindowOpen: true,
-            success: success,
-            isAnalysing: false,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            isAnalysing: false,
-            res_modal_status: status,
-            res_modal_message: message
-          }));
-        }
-      },
-      (error) => {
-        setStatedata((state) => ({
-          ...state,
-          isLoaded: true,
-          isAnalysing: false
-        }));
-        alert(
-          'Make sure that you updated your courses and your credits are number!'
-        );
-      }
-    );
-  };
-
+  const columns = [
+    {
+      ...keyColumn('0', textColumn),
+      title: '0'
+    },
+    {
+      ...keyColumn('1', textColumn),
+      title: '1'
+    },
+    {
+      ...keyColumn('2', textColumn),
+      title: '2'
+    },
+    { ...keyColumn('3', textColumn), title: '3' },
+    { ...keyColumn('4', textColumn), title: '4' },
+    { ...keyColumn('5', textColumn), title: '5' },
+    { ...keyColumn('6', textColumn), title: '6' }
+  ];
   if (!statedata.isLoaded) {
     return (
       <div style={spinner_style}>
@@ -181,7 +166,7 @@ export default function CourseAnalysis(props) {
               <Card.Title>
                 <Row>
                   <Col className="my-0 mx-0 text-light">
-                    {statedata.student.firstname} {statedata.student.lastname}{' '}
+                    {/* {statedata.student.firstname} {statedata.student.lastname}{' '} */}
                     Courses
                   </Col>
                 </Row>
@@ -209,26 +194,46 @@ export default function CourseAnalysis(props) {
                 </Col>
               </Row>
               <br />
-              <DataSheetGrid
-                height={6000}
-                disableContextMenu={true}
-                disableExpandSelection={false}
-                headerRowHeight={30}
-                rowHeight={25}
-                value={statedata.coursesdata}
-                autoAddRow={true}
-                onChange={onChange}
-                columns={columns}
-              />
+              <Tabs>
+                {statedata.sheetNames.map((sheetName, i) => (
+                  <Tab eventKey={`${sheetName}`} title={`${sheetName}`}>
+                    <DataSheetGrid
+                      height={6000}
+                      disableContextMenu={true}
+                      disableExpandSelection={false}
+                      headerRowHeight={30}
+                      rowHeight={25}
+                      value={statedata.sheets[sheetName]}
+                      autoAddRow={true}
+                      disabled={true}
+                      columns={columns}
+                    />
+                  </Tab>
+                  //   <Tab eventKey={`${sheetName}`} title={`${sheetName}`}>
+                  //     <Table responsive>
+                  //       <thead>
+                  //         <tr>
+                  //           {statedata.sheets[sheetName][0].map((h, j) => (
+                  //             <th key={h}>{h}</th>
+                  //           ))}
+                  //         </tr>
+                  //       </thead>
+                  //       <tbody>
+                  //         {statedata.sheets[sheetName].map((row) => (
+                  //           <tr>
+                  //             {row.map((c) => (
+                  //               <td>{c}</td>
+                  //             ))}
+                  //           </tr>
+                  //         ))}
+                  //       </tbody>
+                  //     </Table>
+                  //   </Tab>
+                ))}
+              </Tabs>
+
               <Row className="my-2">
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
-              </Row>
-              <Row className="mx-1">
-                {showButtonIfMyStudentB(props.user, statedata.student) && (
-                  <Button onClick={onSubmit} disabled={statedata.isUpdating}>
-                    {statedata.isUpdating ? 'Updating' : 'Update'}
-                  </Button>
-                )}
               </Row>
             </Card.Body>
           </Card>

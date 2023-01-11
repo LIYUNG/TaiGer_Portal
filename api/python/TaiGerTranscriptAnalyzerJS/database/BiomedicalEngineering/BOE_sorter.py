@@ -11,7 +11,7 @@ env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
 
 
-def BOE_sorter(program_idx, file_path, abbrev, Generated_Version):
+def BOE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
     basic_classification_en = {
         '線性代數': [BOE_MATH_LIN_ALGE_KEY_WORDS_EN, BOE_MATH_LIN_ALGE_ANTI_KEY_WORDS_EN],
         '數值分析': [BOE_MATH_NUM_METHOD_KEY_WORDS_EN, BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS_EN],
@@ -63,4 +63,4 @@ def BOE_sorter(program_idx, file_path, abbrev, Generated_Version):
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, file_path, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, Generated_Version)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name, analysis_language)

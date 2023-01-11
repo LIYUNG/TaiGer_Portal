@@ -11,7 +11,7 @@ env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
 
 
-def EE_sorter(program_idx, obj_arr, abbrev, studentId, student_name):
+def EE_sorter(program_idx, obj_arr, abbrev, studentId, student_name, analysis_language):
 
     basic_classification_en = {
         '微積分': [EE_CALCULUS_KEY_WORDS_EN, EE_CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -62,4 +62,4 @@ def EE_sorter(program_idx, obj_arr, abbrev, studentId, student_name):
         '其他': [USELESS_COURSES_KEY_WORDS, USELESS_COURSES_ANTI_KEY_WORDS], }
 
     Classifier(program_idx, obj_arr, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name)
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name, analysis_language)

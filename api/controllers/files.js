@@ -948,7 +948,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
 
 const processTranscript_test = asyncHandler(async (req, res, next) => {
   const {
-    params: { category, studentId }
+    params: { category, studentId, language }
   } = req;
   const courses = await Course.findOne({ student_id: studentId }).populate(
     'student_id'
@@ -977,7 +977,8 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
         stringified_courses,
         category,
         studentId,
-        student_name
+        student_name,
+        language
       ],
       { stdio: 'inherit' }
     );

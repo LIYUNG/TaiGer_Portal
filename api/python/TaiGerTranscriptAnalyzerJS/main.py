@@ -24,6 +24,7 @@ if __name__ == "__main__":
     #     print(obj['course_chinese'])
     studentId = sys.argv[3]
     student_name = sys.argv[4]
+    analysis_language = sys.argv[5]
     program_idx = []
     program_selection_path = ''
     if sys.argv[2] == 'cs':
@@ -67,18 +68,18 @@ if __name__ == "__main__":
 
     # EE_sorter(program_idx, obj_arr, 'EE', studentId)
     if sys.argv[2] == 'cs':
-        CS_sorter(program_idx, obj_arr, 'CS', studentId, student_name)
+        CS_sorter(program_idx, obj_arr, 'CS', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'boe':
-        BOE_sorter(program_idx, obj_arr, 'BOE', studentId, student_name)
+        BOE_sorter(program_idx, obj_arr, 'BOE', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'ee':
-        EE_sorter(program_idx, obj_arr, 'EE', studentId, student_name)
+        EE_sorter(program_idx, obj_arr, 'EE', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'me':
-        ME_sorter(program_idx, obj_arr, 'ME', studentId, student_name)
+        ME_sorter(program_idx, obj_arr, 'ME', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'mgm':
-        MGM_sorter(program_idx, obj_arr, 'MGM', studentId, student_name)
+        MGM_sorter(program_idx, obj_arr, 'MGM', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'dsbi':
-        DSBI_sorter(program_idx, obj_arr, 'DSBI', studentId, student_name)
+        DSBI_sorter(program_idx, obj_arr, 'DSBI', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'mtl':
-        MTL_sorter(program_idx, obj_arr, 'MTL', studentId, student_name)
+        MTL_sorter(program_idx, obj_arr, 'MTL', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'te':
-        TE_sorter(program_idx, obj_arr, 'TE', studentId, student_name)
+        TE_sorter(program_idx, obj_arr, 'TE', studentId, student_name, analysis_language)

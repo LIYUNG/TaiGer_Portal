@@ -28,6 +28,7 @@ export default function MyCourses(props) {
     student: null,
     file: '',
     study_group: '',
+    analysis_language: '',
     analyzed_course: '',
     expand: true,
     isAnalysing: false,
@@ -112,6 +113,15 @@ export default function MyCourses(props) {
     }));
   };
 
+  const handleChange_analysis_language = (e) => {
+    e.preventDefault();
+    const { value } = e.target;
+    setStatedata((state) => ({
+      ...state,
+      analysis_language: value
+    }));
+  };
+
   const onSubmit = () => {
     const coursesdata_string = JSON.stringify(statedata.coursesdata);
     setStatedata((state) => ({
@@ -182,7 +192,8 @@ export default function MyCourses(props) {
     }));
     transcriptanalyser_test(
       statedata.student._id.toString(),
-      statedata.study_group
+      statedata.study_group,
+      statedata.analysis_language
     ).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -438,13 +449,29 @@ export default function MyCourses(props) {
                             <option value={'O'}>Yes</option> */}
                           </Form.Control>
                         </Form.Group>
+                        <br />
+                        <Form.Group controlId="analysis_language">
+                          <Form.Label>Select language</Form.Label>
+                          <Form.Control
+                            as="select"
+                            onChange={(e) => handleChange_analysis_language(e)}
+                          >
+                            <option value={''}>Select Study Group</option>
+                            <option value={'zh'}>中文</option>
+                            <option value={'en'}>English (Beta Version)</option>
+                          </Form.Control>
+                        </Form.Group>
                       </Col>
                     </Row>
                     <br />
                     <Row className="mx-1">
                       <Button
                         onClick={onAnalyse}
-                        disabled={statedata.isAnalysing}
+                        disabled={
+                          statedata.isAnalysing ||
+                          statedata.study_group === '' ||
+                          statedata.analysis_language === ''
+                        }
                       >
                         {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
                       </Button>

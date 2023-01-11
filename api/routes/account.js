@@ -89,7 +89,7 @@ router
 
 // TaiGer Transcript Analyser:
 router
-  .route('/transcript/:studentId/:category')
+  .route('/transcript/:studentId/:category/:language')
   .post(
     filter_archiv_user,
     TranscriptAnalyserRateLimiter,

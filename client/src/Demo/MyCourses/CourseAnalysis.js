@@ -33,6 +33,7 @@ export default function CourseAnalysis(props) {
     analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
+    excel_file: {},
     file: '',
     study_group: '',
     analyzed_course: '',
@@ -61,7 +62,6 @@ export default function CourseAnalysis(props) {
           const temp = actualFileName.split('_');
           const lastname = temp[3].split('.');
           const student_name_temp = `${temp[2]} - ${lastname[0]}`;
-          console.log(student_name_temp);
           const { data: blob } = resp;
           if (blob.size === 0) return;
           handleFile(blob).then((wb) => {
@@ -72,7 +72,9 @@ export default function CourseAnalysis(props) {
               ...state,
               sheets,
               student_name: student_name_temp,
+              excel_file: blob,
               isLoaded: true,
+              file_name: actualFileName,
               LastModified,
               sheetNames,
               res_modal_status: status,
@@ -121,10 +123,44 @@ export default function CourseAnalysis(props) {
     return data;
   };
 
+  const onDownload = () => {
+    setStatedata((state) => ({
+      ...state,
+      isDownloading: true
+    }));
+    // TODO: timeout? success?
+    if (statedata.excel_file !== {}) {
+      const blob = statedata.excel_file;
+      if (blob.size === 0) return;
+
+      const url = window.URL.createObjectURL(new Blob([blob]));
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${statedata.file_name}`);
+      // Append to html link element page
+      document.body.appendChild(link);
+      // Start download
+      link.click();
+      // Clean up and remove the link
+      link.parentNode.removeChild(link);
+      setStatedata((state) => ({
+        ...state,
+        isDownloading: false
+      }));
+    } else {
+      setStatedata((state) => ({
+        ...state,
+        isLoaded: true,
+        res_modal_status: 500,
+        res_modal_message: "Please try it later",
+        isDownloading: false
+      }));
+    }
+  };
+
   const readDataFormExcel = (data) => {
     const wb = XLSX.read(data);
-    console.log(wb.Props.ModifiedDate);
-    console.log(wb);
     var mySheetData = {};
     for (let i = 0; i < wb.SheetNames.length; i += 1) {
       let sheetName = wb.SheetNames[i];
@@ -220,6 +256,7 @@ export default function CourseAnalysis(props) {
                 </Col>
               </Row>
               <br />
+              <Button onClick={() => onDownload()}>Download Excel</Button>
               <Tabs>
                 {statedata.sheetNames.map((sheetName, i) => (
                   <Tab

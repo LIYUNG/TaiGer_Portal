@@ -739,6 +739,12 @@ function ProgramList(props) {
             filter: 'fuzzyText'
           },
           {
+            Header: 'Degree',
+            accessor: 'degree',
+            // Filter: SelectColumnFilter,
+            filter: 'fuzzyText'
+          },
+          {
             Header: 'Semester',
             accessor: 'semester',
             Filter: SelectColumnFilter,
@@ -761,12 +767,6 @@ function ProgramList(props) {
             accessor: 'ielts'
             // Filter: NumberRangeColumnFilter,
             // filter: 'between'
-          },
-          {
-            Header: 'Degree',
-            accessor: 'degree',
-            // Filter: SelectColumnFilter,
-            filter: 'fuzzyText'
           },
           {
             Header: 'GRE/GMAT',

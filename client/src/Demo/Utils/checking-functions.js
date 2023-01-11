@@ -101,11 +101,33 @@ export const check_english_language_passed = (academic_background) => {
   return false;
 };
 
+export const check_english_language_Notneeded = (academic_background) => {
+  if (!academic_background || !academic_background.language) {
+    return false;
+  }
+  if (academic_background.language.english_isPassed === '--') {
+    return true;
+  }
+
+  return false;
+};
+
 export const check_german_language_passed = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;
   }
   if (academic_background.language.german_isPassed === 'O') {
+    return true;
+  }
+
+  return false;
+};
+
+export const check_german_language_Notneeded = (academic_background) => {
+  if (!academic_background || !academic_background.language) {
+    return false;
+  }
+  if (academic_background.language.german_isPassed === '--') {
     return true;
   }
 

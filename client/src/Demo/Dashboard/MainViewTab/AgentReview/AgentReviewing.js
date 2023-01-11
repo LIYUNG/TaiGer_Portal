@@ -11,6 +11,8 @@ import {
   check_if_there_is_language_info,
   check_if_there_is_english_language_info,
   check_if_there_is_german_language_info,
+  check_english_language_Notneeded,
+  check_german_language_Notneeded,
   check_english_language_passed,
   check_german_language_passed,
   check_academic_background_filled,
@@ -204,21 +206,25 @@ class AgentReviewing extends React.Component {
                         }
                       </p>
                     ) : (
-                      <p className="text-warning" title="Expected Test Date">
-                        <AiFillQuestionCircle
-                          size={24}
-                          color="lightgray"
-                          className="my-0 me-2"
-                        />
-                        {
-                          this.props.student.academic_background.language
-                            .english_certificate
-                        }{' '}
-                        {
-                          this.props.student.academic_background.language
-                            .english_test_date
-                        }
-                      </p>
+                      !check_english_language_Notneeded(
+                        this.props.student.academic_background
+                      ) && (
+                        <p className="text-warning" title="Expected Test Date">
+                          <AiFillQuestionCircle
+                            size={24}
+                            color="lightgray"
+                            className="my-0 me-2"
+                          />
+                          {
+                            this.props.student.academic_background.language
+                              .english_certificate
+                          }{' '}
+                          {
+                            this.props.student.academic_background.language
+                              .english_test_date
+                          }
+                        </p>
+                      )
                     )}
                   </Link>
                 )}
@@ -251,21 +257,25 @@ class AgentReviewing extends React.Component {
                         }
                       </p>
                     ) : (
-                      <p className="text-warning" title="Expected Test Date">
-                        <AiFillQuestionCircle
-                          size={24}
-                          color="lightgray"
-                          className="my-0 me-2"
-                        />
-                        {
-                          this.props.student.academic_background.language
-                            .german_certificate
-                        }{' '}
-                        {
-                          this.props.student.academic_background.language
-                            .german_test_date
-                        }
-                      </p>
+                      !check_german_language_Notneeded(
+                        this.props.student.academic_background
+                      ) && (
+                        <p className="text-warning" title="Expected Test Date">
+                          <AiFillQuestionCircle
+                            size={24}
+                            color="lightgray"
+                            className="my-0 me-2"
+                          />
+                          {
+                            this.props.student.academic_background.language
+                              .german_certificate
+                          }{' '}
+                          {
+                            this.props.student.academic_background.language
+                              .german_test_date
+                          }
+                        </p>
+                      )
                     )}
                     {this.props.student.academic_background.language
                       .english_isPassed === '--' &&

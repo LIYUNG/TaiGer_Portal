@@ -24,7 +24,7 @@ class InternalDocCreatePage extends React.Component {
     doc_id_toBeDelete: '',
     doc_title_toBeDelete: '',
     doc_title: '',
-    category: 'internal',
+    category: '',
     SetDeleteDocModel: false,
     isEdit: false,
     expand: true,

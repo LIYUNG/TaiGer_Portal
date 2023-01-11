@@ -40,6 +40,7 @@ export default function CourseAnalysis(props) {
     isAnalysing: false,
     isUpdating: false,
     isDownloading: false,
+    LastModified: '',
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -64,13 +65,15 @@ export default function CourseAnalysis(props) {
           const { data: blob } = resp;
           if (blob.size === 0) return;
           handleFile(blob).then((wb) => {
-            const sheets = readDataFormExcel(wb);
+            const { mySheetData: sheets, ModifiedDate: LastModified } =
+              readDataFormExcel(wb);
             const sheetNames = Object.keys(sheets);
             setStatedata((state) => ({
               ...state,
               sheets,
               student_name: student_name_temp,
               isLoaded: true,
+              LastModified,
               sheetNames,
               res_modal_status: status,
               isUpdating: false
@@ -88,7 +91,7 @@ export default function CourseAnalysis(props) {
         }
       },
       (error) => {
-          const { statusText } = resp;
+        const { statusText } = resp;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
@@ -114,11 +117,13 @@ export default function CourseAnalysis(props) {
   const handleFile = async (blob) => {
     if (!blob) return;
     const data = await readAsArrayBuffer(blob);
+    // const data = await blob.arrayBuffer();
     return data;
   };
 
   const readDataFormExcel = (data) => {
     const wb = XLSX.read(data);
+    console.log(wb.Props.ModifiedDate);
     console.log(wb);
     var mySheetData = {};
     for (let i = 0; i < wb.SheetNames.length; i += 1) {
@@ -126,10 +131,8 @@ export default function CourseAnalysis(props) {
       const worksheet = wb.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
       mySheetData[sheetName] = jsonData;
-      console.log(wb.SheetNames[i]);
     }
-    console.log(mySheetData);
-    return mySheetData;
+    return { mySheetData, ModifiedDate: wb.Props.ModifiedDate };
   };
   const ConfirmError = () => {
     setStatedata((state) => ({
@@ -208,6 +211,12 @@ export default function CourseAnalysis(props) {
                     The courses analysis for each program as reference.{' '}
                     <b>The results are not garanteed.</b>
                   </p>
+                  <p>
+                    The <b>Required_ECTS</b> means the requirement from the
+                    programs. If your converted credits are still less then
+                    Required_ECTS. You need to take the recommended courses
+                    (建議修課) on the right side.
+                  </p>
                 </Col>
               </Row>
               <br />
@@ -253,7 +262,7 @@ export default function CourseAnalysis(props) {
                 ))}
               </Tabs>
               <Row className="my-2">
-                <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
+                <Col>Last update at: {convertDate(statedata.LastModified)}</Col>
               </Row>
             </Card.Body>
           </Card>

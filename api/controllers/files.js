@@ -163,7 +163,6 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
     params: { category_name }
   } = req;
   // Check authorized role
-  console.log("test")
   if (user.role === Role.Guest) {
     logger.error('downloadTemplateFile: Invalid role!');
     throw new ErrorResponse(400, 'Invalid role');
@@ -1049,37 +1048,40 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     Key: fileKey,
     Bucket: directory
   };
-  s3.getObject(options, (err, data) => {
-    // Handle any error and exit
-    if (err) return err;
+  // s3.getObject(options, (err, data) => {
+  //   // Handle any error and exit
+  //   if (err) return err;
 
-    // No error happened
-    // Convert Body from a Buffer to a String
-    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
-    res.attachment(fileKey_converted);
-    return res.end(data.Body);
+  //   // No error happened
+  //   // Convert Body from a Buffer to a String
+  //   const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+  //   res.attachment(fileKey_converted);
+  //   // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
+  //   // return res.end(data.Body);
+  //   return res.send(data);
 
-    // const fileStream = data.createReadStream();
-    // fileStream.pipe(res);
-  });
+  //   // const fileStream = data.createReadStream();
+  //   // fileStream.pipe(res);
+  // });
 
-  // s3.headObject(options)
-  //   .promise()
-  //   .then(() => {
-  //     // This will not throw error anymore
-  //     res.attachment(fileKey);
-  //     // const fileStream = s3.getObject(options).createReadStream();
-  //     // fileStream.pipe(res);
-  //   })
-  //   .catch((error) => {
-  //     if (error.statusCode === 404) {
-  //       // Catching NoSuchKey
-  //       logger.error('downloadXLSX: ', error);
-  //     }
-  //     return res
-  //       .status(error.statusCode)
-  //       .json({ success: false, message: error.message });
-  //   });
+  s3.headObject(options)
+    .promise()
+    .then(() => {
+      // This will not throw error anymore
+      const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+      res.attachment(fileKey_converted);
+      const fileStream = s3.getObject(options).createReadStream();
+      fileStream.pipe(res);
+    })
+    .catch((error) => {
+      if (error.statusCode === 404) {
+        // Catching NoSuchKey
+        logger.error('downloadXLSX: ', error);
+      }
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    });
 });
 
 const removeNotification = asyncHandler(async (req, res, next) => {

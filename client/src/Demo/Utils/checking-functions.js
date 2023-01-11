@@ -52,6 +52,44 @@ export const showButtonIfMyStudentB = (user, student) => {
   return false;
 };
 
+export const check_if_there_is_language_info = (academic_background) => {
+  if (!academic_background || !academic_background.language) {
+    return false;
+  }
+  if (
+    academic_background.language.english_isPassed === '-' &&
+    academic_background.language.german_isPassed === '-'
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+export const check_if_there_is_english_language_info = (
+  academic_background
+) => {
+  if (!academic_background || !academic_background.language) {
+    return false;
+  }
+  if (academic_background.language.english_isPassed === '-') {
+    return false;
+  }
+
+  return true;
+};
+
+export const check_if_there_is_german_language_info = (academic_background) => {
+  if (!academic_background || !academic_background.language) {
+    return false;
+  }
+  if (academic_background.language.german_isPassed === '-') {
+    return false;
+  }
+
+  return true;
+};
+
 export const check_english_language_passed = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;

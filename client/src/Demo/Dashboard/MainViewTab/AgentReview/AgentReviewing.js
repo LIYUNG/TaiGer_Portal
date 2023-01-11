@@ -8,6 +8,9 @@ import {
 } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
+  check_if_there_is_language_info,
+  check_if_there_is_english_language_info,
+  check_if_there_is_german_language_info,
   check_english_language_passed,
   check_german_language_passed,
   check_academic_background_filled,
@@ -159,14 +162,9 @@ class AgentReviewing extends React.Component {
             </Link>
           </td>
           <td>
-            {!this.props.student.academic_background.language ||
-            !this.props.student.academic_background.language.english_isPassed ||
-            (this.props.student.academic_background.language
-              .english_isPassed === '-' &&
-              (!this.props.student.academic_background.language
-                .german_isPassed ||
-                this.props.student.academic_background.language
-                  .german_isPassed === '-')) ? (
+            {!check_if_there_is_language_info(
+              this.props.student.academic_background
+            ) ? (
               <Link
                 to={
                   '/student-database/' + this.props.student._id + '/background'
@@ -177,28 +175,24 @@ class AgentReviewing extends React.Component {
               </Link>
             ) : (
               <>
-                <Link
-                  to={
-                    '/student-database/' +
-                    this.props.student._id +
-                    '/background'
-                  }
-                  style={{ textDecoration: 'none' }}
-                >
-                  {this.props.student.academic_background.language &&
-                  this.props.student.academic_background.language
-                    .english_isPassed &&
-                  (this.props.student.academic_background.language
-                    .english_isPassed === 'O' ||
-                    this.props.student.academic_background.language
-                      .english_isPassed === 'X') ? (
-                    isEnglishPassed ? (
+                {check_if_there_is_english_language_info(
+                  this.props.student.academic_background
+                ) && (
+                  <Link
+                    to={
+                      '/student-database/' +
+                      this.props.student._id +
+                      '/background'
+                    }
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {isEnglishPassed ? (
                       <p className="text-warning">
                         <IoCheckmarkCircle
                           size={24}
                           color="limegreen"
                           title="complete"
-                          className="my-0 mx-2"
+                          className="my-0 me-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -214,7 +208,7 @@ class AgentReviewing extends React.Component {
                         <AiFillQuestionCircle
                           size={24}
                           color="lightgray"
-                          className="my-0 mx-2"
+                          className="my-0 me-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -225,33 +219,27 @@ class AgentReviewing extends React.Component {
                             .english_test_date
                         }
                       </p>
-                    )
-                  ) : (
-                    <></>
-                  )}
-                </Link>
-                <Link
-                  to={
-                    '/student-database/' +
-                    this.props.student._id +
-                    '/background'
-                  }
-                  style={{ textDecoration: 'none' }}
-                >
-                  {this.props.student.academic_background.language &&
-                  this.props.student.academic_background.language
-                    .german_isPassed &&
-                  (this.props.student.academic_background.language
-                    .german_isPassed === 'O' ||
-                    this.props.student.academic_background.language
-                      .german_isPassed === 'X') ? (
-                    isGermanPassed ? (
+                    )}
+                  </Link>
+                )}
+                {check_if_there_is_german_language_info(
+                  this.props.student.academic_background
+                ) && (
+                  <Link
+                    to={
+                      '/student-database/' +
+                      this.props.student._id +
+                      '/background'
+                    }
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {isGermanPassed ? (
                       <p className="text-warning">
                         <IoCheckmarkCircle
                           size={24}
                           color="limegreen"
                           title="complete"
-                          className="my-0 mx-2"
+                          className="my-0 me-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -267,7 +255,7 @@ class AgentReviewing extends React.Component {
                         <AiFillQuestionCircle
                           size={24}
                           color="lightgray"
-                          className="my-0 mx-2"
+                          className="my-0 me-2"
                         />
                         {
                           this.props.student.academic_background.language
@@ -278,19 +266,17 @@ class AgentReviewing extends React.Component {
                             .german_test_date
                         }
                       </p>
-                    )
-                  ) : (
-                    <></>
-                  )}
-                  {this.props.student.academic_background.language
-                    .english_isPassed === '--' &&
-                    this.props.student.academic_background.language
-                      .german_isPassed === '--' && (
-                      <p className="text-warning" title="Not needed">
-                        Not needed
-                      </p>
                     )}
-                </Link>
+                    {this.props.student.academic_background.language
+                      .english_isPassed === '--' &&
+                      this.props.student.academic_background.language
+                        .german_isPassed === '--' && (
+                        <p className="text-warning" title="Not needed">
+                          Not needed
+                        </p>
+                      )}
+                  </Link>
+                )}
               </>
             )}
           </td>

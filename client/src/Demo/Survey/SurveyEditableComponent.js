@@ -55,8 +55,7 @@ class SurveyEditableComponent extends React.Component {
       }));
     }
     if (
-      prevProps.application_preference !==
-      this.props.application_preference
+      prevProps.application_preference !== this.props.application_preference
     ) {
       this.setState((state) => ({
         ...state,
@@ -955,6 +954,7 @@ class SurveyEditableComponent extends React.Component {
                               }
                               onChange={(e) => this.handleChange_Language(e)}
                             >
+                              <option value="">Please Select</option>
                               <option value="TOEFL">TOEFL</option>
                               <option value="IELTS">IELTS</option>
                               <option value="Duolingo">Duolingo</option>
@@ -1012,6 +1012,7 @@ class SurveyEditableComponent extends React.Component {
                               }
                               onChange={(e) => this.handleChange_Language(e)}
                             >
+                              <option value="">Please Select</option>
                               <option value="TOEFL">TOEFL</option>
                               <option value="IELTS">IELTS</option>
                               <option value="Duolingo">Duolingo</option>

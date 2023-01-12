@@ -133,6 +133,10 @@ window.programstatuslist = [
     prop: 'university'
   },
   {
+    name: 'Degree',
+    prop: 'degree'
+  },
+  {
     name: 'Programs',
     prop: 'programs'
   },

@@ -21,6 +21,7 @@ class ApplicationProgress extends React.Component {
   render() {
     var applying_university;
     var applying_program;
+    var applying_program_degree;
     var program_semester;
     var application_deadline;
     var application_decided;
@@ -52,6 +53,25 @@ class ApplicationProgress extends React.Component {
             ) : (
               <p className="mb-1 text-secondary" title="Not decided yet">
                 {application.programId.school}
+              </p>
+            )}
+          </Link>
+        )
+      );
+      applying_program_degree = this.props.student.applications.map(
+        (application, i) => (
+          <Link
+            to={'/programs/' + application.programId._id}
+            style={{ textDecoration: 'none' }}
+            key={i}
+          >
+            {application.decided === 'O' ? (
+              <p className="mb-1 text-info">
+                {application.programId.degree}
+              </p>
+            ) : (
+              <p className="mb-1 text-secondary" title="Not decided yet">
+                {application.programId.degree}
               </p>
             )}
           </Link>
@@ -254,6 +274,7 @@ class ApplicationProgress extends React.Component {
             <></>
           )}
           <td>{applying_university}</td>
+          <td>{applying_program_degree}</td>
           <td>{applying_program}</td>
           <td>{program_semester}</td>
           <td>{application_deadline}</td>

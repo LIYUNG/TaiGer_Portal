@@ -246,6 +246,7 @@ class AgentMainView extends React.Component {
                 >
                   <thead>
                     <tr>
+                      <th></th>
                       <th>First-, Last Name</th>
                       <th>Agents</th>
                       <th>Editors</th>

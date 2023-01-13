@@ -3,16 +3,16 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Program } = require('../models/Program');
 const { User, Role } = require('../models/User');
 const logger = require('../services/logger');
-const { myCache } = require('../cache/node-cache');
+const { one_month_cache } = require('../cache/node-cache');
 
 const getPrograms = asyncHandler(async (req, res) => {
-  const value = myCache.get(req.originalUrl);
+  const value = one_month_cache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
     const programs = await Program.find().select(
       '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated -country'
     );
-    const success = myCache.set(req.originalUrl, programs);
+    const success = one_month_cache.set(req.originalUrl, programs);
     if (success) {
       console.log('programs cache set successfully');
     }
@@ -41,7 +41,7 @@ const getProgram = asyncHandler(async (req, res) => {
     }
   }
 
-  const value = myCache.get(req.originalUrl);
+  const value = one_month_cache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
     const program = await Program.findById(req.params.programId);
@@ -49,7 +49,7 @@ const getProgram = asyncHandler(async (req, res) => {
       logger.error('getProgram: Invalid program id');
       throw new ErrorResponse(400, 'Invalid program id');
     }
-    const success = myCache.set(req.originalUrl, program);
+    const success = one_month_cache.set(req.originalUrl, program);
     if (success) {
       console.log('programs cache set successfully');
     }
@@ -84,7 +84,7 @@ const updateProgram = asyncHandler(async (req, res) => {
     }
   );
   // TODO: to delete cache key for image, pdf, docs, file here.
-  const value = myCache.del(req.originalUrl);
+  const value = one_month_cache.del(req.originalUrl);
   if (value === 1) {
     console.log('cache key deleted successfully due to update');
   }

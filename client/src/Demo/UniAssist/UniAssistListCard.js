@@ -4,6 +4,7 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
+import { BASE_URL } from '../../api/request';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -393,23 +394,22 @@ class UniAssistListCard extends React.Component {
                 ) : (
                   <>
                     <Col md={2}>
-                      <Button
-                        onClick={(e) =>
-                          this.handleUniAssistDocDownload(
-                            e,
-                            this.state.student._id.toString(),
-                            application.programId._id.toString()
-                          )
-                        }
-                        disabled={
-                          !this.state.isLoaded2[
-                            application.programId._id.toString()
-                          ]
-                        }
-                        size={'sm'}
+                      <a
+                        href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}`}
+                        target="_blank"
                       >
-                        <AiOutlineDownload size={16} />
-                      </Button>
+                        <Button
+                          title="Download"
+                          disabled={
+                            !this.state.isLoaded2[
+                              application.programId._id.toString()
+                            ]
+                          }
+                          size={'sm'}
+                        >
+                          <AiOutlineDownload size={16} />
+                        </Button>
+                      </a>
                     </Col>
                     <Col>
                       {showButtonIfMyStudent(
@@ -569,23 +569,22 @@ class UniAssistListCard extends React.Component {
                         this.props.user,
                         this.props.student
                       ) && (
-                        <Button
-                          onClick={(e) =>
-                            this.handleUniAssistDocDownload(
-                              e,
-                              this.state.student._id.toString(),
-                              application.programId._id.toString()
-                            )
-                          }
-                          disabled={
-                            !this.state.isLoaded2[
-                              application.programId._id.toString()
-                            ]
-                          }
-                          size={'sm'}
+                        <a
+                          href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}`}
+                          target="_blank"
                         >
-                          <AiOutlineDownload size={16} />
-                        </Button>
+                          <Button
+                            title="Download"
+                            disabled={
+                              !this.state.isLoaded2[
+                                application.programId._id.toString()
+                              ]
+                            }
+                            size={'sm'}
+                          >
+                            <AiOutlineDownload size={16} />
+                          </Button>
+                        </a>
                       )}
                     </Col>
                     <Col>

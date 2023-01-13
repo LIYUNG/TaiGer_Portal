@@ -4,6 +4,7 @@ const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
+const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_PUBLIC_BUCKET, API_ORIGIN } = require('../config');
 const { Documentthread } = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
@@ -760,7 +761,6 @@ const postMessages = asyncHandler(async (req, res) => {
   }
 });
 
-// TODO: Download image in a message in a thread
 const getMessageImageDownload = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId, file_name }
@@ -778,30 +778,28 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
     Bucket: directory
   };
   // TODO: cache download files docx, files.
-  // const value = myCache.get(req.originalUrl);
-  // if (value === undefined) {
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(file_name);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error(error);
+  const cache_key = req.originalUrl.split('/')[6];
+  console.log(cache_key);
+  const value = one_month_cache.get(cache_key); // image name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (err) return err;
+
+      // No error happened
+      const success = one_month_cache.set(cache_key, data.Body);
+      if (success) {
+        console.log('image cache set successfully');
       }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
+
+      res.attachment(file_name);
+      return res.end(data.Body);
     });
-  // } else {
-  //   console.log('cache hit');
-  //   res.attachment(file_name);
-  //   return res.end(value);
-  // }
+  } else {
+    console.log('cache hit');
+    res.attachment(file_name);
+    return res.end(value);
+  }
 });
 
 // Download file in a message in a thread
@@ -852,27 +850,45 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     Key: fileKey,
     Bucket: directory
   };
-  // TODO: cache download files docx, files.
-  // console.log(req.originalUrl);
-  // console.log(req.url);
 
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(fileKey);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error(error);
+  const cache_key = req.originalUrl.split('/')[5];
+  const value = one_month_cache.get(cache_key); // image name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (err) return err;
+
+      // No error happened
+      const success = one_month_cache.set(cache_key, data.Body);
+      if (success) {
+        console.log('thread file cache set successfully');
       }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
+
+      res.attachment(fileKey);
+      return res.end(data.Body);
     });
+  } else {
+    console.log('thread file cache hit');
+    res.attachment(fileKey);
+    return res.end(value);
+  }
+  // s3.headObject(options)
+  //   .promise()
+  //   .then(() => {
+  //     // This will not throw error anymore
+  //     res.attachment(fileKey);
+  //     const fileStream = s3.getObject(options).createReadStream();
+  //     fileStream.pipe(res);
+  //   })
+  //   .catch((error) => {
+  //     if (error.statusCode === 404) {
+  //       // Catching NoSuchKey
+  //       logger.error(error);
+  //     }
+  //     return res
+  //       .status(error.statusCode)
+  //       .json({ success: false, message: error.message });
+  //   });
 });
 
 // (O) notification student email works

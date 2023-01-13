@@ -8,7 +8,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const Documentation = require('../models/Documentation');
 const Internaldoc = require('../models/Internaldoc');
 const Docspage = require('../models/Docspage');
-const { myCache } = require('../cache/node-cache');
+const { one_month_cache } = require('../cache/node-cache');
 const logger = require('../services/logger');
 const { getNumberOfDays } = require('../constants');
 const {
@@ -136,7 +136,7 @@ const updateDocumentationPage = asyncHandler(async (req, res) => {
     newDocPage = await Docspage.create(fields);
     return res.status(201).send({ success: true, data: newDocPage });
   }
-  const success = myCache.set(req.url, doc_page_existed);
+  const success = one_month_cache.set(req.url, doc_page_existed);
   if (success) {
     console.log('cache set update successfully');
   }
@@ -167,14 +167,14 @@ const getCategoryDocumentationsPage = asyncHandler(async (req, res) => {
   }
 
   // Use redis/cache
-  const value = myCache.get(req.url);
+  const value = one_month_cache.get(req.url);
   if (value === undefined) {
     // cache miss
     console.log('cache miss');
     const docspage = await Docspage.findOne({
       category: req.params.category
     });
-    const success = myCache.set(req.url, docspage);
+    const success = one_month_cache.set(req.url, docspage);
     if (success) {
       console.log('cache set successfully');
     }
@@ -255,7 +255,7 @@ const getDocFile = asyncHandler(async (req, res) => {
   };
   // Use redis/cache
   // TODO: need to update when new uploaded file with same key name!
-  const value = myCache.get(req.originalUrl);
+  const value = one_month_cache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
     console.log(`cache miss: ${req.originalUrl}`);
@@ -266,7 +266,7 @@ const getDocFile = asyncHandler(async (req, res) => {
       // No error happened
       // Convert Body from a Buffer to a String
       const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
-      const success = myCache.set(req.originalUrl, data.Body);
+      const success = one_month_cache.set(req.originalUrl, data.Body);
       if (success) {
         console.log('cache set successfully');
       }
@@ -318,7 +318,7 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
   let extname = path.extname(req.file.key);
   extname = extname.replace('.', '');
   // TODO: to delete cache key for image, pdf, docs, file here.
-  const value = myCache.del(
+  const value = one_month_cache.del(
     `/api/docs/file/${encodeURIComponent(req.file.key)}`
   );
   // encodeURIComponent convert chinese to url match charater %E7%94%B3%E8%AB%8 etc.

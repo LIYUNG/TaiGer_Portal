@@ -2,6 +2,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const aws = require('aws-sdk');
 const { asyncHandler } = require('../middlewares/error-handler');
+const { one_month_cache, two_month_cache } = require('../cache/node-cache');
 const { Role, Student, User, Agent } = require('../models/User');
 const { Template } = require('../models/Template');
 const Course = require('../models/Course');
@@ -95,6 +96,10 @@ const deleteTemplate = asyncHandler(async (req, res) => {
         logger.error('deleteObject');
         logger.error(error);
       }
+      const value = two_month_cache.del(fileKey);
+      if (value === 1) {
+        console.log('Template cache key deleted successfully');
+      }
     });
   } catch (err) {
     if (err) {
@@ -182,23 +187,46 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
     Bucket: directory
   };
 
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(fileKey);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error('downloadTemplateFile: ', error);
+  console.log(fileKey);
+  const value = two_month_cache.get(fileKey); // vpd name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (err) return err;
+
+      // No error happened
+      const success = two_month_cache.set(fileKey, data.Body);
+      if (success) {
+        console.log('Template file cache set successfully');
       }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
+
+      res.attachment(fileKey);
+      return res.end(data.Body);
     });
+  } else {
+    console.log('Template file cache hit');
+    res.attachment(fileKey);
+    return res.end(value);
+  }
+
+  // s3.headObject(options)
+  //   .promise()
+  //   .then(() => {
+  //     // () TODO: cache template!
+  //     // This will not throw error anymore
+  //     res.attachment(fileKey);
+  //     const fileStream = s3.getObject(options).createReadStream();
+  //     fileStream.pipe(res);
+  //   })
+  //   .catch((error) => {
+  //     if (error.statusCode === 404) {
+  //       // Catching NoSuchKey
+  //       logger.error('downloadTemplateFile: ', error);
+  //     }
+  //     return res
+  //       .status(error.statusCode)
+  //       .json({ success: false, message: error.message });
+  //   });
 });
 
 // (O) email : student notification
@@ -536,23 +564,44 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     Bucket: directory
   };
 
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(fileKey);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error('downloadVPDFile: ', error);
+  console.log(fileKey);
+  const value = one_month_cache.get(fileKey); // vpd name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (err) return err;
+
+      // No error happened
+      const success = one_month_cache.set(fileKey, data.Body);
+      if (success) {
+        console.log('VPD file cache set successfully');
       }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
+
+      res.attachment(fileKey);
+      return res.end(data.Body);
     });
+  } else {
+    console.log('VPD file cache hit');
+    res.attachment(fileKey);
+    return res.end(value);
+  }
+  // s3.headObject(options)
+  //   .promise()
+  //   .then(() => {
+  //     // This will not throw error anymore
+  //     res.attachment(fileKey);
+  //     const fileStream = s3.getObject(options).createReadStream();
+  //     fileStream.pipe(res);
+  //   })
+  //   .catch((error) => {
+  //     if (error.statusCode === 404) {
+  //       // Catching NoSuchKey
+  //       logger.error('downloadVPDFile: ', error);
+  //     }
+  //     return res
+  //       .status(error.statusCode)
+  //       .json({ success: false, message: error.message });
+  //   });
 });
 
 const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
@@ -593,23 +642,45 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
     Bucket: directory
   };
 
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
-      res.attachment(fileKey);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error('downloadProfileFileURL: ', error);
+  console.log(fileKey);
+  const value = one_month_cache.get(fileKey); // vpd name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (err) return err;
+
+      // No error happened
+      const success = one_month_cache.set(fileKey, data.Body);
+      if (success) {
+        console.log('Profile file cache set successfully');
       }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
+
+      res.attachment(fileKey);
+      return res.end(data.Body);
     });
+  } else {
+    console.log('Profile file cache hit');
+    res.attachment(fileKey);
+    return res.end(value);
+  }
+
+  // s3.headObject(options)
+  //   .promise()
+  //   .then(() => {
+  //     // This will not throw error anymore
+  //     res.attachment(fileKey);
+  //     const fileStream = s3.getObject(options).createReadStream();
+  //     fileStream.pipe(res);
+  //   })
+  //   .catch((error) => {
+  //     if (error.statusCode === 404) {
+  //       // Catching NoSuchKey
+  //       logger.error('downloadProfileFileURL: ', error);
+  //     }
+  //     return res
+  //       .status(error.statusCode)
+  //       .json({ success: false, message: error.message });
+  //   });
 });
 
 // (O) email : student notification
@@ -876,6 +947,10 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
         document.updatedAt = new Date();
 
         student.save();
+        const value = two_month_cache.del(fileKey);
+        if (value === 1) {
+          console.log('Profile cache key deleted successfully');
+        }
         res.status(200).send({ success: true, data: document });
       }
     });
@@ -934,6 +1009,10 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
         app.uni_assist.updatedAt = new Date();
 
         student.save();
+        const value = one_month_cache.del(fileKey);
+        if (value === 1) {
+          console.log('VPD cache key deleted successfully');
+        }
         res.status(200).send({ success: true });
       }
     });
@@ -994,6 +1073,14 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
         );
         courses.analysis.updatedAt = new Date();
         courses.save();
+
+        const url_split = req.originalUrl.split('/');
+        const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+        const success = one_month_cache.del(cache_key);
+        if (success === 1) {
+          console.log('cache key deleted successfully');
+        }
+
         return res.status(200).send({ success: true, data: courses.analysis });
       } else {
         logger.error('Error occurs while trying to produce analyzed report');
@@ -1009,7 +1096,6 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   }
 });
 
-// FIXME: refactor this
 // Download original transcript excel
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
@@ -1048,40 +1134,60 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     Key: fileKey,
     Bucket: directory
   };
-  // s3.getObject(options, (err, data) => {
-  //   // Handle any error and exit
-  //   if (err) return err;
+  const url_split = req.originalUrl.split('/');
+  const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+  console.log(cache_key);
+  console.log(req.originalUrl);
+  const value = one_month_cache.get(cache_key);
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (err) return err;
 
-  //   // No error happened
-  //   // Convert Body from a Buffer to a String
-  //   const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
-  //   res.attachment(fileKey_converted);
-  //   // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
-  //   // return res.end(data.Body);
-  //   return res.send(data);
-
-  //   // const fileStream = data.createReadStream();
-  //   // fileStream.pipe(res);
-  // });
-
-  s3.headObject(options)
-    .promise()
-    .then(() => {
-      // This will not throw error anymore
+      // No error happened
+      // Convert Body from a Buffer to a String
       const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
-      res.attachment(fileKey_converted);
-      const fileStream = s3.getObject(options).createReadStream();
-      fileStream.pipe(res);
-    })
-    .catch((error) => {
-      if (error.statusCode === 404) {
-        // Catching NoSuchKey
-        logger.error('downloadXLSX: ', error);
+
+      const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
+
+      const success = one_month_cache.set(cache_key, data.Body);
+      if (success) {
+        console.log('cache set successfully');
       }
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
+
+      res.attachment(fileKey_converted);
+      // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
+      return res.end(data.Body);
+      // return res.send(data);
+
+      // const fileStream = data.createReadStream();
+      // fileStream.pipe(res);
     });
+
+    // s3.headObject(options)
+    //   .promise()
+    //   .then(() => {
+    //     // This will not throw error anymore
+    //     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    //     res.attachment(fileKey_converted);
+    //     const fileStream = s3.getObject(options).createReadStream();
+    //     fileStream.pipe(res);
+    //   })
+    //   .catch((error) => {
+    //     if (error.statusCode === 404) {
+    //       // Catching NoSuchKey
+    //       logger.error('downloadXLSX: ', error);
+    //     }
+    //     return res
+    //       .status(error.statusCode)
+    //       .json({ success: false, message: error.message });
+    //   });
+  } else {
+    console.log('cache hit');
+    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    res.attachment(fileKey_converted);
+    return res.end(value);
+  }
 });
 
 const removeNotification = asyncHandler(async (req, res, next) => {

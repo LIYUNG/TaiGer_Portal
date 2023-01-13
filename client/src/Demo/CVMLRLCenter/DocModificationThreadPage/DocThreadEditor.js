@@ -29,7 +29,7 @@ function DocThreadEditor(props) {
 
   const renderTooltip = (props) => (
     <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text so that improve the communication and
+      Please write some text to improve the communication and
       understanding.
     </Tooltip>
   );

@@ -272,6 +272,16 @@ class StudentApplicationsTableTemplate extends React.Component {
                 style={{ textDecoration: 'none' }}
               >
                 <p className="mb-1 text-info" key={application_idx}>
+                  {application.programId.degree}
+                </p>
+              </Link>
+            </td>
+            <td>
+              <Link
+                to={'/programs/' + application.programId._id}
+                style={{ textDecoration: 'none' }}
+              >
+                <p className="mb-1 text-info" key={application_idx}>
                   {application.programId.program_name}
                 </p>
               </Link>

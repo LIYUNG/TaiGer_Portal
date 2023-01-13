@@ -63,8 +63,8 @@ class TabProgramConflict extends React.Component {
     return (
       <>
         {program_conflict.length !== 0 ? (
-          <Row>
-            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+          <Row className="px-0 py-0 mb-2 my-0">
+            <Card className="py-0 px-0 my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-danger">
                   Program Conflicts

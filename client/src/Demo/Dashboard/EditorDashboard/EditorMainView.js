@@ -103,85 +103,76 @@ class EditorMainView extends React.Component {
     return (
       <>
         <Row>
-          <Col md={12}>
-            <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} />{' '}
-                  Unreplied messages:
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                {unread_thread}
-              </Table>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <Card className="mb-2 mx-0" bg={'primary'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Editor Open Tasks:
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                {editor_todo_tasks}
-              </Table>
-            </Card>
-          </Col>
+          <Card className="px-0 mb-2 mx-0" bg={'danger'} text={'light'}>
+            <Card.Header>
+              <Card.Title className="my-0 mx-0 text-light">
+                <BsExclamationTriangle size={18} /> Unreplied messages:
+              </Card.Title>
+            </Card.Header>
+            <Table
+              responsive
+              bordered
+              hover
+              className="px-0 my-0 mx-0"
+              variant="dark"
+              text="light"
+              size="sm"
+            >
+              {unread_thread}
+            </Table>
+          </Card>
         </Row>
         <TabProgramConflict students={this.props.students} />
         <Row>
-          <Col sm={12}>
-            <Tabs
-              defaultActiveKey="dz"
-              id="uncontrolled-tab-example"
-              fill={true}
-              justify={true}
+          <Card className="px-0 mb-2 mx-0" bg={'primary'} text={'light'}>
+            <Card.Header>
+              <Card.Title className="my-0 mx-0 text-light">
+                Editor Open Tasks:
+              </Card.Title>
+            </Card.Header>
+            <Table
+              responsive
+              bordered
+              hover
+              className="my-0 mx-0"
+              variant="dark"
+              text="light"
+              size="sm"
             >
-              <Tab eventKey="dz" title="Agents and Editors">
-                <Table
-                  responsive
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  {students_agent_editor}
-                </Table>
-              </Tab>
-              <Tab eventKey="y" title="Student Profile Overview">
-                <TabStudBackgroundDashboard
-                  role={this.props.role}
-                  students={this.props.students}
-                  documentslist={this.props.documentslist}
-                  onDeleteProgram={this.props.onDeleteProgram}
-                  SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
-                  updateStudentArchivStatus={
-                    this.props.updateStudentArchivStatus
-                  }
-                  isDashboard={this.props.isDashboard}
-                />
-              </Tab>
-            </Tabs>
-          </Col>
+              {editor_todo_tasks}
+            </Table>
+          </Card>
+        </Row>
+        <Row>
+          <Tabs
+            defaultActiveKey="dz"
+            id="uncontrolled-tab-example"
+            fill={true}
+            justify={true}
+          >
+            <Tab eventKey="dz" title="Agents and Editors">
+              <Table
+                responsive
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+                size="sm"
+              >
+                {students_agent_editor}
+              </Table>
+            </Tab>
+            <Tab eventKey="y" title="Student Profile Overview">
+              <TabStudBackgroundDashboard
+                role={this.props.role}
+                students={this.props.students}
+                documentslist={this.props.documentslist}
+                onDeleteProgram={this.props.onDeleteProgram}
+                SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
+                updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+                isDashboard={this.props.isDashboard}
+              />
+            </Tab>
+          </Tabs>
         </Row>
       </>
     );

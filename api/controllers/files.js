@@ -727,7 +727,6 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     // TODO: any faster way to query one time and write back once?!
     if (application.closed === 'O') {
       for (let k = 0; k < application.doc_modification_thread.length; k += 1) {
-        application.doc_modification_thread[k].isFinalVersion = true;
         application.doc_modification_thread[k].updatedAt = new Date();
         const document_thread = await Documentthread.findById(
           application.doc_modification_thread[k].doc_thread_id

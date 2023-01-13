@@ -16,6 +16,7 @@ import Aux from '../../hoc/_Aux';
 import {
   isProgramNotSelectedEnough,
   is_num_Program_Not_specified,
+  is_program_ready_to_submit,
   application_deadline_calculator
 } from '../Utils/checking-functions';
 import { getNumberOfDays, spinner_style } from '../Utils/contants';
@@ -325,23 +326,28 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             {application.decided === 'O' ? (
               <td>
-                <Form.Group controlId="closed">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => this.handleChange(e, application_idx)}
-                    disabled={
-                      !(
-                        application.decided !== '-' &&
-                        application.decided !== 'X'
-                      )
-                    }
-                    defaultValue={application.closed}
-                  >
-                    <option value={'-'}>-</option>
-                    <option value={'X'}>No</option>
-                    <option value={'O'}>Yes</option>
-                  </Form.Control>
-                </Form.Group>
+                {/* TODO: add condition only when all thread finished */}
+                {is_program_ready_to_submit(application) ? (
+                  <Form.Group controlId="closed">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange(e, application_idx)}
+                      disabled={
+                        !(
+                          application.decided !== '-' &&
+                          application.decided !== 'X'
+                        )
+                      }
+                      defaultValue={application.closed}
+                    >
+                      <option value={'-'}>-</option>
+                      <option value={'X'}>No</option>
+                      <option value={'O'}>Yes</option>
+                    </Form.Control>
+                  </Form.Group>
+                ) : (
+                  <div title='CV/ML/RL/Essay/Uni-Assist not finished' className='my-2 mx-2 text-danger'>Info</div>
+                )}
               </td>
             ) : (
               <td></td>

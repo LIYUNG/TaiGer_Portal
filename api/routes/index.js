@@ -3,7 +3,6 @@ const { Router } = require('express');
 const authRouter = require('./auth');
 const accountRouter = require('./account');
 const usersRouter = require('./users');
-const checklistsRouter = require('./checklists');
 const agentsRouter = require('./agents');
 const editorsRouter = require('./editors');
 const studentsRouter = require('./students');
@@ -22,7 +21,6 @@ const router = (app) => {
   apiRouter.use('/account', accountRouter);
 
   apiRouter.use('/users', usersRouter);
-  apiRouter.use('/checklists', checklistsRouter);
   apiRouter.use('/students', studentsRouter);
   apiRouter.use('/agents', agentsRouter);
   apiRouter.use('/editors', editorsRouter);

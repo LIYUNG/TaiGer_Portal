@@ -762,9 +762,16 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   }
   await student.save();
 
+  // const student_updated = await Student.findById(studentId)
+  //   .populate('applications.programId')
+  //   .populate('agents editors', 'firstname lastname email')
+  //   .lean();
   const student_updated = await Student.findById(studentId)
     .populate('applications.programId')
-    .populate('agents editors', 'firstname lastname email')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    ).select('-profile -notification -application_preference')
     .lean();
 
   res.status(201).send({ success: true, data: student_updated });

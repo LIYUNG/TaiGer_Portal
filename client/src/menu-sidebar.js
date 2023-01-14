@@ -78,13 +78,6 @@ export default {
           icon: 'feather icon-file-text'
         },
         {
-          id: 'checklist',
-          title: 'Check List',
-          type: 'item',
-          url: '/checklist',
-          icon: 'feather icon-check'
-        },
-        {
           id: 'agent_center',
           title: 'Base Documents',
           type: 'item',

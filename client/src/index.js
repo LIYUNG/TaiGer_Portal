@@ -190,15 +190,6 @@ window.programs_files_checklist = [
   }
 ];
 
-window.checklist = {
-  course_analysis: 'Course Analysis',
-  uni_assist: 'Uni-Assist',
-  certification_instruction: 'Copy Certification',
-  blocked_account_instruction: 'Blocked Account',
-  health_insurance_instruction: 'Health Insurance',
-  visa_instruction: 'Visa Instruction'
-};
-
 window.profile_wtih_doc_link_list = {
   High_School_Diploma: { name: 'High School Diploma', link: '' },
   High_School_Transcript: { name: 'High School Transcript', link: '' },

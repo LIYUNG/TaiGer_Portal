@@ -18,7 +18,6 @@ class NavItem extends Component {
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
-        itemTitle === 'Check List' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
@@ -36,7 +35,6 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
-        itemTitle === 'Check List' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
@@ -53,7 +51,6 @@ class NavItem extends Component {
         itemTitle === 'My Courses' ||
         itemTitle === 'Academic Survey' ||
         itemTitle === 'Tasks Overview' ||
-        itemTitle === 'Check List' ||
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
@@ -73,7 +70,6 @@ class NavItem extends Component {
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Statistics' ||
-        itemTitle === 'Check List' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Interview Training' ||
@@ -96,7 +92,6 @@ class NavItem extends Component {
         itemTitle === 'Base Documents' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Applications Overview' ||
-        itemTitle === 'Check List' ||
         itemTitle === 'CV/ML/RL Center' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||

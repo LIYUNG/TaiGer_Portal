@@ -151,11 +151,13 @@ class EditorMainView extends React.Component {
           >
             <Tab eventKey="dz" title="Agents and Editors">
               <Table
+                size="sm"
                 responsive
+                bordered
+                hover
                 className="my-0 mx-0"
                 variant="dark"
                 text="light"
-                size="sm"
               >
                 {students_agent_editor}
               </Table>

@@ -231,7 +231,6 @@ class AgentMainView extends React.Component {
                 <TabStudBackgroundDashboard
                   students={this.props.students}
                   startEditingProgram={this.props.startEditingProgram}
-                  SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={
                     this.props.updateStudentArchivStatus
                   }

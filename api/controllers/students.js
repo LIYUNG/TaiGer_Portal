@@ -346,7 +346,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
 });
 
 // () TODO email : agent better notification! (only added or removed should be informed.)
-// () TODO email : student better notification
+// () TODO email : student better notification ()
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId },
@@ -364,15 +364,13 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
         lastname: agent.lastname,
         email: agent.email
       });
-    } else {
-      // await Agent.findByIdAndUpdate(agentsId_arr[i], {
-      //   $pull: { students: studentId }
-      // });
     }
   }
 
   const student = await Student.findById(studentId);
-  student.notification.isRead_new_agent_assigned = false;
+  if (updated_agent_id.length > 0) {
+    student.notification.isRead_new_agent_assigned = false;
+  }
   student.agents = updated_agent_id;
   await student.save();
 
@@ -405,7 +403,6 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       agents: updated_agent
     }
   );
-  // TODO: email inform Student for(assigned agent) and inform Agent for (your new student)
 });
 
 // () TODO email : agent better notification

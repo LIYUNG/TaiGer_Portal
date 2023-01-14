@@ -1,22 +1,10 @@
 import React from 'react';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineUndo
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-// import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import { convertDate } from '../../../Utils/contants';
 import {
-  check_academic_background_filled,
-  check_application_preference_filled,
-  check_applications_to_decided,
   does_student_have_agents,
   does_student_have_editors,
-  is_num_Program_Not_specified,
-  is_all_uni_assist_vpd_uploaded
+  is_num_Program_Not_specified
 } from '../../../Utils/checking-functions';
 class AdminTasks extends React.Component {
   render() {

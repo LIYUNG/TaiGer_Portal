@@ -452,7 +452,6 @@ class Dashboard extends React.Component {
             updateEditorList={this.state.updateEditorList}
             handleChangeEditorlist={this.handleChangeEditorlist}
             submitUpdateEditorlist={this.submitUpdateEditorlist}
-            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             updateStudentArchivStatus={this.updateStudentArchivStatus}
             isDashboard={this.state.isDashboard}
           />
@@ -480,7 +479,6 @@ class Dashboard extends React.Component {
             role={this.props.user.role}
             isLoaded={isLoaded}
             students={this.state.students}
-            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             updateStudentArchivStatus={this.updateStudentArchivStatus}
             isDashboard={this.state.isDashboard}
             onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
@@ -513,7 +511,6 @@ class Dashboard extends React.Component {
             editor_list={this.state.editor_list}
             students={this.state.students}
             updateEditorList={this.state.updateEditorList}
-            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
             updateStudentArchivStatus={this.updateStudentArchivStatus}
             isDashboard={this.state.isDashboard}
           />

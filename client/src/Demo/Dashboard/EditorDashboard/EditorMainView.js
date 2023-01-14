@@ -92,7 +92,6 @@ class EditorMainView extends React.Component {
             <EditorTODOTasks
               user={this.props.user}
               key={student._id}
-              role={this.props.role}
               student={student}
             />
           ))}
@@ -164,9 +163,6 @@ class EditorMainView extends React.Component {
             <Tab eventKey="y" title="Student Profile Overview">
               <TabStudBackgroundDashboard
                 students={this.props.students}
-                documentslist={this.props.documentslist}
-                onDeleteProgram={this.props.onDeleteProgram}
-                SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                 updateStudentArchivStatus={this.props.updateStudentArchivStatus}
                 isDashboard={this.props.isDashboard}
               />

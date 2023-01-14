@@ -12,8 +12,8 @@ import {
   is_program_closed,
   are_base_documents_missing
 } from '../../../Utils/checking-functions';
+
 class AgentTasks extends React.Component {
-  
   render() {
     return (
       <>

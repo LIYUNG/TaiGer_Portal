@@ -45,7 +45,9 @@ passport.use(
           'firstname lastname email'
         );
         if (!user) return done(null, false);
-
+        // Log: login success
+        user['lastLoginAt'] = Date();
+        await user.save();
         return done(null, user);
       } catch (err) {
         return done(err);

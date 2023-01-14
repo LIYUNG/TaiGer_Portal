@@ -121,7 +121,7 @@ const activateAccount = asyncHandler(async (req, res) => {
 
   const user_updated = await User.findOneAndUpdate(
     { _id: token.userId },
-    { $set: { isAccountActivated: true } },
+    { $set: { isAccountActivated: true, lastLoginAt: Date() } },
     { new: true }
   );
 

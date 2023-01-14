@@ -101,7 +101,6 @@ class AdminMainView extends React.Component {
           <Tabs
             defaultActiveKey="w"
             id="uncontrolled-tab-example"
-            // variant="dark"
             fill={true}
             justify={true}
           >
@@ -110,16 +109,11 @@ class AdminMainView extends React.Component {
               title="Student Background Overview"
               className="my-0 mx-0 py-0"
             >
-              <Row className="px-0 py-0">
-                <TabStudBackgroundDashboard
-                  students={this.props.students}
-                  SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
-                  updateStudentArchivStatus={
-                    this.props.updateStudentArchivStatus
-                  }
-                  isDashboard={this.props.isDashboard}
-                />
-              </Row>
+              <TabStudBackgroundDashboard
+                students={this.props.students}
+                updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+                isDashboard={this.props.isDashboard}
+              />
             </Tab>
             <Tab eventKey="dz" title="Agents and Editors">
               <Table

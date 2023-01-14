@@ -9,6 +9,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { updatePersonalData, updateCredentials, logout } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 class Settings extends React.Component {
   state = {
     error: '',
@@ -196,7 +197,7 @@ class Settings extends React.Component {
   render() {
     const { res_status, isLoaded, res_modal_status, res_modal_message } =
       this.state;
-
+    TabTitle('Settings');
     if (!isLoaded) {
       return (
         <div style={spinner_style}>

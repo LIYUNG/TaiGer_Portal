@@ -7,6 +7,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getCVMLRLOverview } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class index extends React.Component {
   state = {
@@ -58,7 +59,7 @@ class index extends React.Component {
 
   render() {
     const { res_status, isLoaded } = this.state;
-
+    TabTitle('CV ML RL Center');
     if (!isLoaded && !this.state.students) {
       return (
         <div style={spinner_style}>

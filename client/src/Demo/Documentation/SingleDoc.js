@@ -8,6 +8,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getDocumentation, updateDocumentation } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class SingleDoc extends React.Component {
   state = {
@@ -134,7 +135,7 @@ class SingleDoc extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
+    TabTitle(`Doc: ${this.state.document_title}`);
     if (this.state.isEdit) {
       return (
         <>

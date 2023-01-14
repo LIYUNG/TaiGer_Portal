@@ -15,6 +15,7 @@ import {
   analyzedFileDownload_test,
   transcriptanalyser_test
 } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
@@ -345,6 +346,9 @@ export default function MyCourses(props) {
     );
   }
 
+  TabTitle(
+    `Student ${statedata.student.firstname} - ${statedata.student.lastname} || Courses List`
+  );
   if (statedata.res_status >= 400) {
     return <ErrorPage res_status={statedata.res_status} />;
   }

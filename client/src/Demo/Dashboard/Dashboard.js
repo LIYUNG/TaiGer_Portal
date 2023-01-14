@@ -20,6 +20,7 @@ import {
   getEditors,
   updateEditors
 } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class Dashboard extends React.Component {
   state = {
@@ -406,7 +407,7 @@ class Dashboard extends React.Component {
   render() {
     const { res_modal_status, res_modal_message, isLoaded, res_status } =
       this.state;
-
+    TabTitle('Home Page');
     if (!isLoaded && !this.state.data) {
       return (
         <div style={spinner_style}>

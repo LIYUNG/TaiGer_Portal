@@ -39,6 +39,7 @@ import {
   getEditors,
   updateEditors
 } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -487,7 +488,7 @@ class SingleStudentPage extends React.Component {
         </div>
       );
     }
-
+    TabTitle(`Student ${this.state.student.firstname} ${this.state.student.lastname}`);
     return (
       <>
         {res_modal_status >= 400 && (

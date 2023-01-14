@@ -15,6 +15,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getStudentsAndDocLinks } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class BaseDocuments extends React.Component {
   state = {
@@ -74,6 +75,8 @@ class BaseDocuments extends React.Component {
       res_modal_status,
       res_modal_message
     } = this.state;
+
+    TabTitle('Base Documents');
 
     if (!isLoaded && !this.state.students) {
       return (

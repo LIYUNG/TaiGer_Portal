@@ -19,6 +19,7 @@ import {
   deleteAMessageInThread,
   SetFileAsFinal
 } from '../../../api';
+import { TabTitle } from '../../Utils/TabTitle';
 
 class DocModificationThreadPage extends Component {
   state = {
@@ -389,6 +390,7 @@ class DocModificationThreadPage extends Component {
         ' - ' +
         this.state.thread.file_type;
     }
+    TabTitle(docName);
     return (
       <Aux>
         {!isLoaded && (

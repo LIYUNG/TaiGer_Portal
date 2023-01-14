@@ -10,6 +10,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getUsers, addUser } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class UsersTable extends React.Component {
   state = {
@@ -104,6 +105,7 @@ class UsersTable extends React.Component {
     if (this.props.user.role !== 'Admin') {
       return <Redirect to="/dashboard/default" />;
     }
+    TabTitle('User List');
     const { res_modal_message, res_modal_status, res_status, isLoaded } =
       this.state;
 

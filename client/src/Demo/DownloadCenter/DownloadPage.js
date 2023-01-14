@@ -8,6 +8,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { deleteTemplateFile, getTemplates, uploadtemplate } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class DownloadPage extends React.Component {
   state = {
@@ -156,7 +157,7 @@ class DownloadPage extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
-
+    TabTitle('Download Center');
     const { res_status, isLoaded, res_modal_status, res_modal_message } =
       this.state;
 

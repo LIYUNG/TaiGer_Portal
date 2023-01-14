@@ -8,6 +8,7 @@ import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getTeamMembers } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class AdminPage extends React.Component {
   state = {
@@ -73,6 +74,8 @@ class AdminPage extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
+
+    TabTitle('TaiGer Admin');
 
     return (
       <Aux>

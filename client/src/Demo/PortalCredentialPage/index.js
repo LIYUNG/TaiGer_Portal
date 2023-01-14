@@ -9,6 +9,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { showButtonIfMyStudentB } from '../Utils/checking-functions';
 
 import { getPortalCredentials, postPortalCredentials } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 export default function PortalCredentialPage(props) {
   let [statedata, setStatedata] = useState({
@@ -221,7 +222,7 @@ export default function PortalCredentialPage(props) {
       </div>
     );
   }
-
+  TabTitle(`Student ${statedata.student.firstname} ${statedata.student.lastname} || Portal Credentials`);
   if (statedata.res_status >= 400) {
     return <ErrorPage res_status={statedata.res_status} />;
   }

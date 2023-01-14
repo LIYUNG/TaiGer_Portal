@@ -12,6 +12,8 @@ import {
   getAllStudents,
   updateArchivStudents
 } from '../../api';
+import { IoTabletPortraitOutline } from 'react-icons/io5';
+import { TabTitle } from '../Utils/TabTitle';
 
 class Dashboard extends React.Component {
   state = {
@@ -93,7 +95,7 @@ class Dashboard extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
-
+    
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.data) {
@@ -109,7 +111,7 @@ class Dashboard extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
+    TabTitle('Student Database');
     if (this.state.success) {
       return (
         <Aux>

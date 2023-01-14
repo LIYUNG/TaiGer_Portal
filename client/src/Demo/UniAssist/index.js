@@ -1,12 +1,13 @@
 import React from 'react';
 import { Row, Col, Card, Spinner } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import UniAssistListCard from './UniAssistListCard';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudent } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class UniAssistList extends React.Component {
   state = {
@@ -50,6 +51,7 @@ class UniAssistList extends React.Component {
     if (this.props.user.role !== 'Student') {
       return <Redirect to="/dashboard/default" />;
     }
+    TabTitle('Uni-Assist & VPD');
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.student) {
@@ -83,7 +85,10 @@ class UniAssistList extends React.Component {
           <Col>
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Body className="my-0 mx-0 text-light">
-                Instructions
+                Instructions: Follow the documentations in{' '}
+                <Link to="/docs/uniassist" className='text-info'>
+                  Uni-Assist
+                </Link>
               </Card.Body>
             </Card>
           </Col>

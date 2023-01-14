@@ -7,6 +7,7 @@ import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getAdmissions } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class Admissions extends React.Component {
   state = {
@@ -51,7 +52,7 @@ class Admissions extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
-
+    TabTitle("TaiGer Admissions")
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.data) {

@@ -15,6 +15,7 @@ import {
   createDocumentation,
   deleteDocumentation
 } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class DocCreatePage extends React.Component {
   state = {
@@ -256,7 +257,7 @@ class DocCreatePage extends React.Component {
         />
       ));
     };
-
+    TabTitle('Docs Database');
     return (
       <Aux>
         {res_modal_status >= 400 && (

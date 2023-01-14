@@ -9,6 +9,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { getEditor } from '../../api';
 import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
+import { TabTitle } from '../Utils/TabTitle';
 
 class EditorPage extends React.Component {
   state = {
@@ -60,7 +61,6 @@ class EditorPage extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
-
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.editor && !this.state.students) {
@@ -76,6 +76,9 @@ class EditorPage extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
+    TabTitle(
+      `Editor: ${this.state.editor.firstname}, ${this.state.editor.lastname}`
+    );
 
     return (
       <Aux>

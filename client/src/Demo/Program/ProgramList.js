@@ -33,6 +33,7 @@ import {
 } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
+import { TabTitle } from '../Utils/TabTitle';
 
 // import makeData from './makeData';
 
@@ -696,7 +697,7 @@ function ProgramList(props) {
   if (props.user.role !== 'Admin' && props.user.role !== 'Agent') {
     return <Redirect to="/dashboard/default" />;
   }
-
+  TabTitle("Program List")
   useEffect(() => {
     getPrograms().then(
       (resp) => {

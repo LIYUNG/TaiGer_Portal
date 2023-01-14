@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Spinner, Row, Col, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import DocPageView from './DocPageView';
@@ -13,6 +13,7 @@ import {
   getInternalDocumentationPage,
   updateInternalDocumentationPage
 } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class InternaldocsPage extends React.Component {
   state = {
@@ -134,7 +135,7 @@ class InternaldocsPage extends React.Component {
       res_modal_message
     } = this.state;
 
-    if (!isLoaded && !editorState) {
+    if (!isLoaded || !editorState) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -147,17 +148,32 @@ class InternaldocsPage extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
-    if (this.state.isEdit) {
-      return (
-        <>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
+    TabTitle("Internal Documentations")
+    return (
+      <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
+        <Row className="sticky-top ">
+          <Col>
+            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0 text-light">
+                      Internal Documentation
+                    </Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+        {this.state.isEdit ? (
           <DocPageEdit
             category={'category'}
             document={document}
@@ -167,18 +183,7 @@ class InternaldocsPage extends React.Component {
             handleClickEditToggle={this.handleClickEditToggle}
             handleClickSave={this.handleClickSave}
           />
-        </>
-      );
-    } else {
-      return (
-        <>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
+        ) : (
           <DocPageView
             document={document}
             document_title={this.state.document_title}
@@ -187,9 +192,9 @@ class InternaldocsPage extends React.Component {
             role={this.props.user.role}
             handleClickEditToggle={this.handleClickEditToggle}
           />
-        </>
-      );
-    }
+        )}
+      </>
+    );
   }
 }
 

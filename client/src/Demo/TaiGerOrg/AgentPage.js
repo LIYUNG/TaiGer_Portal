@@ -9,6 +9,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { getAgent } from '../../api';
 import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
+import { TabTitle } from '../Utils/TabTitle';
 
 class AgentPage extends React.Component {
   state = {
@@ -76,6 +77,10 @@ class AgentPage extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
+
+    TabTitle(
+      `Agent: ${this.state.agent.firstname}, ${this.state.agent.lastname}`
+    );
 
     return (
       <Aux>

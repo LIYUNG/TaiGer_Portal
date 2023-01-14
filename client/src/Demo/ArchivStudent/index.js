@@ -10,6 +10,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getArchivStudents, updateArchivStudents } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class ArchivStudents extends React.Component {
   state = {
@@ -132,6 +133,7 @@ class ArchivStudents extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
+    TabTitle("Archiv Student")
     const { res_status, isLoaded, res_modal_status, res_modal_message } =
       this.state;
 

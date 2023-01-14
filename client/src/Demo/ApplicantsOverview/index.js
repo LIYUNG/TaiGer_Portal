@@ -9,6 +9,7 @@ import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudents } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class ApplicantSOverview extends React.Component {
   state = {
@@ -60,6 +61,7 @@ class ApplicantSOverview extends React.Component {
     ) {
       return <Redirect to="/dashboard/default" />;
     }
+    TabTitle("Applications Overview")
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.students) {

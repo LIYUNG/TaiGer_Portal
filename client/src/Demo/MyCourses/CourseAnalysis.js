@@ -20,6 +20,7 @@ import { showButtonIfMyStudentB } from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
 import { analyzedFileDownload_test, transcriptanalyser_test } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 export default function CourseAnalysis(props) {
   let [statedata, setStatedata] = useState({
@@ -205,7 +206,7 @@ export default function CourseAnalysis(props) {
       </div>
     );
   }
-
+  TabTitle(`Student ${statedata.student_name} || Courses Analysis`);
   if (statedata.res_status >= 400) {
     return <ErrorPage res_status={statedata.res_status} />;
   }

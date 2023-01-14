@@ -13,6 +13,7 @@ import {
   getCategorizedDocumentationPage,
   updateDocumentationPage
 } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class Documentation extends React.Component {
   state = {
@@ -186,7 +187,7 @@ class Documentation extends React.Component {
       res_modal_message
     } = this.state;
 
-    if (!isLoaded && !editorState) {
+    if (!isLoaded || !editorState) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -200,6 +201,10 @@ class Documentation extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
+    const category_name = valid_categories.find(
+      (categorie) => categorie.key === this.props.match.params.category
+    ).value;
+    TabTitle(`Doc: ${category_name}`);
     if (this.state.isEdit) {
       return (
         <>
@@ -217,12 +222,7 @@ class Documentation extends React.Component {
                   <Card.Title>
                     <Row>
                       <Col className="my-0 mx-0 text-light">
-                        {
-                          valid_categories.find(
-                            (categorie) =>
-                              categorie.key === this.props.match.params.category
-                          ).value
-                        }
+                        {category_name}
                       </Col>
                     </Row>
                   </Card.Title>

@@ -8,6 +8,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getTeamMembers } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class Survey extends React.Component {
   state = {
@@ -57,7 +58,7 @@ class Survey extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
-
+    TabTitle("TaiGer Team")
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {

@@ -29,6 +29,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
@@ -207,7 +208,9 @@ class StudentApplicationsTableTemplate extends React.Component {
         </div>
       );
     }
-
+    TabTitle(
+      `Student ${this.state.student.firstname} ${this.state.student.lastname} || Applications Status`
+    );
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }

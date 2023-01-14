@@ -14,6 +14,7 @@ import {
   createInternalDocumentation,
   deleteInternalDocumentation
 } from '../../api';
+import { TabTitle } from '../Utils/TabTitle';
 
 class InternalDocCreatePage extends React.Component {
   state = {
@@ -237,7 +238,7 @@ class InternalDocCreatePage extends React.Component {
         />
       ));
     };
-
+    TabTitle("Internal Docs Database")
     return (
       <Aux>
         <Row className="sticky-top ">

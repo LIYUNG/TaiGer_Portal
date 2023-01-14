@@ -6,6 +6,7 @@ import SingleProgramEdit from './SingleProgramEdit';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
+import { TabTitle } from '../Utils/TabTitle';
 
 class SingleProgram extends React.Component {
   state = {
@@ -103,7 +104,7 @@ class SingleProgram extends React.Component {
       res_modal_message,
       program
     } = this.state;
-    if (!isLoaded && !program) {
+    if (!isLoaded || !program) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -112,7 +113,7 @@ class SingleProgram extends React.Component {
         </div>
       );
     }
-
+    TabTitle(`${program.school} - ${program.program_name}`);
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }

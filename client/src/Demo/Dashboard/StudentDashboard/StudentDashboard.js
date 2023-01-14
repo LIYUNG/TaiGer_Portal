@@ -15,7 +15,6 @@ import {
   are_base_documents_missing,
   check_base_documents_rejected
 } from '../../Utils/checking-functions';
-import { spinner_style } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
 
 import { updateBanner } from '../../../api';
@@ -108,12 +107,6 @@ class StudentDashboard extends React.Component {
     ) : (
       <></>
     );
-    // const agent_reviewing = (
-    //   <AgentReviewing_StudentView
-    //     role={this.props.role}
-    //     student={this.state.student}
-    //   />
-    // );
     const read_thread = (
       <RespondedThreads
         user={this.props.user}

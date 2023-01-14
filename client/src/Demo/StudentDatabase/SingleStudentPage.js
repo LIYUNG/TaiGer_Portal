@@ -581,7 +581,7 @@ class SingleStudentPage extends React.Component {
               <Tab eventKey="profile" title="Profile Overview">
                 <Table
                   // responsive
-                  className="px-0 py-0 my-2 mx-0"
+                  className="px-0 py-0 mb-2 mx-0"
                   variant="dark"
                   text="light"
                   size="sm"

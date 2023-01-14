@@ -167,7 +167,7 @@ class SurveyEditableComponent extends React.Component {
           )) && (
           <Row>
             <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+              <Card className="my-2 mx-2" bg={'danger'} text={'light'}>
                 <Card.Body>
                   The followings information are still missing:{' '}
                   {this.props.academic_background &&

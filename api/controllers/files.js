@@ -1085,8 +1085,8 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   };
   const url_split = req.originalUrl.split('/');
   const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
-  console.log(cache_key);
-  console.log(req.originalUrl);
+  // console.log(cache_key);
+  // console.log(req.originalUrl);
   const value = one_month_cache.get(cache_key);
   if (value === undefined) {
     s3.getObject(options, (err, data) => {

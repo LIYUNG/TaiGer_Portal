@@ -62,17 +62,26 @@ class DocumentsListItems extends React.Component {
             success,
             editorState,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           });
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
     this.setState((state) => ({ ...state, in_edit_mode: false }));

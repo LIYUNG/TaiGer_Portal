@@ -411,7 +411,16 @@ function Table2({ columns, data, userId }) {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        setStatedataTable2((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
   const setModalHide = () => {
@@ -684,10 +693,7 @@ function ProgramList(props) {
     res_status: 0
   });
 
-  if (
-    props.user.role !== 'Admin' &&
-    props.user.role !== 'Agent'
-  ) {
+  if (props.user.role !== 'Admin' && props.user.role !== 'Agent') {
     return <Redirect to="/dashboard/default" />;
   }
 

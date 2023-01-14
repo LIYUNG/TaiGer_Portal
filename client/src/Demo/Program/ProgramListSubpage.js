@@ -40,10 +40,12 @@ class ProgramListSubpage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }

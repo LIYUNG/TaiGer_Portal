@@ -70,6 +70,7 @@ class BaseDocument_StudentView extends React.Component {
           // TODO: redesign, modal ist better!
           const { message } = resp.data;
           this.setState((state) => ({
+            ...state,
             isLoaded: {
               ...state.isLoaded,
               [category]: true
@@ -80,10 +81,17 @@ class BaseDocument_StudentView extends React.Component {
         }
       },
       (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: {
+            ...state.isLoaded,
+            [category]: true
+          },
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -132,10 +140,18 @@ class BaseDocument_StudentView extends React.Component {
         }
       },
       (error) => {
-        this.setState({
-          isLoaded: true,
-          error: true
-        });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: {
+            ...state.isLoaded,
+            [category]: true
+          },
+          error,
+          deleteFileWarningModel: false,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -185,6 +201,7 @@ class BaseDocument_StudentView extends React.Component {
           // TODO: what if data is oversize? data type not match?
           const { message } = resp.data;
           this.setState((state) => ({
+            ...state,
             isLoaded: {
               ...state.isLoaded,
               [category]: true
@@ -195,10 +212,17 @@ class BaseDocument_StudentView extends React.Component {
         }
       },
       (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: {
+            ...state.isLoaded,
+            [category]: true
+          },
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -226,7 +250,16 @@ class BaseDocument_StudentView extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { message } = resp.data;
+        this.setState((state) => ({
+          ...state,
+          error,
+          isLoaded2: true,
+          res_modal_message: message,
+          res_modal_status: status
+        }));
+      }
     );
   };
 

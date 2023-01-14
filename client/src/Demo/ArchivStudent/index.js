@@ -2,8 +2,9 @@ import React from 'react';
 import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
+import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getArchivStudents, updateArchivStudents } from '../../api';
 
@@ -14,7 +15,9 @@ class Dashboard extends React.Component {
     students: [],
     success: false,
     isArchivPage: true,
-    res_status: 0
+    res_status: 0,
+    res_modal_status: 0,
+    res_modal_message: ''
   };
 
   componentDidMount() {
@@ -37,10 +40,12 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -66,10 +71,12 @@ class Dashboard extends React.Component {
           }
         },
         (error) => {
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            error: true
-          });
+            error,
+            res_status: 500
+          }));
         }
       );
     }
@@ -85,36 +92,46 @@ class Dashboard extends React.Component {
             isLoaded: true,
             students: data,
             success: success,
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_status: status,
+            res_modal_message: message
+          }));
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
 
-  render() {
-    const { res_status, isLoaded } = this.state;
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
 
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
+  render() {
+    const { res_status, isLoaded, res_modal_status, res_modal_message } =
+      this.state;
+
     if (!isLoaded && !this.state.data) {
       return (
-        <div style={style}>
+        <div style={spinner_style}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>
@@ -129,6 +146,13 @@ class Dashboard extends React.Component {
     if (this.state.success) {
       return (
         <Aux>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <Row>
             <Col>
               {this.props.user.role === 'Admin' ||
@@ -143,15 +167,6 @@ class Dashboard extends React.Component {
                 />
               ) : (
                 <></>
-              )}
-              {/* </Card> */}
-
-              {!isLoaded && (
-                <div style={style}>
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
               )}
             </Col>
           </Row>

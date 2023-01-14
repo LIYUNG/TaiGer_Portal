@@ -87,7 +87,8 @@ export default function PortalCredentialPage(props) {
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          error: true
+          error,
+          res_status: 500
         }));
       }
     );
@@ -182,10 +183,14 @@ export default function PortalCredentialPage(props) {
         }
       },
       (error) => {
+        const { statusText } = resp;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          isUpdating: false
+          isUpdating: false,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
         }));
         alert('Course Update failed. Please try later.');
       }

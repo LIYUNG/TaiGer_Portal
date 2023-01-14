@@ -66,10 +66,12 @@ class DocModificationThreadPage extends Component {
         }
       },
       (error) => {
-        this.setState({
-          isLoaded: false,
-          error
-        });
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -205,7 +207,14 @@ class DocModificationThreadPage extends Component {
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
     this.setState((state) => ({ ...state, in_edit_mode: false }));
@@ -262,7 +271,14 @@ class DocModificationThreadPage extends Component {
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -313,7 +329,14 @@ class DocModificationThreadPage extends Component {
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
     this.setState((state) => ({ ...state, in_edit_mode: false }));

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
+import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
@@ -7,7 +7,7 @@ import ApplicationOverviewTabs from './ApplicationOverviewTabs';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
-import { updateArchivStudents, getStudents } from '../../api';
+import { getStudents } from '../../api';
 
 class ApplicantSOverview extends React.Component {
   state = {
@@ -41,42 +41,16 @@ class ApplicantSOverview extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
 
-  updateStudentArchivStatus = (studentId, isArchived) => {
-    updateArchivStudents(studentId, isArchived).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error: true
-        });
-      }
-    );
-  };
   render() {
     if (
       this.props.user.role !== 'Admin' &&

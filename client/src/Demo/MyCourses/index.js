@@ -220,10 +220,14 @@ export default function MyCourses(props) {
         }
       },
       (error) => {
+        const { statusText } = resp;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
-          isAnalysing: false
+          isAnalysing: false,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
         }));
         alert(
           'Make sure that you updated your courses and your credits are number!'

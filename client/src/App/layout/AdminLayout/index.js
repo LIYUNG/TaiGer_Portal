@@ -23,24 +23,48 @@ function AdminLayout(props) {
     error: '',
     success: false,
     data: null,
-    isloaded: false,
-    everlogin: false
+    isLoaded: false,
+    res_modal_message: '',
+    res_modal_status: 0
   });
 
   useEffect(() => {
-    verify().then((resp) => {
-      const { data, success } = resp.data;
-      // TODO: to be remove in production
-      setTimeout(function () {
+    verify().then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          // TODO: to be remove in production
+          setTimeout(function () {
+            setUserdata((state) => ({
+              ...state,
+              success: success,
+              data: data,
+              isLoaded: true
+            }));
+          }, 1000);
+        } else {
+          setTimeout(function () {
+            setUserdata((state) => ({
+              ...state,
+              data: null,
+              isLoaded: true
+            }));
+          }, 1000);
+        }
+      },
+      (error) => {
+        const { statusText } = resp;
         setUserdata((state) => ({
           ...state,
-          success: success,
-          data: data,
-          isloaded: true
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
         }));
-      }, 1000);
-    });
-  }, [userdata.isloaded]);
+      }
+    );
+  }, [userdata.isLoaded]);
 
   useEffect(() => {
     if (
@@ -60,10 +84,17 @@ function AdminLayout(props) {
           ...state,
           data: null
         }));
-        // const { success } = resp.data;
-        // this.setState({ success: success });
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        setUserdata((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -136,7 +167,7 @@ function AdminLayout(props) {
     transform: 'translate(-50%, -50%)'
   };
 
-  if (!userdata.isloaded) {
+  if (!userdata.isLoaded) {
     return (
       <Aux>
         <ScrollToTop>
@@ -184,7 +215,7 @@ function AdminLayout(props) {
                           {menu}
                           <Redirect from="/" to={props.defaultPath} />
                         </Switch>
-                        {!userdata.isloaded && (
+                        {!userdata.isLoaded && (
                           <div style={style}>
                             <Spinner animation="border" role="status">
                               <span className="visually-hidden"></span>

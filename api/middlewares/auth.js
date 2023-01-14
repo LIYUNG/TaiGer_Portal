@@ -19,7 +19,7 @@ const protect = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
     if (err) return next(err);
 
-    if (!user) return next(new ErrorResponse(401, 'unauthenticated'));
+    if (!user) return next(new ErrorResponse(401, 'Session expired. Please refresh and log in again.'));
 
     req.user = user;
     next();

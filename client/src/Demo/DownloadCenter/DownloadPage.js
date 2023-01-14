@@ -5,6 +5,7 @@ import Aux from '../../hoc/_Aux';
 import EditDownloadFilesSubpage from './EditDownloadFilesSubpage';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   deleteTemplateFile,
@@ -21,7 +22,9 @@ class DownloadPage extends React.Component {
     students: [],
     templates: null,
     success: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
   componentDidMount() {
     getTemplates().then(
@@ -43,10 +46,12 @@ class DownloadPage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -64,26 +69,31 @@ class DownloadPage extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        //TODO: backend logic
         if (success) {
           this.setState({
-            isLoaded: true, //false to reload everything
+            isLoaded: true, 
             templates: data,
             success: success,
-            res_status: status
+            res_modal_status: status
           });
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           });
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -110,22 +120,36 @@ class DownloadPage extends React.Component {
             isLoaded: true, //false to reload everything
             templates: data,
             success: success,
-            res_status: status
+            res_modal_status: status
           });
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           });
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
+  };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   render() {
@@ -138,7 +162,8 @@ class DownloadPage extends React.Component {
       return <Redirect to="/dashboard/default" />;
     }
 
-    const { res_status, isLoaded } = this.state;
+    const { res_status, isLoaded, res_modal_status, res_modal_message } =
+      this.state;
 
     if (!isLoaded && !this.state.templates) {
       return (
@@ -156,6 +181,13 @@ class DownloadPage extends React.Component {
 
     return (
       <Aux>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Row>
           <Col>
             <Card className="my-0 mx-0" bg={'primary'} text={'white'}>

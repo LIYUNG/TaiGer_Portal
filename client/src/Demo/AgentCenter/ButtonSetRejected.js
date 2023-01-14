@@ -9,6 +9,7 @@ import {
 } from 'react-icons/ai';
 import { FiExternalLink } from 'react-icons/fi';
 
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import { BASE_URL } from '../../api/request';
 
@@ -31,7 +32,9 @@ class ButtonSetRejected extends React.Component {
     rejectProfileFileModel: this.props.rejectProfileFileModel,
     acceptProfileFileModel: this.props.acceptProfileFileModel,
     baseDocsflagOffcanvas: false,
-    baseDocsflagOffcanvasButtonDisable: false
+    baseDocsflagOffcanvasButtonDisable: false,
+    res_modal_status: 0,
+    res_modal_message: ''
   };
 
   componentDidUpdate(prevProps) {
@@ -177,33 +180,51 @@ class ButtonSetRejected extends React.Component {
       'rejected',
       this.state.comments
     ).then(
-      (res) => {
-        const { data, success } = res.data;
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState((state) => ({
             ...state,
             student: data,
             success,
             CommentModel: false,
-            isLoaded: true
+            isLoaded: true,
+            res_modal_status: status
           }));
         } else {
-          alert(res.data.message);
+          const { message } = resp.data;
           this.setState((state) => ({
             ...state,
-            isLoaded: true
+            isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: message
           }));
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   render() {
+    const { res_status, res_modal_status, res_modal_message } = this.state;
     const deleteStyle = 'danger';
     const acceptStyle = 'success';
     var ButttonRow_Rejected;
@@ -328,14 +349,15 @@ class ButtonSetRejected extends React.Component {
       </tr>
     );
 
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
     return (
       <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         {ButttonRow_Rejected}
         <Modal
           show={this.state.deleteFileWarningModel}

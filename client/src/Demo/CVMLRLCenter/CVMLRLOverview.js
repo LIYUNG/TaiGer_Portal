@@ -128,7 +128,14 @@ class CVMLRLOverview extends React.Component {
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };

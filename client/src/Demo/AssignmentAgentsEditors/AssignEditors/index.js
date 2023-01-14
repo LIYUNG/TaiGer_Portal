@@ -28,6 +28,7 @@ class AssignEditors extends React.Component {
     getStudents().then(
       (resp) => {
         const { data, success } = resp.data;
+        const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
@@ -43,10 +44,12 @@ class AssignEditors extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -72,10 +75,12 @@ class AssignEditors extends React.Component {
           }
         },
         (error) => {
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            error: true
-          });
+            error,
+            res_status: 500
+          }));
         }
       );
     }
@@ -117,7 +122,16 @@ class AssignEditors extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -148,22 +162,33 @@ class AssignEditors extends React.Component {
             ({ _id }) => _id === student_id
           );
           students_temp[studentIdx] = data; // datda is single student updated
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true, //false to reload everything
             students: students_temp,
             success: success,
             updateEditorList: [],
-            res_status: status
-          });
+            res_modal_status: status
+          }));
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
-        alert('UpdateEditorlist is failed.');
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };

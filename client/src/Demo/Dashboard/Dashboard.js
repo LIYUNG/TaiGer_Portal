@@ -59,10 +59,12 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -88,10 +90,12 @@ class Dashboard extends React.Component {
           }
         },
         (error) => {
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            error: true
-          });
+            error,
+            res_status: 500
+          }));
         }
       );
     }
@@ -134,7 +138,16 @@ class Dashboard extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -175,7 +188,16 @@ class Dashboard extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -239,7 +261,14 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        alert('UpdateAgentlist is failed.');
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -274,7 +303,14 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        alert('UpdateEditorlist is failed.');
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -303,10 +339,14 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -343,10 +383,14 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };

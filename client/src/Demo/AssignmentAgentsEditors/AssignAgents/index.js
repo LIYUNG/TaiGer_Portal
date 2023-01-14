@@ -44,10 +44,12 @@ class AssignAgents extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -73,10 +75,12 @@ class AssignAgents extends React.Component {
           }
         },
         (error) => {
-          this.setState({
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            error: true
-          });
+            error,
+            res_status: 500
+          }));
         }
       );
     }
@@ -118,7 +122,16 @@ class AssignAgents extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -154,17 +167,27 @@ class AssignAgents extends React.Component {
             students: students_temp,
             success: success,
             updateAgentList: [],
-            res_status: status
+            res_modal_status: status
           });
         } else {
-          this.setState({
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            res_status: status
-          });
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
-        alert('UpdateAgentlist is failed.');
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };

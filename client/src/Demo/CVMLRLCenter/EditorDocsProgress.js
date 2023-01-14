@@ -143,7 +143,14 @@ class EditorDocsProgress extends React.Component {
           }
         },
         (error) => {
-          this.setState({ error });
+          const { statusText } = resp;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_modal_status: 500,
+            res_modal_message: statusText
+          }));
         }
       );
     } else {
@@ -194,7 +201,14 @@ class EditorDocsProgress extends React.Component {
           }
         },
         (error) => {
-          this.setState({ error });
+          const { statusText } = resp;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_modal_status: 500,
+            res_modal_message: statusText
+          }));
         }
       );
     }
@@ -274,7 +288,14 @@ class EditorDocsProgress extends React.Component {
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -319,7 +340,14 @@ class EditorDocsProgress extends React.Component {
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -401,7 +429,14 @@ class EditorDocsProgress extends React.Component {
           }
         })
         .catch((error) => {
-          this.setState({ error });
+          const { statusText } = resp;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_modal_status: 500,
+            res_modal_message: statusText
+          }));
         });
     }
   };
@@ -438,7 +473,14 @@ class EditorDocsProgress extends React.Component {
           }
         })
         .catch((error) => {
-          this.setState({ error });
+          const { statusText } = resp;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_modal_status: 500,
+            res_modal_message: statusText
+          }));
         });
     }
   };

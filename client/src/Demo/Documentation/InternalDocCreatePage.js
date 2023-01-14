@@ -52,10 +52,12 @@ class InternalDocCreatePage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -104,17 +106,26 @@ class InternalDocCreatePage extends React.Component {
             SetDeleteDocModel: false,
             isEdit: false,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           });
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -161,17 +172,26 @@ class InternalDocCreatePage extends React.Component {
             editorState: '',
             isEdit: !this.state.isEdit,
             isLoaded: true,
-            res_status: status
+            res_modal_status: status
           });
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           });
         }
       },
       (error) => {
-        this.setState({ error });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
     this.setState((state) => ({ ...state, in_edit_mode: false }));

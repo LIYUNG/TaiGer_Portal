@@ -547,10 +547,87 @@ def TUHH_MICROELECTRONICS(transcript_sorted_group_map, df_transcript_array, df_c
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
+def FAU_INFO_COMM_TECH(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'FAU_INFO_COMM_TECH'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    # df_category_courses_sugesstion_data_temp = df_category_courses_sugesstion_data
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Mathematics', 'Required_ECTS': 30}
+    PROG_SPEC_CS_PARAM = {
+        'Program_Category': 'Computer Science', 'Required_ECTS': 30}
+    PROG_SPEC_GRUNDLAGE_KOMMUNIKATIONSTECHNIK_PARAM = {
+        'Program_Category': 'Communications Engineering', 'Required_ECTS': 30}
+    PROG_SPEC_GRUNDLAGE_EE_PARAM = {
+        'Program_Category': 'Electrical Engineering ', 'Required_ECTS': 30}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_CS_PARAM,  # 資工
+        PROG_SPEC_GRUNDLAGE_KOMMUNIKATIONSTECHNIK_PARAM,  # 通訊
+        PROG_SPEC_GRUNDLAGE_EE_PARAM,  # 電子
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_OTHERS,  # 物理
+        PROG_SPEC_OTHERS,  # 物理實驗
+        PROG_SPEC_CS_PARAM,  # 資訊
+        PROG_SPEC_CS_PARAM,  # 程式
+        PROG_SPEC_CS_PARAM,  # 軟體工程
+        PROG_SPEC_OTHERS,  # 控制系統
+        PROG_SPEC_GRUNDLAGE_EE_PARAM,  # 電子
+        PROG_SPEC_GRUNDLAGE_EE_PARAM,  # 電子實驗
+        PROG_SPEC_GRUNDLAGE_EE_PARAM,  # 電路
+        PROG_SPEC_GRUNDLAGE_KOMMUNIKATIONSTECHNIK_PARAM,  # 訊號系統
+        PROG_SPEC_GRUNDLAGE_EE_PARAM,  # 電磁
+        PROG_SPEC_GRUNDLAGE_EE_PARAM,  # 電力電子
+        PROG_SPEC_GRUNDLAGE_KOMMUNIKATIONSTECHNIK_PARAM,  # 通訊
+        PROG_SPEC_CS_PARAM,  # 半導體
+        PROG_SPEC_GRUNDLAGE_EE_PARAM,  # 電子材料
+        PROG_SPEC_GRUNDLAGE_KOMMUNIKATIONSTECHNIK_PARAM,  # 進階電磁理論
+        PROG_SPEC_GRUNDLAGE_KOMMUNIKATIONSTECHNIK_PARAM,  # 電機專業選修
+        PROG_SPEC_OTHERS,  # 應用科技
+        PROG_SPEC_OTHERS,  # 力學,機械
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
 program_sort_function = [TUM_EI,
                          RWTH_EI,
                          STUTTGART_EI,
                          TUM_MSCE,
                          TUM_MSPE,
                          TUM_MSNE,
-                         TUHH_MICROELECTRONICS]
+                         TUHH_MICROELECTRONICS,
+                         FAU_INFO_COMM_TECH]

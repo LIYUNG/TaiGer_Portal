@@ -139,15 +139,7 @@ function AdminLayout(props) {
     left: '50%',
     transform: 'translate(-50%, -50%)'
   };
-  // if (!userdata.isloaded) {
-  //   return (
-  //     <Aux>
-  //       <ScrollToTop>
-  //         <Suspense fallback={<Loader />}></Suspense>
-  //       </ScrollToTop>
-  //     </Aux>
-  //   );
-  // }
+
   if (!userdata.isloaded) {
     return (
       <Aux>

@@ -851,7 +851,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     Bucket: directory
   };
 
-  const cache_key = req.originalUrl.split('/')[5];
+  const cache_key = `${messageId}${req.originalUrl.split('/')[5]}`;
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
@@ -872,23 +872,6 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     res.attachment(fileKey);
     return res.end(value);
   }
-  // s3.headObject(options)
-  //   .promise()
-  //   .then(() => {
-  //     // This will not throw error anymore
-  //     res.attachment(fileKey);
-  //     const fileStream = s3.getObject(options).createReadStream();
-  //     fileStream.pipe(res);
-  //   })
-  //   .catch((error) => {
-  //     if (error.statusCode === 404) {
-  //       // Catching NoSuchKey
-  //       logger.error(error);
-  //     }
-  //     return res
-  //       .status(error.statusCode)
-  //       .json({ success: false, message: error.message });
-  //   });
 });
 
 // (O) notification student email works
@@ -1112,6 +1095,7 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   let directory = path.join(studentId, messagesThreadId);
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
+  console.log(directory);
   emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
 
   await Student.findOneAndUpdate(

@@ -270,43 +270,14 @@ const getDocFile = asyncHandler(async (req, res) => {
       if (success) {
         console.log('cache set successfully');
       }
-      // let buf = new Buffer.alloc(data.Body, 'base64');
-
       res.attachment(object_key);
       return res.end(data.Body);
-
-      // const fileStream = data.createReadStream();
-      // fileStream.pipe(res);
     });
   } else {
     console.log('cache hit');
     res.attachment(object_key);
     return res.end(value);
   }
-
-  // res.attachment(object_key);
-  // const fileStream = value.createReadStream();
-  // fileStream.pipe(res);
-  // Backup, another implementation
-  // s3.headObject(options)
-  //   .promise()
-  //   .then(() => {
-  //     // This will not throw error anymore
-  //     res.attachment(object_key);
-  //     const fileStream = s3.getObject(options).createReadStream();
-  //     fileStream.pipe(res);
-  //     // TODO: to cache image, pdf, docs, file here.
-  //     // console.log(fileStream.pipe(res));
-  //   })
-  //   .catch((error) => {
-  //     if (error.statusCode === 404) {
-  //       // Catching NoSuchKey
-  //       logger.error(error);
-  //     }
-  //     return res
-  //       .status(error.statusCode)
-  //       .json({ success: false, message: error.message });
-  //   });
 });
 
 const uploadDocDocs = asyncHandler(async (req, res) => {

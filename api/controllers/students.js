@@ -8,6 +8,7 @@ const { Role, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
+const { emptyS3Directory } = require('../utils/utils_function');
 const logger = require('../services/logger');
 
 const {
@@ -701,7 +702,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(400, 'Invalid application id');
   }
 
-  // TODO: checking if delete is safe?
+  // checking if delete is safe?
   for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
     if (
       application.doc_modification_thread[i].doc_thread_id.messages.length !== 0
@@ -720,34 +721,12 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
       messagesThreadId =
         application.doc_modification_thread[i].doc_thread_id._id.toString();
-      directory = path.join(
-        studentId,
-        application.doc_modification_thread[i].doc_thread_id._id.toString()
-      );
+      directory = path.join(studentId, messagesThreadId);
       logger.info('Trying to delete message threads and S3 thread folders');
       directory = directory.replace(/\\/g, '/');
+      // Because thread are empty: go to S3 is redundant
+      // emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
 
-      const listParams = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Prefix: directory
-      };
-      const listedObjects = await s3.listObjectsV2(listParams).promise();
-
-      if (listedObjects.Contents.length > 0) {
-        const deleteParams = {
-          Bucket: AWS_S3_BUCKET_NAME,
-          Delete: { Objects: [] }
-        };
-
-        listedObjects.Contents.forEach(({ Key }) => {
-          deleteParams.Delete.Objects.push({ Key });
-          logger.info('Deleting ', Key);
-        });
-
-        await s3.deleteObjects(deleteParams).promise();
-
-        // if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-      }
       await Documentthread.findByIdAndDelete(messagesThreadId);
       await Student.findOneAndUpdate(
         { _id: studentId, 'applications.programId': program_id },

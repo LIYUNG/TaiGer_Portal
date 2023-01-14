@@ -208,25 +208,6 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
     res.attachment(fileKey);
     return res.end(value);
   }
-
-  // s3.headObject(options)
-  //   .promise()
-  //   .then(() => {
-  //     // () TODO: cache template!
-  //     // This will not throw error anymore
-  //     res.attachment(fileKey);
-  //     const fileStream = s3.getObject(options).createReadStream();
-  //     fileStream.pipe(res);
-  //   })
-  //   .catch((error) => {
-  //     if (error.statusCode === 404) {
-  //       // Catching NoSuchKey
-  //       logger.error('downloadTemplateFile: ', error);
-  //     }
-  //     return res
-  //       .status(error.statusCode)
-  //       .json({ success: false, message: error.message });
-  //   });
 });
 
 // (O) email : student notification
@@ -565,14 +546,15 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
   };
 
   console.log(fileKey);
-  const value = one_month_cache.get(fileKey); // vpd name
+  const cache_key = `${studentId}${fileKey}`;
+  const value = one_month_cache.get(cache_key); // vpd name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (err) return err;
 
       // No error happened
-      const success = one_month_cache.set(fileKey, data.Body);
+      const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
         console.log('VPD file cache set successfully');
       }
@@ -585,23 +567,6 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     res.attachment(fileKey);
     return res.end(value);
   }
-  // s3.headObject(options)
-  //   .promise()
-  //   .then(() => {
-  //     // This will not throw error anymore
-  //     res.attachment(fileKey);
-  //     const fileStream = s3.getObject(options).createReadStream();
-  //     fileStream.pipe(res);
-  //   })
-  //   .catch((error) => {
-  //     if (error.statusCode === 404) {
-  //       // Catching NoSuchKey
-  //       logger.error('downloadVPDFile: ', error);
-  //     }
-  //     return res
-  //       .status(error.statusCode)
-  //       .json({ success: false, message: error.message });
-  //   });
 });
 
 const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
@@ -643,14 +608,15 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
   };
 
   console.log(fileKey);
-  const value = one_month_cache.get(fileKey); // vpd name
+  const cache_key = `${studentId}${fileKey}`;
+  const value = one_month_cache.get(cache_key); // vpd name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (err) return err;
 
       // No error happened
-      const success = one_month_cache.set(fileKey, data.Body);
+      const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
         console.log('Profile file cache set successfully');
       }
@@ -663,24 +629,6 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
     res.attachment(fileKey);
     return res.end(value);
   }
-
-  // s3.headObject(options)
-  //   .promise()
-  //   .then(() => {
-  //     // This will not throw error anymore
-  //     res.attachment(fileKey);
-  //     const fileStream = s3.getObject(options).createReadStream();
-  //     fileStream.pipe(res);
-  //   })
-  //   .catch((error) => {
-  //     if (error.statusCode === 404) {
-  //       // Catching NoSuchKey
-  //       logger.error('downloadProfileFileURL: ', error);
-  //     }
-  //     return res
-  //       .status(error.statusCode)
-  //       .json({ success: false, message: error.message });
-  //   });
 });
 
 // (O) email : student notification
@@ -1009,7 +957,8 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
         app.uni_assist.updatedAt = new Date();
 
         student.save();
-        const value = one_month_cache.del(fileKey);
+        const cache_key = `${studentId}${fileKey}`;
+        const value = one_month_cache.del(cache_key);
         if (value === 1) {
           console.log('VPD cache key deleted successfully');
         }

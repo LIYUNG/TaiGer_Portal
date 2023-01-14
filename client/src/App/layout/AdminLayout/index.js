@@ -15,6 +15,7 @@ import Aux from '../../../hoc/_Aux';
 import * as actionTypes from '../../../store/actions';
 
 import routes2 from '../../../route';
+import routes3 from '../../../route3';
 import ScrollToTop from '../ScrollToTop';
 import { verify, logout } from '../../../api/index';
 
@@ -34,12 +35,14 @@ function AdminLayout(props) {
   useEffect(() => {
     verify().then((resp) => {
       const { data, success } = resp.data;
-      setUserdata((state) => ({
-        ...state,
-        success: success,
-        data: data,
-        isloaded: true
-      }));
+      setTimeout(function () {
+        setUserdata((state) => ({
+          ...state,
+          success: success,
+          data: data,
+          isloaded: true
+        }));
+      }, 1000);
     });
   }, [userdata.isloaded]);
 
@@ -116,6 +119,20 @@ function AdminLayout(props) {
       />
     ) : null;
   });
+
+  const menu3 = routes3.map((route, index) => {
+    return route.component ? (
+      <Route
+        key={index}
+        path={route.path}
+        exact={route.exact}
+        name={route.name}
+        render={(props) => (
+          <route.component {...props} setUserdata={setUserdata} />
+        )}
+      />
+    ) : null;
+  });
   const style = {
     position: 'fixed',
     top: '40%',
@@ -131,27 +148,17 @@ function AdminLayout(props) {
   //     </Aux>
   //   );
   // }
-  // if (!userdata.isloaded) {
-  //   return (
-  //     <Aux>
-  //       <ScrollToTop>
-  //         <Suspense fallback={<Loader />}>
-  //           <Switch>
-  //             <Route
-  //               path={'/'}
-  //               exact={false}
-  //               name={'Loading'}
-  //               render={(props) => (
-  //                 <Component {...props} setUserdata={setUserdata} />
-  //               )}
-  //             />
-  //             <Redirect from="/" to="/" />
-  //           </Switch>
-  //         </Suspense>
-  //       </ScrollToTop>
-  //     </Aux>
-  //   );
-  // }
+  if (!userdata.isloaded) {
+    return (
+      <Aux>
+        <ScrollToTop>
+          <Suspense fallback={<Loader />}>
+            <Switch>{menu3}</Switch>
+          </Suspense>
+        </ScrollToTop>
+      </Aux>
+    );
+  }
   if (!userdata.data) {
     return (
       <Aux>

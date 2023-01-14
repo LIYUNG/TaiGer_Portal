@@ -778,7 +778,7 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
     Bucket: directory
   };
   // TODO: cache download files docx, files.
-  const cache_key = req.originalUrl.split('/')[6];
+  const cache_key = `${studentId}${req.originalUrl.split('/')[6]}`;
   console.log(cache_key);
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {

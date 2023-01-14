@@ -647,7 +647,7 @@ export const is_cv_finished = (student) => {
   return true;
 };
 
-export const is_program_ready_to_submit = (application) => {
+export const is_program_ml_rl_essay_ready = (application) => {
   // check ML, RL, Essay
   for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
     if (!application.doc_modification_thread[i].isFinalVersion) {
@@ -673,6 +673,31 @@ export const is_program_closed = (application) => {
     return true;
   }
   return false;
+};
+
+export const is_the_uni_assist_vpd_uploaded = (application) => {
+  if (application === undefined) {
+    return false;
+  }
+  if (
+    application.decided === 'O' &&
+    application.programId.uni_assist &&
+    (application.programId.uni_assist.includes('VPD') ||
+      application.programId.uni_assist.includes('FULL'))
+  ) {
+    if (!application.uni_assist) {
+      return false;
+    }
+
+    if (
+      application.uni_assist.status !== 'uploaded' ||
+      application.uni_assist.vpd_file_path === ''
+    ) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const is_all_uni_assist_vpd_uploaded = (student) => {

@@ -7,6 +7,8 @@ import {
   Table,
   Form,
   Button,
+  Overlay,
+  Tooltip,
   Modal
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -16,9 +18,12 @@ import Aux from '../../hoc/_Aux';
 import {
   isProgramNotSelectedEnough,
   is_num_Program_Not_specified,
-  is_program_ready_to_submit,
+  is_program_ml_rl_essay_ready,
+  is_the_uni_assist_vpd_uploaded,
+  is_cv_finished,
   application_deadline_calculator
 } from '../Utils/checking-functions';
+import OverlayButton from '../../components/Overlay/OverlayButton';
 import { getNumberOfDays, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -38,6 +43,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     applying_program_count: this.props.student.applying_program_count,
     modalDeleteApplication: false,
     modalUpdatedApplication: false,
+    show: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -205,7 +211,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
+    console.log(this.state.student);
     var applying_university_info;
     // var applying_university;
     var today = new Date();
@@ -334,8 +340,10 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             {application.decided === 'O' ? (
               <td>
-                {/* TODO: add condition only when all thread finished */}
-                {is_program_ready_to_submit(application) ? (
+                {/* When all thread finished */}
+                {is_program_ml_rl_essay_ready(application) &&
+                is_cv_finished(this.state.student) &&
+                is_the_uni_assist_vpd_uploaded(application) ? (
                   <Form.Group controlId="closed">
                     <Form.Control
                       as="select"
@@ -354,12 +362,19 @@ class StudentApplicationsTableTemplate extends React.Component {
                     </Form.Control>
                   </Form.Group>
                 ) : (
-                  <div
-                    title="CV/ML/RL/Essay/Uni-Assist not finished"
-                    className="my-2 mx-2 text-danger"
-                  >
-                    Info
-                  </div>
+                  <OverlayButton
+                    text={`Please make sure ${
+                      !is_cv_finished(this.state.student) ? 'CV ' : ''
+                    }${
+                      !is_program_ml_rl_essay_ready(application)
+                        ? 'ML/RL/Essay '
+                        : ''
+                    }${
+                      !is_the_uni_assist_vpd_uploaded(application)
+                        ? 'Uni-Assist '
+                        : ''
+                    }are prepared to unlock this.`}
+                  />
                 )}
               </td>
             ) : (

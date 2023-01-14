@@ -8,7 +8,8 @@ import {
   is_cv_finished,
   is_cv_assigned,
   is_all_uni_assist_vpd_uploaded,
-  is_program_ready_to_submit,
+  is_program_ml_rl_essay_ready,
+  is_the_uni_assist_vpd_uploaded,
   is_program_closed,
   are_base_documents_missing
 } from '../../../Utils/checking-functions';
@@ -149,7 +150,9 @@ class AgentTasks extends React.Component {
         {/* check program reday to be submitted */}
         {this.props.student.applications.map(
           (application, i) =>
-            is_program_ready_to_submit(application) &&
+            is_cv_finished(this.props.student) &&
+            is_program_ml_rl_essay_ready(application) &&
+            is_the_uni_assist_vpd_uploaded(application) &&
             !is_program_closed(application) && (
               <tr>
                 <td>

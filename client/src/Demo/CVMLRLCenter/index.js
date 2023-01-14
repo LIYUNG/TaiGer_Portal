@@ -1,29 +1,16 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Spinner,
-  Table,
-  Card,
-  Modal,
-  Button,
-  Tab,
-  Tabs
-} from 'react-bootstrap';
+import { Row, Col, Spinner, Card } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import CVMLRLOverview from './CVMLRLOverview';
-import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
-import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
-import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
+import { getCVMLRLOverview } from '../../api';
 
 class index extends React.Component {
   state = {
-    error: null,
+    error: '',
     isLoaded: false,
     data: null,
     success: false,

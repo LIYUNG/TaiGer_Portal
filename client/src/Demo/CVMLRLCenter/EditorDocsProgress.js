@@ -35,6 +35,7 @@ import {
 
 class EditorDocsProgress extends React.Component {
   state = {
+    error: '',
     delete_field: '',
     student: this.props.student,
     deleteFileWarningModel: false,

@@ -17,7 +17,7 @@ import { getStudentsAndDocLinks } from '../../api';
 
 class BaseDocuments extends React.Component {
   state = {
-    error: null,
+    error: '',
     isLoaded: false,
     data: null,
     base_docs_link: null,

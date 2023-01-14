@@ -1,12 +1,12 @@
-import React from "react";
-import { Spinner } from "react-bootstrap";
-import { getArchivStudent } from "../../api";
+import React from 'react';
+import { Spinner } from 'react-bootstrap';
+import { getArchivStudent } from '../../api';
 class SingleProgram extends React.Component {
   state = {
+    error: '',
     isLoaded: false,
-    student: "",
-    success: false,
-    error: null,
+    student: '',
+    success: false
   };
   componentDidMount() {
     getArchivStudent().then(
@@ -16,7 +16,7 @@ class SingleProgram extends React.Component {
           this.setState({
             isLoaded: true,
             student: data,
-            success: success,
+            success: success
           });
         } else {
           alert(resp.data.message);
@@ -41,10 +41,10 @@ class SingleProgram extends React.Component {
       );
     }
     const style = {
-      position: "fixed",
-      top: "40%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      position: 'fixed',
+      top: '40%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
     };
     if (!isLoaded && !this.state.student) {
       return (

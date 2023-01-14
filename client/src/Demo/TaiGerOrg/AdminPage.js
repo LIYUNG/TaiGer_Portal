@@ -11,7 +11,7 @@ import { getTeamMembers } from '../../api';
 
 class AdminPage extends React.Component {
   state = {
-    error: null,
+    error: '',
     role: '',
     isLoaded: false,
     data: null,
@@ -43,10 +43,12 @@ class AdminPage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }

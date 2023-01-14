@@ -41,6 +41,7 @@ import {
 
 class SingleStudentPage extends React.Component {
   state = {
+    error: '',
     isLoaded: {},
     isLoaded2: false,
     taiger_view: true,
@@ -52,7 +53,6 @@ class SingleStudentPage extends React.Component {
     base_docs_link: null,
     survey_link: null,
     success: false,
-    error: null,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -90,11 +90,15 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: temp_isLoaded,
           isLoaded2: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   }
@@ -136,7 +140,16 @@ class SingleStudentPage extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -177,7 +190,16 @@ class SingleStudentPage extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -238,7 +260,14 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {
-        alert('UpdateAgentlist is failed.');
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -270,7 +299,14 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {
-        alert('UpdateEditorlist is failed.');
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -308,10 +344,14 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded2: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -349,10 +389,14 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded2: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -390,10 +434,14 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };

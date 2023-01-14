@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import 'react-datasheet-grid/dist/style.css';
+
 import Aux from '../../hoc/_Aux';
-import { convertDate, spinner_style } from '../Utils/contants';
+import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { showButtonIfMyStudentB } from '../Utils/checking-functions';
-import 'react-datasheet-grid/dist/style.css';
 
 import { getPortalCredentials, postPortalCredentials } from '../../api';
 
 export default function PortalCredentialPage(props) {
   let [statedata, setStatedata] = useState({
-    error: null,
+    error: '',
     isLoaded: false,
     isUpdateLoaded: {},
     applications: [],
     analysis: {},
     confirmModalWindowOpen: false,
-    analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
     credentials: {},
     isUpdating: false,
-    isDownloading: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -206,13 +204,6 @@ export default function PortalCredentialPage(props) {
     setStatedata((state) => ({
       ...state,
       confirmModalWindowOpen: false
-    }));
-  };
-
-  const closeanalysisSuccessModal = () => {
-    setStatedata((state) => ({
-      ...state,
-      analysisSuccessModalWindowOpen: false
     }));
   };
 
@@ -442,20 +433,6 @@ export default function PortalCredentialPage(props) {
         <Modal.Body>Update portal credentials successfully</Modal.Body>
         <Modal.Footer>
           <Button onClick={closeModal}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal
-        show={statedata.analysisSuccessModalWindowOpen}
-        onHide={closeanalysisSuccessModal}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Transcript analysed successfully!</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={closeanalysisSuccessModal}>Close</Button>
         </Modal.Footer>
       </Modal>
     </Aux>

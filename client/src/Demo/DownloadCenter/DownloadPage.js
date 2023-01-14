@@ -15,7 +15,7 @@ import {
 
 class DownloadPage extends React.Component {
   state = {
-    error: null,
+    error: '',
     file: '',
     isLoaded: false,
     students: [],

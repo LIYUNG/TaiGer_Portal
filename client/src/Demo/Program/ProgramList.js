@@ -680,7 +680,7 @@ function ProgramList(props) {
     success: false,
     programs: null,
     isloaded: false,
-    error: null,
+    error: '',
     res_status: 0
   });
 

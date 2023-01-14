@@ -5,15 +5,18 @@ import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 class SingleProgram extends React.Component {
   state = {
+    error: '',
     isLoaded: false,
     program: null,
     success: false,
-    error: null,
     isEdit: false,
-    res_status: 0
+    res_status: 0,
+    res_modal_message: '',
+    res_modal_status: 0
   };
   componentDidMount() {
     getProgram(this.props.match.params.programId).then(
@@ -35,10 +38,12 @@ class SingleProgram extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
@@ -54,22 +59,36 @@ class SingleProgram extends React.Component {
             program: data,
             success: success,
             isEdit: !this.state.isEdit,
-            res_status: status
+            res_modal_status: status
           });
         } else {
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           });
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
+  };
+
+  ConfirmError = () => {
+    // window.location.reload(true);
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   handleClick = () => {
@@ -77,8 +96,13 @@ class SingleProgram extends React.Component {
   };
 
   render() {
-    const { res_status, program, isLoaded } = this.state;
-
+    const {
+      res_status,
+      isLoaded,
+      res_modal_status,
+      res_modal_message,
+      program
+    } = this.state;
     if (!isLoaded && !program) {
       return (
         <div style={spinner_style}>
@@ -96,6 +120,13 @@ class SingleProgram extends React.Component {
     if (this.state.isEdit) {
       return (
         <>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <SingleProgramEdit
             program={program}
             isLoaded={isLoaded}
@@ -107,6 +138,13 @@ class SingleProgram extends React.Component {
     } else {
       return (
         <>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
           <SingleProgramView
             program={program}
             isLoaded={isLoaded}

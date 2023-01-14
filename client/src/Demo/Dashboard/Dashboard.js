@@ -23,7 +23,7 @@ import {
 
 class Dashboard extends React.Component {
   state = {
-    error: null,
+    error: '',
     modalShow: false,
     agent_list: [],
     editor_list: [],

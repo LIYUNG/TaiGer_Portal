@@ -14,9 +14,9 @@ import {
 
 class SingleDoc extends React.Component {
   state = {
+    error: '',
     isLoaded: false,
     success: false,
-    error: null,
     editorState: null,
     isEdit: false,
     internal: false,

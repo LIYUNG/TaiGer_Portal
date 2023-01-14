@@ -3,7 +3,6 @@ import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
-import { profile_name_list } from '../Utils/contants';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
@@ -11,7 +10,7 @@ import { getTeamMembers } from '../../api';
 
 class Survey extends React.Component {
   state = {
-    error: null,
+    error: '',
     role: '',
     isLoaded: false,
     data: null,
@@ -43,10 +42,12 @@ class Survey extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }

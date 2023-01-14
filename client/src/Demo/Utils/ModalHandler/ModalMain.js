@@ -20,7 +20,7 @@ class ModalMain extends React.Component {
           <Modal.Header>
             <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Time Out! Please refresh and login again.</Modal.Body>
+          <Modal.Body>{res_modal_message}</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.ConfirmError}>Ok</Button>
           </Modal.Footer>

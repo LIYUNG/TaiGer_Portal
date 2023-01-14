@@ -12,7 +12,7 @@ import { getStudents, getAgents, updateAgents } from '../../../api';
 
 class AssignAgents extends React.Component {
   state = {
-    error: null,
+    error: '',
     agent_list: [],
     isLoaded: false,
     students: [],
@@ -223,8 +223,6 @@ class AssignAgents extends React.Component {
           updateAgentList={this.state.updateAgentList}
           handleChangeAgentlist={this.handleChangeAgentlist}
           submitUpdateAgentlist={this.submitUpdateAgentlist}
-          handleChangeEditorlist={this.handleChangeEditorlist}
-          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
           isDashboard={this.state.isDashboard}
         />
       </Aux>

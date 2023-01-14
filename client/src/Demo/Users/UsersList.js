@@ -4,17 +4,15 @@ import { Table } from 'react-bootstrap';
 import User from './User';
 import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
-import { spinner_style } from '../Utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { deleteUser, updateUser, changeUserRole } from '../../api';
 
 class UsersList extends React.Component {
   state = {
+    error: '',
     modalShow: false,
     delete_field: '',
-    timeouterror: null,
-    unauthorizederror: null,
     firstname: '',
     lastname: '',
     selected_user_role: '',
@@ -112,10 +110,14 @@ class UsersList extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -154,10 +156,14 @@ class UsersList extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };

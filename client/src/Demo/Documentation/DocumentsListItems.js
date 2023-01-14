@@ -13,22 +13,14 @@ import { updateChecklistDocument } from '../../api';
 
 class DocumentsListItems extends React.Component {
   state = {
-    timeouterror: null,
-    unauthorizederror: null,
+    error: '',
     student: this.props.student,
-    deleteFileWarningModel: false,
-    SetAsFinalFileModel: false,
-    Requirements_Modal: false,
     in_edit_mode: false,
     student_id: '',
-    doc_thread_id: '',
-    applicationId: '',
     editorState: null,
     ConvertedContent: '',
     isLoaded: false,
-    requirements: '',
     file: '',
-    isThreadExisted: false,
     res_status: 0
   };
   componentDidMount() {

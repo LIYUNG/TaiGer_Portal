@@ -12,22 +12,18 @@ const UIBasicBreadcrumbPagination = React.lazy(() =>
   import('./Demo/UIElements/Basic/BreadcrumbPagination')
 );
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
-;
-const PortalCredentialPage = React.lazy(() => import('./Demo/PortalCredentialPage/index'));
-;
+const PortalCredentialPage = React.lazy(() =>
+  import('./Demo/PortalCredentialPage/index')
+);
 const BaseDocuments = React.lazy(() =>
   import('./Demo/AgentCenter/BaseDocuments')
 );
-const Checklist = React.lazy(() => import('./Demo/CheckList/index'));
-
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const MyCoursesAnalysis = React.lazy(() =>
   import('./Demo/MyCourses/CourseAnalysis')
 );
 
-const CVMLRLOverview = React.lazy(() =>
-  import('./Demo/CVMLRLCenter/index')
-);
+const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 
 const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/index'));
 const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
@@ -43,15 +39,8 @@ const StudentApplications = React.lazy(() =>
 const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
 const UsersTable = React.lazy(() => import('./Demo/Users/UsersTable'));
 const Survey = React.lazy(() => import('./Demo/Survey/index'));
-const InterviewTraining = React.lazy(() =>
-  import('./Demo/InterviewTraining/index')
-);
-const SingleInterviewTraining = React.lazy(() =>
-  import('./Demo/InterviewTraining/SingleInterviewTraining')
-);
 const Settings = React.lazy(() => import('./Demo/Settings/index'));
 // const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
-const OrgChart = React.lazy(() => import('./Demo/Charts/OrgChart/index'));
 // const Statistics = React.lazy(() =>
 //   import('./Demo/Statistics/Nvd3Chart/index')
 // );
@@ -64,10 +53,6 @@ const CVMLRL_Modification_Thread = React.lazy(() =>
     './Demo/CVMLRLCenter/DocModificationThreadPage/DocModificationThreadPage'
   )
 );
-const TasksOverview = React.lazy(() => import('./Demo/Task/TasksOverview'));
-const Task = React.lazy(() => import('./Demo/Task/Task'));
-const MyTask = React.lazy(() => import('./Demo/Task/MyTask'));
-
 const SingleStudentPage = React.lazy(() =>
   import('./Demo/StudentDatabase/SingleStudentPage')
 );
@@ -143,24 +128,6 @@ const routes = [
     component: SingleProgram
   },
   {
-    path: '/tasks/:student_id',
-    exact: true,
-    name: 'Task Overview',
-    component: Task
-  },
-  {
-    path: '/tasks/students/overview',
-    exact: true,
-    name: 'Task Overview',
-    component: TasksOverview
-  },
-  {
-    path: '/tasks',
-    exact: true,
-    name: 'My Task',
-    component: MyTask
-  },
-  {
     path: '/document-modification/:documentsthreadId',
     exact: true,
     name: 'CVMLRL Modification Thread',
@@ -202,12 +169,7 @@ const routes = [
     name: 'SingleStudentPage',
     component: SingleStudentPage
   },
-  {
-    path: '/org-charts',
-    exact: true,
-    name: 'Organization Charts',
-    component: OrgChart
-  },
+
   // {
   //   path: '/statistics',
   //   exact: true,
@@ -269,12 +231,6 @@ const routes = [
     component: Download
   },
   {
-    path: '/checklist',
-    exact: true,
-    name: 'Check List',
-    component: Checklist
-  },
-  {
     path: '/my-courses/analysis/:student_id',
     exact: true,
     name: 'My MyCourses Analysis',
@@ -321,18 +277,6 @@ const routes = [
     exact: true,
     name: 'CV/ML/RL Center',
     component: CVMLRLOverview
-  },
-  {
-    path: '/interview-training',
-    exact: true,
-    name: 'InterviewTraining',
-    component: InterviewTraining
-  },
-  {
-    path: '/interview-training/:interview_id',
-    exact: true,
-    name: 'SingleInterviewTraining',
-    component: SingleInterviewTraining
   },
   {
     path: '/settings',

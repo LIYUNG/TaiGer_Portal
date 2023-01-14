@@ -9,9 +9,7 @@ import { getAdmissions } from '../../api';
 
 class Admissions extends React.Component {
   state = {
-    error: null,
-    timeouterror: null,
-    unauthorizederror: null,
+    error: '',
     isLoaded: false,
     students: [],
     success: false,

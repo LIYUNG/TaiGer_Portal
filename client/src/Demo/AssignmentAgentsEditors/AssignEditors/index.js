@@ -6,13 +6,13 @@ import Aux from '../../../hoc/_Aux';
 import AssignEditorsPage from './AssignEditorsPage';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { SYMBOL_EXPLANATION, spinner_style } from '../../Utils/contants';
+import { spinner_style } from '../../Utils/contants';
 
 import { getStudents, getEditors, updateEditors } from '../../../api';
 
 class AssignEditors extends React.Component {
   state = {
-    error: null,
+    error: '',
     editor_list: [],
     isLoaded: false,
     students: [],
@@ -221,8 +221,6 @@ class AssignEditors extends React.Component {
           updateEditorList={this.state.updateEditorList}
           handleChangeEditorlist={this.handleChangeEditorlist}
           submitUpdateEditorlist={this.submitUpdateEditorlist}
-          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-          updateStudentArchivStatus={this.updateStudentArchivStatus}
           isDashboard={this.state.isDashboard}
         />
       </Aux>

@@ -16,12 +16,10 @@ import {
 
 class Documentation extends React.Component {
   state = {
+    error: '',
     isLoaded: false,
     success: false,
-    error: null,
     editorState: null,
-    unauthorizederror: null,
-    unauthorizederror: null,
     isEdit: false,
     res_status: 0,
     res_modal_message: '',

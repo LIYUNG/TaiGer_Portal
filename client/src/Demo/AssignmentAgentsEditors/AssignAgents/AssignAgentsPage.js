@@ -9,7 +9,6 @@ class AssignAgentsPage extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         editAgent={this.props.editAgent}
         agent_list={this.props.agent_list}
         updateAgentList={this.props.updateAgentList}

@@ -8,7 +8,6 @@ class User extends React.Component {
       return (
         <tr key={this.props.user._id}>
           <th>
-            {/* {this.props.user.role !== 'Admin' && ( */}
             <DropdownButton
               size="sm"
               title="Option"

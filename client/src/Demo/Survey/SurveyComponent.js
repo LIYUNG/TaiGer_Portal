@@ -3,7 +3,6 @@ import { Button, Spinner, Modal } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import SurveyEditableComponent from './SurveyEditableComponent';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -16,7 +15,7 @@ import {
 
 class SurveyComponent extends React.Component {
   state = {
-    error: null,
+    error: '',
     role: '',
     isLoaded: this.props.isLoaded,
     student_id: this.props.student_id,
@@ -89,10 +88,14 @@ class SurveyComponent extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -127,10 +130,14 @@ class SurveyComponent extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -165,10 +172,14 @@ class SurveyComponent extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -235,7 +246,16 @@ class SurveyComponent extends React.Component {
           }));
         }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -273,7 +293,9 @@ class SurveyComponent extends React.Component {
             this.handleSubmit_AcademicBackground_root
           }
           handleSubmit_Language_root={this.handleSubmit_Language_root}
-          handleSubmit_ApplicationPreference_root={this.handleSubmit_ApplicationPreference_root}
+          handleSubmit_ApplicationPreference_root={
+            this.handleSubmit_ApplicationPreference_root
+          }
           updateDocLink={this.updateDocLink}
           survey_link={this.state.survey_link}
         />

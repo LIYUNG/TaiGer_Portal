@@ -13,7 +13,6 @@ class ButtonSetNotNeeded extends React.Component {
     student_id: this.props.student._id.toString(),
     category: '',
     docName: '',
-    comments: '',
     file: '',
     isLoaded: this.props.isLoaded,
     SetNeededWindow: false,
@@ -95,8 +94,6 @@ class ButtonSetNotNeeded extends React.Component {
     this.props.handleGeneralDocSubmit(e, k, student_id);
   };
   render() {
-    const deleteStyle = 'danger';
-    const graoutStyle = 'light';
     var ButttonRow_NotNeeded;
     ButttonRow_NotNeeded = (
       <tr>

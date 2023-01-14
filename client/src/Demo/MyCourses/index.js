@@ -18,7 +18,7 @@ import {
 
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
-    error: null,
+    error: '',
     isLoaded: false,
     coursesdata: {},
     analysis: {},

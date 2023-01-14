@@ -22,6 +22,7 @@ import { updateBanner } from '../../../api';
 
 class StudentDashboard extends React.Component {
   state = {
+    error: '',
     student: this.props.student,
     itemheight: 20,
     data: [],

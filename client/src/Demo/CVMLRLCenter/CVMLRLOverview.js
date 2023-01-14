@@ -11,18 +11,16 @@ import {
   Tabs
 } from 'react-bootstrap';
 
-import Aux from '../../hoc/_Aux';
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import { spinner_style } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
 
 class CVMLRLOverview extends React.Component {
   state = {
-    error: null,
+    error: '',
     isLoaded: this.props.isLoaded,
     data: null,
     success: this.props.success,

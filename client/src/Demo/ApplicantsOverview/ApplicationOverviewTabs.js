@@ -1,10 +1,6 @@
 import React from 'react';
 import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
 
-import Aux from '../../hoc/_Aux';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import ApplicationFilesProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationFilesProgress';
 import { isProgramNotSelectedEnough } from '../Utils/checking-functions';
@@ -15,12 +11,11 @@ import { updateArchivStudents, getStudents } from '../../api';
 
 class ApplicationOverviewTabs extends React.Component {
   state = {
-    error: null,
+    error: '',
     isLoaded: this.props.isLoaded,
     data: null,
     success: this.props.success,
     students: this.props.students,
-    file: '',
     status: '', //reject, accept... etc
     res_status: 0
   };

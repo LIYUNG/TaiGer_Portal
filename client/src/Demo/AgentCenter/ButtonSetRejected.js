@@ -16,6 +16,7 @@ import { updateProfileDocumentStatus, deleteFile } from '../../api';
 
 class ButtonSetRejected extends React.Component {
   state = {
+    error: '',
     student: this.props.student,
     link: this.props.link,
     student_id: this.props.student._id.toString(),

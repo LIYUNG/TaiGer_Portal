@@ -3,8 +3,6 @@ import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import { convertDate } from '../Utils/contants';
-import TimeOutErrors from '../Utils/TimeOutErrors';
-import UnauthorizedError from '../Utils/UnauthorizedError';
 import { FiExternalLink } from 'react-icons/fi';
 import {
   check_academic_background_filled,
@@ -157,22 +155,6 @@ class SurveyEditableComponent extends React.Component {
   };
 
   render() {
-    const { unauthorizederror, timeouterror, isLoaded } = this.state;
-
-    if (timeouterror) {
-      return (
-        <div>
-          <TimeOutErrors />
-        </div>
-      );
-    }
-    if (unauthorizederror) {
-      return (
-        <div>
-          <UnauthorizedError />
-        </div>
-      );
-    }
     const isReadonly = !showButtonIfMyStudent(this.props.user, {
       agents: this.props.agents,
       editors: this.props.editors

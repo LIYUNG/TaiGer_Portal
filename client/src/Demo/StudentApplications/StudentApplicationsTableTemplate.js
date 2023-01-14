@@ -27,7 +27,7 @@ import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
-    error: null,
+    error: '',
     student: this.props.student,
     applications: this.props.student.applications,
     isLoaded: this.props.isLoaded,
@@ -119,10 +119,14 @@ class StudentApplicationsTableTemplate extends React.Component {
         }
       },
       (error) => {
-        this.setState({
-          isLoaded: true
-          // error: true
-        });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -164,10 +168,14 @@ class StudentApplicationsTableTemplate extends React.Component {
         }
       },
       (error) => {
-        this.setState({
-          isLoaded: true
-          // error: true
-        });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -346,7 +354,12 @@ class StudentApplicationsTableTemplate extends React.Component {
                     </Form.Control>
                   </Form.Group>
                 ) : (
-                  <div title='CV/ML/RL/Essay/Uni-Assist not finished' className='my-2 mx-2 text-danger'>Info</div>
+                  <div
+                    title="CV/ML/RL/Essay/Uni-Assist not finished"
+                    className="my-2 mx-2 text-danger"
+                  >
+                    Info
+                  </div>
                 )}
               </td>
             ) : (

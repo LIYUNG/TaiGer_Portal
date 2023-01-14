@@ -10,6 +10,7 @@ import { getStudent } from '../../api';
 
 class UniAssistList extends React.Component {
   state = {
+    error: '',
     isLoaded: false,
     student: null,
     deleteVPDFileWarningModel: false,
@@ -35,10 +36,12 @@ class UniAssistList extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }

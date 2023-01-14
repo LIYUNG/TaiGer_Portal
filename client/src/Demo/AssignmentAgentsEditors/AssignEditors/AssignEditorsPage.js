@@ -10,7 +10,6 @@ class AssignEditorsPage extends React.Component {
         key={i}
         role={this.props.role}
         student={student}
-        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         editEditor={this.props.editEditor}
         editor_list={this.props.editor_list}
         updateEditorList={this.props.updateEditorList}

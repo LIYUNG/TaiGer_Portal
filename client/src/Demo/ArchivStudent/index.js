@@ -9,7 +9,7 @@ import { getArchivStudents, updateArchivStudents } from '../../api';
 
 class Dashboard extends React.Component {
   state = {
-    error: null,
+    error: '',
     isLoaded: false,
     students: [],
     success: false,

@@ -9,7 +9,7 @@ const localAuth = (req, res, next) => {
       return next(new ErrorResponse(403, 'Inactivated account'));
     }
 
-    if (!user) return next(new ErrorResponse(401, 'unauthenticated'));
+    if (!user) return next(new ErrorResponse(401, 'The current password is wrong.'));
     req.user = user;
     next();
   })(req, res, next);

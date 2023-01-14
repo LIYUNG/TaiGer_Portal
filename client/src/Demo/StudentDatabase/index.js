@@ -15,7 +15,7 @@ import {
 
 class Dashboard extends React.Component {
   state = {
-    error: null,
+    error: '',
     timeouterror: null,
     unauthorizederror: null,
     modalShow: false,
@@ -27,8 +27,6 @@ class Dashboard extends React.Component {
     updateEditorList: {},
     success: false,
     res_status: 0
-
-    // isArchivPage: true
   };
 
   componentDidMount() {
@@ -51,43 +49,15 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.state.isLoaded === false) {
-  //     getArchivStudents().then(
-  //       (resp) => {
-  //         const { data, success } = resp.data;
-  //         const { status } = resp;
-  //         if (success) {
-  //           this.setState({
-  //             isLoaded: true,
-  //             students: data,
-  //             success: success,
-  //             res_status: status
-  //           });
-  //         } else {
-  //           this.setState({
-  //             isLoaded: true,
-  //             res_status: status
-  //           });
-  //         }
-  //       },
-  //       (error) => {
-  //         this.setState({
-  //           isLoaded: true,
-  //           error: true
-  //         });
-  //       }
-  //     );
-  //   }
-  // }
 
   updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
@@ -109,10 +79,12 @@ class Dashboard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   };

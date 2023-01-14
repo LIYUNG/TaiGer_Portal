@@ -22,18 +22,13 @@ import {
 
 class DocModificationThreadPage extends Component {
   state = {
-    error: null,
-    timeouterror: null,
-    unauthorizederror: null,
-    pagenotfounderror: null,
+    error: '',
     file: null,
     isLoaded: false,
     isSubmissionLoaded: true,
     articles: [],
     isEdit: false,
     thread: null,
-    editFormOpen: false,
-    defaultStep: 1,
     buttonDisabled: false,
     editorState: {},
     expand: true,
@@ -91,90 +86,12 @@ class DocModificationThreadPage extends Component {
     this.setState({ file: e.target.files[0] });
   };
 
-  handleEditorChange = (newstate) => {
-    this.setState((state) => ({ ...state, editorState: newstate }));
-  };
-
-  onDownloadTemplate = (e, category) => {
-    e.preventDefault();
-    getTemplateDownload(category).then(
-      (resp) => {
-        const actualFileName =
-          resp.headers['content-disposition'].split('"')[1];
-        const { data: blob } = resp;
-        if (blob.size === 0) return;
-
-        var filetype = actualFileName.split('.'); //split file name
-        filetype = filetype.pop(); //get the file type
-
-        if (filetype === 'pdf') {
-          const url = window.URL.createObjectURL(
-            new Blob([blob], { type: 'application/pdf' })
-          );
-
-          // Open the URL on new Window
-          var newWindow = window.open(url, '_blank'); //TODO: having a reasonable file name, pdf viewer
-          newWindow.document.title = actualFileName;
-        } else {
-          //if not pdf, download instead.
-
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', actualFileName);
-          // Append to html link element page
-          document.body.appendChild(link);
-          // Start download
-          link.click();
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-        }
-      },
-      (error) => {
-        alert('The file is not available.');
-      }
-    );
-  };
-
-  handleTrashClick = (articleId) => {
-    this.deleteArticle(articleId);
-  };
-
   ConfirmError = () => {
     this.setState((state) => ({
       ...state,
       res_modal_status: 0,
       res_modal_message: ''
     }));
-  };
-
-  deleteArticle = (articleId) => {
-    this.setState({
-      articles: this.state.articles.filter(
-        (article) => article._id !== articleId
-      )
-    });
-
-    deleteDoc(articleId).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_modal_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error
-        });
-      }
-    );
   };
 
   singleExpandtHandler = (idx) => {
@@ -508,8 +425,7 @@ class DocModificationThreadPage extends Component {
                 <p>
                   Download template:{' '}
                   {template_obj ? (
-                    <b
-                    >
+                    <b>
                       <a
                         href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
                         target="_blank"
@@ -579,7 +495,6 @@ class DocModificationThreadPage extends Component {
             accordionKeys={this.state.accordionKeys}
             singleExpandtHandler={this.singleExpandtHandler}
             thread={this.state.thread}
-            onTrashClick={this.handleTrashClick}
             isLoaded={this.state.isLoaded}
             user={this.props.user}
             onDeleteSingleMessage={this.onDeleteSingleMessage}

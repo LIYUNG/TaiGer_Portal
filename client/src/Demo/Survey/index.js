@@ -12,7 +12,7 @@ import { getMyAcademicBackground } from '../../api';
 
 class Survey extends React.Component {
   state = {
-    error: null,
+    error: '',
     role: '',
     isLoaded: false,
     data: null,
@@ -50,10 +50,12 @@ class Survey extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }

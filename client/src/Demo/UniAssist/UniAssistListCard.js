@@ -19,13 +19,12 @@ import {
 
 class UniAssistListCard extends React.Component {
   state = {
+    error: '',
     student_id: '',
     program_id: '',
     isLoaded2: {},
     isLoaded: false,
     student: this.props.student,
-    timeouterror: null,
-    unauthorizederror: null,
     deleteVPDFileWarningModel: false,
     setAsNotNeededModel: false,
     res_status: 0,
@@ -91,10 +90,14 @@ class UniAssistListCard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -151,10 +154,14 @@ class UniAssistListCard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -205,18 +212,28 @@ class UniAssistListCard extends React.Component {
             link.parentNode.removeChild(link);
           }
         } else {
-          if (resp.status === 401 || resp.status === 500) {
-            this.setState({ isLoaded: true, timeouterror: true });
-          } else if (resp.status === 403) {
-            this.setState({
-              isLoaded: true,
-              unauthorizederror: true
-            });
-          }
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            isLoaded2: {
+              ...state.isLoaded2,
+              [program_id]: true
+            },
+            res_modal_message: message,
+            res_modal_status: status
+          }));
         }
       },
       (error) => {
-        alert('The file is not available.');
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -265,10 +282,14 @@ class UniAssistListCard extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };

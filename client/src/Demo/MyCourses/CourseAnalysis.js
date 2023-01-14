@@ -23,7 +23,7 @@ import { analyzedFileDownload_test, transcriptanalyser_test } from '../../api';
 
 export default function CourseAnalysis(props) {
   let [statedata, setStatedata] = useState({
-    error: null,
+    error: '',
     isLoaded: false,
     coursesdata: {},
     analysis: {},

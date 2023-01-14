@@ -4,11 +4,9 @@ import {
   useFilters,
   useGlobalFilter,
   useAsyncDebounce,
-  useRowSelect,
+  // useRowSelect,
   usePagination
 } from 'react-table';
-import UnauthorizedError from '../Utils/UnauthorizedError';
-import TimeOutErrors from '../Utils/TimeOutErrors';
 import { Link } from 'react-router-dom';
 
 import {
@@ -16,12 +14,10 @@ import {
   Table,
   Row,
   Col,
-  Spinner,
   Card,
   Tabs,
   Tab
 } from 'react-bootstrap';
-import { getAdmissions } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
 

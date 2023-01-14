@@ -8,7 +8,7 @@ import {
   Row,
   Col
 } from 'react-bootstrap';
-import { RiMoreFill, RiEditFill, RiCloseFill } from 'react-icons/ri';
+import { RiCloseFill } from 'react-icons/ri';
 import { BASE_URL } from '../../../api/request';
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
 import { FileIcon, defaultStyles } from 'react-file-icon';

@@ -11,6 +11,7 @@ class ProgramListSubpage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      error: '',
       students: [],
       isLoaded: false,
       timeouterror: null,

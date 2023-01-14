@@ -11,7 +11,7 @@ import { updateArchivStudents, getStudents } from '../../api';
 
 class ApplicantSOverview extends React.Component {
   state = {
-    error: null,
+    error: '',
     isLoaded: false,
     data: null,
     success: false,

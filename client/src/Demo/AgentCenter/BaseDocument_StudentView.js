@@ -22,6 +22,7 @@ import {
 
 class BaseDocument_StudentView extends React.Component {
   state = {
+    error: '',
     student: this.props.student,
     student_id: '',
     // isLoaded: this.props.isLoaded,

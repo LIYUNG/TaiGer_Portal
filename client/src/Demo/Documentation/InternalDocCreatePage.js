@@ -16,7 +16,7 @@ import {
 
 class InternalDocCreatePage extends React.Component {
   state = {
-    error: null,
+    error: '',
     isLoaded: false,
     data: null,
     success: false,

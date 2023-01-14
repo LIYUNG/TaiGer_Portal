@@ -13,6 +13,7 @@ import { updateAgentBanner } from '../../../api';
 
 class AgentMainView extends React.Component {
   state = {
+    error: '',
     user: this.props.user
   };
 

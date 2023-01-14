@@ -13,28 +13,24 @@ import Loader from '../Loader';
 import routes from '../../../routes';
 import Aux from '../../../hoc/_Aux';
 import * as actionTypes from '../../../store/actions';
-
 import routes2 from '../../../route';
 import routes3 from '../../../route3';
 import ScrollToTop from '../ScrollToTop';
 import { verify, logout } from '../../../api/index';
 
-const Component = React.lazy(() =>
-  import('../../../Demo/LoadingPage/LoadingPage')
-);
-
 function AdminLayout(props) {
   let [userdata, setUserdata] = useState({
+    error: '',
     success: false,
     data: null,
     isloaded: false,
-    error: null,
     everlogin: false
   });
 
   useEffect(() => {
     verify().then((resp) => {
       const { data, success } = resp.data;
+      // TODO: to be remove in production
       setTimeout(function () {
         setUserdata((state) => ({
           ...state,

@@ -8,10 +8,10 @@ import { getStudent } from '../../api';
 
 class StudentApplicationsIndividual extends React.Component {
   state = {
+    error: '',
     isLoaded: false,
     student: null,
     success: false,
-    error: null,
     res_status: 0
   };
   componentDidMount() {
@@ -34,10 +34,12 @@ class StudentApplicationsIndividual extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_status: 500
+        }));
       }
     );
   }

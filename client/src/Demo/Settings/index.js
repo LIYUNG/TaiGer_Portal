@@ -11,8 +11,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 class Settings extends React.Component {
   state = {
-    error: null,
-    timeouterror: null,
+    error: '',
     unauthorizederror: null,
     role: '',
     isLoaded: false,
@@ -80,10 +79,14 @@ class Settings extends React.Component {
         }
       },
       (error) => {
-        this.setState({
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
           isLoaded: true,
-          error: true
-        });
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -128,11 +131,14 @@ class Settings extends React.Component {
         }
       },
       (error) => {
-        alert(error);
-        this.setState({
-          isLoaded: true
-          // error: true
-        });
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
       }
     );
   };
@@ -171,7 +177,14 @@ class Settings extends React.Component {
         // const { success } = resp.data;
         // this.setState({ success: success });
       },
-      (error) => {}
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_status: 500
+        }));
+      }
     );
   };
 

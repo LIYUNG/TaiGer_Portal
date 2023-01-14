@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner, Button, Row, Col, Card } from 'react-bootstrap';
+import { Spinner, Row, Col, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import DocPageView from './DocPageView';
@@ -112,7 +112,7 @@ class Documentation extends React.Component {
     }
   }
 
-  handleClickCancel = (e) => {
+  handleClickEditToggle = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
   handleClickSave = (e, doc_title, editorState) => {
@@ -159,10 +159,6 @@ class Documentation extends React.Component {
       }
     );
     this.setState((state) => ({ ...state, in_edit_mode: false }));
-  };
-
-  handleClick = () => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
 
   ConfirmError = () => {
@@ -240,8 +236,7 @@ class Documentation extends React.Component {
             document_title={this.state.document_title}
             editorState={this.state.editorState}
             isLoaded={isLoaded}
-            handleClick={this.handleClick}
-            handleClickCancel={this.handleClickCancel}
+            handleClickEditToggle={this.handleClickEditToggle}
             handleClickSave={this.handleClickSave}
           />
         </>
@@ -275,7 +270,7 @@ class Documentation extends React.Component {
             editorState={this.state.editorState}
             isLoaded={isLoaded}
             role={this.props.user.role}
-            handleClick={this.handleClick}
+            handleClickEditToggle={this.handleClickEditToggle}
           />
         </>
       );

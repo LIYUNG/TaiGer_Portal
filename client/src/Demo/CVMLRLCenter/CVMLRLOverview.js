@@ -13,6 +13,7 @@ import {
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import { spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
@@ -232,9 +233,7 @@ class CVMLRLOverview extends React.Component {
                       <>
                         <th></th>
                         <th>First-, Last Name</th>
-                        {(this.props.user.role === 'Admin' ||
-                          this.props.user.role === 'Editor' ||
-                          this.props.user.role === 'Agent') && <th>Action</th>}
+                        {is_TaiGer_role(this.props.user) && <th>Action</th>}
                       </>
                       {window.cvmlrllist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
@@ -258,10 +257,7 @@ class CVMLRLOverview extends React.Component {
                     <tr>
                       <th></th>
                       <th>First-, Last Name</th>
-                      {(this.props.user.role === 'Admin' ||
-                        this.props.user.role === 'Editor' ||
-                        this.props.user.role === 'Agent') && <th>Action</th>}
-
+                      {is_TaiGer_role(this.props.user) && <th>Action</th>}
                       {window.cvmlrlclosedlist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}

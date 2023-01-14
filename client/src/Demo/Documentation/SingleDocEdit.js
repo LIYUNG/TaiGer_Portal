@@ -105,7 +105,7 @@ class SingleDocEdit extends React.Component {
               doc_title={this.state.doc_title}
               editorState={this.props.editorState}
               handleClickSave={this.handleClickSave}
-              handleClickCancel={this.props.handleClickCancel}
+              handleClickEditToggle={this.props.handleClickEditToggle}
               role={this.props.role}
             />
           </Card.Body>

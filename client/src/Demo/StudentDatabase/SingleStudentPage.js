@@ -558,7 +558,6 @@ class SingleStudentPage extends React.Component {
                       </thead>
                       <tbody>
                         <ApplicationProgress
-                          role={this.props.user.role}
                           user={this.props.user}
                           student={this.state.student}
                           isLoaded={this.state.isLoaded2}

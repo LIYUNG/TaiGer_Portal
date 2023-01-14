@@ -1,5 +1,4 @@
 import React from 'react';
-import { Row, Col, Table, Card, Collapse } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
@@ -18,8 +17,6 @@ class StudentBaseDocumentsStatus extends React.Component {
   };
 
   render() {
-    // const deleteStyle = "danger";
-    // const graoutStyle = "light";
     let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_list);
     let object_init = {};

@@ -203,7 +203,6 @@ class Message extends Component {
                 holder={`${this.props.message._id.toString()}`}
                 readOnly={true}
                 handleClickSave={this.props.handleClickSave}
-                handleClickCancel={this.props.handleClickCancel}
                 editorState={this.state.editorState}
               />
               {files_info}

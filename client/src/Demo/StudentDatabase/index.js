@@ -121,7 +121,6 @@ class Dashboard extends React.Component {
                 this.props.user.role === 'Agent' ||
                 this.props.user.role === 'Editor' ? (
                   <TabStudBackgroundDashboard
-                    role={this.props.user.role}
                     students={this.state.students}
                     agent_list={this.state.agent_list}
                     editor_list={this.state.editor_list}

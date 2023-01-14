@@ -163,7 +163,6 @@ class EditorMainView extends React.Component {
             </Tab>
             <Tab eventKey="y" title="Student Profile Overview">
               <TabStudBackgroundDashboard
-                role={this.props.role}
                 students={this.props.students}
                 documentslist={this.props.documentslist}
                 onDeleteProgram={this.props.onDeleteProgram}

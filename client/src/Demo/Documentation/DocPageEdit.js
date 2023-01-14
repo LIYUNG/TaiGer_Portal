@@ -33,8 +33,7 @@ class DocPageEdit extends React.Component {
               doc_title={'not_used'}
               editorState={this.props.editorState}
               handleClickSave={this.handleClickSave}
-              handleClickCancel={this.props.handleClickCancel}
-              role={this.props.role}
+              handleClickEditToggle={this.props.handleClickEditToggle}
             />
           </Card.Body>
         </Card>

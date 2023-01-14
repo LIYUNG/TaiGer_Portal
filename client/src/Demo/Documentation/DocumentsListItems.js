@@ -40,13 +40,7 @@ class DocumentsListItems extends React.Component {
       isLoaded: true
     }));
   }
-  handleClickEdit = (e) => {
-    e.preventDefault();
-    this.setState((state) => ({ ...state, in_edit_mode: true }));
-  };
-  handleClickCancel = (e) => {
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
-  };
+
   handleClickSave = (e, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(
@@ -123,7 +117,6 @@ class DocumentsListItems extends React.Component {
                 }
               />
             )}
-
             {this.props.idx}
             {'. '}
             <Link to={`${this.props.path}/${this.props.document._id}`}>

@@ -12,6 +12,7 @@ import {
 } from '../Utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ErrorPage from '../Utils/ErrorPage';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getStudentsAndDocLinks } from '../../api';
 
@@ -126,9 +127,7 @@ class BaseDocuments extends React.Component {
       <Aux>
         {/* <Row className="sticky-top"> */}
         <Row className="pt-0">
-          {this.props.user.role === 'Admin' ||
-          this.props.user.role === 'Agent' ||
-          this.props.user.role === 'Editor' ? (
+          {is_TaiGer_role(this.props.user) ? (
             // <Card bg={'dark'} text={'light'}>
             <Card className="mb-0 mx-0" bg={'dark'} text={'light'}>
               {/* <Card.Header as="h5">Base Documents</Card.Header> */}

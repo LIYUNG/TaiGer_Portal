@@ -5,7 +5,10 @@ import { Link } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import {
+  showButtonIfMyStudent,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 
 class EditableFile_Thread extends Component {
@@ -69,8 +72,7 @@ class EditableFile_Thread extends Component {
         <Row>
           <Col md={1}>
             {showButtonIfMyStudent(this.props.user, this.props.student) &&
-              (this.props.user.role === 'Student' ||
-              this.props.user.role === 'Guest' ? (
+              (!is_TaiGer_role(this.props.user) ? (
                 this.props.thread.isFinalVersion && (
                   <IoCheckmarkCircle
                     size={24}
@@ -138,10 +140,7 @@ class EditableFile_Thread extends Component {
               {convertDate(this.props.thread.doc_thread_id.updatedAt)}
             </p>
           </Col>
-          {this.props.user.role === 'Student' ||
-          this.props.user.role === 'Guest' ? (
-            <></>
-          ) : (
+          {is_TaiGer_role(this.props.user) && (
             <Col md={1}>
               {showButtonIfMyStudent(this.props.user, this.props.student) && (
                 <Button

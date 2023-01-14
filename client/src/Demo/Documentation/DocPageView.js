@@ -57,7 +57,7 @@ class DocPageView extends React.Component {
             <EditorNew
               readOnly={true}
               handleClickSave={this.props.handleClickSave}
-              handleClickCancel={this.props.handleClickCancel}
+              handleClickEditToggle={this.props.handleClickEditToggle}
               editorState={this.props.editorState}
             />
             {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
@@ -75,7 +75,7 @@ class DocPageView extends React.Component {
               </>
             )}
             {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
-              <Button size="sm" onClick={() => this.props.handleClick()}>
+              <Button size="sm" onClick={() => this.props.handleClickEditToggle()}>
                 Edit
               </Button>
             )}

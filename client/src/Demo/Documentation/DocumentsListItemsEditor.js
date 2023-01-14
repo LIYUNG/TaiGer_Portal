@@ -13,7 +13,7 @@ function DocumentsListItemsEditor(props) {
           doc_title={props.doc_title}
           readOnly={false}
           handleClickSave={props.handleClickSave}
-          handleClickCancel={props.handleClickCancel}
+          handleClickEditToggle={props.handleClickEditToggle}
           editorState={props.editorState}
         />
       </Col>

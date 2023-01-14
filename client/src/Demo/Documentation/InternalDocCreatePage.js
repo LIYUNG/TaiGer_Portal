@@ -146,7 +146,7 @@ class InternalDocCreatePage extends React.Component {
     }));
   };
 
-  handleClickCancel = (e) => {
+  handleClickEditToggle = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
 
@@ -297,7 +297,7 @@ class InternalDocCreatePage extends React.Component {
                       doc_title={this.state.doc_title}
                       editorState={this.state.editorState}
                       handleClickSave={this.handleClickSave}
-                      handleClickCancel={this.handleClickCancel}
+                      handleClickEditToggle={this.handleClickEditToggle}
                       // readOnlyMode={this.readOnlyMode}
                       role={this.props.role}
                     />
@@ -313,7 +313,7 @@ class InternalDocCreatePage extends React.Component {
                   ))}
                   {(this.props.user.role === 'Admin' ||
                     this.props.user.role === 'Agent') && (
-                    <Button onClick={this.handleClick}>Add</Button>
+                    <Button onClick={this.handleClickEditToggle}>Add</Button>
                   )}
                 </Card.Body>
               )}

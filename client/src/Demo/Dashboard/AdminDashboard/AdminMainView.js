@@ -6,38 +6,10 @@ import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudB
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
-import NoEditorsStudentsCard from '../MainViewTab/NoEditorsStudentsCard/NoEditorsStudentsCard';
-import NoAgentsStudentsCard from '../MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
 
 class AdminMainView extends React.Component {
   render() {
-    const no_agent_students = this.props.students.map((student, i) => (
-      <NoAgentsStudentsCard
-        key={i}
-        role={this.props.role}
-        student={student}
-        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-        editAgent={this.props.editAgent}
-        agent_list={this.props.agent_list}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-      />
-    ));
-    const no_editor_students = this.props.students.map((student, i) => (
-      <NoEditorsStudentsCard
-        key={i}
-        role={this.props.role}
-        student={student}
-        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-        editEditor={this.props.editEditor}
-        editor_list={this.props.editor_list}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
-      />
-    ));
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
@@ -140,7 +112,6 @@ class AdminMainView extends React.Component {
             >
               <Row className="px-0 py-0">
                 <TabStudBackgroundDashboard
-                  role={this.props.role}
                   students={this.props.students}
                   SYMBOL_EXPLANATION={this.props.SYMBOL_EXPLANATION}
                   updateStudentArchivStatus={

@@ -3,7 +3,10 @@ import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
 
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import ApplicationFilesProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationFilesProgress';
-import { isProgramNotSelectedEnough } from '../Utils/checking-functions';
+import {
+  isProgramNotSelectedEnough,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
@@ -84,7 +87,6 @@ class ApplicationOverviewTabs extends React.Component {
       <ApplicationProgress
         key={i}
         user={this.props.user}
-        role={this.props.user.role}
         student={student}
         updateStudentArchivStatus={this.updateStudentArchivStatus}
         isDashboard={true}
@@ -138,10 +140,7 @@ class ApplicationOverviewTabs extends React.Component {
                   <thead>
                     <tr>
                       <th></th>
-                      {this.props.user.role === 'Student' ||
-                      this.props.user.role === 'Guest' ? (
-                        <></>
-                      ) : (
+                      {is_TaiGer_role(this.props.user) && (
                         <>
                           <th>First-, Last Name</th>
                           <th
@@ -180,13 +179,9 @@ class ApplicationOverviewTabs extends React.Component {
                 >
                   <thead>
                     <tr>
-                      {this.props.user.role === 'Student' ||
-                      this.props.user.role === 'Guest' ? (
-                        <></>
-                      ) : (
+                      {is_TaiGer_role(this.props.user) && (
                         <th>First-, Last Name</th>
                       )}
-
                       <th>University</th>
                       <th>Programs</th>
                       <th>Deadline</th>

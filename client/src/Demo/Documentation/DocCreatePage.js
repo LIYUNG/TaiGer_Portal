@@ -150,7 +150,7 @@ class DocCreatePage extends React.Component {
     }));
   };
 
-  handleClickCancel = (e) => {
+  handleClickEditToggle = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
 
@@ -323,7 +323,7 @@ class DocCreatePage extends React.Component {
                       doc_title={this.state.doc_title}
                       editorState={this.state.editorState}
                       handleClickSave={this.handleClickSave}
-                      handleClickCancel={this.handleClickCancel}
+                      handleClickEditToggle={this.handleClickEditToggle}
                       // readOnlyMode={this.readOnlyMode}
                       role={this.props.role}
                     />

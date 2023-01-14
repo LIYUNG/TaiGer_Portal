@@ -75,7 +75,6 @@ class StudentDashboard extends React.Component {
 
     const application_progress = (
       <ApplicationProgress
-        role={this.props.role}
         user={this.props.user}
         student={this.state.student}
       />

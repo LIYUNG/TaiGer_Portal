@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
 import { spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudents } from '../../api';
@@ -16,7 +17,6 @@ class ApplicantSOverview extends React.Component {
     data: null,
     success: false,
     students: null,
-    file: '',
     status: '', //reject, accept... etc
     res_status: 0
   };
@@ -83,7 +83,9 @@ class ApplicantSOverview extends React.Component {
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Students Applications Overview
+                  {is_TaiGer_role(this.props.user)
+                    ? 'Students Applications Overview'
+                    : `${this.props.user.firstname} ${this.props.user.lastname} Applications Overview`}
                 </Card.Title>
               </Card.Header>
             </Card>

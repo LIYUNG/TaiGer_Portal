@@ -259,7 +259,9 @@ const EditorNew = (props) => {
             >
               Save
             </Button>
-            <Button onClick={(e) => props.handleClickCancel(e)}>Cancel</Button>
+            <Button onClick={(e) => props.handleClickEditToggle(e)}>
+              Cancel
+            </Button>
           </Col>
         </Row>
       )}

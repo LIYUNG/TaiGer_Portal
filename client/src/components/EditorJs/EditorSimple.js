@@ -30,7 +30,7 @@ const EditorSimple = (props) => {
       // setEditorState(props.editorState);
     }
     return () => {
-      ejInstance.current.destroy();
+      ejInstance.current && ejInstance.current.destroy();
       ejInstance.current = null;
     };
   }, [props.editorState]);

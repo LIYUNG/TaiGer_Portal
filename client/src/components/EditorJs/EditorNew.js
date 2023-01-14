@@ -40,8 +40,11 @@ const EditorNew = (props) => {
       initEditor();
     }
     return () => {
-      ejInstance.current.destroy();
+      ejInstance.current && ejInstance.current.destroy();
       ejInstance.current = null;
+      // if (ejInstance.current && ejInstance.current.destroy) {
+      //   ejInstance.current.destroy();
+      // }
     };
   }, [props.editorState]);
   const initEditor = () => {

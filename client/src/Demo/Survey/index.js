@@ -4,8 +4,8 @@ import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
 import SurveyComponent from './SurveyComponent';
-import { profile_name_list } from '../Utils/contants';
-import { spinner_style } from '../Utils/contants';
+import { profile_name_list, spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getMyAcademicBackground } from '../../api';
@@ -61,10 +61,7 @@ class Survey extends React.Component {
   }
 
   render() {
-    if (
-      this.props.user.role !== 'Student' &&
-      this.props.user.role !== 'Guest'
-    ) {
+    if (is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
     const { res_status, isLoaded } = this.state;

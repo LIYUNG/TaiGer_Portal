@@ -6,6 +6,7 @@ import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { valid_internal_categories, spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import {
@@ -198,13 +199,10 @@ class InternalDocCreatePage extends React.Component {
   };
 
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent'
-    ) {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
+
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded) {

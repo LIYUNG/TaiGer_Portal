@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineUndo
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-// import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+
 import { convertDate } from '../../../Utils/contants';
 import {
   check_academic_background_filled,
@@ -17,8 +10,8 @@ import {
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing
 } from '../../../Utils/checking-functions';
+
 class StudentTasks extends React.Component {
- 
   render() {
     let unread_general_generaldocs = <></>;
     let unread_applications_docthread = <></>;

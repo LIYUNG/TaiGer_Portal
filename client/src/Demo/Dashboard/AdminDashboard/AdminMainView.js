@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Card, Table, Tabs, Tab } from 'react-bootstrap';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import { BsExclamationTriangle } from 'react-icons/bs';
 
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';

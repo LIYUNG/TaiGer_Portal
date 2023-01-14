@@ -16,7 +16,7 @@ const PortalCredentialPage = React.lazy(() =>
   import('./Demo/PortalCredentialPage/index')
 );
 const BaseDocuments = React.lazy(() =>
-  import('./Demo/AgentCenter/BaseDocuments')
+  import('./Demo/BaseDocuments/BaseDocuments')
 );
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const MyCoursesAnalysis = React.lazy(() =>

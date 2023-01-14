@@ -4,6 +4,7 @@ import Aux from '../../hoc/_Aux';
 import AdmissionsTable from './AdmissionsTable';
 import ErrorPage from '../Utils/ErrorPage';
 import { spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getAdmissions } from '../../api';
 
@@ -47,6 +48,10 @@ class Admissions extends React.Component {
   }
 
   render() {
+    if (!is_TaiGer_role(this.props.user)) {
+      return <Redirect to="/dashboard/default" />;
+    }
+
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.data) {
@@ -68,15 +73,7 @@ class Admissions extends React.Component {
         <Aux>
           <Row>
             <Col>
-              {/* <Card.Body> */}
-              {this.props.user.role === 'Admin' ||
-              this.props.user.role === 'Agent' ||
-              this.props.user.role === 'Editor' ? (
-                <AdmissionsTable students={this.state.students} />
-              ) : (
-                <></>
-              )}
-              {/* </Card.Body> */}
+              <AdmissionsTable students={this.state.students} />
             </Col>
           </Row>
         </Aux>

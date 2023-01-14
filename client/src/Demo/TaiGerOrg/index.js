@@ -5,6 +5,7 @@ import { Redirect, Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getTeamMembers } from '../../api';
 
@@ -53,13 +54,10 @@ class Survey extends React.Component {
   }
 
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Editor'
-    ) {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
+
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {

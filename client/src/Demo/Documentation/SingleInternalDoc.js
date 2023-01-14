@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
 import { spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import {
@@ -109,11 +110,7 @@ class SingleDoc extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent'
-    ) {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
 

@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineUndo
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-// import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+
 import { convertDate, return_thread_status } from '../../../Utils/contants';
 import { application_deadline_calculator } from '../../../Utils/checking-functions';
 

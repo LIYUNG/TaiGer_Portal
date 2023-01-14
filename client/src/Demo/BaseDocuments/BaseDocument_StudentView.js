@@ -6,12 +6,7 @@ import ButtonSetRejected from './ButtonSetRejected';
 import ButtonSetNotNeeded from './ButtonSetNotNeeded';
 import ButtonSetMissing from './ButtonSetMissing';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import {
-  SYMBOL_EXPLANATION,
-  split_header,
-  spinner_style,
-  spinner_style2
-} from '../Utils/contants';
+import { spinner_style } from '../Utils/contants';
 
 import {
   uploadforstudent,

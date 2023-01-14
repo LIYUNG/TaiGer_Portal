@@ -1,14 +1,12 @@
 import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { getNumberOfDays } from '../../../Utils/contants';
 import {
   is_cv_finished,
   is_program_ml_rl_essay_finished,
-  check_uni_assist_needed,
   check_program_uni_assist_needed,
   application_deadline_calculator
 } from '../../../Utils/checking-functions';
+
 class ApplicationFilesProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
     this.props.updateStudentArchivStatus(studentId, isArchived);

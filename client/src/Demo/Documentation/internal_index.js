@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
 import { spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -125,13 +126,10 @@ class InternaldocsPage extends React.Component {
   };
 
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent'
-    ) {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
+
     const {
       res_status,
       editorState,

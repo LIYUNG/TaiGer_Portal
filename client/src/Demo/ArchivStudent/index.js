@@ -1,14 +1,17 @@
 import React from 'react';
 import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+
 import Aux from '../../hoc/_Aux';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getArchivStudents, updateArchivStudents } from '../../api';
 
-class Dashboard extends React.Component {
+class ArchivStudents extends React.Component {
   state = {
     error: '',
     isLoaded: false,
@@ -126,6 +129,9 @@ class Dashboard extends React.Component {
   };
 
   render() {
+    if (!is_TaiGer_role(this.props.user)) {
+      return <Redirect to="/dashboard/default" />;
+    }
     const { res_status, isLoaded, res_modal_status, res_modal_message } =
       this.state;
 
@@ -155,19 +161,13 @@ class Dashboard extends React.Component {
           )}
           <Row>
             <Col>
-              {this.props.user.role === 'Admin' ||
-              this.props.user.role === 'Agent' ||
-              this.props.user.role === 'Editor' ? (
-                <TabStudBackgroundDashboard
-                  role={this.props.user.role}
-                  students={this.state.students}
-                  updateStudentArchivStatus={this.updateStudentArchivStatus}
-                  isArchivPage={this.state.isArchivPage}
-                  SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                />
-              ) : (
-                <></>
-              )}
+              <TabStudBackgroundDashboard
+                role={this.props.user.role}
+                students={this.state.students}
+                updateStudentArchivStatus={this.updateStudentArchivStatus}
+                isArchivPage={this.state.isArchivPage}
+                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+              />
             </Col>
           </Row>
         </Aux>
@@ -176,4 +176,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default ArchivStudents;

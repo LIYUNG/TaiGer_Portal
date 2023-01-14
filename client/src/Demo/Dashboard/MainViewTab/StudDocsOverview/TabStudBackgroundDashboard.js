@@ -1,12 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import StudDocsDashboard from './StudDocsDashboard';
-import {
-  useTable,
-  useFilters,
-  useGlobalFilter,
-  useAsyncDebounce
-} from 'react-table';
+
 class TabStudBackgroundDashboard extends React.Component {
   render() {
     const stdlist = (

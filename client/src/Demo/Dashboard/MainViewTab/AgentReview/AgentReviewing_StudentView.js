@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  AiFillCloseCircle,
   AiOutlineLoading3Quarters,
-  AiFillQuestionCircle,
-  AiOutlineUndo
+  AiFillQuestionCircle
 } from 'react-icons/ai';
 
 class AgentReviewing_StudentView extends React.Component {

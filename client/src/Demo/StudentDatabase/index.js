@@ -5,11 +5,11 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import {
   getAllStudents,
-  getArchivStudents,
   updateArchivStudents
 } from '../../api';
 
@@ -90,13 +90,10 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Editor'
-    ) {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
+
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.data) {

@@ -1,16 +1,6 @@
 import React from 'react';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineUndo
-} from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-// import { Card, Col, Row } from "react-bootstrap";
-// import { Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from 'react-router-dom';
-import { convertDate } from '../../../Utils/contants';
 import {
-  check_academic_background_filled,
   check_all_applications_decided,
   is_num_Program_Not_specified,
   isProgramNotSelectedEnough,

@@ -12,7 +12,6 @@ import { updatePersonalData, updateCredentials, logout } from '../../api';
 class Settings extends React.Component {
   state = {
     error: '',
-    unauthorizederror: null,
     role: '',
     isLoaded: false,
     data: null,
@@ -148,16 +147,13 @@ class Settings extends React.Component {
       updateconfirmed: false
     });
   };
+
   onHideCredential = () => {
     this.setState({
       updateconfirmed: false
     });
   };
-  onHideUnauthorizederror = () => {
-    this.setState({
-      unauthorizederror: false
-    });
-  };
+
   setmodalhide = () => {
     window.location.reload(true);
     // this.setState({
@@ -359,10 +355,6 @@ class Settings extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="password"
-                        // readOnly={true}
-                        // placeholder="Text"
-                        // autoComplete="nope"
-                        // value={this.props.user.firstname}
                         onChange={(e) => this.handleChange_Credentials(e)}
                       />
                     </Form.Group>
@@ -376,10 +368,6 @@ class Settings extends React.Component {
                       </Form.Label>
                       <Form.Control
                         type="password"
-                        // readOnly={true}
-                        // placeholder="Text"
-                        // autoComplete="nope"
-                        // value={this.props.user.firstname}
                         onChange={(e) => this.handleChange_Credentials(e)}
                       />
                     </Form.Group>
@@ -445,26 +433,6 @@ class Settings extends React.Component {
           <Modal.Body>Personal Data is updated successfully!</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.setmodalhide}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal
-          show={this.state.unauthorizederror}
-          onHide={this.onHideUnauthorizederror}
-          size="sm"
-          bg={'danger'}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Your current passwords are wrong. Please enter correct the current
-            passwords.
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={(e) => this.onHideUnauthorizederror(e)}>Ok</Button>
           </Modal.Footer>
         </Modal>
         <Modal

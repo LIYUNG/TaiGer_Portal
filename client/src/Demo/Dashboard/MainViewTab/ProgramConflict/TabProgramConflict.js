@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Card, Table, Col } from 'react-bootstrap';
+import { Row, Card, Table } from 'react-bootstrap';
 import ProgramConflict from './ProgramConflict';
 
 class TabProgramConflict extends React.Component {

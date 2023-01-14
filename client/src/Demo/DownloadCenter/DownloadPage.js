@@ -7,12 +7,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import {
-  deleteTemplateFile,
-  getTemplates,
-  uploadtemplate,
-  getTemplateDownload
-} from '../../api';
+import { deleteTemplateFile, getTemplates, uploadtemplate } from '../../api';
 
 class DownloadPage extends React.Component {
   state = {
@@ -71,7 +66,7 @@ class DownloadPage extends React.Component {
         const { status } = resp;
         if (success) {
           this.setState({
-            isLoaded: true, 
+            isLoaded: true,
             templates: data,
             success: success,
             res_modal_status: status

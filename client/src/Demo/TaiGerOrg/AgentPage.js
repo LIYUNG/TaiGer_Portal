@@ -8,6 +8,7 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getAgent } from '../../api';
 import { spinner_style } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 
 class AgentPage extends React.Component {
   state = {
@@ -56,13 +57,10 @@ class AgentPage extends React.Component {
   }
 
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Editor'
-    ) {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
+
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.students && !this.state.agent) {

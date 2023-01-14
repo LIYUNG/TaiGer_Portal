@@ -12,7 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
-import BaseDocument_StudentView from '../AgentCenter/BaseDocument_StudentView';
+import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import SurveyComponent from '../Survey/SurveyComponent';
@@ -25,6 +25,7 @@ import {
   spinner_style,
   convertDate
 } from '../Utils/contants';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -461,13 +462,10 @@ class SingleStudentPage extends React.Component {
   };
 
   render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Editor'
-    ) {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
+
     const {
       res_modal_status,
       res_status,

@@ -1,3 +1,6 @@
+export const is_TaiGer_role = (user) =>
+  user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
+
 export const showButtonIfMyStudent = (user, student) => {
   if (
     user.role === 'Admin' ||

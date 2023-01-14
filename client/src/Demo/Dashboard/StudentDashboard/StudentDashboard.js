@@ -5,6 +5,7 @@ import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import { RiInformationLine } from 'react-icons/ri';
 
 import StudentMyself from './StudentMyself';
+import Banner from '../../../components/Banner/Banner';
 import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
 import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
 import StudentTasks from '../MainViewTab/StudentTasks/index';
@@ -124,76 +125,27 @@ class StudentDashboard extends React.Component {
         {student.notification &&
           !student.notification.isRead_survey_not_complete &&
           !check_academic_background_filled(student.academic_background) && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> It looks like you did not
-                    finish survey:{' '}
-                    <Link
-                      to={'/survey'}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      Survey
-                    </Link>{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(e, 'isRead_survey_not_complete')
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              path={'/survey'}
+              text={'It looks like you did not finish survey'}
+              link_name={'Survey'}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_survey_not_complete'}
+            />
           )}
 
         {student.notification &&
           !student.notification.isRead_uni_assist_task_assigned &&
           !is_all_uni_assist_vpd_uploaded(student) && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> Please go to Uni-Assist to
-                    apply or to get VPD:{' '}
-                    <Link
-                      to={'/uni-assist'}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      Uni-Assist
-                    </Link>{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(
-                              e,
-                              'isRead_uni_assist_task_assigned'
-                            )
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              path={'/uni-assist'}
+              text={'Please go to Uni-Assist to apply or to get VPD'}
+              link_name={'Uni-Assist'}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_uni_assist_task_assigned'}
+            />
           )}
         {/* new agents assigned banner */}
         {student.notification &&
@@ -253,186 +205,62 @@ class StudentDashboard extends React.Component {
         {/* new CV ML RL Essay message */}
         {student.notification &&
           !student.notification.isRead_new_cvmlrl_messsage && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> New feedback from your
-                    Editor. See{' '}
-                    <Link
-                      to={'/cv-ml-rl-center'}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      CV/ML/RL Center
-                    </Link>{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(e, 'isRead_new_cvmlrl_messsage')
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              path={'/cv-ml-rl-center'}
+              text={'New feedback from your Editor. See'}
+              link_name={'CV/ML/RL Center'}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_new_cvmlrl_messsage'}
+            />
           )}
         {/* TODO: check function : new cv ml rl tasks are asigned to you */}
         {student.notification &&
           !student.notification.isRead_new_cvmlrl_tasks_created && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> New tasks are assigned to
-                    you:{' '}
-                    <Link
-                      to={'/cv-ml-rl-center'}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      CV/ML/RL Center
-                    </Link>{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(
-                              e,
-                              'isRead_new_cvmlrl_tasks_created'
-                            )
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              path={'/cv-ml-rl-center'}
+              text={'New tasks are assigned to you'}
+              link_name={'CV/ML/RL Center'}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_new_cvmlrl_tasks_created'}
+            />
           )}
         {student.notification &&
           !student.notification.isRead_new_programs_assigned &&
           !check_applications_to_decided(student) && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> It looks like you did not
-                    decide programs:{' '}
-                    <Link
-                      to={'/student-applications'}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      My Applications
-                    </Link>{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(e, 'isRead_new_programs_assigned')
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              path={'/student-applications'}
+              text={'It looks like you did not decide programs'}
+              link_name={'Application Overview'}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_new_programs_assigned'}
+            />
           )}
         {student.notification &&
           !student.notification.isRead_base_documents_missing &&
           are_base_documents_missing(student) && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b>Some of Base Documents are
-                    still missing :{' '}
-                    <Link
-                      to={'/base-documents'}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      My Base Documents
-                    </Link>
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(
-                              e,
-                              'isRead_base_documents_missing'
-                            )
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              path={'/base-documents'}
+              text={'Some of Base Documents are still missing'}
+              link_name={'Base Documents'}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_base_documents_missing'}
+            />
           )}
         {student.notification &&
           !student.notification.isRead_base_documents_rejected &&
           check_base_documents_rejected(student) && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b>Some of Base Documents are
-                    rejected :{' '}
-                    <Link
-                      to={'/base-documents'}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      My Base Documents
-                    </Link>
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(
-                              e,
-                              'isRead_base_documents_rejected'
-                            )
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              path={'/base-documents'}
+              text={'Some of Base Documents are rejected'}
+              link_name={'Base Documents'}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_base_documents_rejected'}
+            />
           )}
         <Row>
           <Col>

@@ -107,7 +107,6 @@ class SingleStudentPage extends React.Component {
   editAgent = (student) => {
     getAgents().then(
       (resp) => {
-        // TODO: check success
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
@@ -627,7 +626,6 @@ class SingleStudentPage extends React.Component {
                 </Card>
               </Tab>
               <Tab eventKey="program_portal" title="Portal">
-                {/* <Row>Coming Soon!</Row> */}
                 <Card className="my-0 mx-0">
                   <Card.Body>
                     <Row>
@@ -641,13 +639,11 @@ class SingleStudentPage extends React.Component {
                 </Card>
               </Tab>
               <Tab eventKey="uni-assist" title="Uni-Assist">
-                <Row>
-                  <UniAssistListCard
-                    student={this.state.student}
-                    role={this.props.user.role}
-                    user={this.props.user}
-                  />
-                </Row>
+                <UniAssistListCard
+                  student={this.state.student}
+                  role={this.props.user.role}
+                  user={this.props.user}
+                />
               </Tab>
               <Tab eventKey="background" title="Background">
                 <SurveyComponent

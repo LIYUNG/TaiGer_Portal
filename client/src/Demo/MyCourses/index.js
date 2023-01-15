@@ -348,15 +348,18 @@ export default function MyCourses(props) {
       </div>
     );
   }
-  if (is_TaiGer_role(props.user)) {
-    return <Redirect to="/dashboard/default" />;
+  if (!props.match.params.student_id) {
+    if (is_TaiGer_role(props.user)) {
+      return <Redirect to="/dashboard/default" />;
+    }
+  }
+
+  if (statedata.res_status >= 400) {
+    return <ErrorPage res_status={statedata.res_status} />;
   }
   TabTitle(
     `Student ${statedata.student.firstname} - ${statedata.student.lastname} || Courses List`
   );
-  if (statedata.res_status >= 400) {
-    return <ErrorPage res_status={statedata.res_status} />;
-  }
 
   return (
     <Aux>

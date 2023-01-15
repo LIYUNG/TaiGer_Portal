@@ -13,6 +13,7 @@ const {
   HTTPS_PORT,
   CLEAN_UP_SCHEDULE,
   WEEKLY_TASKS_REMINDER_SCHEDULE,
+  DAILY_TASKS_REMINDER_SCHEDULE,
   MONGODB_URI
 } = require('./config');
 const logger = require('./services/logger');
@@ -22,7 +23,10 @@ const {
 const {
   ThreadS3GarbageCollector
 } = require('./controllers/documents_modification');
-const { TasksReminderEmails } = require('./utils/utils_function');
+const {
+  TasksReminderEmails,
+  UrgentTasksReminderEmails
+} = require('./utils/utils_function');
 const { UserS3GarbageCollector } = require('./controllers/users');
 
 process.on('SIGINT', () => {
@@ -81,9 +85,10 @@ const launch = async () => {
   // reminder emails to agents, editor and student
 
   // const job4 = schedule.scheduleJob(
-  //   WEEKLY_TASKS_REMINDER_SCHEDULE,
-  //   TasksReminderEmails
+  //   DAILY_TASKS_REMINDER_SCHEDULE,
+  //   UrgentTasksReminderEmails
   // );
+
   console.log(`isProd : ${isProd()}`);
   console.log(`isDev : ${isDev()}`);
   if (isProd()) {

@@ -1615,43 +1615,6 @@ on ${msg.updatedAt}.</p>
   sendEmail(recipient, subject, message);
 };
 
-const StudentTasksReminderEmail = async (recipient, payload) => {
-  const subject = `TaiGer Student Reminder: ${recipient.firstname} ${recipient.lastname}`;
-  const unsubmitted_applications = unsubmitted_applications_summary(
-    payload.student
-  );
-
-  const base_documents = base_documents_summary(payload.student);
-
-  const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
-    payload.student,
-    payload.student
-  );
-  // TODO: uni-assist if missing
-  // TODO if english not passed and not registering any date, inform them
-  const missing_uni_assist = '';
-  const survey_not_complete = missing_academic_background(
-    payload.student,
-    payload.student
-  );
-  const message = `\
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-${survey_not_complete}
-
-${unread_cv_ml_rl_thread}
-
-${base_documents}
-
-${unsubmitted_applications}
-
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`; // should be for admin/editor/agent/student
-
-  return sendEmail(recipient, subject, message);
-};
 const AgentTasksReminderEmail = async (recipient, payload) => {
   const subject = `TaiGer Agent Reminder: ${recipient.firstname} ${recipient.lastname}`;
   let student_i = '';
@@ -1822,7 +1785,6 @@ module.exports = {
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
-  StudentTasksReminderEmail,
   AgentTasksReminderEmail,
   EditorTasksReminderEmail
 };

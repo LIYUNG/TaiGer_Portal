@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { showButtonIfMyStudentB } from '../Utils/checking-functions';
+import {
+  is_TaiGer_role,
+  showButtonIfMyStudentB
+} from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
 import {
@@ -345,7 +348,9 @@ export default function MyCourses(props) {
       </div>
     );
   }
-
+  if (is_TaiGer_role(props.user)) {
+    return <Redirect to="/dashboard/default" />;
+  }
   TabTitle(
     `Student ${statedata.student.firstname} - ${statedata.student.lastname} || Courses List`
   );

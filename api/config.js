@@ -26,6 +26,7 @@ module.exports = {
   MONGODB_URI: env('MONGODB_URI', 'mongodb://localhost:27017/TaiGer'),
   JWT_SECRET: env('JWT_SECRET', 'topsecret'),
   JWT_EXPIRE: env('JWT_EXPIRE', '1hr'),
+  PROGRAMS_CACHE: env('PROGRAMS_CACHE', false),
   SMTP_HOST: env('SMTP_HOST', 'smtp.ethereal.email'),
   SMTP_PORT: env('SMTP_PORT', 587),
   SMTP_USERNAME: env('SMTP_USERNAME', 'glen.simonis12@ethereal.email'),

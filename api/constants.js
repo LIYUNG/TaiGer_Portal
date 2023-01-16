@@ -91,6 +91,79 @@ const profile_list = {
   Others: 'Others'
 };
 
+const is_escalation_needed = (student) => {
+  let escalated = false;
+  const today = new Date();
+  for (let k = 0; k < student.applications.length; k += 1) {
+    const day_diff = getNumberOfDays(
+      today,
+      application_deadline_calculator(student, student.applications[k])
+    );
+    // TODO: should pack all thread due soon in a student email, not multiple email for 1 student  for daily reminder.
+    if (
+      student.applications[k].decided === 'O' &&
+      student.applications[k].closed !== 'O' &&
+      day_diff < 50 &&
+      day_diff > -1
+    ) {
+      console.log(
+        `${student.applications[k].programId.school} - ${student.applications[k].programId.program_name}`
+      );
+      escalated = true;
+      console.log(`Day left: ${day_diff}`);
+    }
+  }
+  return escalated;
+};
+
+const application_deadline_calculator = (student, application) => {
+  if (application.closed === 'O') {
+    return 'CLOSE';
+  }
+  if (!application.programId.application_deadline) {
+    return 'No Data';
+  }
+  if (application.programId.application_deadline.includes('olling')) {
+    // include Rolling
+    return 'Rolling';
+  }
+  // let year_now = new Date().getFullYear();
+  let application_year = '<TBD>';
+  if (
+    student.application_preference &&
+    student.application_preference.expected_application_date !== ''
+  ) {
+    application_year = parseInt(
+      student.application_preference.expected_application_date
+    );
+  }
+  if (!application.programId.application_deadline) {
+    return `${application_year}-<TBD>`;
+  }
+  let application_semester = application.programId.semester;
+  let deadline_month = parseInt(
+    application.programId.application_deadline.split('-')[0]
+  );
+  let deadline_day = parseInt(
+    application.programId.application_deadline.split('-')[1]
+  );
+  if (application_semester === undefined) {
+    return 'Err';
+  }
+  if (application_semester === 'WS') {
+    if (deadline_month > 9) {
+      application_year = application_year - 1;
+    }
+  }
+  if (application_semester === 'SS') {
+    if (deadline_month > 3) {
+      application_year = application_year - 1;
+    }
+  }
+
+  return `${application_year}-${deadline_month}-${deadline_day}`;
+};
+
 const unsubmitted_applications_summary = (student) => {
   let unsubmitted_applications = '';
   let x = 0;
@@ -112,6 +185,112 @@ const unsubmitted_applications_summary = (student) => {
     unsubmitted_applications += `<p>If there is any updates, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
   }
   return unsubmitted_applications;
+};
+
+const cv_ml_rl_escalation_summary = (student, user) => {
+  let missing_doc_list = '';
+  let kk = 0;
+  for (let i = 0; i < student.applications.length; i += 1) {
+    for (
+      let j = 0;
+      j < student.applications[i].doc_modification_thread.length;
+      j += 1
+    ) {
+      if (user.role === 'Editor') {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== '' &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString()
+        ) {
+          if (kk === 0) {
+            missing_doc_list = `
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a></li>`;
+            kk += 1;
+          } else {
+            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a></li>`;
+          }
+        }
+      } else if (user.role === 'Student') {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString()
+        ) {
+          if (kk === 0) {
+            missing_doc_list = `
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a></li>`;
+            kk += 1;
+          } else {
+            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a></li>`;
+          }
+        }
+      } else if (user.role === 'Agent') {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion
+        ) {
+          if (kk === 0) {
+            missing_doc_list = `
+        The following documents are not finished:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a></li>`;
+            kk += 1;
+          } else {
+            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a></li>`;
+          }
+        }
+      }
+    }
+  }
+  missing_doc_list += '</ul>';
+  return missing_doc_list;
 };
 
 const cv_ml_rl_unfinished_summary = (student, user) => {
@@ -459,7 +638,10 @@ module.exports = {
   TaskStatus,
   RLs_CONSTANT,
   base_documents_summary,
+  is_escalation_needed,
+  application_deadline_calculator,
   unsubmitted_applications_summary,
+  cv_ml_rl_escalation_summary,
   cv_ml_rl_unfinished_summary,
   profile_list,
   profile_keys_list,

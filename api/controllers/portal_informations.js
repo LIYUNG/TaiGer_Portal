@@ -18,7 +18,7 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
       'school program_name application_portal_a application_portal_b'
     )
     .select(
-      'firstname lastname applications.portal_credentials.application_portal_a applications.portal_credentials.application_portal_b'
+      'firstname lastname agents editors applications.portal_credentials.application_portal_a applications.portal_credentials.application_portal_b'
     )
     .lean();
   res.status(200).send({
@@ -28,7 +28,9 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
       student: {
         _id: student._id,
         firstname: student.firstname,
-        lastname: student.lastname
+        lastname: student.lastname,
+        agents: student.agents,
+        editors: student.editors
       }
     }
   });

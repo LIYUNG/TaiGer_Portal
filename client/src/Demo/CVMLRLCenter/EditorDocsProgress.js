@@ -538,13 +538,14 @@ class EditorDocsProgress extends React.Component {
                   <Card.Body>
                     <p className="text-light my-0">
                       The following general documents are not started yet:{' '}
-                      {this.state.student.generaldocs_threads.findIndex(
-                        (thread) => thread.doc_thread_id.file_type === 'CV'
-                      ) === -1 && (
-                        <li>
-                          <b>CV</b>
-                        </li>
-                      )}{' '}
+                      {this.state.student.generaldocs_threads &&
+                        this.state.student.generaldocs_threads.findIndex(
+                          (thread) => thread.doc_thread_id.file_type === 'CV'
+                        ) === -1 && (
+                          <li>
+                            <b>CV</b>
+                          </li>
+                        )}{' '}
                     </p>
                   </Card.Body>
                 </Card>

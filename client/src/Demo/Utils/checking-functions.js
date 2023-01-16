@@ -733,6 +733,9 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
 };
 
 export const check_generaldocs = (student) => {
+  if (!student.generaldocs_threads) {
+    return false;
+  }
   if (
     student.generaldocs_threads.findIndex(
       (thread) => thread.doc_thread_id.file_type === 'CV'

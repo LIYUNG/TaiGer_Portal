@@ -2,6 +2,7 @@ const path = require('path');
 const { createTransport } = require('nodemailer');
 const queryString = require('query-string');
 const {
+  cv_ml_rl_escalation_summary,
   cv_ml_rl_unfinished_summary,
   base_documents_summary,
   missing_academic_background,
@@ -108,8 +109,40 @@ ${unsubmitted_applications}
   return sendEmail(recipient, subject, message);
 };
 
+const StudentUrgentTasksReminderEmail = async (recipient, payload) => {
+  const subject = `TaiGer Student Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  const unsubmitted_applications = unsubmitted_applications_summary(
+    payload.student
+  );
+
+  const base_documents = base_documents_summary(payload.student);
+
+  const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
+    payload.student,
+    payload.student
+  );
+  // TODO: uni-assist if missing
+  // TODO if english not passed and not registering any date, inform them
+  const missing_uni_assist = '';
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+${unread_cv_ml_rl_thread}
+
+${base_documents}
+
+${unsubmitted_applications}
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   sendEmail,
-  StudentTasksReminderEmail
+  StudentTasksReminderEmail,
+  StudentUrgentTasksReminderEmail
 };

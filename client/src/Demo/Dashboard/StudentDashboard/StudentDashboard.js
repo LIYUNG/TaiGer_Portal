@@ -332,7 +332,7 @@ class StudentDashboard extends React.Component {
                     style={{ textDecoration: 'none' }}
                     className="text-info"
                   >
-                    My Uploaded Documents
+                    My Documents
                   </Link>
                 </Card.Title>
               </Card.Header>

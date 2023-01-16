@@ -7,8 +7,6 @@ import {
   Table,
   Form,
   Button,
-  Overlay,
-  Tooltip,
   Modal
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -16,6 +14,7 @@ import { AiFillDelete } from 'react-icons/ai';
 
 import Aux from '../../hoc/_Aux';
 import {
+  is_TaiGer_role,
   isProgramNotSelectedEnough,
   is_num_Program_Not_specified,
   is_program_ml_rl_essay_ready,
@@ -442,7 +441,8 @@ class StudentApplicationsTableTemplate extends React.Component {
             <Card className="my-2 mx-0" bg={'black'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  {this.props.student.firstname} {this.props.student.lastname}
+                  {this.props.student.firstname} {this.props.student.lastname}{' '}
+                  Applications
                 </Card.Title>
               </Card.Header>
             </Card>
@@ -548,6 +548,23 @@ class StudentApplicationsTableTemplate extends React.Component {
                 Update
               </Button>
             </Row>
+            {is_TaiGer_role(this.props.user) && (
+              <>
+                <Row>
+                  <span style={{ 'vertical-align': 'middle' }}>
+                    You want to add more programs to{' '}
+                    {this.props.student.firstname} {this.props.student.lastname}
+                    ?
+                  </span>
+                </Row>
+                <Row className="my-2 mx-0">
+                  <Link to={'/programs'}>
+                    <Button size="sm">Add New Programs</Button>
+                  </Link>
+                </Row>
+              </>
+            )}
+
             <Modal
               show={this.state.modalDeleteApplication}
               onHide={this.onHideModalDeleteApplication}

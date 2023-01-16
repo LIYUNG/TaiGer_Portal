@@ -65,6 +65,7 @@ class StudentApplicationsIndividual extends React.Component {
       <StudentApplicationsTableTemplate
         isLoaded={isLoaded}
         role={this.props.user.role}
+        user={this.props.user}
         student={this.state.student}
       />
     );

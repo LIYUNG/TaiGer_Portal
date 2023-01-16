@@ -236,15 +236,15 @@ window.academic_background_header = {
 
 window.templatelist = [
   {
-    name: 'CV',
+    name: 'CV Survey Template',
     prop: 'Example_CV_english'
   },
   {
-    name: 'ML',
+    name: 'ML (Motivation Letter) Survey Template',
     prop: 'ML_Survey'
   },
   {
-    name: 'RL',
+    name: 'RL (Recommendation Letter) Survey Template',
     prop: 'RL_academic_survey_lock'
   },
   {

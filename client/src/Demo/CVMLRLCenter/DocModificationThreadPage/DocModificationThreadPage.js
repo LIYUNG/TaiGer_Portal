@@ -444,6 +444,10 @@ class DocModificationThreadPage extends Component {
               <Col>
                 <h5>Instruction</h5>
                 <p>
+                  請填好我們的 TaiGer {' '}
+                  Template。請填好並在這個討論串夾帶在和您的 Editor 討論。
+                </p>
+                <p>
                   Please fill our TaiGer template and attach the filled template
                   in this discussion.
                 </p>
@@ -455,7 +459,7 @@ class DocModificationThreadPage extends Component {
                         href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
                         target="_blank"
                       >
-                        Link
+                        Link [點我下載]
                       </a>
                     </b>
                   ) : (

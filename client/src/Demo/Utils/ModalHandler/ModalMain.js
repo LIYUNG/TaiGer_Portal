@@ -64,7 +64,21 @@ class ModalMain extends React.Component {
           <Modal.Header>
             <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{res_modal_message}</Modal.Body>
+          <Modal.Body>
+            <p>{res_modal_message}</p>
+            Please use third party WebApp like{' '}
+            <a href="https://www.ilovepdf.com/compress_pdf" target="_blank">
+              <b>PDF Compressor</b>
+            </a>{' '}
+            or{' '}
+            <a
+              href="https://www.adobe.com/de/acrobat/online/compress-pdf.html"
+              target="_blank"
+            >
+              <b>Adobe WebApp</b>
+            </a>
+            to compress your file!
+          </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.ConfirmError}>Ok</Button>
           </Modal.Footer>
@@ -78,7 +92,10 @@ class ModalMain extends React.Component {
           <Modal.Header>
             <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{res_modal_message}</Modal.Body>
+          <Modal.Body>
+            <p>{res_modal_message}</p>
+            <p>請確認您的檔案格式。壓縮過後的檔案仍然需要是上述格式。</p>
+          </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.ConfirmError}>Ok</Button>
           </Modal.Footer>

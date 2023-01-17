@@ -17,9 +17,9 @@ module.exports = {
   isDev,
   PORT: env('PORT', 3000),
   HTTPS_PORT: env('HTTPS_PORT', 3000),
-  HTTPS_KEY: env('HTTPS_KEY', './cert/cert.key'),
-  HTTPS_CERT: env('HTTPS_CERT', './cert/cert.pem'),
-  HTTPS_CA: env('HTTPS_CA', './cert/cert.pem'),
+  HTTPS_KEY: env('HTTPS_KEY', './cert/selfsigned.key'),
+  HTTPS_CERT: env('HTTPS_CERT', './cert/selfsigned.pem'),
+  HTTPS_CA: env('HTTPS_CA', './cert/selfsigned.pem'),
   ORIGIN: env('ORIGIN', 'http://localhost:3006'),
   API_ORIGIN: env('API_ORIGIN', 'http://localhost:3000/api'),
   // TODO: remove some of the default values

@@ -16,6 +16,7 @@ class StudentMyself extends React.Component {
     let studentDocOverview;
     let documentlist2_keys = Object.keys(window.profile_list);
     let object_init = {};
+    let object_date_init = {};
     for (let i = 0; i < documentlist2_keys.length; i++) {
       object_init[documentlist2_keys[i]] = 'missing';
     }
@@ -49,6 +50,7 @@ class StudentMyself extends React.Component {
               />{' '}
             </td>
             <td>{key_doc_name}</td>
+            <td></td>
           </tr>
         );
       } else if (object_init[key_doc_name] === 'accepted') {
@@ -62,6 +64,7 @@ class StudentMyself extends React.Component {
               />{' '}
             </td>
             <td>{key_doc_name}</td>
+            <td></td>
           </tr>
         );
       } else if (object_init[key_doc_name] === 'rejected') {
@@ -75,6 +78,7 @@ class StudentMyself extends React.Component {
               />
             </td>
             <td>{key_doc_name}</td>
+            <td></td>
           </tr>
         );
       } else if (object_init[key_doc_name] === 'notneeded') {
@@ -85,6 +89,7 @@ class StudentMyself extends React.Component {
         //   //     <BsDash size={24} color="lightgray" title="Not needed" />
         //   //   </td>
         //   //   <td>{key_doc_name}</td>
+        //   //   <td></td>
         //   // </tr>
         // );
       } else {
@@ -98,6 +103,7 @@ class StudentMyself extends React.Component {
               />{' '}
             </td>
             <td>{key_doc_name}</td>
+            <td></td>
           </tr>
         );
       }

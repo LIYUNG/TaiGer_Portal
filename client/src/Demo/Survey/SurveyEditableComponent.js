@@ -1032,8 +1032,8 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={4}>
                     <Form.Group controlId="german_isPassed">
                       <Form.Label className="my-0 mx-0 text-light">
-                        German Passed? (Not need if applying English taught
-                        programs.)
+                        German Passed? (Set <b>Not need</b> if applying English
+                        taught programs.)
                       </Form.Label>
                       <Form.Control
                         as="select"

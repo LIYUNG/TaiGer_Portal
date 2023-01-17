@@ -73,7 +73,9 @@ const upload_template_s3 = multer({
       return cb(
         new ErrorResponse(
           413,
-          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }
@@ -222,7 +224,9 @@ const upload_doc_image_s3 = multer({
       return cb(
         new ErrorResponse(
           413,
-          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }
@@ -245,7 +249,9 @@ const upload_doc_docs_s3 = multer({
       return cb(
         new ErrorResponse(
           413,
-          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }
@@ -265,7 +271,9 @@ const upload_vpd_s3 = multer({
       return cb(
         new ErrorResponse(
           413,
-          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }
@@ -297,7 +305,9 @@ const upload_profile_s3 = multer({
       return cb(
         new ErrorResponse(
           413,
-          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }
@@ -434,7 +444,9 @@ const upload_messagesthread_file_s3 = multer({
       return cb(
         new ErrorResponse(
           413,
-          `File size is limited to ${MAX_DOC_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${MAX_DOC_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }
@@ -456,7 +468,9 @@ const upload_messagesthread_image_s3 = multer({
       return cb(
         new ErrorResponse(
           413,
-          `File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
         )
       );
     }

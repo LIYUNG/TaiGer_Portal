@@ -10,7 +10,17 @@ import TooManyRequestsError from './TooManyRequestsError';
 import ResourceLockedError from './ResourceLockedError';
 class ErrorPage extends React.Component {
   render() {
-    if (this.props.res_status === 401) {
+    if (this.props.res_status === 400) {
+      return (
+        <Aux>
+          <Row>
+            <Col>
+              <Card>Server problem. Please try later.</Card>
+            </Col>
+          </Row>
+        </Aux>
+      );
+    } else if (this.props.res_status === 401) {
       return <UnauthenticatedError />;
     } else if (this.props.res_status === 403) {
       return <UnauthorizedError />;

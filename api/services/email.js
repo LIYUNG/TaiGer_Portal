@@ -1753,7 +1753,9 @@ const updateCoursesDataAgentEmail = async (recipient, msg) => {
 
 <p>You have updated your course data successfully!</p>
 
-<p>Please double check in <a href="${SETTINGS_URL}">Setting</a> </p>
+<p>Please go to <a href="${STUDENT_COURSE_URL(
+    msg.student_id
+  )}">Courses</a> for more details.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

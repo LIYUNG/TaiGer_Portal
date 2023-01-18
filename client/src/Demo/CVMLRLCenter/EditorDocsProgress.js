@@ -537,7 +537,8 @@ class EditorDocsProgress extends React.Component {
                 <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                   <Card.Body>
                     <p className="text-light my-0">
-                      The following general documents are not started yet:{' '}
+                      The following general documents are not started yet,
+                      please <b>create</b> the discussion thread below:{' '}
                       {this.state.student.generaldocs_threads &&
                         this.state.student.generaldocs_threads.findIndex(
                           (thread) => thread.doc_thread_id.file_type === 'CV'

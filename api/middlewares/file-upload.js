@@ -327,21 +327,18 @@ const storage_messagesthread_file_s3 = multerS3({
   },
   metadata: (req, file, cb) => {
     const { messagesThreadId, studentId } = req.params;
-
     // TODO: check studentId and messagesThreadId exist
     let directory = path.join(studentId, messagesThreadId);
     directory = directory.replace(/\\/g, '/'); // g>> replace all!
     cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: (req, file, cb) => {
-    // cb(null, file.originalname + "-" + Date.now().toString());
-    // cb(null, file.originalname);
     const { messagesThreadId } = req.params;
     Documentthread.findById(messagesThreadId)
       .populate('student_id')
       .then((thread) => {
         if (!thread) {
-          throw new ErrorResponse(400, 'Invalid message thread id');
+          throw new ErrorResponse(404, 'Invalid message thread id');
         }
         let program_name = '';
         if (thread.program_id) {

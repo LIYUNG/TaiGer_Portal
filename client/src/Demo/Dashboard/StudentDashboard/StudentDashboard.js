@@ -347,7 +347,7 @@ class StudentDashboard extends React.Component {
                   <tr>
                     <th>Status</th>
                     <th>Documents</th>
-                    <th></th>
+                    <th>Last Updated at</th>
                   </tr>
                 </thead>
                 <tbody>{stdlist}</tbody>

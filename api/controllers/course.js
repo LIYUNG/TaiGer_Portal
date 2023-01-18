@@ -61,7 +61,6 @@ const createCourse = asyncHandler(async (req, res) => {
     const student = await Student.findById(studentId)
       .populate('agents', 'firstname lastname email')
       .exec();
-    console.log(student);
     for (let i = 0; i < student.agents.length; i += 1) {
       console.log(student.agents[i].firstname);
       await updateCoursesDataAgentEmail(

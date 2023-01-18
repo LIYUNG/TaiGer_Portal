@@ -9,6 +9,7 @@ import {
   AiOutlineDelete
 } from 'react-icons/ai';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import { convertDate } from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetUploaded extends React.Component {
@@ -174,9 +175,7 @@ class ButtonSetUploaded extends React.Component {
             </a>
           )}
           {' - '}
-          {this.props.date}
-          {' - '}
-          {this.props.time}
+          {convertDate(this.props.time)}
         </td>
         <td>
           <Col md>

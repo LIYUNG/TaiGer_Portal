@@ -3,6 +3,7 @@ import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import { IoMdCloudUpload } from 'react-icons/io';
 import { BsDash } from 'react-icons/bs';
 import { FiExternalLink } from 'react-icons/fi';
+import { convertDate } from '../Utils/contants';
 
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
 
@@ -120,9 +121,7 @@ class ButtonSetNotNeeded extends React.Component {
             </a>
           )}
           {' - '}
-          {this.props.date}
-          {' - '}
-          {this.props.time}
+          {convertDate(this.props.time)}
         </td>
         {this.props.role === 'Editor' ? (
           <>

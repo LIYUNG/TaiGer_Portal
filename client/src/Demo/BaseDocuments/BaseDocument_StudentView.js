@@ -273,12 +273,10 @@ class BaseDocument_StudentView extends React.Component {
     let keys2 = Object.keys(window.profile_wtih_doc_link_list);
     let object_init = {};
     let object_message = {};
-    let object_date_init = {};
     let object_time_init = {};
     for (let i = 0; i < keys2.length; i++) {
       object_init[keys2[i]] = { status: 'missing', link: '' };
       object_message[keys2[i]] = '';
-      object_date_init[keys2[i]] = '';
       object_time_init[keys2[i]] = '';
     }
     // TODO: what if this.state.student.profile[i].name key not in base_docs_link[i].key?
@@ -315,12 +313,8 @@ class BaseDocument_StudentView extends React.Component {
           .profile[i].feedback
           ? this.state.student.profile[i].feedback
           : '';
-        object_date_init[this.state.student.profile[i].name] = new Date(
-          this.state.student.profile[i].updatedAt
-        ).toLocaleDateString();
-        object_time_init[this.state.student.profile[i].name] = new Date(
-          this.state.student.profile[i].updatedAt
-        ).toLocaleTimeString();
+        object_time_init[this.state.student.profile[i].name] =
+          this.state.student.profile[i].updatedAt;
       }
     } else {
     }
@@ -336,7 +330,6 @@ class BaseDocument_StudentView extends React.Component {
           user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
-          date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           student={this.state.student}
@@ -353,7 +346,6 @@ class BaseDocument_StudentView extends React.Component {
           user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
-          date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           student={this.state.student}
@@ -371,7 +363,6 @@ class BaseDocument_StudentView extends React.Component {
           user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
-          date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           message={object_message[k]}
@@ -391,7 +382,6 @@ class BaseDocument_StudentView extends React.Component {
             user={this.props.user}
             isLoaded={this.state.isLoaded[k]}
             docName={value2[i]}
-            date={object_date_init[k]}
             time={object_time_init[k]}
             k={k}
             student={this.state.student}
@@ -410,7 +400,6 @@ class BaseDocument_StudentView extends React.Component {
           user={this.props.user}
           isLoaded={this.state.isLoaded[k]}
           docName={value2[i]}
-          date={object_date_init[k]}
           time={object_time_init[k]}
           k={k}
           message={object_message[k]}

@@ -11,6 +11,7 @@ import { FiExternalLink } from 'react-icons/fi';
 
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import { convertDate } from '../Utils/contants';
 import { BASE_URL } from '../../api/request';
 
 import { updateProfileDocumentStatus, deleteFile } from '../../api';
@@ -253,9 +254,7 @@ class ButtonSetRejected extends React.Component {
             </a>
           )}
           {' - '}
-          {this.props.date}
-          {' - '}
-          {this.props.time}
+          {convertDate(this.props.time)}
         </td>
         <td>
           <Col>

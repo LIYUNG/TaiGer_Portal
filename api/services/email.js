@@ -21,6 +21,7 @@ const {
   STUDENT_APPLICATION_URL,
   STUDENT_SURVEY_URL,
   SETTINGS_URL,
+  STUDENT_COURSE_URL,
   STUDENT_BACKGROUND_FOR_AGENT_URL,
   TAIGER_SIGNATURE,
   SPLIT_LINE,
@@ -1730,6 +1731,37 @@ ${student_i}
 
   return sendEmail(recipient, subject, message);
 };
+
+const updateCoursesDataAgentEmail = async (recipient, msg) => {
+  const subject = '課程更新成功 / Course data updated successfully';
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.student_firstname} ${msg.student_lastname}的課程資料已更新成功。</p>
+
+<p>請至 <a href="${STUDENT_COURSE_URL(
+    msg.student_id
+  )}">Courses</a> 查看細節。</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>You have updated your course data successfully!</p>
+
+<p>Please double check in <a href="${SETTINGS_URL}">Setting</a> </p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendSomeReminderEmail = async (recipient) => {
   const subject = 'File Status changes';
   const message = `\
@@ -1786,5 +1818,6 @@ module.exports = {
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
   AgentTasksReminderEmail,
-  EditorTasksReminderEmail
+  EditorTasksReminderEmail,
+  updateCoursesDataAgentEmail
 };

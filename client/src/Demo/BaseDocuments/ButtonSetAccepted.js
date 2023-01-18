@@ -8,6 +8,7 @@ import {
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { FiExternalLink } from 'react-icons/fi';
+import { convertDate } from '../Utils/contants';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
 
 class ButtonSetAccepted extends React.Component {
@@ -184,9 +185,7 @@ class ButtonSetAccepted extends React.Component {
           )}
 
           {' - '}
-          {this.props.date}
-          {' - '}
-          {this.props.time}
+          {convertDate(this.props.time)}
         </td>
         <td>
           <Col md>

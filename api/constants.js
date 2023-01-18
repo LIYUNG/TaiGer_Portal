@@ -22,9 +22,10 @@ const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
 const SURVEY_URL_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 const SETTINGS_URL = new URL('/settings', ORIGIN).href;
-
 const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
+const STUDENT_COURSE_URL = (studentId) =>
+  new URL(`/my-courses/${studentId}`, ORIGIN).href;
 
 const TAIGER_SIGNATURE = '<p>Your TaiGer Consultancy Team</p>';
 // const TAIGER_SIGNATURE = `<p>Your TaiGer Consultancy Team</p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
@@ -667,6 +668,7 @@ module.exports = {
   STUDENT_SURVEY_URL,
   SETTINGS_URL,
   STUDENT_BACKGROUND_FOR_AGENT_URL,
+  STUDENT_COURSE_URL,
   TAIGER_SIGNATURE,
   SPLIT_LINE,
   ENGLISH_BELOW,

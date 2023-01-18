@@ -5,6 +5,7 @@ import {
   AiOutlineFieldTime
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
+import { convertDate } from '../../Utils/contants';
 import { BsDash } from 'react-icons/bs';
 
 class StudentMyself extends React.Component {
@@ -16,9 +17,10 @@ class StudentMyself extends React.Component {
     let studentDocOverview;
     let documentlist2_keys = Object.keys(window.profile_list);
     let object_init = {};
-    let object_date_init = {};
+    let object_time_init = {};
     for (let i = 0; i < documentlist2_keys.length; i++) {
       object_init[documentlist2_keys[i]] = 'missing';
+      object_time_init[documentlist2_keys[i]] = '';
     }
 
     if (this.state.student.profile) {
@@ -34,6 +36,8 @@ class StudentMyself extends React.Component {
         } else if (this.state.student.profile[i].status === 'notneeded') {
           object_init[this.state.student.profile[i].name] = 'notneeded';
         }
+        object_time_init[this.state.student.profile[i].name] =
+          this.state.student.profile[i].updatedAt;
       }
     } else {
     }
@@ -50,7 +54,7 @@ class StudentMyself extends React.Component {
               />{' '}
             </td>
             <td>{key_doc_name}</td>
-            <td></td>
+            <td>{convertDate(object_time_init[key_doc_name])}</td>
           </tr>
         );
       } else if (object_init[key_doc_name] === 'accepted') {
@@ -64,7 +68,7 @@ class StudentMyself extends React.Component {
               />{' '}
             </td>
             <td>{key_doc_name}</td>
-            <td></td>
+            <td>{convertDate(object_time_init[key_doc_name])}</td>
           </tr>
         );
       } else if (object_init[key_doc_name] === 'rejected') {
@@ -78,7 +82,7 @@ class StudentMyself extends React.Component {
               />
             </td>
             <td>{key_doc_name}</td>
-            <td></td>
+            <td>{convertDate(object_time_init[key_doc_name])}</td>
           </tr>
         );
       } else if (object_init[key_doc_name] === 'notneeded') {

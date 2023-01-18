@@ -1,4 +1,4 @@
-const { ORIGIN } = require('./config');
+const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
 
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
@@ -104,14 +104,10 @@ const is_escalation_needed = (student) => {
     if (
       student.applications[k].decided === 'O' &&
       student.applications[k].closed !== 'O' &&
-      day_diff < 50 &&
+      day_diff < ESCALATION_DEADLINE_DAYS_TRIGGER &&
       day_diff > -1
     ) {
-      console.log(
-        `${student.applications[k].programId.school} - ${student.applications[k].programId.program_name}`
-      );
       escalated = true;
-      console.log(`Day left: ${day_diff}`);
     }
   }
   return escalated;
@@ -184,6 +180,52 @@ const unsubmitted_applications_summary = (student) => {
   if (unsubmitted_applications !== '') {
     unsubmitted_applications += '</ul>';
     unsubmitted_applications += `<p>If there is any updates, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
+  }
+  return unsubmitted_applications;
+};
+
+const unsubmitted_applications_escalation_summary = (student) => {
+  let unsubmitted_applications = '';
+  let x = 0;
+  const today = new Date();
+  for (let i = 0; i < student.applications.length; i += 1) {
+    const day_diff = getNumberOfDays(
+      today,
+      application_deadline_calculator(student, student.applications[i])
+    );
+    if (
+      student.applications[i].decided === 'O' &&
+      student.applications[i].closed !== 'O' &&
+      day_diff < 50 &&
+      day_diff > -1
+    ) {
+      if (x === 0) {
+        unsubmitted_applications = `
+        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
+        <ul>
+        <li>${student.applications[i].programId.school} ${
+          student.applications[i].programId.program_name
+        }: <b> Deadline ${application_deadline_calculator(
+          student,
+          student.applications[i]
+        )} </b> </li>`;
+        x += 1;
+      } else {
+        unsubmitted_applications += `<li>${
+          student.applications[i].programId.school
+        } - ${
+          student.applications[i].programId.program_name
+        }: <b> Deadline ${application_deadline_calculator(
+          student,
+          student.applications[i]
+        )} </b></li>`;
+      }
+      console.log(`Day left: ${day_diff}`);
+    }
+  }
+  if (unsubmitted_applications !== '') {
+    unsubmitted_applications += '</ul>';
+    unsubmitted_applications += `<p>If the applications are already submitted, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
   }
   return unsubmitted_applications;
 };
@@ -458,7 +500,9 @@ const check_languages_filled = (academic_background) => {
 const missing_academic_background = (student, user) => {
   let missing_background_fields = '';
   if (
-    (!student.academic_background || !student.academic_background.university) &&
+    (!student.academic_background ||
+      !student.academic_background.university ||
+      !student.academic_background.language) &&
     !student.application_preference
   ) {
     missing_background_fields = `<p>The following fields in Survey not finished yet:</p>
@@ -495,7 +539,11 @@ const missing_academic_background = (student, user) => {
     !student.academic_background.university.isGraduated ||
     student.academic_background.university.isGraduated === '-' ||
     !student.application_preference.expected_application_date ||
-    !student.application_preference.expected_application_semester
+    !student.application_preference.expected_application_semester ||
+    student.academic_background.language.english_isPassed === '-' ||
+    student.academic_background.language.english_isPassed === 'X' ||
+    student.academic_background.language.german_isPassed === '-' ||
+    student.academic_background.language.german_isPassed === 'X'
     // ||
     // !student.academic_background.university.isGraduated
   ) {
@@ -531,11 +579,26 @@ const missing_academic_background = (student, user) => {
     if (!student.application_preference.expected_application_semester) {
       missing_background_fields += '<li>Expected Application Semester</li>';
     }
-    if (
-      user.role === 'Agent' ||
-      user.role === 'Admin' ||
-      user.role === 'Agent'
-    ) {
+    if (student.academic_background.language.english_isPassed === '-') {
+      missing_background_fields += '<li>English passed?</li>';
+    }
+    if (student.academic_background.language.english_isPassed === 'X') {
+      if (student.academic_background.language.english_certificate === '') {
+        missing_background_fields += '<li>English Certificate?</li>';
+      }
+      if (student.academic_background.language.english_test_date === '') {
+        missing_background_fields += '<li>English Test Date?</li>';
+      } else {
+        // TODO: check if expired?
+        const today = new Date();
+        missing_background_fields += `<li>english test date expired
+          </li>`;
+      }
+    }
+    if (student.academic_background.language.german_isPassed === '-') {
+      missing_background_fields += '<li>German passed?</li>';
+    }
+    if (user.role === 'Agent' || user.role === 'Admin') {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and update them.</p>`;
@@ -642,6 +705,7 @@ module.exports = {
   is_escalation_needed,
   application_deadline_calculator,
   unsubmitted_applications_summary,
+  unsubmitted_applications_escalation_summary,
   cv_ml_rl_escalation_summary,
   cv_ml_rl_unfinished_summary,
   profile_list,

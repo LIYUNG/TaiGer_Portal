@@ -6,11 +6,10 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const {
+  StudentTasksReminderEmail,
   AgentTasksReminderEmail,
-  EditorTasksReminderEmail
-} = require('../services/email');
-const {
-  StudentTasksReminderEmail
+  EditorTasksReminderEmail,
+  StudentUrgentTasksReminderEmail
 } = require('../services/regular_system_emails');
 const logger = require('../services/logger');
 const {
@@ -145,8 +144,7 @@ const UrgentTasksReminderEmails = async () => {
   const agents = await Agent.find();
   const editors = await Editor.find();
   // TODO: Check if student threads no reply (need to response) more than 3 days (Should configurable)
-  // TODO: Check if student applications able to submit but not yet more than 3 days (Should configurable)
-  // TODO: Check if student applications deadline within 30 days
+  // (O): Check if student applications deadline within 30 days
   for (let j = 0; j < students.length; j += 1) {
     if (is_escalation_needed(students[j])) {
       console.log(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
@@ -157,6 +155,9 @@ const UrgentTasksReminderEmails = async () => {
           address: students[j].email
         },
         { student: students[j] }
+      );
+      console.log(
+        `Daily urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
       );
     }
   }
@@ -208,7 +209,6 @@ const UrgentTasksReminderEmails = async () => {
   //     );
   //   }
   // }
-  console.log('Daily urgent emails sent');
 };
 
 module.exports = {

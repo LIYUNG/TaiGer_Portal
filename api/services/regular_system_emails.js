@@ -7,6 +7,7 @@ const {
   base_documents_summary,
   missing_academic_background,
   unsubmitted_applications_summary,
+  unsubmitted_applications_escalation_summary,
   ACCOUNT_ACTIVATION_URL,
   RESEND_ACTIVATION_URL,
   PASSWORD_RESET_URL,
@@ -109,29 +110,163 @@ ${unsubmitted_applications}
   return sendEmail(recipient, subject, message);
 };
 
+const AgentTasksReminderEmail = async (recipient, payload) => {
+  const subject = `TaiGer Agent Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  let student_i = '';
+  for (let i = 0; i < payload.students.length; i += 1) {
+    if (i === 0) {
+      const base_documents = base_documents_summary(payload.students[i]);
+      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+        payload.students[i],
+        payload.agent
+      );
+      // TODO
+      const missing_uni_assist = '';
+      const academic_background_not_complete = missing_academic_background(
+        payload.students[i],
+        payload.agent
+      );
+      const unsubmitted_applications = unsubmitted_applications_summary(
+        payload.students[i]
+      );
+      student_i = `
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
+
+      ${academic_background_not_complete}
+
+      ${base_documents}
+      
+      ${unread_cv_ml_rl_thread}
+
+      ${unsubmitted_applications}
+
+`;
+    } else {
+      const base_documents = base_documents_summary(payload.students[i]);
+      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+        payload.students[i],
+        payload.agent
+      );
+      // TODO
+      const missing_uni_assist = '';
+      const academic_background_not_complete = missing_academic_background(
+        payload.students[i],
+        payload.agent
+      );
+      const unsubmitted_applications = unsubmitted_applications_summary(
+        payload.students[i]
+      );
+      student_i += `
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
+
+      ${academic_background_not_complete}
+
+      ${base_documents}
+      
+      ${unread_cv_ml_rl_thread}
+
+      ${unsubmitted_applications}
+
+    `;
+    }
+  }
+
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>The following is the overview of the current status for your each student:</p>
+
+${student_i}
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const EditorTasksReminderEmail = async (recipient, payload) => {
+  const subject = `TaiGer Editor Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  let student_i = '';
+  for (let i = 0; i < payload.students.length; i += 1) {
+    if (i === 0) {
+      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+        payload.students[i],
+        payload.editor
+      );
+      student_i = `
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
+      
+      ${unread_cv_ml_rl_thread}
+`;
+    } else {
+      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+        payload.students[i],
+        payload.editor
+      );
+      student_i += `
+      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
+      
+      ${unread_cv_ml_rl_thread}
+    `;
+    }
+  }
+
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+The following is the overview of the open tasks for your students
+
+${student_i}
+
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const StudentUrgentTasksReminderEmail = async (recipient, payload) => {
-  const subject = `TaiGer Student Reminder: ${recipient.firstname} ${recipient.lastname}`;
-  const unsubmitted_applications = unsubmitted_applications_summary(
+  const subject = `[Action Required] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
+  const unsubmitted_applications = unsubmitted_applications_escalation_summary(
     payload.student
   );
-
-  const base_documents = base_documents_summary(payload.student);
 
   const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
     payload.student,
     payload.student
   );
-  // TODO: uni-assist if missing
-  // TODO if english not passed and not registering any date, inform them
-  const missing_uni_assist = '';
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
+${unsubmitted_applications}
+
 ${unread_cv_ml_rl_thread}
 
-${base_documents}
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const AgentUrgentTasksReminderEmail = async (recipient, payload) => {
+  const subject = `[Action Required] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
+  const unsubmitted_applications = unsubmitted_applications_escalation_summary(
+    payload.student
+  );
+
+  const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
+    payload.student,
+    payload.student
+  );
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unsubmitted_applications}
+
+${unread_cv_ml_rl_thread}
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -144,5 +279,8 @@ module.exports = {
   verifySMTPConfig,
   sendEmail,
   StudentTasksReminderEmail,
-  StudentUrgentTasksReminderEmail
+  AgentTasksReminderEmail,
+  EditorTasksReminderEmail,
+  StudentUrgentTasksReminderEmail,
+  AgentUrgentTasksReminderEmail
 };

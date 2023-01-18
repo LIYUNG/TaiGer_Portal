@@ -580,7 +580,7 @@ const missing_academic_background = (student, user) => {
       missing_background_fields += '<li>Expected Application Semester</li>';
     }
     if (student.academic_background.language.english_isPassed === '-') {
-      missing_background_fields += '<li>English passed?</li>';
+      missing_background_fields += '<li><b>English passed?</b></li>';
     }
     if (student.academic_background.language.english_isPassed === 'X') {
       if (student.academic_background.language.english_certificate === '') {
@@ -591,8 +591,18 @@ const missing_academic_background = (student, user) => {
       } else {
         // TODO: check if expired?
         const today = new Date();
-        missing_background_fields += `<li>english test date expired
+        if (
+          getNumberOfDays(
+            student.academic_background.language.english_test_date,
+            today
+          ) > 1
+        ) {
+          missing_background_fields += `<li>English test date : <b>expired ${getNumberOfDays(
+            student.academic_background.language.english_test_date,
+            today
+          )} days</b>
           </li>`;
+        }
       }
     }
     if (student.academic_background.language.german_isPassed === '-') {

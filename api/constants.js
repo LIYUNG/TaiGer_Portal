@@ -608,6 +608,29 @@ const missing_academic_background = (student, user) => {
     if (student.academic_background.language.german_isPassed === '-') {
       missing_background_fields += '<li>German passed?</li>';
     }
+    if (student.academic_background.language.german_isPassed === 'X') {
+      if (student.academic_background.language.german_certificate === '') {
+        missing_background_fields += '<li>German Certificate?</li>';
+      }
+      if (student.academic_background.language.german_test_date === '') {
+        missing_background_fields += '<li>German Test Date?</li>';
+      } else {
+        // TODO: check if expired?
+        const today = new Date();
+        if (
+          getNumberOfDays(
+            student.academic_background.language.german_test_date,
+            today
+          ) > 1
+        ) {
+          missing_background_fields += `<li>German test date : <b>expired ${getNumberOfDays(
+            student.academic_background.language.german_test_date,
+            today
+          )} days</b>
+          </li>`;
+        }
+      }
+    }
     if (user.role === 'Agent' || user.role === 'Admin') {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()

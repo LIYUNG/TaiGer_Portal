@@ -1062,7 +1062,10 @@ class SurveyEditableComponent extends React.Component {
                     'O' ? (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="german_certificate">
+                          <Form.Group
+                            className="mt-3 mx-0"
+                            controlId="german_certificate"
+                          >
                             <Form.Label className="my-0 mx-0 text-light">
                               German Certificate
                             </Form.Label>
@@ -1098,7 +1101,10 @@ class SurveyEditableComponent extends React.Component {
                           </Form.Group>
                         </Col>
                         <Col md={4}>
-                          <Form.Group controlId="german_score">
+                          <Form.Group
+                            className="mt-3 mx-0"
+                            controlId="german_score"
+                          >
                             <Form.Label className="my-0 mx-0 text-light">
                               German Test Score
                             </Form.Label>
@@ -1130,7 +1136,10 @@ class SurveyEditableComponent extends React.Component {
                     ) : (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="german_certificate">
+                          <Form.Group
+                            className="mt-3 mx-0"
+                            controlId="german_certificate"
+                          >
                             <Form.Label className="my-0 mx-0 text-light">
                               German Certificate
                             </Form.Label>
@@ -1166,7 +1175,10 @@ class SurveyEditableComponent extends React.Component {
                           </Form.Group>
                         </Col>
                         <Col md={4}>
-                          <Form.Group controlId="german_test_date">
+                          <Form.Group
+                            className="mt-3 mx-0"
+                            controlId="german_test_date"
+                          >
                             <Form.Label className="my-0 mx-0 text-light">
                               Expected Test Date
                             </Form.Label>

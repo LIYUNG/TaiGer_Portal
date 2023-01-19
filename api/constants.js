@@ -165,18 +165,19 @@ const is_deadline_within30days_needed = (student) => {
 
 const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
-  // for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-  //   if (
-  //     !student.generaldocs_threads[i].isFinalVersion &&
-  //     student.generaldocs_threads[i].latest_message_left_by_id !==
-  //       user._id.toString() &&
-  //     parseInt(
-  //       getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
-  //     ) > trigger_days
-  //   ) {
-  //     return true;
-  //   }
-  // }
+  // TODO: verify
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    if (
+      !student.generaldocs_threads[i].isFinalVersion &&
+      student.generaldocs_threads[i].latest_message_left_by_id !==
+        user._id.toString() &&
+      parseInt(
+        getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
+      ) > trigger_days
+    ) {
+      return true;
+    }
+  }
   for (let i = 0; i < student.applications.length; i += 1) {
     if (student.applications[i].decided === 'O') {
       for (
@@ -287,6 +288,83 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
   let kk = 0;
   const today = new Date();
+  // TODO:
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    if (user.role === 'Editor') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString() &&
+        parseInt(
+          getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )
+        ) > trigger_days
+      ) {
+        if (kk === 0) {
+          missing_doc_list = `
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+        }
+      }
+    } else if (user.role === 'Student') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString() &&
+        parseInt(
+          getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )
+        ) > trigger_days
+      ) {
+        if (kk === 0) {
+          missing_doc_list = `
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+        }
+      }
+    }
+  }
   for (let i = 0; i < student.applications.length; i += 1) {
     if (student.applications[i].decided === 'O') {
       for (
@@ -321,7 +399,11 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a></li>`;
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -331,7 +413,11 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a></li>`;
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
             }
           }
         } else if (user.role === 'Student') {
@@ -359,7 +445,11 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a></li>`;
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -369,7 +459,11 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a></li>`;
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
             }
           }
         } else if (user.role === 'Agent') {
@@ -387,7 +481,11 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a></li>`;
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -397,7 +495,11 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a></li>`;
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
             }
           }
         }
@@ -411,6 +513,59 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
 const cv_ml_rl_unfinished_summary = (student, user) => {
   let missing_doc_list = '';
   let kk = 0;
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    if (user.role === 'Editor') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString()
+      ) {
+        if (kk === 0) {
+          missing_doc_list = `
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a></li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a></li>`;
+        }
+      }
+    } else if (user.role === 'Student') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString()
+      ) {
+        if (kk === 0) {
+          missing_doc_list = `
+        The following documents are waiting for your response, please reply it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a></li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a></li>`;
+        }
+      }
+    }
+  }
+
   for (let i = 0; i < student.applications.length; i += 1) {
     if (student.applications[i].decided === 'O') {
       for (

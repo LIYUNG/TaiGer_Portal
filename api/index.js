@@ -84,10 +84,10 @@ const launch = async () => {
   // everyday, send emergency tasks (deadline within 1 month)
   // reminder emails to agents, editor and student
 
-  // const job4 = schedule.scheduleJob(
-  //   DAILY_TASKS_REMINDER_SCHEDULE,
-  //   UrgentTasksReminderEmails
-  // );
+  const job4 = schedule.scheduleJob(
+    DAILY_TASKS_REMINDER_SCHEDULE,
+    UrgentTasksReminderEmails
+  );
 
   console.log(`isProd : ${isProd()}`);
   console.log(`isDev : ${isDev()}`);

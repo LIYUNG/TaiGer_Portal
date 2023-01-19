@@ -252,11 +252,11 @@ const StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
   recipient,
   payload
 ) => {
-  const subject = `[Reminder] ${recipient.firstname} ${recipient.lastname}: Your Editor is waiting for you!`;
+  const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your Editor is waiting for you!`;
   const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
     payload.student,
     payload.student,
-    10 // after 10 days
+    3 // after 3 days
   );
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>

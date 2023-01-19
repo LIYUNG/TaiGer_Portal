@@ -161,7 +161,7 @@ const UrgentTasksReminderEmails = async () => {
         `Daily urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
       );
     }
-    // TODO: Check if student threads no reply (need to response) more than 3 days (Should configurable)
+    // (O): Check if student threads no reply (need to response) more than 3 days (Should configurable)
     if (is_cv_ml_rl_reminder_needed(students[j], students[j], 3)) {
       console.log(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
       await StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail(

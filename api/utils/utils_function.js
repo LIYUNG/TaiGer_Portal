@@ -9,12 +9,14 @@ const {
   StudentTasksReminderEmail,
   AgentTasksReminderEmail,
   EditorTasksReminderEmail,
-  StudentUrgentTasksReminderEmail
+  StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
+  StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail
 } = require('../services/regular_system_emails');
 const logger = require('../services/logger');
 const {
   getNumberOfDays,
-  is_escalation_needed,
+  is_deadline_within30days_needed,
+  is_cv_ml_rl_reminder_needed,
   application_deadline_calculator
 } = require('../constants');
 
@@ -143,12 +145,11 @@ const UrgentTasksReminderEmails = async () => {
     .lean(); // Only active student, not archiv
   const agents = await Agent.find();
   const editors = await Editor.find();
-  // TODO: Check if student threads no reply (need to response) more than 3 days (Should configurable)
   // (O): Check if student applications deadline within 30 days
   for (let j = 0; j < students.length; j += 1) {
-    if (is_escalation_needed(students[j])) {
+    if (is_deadline_within30days_needed(students[j])) {
       console.log(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
-      await StudentUrgentTasksReminderEmail(
+      await StudentApplicationsDeadline_Within30Days_DailyReminderEmail(
         {
           firstname: students[j].firstname,
           lastname: students[j].lastname,
@@ -158,6 +159,21 @@ const UrgentTasksReminderEmails = async () => {
       );
       console.log(
         `Daily urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
+      );
+    }
+    // TODO: Check if student threads no reply (need to response) more than 3 days (Should configurable)
+    if (is_cv_ml_rl_reminder_needed(students[j], students[j], 3)) {
+      console.log(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
+      await StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail(
+        {
+          firstname: students[j].firstname,
+          lastname: students[j].lastname,
+          address: students[j].email
+        },
+        { student: students[j] }
+      );
+      console.log(
+        `Daily2 urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
       );
     }
   }
@@ -176,7 +192,7 @@ const UrgentTasksReminderEmails = async () => {
   //     .lean()
   //     .exec();
   //   if (agent_students.length > 0) {
-  //     await AgentTasksReminderEmail(
+  //     await AgentUrgentTasksReminderEmail(
   //       {
   //         firstname: agents[j].firstname,
   //         lastname: agents[j].lastname,

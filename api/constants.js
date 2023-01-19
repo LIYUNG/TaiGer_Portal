@@ -65,54 +65,6 @@ const getNumberOfDays = (start, end) => {
   return diffInDays.toString();
 };
 
-const TaskStatus = {
-  Finished: 'finished',
-  Locked: 'locked',
-  Open: 'Open',
-  Pending: 'pending',
-  NotNeeded: 'notneeded'
-};
-const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
-
-const profile_list = {
-  High_School_Diploma: 'High School Diploma',
-  High_School_Transcript: 'High School Transcript',
-  University_Entrance_Examination_GSAT: 'GSAT/SAT (學測)',
-  Bachelor_Certificate: 'Bachelor Certificate',
-  Bachelor_Transcript: 'Bachelor Transcript',
-  Englisch_Certificate: 'TOEFL or IELTS',
-  German_Certificate: 'TestDaF or Goethe-B2/C1',
-  GREGMAT: 'GRE or GMAT',
-  ECTS_Conversion: 'ECTS Conversion',
-  Course_Description: 'Course Description',
-  Internship: 'Internship Certificate',
-  Employment_Certificate: 'Employment Certificate',
-  Passport_Photo: 'Passport Photo',
-  Passport: 'Passport Copy',
-  Others: 'Others'
-};
-
-const is_escalation_needed = (student) => {
-  let escalated = false;
-  const today = new Date();
-  for (let k = 0; k < student.applications.length; k += 1) {
-    const day_diff = getNumberOfDays(
-      today,
-      application_deadline_calculator(student, student.applications[k])
-    );
-    // TODO: should pack all thread due soon in a student email, not multiple email for 1 student  for daily reminder.
-    if (
-      student.applications[k].decided === 'O' &&
-      student.applications[k].closed !== 'O' &&
-      day_diff < ESCALATION_DEADLINE_DAYS_TRIGGER &&
-      day_diff > -1
-    ) {
-      escalated = true;
-    }
-  }
-  return escalated;
-};
-
 const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
@@ -161,11 +113,112 @@ const application_deadline_calculator = (student, application) => {
   return `${application_year}-${deadline_month}-${deadline_day}`;
 };
 
+const TaskStatus = {
+  Finished: 'finished',
+  Locked: 'locked',
+  Open: 'Open',
+  Pending: 'pending',
+  NotNeeded: 'notneeded'
+};
+const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
+
+const profile_list = {
+  High_School_Diploma: 'High School Diploma',
+  High_School_Transcript: 'High School Transcript',
+  University_Entrance_Examination_GSAT: 'GSAT/SAT (學測)',
+  Bachelor_Certificate: 'Bachelor Certificate',
+  Bachelor_Transcript: 'Bachelor Transcript',
+  Englisch_Certificate: 'TOEFL or IELTS',
+  German_Certificate: 'TestDaF or Goethe-B2/C1',
+  GREGMAT: 'GRE or GMAT',
+  ECTS_Conversion: 'ECTS Conversion',
+  Course_Description: 'Course Description',
+  Internship: 'Internship Certificate',
+  Employment_Certificate: 'Employment Certificate',
+  Passport_Photo: 'Passport Photo',
+  Passport: 'Passport Copy',
+  Others: 'Others'
+};
+
+const is_deadline_within30days_needed = (student) => {
+  const today = new Date();
+  if (student.application_preference.expected_application_date === '') {
+    return false;
+  }
+  for (let k = 0; k < student.applications.length; k += 1) {
+    const day_diff = getNumberOfDays(
+      today,
+      application_deadline_calculator(student, student.applications[k])
+    );
+    // TODO: should pack all thread due soon in a student email, not multiple email for 1 student  for daily reminder.
+    if (
+      student.applications[k].decided === 'O' &&
+      student.applications[k].closed !== 'O' &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      day_diff > -1
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
+  const today = new Date();
+  // for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+  //   if (
+  //     !student.generaldocs_threads[i].isFinalVersion &&
+  //     student.generaldocs_threads[i].latest_message_left_by_id !==
+  //       user._id.toString() &&
+  //     parseInt(
+  //       getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
+  //     ) > trigger_days
+  //   ) {
+  //     return true;
+  //   }
+  // }
+  for (let i = 0; i < student.applications.length; i += 1) {
+    if (student.applications[i].decided === 'O') {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString() &&
+          parseInt(
+            getNumberOfDays(
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .updatedAt,
+              today
+            )
+          ) > trigger_days
+        ) {
+          console.log(
+            getNumberOfDays(
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .updatedAt,
+              today
+            )
+          );
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
 const unsubmitted_applications_summary = (student) => {
   let unsubmitted_applications = '';
   let x = 0;
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].closed !== 'O') {
+    if (
+      student.applications[i].decided === 'O' &&
+      student.applications[i].closed !== 'O'
+    ) {
       if (x === 0) {
         unsubmitted_applications = `
         The follow program are not submitted yet: 
@@ -196,7 +249,7 @@ const unsubmitted_applications_escalation_summary = (student) => {
     if (
       student.applications[i].decided === 'O' &&
       student.applications[i].closed !== 'O' &&
-      day_diff < 50 &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
       day_diff > -1
     ) {
       if (x === 0) {
@@ -230,103 +283,122 @@ const unsubmitted_applications_escalation_summary = (student) => {
   return unsubmitted_applications;
 };
 
-const cv_ml_rl_escalation_summary = (student, user) => {
+const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
   let kk = 0;
+  const today = new Date();
   for (let i = 0; i < student.applications.length; i += 1) {
-    for (
-      let j = 0;
-      j < student.applications[i].doc_modification_thread.length;
-      j += 1
-    ) {
-      if (user.role === 'Editor') {
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== '' &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== user._id.toString()
-        ) {
-          if (kk === 0) {
-            missing_doc_list = `
+    if (student.applications[i].decided === 'O') {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        if (user.role === 'Editor') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== '' &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString() &&
+            parseInt(
+              getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )
+            ) > trigger_days
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
         The following documents are waiting for your response, please reply it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
-            kk += 1;
-          } else {
-            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+            }
           }
-        }
-      } else if (user.role === 'Student') {
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== user._id.toString()
-        ) {
-          if (kk === 0) {
-            missing_doc_list = `
+        } else if (user.role === 'Student') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString() &&
+            parseInt(
+              getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )
+            ) > trigger_days
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
         The following documents are waiting for your response, please reply it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
-            kk += 1;
-          } else {
-            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+            }
           }
-        }
-      } else if (user.role === 'Agent') {
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion
-        ) {
-          if (kk === 0) {
-            missing_doc_list = `
+        } else if (user.role === 'Agent') {
+          if (
+            !student.applications[i].doc_modification_thread[j].isFinalVersion
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
         The following documents are not finished:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
-            kk += 1;
-          } else {
-            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+            }
           }
         }
       }
@@ -340,99 +412,103 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
   let missing_doc_list = '';
   let kk = 0;
   for (let i = 0; i < student.applications.length; i += 1) {
-    for (
-      let j = 0;
-      j < student.applications[i].doc_modification_thread.length;
-      j += 1
-    ) {
-      if (user.role === 'Editor') {
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== '' &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== user._id.toString()
-        ) {
-          if (kk === 0) {
-            missing_doc_list = `
+    if (student.applications[i].decided === 'O') {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        if (user.role === 'Editor') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== '' &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString()
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
         The following documents are waiting for your response, please reply it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
-            kk += 1;
-          } else {
-            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+            }
           }
-        }
-      } else if (user.role === 'Student') {
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== user._id.toString()
-        ) {
-          if (kk === 0) {
-            missing_doc_list = `
+        } else if (user.role === 'Student') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString()
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
         The following documents are waiting for your response, please reply it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
-            kk += 1;
-          } else {
-            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+            }
           }
-        }
-      } else if (user.role === 'Agent') {
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion
-        ) {
-          if (kk === 0) {
-            missing_doc_list = `
+        } else if (user.role === 'Agent') {
+          if (
+            !student.applications[i].doc_modification_thread[j].isFinalVersion
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
         The following documents are not finished:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
-            kk += 1;
-          } else {
-            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-              i
-            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-              student.applications[i].programId.school
-            } ${student.applications[i].programId.program_name} ${
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .file_type
-            }</a></li>`;
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a></li>`;
+            }
           }
         }
       }
@@ -512,7 +588,7 @@ const missing_academic_background = (student, user) => {
     <li>High School Graduate Year</li>
     <li>University Name</li>
     <li>University Program</li>
-    <li>Already Bechelor graduated?</li>`;
+    <li>Already Bachelor graduated?</li>`;
     missing_background_fields += '<li>Expected Application Year</li>';
     missing_background_fields += '<li>Expected Application Semester</li>';
     missing_background_fields += '</ul>';
@@ -571,7 +647,7 @@ const missing_academic_background = (student, user) => {
       !student.academic_background.university.isGraduated ||
       student.academic_background.university.isGraduated === '-'
     ) {
-      missing_background_fields += ' <li>Already Bechelor graduated?</li>';
+      missing_background_fields += ' <li>Already Bachelor graduated?</li>';
     }
     if (!student.application_preference.expected_application_date) {
       missing_background_fields += '<li>Expected Application Year</li>';
@@ -589,7 +665,7 @@ const missing_academic_background = (student, user) => {
       if (student.academic_background.language.english_test_date === '') {
         missing_background_fields += '<li>English Test Date?</li>';
       } else {
-        // TODO: check if expired?
+        // After test date 1 day:
         const today = new Date();
         if (
           getNumberOfDays(
@@ -615,7 +691,7 @@ const missing_academic_background = (student, user) => {
       if (student.academic_background.language.german_test_date === '') {
         missing_background_fields += '<li>German Test Date?</li>';
       } else {
-        // TODO: check if expired?
+        // After test date 1 day:
         const today = new Date();
         if (
           getNumberOfDays(
@@ -735,7 +811,8 @@ module.exports = {
   TaskStatus,
   RLs_CONSTANT,
   base_documents_summary,
-  is_escalation_needed,
+  is_deadline_within30days_needed,
+  is_cv_ml_rl_reminder_needed,
   application_deadline_calculator,
   unsubmitted_applications_summary,
   unsubmitted_applications_escalation_summary,

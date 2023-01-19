@@ -396,7 +396,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="isGraduated">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Already Bechelor graduated?
+                        Already Bachelor graduated?
                       </Form.Label>
                       <Form.Control
                         as="select"

@@ -227,26 +227,45 @@ ${student_i}
   return sendEmail(recipient, subject, message);
 };
 
-const StudentUrgentTasksReminderEmail = async (recipient, payload) => {
-  const subject = `[Action Required] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
+const StudentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
+  recipient,
+  payload
+) => {
+  const subject = `[Important] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
   const unsubmitted_applications = unsubmitted_applications_escalation_summary(
     payload.student
   );
 
-  const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
-    payload.student,
-    payload.student
-  );
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unsubmitted_applications}
 
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
+  recipient,
+  payload
+) => {
+  const subject = `[Reminder] ${recipient.firstname} ${recipient.lastname}: Your Editor is waiting for you!`;
+  const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
+    payload.student,
+    payload.student,
+    10 // after 10 days
+  );
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
 ${unread_cv_ml_rl_thread}
 
 <p>${TAIGER_SIGNATURE}</p>
 
-`; // should be for admin/editor/agent/student
+`;
 
   return sendEmail(recipient, subject, message);
 };
@@ -259,7 +278,8 @@ const AgentUrgentTasksReminderEmail = async (recipient, payload) => {
 
   const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
     payload.student,
-    payload.student
+    payload.student,
+    7
   );
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -281,6 +301,7 @@ module.exports = {
   StudentTasksReminderEmail,
   AgentTasksReminderEmail,
   EditorTasksReminderEmail,
-  StudentUrgentTasksReminderEmail,
+  StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
+  StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
   AgentUrgentTasksReminderEmail
 };

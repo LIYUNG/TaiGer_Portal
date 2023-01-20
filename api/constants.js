@@ -204,15 +204,29 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
   // TODO: verify
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    if (
-      !student.generaldocs_threads[i].isFinalVersion &&
-      student.generaldocs_threads[i].latest_message_left_by_id !==
-        user._id.toString() &&
-      parseInt(
-        getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
-      ) > trigger_days
-    ) {
-      return true;
+    if (user.role === 'Editor') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString() &&
+        parseInt(
+          getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
+        ) > trigger_days
+      ) {
+        return true;
+      }
+    } else if (user.role === 'Student') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString() &&
+        parseInt(
+          getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
+        ) > trigger_days
+      ) {
+        return true;
+      }
     }
   }
   for (let i = 0; i < student.applications.length; i += 1) {
@@ -222,26 +236,40 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== user._id.toString() &&
-          parseInt(
-            getNumberOfDays(
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .updatedAt,
-              today
-            )
-          ) > trigger_days
-        ) {
-          console.log(
-            getNumberOfDays(
-              student.applications[i].doc_modification_thread[j].doc_thread_id
-                .updatedAt,
-              today
-            )
-          );
-          return true;
+        if (user.role === 'Editor') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== '' &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString() &&
+            parseInt(
+              getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )
+            ) > trigger_days
+          ) {
+            return true;
+          }
+        } else if (user.role === 'Student') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString() &&
+            parseInt(
+              getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )
+            ) > trigger_days
+          ) {
+            return true;
+          }
         }
       }
     }
@@ -341,7 +369,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
@@ -377,7 +405,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
@@ -426,7 +454,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
                 i
@@ -472,7 +500,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
                 i
@@ -559,7 +587,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
@@ -583,7 +611,27 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a></li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a></li>`;
+        }
+      }
+    } else if (user.role === 'Agent') {
+      if (!student.generaldocs_threads[i].isFinalVersion) {
+        if (kk === 0) {
+          missing_doc_list = `
+        The following documents are not finished:
         <ul>
         <li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
@@ -620,7 +668,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
                 i
@@ -651,7 +699,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        The following documents are waiting for your response, please reply it as soon as possible:
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
                 i
@@ -790,7 +838,7 @@ const missing_academic_background = (student, user) => {
     ) {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
-      )}">Survey</a> and update them.</p>`;
+      )}">Survey</a> and <b>update</b> them.</p>`;
     } else {
       missing_background_fields += `<p>Please go to <a href="${STUDENT_SURVEY_URL}">Survey</a> and update them.</p>`;
     }
@@ -955,7 +1003,7 @@ const base_documents_summary = (student) => {
       if (xx === 0) {
         xx += 1;
         missing_base_documents = `
-        <p>The following base documents are still missing, please upload them as soon as possible:</p>
+        <p>The following base documents are still missing, please <b>upload</b> them as soon as possible:</p>
         <ul>
         <li>${profile_list[profile_keys_list[i]]}</li>`;
       } else {
@@ -968,7 +1016,7 @@ const base_documents_summary = (student) => {
       if (yy === 0) {
         yy += 1;
         rejected_base_documents = `
-        <p>The following base documents are not okay, please upload them again as soon as possible:</p>
+        <p>The following base documents are <b>not okay</b>, please <b>upload</b> them again as soon as possible:</p>
         <ul>
         <li>${profile_list[profile_keys_list[i]]}</li>`;
       } else {

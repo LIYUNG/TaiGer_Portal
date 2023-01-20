@@ -10,7 +10,8 @@ const {
   AgentTasksReminderEmail,
   EditorTasksReminderEmail,
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
-  StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail
+  StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
+  EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail
 } = require('../services/regular_system_emails');
 const logger = require('../services/logger');
 const {
@@ -136,6 +137,7 @@ const TasksReminderEmails = async () => {
 const UrgentTasksReminderEmails = async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
+  const trigger_days = 1;
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -166,7 +168,7 @@ const UrgentTasksReminderEmails = async () => {
       );
     }
     // (O): Check if student threads no reply (need to response) more than 3 days (Should configurable)
-    if (is_cv_ml_rl_reminder_needed(students[j], students[j], 3)) {
+    if (is_cv_ml_rl_reminder_needed(students[j], students[j], trigger_days)) {
       console.log(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
       await StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail(
         {
@@ -174,7 +176,7 @@ const UrgentTasksReminderEmails = async () => {
           lastname: students[j].lastname,
           address: students[j].email
         },
-        { student: students[j] }
+        { student: students[j], trigger_days }
       );
       console.log(
         `Daily2 urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
@@ -210,29 +212,40 @@ const UrgentTasksReminderEmails = async () => {
 
   // TODO (): Check if editor no reply (need to response) more than 3 days (Should configurable)
 
-  // for (let j = 0; j < editors.length; j += 1) {
-  //   const editor_students = await Student.find({
-  //     editors: editors[j]._id,
-  //     $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  //   })
-  //     .populate('agents editors', 'firstname lastname email')
-  //     .populate('applications.programId')
-  //     .populate(
-  //       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-  //       '-messages'
-  //     )
-  //     .select('-notification');
-  //   if (editor_students.length > 0) {
-  //     await EditorTasksReminderEmail(
-  //       {
-  //         firstname: editors[j].firstname,
-  //         lastname: editors[j].lastname,
-  //         address: editors[j].email
-  //       },
-  //       { students: editor_students, editor: editors[j] }
-  //     );
-  //   }
-  // }
+  for (let j = 0; j < editors.length; j += 1) {
+    const editor_students = await Student.find({
+      editors: editors[j]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select('-notification');
+    if (editor_students.length > 0) {
+      let temp_flag = false;
+      for (let x = 0; x < editor_students.length; x += 1) {
+        temp_flag |= is_cv_ml_rl_reminder_needed(
+          editor_students[x],
+          editors[j],
+          trigger_days
+        );
+      }
+      if (temp_flag) {
+        console.log(`Escalate: ${editors[j].firstname} ${editors[j].lastname}`);
+        await EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail(
+          {
+            firstname: editors[j].firstname,
+            lastname: editors[j].lastname,
+            address: editors[j].email
+          },
+          { students: editor_students, editor: editors[j], trigger_days }
+        );
+      }
+    }
+  }
 };
 
 module.exports = {

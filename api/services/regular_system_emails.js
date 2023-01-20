@@ -256,12 +256,37 @@ const StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
   const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
     payload.student,
     payload.student,
-    3 // after 3 days
+    payload.trigger_days // after 3 days
   );
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unread_cv_ml_rl_thread}
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
+  recipient,
+  payload
+) => {
+  const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your Students are waiting for your response!`;
+  let unread_cv_ml_rl_threads = '';
+  for (let i = 0; i < payload.students.length; i += 1) {
+    unread_cv_ml_rl_threads += cv_ml_rl_escalation_summary(
+      payload.students[i],
+      payload.editor,
+      payload.trigger_days // after 3 days
+    );
+  }
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+${unread_cv_ml_rl_threads}
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -303,5 +328,6 @@ module.exports = {
   EditorTasksReminderEmail,
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
   StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
+  EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
   AgentUrgentTasksReminderEmail
 };

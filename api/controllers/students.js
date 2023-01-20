@@ -393,16 +393,18 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       }
     );
   }
-  await informStudentTheirAgentEmail(
-    {
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email
-    },
-    {
-      agents: updated_agent
-    }
-  );
+  if (updated_agent.length !== 0) {
+    await informStudentTheirAgentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        agents: updated_agent
+      }
+    );
+  }
 });
 
 // () TODO email : agent better notification
@@ -464,17 +466,18 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       }
     );
   }
-  await informStudentTheirEditorEmail(
-    {
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email
-    },
-    {
-      editors: updated_editor
-    }
-  );
-  // TODO: email inform Student for(assigned editor) and inform editor for (your new student)
+  if (updated_editor.length !== 0) {
+    await informStudentTheirEditorEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        editors: updated_editor
+      }
+    );
+  }
 });
 
 const ToggleProgramStatus = asyncHandler(async (req, res) => {

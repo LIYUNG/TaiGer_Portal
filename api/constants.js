@@ -202,7 +202,6 @@ const does_editor_have_pending_tasks = (students, editor) => {
 
 const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
-  // TODO: verify
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
     if (user.role === 'Editor') {
       if (

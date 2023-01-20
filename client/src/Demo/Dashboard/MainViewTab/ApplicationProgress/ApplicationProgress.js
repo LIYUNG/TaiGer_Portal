@@ -23,6 +23,8 @@ class ApplicationProgress extends React.Component {
     var applying_program;
     var applying_program_degree;
     var program_semester;
+    var program_toefl;
+    var program_ielts;
     var application_deadline;
     var application_decided;
     var application_closed;
@@ -36,6 +38,8 @@ class ApplicationProgress extends React.Component {
       applying_university = <p className="mb-1  text-danger"> No University</p>;
       applying_program = <p className="mb-1  text-danger"> No Program</p>;
       program_semester = <p className="mb-1  text-danger"> No Program</p>;
+      program_toefl = <p className="mb-1  text-danger"> </p>;
+      program_ielts = <p className="mb-1  text-danger"> </p>;
       application_deadline = <p className="mb-1  text-danger"> No Date</p>;
       application_date_left = <p className="mb-1  text-danger"></p>;
       application_decided = <p className="mb-1  text-danger"></p>;
@@ -66,9 +70,7 @@ class ApplicationProgress extends React.Component {
             key={i}
           >
             {application.decided === 'O' ? (
-              <p className="mb-1 text-info">
-                {application.programId.degree}
-              </p>
+              <p className="mb-1 text-info">{application.programId.degree}</p>
             ) : (
               <p className="mb-1 text-secondary" title="Not decided yet">
                 {application.programId.degree}
@@ -113,6 +115,28 @@ class ApplicationProgress extends React.Component {
           </Link>
         )
       );
+      program_toefl = this.props.student.applications.map((application, i) => (
+        <Link
+          to={'/programs/' + application.programId._id}
+          style={{ textDecoration: 'none' }}
+          key={i}
+        >
+          <p className="mb-1 text-info">
+            {application.programId.toefl ? application.programId.toefl : '-'}
+          </p>
+        </Link>
+      ));
+      program_ielts = this.props.student.applications.map((application, i) => (
+        <Link
+          to={'/programs/' + application.programId._id}
+          style={{ textDecoration: 'none' }}
+          key={i}
+        >
+          <p className="mb-1 text-info">
+            {application.programId.ielts ? application.programId.ielts : '-'}
+          </p>
+        </Link>
+      ));
       application_deadline = this.props.student.applications.map(
         (application, i) =>
           application.decided === 'O' ? (
@@ -277,6 +301,8 @@ class ApplicationProgress extends React.Component {
           <td>{applying_program_degree}</td>
           <td>{applying_program}</td>
           <td>{program_semester}</td>
+          <td>{program_toefl}</td>
+          <td>{program_ielts}</td>
           <td>{application_deadline}</td>
           <td>{application_decided}</td>
           <td>{application_closed}</td>

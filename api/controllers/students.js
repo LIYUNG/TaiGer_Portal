@@ -56,7 +56,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
     .populate('agents editors', 'firstname lastname email')
     .populate(
       'applications.programId',
-      'school program_name degree semester application_deadline ml_required ml_requirements rl_required uni_assist rl_requirements essay_required essay_requirements'
+      'school program_name toefl ielts degree semester application_deadline ml_required ml_requirements rl_required uni_assist rl_requirements essay_required essay_requirements'
     )
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',

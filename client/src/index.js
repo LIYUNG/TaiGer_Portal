@@ -145,6 +145,14 @@ window.programstatuslist = [
     prop: 'semester'
   },
   {
+    name: 'TOEFL',
+    prop: 'toefl'
+  },
+  {
+    name: 'IELTS',
+    prop: 'ielts'
+  },
+  {
     name: 'Deadline',
     prop: 'deadline'
   },

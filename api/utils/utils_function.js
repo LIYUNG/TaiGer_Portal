@@ -15,6 +15,7 @@ const {
 const logger = require('../services/logger');
 const {
   getNumberOfDays,
+  does_editor_have_pending_tasks,
   is_deadline_within30days_needed,
   is_cv_ml_rl_reminder_needed,
   application_deadline_calculator
@@ -117,14 +118,16 @@ const TasksReminderEmails = async () => {
       .select('-notification');
     if (editor_students.length > 0) {
       // TODO: if nothing to send?
-      await EditorTasksReminderEmail(
-        {
-          firstname: editors[j].firstname,
-          lastname: editors[j].lastname,
-          address: editors[j].email
-        },
-        { students: editor_students, editor: editors[j] }
-      );
+      if (does_editor_have_pending_tasks(editor_students, editors[j])) {
+        await EditorTasksReminderEmail(
+          {
+            firstname: editors[j].firstname,
+            lastname: editors[j].lastname,
+            address: editors[j].email
+          },
+          { students: editor_students, editor: editors[j] }
+        );
+      }
     }
   }
   console.log('Reminder email sent');

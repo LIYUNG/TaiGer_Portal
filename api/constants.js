@@ -163,6 +163,43 @@ const is_deadline_within30days_needed = (student) => {
   return false;
 };
 
+const does_editor_have_pending_tasks = (students, editor) => {
+  for (let i = 0; i < students.length; i += 1) {
+    // check CV tasks
+    for (let j = 0; j < students[i].generaldocs_threads.length; j += 1) {
+      if (
+        !students[i].generaldocs_threads[j].isFinalVersion &&
+        students[i].generaldocs_threads[j].latest_message_left_by_id !== '' &&
+        students[i].generaldocs_threads[j].latest_message_left_by_id !==
+          editor._id.toString()
+      ) {
+        return true;
+      }
+    }
+    for (let k = 0; k < students[i].applications.length; k += 1) {
+      if (students[i].applications[k].decided === 'O') {
+        for (
+          let j = 0;
+          j < students[i].applications[k].doc_modification_thread.length;
+          j += 1
+        ) {
+          if (
+            !students[i].applications[k].doc_modification_thread[j]
+              .isFinalVersion &&
+            students[i].applications[k].doc_modification_thread[j]
+              .latest_message_left_by_id !== '' &&
+            students[i].applications[k].doc_modification_thread[j]
+              .latest_message_left_by_id !== editor._id.toString()
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+};
+
 const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
   // TODO: verify
@@ -966,6 +1003,7 @@ module.exports = {
   RLs_CONSTANT,
   base_documents_summary,
   is_deadline_within30days_needed,
+  does_editor_have_pending_tasks,
   is_cv_ml_rl_reminder_needed,
   application_deadline_calculator,
   unsubmitted_applications_summary,

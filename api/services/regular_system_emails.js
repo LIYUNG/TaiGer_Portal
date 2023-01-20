@@ -3,6 +3,7 @@ const { createTransport } = require('nodemailer');
 const queryString = require('query-string');
 const {
   cv_ml_rl_escalation_summary,
+  cv_ml_rl_editor_escalation_summary,
   cv_ml_rl_unfinished_summary,
   base_documents_summary,
   missing_academic_background,
@@ -277,11 +278,12 @@ const EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
   const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your Students are waiting for your response!`;
   let unread_cv_ml_rl_threads = '';
   for (let i = 0; i < payload.students.length; i += 1) {
-    unread_cv_ml_rl_threads += cv_ml_rl_escalation_summary(
+    unread_cv_ml_rl_threads += `
+    ${cv_ml_rl_editor_escalation_summary(
       payload.students[i],
       payload.editor,
       payload.trigger_days // after 3 days
-    );
+    )}`;
   }
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -300,18 +302,21 @@ const AgentUrgentTasksReminderEmail = async (recipient, payload) => {
   const unsubmitted_applications = unsubmitted_applications_escalation_summary(
     payload.student
   );
-
-  const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
-    payload.student,
-    payload.student,
-    7
-  );
+  let unread_cv_ml_rl_threads = '';
+  for (let i = 0; i < payload.students.length; i += 1) {
+    unread_cv_ml_rl_threads += `
+    ${cv_ml_rl_editor_escalation_summary(
+      payload.students[i],
+      payload.editor,
+      payload.trigger_days // after 3 days
+    )}`;
+  }
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unsubmitted_applications}
 
-${unread_cv_ml_rl_thread}
+${unread_cv_ml_rl_threads}
 
 <p>${TAIGER_SIGNATURE}</p>
 

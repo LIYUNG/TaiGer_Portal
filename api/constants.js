@@ -574,6 +574,199 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   return missing_doc_list;
 };
 
+const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+  let kk = 0;
+  const today = new Date();
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    if (user.role === 'Editor') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString() &&
+        parseInt(
+          getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )
+        ) > trigger_days
+      ) {
+        if (kk === 0) {
+          missing_doc_list = `
+        <b>${student.firstname} ${student.lastname}</b><br />
+
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+        }
+      }
+    } else if (user.role === 'Student') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        parseInt(
+          getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )
+        ) > trigger_days
+      ) {
+        if (kk === 0) {
+          missing_doc_list = `
+        <b>${student.firstname} ${student.lastname}</b><br />
+
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - aged ${getNumberOfDays(
+            student.generaldocs_threads[i].doc_thread_id.updatedAt,
+            today
+          )} days.</li>`;
+        }
+      }
+    }
+  }
+  for (let i = 0; i < student.applications.length; i += 1) {
+    if (student.applications[i].decided === 'O') {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        if (user.role === 'Editor') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== '' &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString() &&
+            parseInt(
+              getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )
+            ) > trigger_days
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
+        <b>${student.firstname} ${student.lastname}</b><br />
+
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
+            }
+          }
+        } else if (user.role === 'Agent') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            parseInt(
+              getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )
+            ) > trigger_days
+          ) {
+            if (kk === 0) {
+              missing_doc_list = `
+        <b>${student.firstname} ${student.lastname}</b><br />
+        
+        The following documents are not finished:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
+              kk += 1;
+            } else {
+              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+                i
+              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+                student.applications[i].programId.school
+              } ${student.applications[i].programId.program_name} ${
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .file_type
+              }</a> - aged ${getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )} days.</li>`;
+            }
+          }
+        }
+      }
+    }
+  }
+  missing_doc_list += '</ul>';
+  return missing_doc_list;
+};
+
 const cv_ml_rl_unfinished_summary = (student, user) => {
   let missing_doc_list = '';
   let kk = 0;
@@ -1057,6 +1250,7 @@ module.exports = {
   unsubmitted_applications_summary,
   unsubmitted_applications_escalation_summary,
   cv_ml_rl_escalation_summary,
+  cv_ml_rl_editor_escalation_summary,
   cv_ml_rl_unfinished_summary,
   profile_list,
   profile_keys_list,

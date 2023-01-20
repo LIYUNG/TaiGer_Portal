@@ -11,7 +11,8 @@ const {
   EditorTasksReminderEmail,
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
   StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
-  EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail
+  EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
+  AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail
 } = require('../services/regular_system_emails');
 const logger = require('../services/logger');
 const {
@@ -137,7 +138,8 @@ const TasksReminderEmails = async () => {
 const UrgentTasksReminderEmails = async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const trigger_days = 1;
+  const trigger_days = 3;
+  const escalation_trigger_days = 7;
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -184,33 +186,46 @@ const UrgentTasksReminderEmails = async () => {
     }
   }
 
-  // for (let j = 0; j < agents.length; j += 1) {
-  //   const agent_students = await Student.find({
-  //     agents: agents[j]._id,
-  //     $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  //   })
-  //     .populate('agents editors', 'firstname lastname email')
-  //     .populate('applications.programId')
-  //     .populate(
-  //       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-  //       '-messages'
-  //     )
-  //     .select('-notification')
-  //     .lean()
-  //     .exec();
-  //   if (agent_students.length > 0) {
-  //     await AgentUrgentTasksReminderEmail(
-  //       {
-  //         firstname: agents[j].firstname,
-  //         lastname: agents[j].lastname,
-  //         address: agents[j].email
-  //       },
-  //       { students: agent_students, agent: agents[j] }
-  //     );
-  //   }
-  // }
+  // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
+  for (let j = 0; j < agents.length; j += 1) {
+    const agent_students = await Student.find({
+      agents: agents[j]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select('-notification');
+    if (agent_students.length > 0) {
+      let temp_flag = false;
+      for (let x = 0; x < agent_students.length; x += 1) {
+        temp_flag |= is_cv_ml_rl_reminder_needed(
+          agent_students[x],
+          agents[j],
+          escalation_trigger_days
+        );
+      }
+      if (temp_flag) {
+        await AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail(
+          {
+            firstname: agents[j].firstname,
+            lastname: agents[j].lastname,
+            address: agents[j].email
+          },
+          {
+            students: agent_students,
+            agent: agents[j],
+            trigger_days: escalation_trigger_days
+          }
+        );
+      }
+    }
+  }
 
-  // TODO (): Check if editor no reply (need to response) more than 3 days (Should configurable)
+  // (O): Check if editor no reply (need to response) more than 3 days (Should configurable)
 
   for (let j = 0; j < editors.length; j += 1) {
     const editor_students = await Student.find({

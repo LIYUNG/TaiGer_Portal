@@ -227,6 +227,15 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       ) {
         return true;
       }
+    } else if (user.role === 'Agent') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        parseInt(
+          getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
+        ) > trigger_days
+      ) {
+        return true;
+      }
     }
   }
   for (let i = 0; i < student.applications.length; i += 1) {
@@ -260,6 +269,20 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
               .isFinalVersion &&
             student.applications[i].doc_modification_thread[j]
               .latest_message_left_by_id !== user._id.toString() &&
+            parseInt(
+              getNumberOfDays(
+                student.applications[i].doc_modification_thread[j].doc_thread_id
+                  .updatedAt,
+                today
+              )
+            ) > trigger_days
+          ) {
+            return true;
+          }
+        } else if (user.role === 'Agent') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
             parseInt(
               getNumberOfDays(
                 student.applications[i].doc_modification_thread[j].doc_thread_id
@@ -618,7 +641,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
           )} days.</li>`;
         }
       }
-    } else if (user.role === 'Student') {
+    } else if (user.role === 'Agent') {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         parseInt(
@@ -632,7 +655,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
           missing_doc_list = `
         <b>${student.firstname} ${student.lastname}</b><br />
 
-        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
+        The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
@@ -729,7 +752,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
               missing_doc_list = `
         <b>${student.firstname} ${student.lastname}</b><br />
         
-        The following documents are not finished:
+        The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
         <ul>
         <li><a href="${THREAD_URL}/${student.applications[
                 i

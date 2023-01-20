@@ -297,6 +297,32 @@ ${unread_cv_ml_rl_threads}
   return sendEmail(recipient, subject, message);
 };
 
+const AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = async (
+  recipient,
+  payload
+) => {
+  const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: The documents are idle for ${payload.trigger_days} days!`;
+  let unread_cv_ml_rl_threads = '';
+  for (let i = 0; i < payload.students.length; i += 1) {
+    unread_cv_ml_rl_threads += `
+    ${cv_ml_rl_editor_escalation_summary(
+      payload.students[i],
+      payload.agent,
+      payload.trigger_days // after 7 days
+    )}`;
+  }
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+${unread_cv_ml_rl_threads}
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const AgentUrgentTasksReminderEmail = async (recipient, payload) => {
   const subject = `[Action Required] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
   const unsubmitted_applications = unsubmitted_applications_escalation_summary(
@@ -334,5 +360,6 @@ module.exports = {
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
   StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
   EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
+  AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
   AgentUrgentTasksReminderEmail
 };

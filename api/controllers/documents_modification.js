@@ -545,6 +545,7 @@ const postMessages = asyncHandler(async (req, res) => {
     file: newfile
   };
   document_thread.messages.push(new_message);
+  document_thread.updatedAt = new Date();
   await document_thread.save();
   const document_thread2 = await Documentthread.findById(messagesThreadId)
     .populate('student_id program_id messages.user_id')

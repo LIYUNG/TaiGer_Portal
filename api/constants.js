@@ -288,7 +288,6 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
   let kk = 0;
   const today = new Date();
-  // TODO:
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
     if (user.role === 'Editor') {
       if (

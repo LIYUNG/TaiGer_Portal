@@ -116,6 +116,7 @@ const TasksReminderEmails = async () => {
       )
       .select('-notification');
     if (editor_students.length > 0) {
+      // TODO: if nothing to send?
       await EditorTasksReminderEmail(
         {
           firstname: editors[j].firstname,
@@ -177,6 +178,7 @@ const UrgentTasksReminderEmails = async () => {
       );
     }
   }
+
   // for (let j = 0; j < agents.length; j += 1) {
   //   const agent_students = await Student.find({
   //     agents: agents[j]._id,
@@ -202,6 +204,9 @@ const UrgentTasksReminderEmails = async () => {
   //     );
   //   }
   // }
+
+  // TODO (): Check if editor no reply (need to response) more than 3 days (Should configurable)
+
   // for (let j = 0; j < editors.length; j += 1) {
   //   const editor_students = await Student.find({
   //     editors: editors[j]._id,

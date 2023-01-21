@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import { BsExclamationTriangle } from 'react-icons/bs';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
@@ -157,22 +157,12 @@ class Settings extends React.Component {
 
   setmodalhide = () => {
     window.location.reload(true);
-    // this.setState({
-    //   updateconfirmed: false,
-    // });
   };
 
   setmodalhideUpdateCredentials = () => {
     logout().then(
       (resp) => {
-        // TODO: resp success? error handling
-        // this.setState((state) => ({
-        //   ...state,
-        //   data: null
-        // }));
         window.location.reload(true);
-        // const { success } = resp.data;
-        // this.setState({ success: success });
       },
       (error) => {
         this.setState((state) => ({
@@ -186,7 +176,6 @@ class Settings extends React.Component {
   };
 
   ConfirmError = () => {
-    // window.location.reload(true);
     this.setState((state) => ({
       ...state,
       res_modal_status: 0,

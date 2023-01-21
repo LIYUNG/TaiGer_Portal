@@ -156,7 +156,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     })
       .populate(
         'applications.programId',
-        'school program_name application_deadline'
+        'school program_name application_deadline semester'
       )
       .populate(
         'generaldocs_threads.doc_thread_id',

@@ -854,11 +854,10 @@ class SurveyEditableComponent extends React.Component {
                       </Form.Group>
                     </Form>
                   </Col>
-                </Row>{' '}
+                </Row>
                 <Row>
                   <Col md={10} className="my-0 mx-0 text-light">
                     <br />
-                    {/* <br /> */}
                     Last update at:{' '}
                     {this.props.application_preference &&
                     this.props.application_preference.updatedAt

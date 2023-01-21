@@ -203,15 +203,16 @@ const does_editor_have_pending_tasks = (students, editor) => {
 const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    const day_diff = parseInt(
+      getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
+    );
     if (user.role === 'Editor') {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
           user._id.toString() &&
-        parseInt(
-          getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
-        ) > trigger_days
+        day_diff > trigger_days
       ) {
         return true;
       }
@@ -220,18 +221,14 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
           user._id.toString() &&
-        parseInt(
-          getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
-        ) > trigger_days
+        day_diff > trigger_days
       ) {
         return true;
       }
     } else if (user.role === 'Agent') {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
-        parseInt(
-          getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
-        ) > trigger_days
+        day_diff > trigger_days
       ) {
         return true;
       }
@@ -244,6 +241,13 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
+        const day_diff_2 = parseInt(
+          getNumberOfDays(
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .updatedAt,
+            today
+          )
+        );
         if (user.role === 'Editor') {
           if (
             !student.applications[i].doc_modification_thread[j]
@@ -252,13 +256,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
               .latest_message_left_by_id !== '' &&
             student.applications[i].doc_modification_thread[j]
               .latest_message_left_by_id !== user._id.toString() &&
-            parseInt(
-              getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )
-            ) > trigger_days
+            day_diff_2 > trigger_days
           ) {
             return true;
           }
@@ -268,13 +266,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
               .isFinalVersion &&
             student.applications[i].doc_modification_thread[j]
               .latest_message_left_by_id !== user._id.toString() &&
-            parseInt(
-              getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )
-            ) > trigger_days
+            day_diff_2 > trigger_days
           ) {
             return true;
           }
@@ -282,13 +274,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
-            parseInt(
-              getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )
-            ) > trigger_days
+            day_diff_2 > trigger_days
           ) {
             return true;
           }
@@ -376,18 +362,19 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let kk = 0;
   const today = new Date();
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    const day_diff = parseInt(
+      getNumberOfDays(
+        student.generaldocs_threads[i].doc_thread_id.updatedAt,
+        today
+      )
+    );
     if (user.role === 'Editor') {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
           user._id.toString() &&
-        parseInt(
-          getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )
-        ) > trigger_days
+        day_diff > trigger_days
       ) {
         if (kk === 0) {
           missing_doc_list = `
@@ -397,20 +384,14 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
           kk += 1;
         } else {
           missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
         }
       }
     } else if (user.role === 'Student') {
@@ -418,12 +399,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
           user._id.toString() &&
-        parseInt(
-          getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )
-        ) > trigger_days
+        day_diff > trigger_days
       ) {
         if (kk === 0) {
           missing_doc_list = `
@@ -433,20 +409,14 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
           kk += 1;
         } else {
           missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
         }
       }
     }
@@ -458,6 +428,13 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
+        const day_diff_2 = parseInt(
+          getNumberOfDays(
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .updatedAt,
+            today
+          )
+        );
         if (user.role === 'Editor') {
           if (
             !student.applications[i].doc_modification_thread[j]
@@ -466,13 +443,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               .latest_message_left_by_id !== '' &&
             student.applications[i].doc_modification_thread[j]
               .latest_message_left_by_id !== user._id.toString() &&
-            parseInt(
-              getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )
-            ) > trigger_days
+            day_diff_2 > trigger_days
           ) {
             if (kk === 0) {
               missing_doc_list = `
@@ -485,11 +456,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -499,11 +466,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
             }
           }
         } else if (user.role === 'Student') {
@@ -512,13 +475,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               .isFinalVersion &&
             student.applications[i].doc_modification_thread[j]
               .latest_message_left_by_id !== user._id.toString() &&
-            parseInt(
-              getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )
-            ) > trigger_days
+            day_diff_2 > trigger_days
           ) {
             if (kk === 0) {
               missing_doc_list = `
@@ -531,11 +488,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -545,11 +498,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
             }
           }
         } else if (user.role === 'Agent') {
@@ -567,11 +516,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -581,11 +526,7 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
             }
           }
         }
@@ -601,18 +542,19 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
   let kk = 0;
   const today = new Date();
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    const day_diff = parseInt(
+      getNumberOfDays(
+        student.generaldocs_threads[i].doc_thread_id.updatedAt,
+        today
+      )
+    );
     if (user.role === 'Editor') {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
           user._id.toString() &&
-        parseInt(
-          getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )
-        ) > trigger_days
+        day_diff > trigger_days
       ) {
         if (kk === 0) {
           missing_doc_list = `
@@ -624,31 +566,20 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
           kk += 1;
         } else {
           missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
         }
       }
     } else if (user.role === 'Agent') {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
-        parseInt(
-          getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )
-        ) > trigger_days
+        day_diff > trigger_days
       ) {
         if (kk === 0) {
           missing_doc_list = `
@@ -660,20 +591,14 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
           kk += 1;
         } else {
           missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
             i
           ].doc_thread_id._id.toString()}">${
             student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${getNumberOfDays(
-            student.generaldocs_threads[i].doc_thread_id.updatedAt,
-            today
-          )} days.</li>`;
+          }</a> - aged ${day_diff} days.</li>`;
         }
       }
     }
@@ -685,6 +610,13 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
+        const day_diff_2 = parseInt(
+          getNumberOfDays(
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .updatedAt,
+            today
+          )
+        );
         if (user.role === 'Editor') {
           if (
             !student.applications[i].doc_modification_thread[j]
@@ -693,13 +625,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
               .latest_message_left_by_id !== '' &&
             student.applications[i].doc_modification_thread[j]
               .latest_message_left_by_id !== user._id.toString() &&
-            parseInt(
-              getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )
-            ) > trigger_days
+            day_diff_2 > trigger_days
           ) {
             if (kk === 0) {
               missing_doc_list = `
@@ -714,11 +640,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -728,24 +650,14 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
             }
           }
         } else if (user.role === 'Agent') {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
-            parseInt(
-              getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )
-            ) > trigger_days
+            day_diff_2 > trigger_days
           ) {
             if (kk === 0) {
               missing_doc_list = `
@@ -760,11 +672,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
               kk += 1;
             } else {
               missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
@@ -774,11 +682,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
               } ${student.applications[i].programId.program_name} ${
                 student.applications[i].doc_modification_thread[j].doc_thread_id
                   .file_type
-              }</a> - aged ${getNumberOfDays(
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .updatedAt,
-                today
-              )} days.</li>`;
+              }</a> - aged ${day_diff_2} days.</li>`;
             }
           }
         }

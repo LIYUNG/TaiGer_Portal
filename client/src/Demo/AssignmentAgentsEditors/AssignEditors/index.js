@@ -18,7 +18,6 @@ class AssignEditors extends React.Component {
     students: [],
     updateEditorList: {},
     success: false,
-    isDashboard: true,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -208,7 +207,7 @@ class AssignEditors extends React.Component {
     const { isLoaded, res_status, res_modal_status, res_modal_message } =
       this.state;
 
-    if (!isLoaded && !this.state.data) {
+    if (!isLoaded && !this.state.students) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -224,13 +223,6 @@ class AssignEditors extends React.Component {
 
     return (
       <Aux>
-        {!isLoaded && (
-          <div style={spinner_style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )}
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={this.ConfirmError}
@@ -246,7 +238,6 @@ class AssignEditors extends React.Component {
           updateEditorList={this.state.updateEditorList}
           handleChangeEditorlist={this.handleChangeEditorlist}
           submitUpdateEditorlist={this.submitUpdateEditorlist}
-          isDashboard={this.state.isDashboard}
         />
       </Aux>
     );

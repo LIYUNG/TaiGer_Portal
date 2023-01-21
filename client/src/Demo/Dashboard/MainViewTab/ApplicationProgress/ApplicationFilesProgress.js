@@ -20,7 +20,6 @@ class ApplicationFilesProgress extends React.Component {
     var application_uni_assist;
     var application_cv;
     var application_mlrlessay;
-    var today = new Date();
     let isMissingBaseDocs = false;
 
     let keys = Object.keys(window.profile_list);

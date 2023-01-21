@@ -1,6 +1,10 @@
 import React from 'react';
 import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import {
+  is_TaiGer_role,
+  application_deadline_calculator
+} from '../../../Utils/checking-functions';
 
 import { convertDate } from '../../../Utils/contants';
 import { getNumberOfDays, return_thread_status } from '../../../Utils/contants';
@@ -52,9 +56,7 @@ class CVMLRLProgress extends React.Component {
                   </p>
                 </Link>
               </td>
-              {(this.props.role === 'Admin' ||
-                this.props.role === 'Editor' ||
-                this.props.role === 'Agent') &&
+              {is_TaiGer_role(this.props.user) &&
                 (generaldocs_thread.isFinalVersion ? (
                   <td>
                     <AiOutlineUndo
@@ -142,12 +144,9 @@ class CVMLRLProgress extends React.Component {
                       </p>
                     </Link>
                   </td>
-
-                  {(this.props.role === 'Admin' ||
-                    this.props.role === 'Editor' ||
-                    this.props.role === 'Agent') &&
-                    (doc_thread.isFinalVersion ? (
-                      <td>
+                  <td>
+                    {is_TaiGer_role(this.props.user) &&
+                      (doc_thread.isFinalVersion ? (
                         <AiOutlineUndo
                           size={24}
                           color="red"
@@ -163,9 +162,7 @@ class CVMLRLProgress extends React.Component {
                             )
                           }
                         />
-                      </td>
-                    ) : (
-                      <td>
+                      ) : (
                         <AiOutlineCheck
                           size={24}
                           style={{ cursor: 'pointer' }}
@@ -180,9 +177,8 @@ class CVMLRLProgress extends React.Component {
                             )
                           }
                         />
-                      </td>
-                    ))}
-
+                      ))}
+                  </td>
                   {return_thread_status(this.props.user, doc_thread)}
                   <td>
                     <Link
@@ -205,12 +201,10 @@ class CVMLRLProgress extends React.Component {
                       getNumberOfDays(doc_thread.updatedAt, today)}
                   </td>
                   <td>
-                    {this.props.student.application_preference &&
-                      this.props.student.application_preference
-                        .expected_application_date &&
-                      this.props.student.application_preference
-                        .expected_application_date + '-'}
-                    {application.programId.application_deadline}
+                    {application_deadline_calculator(
+                      this.props.student,
+                      application
+                    )}
                   </td>
                   <td>
                     {application.closed === 'O'

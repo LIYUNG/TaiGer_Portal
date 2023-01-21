@@ -18,7 +18,6 @@ class AssignAgents extends React.Component {
     students: [],
     updateAgentList: {},
     success: false,
-    isDashboard: true,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -207,7 +206,7 @@ class AssignAgents extends React.Component {
     const { isLoaded, res_status, res_modal_status, res_modal_message } =
       this.state;
 
-    if (!isLoaded && !this.state.data) {
+    if (!isLoaded && !this.state.students) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -223,13 +222,6 @@ class AssignAgents extends React.Component {
 
     return (
       <Aux>
-        {!isLoaded && (
-          <div style={spinner_style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )}
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={this.ConfirmError}
@@ -246,7 +238,6 @@ class AssignAgents extends React.Component {
           updateAgentList={this.state.updateAgentList}
           handleChangeAgentlist={this.handleChangeAgentlist}
           submitUpdateAgentlist={this.submitUpdateAgentlist}
-          isDashboard={this.state.isDashboard}
         />
       </Aux>
     );

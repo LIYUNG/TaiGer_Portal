@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Col, Table, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
-import { RiInformationLine } from 'react-icons/ri';
 
 import StudentMyself from './StudentMyself';
 import Banner from '../../../components/Banner/Banner';
@@ -159,62 +158,25 @@ class StudentDashboard extends React.Component {
               bg={'primary'}
               title={'Info:'}
               path={'/uni-assist'}
-              text={'New agent are assigned to you.'}
+              text={'New agent is assigned to you.'}
               link_name={''}
               removeBanner={this.removeBanner}
               notification_key={'isRead_new_agent_assigned'}
             />
-            // <Row>
-            //   <Col>
-            //     <Card className="my-1 mx-0" bg={'primary'} text={'light'}>
-            //       <p
-            //         className="text-light my-3 mx-3"
-            //         style={{ textAlign: 'left' }}
-            //       >
-            //         <RiInformationLine size={18} />
-            //         <b className="mx-2">Info:</b> New agent are assigned to you.{' '}
-            //         <span style={{ float: 'right', cursor: 'pointer' }}>
-            //           {!this.props.ReadOnlyMode && (
-            //             <BsX
-            //               size={18}
-            //               onClick={(e) =>
-            //                 this.removeBanner(e, 'isRead_new_agent_assigned')
-            //               }
-            //             />
-            //           )}
-            //         </span>
-            //       </p>
-            //     </Card>
-            //   </Col>
-            // </Row>
           )}
         {/* new editors assigned banner */}
         {student.notification &&
           !student.notification.isRead_new_editor_assigned && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'primary'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <RiInformationLine size={18} />
-                    <b className="mx-2">Info:</b> New editor are assigned to
-                    you.{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(e, 'isRead_new_editor_assigned')
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'primary'}
+              title={'Info:'}
+              path={'/uni-assist'}
+              text={'New editor is assigned to you.'}
+              link_name={''}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_new_editor_assigned'}
+            />
           )}
         {/* new CV ML RL Essay message */}
         {student.notification &&

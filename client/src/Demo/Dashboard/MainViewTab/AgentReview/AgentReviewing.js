@@ -1,11 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillQuestionCircle } from 'react-icons/ai';
-import {
-  BsExclamationTriangle,
-  BsFillExclamationCircleFill,
-  BsDash
-} from 'react-icons/bs';
+import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
   check_if_there_is_language_info,

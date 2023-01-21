@@ -27,7 +27,6 @@ class CVMLRLProgressClosed extends React.Component {
     );
   };
   render() {
-    var today = new Date();
     const return_thread_status = (user, thread) => {
       if (thread.isFinalVersion) {
         return (

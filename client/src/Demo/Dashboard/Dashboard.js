@@ -424,13 +424,6 @@ class Dashboard extends React.Component {
     if (this.props.user.role === 'Admin') {
       return (
         <Aux>
-          {!isLoaded && (
-            <div style={spinner_style}>
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            </div>
-          )}
           {res_modal_status >= 400 && (
             <ModalMain
               ConfirmError={this.ConfirmError}
@@ -461,13 +454,6 @@ class Dashboard extends React.Component {
     } else if (this.props.user.role === 'Agent') {
       return (
         <Aux>
-          {!isLoaded && (
-            <div style={spinner_style}>
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            </div>
-          )}
           {res_modal_status >= 400 && (
             <ModalMain
               ConfirmError={this.ConfirmError}
@@ -489,13 +475,6 @@ class Dashboard extends React.Component {
     } else if (this.props.user.role === 'Editor') {
       return (
         <Aux>
-          {!isLoaded && (
-            <div style={spinner_style}>
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            </div>
-          )}
           {res_modal_status >= 400 && (
             <ModalMain
               ConfirmError={this.ConfirmError}
@@ -520,13 +499,6 @@ class Dashboard extends React.Component {
     } else if (this.props.user.role === 'Student') {
       return (
         <Aux>
-          {!isLoaded && (
-            <div style={spinner_style}>
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            </div>
-          )}
           {res_modal_status >= 400 && (
             <ModalMain
               ConfirmError={this.ConfirmError}
@@ -545,13 +517,6 @@ class Dashboard extends React.Component {
     } else {
       return (
         <Aux>
-          {!isLoaded && (
-            <div style={spinner_style}>
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            </div>
-          )}
           {res_modal_status >= 400 && (
             <ModalMain
               ConfirmError={this.ConfirmError}

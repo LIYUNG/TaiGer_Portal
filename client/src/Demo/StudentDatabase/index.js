@@ -8,11 +8,7 @@ import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
-import {
-  getAllStudents,
-  updateArchivStudents
-} from '../../api';
-import { IoTabletPortraitOutline } from 'react-icons/io5';
+import { getAllStudents, updateArchivStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 
 class Dashboard extends React.Component {
@@ -95,7 +91,7 @@ class Dashboard extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to="/dashboard/default" />;
     }
-    
+
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.data) {
@@ -118,29 +114,14 @@ class Dashboard extends React.Component {
           <Row>
             <Col>
               <Card className="my-0 mx-0">
-                {/* <Card.Body> */}
-                {this.props.user.role === 'Admin' ||
-                this.props.user.role === 'Agent' ||
-                this.props.user.role === 'Editor' ? (
-                  <TabStudBackgroundDashboard
-                    students={this.state.students}
-                    agent_list={this.state.agent_list}
-                    editor_list={this.state.editor_list}
-                    updateStudentArchivStatus={this.updateStudentArchivStatus}
-                    isArchivPage={this.state.isArchivPage}
-                    SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-                  />
-                ) : (
-                  <></>
-                )}
-                {!isLoaded && (
-                  <div style={spinner_style}>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  </div>
-                )}
-                {/* </Card.Body> */}
+                <TabStudBackgroundDashboard
+                  students={this.state.students}
+                  agent_list={this.state.agent_list}
+                  editor_list={this.state.editor_list}
+                  updateStudentArchivStatus={this.updateStudentArchivStatus}
+                  isArchivPage={this.state.isArchivPage}
+                  SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+                />
               </Card>
             </Col>
           </Row>

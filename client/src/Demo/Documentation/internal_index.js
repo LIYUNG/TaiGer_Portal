@@ -14,6 +14,7 @@ import {
   updateInternalDocumentationPage
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class InternaldocsPage extends React.Component {
   state = {
@@ -124,7 +125,7 @@ class InternaldocsPage extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
     const {
@@ -148,7 +149,7 @@ class InternaldocsPage extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    TabTitle("Internal Documentations")
+    TabTitle('Internal Documentations');
     return (
       <>
         {res_modal_status >= 400 && (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../Utils/contants';
 import {
   check_academic_background_filled,
@@ -190,7 +191,7 @@ class StudentTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={'/base-documents'}
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >

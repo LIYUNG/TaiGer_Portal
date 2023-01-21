@@ -18,6 +18,7 @@ import {
 import ErrorPage from '../../Utils/ErrorPage';
 
 import { updateBanner } from '../../../api';
+import DEMO from '../../../store/constant';
 
 class StudentDashboard extends React.Component {
   state = {
@@ -41,12 +42,10 @@ class StudentDashboard extends React.Component {
           this.setState((state) => ({
             ...state,
             success: success,
-            isLoaded: true,
             res_status: status
           }));
         } else {
           this.setState({
-            isLoaded: true,
             res_status: status
           });
         }
@@ -54,7 +53,6 @@ class StudentDashboard extends React.Component {
       (error) => {
         this.setState((state) => ({
           ...state,
-          isLoaded: true,
           error,
           res_status: 500
         }));
@@ -63,7 +61,7 @@ class StudentDashboard extends React.Component {
   };
 
   render() {
-    const { res_status, isLoaded } = this.state;
+    const { res_status } = this.state;
 
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
@@ -143,7 +141,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}
               title={'Reminder:'}
-              path={'/uni-assist'}
+              path={`${DEMO.UNI_ASSIST_LINK}`}
               text={'Please go to Uni-Assist to apply or to get VPD'}
               link_name={'Uni-Assist'}
               removeBanner={this.removeBanner}
@@ -157,7 +155,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'primary'}
               title={'Info:'}
-              path={'/uni-assist'}
+              path={`${DEMO.UNI_ASSIST_LINK}`}
               text={'New agent is assigned to you.'}
               link_name={''}
               removeBanner={this.removeBanner}
@@ -171,7 +169,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'primary'}
               title={'Info:'}
-              path={'/uni-assist'}
+              path={`${DEMO.UNI_ASSIST_LINK}`}
               text={'New editor is assigned to you.'}
               link_name={''}
               removeBanner={this.removeBanner}
@@ -185,7 +183,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}
               title={'Reminder:'}
-              path={'/cv-ml-rl-center'}
+              path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
               text={'New feedback from your Editor. See'}
               link_name={'CV/ML/RL Center'}
               removeBanner={this.removeBanner}
@@ -199,7 +197,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}
               title={'Reminder:'}
-              path={'/cv-ml-rl-center'}
+              path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
               text={'New tasks are assigned to you. See'}
               link_name={'CV/ML/RL Center'}
               removeBanner={this.removeBanner}
@@ -227,7 +225,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}
               title={'Reminder:'}
-              path={'/base-documents'}
+              path={`${DEMO.BASE_DOCUMENTS_LINK}`}
               text={'Some of Base Documents are still missing'}
               link_name={'Base Documents'}
               removeBanner={this.removeBanner}
@@ -241,7 +239,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}
               title={'Reminder:'}
-              path={'/base-documents'}
+              path={`${DEMO.BASE_DOCUMENTS_LINK}`}
               text={'Some of Base Documents are rejected'}
               link_name={'Base Documents'}
               removeBanner={this.removeBanner}
@@ -259,7 +257,7 @@ class StudentDashboard extends React.Component {
               <Banner
                 ReadOnlyMode={true}
                 bg={'primary'}
-                path={'/base-documents'}
+                path={`${DEMO.BASE_DOCUMENTS_LINK}`}
                 title={'Info:'}
                 text={
                   'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
@@ -326,7 +324,7 @@ class StudentDashboard extends React.Component {
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   <Link
-                    to={'/base-documents'}
+                    to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                     style={{ textDecoration: 'none' }}
                     className="text-info"
                   >

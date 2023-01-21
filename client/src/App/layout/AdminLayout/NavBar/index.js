@@ -49,7 +49,7 @@ class NavBar extends Component {
               />
             </a>{' '}
             <Link
-              to={'/dashboard/default'}
+              to={`${DEMO.DASHBOARD_LINK}`}
               style={{ textDecoration: 'none' }}
               className="b-brand mx-2"
             >

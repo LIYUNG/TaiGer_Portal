@@ -9,6 +9,7 @@ import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getTeamMembers } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class Survey extends React.Component {
   state = {
@@ -18,9 +19,6 @@ class Survey extends React.Component {
     data: null,
     success: false,
     teams: null,
-    academic_background: {},
-    application_preference: {},
-    updateconfirmed: false,
     res_status: 0
   };
 
@@ -56,9 +54,9 @@ class Survey extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle("TaiGer Team")
+    TabTitle('TaiGer Team');
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {

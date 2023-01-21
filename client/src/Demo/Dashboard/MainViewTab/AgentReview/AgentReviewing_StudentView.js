@@ -4,6 +4,7 @@ import {
   AiOutlineLoading3Quarters,
   AiFillQuestionCircle
 } from 'react-icons/ai';
+import DEMO from '../../../../store/constant';
 
 class AgentReviewing_StudentView extends React.Component {
   render() {
@@ -60,7 +61,7 @@ class AgentReviewing_StudentView extends React.Component {
               title="Under agent's check"
             />{' '}
             <Link
-              to={'/base-documents'}
+              to={`${DEMO.BASE_DOCUMENTS_LINK}`}
               className="text-info"
               style={{ textDecoration: 'none' }}
             >

@@ -8,6 +8,7 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class UniAssistList extends React.Component {
   state = {
@@ -49,7 +50,7 @@ class UniAssistList extends React.Component {
 
   render() {
     if (this.props.user.role !== 'Student') {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     TabTitle('Uni-Assist & VPD');
     const { res_status, isLoaded } = this.state;
@@ -86,7 +87,7 @@ class UniAssistList extends React.Component {
             <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Body className="my-0 mx-0 text-light">
                 Instructions: Follow the documentations in{' '}
-                <Link to="/docs/uniassist" className='text-info'>
+                <Link to="/docs/uniassist" className="text-info">
                   Uni-Assist
                 </Link>
               </Card.Body>

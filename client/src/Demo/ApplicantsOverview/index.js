@@ -10,6 +10,7 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class ApplicantSOverview extends React.Component {
   state = {
@@ -59,9 +60,9 @@ class ApplicantSOverview extends React.Component {
       this.props.user.role !== 'Agent' &&
       this.props.user.role !== 'Student'
     ) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle("Applications Overview")
+    TabTitle('Applications Overview');
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.students) {

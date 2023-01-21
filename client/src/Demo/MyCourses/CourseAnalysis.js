@@ -13,13 +13,12 @@ import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import * as XLSX from 'xlsx/xlsx.mjs';
 
 import Aux from '../../hoc/_Aux';
-import { convertDate, spinner_style, study_group } from '../Utils/contants';
+import { convertDate, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { showButtonIfMyStudentB } from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
-import { analyzedFileDownload_test, transcriptanalyser_test } from '../../api';
+import { analyzedFileDownload_test } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 
 export default function CourseAnalysis(props) {
@@ -28,17 +27,13 @@ export default function CourseAnalysis(props) {
     isLoaded: false,
     coursesdata: {},
     analysis: {},
-    confirmModalWindowOpen: false,
     sheets: {},
     sheetNames: [],
-    analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
     excel_file: {},
     file: '',
-    study_group: '',
     analyzed_course: '',
-    expand: true,
     isAnalysing: false,
     isUpdating: false,
     isDownloading: false,

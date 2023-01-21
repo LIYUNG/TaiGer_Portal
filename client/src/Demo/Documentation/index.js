@@ -14,6 +14,7 @@ import {
   updateDocumentationPage
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class Documentation extends React.Component {
   state = {
@@ -177,7 +178,7 @@ class Documentation extends React.Component {
       this.props.user.role !== 'Agent' &&
       this.props.user.role !== 'Student'
     ) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     const {
       res_status,

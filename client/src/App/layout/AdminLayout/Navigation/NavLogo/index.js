@@ -25,7 +25,7 @@ const navLogo = (props) => {
           />
         </a>{' '}
         <Link
-          to={'/dashboard/default'}
+          to={`${DEMO.DASHBOARD_LINK}`}
           style={{ textDecoration: 'none' }}
           className="b-brand mx-2"
         >

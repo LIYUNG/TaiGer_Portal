@@ -10,6 +10,7 @@ import { getAgent } from '../../api';
 import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class AgentPage extends React.Component {
   state = {
@@ -20,9 +21,6 @@ class AgentPage extends React.Component {
     success: false,
     students: null,
     agent: null,
-    academic_background: {},
-    application_preference: {},
-    updateconfirmed: false,
     res_status: 0
   };
 
@@ -59,7 +57,7 @@ class AgentPage extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
     const { res_status, isLoaded } = this.state;

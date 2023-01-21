@@ -9,6 +9,7 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getTeamMembers } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class AdminPage extends React.Component {
   state = {
@@ -56,7 +57,7 @@ class AdminPage extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
     const { res_status, isLoaded } = this.state;

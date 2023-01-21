@@ -16,6 +16,7 @@ import {
   deleteDocumentation
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class DocCreatePage extends React.Component {
   state = {
@@ -219,7 +220,7 @@ class DocCreatePage extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
     const { res_status, isLoaded, res_modal_status, res_modal_message } =

@@ -9,6 +9,7 @@ import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { SYMBOL_EXPLANATION, spinner_style } from '../../Utils/contants';
 
 import { getStudents, getAgents, updateAgents } from '../../../api';
+import DEMO from '../../../store/constant';
 
 class AssignAgents extends React.Component {
   state = {
@@ -201,7 +202,7 @@ class AssignAgents extends React.Component {
 
   render() {
     if (this.props.user.role !== 'Admin') {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     const { isLoaded, res_status, res_modal_status, res_modal_message } =
       this.state;

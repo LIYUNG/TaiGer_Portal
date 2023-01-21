@@ -1,7 +1,9 @@
 const DEMO = {
   BLANK_LINK: '/dashboard/default',
   DASHBOARD_LINK: '/dashboard/default',
-  LOG_OUT: '/tables/bootstrap',
+  UNI_ASSIST_LINK: '/uni-assist',
+  CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
+  BASE_DOCUMENTS_LINK: '/base-documents',
   SETTINGS: '/settings'
 };
 

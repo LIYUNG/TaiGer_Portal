@@ -40,6 +40,7 @@ import {
   updateEditors
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -463,7 +464,7 @@ class SingleStudentPage extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
     const {
@@ -488,7 +489,9 @@ class SingleStudentPage extends React.Component {
         </div>
       );
     }
-    TabTitle(`Student ${this.state.student.firstname} ${this.state.student.lastname}`);
+    TabTitle(
+      `Student ${this.state.student.firstname} ${this.state.student.lastname}`
+    );
     return (
       <>
         {res_modal_status >= 400 && (

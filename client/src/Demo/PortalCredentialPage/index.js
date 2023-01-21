@@ -17,7 +17,6 @@ export default function PortalCredentialPage(props) {
     isLoaded: false,
     isUpdateLoaded: {},
     applications: [],
-    analysis: {},
     confirmModalWindowOpen: false,
     success: false,
     student: null,

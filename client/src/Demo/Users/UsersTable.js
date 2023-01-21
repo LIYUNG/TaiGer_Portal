@@ -8,7 +8,7 @@ import AddUserModal from './AddUserModal';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
+import DEMO from '../../store/constant';
 import { getUsers, addUser } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 
@@ -103,7 +103,7 @@ class UsersTable extends React.Component {
 
   render() {
     if (this.props.user.role !== 'Admin') {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     TabTitle('User List');
     const { res_modal_message, res_modal_status, res_status, isLoaded } =
@@ -118,7 +118,6 @@ class UsersTable extends React.Component {
         </div>
       );
     }
-
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }

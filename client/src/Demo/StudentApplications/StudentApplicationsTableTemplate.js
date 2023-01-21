@@ -30,6 +30,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
@@ -547,7 +548,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                   <Banner
                     ReadOnlyMode={true}
                     bg={'primary'}
-                    path={'/base-documents'}
+                    to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                     title={'Info:'}
                     text={
                       'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'

@@ -19,6 +19,7 @@ import {
   transcriptanalyser_test
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
@@ -42,9 +43,7 @@ export default function MyCourses(props) {
     res_modal_status: 0,
     res_modal_message: ''
   });
-  // if (props.user.role !== 'Student' && props.user.role !== 'Guest') {
-  //   return <Redirect to="/dashboard/default" />;
-  // }
+
   useEffect(() => {
     const student_id = props.match.params.student_id
       ? props.match.params.student_id
@@ -350,7 +349,7 @@ export default function MyCourses(props) {
   }
   if (!props.match.params.student_id) {
     if (is_TaiGer_role(props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
   }
 

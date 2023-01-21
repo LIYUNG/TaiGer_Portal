@@ -34,6 +34,7 @@ import {
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 // import makeData from './makeData';
 
@@ -696,9 +697,9 @@ function ProgramList(props) {
   });
 
   if (props.user.role !== 'Admin' && props.user.role !== 'Agent') {
-    return <Redirect to="/dashboard/default" />;
+    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle("Program List")
+  TabTitle('Program List');
   useEffect(() => {
     getPrograms().then(
       (resp) => {

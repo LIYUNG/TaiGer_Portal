@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import DEMO from '../../../../store/constant';
 
 import { convertDate } from '../../../Utils/contants';
 
@@ -27,7 +28,7 @@ class UnrespondedThreads extends React.Component {
                       to={
                         this.props.role === 'Student' ||
                         this.props.role === 'Guest'
-                          ? '/cv-ml-rl-center'
+                          ? `${DEMO.CV_ML_RL_CENTER_LINK}`
                           : '/student-database/' +
                             this.props.student._id +
                             '/CV_ML_RL'
@@ -74,7 +75,7 @@ class UnrespondedThreads extends React.Component {
                           to={
                             this.props.role === 'Student' ||
                             this.props.role === 'Guest'
-                              ? '/cv-ml-rl-center'
+                              ? `${DEMO.CV_ML_RL_CENTER_LINK}`
                               : '/student-database/' +
                                 this.props.student._id +
                                 '/CV_ML_RL'

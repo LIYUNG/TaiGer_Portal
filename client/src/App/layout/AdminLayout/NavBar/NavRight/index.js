@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Col,
   Row,
-  Button,
-  DropdownButton,
   Dropdown
 } from 'react-bootstrap';
 import { Avatar } from '@mui/material';
@@ -73,56 +71,7 @@ class NavRight extends Component {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                {/* <DropdownButton
-                  variant="default"
-                  size="sm"
-                  id="dropdown-basic-button"
-                  title={`${this.props.userdata.firstname} ${this.props.userdata.lastname}`}
-                >
-                  <NavLink to="/base-documents">
-                    <Dropdown.Item size="sm">Base Documents</Dropdown.Item>
-                  </NavLink>
-                  <NavLink
-                    to={'/settings'}
-                    className="dud-logout"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Dropdown.Item>My Settings</Dropdown.Item>
-                  </NavLink>
-                  <NavLink
-                    to={'/logout'}
-                    className="dud-logout"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Dropdown.Item onClick={(e) => this.handleOnClick(e)}>
-                      Sign Out
-                    </Dropdown.Item>
-                  </NavLink>
-                </DropdownButton> */}
               </li>
-              {/* <li className={this.props.rtlLayout ? 'm-r-15' : 'm-l-15'}>
-                <a
-                  // href={DEMO.BLANK_LINK}
-                  // className="displayChatbox"
-                  onClick={() => {
-                    this.setState({ listOpen: true });
-                  }}
-                >
-                  <i className="icon feather icon-mail" /> Messages
-                </a>
-              </li> */}
-              {/* <li>
-                <Row>
-                  <Link
-                    to={'/settings'}
-                    // onClick={(e) => this.handleOnClick(e)}
-                    className="dud-logout"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    ettings
-                  </Link>
-                </Row>
-              </li> */}
             </ul>
           </Col>
         </Container>

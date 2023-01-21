@@ -11,6 +11,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getArchivStudents, updateArchivStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class ArchivStudents extends React.Component {
   state = {
@@ -131,9 +132,9 @@ class ArchivStudents extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle("Archiv Student")
+    TabTitle('Archiv Student');
     const { res_status, isLoaded, res_modal_status, res_modal_message } =
       this.state;
 

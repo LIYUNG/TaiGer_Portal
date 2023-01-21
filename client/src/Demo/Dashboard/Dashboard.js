@@ -25,7 +25,6 @@ import { TabTitle } from '../Utils/TabTitle';
 class Dashboard extends React.Component {
   state = {
     error: '',
-    modalShow: false,
     agent_list: [],
     editor_list: [],
     isLoaded: false,

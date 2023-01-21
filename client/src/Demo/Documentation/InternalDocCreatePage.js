@@ -15,6 +15,7 @@ import {
   deleteInternalDocumentation
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class InternalDocCreatePage extends React.Component {
   state = {
@@ -201,7 +202,7 @@ class InternalDocCreatePage extends React.Component {
 
   render() {
     if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
     const { res_status, isLoaded } = this.state;
@@ -238,7 +239,7 @@ class InternalDocCreatePage extends React.Component {
         />
       ));
     };
-    TabTitle("Internal Docs Database")
+    TabTitle('Internal Docs Database');
     return (
       <Aux>
         <Row className="sticky-top ">

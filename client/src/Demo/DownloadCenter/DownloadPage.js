@@ -9,6 +9,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { deleteTemplateFile, getTemplates, uploadtemplate } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class DownloadPage extends React.Component {
   state = {
@@ -155,7 +156,7 @@ class DownloadPage extends React.Component {
       this.props.user.role !== 'Agent' &&
       this.props.user.role !== 'Student'
     ) {
-      return <Redirect to="/dashboard/default" />;
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     TabTitle('Download Center');
     const { res_status, isLoaded, res_modal_status, res_modal_message } =

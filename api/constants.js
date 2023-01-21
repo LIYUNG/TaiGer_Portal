@@ -357,6 +357,54 @@ const unsubmitted_applications_escalation_summary = (student) => {
   return unsubmitted_applications;
 };
 
+const unsubmitted_applications_escalation_agent_summary = (student) => {
+  let unsubmitted_applications = '';
+  let x = 0;
+  const today = new Date();
+  for (let i = 0; i < student.applications.length; i += 1) {
+    const day_diff = getNumberOfDays(
+      today,
+      application_deadline_calculator(student, student.applications[i])
+    );
+    if (
+      student.applications[i].decided === 'O' &&
+      student.applications[i].closed !== 'O' &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      day_diff > -1
+    ) {
+      if (x === 0) {
+        unsubmitted_applications = `
+        <b>${student.firstname} ${student.lastname}</b><br />
+        
+        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
+        <ul>
+        <li>${student.applications[i].programId.school} ${
+          student.applications[i].programId.program_name
+        }: <b> Deadline ${application_deadline_calculator(
+          student,
+          student.applications[i]
+        )} </b> </li>`;
+        x += 1;
+      } else {
+        unsubmitted_applications += `<li>${
+          student.applications[i].programId.school
+        } - ${
+          student.applications[i].programId.program_name
+        }: <b> Deadline ${application_deadline_calculator(
+          student,
+          student.applications[i]
+        )} </b></li>`;
+      }
+      console.log(`Day left: ${day_diff}`);
+    }
+  }
+  if (unsubmitted_applications !== '') {
+    unsubmitted_applications += '</ul>';
+    unsubmitted_applications += `<p>If the applications are already submitted, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
+  }
+  return unsubmitted_applications;
+};
+
 const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
   let kk = 0;
@@ -1175,6 +1223,7 @@ module.exports = {
   application_deadline_calculator,
   unsubmitted_applications_summary,
   unsubmitted_applications_escalation_summary,
+  unsubmitted_applications_escalation_agent_summary,
   cv_ml_rl_escalation_summary,
   cv_ml_rl_editor_escalation_summary,
   cv_ml_rl_unfinished_summary,

@@ -12,7 +12,8 @@ const {
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
   StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
   EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
-  AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail
+  AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
+  AgentApplicationsDeadline_Within30Days_DailyReminderEmail
 } = require('../services/regular_system_emails');
 const logger = require('../services/logger');
 const {
@@ -186,7 +187,6 @@ const UrgentTasksReminderEmails = async () => {
     }
   }
 
-  // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
   for (let j = 0; j < agents.length; j += 1) {
     const agent_students = await Student.find({
       agents: agents[j]._id,
@@ -201,6 +201,8 @@ const UrgentTasksReminderEmails = async () => {
       .select('-notification');
     if (agent_students.length > 0) {
       let temp_flag = false;
+      let temp_flag2 = false;
+      // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
       for (let x = 0; x < agent_students.length; x += 1) {
         temp_flag |= is_cv_ml_rl_reminder_needed(
           agent_students[x],
@@ -220,6 +222,24 @@ const UrgentTasksReminderEmails = async () => {
             agent: agents[j],
             trigger_days: escalation_trigger_days
           }
+        );
+      }
+      // (O) check any program within 30 days from agent's students?
+      for (let x = 0; x < agent_students.length; x += 1) {
+        temp_flag2 |= is_deadline_within30days_needed(agent_students[x]);
+      }
+      if (temp_flag2) {
+        console.log(`Escalate: ${agents[j].firstname} ${agents[j].lastname}`);
+        await AgentApplicationsDeadline_Within30Days_DailyReminderEmail(
+          {
+            firstname: agents[j].firstname,
+            lastname: agents[j].lastname,
+            address: agents[j].email
+          },
+          { students: agent_students }
+        );
+        console.log(
+          `Daily urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
         );
       }
     }

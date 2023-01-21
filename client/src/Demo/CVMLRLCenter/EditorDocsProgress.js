@@ -724,7 +724,6 @@ class EditorDocsProgress extends React.Component {
                                   }
                                 >
                                   ML
-                                  {/* <AiOutlineMore size={20} /> */}
                                 </Button>
                               </>
                             ) : (
@@ -744,7 +743,6 @@ class EditorDocsProgress extends React.Component {
                                   }
                                 >
                                   RL
-                                  {/* <AiOutlineMore size={20} /> */}
                                 </Button>
                               </>
                             ) : (
@@ -765,7 +763,6 @@ class EditorDocsProgress extends React.Component {
                                   }
                                 >
                                   Essay
-                                  {/* <AiOutlineMore size={20} /> */}
                                 </Button>
                               </>
                             ) : (

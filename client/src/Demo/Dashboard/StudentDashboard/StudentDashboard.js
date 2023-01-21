@@ -300,7 +300,7 @@ class StudentDashboard extends React.Component {
                 path={'/base-documents'}
                 title={'Info:'}
                 text={
-                  'TaiGer Portal 上網站學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
+                  'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
                 }
                 link_name={''}
                 removeBanner={this.removeBanner}
@@ -395,6 +395,7 @@ class StudentDashboard extends React.Component {
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   <BsExclamationTriangle size={18} /> To Do Tasks:
+                  請盡速完成以下任務
                 </Card.Title>
               </Card.Header>
               <Table
@@ -419,7 +420,7 @@ class StudentDashboard extends React.Component {
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Pending
+                  Pending: 等待 Editor 回復
                 </Card.Title>
               </Card.Header>
               <Table

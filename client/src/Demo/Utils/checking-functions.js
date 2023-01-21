@@ -1,3 +1,4 @@
+import { getNumberOfDays } from './contants';
 export const is_TaiGer_role = (user) =>
   user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
 
@@ -256,6 +257,22 @@ export const check_languages_filled = (academic_background) => {
       academic_background.language.english_isPassed === '-') &&
       (!academic_background.language.german_isPassed ||
         academic_background.language.german_isPassed === '-'))
+  ) {
+    return false;
+  }
+  // if test date expired:
+  const today = new Date();
+  if (
+    (academic_background.language.english_isPassed === 'X' &&
+      getNumberOfDays(academic_background.language.english_test_date, today) >
+        1) ||
+    (academic_background.language.english_isPassed === 'X' &&
+      academic_background.language.english_test_date === '') ||
+    (academic_background.language.german_isPassed === 'X' &&
+      getNumberOfDays(academic_background.language.german_test_date, today) >
+        1) ||
+    (academic_background.language.german_isPassed === 'X' &&
+      academic_background.language.german_test_date === '')
   ) {
     return false;
   }

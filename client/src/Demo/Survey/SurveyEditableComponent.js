@@ -13,7 +13,8 @@ import {
 import {
   APPLICATION_YEARS_FUTURE,
   EXPECTATION_APPLICATION_YEARS,
-  profile_name_list
+  profile_name_list,
+  getNumberOfDays
 } from '../Utils/contants';
 class SurveyEditableComponent extends React.Component {
   state = {
@@ -167,8 +168,10 @@ class SurveyEditableComponent extends React.Component {
           )) && (
           <Row>
             <Col>
-              <Card className="my-2 mx-2" bg={'danger'} text={'light'}>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
+                  請盡速填好以下問卷問題
+                  <br />
                   The followings information are still missing:{' '}
                   {this.props.academic_background &&
                     this.props.academic_background.university &&
@@ -237,8 +240,42 @@ class SurveyEditableComponent extends React.Component {
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
+                  請盡速更新您的語言檢定資訊
+                  <br />
                   You <b>language skills</b> information are still missing or
-                  not updated.
+                  not up-to-date.
+                  {(!this.props.academic_background.language &&
+                    this.props.academic_background.language.english_isPassed ===
+                      'X' &&
+                    getNumberOfDays(
+                      this.props.academic_background.language.english_test_date,
+                      new Date()
+                    ) > 1) ||
+                  (!this.props.academic_background.language &&
+                    this.props.academic_background.language.english_isPassed ===
+                      'X' &&
+                    this.props.academic_background.language
+                      .english_test_date === '') ? (
+                    <li>English Test Date (Or if passed? Or not needed?)</li>
+                  ) : (
+                    <></>
+                  )}
+                  {(!this.props.academic_background.language &&
+                    this.props.academic_background.language.german_isPassed ===
+                      'X' &&
+                    getNumberOfDays(
+                      this.props.academic_background.language.german_test_date,
+                      new Date()
+                    ) > 1) ||
+                  (!this.props.academic_background.language &&
+                    this.props.academic_background.language.german_isPassed ===
+                      'X' &&
+                    this.props.academic_background.language.german_test_date ===
+                      '') ? (
+                    <li>German Test Date (Or if passed? Or not needed?)</li>
+                  ) : (
+                    <></>
+                  )}
                 </Card.Body>
               </Card>
             </Col>

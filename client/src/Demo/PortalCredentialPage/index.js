@@ -221,7 +221,9 @@ export default function PortalCredentialPage(props) {
       </div>
     );
   }
-  TabTitle(`Student ${statedata.student.firstname} ${statedata.student.lastname} || Portal Credentials`);
+  TabTitle(
+    `Student ${statedata.student.firstname} ${statedata.student.lastname} || Portal Credentials`
+  );
   if (statedata.res_status >= 400) {
     return <ErrorPage res_status={statedata.res_status} />;
   }
@@ -270,151 +272,158 @@ export default function PortalCredentialPage(props) {
               </Row>
               {statedata.applications.map((application, i) => (
                 <>
-                  <hr></hr>
-                  <div>
-                    <a
-                      href={`/programs/${application.programId._id.toString()}`}
-                      target="_blank"
-                    >
-                      <b>
-                        {application.programId.school}
-                        {' - '}
-                        {application.programId.program_name}
-                      </b>
-                    </a>{' '}
-                    {showButtonIfMyStudentB(props.user, statedata.student) &&
-                      (application.programId.application_portal_a ||
-                        application.programId.application_portal_b) && (
-                        <Button
-                          size="sm"
-                          onClick={(e) =>
-                            onSubmit(
-                              statedata.student._id.toString(),
-                              application.programId._id.toString(),
-                              statedata.credentials[
+                  {application.decided === 'O' && (
+                    <>
+                      <hr></hr>
+                      <div>
+                        <a
+                          href={`/programs/${application.programId._id.toString()}`}
+                          target="_blank"
+                        >
+                          <b>
+                            {application.programId.school}
+                            {' - '}
+                            {application.programId.program_name}
+                          </b>
+                        </a>{' '}
+                        {showButtonIfMyStudentB(
+                          props.user,
+                          statedata.student
+                        ) &&
+                          (application.programId.application_portal_a ||
+                            application.programId.application_portal_b) && (
+                            <Button
+                              size="sm"
+                              onClick={(e) =>
+                                onSubmit(
+                                  statedata.student._id.toString(),
+                                  application.programId._id.toString(),
+                                  statedata.credentials[
+                                    application.programId._id.toString()
+                                  ]
+                                )
+                              }
+                              disabled={
+                                !statedata.isUpdateLoaded[
+                                  application.programId._id.toString()
+                                ]
+                              }
+                            >
+                              {!statedata.isUpdateLoaded[
                                 application.programId._id.toString()
                               ]
-                            )
-                          }
-                          disabled={
-                            !statedata.isUpdateLoaded[
-                              application.programId._id.toString()
-                            ]
-                          }
-                        >
-                          {!statedata.isUpdateLoaded[
-                            application.programId._id.toString()
-                          ]
-                            ? 'Updating'
-                            : 'Update'}
-                        </Button>
-                      )}
-                  </div>
-                  {(application.programId.application_portal_a ||
-                    application.programId.application_portal_b) && (
-                    <>
-                      <Row>
-                        <Col md={4}>
-                          <b>Account</b>
-                        </Col>
-                        <Col md={3}>
-                          <b>Password</b>
-                        </Col>
-                        <Col md={5}>
-                          <b>Link</b>
-                        </Col>
-                      </Row>
-                      {application.programId.application_portal_a && (
-                        <Row>
-                          <Col md={4}>
-                            <Form.Group
-                              controlId={`${application.programId._id.toString()}_application_portal_a_account`}
-                              className="my-0 mx-0"
-                            >
-                              <Form.Control
-                                type="text"
-                                placeholder="account"
-                                onChange={(e) => onChange(e)}
-                                defaultValue={
-                                  statedata.credentials[
-                                    application.programId._id.toString()
-                                  ].account_portal_a
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col md={3}>
-                            <Form.Group
-                              controlId={`${application.programId._id.toString()}_application_portal_a_password`}
-                              className="my-0 mx-0"
-                            >
-                              <Form.Control
-                                type="text"
-                                placeholder="password"
-                                onChange={(e) => onChange(e)}
-                                defaultValue={
-                                  statedata.credentials[
-                                    application.programId._id.toString()
-                                  ].password_portal_a
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col md={5}>
-                            <a
-                              href={`${application.programId.application_portal_a}`}
-                              target="_blank"
-                            >
-                              {application.programId.application_portal_a}
-                            </a>
-                          </Col>
-                        </Row>
-                      )}
-                      {application.programId.application_portal_b && (
-                        <Row>
-                          <Col md={4}>
-                            <Form.Group
-                              controlId={`${application.programId._id.toString()}_application_portal_b_account`}
-                              className="my-1 mx-0"
-                            >
-                              <Form.Control
-                                type="text"
-                                placeholder="account"
-                                onChange={(e) => onChange(e)}
-                                defaultValue={
-                                  statedata.credentials[
-                                    application.programId._id.toString()
-                                  ].account_portal_b
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col md={3}>
-                            <Form.Group
-                              controlId={`${application.programId._id.toString()}_application_portal_b_password`}
-                              className="my-1 mx-0"
-                            >
-                              <Form.Control
-                                type="text"
-                                placeholder="password"
-                                onChange={(e) => onChange(e)}
-                                defaultValue={
-                                  statedata.credentials[
-                                    application.programId._id.toString()
-                                  ].password_portal_b
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col md={5}>
-                            <a
-                              href={`${application.programId.application_portal_b}`}
-                              target="_blank"
-                            >
-                              {application.programId.application_portal_b}
-                            </a>
-                          </Col>
-                        </Row>
+                                ? 'Updating'
+                                : 'Update'}
+                            </Button>
+                          )}
+                      </div>
+                      {(application.programId.application_portal_a ||
+                        application.programId.application_portal_b) && (
+                        <>
+                          <Row>
+                            <Col md={4}>
+                              <b>Account</b>
+                            </Col>
+                            <Col md={3}>
+                              <b>Password</b>
+                            </Col>
+                            <Col md={5}>
+                              <b>Link</b>
+                            </Col>
+                          </Row>
+                          {application.programId.application_portal_a && (
+                            <Row>
+                              <Col md={4}>
+                                <Form.Group
+                                  controlId={`${application.programId._id.toString()}_application_portal_a_account`}
+                                  className="my-0 mx-0"
+                                >
+                                  <Form.Control
+                                    type="text"
+                                    placeholder="account"
+                                    onChange={(e) => onChange(e)}
+                                    defaultValue={
+                                      statedata.credentials[
+                                        application.programId._id.toString()
+                                      ].account_portal_a
+                                    }
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md={3}>
+                                <Form.Group
+                                  controlId={`${application.programId._id.toString()}_application_portal_a_password`}
+                                  className="my-0 mx-0"
+                                >
+                                  <Form.Control
+                                    type="text"
+                                    placeholder="password"
+                                    onChange={(e) => onChange(e)}
+                                    defaultValue={
+                                      statedata.credentials[
+                                        application.programId._id.toString()
+                                      ].password_portal_a
+                                    }
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md={5}>
+                                <a
+                                  href={`${application.programId.application_portal_a}`}
+                                  target="_blank"
+                                >
+                                  {application.programId.application_portal_a}
+                                </a>
+                              </Col>
+                            </Row>
+                          )}
+                          {application.programId.application_portal_b && (
+                            <Row>
+                              <Col md={4}>
+                                <Form.Group
+                                  controlId={`${application.programId._id.toString()}_application_portal_b_account`}
+                                  className="my-1 mx-0"
+                                >
+                                  <Form.Control
+                                    type="text"
+                                    placeholder="account"
+                                    onChange={(e) => onChange(e)}
+                                    defaultValue={
+                                      statedata.credentials[
+                                        application.programId._id.toString()
+                                      ].account_portal_b
+                                    }
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md={3}>
+                                <Form.Group
+                                  controlId={`${application.programId._id.toString()}_application_portal_b_password`}
+                                  className="my-1 mx-0"
+                                >
+                                  <Form.Control
+                                    type="text"
+                                    placeholder="password"
+                                    onChange={(e) => onChange(e)}
+                                    defaultValue={
+                                      statedata.credentials[
+                                        application.programId._id.toString()
+                                      ].password_portal_b
+                                    }
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col md={5}>
+                                <a
+                                  href={`${application.programId.application_portal_b}`}
+                                  target="_blank"
+                                >
+                                  {application.programId.application_portal_b}
+                                </a>
+                              </Col>
+                            </Row>
+                          )}
+                        </>
                       )}
                     </>
                   )}

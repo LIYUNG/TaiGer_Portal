@@ -130,7 +130,7 @@ class StudentTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={'/survey'}
+                to={`${DEMO.SURVEY_LINK}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
@@ -145,7 +145,7 @@ class StudentTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={'/student-applications'}
+                to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
@@ -161,7 +161,7 @@ class StudentTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={'/uni-assist'}
+                to={`${DEMO.UNI_ASSIST_LINK}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
@@ -176,7 +176,7 @@ class StudentTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={'/settings'}
+                to={`${DEMO.SETTINGS}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >

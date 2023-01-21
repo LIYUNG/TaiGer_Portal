@@ -189,7 +189,6 @@ class CVMLRLOverview extends React.Component {
     const cvmlrl_progress = this.state.students.map((student, i) => (
       <CVMLRLProgress
         key={i}
-        role={this.props.user.role}
         user={this.props.user}
         student={student}
         isDashboard={true}
@@ -199,7 +198,6 @@ class CVMLRLOverview extends React.Component {
     const cvmlrl_progress_closed = this.state.students.map((student, i) => (
       <CVMLRLProgressClosed
         key={i}
-        role={this.props.user.role}
         user={this.props.user}
         student={student}
         isDashboard={true}

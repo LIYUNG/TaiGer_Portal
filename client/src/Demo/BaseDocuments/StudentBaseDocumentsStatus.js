@@ -17,7 +17,6 @@ class StudentBaseDocumentsStatus extends React.Component {
   };
 
   render() {
-    let value2 = Object.values(window.profile_list);
     let keys2 = Object.keys(window.profile_list);
     let object_init = {};
     let object_message = {};
@@ -67,6 +66,8 @@ class StudentBaseDocumentsStatus extends React.Component {
     const title_missing = 'Incomplete';
     let current_style = style_ok;
     let current_title = title_ok;
+    const student_profile_path =
+      '/student-database/' + this.props.student._id + '/profile';
     var file_information;
     for (var i = 0; i < profile_list_keys.length; i++) {
       if (
@@ -84,7 +85,7 @@ class StudentBaseDocumentsStatus extends React.Component {
         return (
           <td key={i}>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={student_profile_path}
               style={{ textDecoration: 'none' }}
               className="text-info"
             >
@@ -100,7 +101,7 @@ class StudentBaseDocumentsStatus extends React.Component {
         return (
           <td key={i}>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={student_profile_path}
               style={{ textDecoration: 'none' }}
               className="text-info"
             >
@@ -116,7 +117,7 @@ class StudentBaseDocumentsStatus extends React.Component {
         return (
           <td key={i}>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={student_profile_path}
               style={{ textDecoration: 'none' }}
               className="text-info"
             >
@@ -133,7 +134,7 @@ class StudentBaseDocumentsStatus extends React.Component {
         return (
           <td key={i}>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={student_profile_path}
               style={{ textDecoration: 'none' }}
               className="text-info"
             >
@@ -145,7 +146,7 @@ class StudentBaseDocumentsStatus extends React.Component {
         return (
           <td key={i}>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={student_profile_path}
               style={{ textDecoration: 'none' }}
               className="text-info"
             >
@@ -165,7 +166,7 @@ class StudentBaseDocumentsStatus extends React.Component {
         <tr>
           <td style={current_style} title={current_title} className="long">
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={student_profile_path}
               style={{ textDecoration: 'none' }}
               className="text-light"
             >
@@ -174,7 +175,7 @@ class StudentBaseDocumentsStatus extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={student_profile_path}
               style={{ textDecoration: 'none' }}
               className="text-light"
             >

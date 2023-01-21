@@ -14,6 +14,7 @@ import {
   deleteFile,
   updateDocumentationHelperLink
 } from '../../api';
+import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 
 class BaseDocument_StudentView extends React.Component {
   state = {
@@ -372,8 +373,7 @@ class BaseDocument_StudentView extends React.Component {
           deleteFileWarningModel={this.state.deleteFileWarningModel}
         />
       ) : object_init[k].status === 'notneeded' ? (
-        (this.props.user.role === 'Admin' ||
-          this.props.user.role === 'Agent') && (
+        is_TaiGer_AdminAgent(this.props.user) && (
           <ButtonSetNotNeeded
             key={i + 1}
             updateDocLink={this.updateDocLink}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { HiX } from 'react-icons/hi';
+import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 
 class DocumentsListItems extends React.Component {
   render() {
@@ -9,7 +10,7 @@ class DocumentsListItems extends React.Component {
       <>
         <Row>
           <Col sm={10}>
-            {(this.props.role === 'Agent' || this.props.role === 'Admin') && (
+            {is_TaiGer_AdminAgent(this.props.user) && (
               <HiX
                 size={24}
                 color="red"

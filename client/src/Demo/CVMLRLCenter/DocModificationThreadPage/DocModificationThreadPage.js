@@ -8,7 +8,11 @@ import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style } from '../../Utils/contants';
-import { showButtonIfMyStudentB } from '../../Utils/checking-functions';
+import {
+  is_TaiGer_AdminAgent,
+  is_TaiGer_role,
+  showButtonIfMyStudentB
+} from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
 
 import {
@@ -444,8 +448,8 @@ class DocModificationThreadPage extends Component {
               <Col>
                 <h5>Instruction</h5>
                 <p>
-                  請填好我們的 TaiGer {' '}
-                  Template。請填好並在這個討論串夾帶在和您的 Editor 討論。
+                  請填好我們的 TaiGer Template。請填好並在這個討論串夾帶在和您的
+                  Editor 討論。
                 </p>
                 <p>
                   Please fill our TaiGer template and attach the filled template
@@ -470,8 +474,7 @@ class DocModificationThreadPage extends Component {
               <Col>
                 <h6>
                   <b>Requirements:</b>
-                  {(this.props.user.role === 'Agent' ||
-                    this.props.user.role === 'Admin') &&
+                  {is_TaiGer_AdminAgent(this.props.user) &&
                     this.state.thread.program_id && (
                       <Link
                         to={`/programs/${this.state.thread.program_id._id.toString()}`}
@@ -491,8 +494,7 @@ class DocModificationThreadPage extends Component {
                 )}
                 <h6>
                   <b>Deadline</b>
-                  {(this.props.user.role === 'Agent' ||
-                    this.props.user.role === 'Admin') &&
+                  {is_TaiGer_AdminAgent(this.props.user) &&
                     this.state.thread.program_id && (
                       <Link
                         to={`/programs/${this.state.thread.program_id._id.toString()}`}
@@ -576,9 +578,7 @@ class DocModificationThreadPage extends Component {
             </Card>
           </Row>
         )}
-        {(this.props.user.role === 'Editor' ||
-          this.props.user.role === 'Agent' ||
-          this.props.user.role === 'Admin') &&
+        {is_TaiGer_role(this.props.user) &&
           (!this.state.thread.isFinalVersion ? (
             <Row className="mt-2">
               {showButtonIfMyStudentB(

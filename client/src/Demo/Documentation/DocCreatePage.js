@@ -6,7 +6,10 @@ import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { valid_categories, spinner_style } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  is_TaiGer_AdminAgent,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -253,7 +256,7 @@ class DocCreatePage extends React.Component {
           key={i}
           path={'/docs/search'}
           document={document}
-          role={this.props.user.role}
+          user={this.props.user}
           openDeleteDocModalWindow={this.openDeleteDocModalWindow}
         />
       ));
@@ -339,8 +342,7 @@ class DocCreatePage extends React.Component {
                       {document_list(catego)}
                     </Row>
                   ))}
-                  {(this.props.user.role === 'Admin' ||
-                    this.props.user.role === 'Agent') && (
+                  {is_TaiGer_AdminAgent(this.props.user) && (
                     <Button onClick={this.handleClick}>Add</Button>
                   )}
                 </Card.Body>

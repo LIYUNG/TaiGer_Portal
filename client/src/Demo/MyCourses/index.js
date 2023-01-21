@@ -7,6 +7,7 @@ import { convertDate, spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
+  is_TaiGer_AdminAgent,
   is_TaiGer_role,
   showButtonIfMyStudentB
 } from '../Utils/checking-functions';
@@ -435,7 +436,7 @@ export default function MyCourses(props) {
               </Card.Body>
             </Card>
           )}
-          {(props.user.role === 'Admin' || props.user.role === 'Agent') && (
+          {is_TaiGer_AdminAgent(props.user) && (
             <Card className="mb-2 mx-0">
               <Card.Body>
                 <Row>

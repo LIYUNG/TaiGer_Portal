@@ -4,7 +4,10 @@ import { IoMdCloudUpload } from 'react-icons/io';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { FiExternalLink } from 'react-icons/fi';
 
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import {
+  is_TaiGer_AdminAgent,
+  showButtonIfMyStudent
+} from '../Utils/checking-functions';
 
 class ButtonSetMissing extends React.Component {
   state = {
@@ -162,8 +165,8 @@ class ButtonSetMissing extends React.Component {
           <td></td>
         )}
         <td></td>
-        {this.props.role === 'Admin' || this.props.role === 'Agent' ? (
-          <td>
+        <td>
+          {is_TaiGer_AdminAgent(this.props.user) && (
             <Col md>
               {showButtonIfMyStudent(this.props.user, this.props.student) && (
                 <Form
@@ -184,11 +187,8 @@ class ButtonSetMissing extends React.Component {
                 </Form>
               )}
             </Col>
-          </td>
-        ) : (
-          <td></td>
-        )}
-
+          )}
+        </td>
         <td></td>
         <td></td>
       </tr>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
+import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 
 class SingleProgramView extends React.Component {
@@ -294,29 +295,28 @@ class SingleProgramView extends React.Component {
                 </p>
               </Col>
             </Row>
-            {this.props.role === 'Admin' ||
-              (this.props.role === 'Agent' && (
-                <>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">Updated by</p>
-                    </Col>
-                    <Col md={6}>
-                      <p className="my-0">{this.props.program.whoupdated}</p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">Group</p>
-                    </Col>
-                    <Col md={6}>
-                      <p className="my-0">
-                        {this.props.program.study_group_flag}
-                      </p>
-                    </Col>
-                  </Row>
-                </>
-              ))}
+            {is_TaiGer_AdminAgent(this.props.user) && (
+              <>
+                <Row>
+                  <Col md={4}>
+                    <p className="my-0">Updated by</p>
+                  </Col>
+                  <Col md={6}>
+                    <p className="my-0">{this.props.program.whoupdated}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={4}>
+                    <p className="my-0">Group</p>
+                  </Col>
+                  <Col md={6}>
+                    <p className="my-0">
+                      {this.props.program.study_group_flag}
+                    </p>
+                  </Col>
+                </Row>
+              </>
+            )}
           </Card.Body>
         </Card>
       </>

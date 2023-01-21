@@ -9,6 +9,7 @@ import {
 } from 'react-icons/ai';
 
 import { convertDate } from '../../../Utils/contants';
+import { is_TaiGer_role } from '../../../Utils/checking-functions';
 
 class CVMLRLProgressClosed extends React.Component {
   handleAsFinalFileThread = (
@@ -98,9 +99,7 @@ class CVMLRLProgressClosed extends React.Component {
                   </p>
                 </Link>
               </td>
-              {(this.props.role === 'Admin' ||
-                this.props.role === 'Editor' ||
-                this.props.role === 'Agent') &&
+              {is_TaiGer_role(this.props.user) &&
                 (generaldocs_thread.isFinalVersion ? (
                   <td>
                     <AiOutlineUndo
@@ -184,9 +183,7 @@ class CVMLRLProgressClosed extends React.Component {
                   </Link>
                 </td>
 
-                {(this.props.role === 'Admin' ||
-                  this.props.role === 'Editor' ||
-                  this.props.role === 'Agent') &&
+                {is_TaiGer_role(this.props.user) &&
                   (doc_thread.isFinalVersion ? (
                     <td>
                       <AiOutlineUndo

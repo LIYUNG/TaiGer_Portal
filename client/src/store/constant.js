@@ -4,6 +4,8 @@ const DEMO = {
   UNI_ASSIST_LINK: '/uni-assist',
   CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
   BASE_DOCUMENTS_LINK: '/base-documents',
+  SURVEY_LINK: '/survey',
+  STUDENT_APPLICATIONS_LINK: '/student-applications',
   SETTINGS: '/settings'
 };
 

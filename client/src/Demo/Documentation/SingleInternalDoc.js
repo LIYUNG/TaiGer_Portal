@@ -150,7 +150,7 @@ class SingleDoc extends React.Component {
           document_title={this.state.document_title}
           editorState={this.state.editorState}
           isLoaded={isLoaded}
-          role={this.props.user.role}
+          user={this.props.user}
           handleClickEditToggle={this.handleClickEditToggle}
         />
       );

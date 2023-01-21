@@ -10,7 +10,10 @@ import {
 import { FiExternalLink } from 'react-icons/fi';
 
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import {
+  is_TaiGer_AdminAgent,
+  showButtonIfMyStudent
+} from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 import { BASE_URL } from '../../api/request';
 
@@ -270,8 +273,8 @@ class ButtonSetRejected extends React.Component {
             </a>
           </Col>
         </td>
-        {this.props.role === 'Agent' || this.props.role === 'Admin' ? (
-          <td>
+        <td>
+          {is_TaiGer_AdminAgent(this.props.user) && (
             <Col>
               {showButtonIfMyStudent(this.props.user, this.state.student) && (
                 <Button
@@ -293,10 +296,8 @@ class ButtonSetRejected extends React.Component {
                 </Button>
               )}
             </Col>
-          </td>
-        ) : (
-          <td></td>
-        )}
+          )}
+        </td>
         <td>
           <Button
             size="sm"

@@ -4,6 +4,7 @@ import EditorNew from '../../components/EditorJs/EditorNew';
 import { convertDate } from '../Utils/contants';
 // import Blocks from 'editorjs-blocks-react-renderer';
 import Output from 'editorjs-react-renderer';
+import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 class SingleDocView extends React.Component {
   render() {
     return (
@@ -62,7 +63,7 @@ class SingleDocView extends React.Component {
               handleClickEditToggle={this.props.handleClickEditToggle}
               editorState={this.props.editorState}
             />
-            {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
+            {is_TaiGer_AdminAgent(this.props.user) && (
               <>
                 <Row>
                   <Col md={2}>
@@ -76,7 +77,7 @@ class SingleDocView extends React.Component {
                 </Row>
               </>
             )}
-            {(this.props.role === 'Admin' || this.props.role === 'Agent') && (
+            {is_TaiGer_AdminAgent(this.props.user) && (
               <Button
                 size="sm"
                 onClick={(e) => this.props.handleClickEditToggle(e)}

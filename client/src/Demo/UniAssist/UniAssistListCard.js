@@ -5,7 +5,10 @@ import { AiOutlineDownload, AiOutlineDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
 import { BASE_URL } from '../../api/request';
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import {
+  showButtonIfMyStudent,
+  is_TaiGer_AdminAgent
+} from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -376,8 +379,7 @@ class UniAssistListCard extends React.Component {
                             )}
                           </Col>
                           <Col>
-                            {(this.props.role === 'Agent' ||
-                              this.props.role === 'Admin') &&
+                            {is_TaiGer_AdminAgent(this.props.user) &&
                               showButtonIfMyStudent(
                                 this.props.user,
                                 this.props.student
@@ -515,8 +517,7 @@ class UniAssistListCard extends React.Component {
                           )}
                         </Col>
                         <Col>
-                          {(this.props.role === 'Agent' ||
-                            this.props.role === 'Admin') &&
+                          {is_TaiGer_AdminAgent(this.props.user) &&
                             showButtonIfMyStudent(
                               this.props.user,
                               this.props.student
@@ -561,8 +562,7 @@ class UniAssistListCard extends React.Component {
                       </p>
                     </Col>
                     <Col>
-                      {(this.props.role === 'Agent' ||
-                        this.props.role === 'Admin') &&
+                      {is_TaiGer_AdminAgent(this.props.user) &&
                         showButtonIfMyStudent(
                           this.props.user,
                           this.props.student

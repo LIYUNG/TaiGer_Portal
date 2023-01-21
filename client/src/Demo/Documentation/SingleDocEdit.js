@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { valid_categories, valid_internal_categories } from '../Utils/contants';
+
 class SingleDocEdit extends React.Component {
   state = {
     doc_title: this.props.document_title,
@@ -45,7 +46,6 @@ class SingleDocEdit extends React.Component {
       <>
         <Card>
           <Card.Body>
-            {' '}
             <Row>
               <Col>
                 {this.props.internal ? (
@@ -106,7 +106,6 @@ class SingleDocEdit extends React.Component {
               editorState={this.props.editorState}
               handleClickSave={this.handleClickSave}
               handleClickEditToggle={this.props.handleClickEditToggle}
-              role={this.props.role}
             />
           </Card.Body>
         </Card>

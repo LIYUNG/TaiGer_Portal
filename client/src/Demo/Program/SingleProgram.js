@@ -7,6 +7,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
+import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 
 class SingleProgram extends React.Component {
   state = {
@@ -149,10 +150,9 @@ class SingleProgram extends React.Component {
           <SingleProgramView
             program={program}
             isLoaded={isLoaded}
-            role={this.props.user.role}
+            user={this.props.user}
           />
-          {(this.props.user.role === 'Admin' ||
-            this.props.user.role === 'Agent') && (
+          {is_TaiGer_AdminAgent(this.props.user) && (
             <Button size="sm" onClick={() => this.handleClick()}>
               Edit
             </Button>

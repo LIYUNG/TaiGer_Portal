@@ -10,6 +10,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 class Settings extends React.Component {
   state = {
     error: '',
@@ -231,11 +232,11 @@ class Settings extends React.Component {
                           <b className="mx-2">Reminder:</b> Please fill your
                           birthday:{' '}
                           <Link
-                            to={'/settings'}
+                            to={`${DEMO.SETTINGS}`}
                             style={{ textDecoration: 'none' }}
                             className="text-info"
                           >
-                            Survey
+                            Settings
                           </Link>{' '}
                         </p>
                       </Card>

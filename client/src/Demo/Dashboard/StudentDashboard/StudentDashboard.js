@@ -126,7 +126,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}
               title={'Reminder:'}
-              path={'/survey'}
+              path={`${DEMO.SURVEY_LINK}`}
               text={'It looks like you did not finish survey. See'}
               link_name={'Survey'}
               removeBanner={this.removeBanner}
@@ -211,7 +211,7 @@ class StudentDashboard extends React.Component {
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}
               title={'Reminder:'}
-              path={'/student-applications'}
+              path={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
               text={'It looks like you did not decide programs'}
               link_name={'Application Overview'}
               removeBanner={this.removeBanner}

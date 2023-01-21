@@ -1,6 +1,8 @@
 import { getNumberOfDays } from './contants';
 export const is_TaiGer_role = (user) =>
   user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
+export const is_TaiGer_AdminAgent = (user) =>
+  user.role === 'Admin' || user.role === 'Agent';
 
 export const showButtonIfMyStudent = (user, student) => {
   if (

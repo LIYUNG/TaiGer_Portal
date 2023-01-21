@@ -244,37 +244,37 @@ window.academic_background_header = {
 
 window.templatelist = [
   {
-    name: 'CV Survey Template',
+    name: 'CV Survey Template (履歷模板)',
     prop: 'Example_CV_english'
   },
   {
-    name: 'ML (Motivation Letter) Survey Template',
+    name: 'ML (Motivation Letter) Survey Template (動機信模板)',
     prop: 'ML_Survey'
   },
   {
-    name: 'RL (Recommendation Letter) Survey Template',
+    name: 'RL (Recommendation Letter) Survey Template (Academic) (教授推薦信模板(學術))',
     prop: 'RL_academic_survey_lock'
   },
   {
-    name: 'Internship Certificate',
+    name: 'RL (Recommendation Letter) Survey Template (Employer) (主管推薦信模板(工作))',
+    prop: 'RL_employer_survey_lock'
+  },
+  {
+    name: 'Internship Certificate (實習證明)',
     prop: 'Internship_Certificate_Example'
   },
   {
-    name: 'Employment Certificate',
+    name: 'Employment Certificate (工作證明)',
     prop: 'Employment_Template'
   },
   {
-    name: 'Module Description',
+    name: 'Module Description (課程描述)',
     prop: 'Module_Catalog'
   },
   {
-    name: 'ECTS Conv.',
+    name: 'ECTS Conversion (台灣Credits轉換歐洲ECTS學分證明)',
     prop: 'ECTS_Conv_example'
   }
-  // {
-  //   name: "Essay",
-  //   prop: "Essay_",
-  // },
 ];
 
 window.ProgramlistHeader = [

@@ -37,7 +37,10 @@ class ApplicationProgress extends React.Component {
     ) {
       applying_university = <p className="mb-1  text-danger"> No University</p>;
       applying_program = <p className="mb-1  text-danger"> No Program</p>;
-      program_semester = <p className="mb-1  text-danger"> No Program</p>;
+      applying_program_degree = (
+        <p className="mb-1  text-danger"> No Degree</p>
+      );
+      program_semester = <p className="mb-1  text-danger"> No Info</p>;
       program_toefl = <p className="mb-1  text-danger"> </p>;
       program_ielts = <p className="mb-1  text-danger"> </p>;
       application_deadline = <p className="mb-1  text-danger"> No Date</p>;

@@ -23,6 +23,7 @@ import {
   application_deadline_calculator
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
+import Banner from '../../components/Banner/Banner';
 import { getNumberOfDays, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -543,6 +544,18 @@ class StudentApplicationsTableTemplate extends React.Component {
               </Row>
               <Row>
                 <Col>
+                  <Banner
+                    ReadOnlyMode={true}
+                    bg={'primary'}
+                    path={'/base-documents'}
+                    title={'Info:'}
+                    text={
+                      'TaiGer Portal 上網站學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
+                    }
+                    link_name={''}
+                    removeBanner={this.removeBanner}
+                    notification_key={''}
+                  />
                   <Table
                     size="sm"
                     responsive

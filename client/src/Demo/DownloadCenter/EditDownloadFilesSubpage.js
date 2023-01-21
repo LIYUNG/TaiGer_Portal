@@ -82,28 +82,30 @@ class EditDownloadFilesSubpage extends React.Component {
                 </a>
               </Col>
             ) : (
-              <Col>
-                <Form onSubmit={(e) => this.submitFile(e, template.prop)}>
-                  <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Button size="sm" type="submit">
-                      {!this.state.isLoaded ? (
-                        <div>
-                          <Spinner
-                            size="sm"
-                            animation="border"
-                            role="status"
-                            variant="light"
-                          >
-                            <span className="visually-hidden"></span>
-                          </Spinner>
-                        </div>
-                      ) : (
-                        'Upload'
-                      )}
-                    </Button>
-                  </Form.Group>
-                </Form>
-              </Col>
+              this.props.role === 'Admin' && (
+                <Col>
+                  <Form onSubmit={(e) => this.submitFile(e, template.prop)}>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                      <Button size="sm" type="submit">
+                        {!this.state.isLoaded ? (
+                          <div>
+                            <Spinner
+                              size="sm"
+                              animation="border"
+                              role="status"
+                              variant="light"
+                            >
+                              <span className="visually-hidden"></span>
+                            </Spinner>
+                          </div>
+                        ) : (
+                          'Upload'
+                        )}
+                      </Button>
+                    </Form.Group>
+                  </Form>
+                </Col>
+              )
             )}
           </td>
         </tr>

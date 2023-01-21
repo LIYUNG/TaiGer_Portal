@@ -7,10 +7,17 @@ export default function Banner(props) {
   return (
     <Row>
       <Col>
-        <Card className="my-1 mx-0" bg={'danger'} text={'light'}>
+        <Card
+          className="my-1 mx-0"
+          bg={props.bg ? props.bg : 'primary'}
+          text={'light'}
+        >
           <p className="text-light my-3 mx-3" style={{ textAlign: 'left' }}>
             <BsExclamationTriangle size={18} />
-            <b className="mx-2">Reminder:</b> {props.text}:{' '}
+            <b className="mx-2">
+              {props.title ? props.title : 'Reminder:'}
+            </b>{' '}
+            {props.text}{' '}
             <Link
               to={`${props.path}`}
               style={{ textDecoration: 'none' }}

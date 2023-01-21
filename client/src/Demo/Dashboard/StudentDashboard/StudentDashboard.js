@@ -127,8 +127,10 @@ class StudentDashboard extends React.Component {
           !check_academic_background_filled(student.academic_background) && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'danger'}
+              title={'Reminder:'}
               path={'/survey'}
-              text={'It looks like you did not finish survey'}
+              text={'It looks like you did not finish survey. See'}
               link_name={'Survey'}
               removeBanner={this.removeBanner}
               notification_key={'isRead_survey_not_complete'}
@@ -140,6 +142,8 @@ class StudentDashboard extends React.Component {
           !is_all_uni_assist_vpd_uploaded(student) && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'danger'}
+              title={'Reminder:'}
               path={'/uni-assist'}
               text={'Please go to Uni-Assist to apply or to get VPD'}
               link_name={'Uni-Assist'}
@@ -150,29 +154,39 @@ class StudentDashboard extends React.Component {
         {/* new agents assigned banner */}
         {student.notification &&
           !student.notification.isRead_new_agent_assigned && (
-            <Row>
-              <Col>
-                <Card className="my-1 mx-0" bg={'primary'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <RiInformationLine size={18} />
-                    <b className="mx-2">Info:</b> New agent are assigned to you.{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      {!this.props.ReadOnlyMode && (
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeBanner(e, 'isRead_new_agent_assigned')
-                          }
-                        />
-                      )}
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+            <Banner
+              ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'primary'}
+              title={'Info:'}
+              path={'/uni-assist'}
+              text={'New agent are assigned to you.'}
+              link_name={''}
+              removeBanner={this.removeBanner}
+              notification_key={'isRead_new_agent_assigned'}
+            />
+            // <Row>
+            //   <Col>
+            //     <Card className="my-1 mx-0" bg={'primary'} text={'light'}>
+            //       <p
+            //         className="text-light my-3 mx-3"
+            //         style={{ textAlign: 'left' }}
+            //       >
+            //         <RiInformationLine size={18} />
+            //         <b className="mx-2">Info:</b> New agent are assigned to you.{' '}
+            //         <span style={{ float: 'right', cursor: 'pointer' }}>
+            //           {!this.props.ReadOnlyMode && (
+            //             <BsX
+            //               size={18}
+            //               onClick={(e) =>
+            //                 this.removeBanner(e, 'isRead_new_agent_assigned')
+            //               }
+            //             />
+            //           )}
+            //         </span>
+            //       </p>
+            //     </Card>
+            //   </Col>
+            // </Row>
           )}
         {/* new editors assigned banner */}
         {student.notification &&
@@ -207,6 +221,8 @@ class StudentDashboard extends React.Component {
           !student.notification.isRead_new_cvmlrl_messsage && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'danger'}
+              title={'Reminder:'}
               path={'/cv-ml-rl-center'}
               text={'New feedback from your Editor. See'}
               link_name={'CV/ML/RL Center'}
@@ -219,8 +235,10 @@ class StudentDashboard extends React.Component {
           !student.notification.isRead_new_cvmlrl_tasks_created && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'danger'}
+              title={'Reminder:'}
               path={'/cv-ml-rl-center'}
-              text={'New tasks are assigned to you'}
+              text={'New tasks are assigned to you. See'}
               link_name={'CV/ML/RL Center'}
               removeBanner={this.removeBanner}
               notification_key={'isRead_new_cvmlrl_tasks_created'}
@@ -231,6 +249,8 @@ class StudentDashboard extends React.Component {
           !check_applications_to_decided(student) && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'danger'}
+              title={'Reminder:'}
               path={'/student-applications'}
               text={'It looks like you did not decide programs'}
               link_name={'Application Overview'}
@@ -243,6 +263,8 @@ class StudentDashboard extends React.Component {
           are_base_documents_missing(student) && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'danger'}
+              title={'Reminder:'}
               path={'/base-documents'}
               text={'Some of Base Documents are still missing'}
               link_name={'Base Documents'}
@@ -255,6 +277,8 @@ class StudentDashboard extends React.Component {
           check_base_documents_rejected(student) && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
+              bg={'danger'}
+              title={'Reminder:'}
               path={'/base-documents'}
               text={'Some of Base Documents are rejected'}
               link_name={'Base Documents'}
@@ -270,6 +294,18 @@ class StudentDashboard extends React.Component {
                   My Application Progress
                 </Card.Title>
               </Card.Header>
+              <Banner
+                ReadOnlyMode={true}
+                bg={'primary'}
+                path={'/base-documents'}
+                title={'Info:'}
+                text={
+                  'TaiGer Portal 上網站學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
+                }
+                link_name={''}
+                removeBanner={this.removeBanner}
+                notification_key={''}
+              />
               <Table
                 responsive
                 className="my-0 mx-0"

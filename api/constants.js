@@ -412,7 +412,6 @@ const unsubmitted_applications_escalation_summary = (student) => {
           student.applications[i]
         )} </b></li>`;
       }
-      console.log(`Day left: ${day_diff}`);
     }
   }
   if (unsubmitted_applications !== '') {
@@ -460,7 +459,6 @@ const unsubmitted_applications_escalation_agent_summary = (student) => {
           student.applications[i]
         )} </b></li>`;
       }
-      console.log(`Day left: ${day_diff}`);
     }
   }
   if (unsubmitted_applications !== '') {

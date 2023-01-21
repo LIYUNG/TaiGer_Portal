@@ -375,9 +375,10 @@ class StudentApplicationsTableTemplate extends React.Component {
             {application.decided === 'O' ? (
               <td>
                 {/* When all thread finished */}
-                {is_program_ml_rl_essay_ready(application) &&
-                is_cv_finished(this.state.student) &&
-                is_the_uni_assist_vpd_uploaded(application) ? (
+                {application.closed === 'O' ||
+                (is_program_ml_rl_essay_ready(application) &&
+                  is_cv_finished(this.state.student) &&
+                  is_the_uni_assist_vpd_uploaded(application)) ? (
                   <Form.Group controlId="closed">
                     <Form.Control
                       as="select"
@@ -595,16 +596,22 @@ class StudentApplicationsTableTemplate extends React.Component {
             {is_TaiGer_role(this.props.user) && (
               <>
                 <Row>
-                  <span style={{ 'vertical-align': 'middle' }}>
-                    You want to add more programs to{' '}
-                    {this.props.student.firstname} {this.props.student.lastname}
-                    ?
-                  </span>
+                  <p>
+                    <span style={{ display: 'flex', justifyContent: 'center' }}>
+                      You want to add more programs to{' '}
+                      {this.props.student.firstname}{' '}
+                      {this.props.student.lastname}?
+                    </span>
+                  </p>
                 </Row>
-                <Row className="my-2 mx-0">
-                  <Link to={'/programs'}>
-                    <Button size="sm">Add New Programs</Button>
-                  </Link>
+                <Row className="mt-2 mx-0">
+                  <p>
+                    <span style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Link to={'/programs'}>
+                        <Button size="sm">Add New Programs</Button>{' '}
+                      </Link>
+                    </span>
+                  </p>
                 </Row>
               </>
             )}

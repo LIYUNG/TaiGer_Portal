@@ -780,7 +780,6 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
   };
   // TODO: cache download files docx, files.
   const cache_key = `${studentId}${req.originalUrl.split('/')[6]}`;
-  console.log(cache_key);
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
@@ -1096,7 +1095,6 @@ const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
   let directory = path.join(studentId, messagesThreadId);
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
-  console.log(directory);
   emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
 
   await Student.findOneAndUpdate(

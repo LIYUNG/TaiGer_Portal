@@ -200,6 +200,71 @@ const does_editor_have_pending_tasks = (students, editor) => {
   return false;
 };
 
+const is_cv_ml_rl_task_response_needed = (student, user) => {
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    if (user.role === 'Editor') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString()
+      ) {
+        return true;
+      }
+    } else if (user.role === 'Student') {
+      if (
+        !student.generaldocs_threads[i].isFinalVersion &&
+        student.generaldocs_threads[i].latest_message_left_by_id !==
+          user._id.toString()
+      ) {
+        return true;
+      }
+    } else if (user.role === 'Agent') {
+      if (!student.generaldocs_threads[i].isFinalVersion) {
+        return true;
+      }
+    }
+  }
+  for (let i = 0; i < student.applications.length; i += 1) {
+    if (student.applications[i].decided === 'O') {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        if (user.role === 'Editor') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== '' &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString()
+          ) {
+            return true;
+          }
+        } else if (user.role === 'Student') {
+          if (
+            !student.applications[i].doc_modification_thread[j]
+              .isFinalVersion &&
+            student.applications[i].doc_modification_thread[j]
+              .latest_message_left_by_id !== user._id.toString()
+          ) {
+            return true;
+          }
+        } else if (user.role === 'Agent') {
+          if (
+            !student.applications[i].doc_modification_thread[j].isFinalVersion
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+};
+
 const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
@@ -1219,6 +1284,7 @@ module.exports = {
   base_documents_summary,
   is_deadline_within30days_needed,
   does_editor_have_pending_tasks,
+  is_cv_ml_rl_task_response_needed,
   is_cv_ml_rl_reminder_needed,
   application_deadline_calculator,
   unsubmitted_applications_summary,

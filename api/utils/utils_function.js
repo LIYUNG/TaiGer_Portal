@@ -120,7 +120,6 @@ const TasksReminderEmails = async () => {
       )
       .select('-notification');
     if (editor_students.length > 0) {
-      // TODO: if nothing to send?
       if (does_editor_have_pending_tasks(editor_students, editors[j])) {
         await EditorTasksReminderEmail(
           {

@@ -3,6 +3,7 @@ const { createTransport } = require('nodemailer');
 const queryString = require('query-string');
 const {
   cv_ml_rl_escalation_summary,
+  is_cv_ml_rl_task_response_needed,
   cv_ml_rl_editor_escalation_summary,
   cv_ml_rl_unfinished_summary,
   base_documents_summary,
@@ -190,27 +191,37 @@ ${student_i}
 const EditorTasksReminderEmail = async (recipient, payload) => {
   const subject = `TaiGer Editor Reminder: ${recipient.firstname} ${recipient.lastname}`;
   let student_i = '';
+  let x = 0;
   for (let i = 0; i < payload.students.length; i += 1) {
-    if (i === 0) {
-      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
-        payload.students[i],
-        payload.editor
-      );
-      student_i = `
+    if (x === 0) {
+      if (
+        is_cv_ml_rl_task_response_needed(payload.students[i], payload.editor)
+      ) {
+        const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+          payload.students[i],
+          payload.editor
+        );
+        student_i = `
       <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
       
       ${unread_cv_ml_rl_thread}
 `;
+        x += 1;
+      }
     } else {
-      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
-        payload.students[i],
-        payload.editor
-      );
-      student_i += `
+      if (
+        is_cv_ml_rl_task_response_needed(payload.students[i], payload.editor)
+      ) {
+        const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+          payload.students[i],
+          payload.editor
+        );
+        student_i += `
       <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
       
       ${unread_cv_ml_rl_thread}
     `;
+      }
     }
   }
 

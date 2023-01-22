@@ -11,12 +11,14 @@ import {
 } from 'react-bootstrap';
 
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
+import CVMLRLProgressNewMessage from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressNewMessage';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { getCVMLRLOverview, SetFileAsFinal, getStudents } from '../../api';
+import { SetFileAsFinal } from '../../api';
+import Banner from '../../components/Banner/Banner';
 
 class CVMLRLOverview extends React.Component {
   state = {
@@ -186,6 +188,16 @@ class CVMLRLOverview extends React.Component {
       );
     }
 
+    const cvmlrl_new_message = this.state.students.map((student, i) => (
+      <CVMLRLProgressNewMessage
+        key={i}
+        user={this.props.user}
+        student={student}
+        isDashboard={true}
+        handleAsFinalFile={this.handleAsFinalFile}
+      />
+    ));
+
     const cvmlrl_progress = this.state.students.map((student, i) => (
       <CVMLRLProgress
         key={i}
@@ -217,6 +229,49 @@ class CVMLRLOverview extends React.Component {
           <Col>
             <Tabs defaultActiveKey="open" fill={true} justify={true}>
               <Tab eventKey="open" title="Open">
+                <Banner
+                  ReadOnlyMode={true}
+                  bg={'danger'}
+                  title={'Warning:'}
+                  path={'/'}
+                  text={'Please reply:'}
+                  link_name={''}
+                  removeBanner={this.removeBanner}
+                  notification_key={'x'}
+                />
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <thead>
+                    <tr>
+                      <>
+                        <th></th>
+                        <th>First-, Last Name</th>
+                        {is_TaiGer_role(this.props.user) && <th>Action</th>}
+                      </>
+                      {window.cvmlrllist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{cvmlrl_new_message}</tbody>
+                </Table>
+                <Banner
+                  ReadOnlyMode={true}
+                  bg={'info'}
+                  title={'Info:'}
+                  path={'/'}
+                  text={'Waiting responses or inputs'}
+                  link_name={''}
+                  removeBanner={this.removeBanner}
+                  notification_key={'x'}
+                />
                 <Table
                   responsive
                   bordered

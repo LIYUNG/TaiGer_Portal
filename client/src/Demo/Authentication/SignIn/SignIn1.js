@@ -153,9 +153,14 @@ export default function Signin1({ setUserdata }) {
                   <p className="text-muted">Reset</p>
                 </NavLink>
                 <p className="mb-2 text-light">
-                  About us:{' '}
-                  <a href='https://taigerconsultancy.com' target='_blank'>
-                    <p className="text-muted">TaiGer Consultancy</p>
+                  About us:
+                  <br />
+                  <a
+                    href="https://taigerconsultancy.com"
+                    target="_blank"
+                    className="text-muted"
+                  >
+                    TaiGer Consultancy
                   </a>
                 </p>
 

@@ -206,6 +206,16 @@ export const EXPECTATION_APPLICATION_YEARS = () => {
   );
 };
 
+export const compare = (a, b) => {
+  if (a.last_nom < b.last_nom) {
+    return -1;
+  }
+  if (a.last_nom > b.last_nom) {
+    return 1;
+  }
+  return 0;
+};
+
 export const return_thread_status = (user, thread) => {
   if (thread.isFinalVersion) {
     return (
@@ -246,5 +256,24 @@ export const return_thread_status = (user, thread) => {
         <BiCommentDots size={24} color="red" title="New Message" />
       </td>
     );
+  }
+};
+
+export const is_new_message_status = (user, thread) => {
+  if (thread.isFinalVersion) {
+    return false;
+  }
+  if (
+    thread.latest_message_left_by_id === undefined ||
+    thread.latest_message_left_by_id === ''
+  ) {
+    if (user.role !== 'Student') {
+      return false;
+    }
+  }
+  if (user._id.toString() === thread.latest_message_left_by_id) {
+    return false;
+  } else {
+    return true;
   }
 };

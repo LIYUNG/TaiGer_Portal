@@ -9,7 +9,7 @@ import {
 import { convertDate, is_new_message_status } from '../../../Utils/contants';
 import { getNumberOfDays, return_thread_status } from '../../../Utils/contants';
 
-class CVMLRLProgress extends React.Component {
+class CVMLRLProgressNewMessage extends React.Component {
   handleAsFinalFileThread = (
     thread_id,
     student_id,
@@ -38,7 +38,7 @@ class CVMLRLProgress extends React.Component {
       this.props.student.generaldocs_threads &&
       this.props.student.generaldocs_threads.map(
         (generaldocs_thread, i) =>
-          !is_new_message_status(this.props.user, generaldocs_thread) && (
+          is_new_message_status(this.props.user, generaldocs_thread) && (
             <tr key={i}>
               {!generaldocs_thread.isFinalVersion && (
                 <>
@@ -127,7 +127,7 @@ class CVMLRLProgress extends React.Component {
       this.props.student.applications.map((application, i) =>
         application.doc_modification_thread.map(
           (doc_thread, j) =>
-            !is_new_message_status(this.props.user, doc_thread) && (
+            is_new_message_status(this.props.user, doc_thread) && (
               <tr key={j}>
                 {application.decided === 'O' &&
                   !doc_thread.isFinalVersion &&
@@ -151,6 +151,7 @@ class CVMLRLProgress extends React.Component {
                           </p>
                         </Link>
                       </td>
+
                       {is_TaiGer_role(this.props.user) &&
                         (doc_thread.isFinalVersion ? (
                           <td>
@@ -249,4 +250,4 @@ class CVMLRLProgress extends React.Component {
   }
 }
 
-export default CVMLRLProgress;
+export default CVMLRLProgressNewMessage;

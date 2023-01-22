@@ -51,7 +51,7 @@ const EditorSimple = (props) => {
       },
       readOnly: props.readOnly,
       autofocus: true,
-      minHeight: 100,
+      minHeight: props.defaultHeight,
       tools: {
         header: {
           class: Header,

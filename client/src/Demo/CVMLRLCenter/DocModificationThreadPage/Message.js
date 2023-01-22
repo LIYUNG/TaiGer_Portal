@@ -204,6 +204,7 @@ class Message extends Component {
                 readOnly={true}
                 handleClickSave={this.props.handleClickSave}
                 editorState={this.state.editorState}
+                defaultHeight={0}
               />
               {files_info}
             </Card.Body>

@@ -6,7 +6,8 @@ import {
   Button,
   Form,
   OverlayTrigger,
-  Tooltip
+  Tooltip,
+  Card
 } from 'react-bootstrap';
 
 function DocThreadEditor(props) {
@@ -38,15 +39,20 @@ function DocThreadEditor(props) {
     <>
       <Row style={{ textDecoration: 'none' }}>
         <Col className="my-0 mx-0">
-          <EditorSimple
-            holder={'editorjs'}
-            thread={props.thread}
-            readOnly={false}
-            handleEditorChange={handleEditorChange}
-            handleClickSave={props.handleClickSave}
-            editorState={props.editorState}
-            setStatedata={setStatedata}
-          />
+          <Card border="dark">
+            <Card.Body border="dark">
+              <EditorSimple
+                holder={'editorjs'}
+                thread={props.thread}
+                defaultHeight={0}
+                readOnly={false}
+                handleEditorChange={handleEditorChange}
+                handleClickSave={props.handleClickSave}
+                editorState={props.editorState}
+                setStatedata={setStatedata}
+              />
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
       <Row>

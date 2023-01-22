@@ -738,7 +738,7 @@ class EditorDocsProgress extends React.Component {
                                   variant="info"
                                   onClick={() =>
                                     this.openRequirements_ModalWindow(
-                                      application.programId.ml_requirements
+                                      application.programId.rl_requirements
                                     )
                                   }
                                 >

@@ -156,7 +156,11 @@ class DocModificationThreadPage extends Component {
         return <p>No</p>;
       }
     } else if (thread.file_type.includes('RL')) {
-      if (thread.program_id.rl_required === 'yes') {
+      if (
+        thread.program_id.rl_required === '1' ||
+        thread.program_id.rl_required === '2' ||
+        thread.program_id.rl_required === '3'
+      ) {
         return (
           <p>
             {this.state.thread.program_id.rl_requirements

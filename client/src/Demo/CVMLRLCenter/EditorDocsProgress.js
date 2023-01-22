@@ -850,7 +850,6 @@ class EditorDocsProgress extends React.Component {
                                   }
                                 >
                                   ML
-                                  {/* <AiOutlineMore size={20} /> */}
                                 </Button>
                               </>
                             ) : (
@@ -865,12 +864,11 @@ class EditorDocsProgress extends React.Component {
                                   variant="info"
                                   onClick={() =>
                                     this.openRequirements_ModalWindow(
-                                      application.programId.ml_requirements
+                                      application.programId.rl_requirements
                                     )
                                   }
                                 >
                                   RL
-                                  {/* <AiOutlineMore size={20} /> */}
                                 </Button>
                               </>
                             ) : (

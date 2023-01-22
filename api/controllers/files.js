@@ -771,7 +771,8 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
-    ).select('-profile -notification -application_preference')
+    )
+    .select('-profile -notification -application_preference')
     .lean();
 
   res.status(201).send({ success: true, data: student_updated });
@@ -992,64 +993,63 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     return res.send({ success: true, data: {} });
   }
   const stringified_courses = JSON.stringify(courses.table_data_string);
-
+  let exitCode_Python = -1;
   // TODO: multitenancy studentId?
   let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
   student_name = student_name.replace(/ /g, '-');
-  try {
-    let test_var;
-    const python = spawn(
-      'python',
-      [
-        path.join(
-          __dirname,
-          '..',
-          'python',
-          'TaiGerTranscriptAnalyzerJS',
-          'main.py'
-        ),
-        stringified_courses,
-        category,
+  const python = spawn(
+    'python',
+    [
+      path.join(
+        __dirname,
+        '..',
+        'python',
+        'TaiGerTranscriptAnalyzerJS',
+        'main.py'
+      ),
+      stringified_courses,
+      category,
+      studentId,
+      student_name,
+      language
+    ],
+    { stdio: 'inherit' }
+  );
+  python.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+  python.on('error', (err) => {
+    console.log('error');
+    console.log(err);
+    exitCode_Python = err;
+    // res.sendStatus(500);
+    // res.status(500).send({ success: false });
+  });
+  // python.on('data', (data) => {
+  //   console.error(`stderr: ${data}`);
+  // });
+  python.on('close', (code) => {
+    if (code === 0) {
+      courses.analysis.isAnalysed = true;
+      courses.analysis.path = path.join(
         studentId,
-        student_name,
-        language
-      ],
-      { stdio: 'inherit' }
-    );
-    python.on('data', (data) => {
-      test_var = data;
-      process.stdout.write('python script output', data);
-    });
-    python.on('close', (code) => {
-      if (code === 0) {
-        courses.analysis.isAnalysed = true;
-        courses.analysis.path = path.join(
-          studentId,
-          `analysed_transcript_${student_name}.xlsx`
-        );
-        courses.analysis.updatedAt = new Date();
-        courses.save();
+        `analysed_transcript_${student_name}.xlsx`
+      );
+      courses.analysis.updatedAt = new Date();
+      courses.save();
 
-        const url_split = req.originalUrl.split('/');
-        const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
-        const success = one_month_cache.del(cache_key);
-        if (success === 1) {
-          console.log('cache key deleted successfully');
-        }
-
-        return res.status(200).send({ success: true, data: courses.analysis });
-      } else {
-        logger.error('Error occurs while trying to produce analyzed report');
-        return res.status(500).send({ success: false });
+      const url_split = req.originalUrl.split('/');
+      const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+      const success = one_month_cache.del(cache_key);
+      if (success === 1) {
+        console.log('cache key deleted successfully');
       }
-    });
-  } catch (err) {
-    logger.error(err);
-    throw new ErrorResponse(
-      500,
-      'Error occurs while trying to produce analyzed report2'
-    );
-  }
+      exitCode_Python = 0;
+      res.status(200).send({ success: true, data: courses.analysis });
+    } else {
+      res.status(404).send({ message: code });
+    }
+  });
 });
 
 // Download original transcript excel

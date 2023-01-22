@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Fullscreen from 'react-full-screen';
 import windowSize from 'react-window-size';
-import { Spinner } from 'react-bootstrap';
 
 import Navigation from './Navigation';
 import NavBar from './NavBar';
@@ -160,12 +158,6 @@ function AdminLayout(props) {
       />
     ) : null;
   });
-  const style = {
-    position: 'fixed',
-    top: '40%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)'
-  };
 
   if (!userdata.isLoaded) {
     return (
@@ -215,13 +207,6 @@ function AdminLayout(props) {
                           {menu}
                           <Redirect from="/" to={props.defaultPath} />
                         </Switch>
-                        {!userdata.isLoaded && (
-                          <div style={style}>
-                            <Spinner animation="border" role="status">
-                              <span className="visually-hidden"></span>
-                            </Spinner>
-                          </div>
-                        )}
                       </Suspense>
                     </div>
                   </div>

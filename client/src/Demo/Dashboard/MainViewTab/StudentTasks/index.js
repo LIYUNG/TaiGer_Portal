@@ -198,7 +198,7 @@ class StudentTasks extends React.Component {
                 Base Documents
               </Link>
             </td>
-            <td>Some of Base Documents are still missing</td>
+            <td>Some of Base Documents are still missing. Please upload them.</td>
             <td></td>
           </tr>
         )}

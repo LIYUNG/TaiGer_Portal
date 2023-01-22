@@ -40,17 +40,24 @@ def ProgramCategoryInit(program_category):
     return df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION
 
 
-def CheckTemplateFormat(df_transcript):
-    if 'course_chinese' not in df_transcript.columns or 'course_english' not in df_transcript.columns or 'credits' not in df_transcript.columns or 'grades' not in df_transcript.columns:
-        print("Error: Please check the student's transcript xlsx file.")
-        print(" There must be course_chinese, course_english, credits and grades in student's course excel file.")
-        sys.exit()
+def CheckTemplateFormat(df_transcript, analysis_lang):
+    if analysis_lang == 'zh':
+        if 'course_chinese' not in df_transcript.columns or 'credits' not in df_transcript.columns or 'grades' not in df_transcript.columns:
+            print("Error: Please check the student's transcript xlsx file.")
+            print(" There must be course_chinese, credits and grades in student's course excel file.")
+            sys.exit(1)
+    elif analysis_lang == 'en':
+        if 'course_english' not in df_transcript.columns or 'credits' not in df_transcript.columns or 'grades' not in df_transcript.columns:
+            print("Error: Please check the student's transcript xlsx file.")
+            print(" There must be course_english, credits and grades in student's course excel file.")
+            sys.exit(1)
+
 
 
 def CheckDBFormat(df_database):
     if '所有科目' not in df_database.columns:
         print("Error: Please check the database xlsx file.")
-        sys.exit()
+        sys.exit(1)
 
 
 def isOutputEnglish(df_transcript):
@@ -66,7 +73,7 @@ def isOutputEnglish(df_transcript):
         return False  # output CHinese version
 
     print("course_english course_chinese credits 和 grades not match. Please make sure you fill the template correctly")
-    sys.exit()
+    sys.exit(1)
 
 
 def DataPreparation(df_database, df_transcript):
@@ -310,7 +317,7 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     df_transcript = pd.DataFrame.from_dict(obj_arr)
     # TODO: move the checking mechanism to util.py!
     # Verify the format of transcript_course_list.xlsx
-    CheckTemplateFormat(df_transcript)
+    CheckTemplateFormat(df_transcript, analysis_language)
     print("Checked input template successfully.")
 
     sheetname = 'All_' + abbrev + '_Courses'
@@ -379,60 +386,7 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     df_category_courses_sugesstion_data = SuggestionCourseAlgorithm(
         df_category_data, transcript_sorted_group_map, df_category_courses_sugesstion_data)
 
-    # print(df_category_data)
-    df_category_data_basic_classification = pd.DataFrame(df_category_data)
-    # print(df_category_data_basic_classification)
-
-    # print(df_category_courses_sugesstion_data)
-    # output_file_name = 'analyzed_' + input_file_name
     sorted_courses = df_category_data
-    # if isinstance(df_category_data_basic_classification, pd.DataFrame):
-    #     print("YES")
-    # with io.BytesIO() as output:
-    #     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-    #         df_category_data_basic_classification.to_excel(writer)
-    #     data = output.getvalue()
-
-
-    # with io.BytesIO() as output:
-    # output = io.BytesIO()
-    # writer = pd.ExcelWriter(
-    #     output, engine='xlsxwriter')
-    # start_row = 0
-    # for idx, sortedcourses in enumerate(sorted_courses):
-    #     sortedcourses.to_excel(
-    #         writer, sheet_name='General', startrow=start_row, index=False)
-    #     start_row += len(sortedcourses.index) + 2
-    # workbook = writer.book
-    # worksheet = writer.sheets['General']
-
-    # red_out_failed_subject(workbook, worksheet, 1, start_row)
-
-    # for i, col in enumerate(df_transcript.columns):
-    #     # find length of column i
-
-    #     column_len = df_transcript[col].astype(str).str.len().max()
-    #     # Setting the length if the column header is larger
-    #     # than the max column value length
-    #     if i == 1:
-    #         column_len_array.append(len(col))
-    #     else:
-    #         column_len_array.append(max(column_len, len(col)))
-
-    #     # set the column length
-    #     worksheet.set_column(i, i, column_len_array[i] * 2)
-
-    # # Modify to column width for "Required_ECTS"
-    # column_len_array.append(6)
-
-    # for idx in program_idx:
-    #     program_sort_function[idx](
-    #         transcript_sorted_group_map,
-    #         sorted_courses,
-    #         df_category_courses_sugesstion_data,
-    #         writer)
-    # writer.save()
-    # data = output.getvalue()
 
     with io.BytesIO() as output:
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
@@ -485,7 +439,7 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     s3 = session.resource('s3')
     transcript_path = studentId + '/analysed_transcript_' + student_name + '.xlsx'
     s3.Bucket(AWS_S3_BUCKET_NAME).put_object(Key=transcript_path, Body=data)
-
+    sys.exit(0)
 
 
 

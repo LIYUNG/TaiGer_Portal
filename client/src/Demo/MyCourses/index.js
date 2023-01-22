@@ -214,28 +214,28 @@ export default function MyCourses(props) {
           }));
         } else {
           const { message } = resp.data;
+          console.log(message);
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             isAnalysing: false,
             res_modal_status: status,
-            res_modal_message: message
+            res_modal_message:
+              'Make sure that you updated your courses and select the right target group and language!'
           }));
         }
       },
       (error) => {
-        const { statusText } = resp;
+        const statusText = error.message;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
           isAnalysing: false,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message:
+            'Make sure that you updated your courses and select the right target group and language!'
         }));
-        alert(
-          'Make sure that you updated your courses and your credits are number!'
-        );
       }
     );
   };

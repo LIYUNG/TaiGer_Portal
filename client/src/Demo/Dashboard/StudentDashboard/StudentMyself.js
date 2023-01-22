@@ -1,10 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
   AiOutlineFieldTime
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
+
+import DEMO from '../../../store/constant';
 import { convertDate } from '../../Utils/contants';
 import { BsDash } from 'react-icons/bs';
 
@@ -51,9 +54,17 @@ class StudentMyself extends React.Component {
                 size={24}
                 color="orange"
                 title="Uploaded successfully"
-              />{' '}
+              />
             </td>
-            <td>{key_doc_name}</td>
+            <td>
+              <Link
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                {key_doc_name}
+              </Link>
+            </td>
             <td>{convertDate(object_time_init[key_doc_name])}</td>
           </tr>
         );
@@ -67,7 +78,15 @@ class StudentMyself extends React.Component {
                 title="Valid Document"
               />{' '}
             </td>
-            <td>{key_doc_name}</td>
+            <td>
+              <Link
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                {key_doc_name}
+              </Link>
+            </td>
             <td>{convertDate(object_time_init[key_doc_name])}</td>
           </tr>
         );
@@ -81,7 +100,15 @@ class StudentMyself extends React.Component {
                 title="Invalid Document"
               />
             </td>
-            <td>{key_doc_name}</td>
+            <td>
+              <Link
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                {key_doc_name}
+              </Link>
+            </td>
             <td>{convertDate(object_time_init[key_doc_name])}</td>
           </tr>
         );
@@ -104,9 +131,17 @@ class StudentMyself extends React.Component {
                 size={24}
                 color="lightgray"
                 title="No Document uploaded"
-              />{' '}
+              />
             </td>
-            <td>{key_doc_name}</td>
+            <td>
+              <Link
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                {key_doc_name}
+              </Link>
+            </td>
             <td></td>
           </tr>
         );

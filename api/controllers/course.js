@@ -52,9 +52,13 @@ const createCourse = asyncHandler(async (req, res) => {
     }).populate('student_id', 'firstname lastname');
     return res.send({ success: true, data: courses3 });
   }
-  const courses2 = await Course.findOneAndUpdate(studentId, fields, {
-    new: true
-  }).populate('student_id', 'firstname lastname');
+  const courses2 = await Course.findOneAndUpdate(
+    { student_id: studentId },
+    fields,
+    {
+      new: true
+    }
+  ).populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
   if (user.role === 'Student') {
     // TODO: send course update to Agent

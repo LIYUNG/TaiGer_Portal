@@ -5,6 +5,7 @@ import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { resetPassword } from '../../../api/index';
+import Footer from '../../../components/Footer/Footer';
 
 export default function ResetPassword(props) {
   const query = new URLSearchParams(props.location.search);
@@ -74,6 +75,7 @@ export default function ResetPassword(props) {
                 </p>
               </div>
             </div>
+            <Footer />
           </div>
         </div>
       </Aux>
@@ -132,6 +134,7 @@ export default function ResetPassword(props) {
                   </NavLink>
                 </p>
               </div>
+              <Footer />
             </form>
           </div>
         </div>

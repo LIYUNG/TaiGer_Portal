@@ -6,6 +6,7 @@ import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { activation, resendActivation } from '../../../api/index';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
+import Footer from '../../../components/Footer/Footer';
 
 export default function Activation(props) {
   const query = new URLSearchParams(props.location.search);
@@ -103,6 +104,7 @@ export default function Activation(props) {
                   </div>
                   <p className="mb-4 text-muted">{email}</p>
                 </div>
+                <Footer />
               </form>
             </div>
           </div>
@@ -136,6 +138,7 @@ export default function Activation(props) {
                     Resend
                   </button>
                 </div>
+                <Footer />
               </form>
             </div>
           </div>

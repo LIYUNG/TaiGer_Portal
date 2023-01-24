@@ -6,6 +6,7 @@ import Aux from '../../../hoc/_Aux';
 import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { resendActivation } from '../../../api/index';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
+import Footer from '../../../components/Footer/Footer';
 
 export default function Reactivation(props) {
   // const query = new URLSearchParams(props.location.search);
@@ -79,6 +80,7 @@ export default function Reactivation(props) {
             </form>
           </div>
         </div>
+        <Footer />
       </Aux>
     );
   } else {
@@ -112,6 +114,7 @@ export default function Reactivation(props) {
             </form>
           </div>
         </div>
+        <Footer />
       </Aux>
     );
   }

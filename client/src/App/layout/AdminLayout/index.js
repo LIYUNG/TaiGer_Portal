@@ -15,6 +15,7 @@ import routes2 from '../../../route';
 import routes3 from '../../../route3';
 import ScrollToTop from '../ScrollToTop';
 import { verify, logout } from '../../../api/index';
+import Footer from '../../../components/Footer/Footer';
 
 function AdminLayout(props) {
   let [userdata, setUserdata] = useState({
@@ -214,26 +215,7 @@ function AdminLayout(props) {
               </div>
             </div>
           </div>
-          <footer
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '2px',
-              backgroundColor: '#000000'
-            }}
-          >
-            <p
-              className="my-1 text-light"
-              style={{
-                fontSize: '12px'
-              }}
-            >
-              Copyright TaiGer Consultancy © 2023 | Designed and developed by{' '}
-              <a href="https://taigerconsultancy.com/" className="text-info">
-                TaiGer Consultancy
-              </a>
-            </p>
-          </footer>
+          <Footer />
         </Fullscreen>
       </Aux>
     );

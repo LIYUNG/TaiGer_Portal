@@ -7,6 +7,7 @@ import Aux from '../../../hoc/_Aux';
 import { login } from '../../../api/index';
 import Reactivation from '../Activation/Reactivation';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
+import Footer from '../../../components/Footer/Footer';
 
 // export default function Signin1({ setToken }) {
 export default function Signin1({ setUserdata }) {
@@ -150,9 +151,9 @@ export default function Signin1({ setUserdata }) {
                 </button>
                 <p className="mb-2 text-light">Forgot password?</p>
                 <NavLink to="/forgot-password">
-                  <p className="text-muted">Reset</p>
+                  <p className="text-info">Reset</p>
                 </NavLink>
-                <p className="mb-2 text-light">
+                {/* <p className="mb-2 text-light">
                   About us:
                   <br />
                   <a
@@ -162,8 +163,8 @@ export default function Signin1({ setUserdata }) {
                   >
                     TaiGer Consultancy
                   </a>
-                </p>
-
+                </p> */}
+                <Footer />
                 {/* <p className="mb-2 text-light">New in TaiGer Portal?</p>
                 <NavLink to="/sign-up">
                   <p className="text-muted">Sign up</p>

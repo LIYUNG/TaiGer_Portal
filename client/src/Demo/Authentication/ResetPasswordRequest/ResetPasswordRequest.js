@@ -7,6 +7,7 @@ import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import DEMO from '../../../store/constant';
 import { forgotPassword } from '../../../api';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
+import Footer from '../../../components/Footer/Footer';
 
 export default function ResetPasswordRequest() {
   const [emailaddress, setEmailaddress] = useState();
@@ -65,6 +66,7 @@ export default function ResetPasswordRequest() {
                   </NavLink>
                 </p>
               </div>
+              <Footer />
             </div>
           </div>
         </div>
@@ -106,6 +108,7 @@ export default function ResetPasswordRequest() {
                   <p className="text-muted">Login</p>
                 </NavLink>
               </div>
+              <Footer />
             </form>
           </div>
         </div>

@@ -85,7 +85,7 @@ class StudentsAgentEditor extends React.Component {
     } else {
       studentsEditor = this.props.student.editors.map((editor, i) => (
         <div key={editor._id}>
-          <p className="mb-1 text-info">
+          <p className="mb-0 text-info">
             <Link
               to={`/teams/editors/${editor._id.toString()}`}
               className="mb-0 text-info"

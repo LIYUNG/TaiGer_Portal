@@ -893,6 +893,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
     Key: fileKey,
     Bucket: directory
   };
+  const cache_key = `${studentId}${fileKey}`;
   try {
     s3.deleteObject(options, (error, data) => {
       if (error) {
@@ -903,7 +904,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
         document.updatedAt = new Date();
 
         student.save();
-        const value = two_month_cache.del(fileKey);
+        const value = one_month_cache.del(cache_key);
         if (value === 1) {
           console.log('Profile cache key deleted successfully');
         }

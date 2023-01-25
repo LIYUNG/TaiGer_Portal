@@ -575,7 +575,7 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
 
 <p>由於下列原因, 請再次上傳 ${msg.category}:</p>
 
-<p>${msg.message}</p>
+<p><b>${msg.message}</b></p>
 
 <p>請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 確認被拒絕原因，並刪除舊檔案，然後再次上傳。</p>
 

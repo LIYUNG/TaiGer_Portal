@@ -22,8 +22,8 @@ const {
 } = require('../controllers/auth');
 
 const router = Router();
-
-router.post('/signup', registerRateLimiter, signup);
+// TODO: when public to all user, then activate registration.
+// router.post('/signup', registerRateLimiter, signup);
 
 router.post('/login', loginRateLimiter, localAuth, login);
 

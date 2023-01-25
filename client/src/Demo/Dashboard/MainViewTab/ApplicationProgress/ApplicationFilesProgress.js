@@ -168,8 +168,10 @@ class ApplicationFilesProgress extends React.Component {
                       <p className="mb-1 text-danger">X</p>
                     )}
                   </>
-                ) : (
+                ) : application.decided === 'O' ? (
                   <p className="mb-1 text-info">Not needed</p>
+                ) : (
+                  <p className="mb-1 text-secondary">Not needed</p>
                 )}
               </>
             )}

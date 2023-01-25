@@ -37,9 +37,7 @@ class ApplicationProgress extends React.Component {
     ) {
       applying_university = <p className="mb-1  text-danger"> No University</p>;
       applying_program = <p className="mb-1  text-danger"> No Program</p>;
-      applying_program_degree = (
-        <p className="mb-1  text-danger"> No Degree</p>
-      );
+      applying_program_degree = <p className="mb-1  text-danger"> No Degree</p>;
       program_semester = <p className="mb-1  text-danger"> No Info</p>;
       program_toefl = <p className="mb-1  text-danger"> </p>;
       program_ielts = <p className="mb-1  text-danger"> </p>;
@@ -124,9 +122,15 @@ class ApplicationProgress extends React.Component {
           style={{ textDecoration: 'none' }}
           key={i}
         >
-          <p className="mb-1 text-info">
-            {application.programId.toefl ? application.programId.toefl : '-'}
-          </p>
+          {application.decided === 'O' ? (
+            <p className="mb-1 text-info">
+              {application.programId.toefl ? application.programId.toefl : '-'}
+            </p>
+          ) : (
+            <p className="mb-1 text-secondary" title="Not decided yet">
+              {application.programId.toefl ? application.programId.toefl : '-'}
+            </p>
+          )}
         </Link>
       ));
       program_ielts = this.props.student.applications.map((application, i) => (
@@ -135,9 +139,15 @@ class ApplicationProgress extends React.Component {
           style={{ textDecoration: 'none' }}
           key={i}
         >
-          <p className="mb-1 text-info">
-            {application.programId.ielts ? application.programId.ielts : '-'}
-          </p>
+          {application.decided === 'O' ? (
+            <p className="mb-1 text-info">
+              {application.programId.ielts ? application.programId.ielts : '-'}
+            </p>
+          ) : (
+            <p className="mb-1 text-secondary" title="Not decided yet">
+              {application.programId.ielts ? application.programId.ielts : '-'}
+            </p>
+          )}
         </Link>
       ));
       application_deadline = this.props.student.applications.map(

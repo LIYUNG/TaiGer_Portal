@@ -34,22 +34,22 @@ function AdminLayout(props) {
         const { status } = resp;
         if (success) {
           // TODO: to be remove in production
-          setTimeout(function () {
+          // setTimeout(function () {
             setUserdata((state) => ({
               ...state,
               success: success,
               data: data,
               isLoaded: true
             }));
-          }, 1000);
+          // }, 1000);
         } else {
-          setTimeout(function () {
+          // setTimeout(function () {
             setUserdata((state) => ({
               ...state,
               data: null,
               isLoaded: true
             }));
-          }, 1000);
+          // }, 1000);
         }
       },
       (error) => {

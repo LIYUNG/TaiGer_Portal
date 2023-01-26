@@ -101,7 +101,7 @@ class EditorPage extends React.Component {
         </Row>
         <CVMLRLOverview
           isLoaded={this.state.isLoaded}
-          user={this.props.user}
+          user={this.state.editor}
           success={this.state.success}
           students={this.state.students}
         />

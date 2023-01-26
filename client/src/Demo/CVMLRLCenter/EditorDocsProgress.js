@@ -925,17 +925,22 @@ class EditorDocsProgress extends React.Component {
                           <Col md={4}>
                             <p className="text-light">
                               Please make sure the program should be proceeded.
-                              <Link
-                                to={
-                                  '/student-applications/' +
-                                  this.state.student._id.toString()
-                                }
-                                style={{ textDecoration: 'none' }}
-                                className="text-info"
-                              >
-                                {' '}
-                                click here
-                              </Link>
+                              {showButtonIfMyStudent(
+                                this.props.user,
+                                this.state.student
+                              ) && (
+                                <Link
+                                  to={
+                                    '/student-applications/' +
+                                    this.state.student._id.toString()
+                                  }
+                                  style={{ textDecoration: 'none' }}
+                                  className="text-info"
+                                >
+                                  {' '}
+                                  click here
+                                </Link>
+                              )}
                             </p>
                           </Col>
                         </Row>

@@ -32,6 +32,19 @@ class CVMLRLProgressNewMessage extends React.Component {
     // TODO: implement:
     let no_started_general_document_items = <></>;
     let application_document_items = <></>;
+    let days_left_min = 3000;
+    let CV_deadline = '';
+    for (let i = 0; i < this.props.student.applications.length; i += 1) {
+      let application_deadline_temp = application_deadline_calculator(
+        this.props.student,
+        this.props.student.applications[i]
+      );
+      let day_left = getNumberOfDays(today, application_deadline_temp);
+      if (days_left_min > day_left) {
+        days_left_min = day_left;
+        CV_deadline = application_deadline_temp;
+      }
+    }
     // TODO: implement:
     let no_started_application_document_items = <></>;
     general_document_items =
@@ -115,8 +128,8 @@ class CVMLRLProgressNewMessage extends React.Component {
                     {!generaldocs_thread.isFinalVersion &&
                       getNumberOfDays(generaldocs_thread.updatedAt, today)}
                   </td>
-                  <td></td>
-                  <td></td>
+                  <td>{CV_deadline}</td>
+                  <td>{getNumberOfDays(today, CV_deadline)}</td>
                 </>
               )}
             </tr>
@@ -226,10 +239,10 @@ class CVMLRLProgressNewMessage extends React.Component {
                               .expected_application_date &&
                             getNumberOfDays(
                               today,
-                              this.props.student.application_preference
-                                .expected_application_date +
-                                '-' +
-                                application.programId.application_deadline
+                              application_deadline_calculator(
+                                this.props.student,
+                                application
+                              )
                             )
                           : '-'}
                       </td>

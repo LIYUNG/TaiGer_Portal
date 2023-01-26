@@ -9,7 +9,10 @@ import {
 } from 'react-icons/ai';
 
 import { convertDate } from '../../../Utils/contants';
-import { is_TaiGer_role } from '../../../Utils/checking-functions';
+import {
+  is_TaiGer_role,
+  application_deadline_calculator
+} from '../../../Utils/checking-functions';
 
 class CVMLRLProgressClosed extends React.Component {
   handleAsFinalFileThread = (
@@ -239,12 +242,10 @@ class CVMLRLProgressClosed extends React.Component {
                 </td>
                 <td>{convertDate(doc_thread.updatedAt)}</td>
                 <td>
-                  {this.props.student.application_preference &&
-                    this.props.student.application_preference
-                      .expected_application_date &&
-                    this.props.student.application_preference
-                      .expected_application_date + '-'}
-                  {application.programId.application_deadline}
+                  {application_deadline_calculator(
+                    this.props.student,
+                    application
+                  )}
                 </td>
                 <td>{application.closed === 'O' ? 'CLOSE' : 'OPEN'}</td>
               </>

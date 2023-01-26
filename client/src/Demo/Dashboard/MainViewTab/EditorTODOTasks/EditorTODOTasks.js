@@ -1,14 +1,31 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { convertDate, return_thread_status } from '../../../Utils/contants';
+import {
+  convertDate,
+  return_thread_status,
+  getNumberOfDays
+} from '../../../Utils/contants';
 import { application_deadline_calculator } from '../../../Utils/checking-functions';
 
 class EditorTODOTasks extends React.Component {
   render() {
+    var today = new Date();
     var unread_general_generaldocs;
     var unread_applications_docthread;
-
+    let days_left_min = 3000;
+    let CV_deadline = '';
+    for (let i = 0; i < this.props.student.applications.length; i += 1) {
+      let application_deadline_temp = application_deadline_calculator(
+        this.props.student,
+        this.props.student.applications[i]
+      );
+      let day_left = getNumberOfDays(today, application_deadline_temp);
+      if (days_left_min > day_left) {
+        days_left_min = day_left;
+        CV_deadline = application_deadline_temp;
+      }
+    }
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
@@ -49,7 +66,7 @@ class EditorTODOTasks extends React.Component {
                     {generaldocs_threads.doc_thread_id.file_type}
                   </Link>
                 </td>
-                <td></td>
+                <td>{CV_deadline}</td>
                 <td>
                   {new Date(generaldocs_threads.updatedAt).toLocaleDateString()}
                   {', '}

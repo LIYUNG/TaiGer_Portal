@@ -2,13 +2,27 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import DEMO from '../../../../store/constant';
 
-import { convertDate } from '../../../Utils/contants';
+import { convertDate, getNumberOfDays } from '../../../Utils/contants';
+import { application_deadline_calculator } from '../../../Utils/checking-functions';
 
 class UnrespondedThreads extends React.Component {
   render() {
+    var today = new Date();
     var unread_general_generaldocs = 0;
     var unread_applications_docthread = 0;
-
+    let days_left_min = 3000;
+    let CV_deadline = '';
+    for (let i = 0; i < this.props.student.applications.length; i += 1) {
+      let application_deadline_temp = application_deadline_calculator(
+        this.props.student,
+        this.props.student.applications[i]
+      );
+      let day_left = getNumberOfDays(today, application_deadline_temp);
+      if (days_left_min > day_left) {
+        days_left_min = day_left;
+        CV_deadline = application_deadline_temp;
+      }
+    }
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0
@@ -53,6 +67,7 @@ class UnrespondedThreads extends React.Component {
                       {generaldocs_threads.doc_thread_id.file_type}
                     </Link>
                   </td>
+                  <td>{CV_deadline}</td>
                   <td> {convertDate(generaldocs_threads.updatedAt)}</td>
                 </>
               )}
@@ -103,6 +118,12 @@ class UnrespondedThreads extends React.Component {
                           {' - '}
                           {application.programId.program_name}
                         </Link>
+                      </td>
+                      <td>
+                        {application_deadline_calculator(
+                          this.props.student,
+                          application
+                        )}
                       </td>
                       <td> {convertDate(application_doc_thread.updatedAt)}</td>
                     </>

@@ -40,6 +40,7 @@ class EditorMainView extends React.Component {
           <tr>
             <th>First-, Last Name</th>
             <th>Documents</th>
+            <th>Deadline</th>
             <th>Last Update</th>
           </tr>
         </thead>
@@ -55,27 +56,27 @@ class EditorMainView extends React.Component {
         </tbody>
       </>
     );
-    const read_thread = (
-      <>
-        <thead>
-          <tr>
-            <th>First-, Last Name</th>
-            <th>Documents</th>
-            <th>Last Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.students.map((student, i) => (
-            <RespondedThreads
-              user={this.props.user}
-              key={student._id}
-              role={this.props.role}
-              student={student}
-            />
-          ))}
-        </tbody>
-      </>
-    );
+    // const read_thread = (
+    //   <>
+    //     <thead>
+    //       <tr>
+    //         <th>First-, Last Name</th>
+    //         <th>Documents</th>
+    //         <th>Last Update</th>
+    //       </tr>
+    //     </thead>
+    //     <tbody>
+    //       {this.props.students.map((student, i) => (
+    //         <RespondedThreads
+    //           user={this.props.user}
+    //           key={student._id}
+    //           role={this.props.role}
+    //           student={student}
+    //         />
+    //       ))}
+    //     </tbody>
+    //   </>
+    // );
     const editor_todo_tasks = (
       <>
         <thead>
@@ -112,7 +113,7 @@ class EditorMainView extends React.Component {
               responsive
               bordered
               hover
-              className="px-0 my-0 mx-0"
+              className="my-0 mx-0"
               variant="dark"
               text="light"
               size="sm"

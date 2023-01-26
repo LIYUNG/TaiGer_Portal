@@ -116,6 +116,7 @@ class Dashboard extends React.Component {
             <Col>
               <Card className="my-0 mx-0">
                 <TabStudBackgroundDashboard
+                  user={this.props.user}
                   students={this.state.students}
                   agent_list={this.state.agent_list}
                   editor_list={this.state.editor_list}

@@ -9,6 +9,7 @@ class TabStudBackgroundDashboard extends React.Component {
         {this.props.students.map((student, i) => (
           <StudDocsDashboard
             key={i}
+            user={this.props.user}
             student={student}
             updateStudentArchivStatus={this.props.updateStudentArchivStatus}
             isDashboard={this.props.isDashboard}

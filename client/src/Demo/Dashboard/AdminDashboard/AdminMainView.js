@@ -111,6 +111,7 @@ class AdminMainView extends React.Component {
             >
               <TabStudBackgroundDashboard
                 students={this.props.students}
+                user={this.props.user}
                 updateStudentArchivStatus={this.props.updateStudentArchivStatus}
                 isDashboard={this.props.isDashboard}
               />

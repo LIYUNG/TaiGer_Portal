@@ -34,7 +34,7 @@ class StudDocsDashboard extends React.Component {
       <>
         <tr>
           <td>
-            {this.props.isDashboard && (
+            {this.props.isDashboard && this.props.user.role !== 'Editor' && (
               <DropdownButton
                 size="sm"
                 className="mx-0"

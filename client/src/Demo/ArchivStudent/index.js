@@ -165,6 +165,7 @@ class ArchivStudents extends React.Component {
           <Row>
             <Col>
               <TabStudBackgroundDashboard
+                user={this.props.user}
                 students={this.state.students}
                 updateStudentArchivStatus={this.updateStudentArchivStatus}
                 isArchivPage={this.state.isArchivPage}

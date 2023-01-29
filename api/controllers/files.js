@@ -129,22 +129,16 @@ const uploadTemplate = asyncHandler(async (req, res) => {
     logger.error('uploadTemplate: Invalid operation');
     throw new ErrorResponse(403, 'Invalid operation');
   }
-  let template = await Template.findOne({ category_name });
-  if (!template) {
-    template = await Template.create({
+  const updated_templates = await Template.findOneAndUpdate(
+    { category_name },
+    {
       name: req.file.key,
       category_name,
       path: path.join(req.file.metadata.path, req.file.key),
       updatedAt: new Date()
-    });
-  } else {
-    template.name = req.file.key;
-    template.category_name = category_name;
-    template.path = path.join(req.file.metadata.path, req.file.key);
-    template.updatedAt = new Date();
-    await template.save();
-  }
-  const updated_templates = await Template.find({});
+    },
+    { upsert: true, new: true }
+  );
   res.status(201).send({ success: true, data: updated_templates });
 
   await uploadTemplateSuccessEmail(
@@ -980,19 +974,14 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
 const removeNotification = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { notification_key } = req.body;
   // eslint-disable-next-line no-underscore-dangle
-  const me = await User.findById(user._id.toString())
-    .populate('applications.programId agents editors')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id'
-    );
-  me.notification[`${notification_key}`] = true;
-  await me.save();
+  const me = await User.findById(user._id.toString());
+  const obj = me.notification; // create object
+  obj[`${notification_key}`] = true; // set value
+  await User.findByIdAndUpdate(user._id.toString(), { notification: obj }, {});
   res.status(200).send({
     success: true
   });

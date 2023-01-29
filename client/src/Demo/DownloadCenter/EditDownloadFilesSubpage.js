@@ -4,38 +4,23 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL } from '../../api/request';
 
 class EditDownloadFilesSubpage extends React.Component {
-  state = {
-    isLoaded: this.props.isLoaded
-  };
-  componentDidUpdate(prevProps) {
-    // 常見用法（別忘了比較 prop）：
-    if (prevProps.isLoaded !== this.props.isLoaded) {
-      this.setState((state) => ({
-        ...state,
-        isLoaded: true
-      }));
-    }
-  }
+  state = {};
+
   submitFile = (e, prop) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false
-    }));
     this.props.submitFile(e, prop);
   };
 
   render() {
     const deleteStyle = 'danger';
-    let keys2 = Object.keys(this.props.templatelist);
     let object_init = {};
-    for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = 'missing';
+    for (let i = 0; i < this.props.templatelist.length; i++) {
+      object_init[this.props.templatelist[i].prop] = 'missing';
     }
     for (let i = 0; i < this.props.templates.length; i++) {
       object_init[this.props.templates[i].category_name] = 'uploaded';
     }
-
+    console.log(object_init);
     let templatelist2;
     templatelist2 = this.props.templatelist.map((template, i) => {
       return (
@@ -50,7 +35,7 @@ class EditDownloadFilesSubpage extends React.Component {
                     size="sm"
                     type="submit"
                     title="Delete"
-                    disabled={!this.props.isLoaded}
+                    disabled={!this.props.areLoaded[template.prop]}
                     onClick={(e) =>
                       this.props.onDeleteTemplateFile(e, template.prop)
                     }
@@ -87,7 +72,7 @@ class EditDownloadFilesSubpage extends React.Component {
                   <Form onSubmit={(e) => this.submitFile(e, template.prop)}>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                       <Button size="sm" type="submit">
-                        {!this.state.isLoaded ? (
+                        {!this.props.areLoaded[template.prop] ? (
                           <div>
                             <Spinner
                               size="sm"
@@ -113,7 +98,13 @@ class EditDownloadFilesSubpage extends React.Component {
     });
 
     return (
-      <Table responsive variant="dark" text="light" className="my-0 mx-0" size="sm">
+      <Table
+        responsive
+        variant="dark"
+        text="light"
+        className="my-0 mx-0"
+        size="sm"
+      >
         <tbody>{templatelist2}</tbody>
       </Table>
     );

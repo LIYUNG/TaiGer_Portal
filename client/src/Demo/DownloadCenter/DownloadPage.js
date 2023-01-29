@@ -16,7 +16,7 @@ class DownloadPage extends React.Component {
     error: '',
     file: '',
     isLoaded: false,
-    students: [],
+    areLoaded: {},
     templates: null,
     success: false,
     res_status: 0,
@@ -29,11 +29,16 @@ class DownloadPage extends React.Component {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
+          let areLoaded_temp = {};
+          for (let i = 0; i < window.templatelist.length; i++) {
+            areLoaded_temp[window.templatelist[i].prop] = true;
+          }
           this.setState({
             isLoaded: true, //false to reload everything
             templates: data,
             success: success,
-            res_status: status
+            res_status: status,
+            areLoaded: areLoaded_temp
           });
         } else {
           this.setState({
@@ -60,23 +65,34 @@ class DownloadPage extends React.Component {
   };
 
   onSubmitFile = (e, category) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append('file', this.state.file);
+    let areLoaded_temp = { ...this.state.areLoaded };
+    areLoaded_temp[category] = false;
+    this.setState({ areLoaded: areLoaded_temp });
     uploadtemplate(category, formData).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
+          areLoaded_temp[category] = true;
+          let templates_temp = [...this.state.templates];
+          templates_temp.push(data);
+          console.log(templates_temp);
+          console.log(data);
           this.setState({
             isLoaded: true,
-            templates: data,
+            templates: templates_temp,
             success: success,
+            areLoaded: areLoaded_temp,
             res_modal_status: status
           });
         } else {
           const { message } = resp.data;
           this.setState({
             isLoaded: true,
+            areLoaded: areLoaded_temp,
             res_modal_status: status,
             res_modal_message: message
           });
@@ -88,6 +104,7 @@ class DownloadPage extends React.Component {
           ...state,
           isLoaded: true,
           error,
+          areLoaded: areLoaded_temp,
           res_modal_status: 500,
           res_modal_message: statusText
         }));
@@ -197,11 +214,11 @@ class DownloadPage extends React.Component {
                 isLoaded={isLoaded}
                 role={this.props.user.role}
                 userId={this.props.user._id}
-                student={this.state.student}
                 templates={this.state.templates}
                 submitFile={this.submitFile}
                 onFileChange={this.onFileChange}
                 templatelist={window.templatelist}
+                areLoaded={this.state.areLoaded}
                 onDeleteTemplateFile={this.onDeleteTemplateFile}
               />
             </Card>

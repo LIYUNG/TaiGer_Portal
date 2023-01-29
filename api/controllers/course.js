@@ -64,21 +64,6 @@ const createCourse = asyncHandler(async (req, res) => {
     fields,
     { upsert: true, new: true }
   ).populate('student_id', 'firstname lastname');
-  // const courses = await Course.findOne({ student_id: studentId });
-  // if (!courses) {
-  //   const newDoc = await Course.create(fields);
-  //   const courses3 = await Course.findOne({
-  //     student_id: studentId
-  //   }).populate('student_id', 'firstname lastname');
-  //   return res.send({ success: true, data: courses3 });
-  // }
-  // const courses2 = await Course.findOneAndUpdate(
-  //   { student_id: studentId },
-  //   fields,
-  //   {
-  //     new: true
-  //   }
-  // ).populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
   if (user.role === 'Student') {
     // TODO: send course update to Agent
@@ -86,7 +71,6 @@ const createCourse = asyncHandler(async (req, res) => {
       .populate('agents', 'firstname lastname email')
       .exec();
     for (let i = 0; i < student.agents.length; i += 1) {
-      console.log(student.agents[i].firstname);
       await updateCoursesDataAgentEmail(
         {
           firstname: student.agents[i].firstname,

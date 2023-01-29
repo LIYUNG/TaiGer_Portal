@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Spinner } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
+import { Spinner, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 import './../../../assets/scss/style.scss';
@@ -15,8 +15,16 @@ export default function Signin1({ setUserdata }) {
   const [password, setPassword] = useState();
   const [loginsuccess, setLoginsuccess] = useState(true);
   const [buttondisable, setButtondisable] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [reactivateAccount, setReactivateAccount] = useState(false);
-  useEffect(() => {}, []);
+  const clickRef = useRef();
+  useEffect(() => {
+    setIsLoaded(true);
+  }, [emailaddress, password, buttondisable]);
+  if (isLoaded) {
+    // console.log(document.getElementById('email').value);
+    // console.log(document.getElementById('password'));
+  }
   const emailValidation = () => {
     const regex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -59,16 +67,26 @@ export default function Signin1({ setUserdata }) {
     } catch (e) {
       // TODO: Error handler
       // console.log(e);
+      setButtondisable(false);
     }
   };
 
+  const onChangeEmail = async (e, value) => {
+    e.preventDefault();
+    setEmailaddress(value);
+  };
+
+  const onChangePassword = async (e, value) => {
+    e.preventDefault();
+    setPassword(value);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (emailValidation()) {
       if (!password) {
         alert('Password please!');
-        // setButtondisable(false);
+        setButtondisable(false);
       } else {
         try {
           const resp = await login({ email: emailaddress, password });
@@ -84,6 +102,7 @@ export default function Signin1({ setUserdata }) {
       }
     } else {
       alert('Email is not valid');
+      setButtondisable(false);
     }
   };
 
@@ -115,19 +134,22 @@ export default function Signin1({ setUserdata }) {
                 <p className="mb-4"></p>
                 <div className="input-group mb-3">
                   <input
+                    id="email"
                     type="email"
-                    autoFocus
                     className="form-control"
+                    // value={emailaddress}
                     placeholder="Email"
-                    onChange={(e) => setEmailaddress(e.target.value)}
+                    onChange={(e) => onChangeEmail(e, e.target.value)}
                   />
                 </div>
                 <div className="input-group mb-3">
                   <input
+                    id="password"
                     type="password"
                     className="form-control"
+                    // value={password}
                     placeholder="password"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => onChangePassword(e, e.target.value)}
                   />
                 </div>
                 {!loginsuccess && (
@@ -135,11 +157,14 @@ export default function Signin1({ setUserdata }) {
                     Email or password is not correct.
                   </p>
                 )}
-                <button
-                  disabled={!emailaddress || !password || buttondisable}
+                <Button
+                  // ref={clickRef}
+                  // disabled={!emailaddress || !password || buttondisable}
                   onClick={(e) => onButtonClick(e, true)}
+                  autoFocus
                   type="submit"
-                  className="btn btn-success shadow-2 mb-2"
+                  variant="primary"
+                  // className="btn btn-success mb-2"
                 >
                   {buttondisable ? (
                     <Spinner animation="border" role="status" size="sm">
@@ -148,7 +173,7 @@ export default function Signin1({ setUserdata }) {
                   ) : (
                     'Login'
                   )}
-                </button>
+                </Button>
                 <p className="mb-2 text-light">Forgot password?</p>
                 <NavLink to="/forgot-password">
                   <p className="text-info">Reset</p>

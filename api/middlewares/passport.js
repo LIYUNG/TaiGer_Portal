@@ -22,9 +22,12 @@ passport.use(
           return done(null, 'inactivated');
         }
         // Log: login success
-        user['lastLoginAt'] = Date();
-        await user.save();
-        return done(null, user);
+        const user2 = await User.findOneAndUpdate(
+          { email },
+          { lastLoginAt: new Date() },
+          { upsert: true, new: true }
+        ).populate('students agents editors', 'firstname lastname email');
+        return done(null, user2);
       } catch (err) {
         return done(err);
       }
@@ -46,9 +49,12 @@ passport.use(
         );
         if (!user) return done(null, false);
         // Log: login success
-        user['lastLoginAt'] = Date();
-        await user.save();
-        return done(null, user);
+        const user2 = await User.findByIdAndUpdate(
+          payload.id,
+          { lastLoginAt: new Date() },
+          { upsert: true, new: true }
+        ).populate('students agents editors', 'firstname lastname email');
+        return done(null, user2);
       } catch (err) {
         return done(err);
       }

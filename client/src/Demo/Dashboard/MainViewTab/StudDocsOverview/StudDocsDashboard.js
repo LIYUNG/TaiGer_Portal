@@ -53,7 +53,7 @@ class StudDocsDashboard extends React.Component {
                 </Dropdown.Item>
               </DropdownButton>
             )}
-            {this.props.isArchivPage && (
+            {this.props.isArchivPage && this.props.user.role !== 'Editor' && (
               <DropdownButton
                 size="sm"
                 className="mx-0"

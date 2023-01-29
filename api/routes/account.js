@@ -18,14 +18,17 @@ const { protect, permit } = require('../middlewares/auth');
 const { TemplatefileUpload } = require('../middlewares/file-upload');
 
 const {
+  processTranscript_test,
+  downloadXLSX
+} = require('../controllers/course');
+
+const {
   getMyfiles,
   getTemplates,
   deleteTemplate,
   uploadTemplate,
   downloadTemplateFile,
   UpdateStudentApplications,
-  processTranscript_test,
-  downloadXLSX,
   removeNotification,
   removeAgentNotification,
   getMyAcademicBackground,

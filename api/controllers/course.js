@@ -1,4 +1,7 @@
 const _ = require('lodash');
+const { spawn } = require('child_process');
+const aws = require('aws-sdk');
+
 const { ErrorResponse } = require('../common/errors');
 const path = require('path');
 
@@ -7,6 +10,17 @@ const Course = require('../models/Course');
 const { Role, Student, User } = require('../models/User');
 const logger = require('../services/logger');
 const { updateCoursesDataAgentEmail } = require('../services/email');
+const { one_month_cache, two_month_cache } = require('../cache/node-cache');
+const {
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_BUCKET_NAME,
+  AWS_S3_PUBLIC_BUCKET_NAME
+} = require('../config');
+const s3 = new aws.S3({
+  accessKeyId: AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: AWS_S3_ACCESS_KEY
+});
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
@@ -43,22 +57,28 @@ const createCourse = asyncHandler(async (req, res) => {
   const { user } = req;
   const { studentId } = req.params;
   const fields = req.body;
-  const courses = await Course.findOne({ student_id: studentId });
   fields.updatedAt = new Date();
-  if (!courses) {
-    const newDoc = await Course.create(fields);
-    const courses3 = await Course.findOne({
-      student_id: studentId
-    }).populate('student_id', 'firstname lastname');
-    return res.send({ success: true, data: courses3 });
-  }
+
   const courses2 = await Course.findOneAndUpdate(
     { student_id: studentId },
     fields,
-    {
-      new: true
-    }
+    { upsert: true, new: true }
   ).populate('student_id', 'firstname lastname');
+  // const courses = await Course.findOne({ student_id: studentId });
+  // if (!courses) {
+  //   const newDoc = await Course.create(fields);
+  //   const courses3 = await Course.findOne({
+  //     student_id: studentId
+  //   }).populate('student_id', 'firstname lastname');
+  //   return res.send({ success: true, data: courses3 });
+  // }
+  // const courses2 = await Course.findOneAndUpdate(
+  //   { student_id: studentId },
+  //   fields,
+  //   {
+  //     new: true
+  //   }
+  // ).populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
   if (user.role === 'Student') {
     // TODO: send course update to Agent
@@ -83,6 +103,171 @@ const createCourse = asyncHandler(async (req, res) => {
   }
 });
 
+const processTranscript_test = asyncHandler(async (req, res, next) => {
+  const {
+    params: { category, studentId, language }
+  } = req;
+  const courses = await Course.findOne({ student_id: studentId }).populate(
+    'student_id'
+  );
+  if (!courses) {
+    logger.error('no course for this student!');
+    return res.send({ success: true, data: {} });
+  }
+  const stringified_courses = JSON.stringify(courses.table_data_string);
+  let exitCode_Python = -1;
+  // TODO: multitenancy studentId?
+  let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
+  student_name = student_name.replace(/ /g, '-');
+  const python = spawn(
+    'python',
+    [
+      path.join(
+        __dirname,
+        '..',
+        'python',
+        'TaiGerTranscriptAnalyzerJS',
+        'main.py'
+      ),
+      stringified_courses,
+      category,
+      studentId,
+      student_name,
+      language
+    ],
+    { stdio: 'inherit' }
+  );
+  python.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+  python.on('error', (err) => {
+    console.log('error');
+    console.log(err);
+    exitCode_Python = err;
+    // res.sendStatus(500);
+    // res.status(500).send({ success: false });
+  });
+  // python.on('data', (data) => {
+  //   console.error(`stderr: ${data}`);
+  // });
+  python.on('close', (code) => {
+    if (code === 0) {
+      courses.analysis.isAnalysed = true;
+      courses.analysis.path = path.join(
+        studentId,
+        `analysed_transcript_${student_name}.xlsx`
+      );
+      courses.analysis.updatedAt = new Date();
+      courses.save();
+
+      const url_split = req.originalUrl.split('/');
+      const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+      const success = one_month_cache.del(cache_key);
+      if (success === 1) {
+        console.log('cache key deleted successfully');
+      }
+      exitCode_Python = 0;
+      res.status(200).send({ success: true, data: courses.analysis });
+    } else {
+      res.status(404).send({ message: code });
+    }
+  });
+});
+
+// Download original transcript excel
+const downloadXLSX = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId }
+  } = req;
+
+  let course;
+  if (user.role === Role.Student || user.role === 'Guest') {
+    // eslint-disable-next-line no-underscore-dangle
+    course = await Course.findOne({ student_id: user._id.toString() });
+  } else {
+    course = await Course.findOne({ student_id: studentId });
+  }
+  if (!course) {
+    logger.error('downloadXLSX: Invalid student id');
+    throw new ErrorResponse(404, 'Invalid student id');
+  }
+
+  if (course.analysis.path === '' || !course.analysis.isAnalysed) {
+    logger.error('downloadXLSX: not analysed yet');
+    throw new ErrorResponse(404, 'Transcript not analysed  yet');
+  }
+
+  let analysed_transcript_excel_split = course.analysis.path.replace(
+    /\\/g,
+    '/'
+  );
+  analysed_transcript_excel_split = analysed_transcript_excel_split.split('/');
+  const fileKey = analysed_transcript_excel_split[1];
+  let directory = analysed_transcript_excel_split[0];
+  logger.info(`Trying to download transcript excel file ${fileKey}`);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+  const url_split = req.originalUrl.split('/');
+  const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+  // console.log(cache_key);
+  // console.log(req.originalUrl);
+  const value = one_month_cache.get(cache_key);
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (err) return err;
+
+      // No error happened
+      // Convert Body from a Buffer to a String
+      const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+
+      const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
+
+      const success = one_month_cache.set(cache_key, data.Body);
+      if (success) {
+        console.log('cache set successfully');
+      }
+
+      res.attachment(fileKey_converted);
+      // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
+      return res.end(data.Body);
+      // return res.send(data);
+
+      // const fileStream = data.createReadStream();
+      // fileStream.pipe(res);
+    });
+
+    // s3.headObject(options)
+    //   .promise()
+    //   .then(() => {
+    //     // This will not throw error anymore
+    //     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    //     res.attachment(fileKey_converted);
+    //     const fileStream = s3.getObject(options).createReadStream();
+    //     fileStream.pipe(res);
+    //   })
+    //   .catch((error) => {
+    //     if (error.statusCode === 404) {
+    //       // Catching NoSuchKey
+    //       logger.error('downloadXLSX: ', error);
+    //     }
+    //     return res
+    //       .status(error.statusCode)
+    //       .json({ success: false, message: error.message });
+    //   });
+  } else {
+    console.log('cache hit');
+    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    res.attachment(fileKey_converted);
+    return res.end(value);
+  }
+});
+
 const deleteCourse = asyncHandler(async (req, res) => {
   await Course.findByIdAndDelete(req.params.id);
   return res.send({ success: true });
@@ -91,5 +276,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
 module.exports = {
   getCourse,
   createCourse,
+  processTranscript_test,
+  downloadXLSX,
   deleteCourse
 };

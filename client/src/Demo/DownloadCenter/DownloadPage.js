@@ -79,8 +79,6 @@ class DownloadPage extends React.Component {
           areLoaded_temp[category] = true;
           let templates_temp = [...this.state.templates];
           templates_temp.push(data);
-          console.log(templates_temp);
-          console.log(data);
           this.setState({
             isLoaded: true,
             templates: templates_temp,

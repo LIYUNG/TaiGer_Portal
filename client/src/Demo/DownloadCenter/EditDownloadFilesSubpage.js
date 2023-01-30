@@ -20,7 +20,6 @@ class EditDownloadFilesSubpage extends React.Component {
     for (let i = 0; i < this.props.templates.length; i++) {
       object_init[this.props.templates[i].category_name] = 'uploaded';
     }
-    console.log(object_init);
     let templatelist2;
     templatelist2 = this.props.templatelist.map((template, i) => {
       return (

@@ -204,6 +204,12 @@ ${activationLink}
 <p>This link will expire in 20 minutes.</p>
 <p>You can request another here: ${RESEND_ACTIVATION_URL}</p>
 
+<p>The following are your TaiGer Portal credential</p>
+<p>Email: <b>${recipient.address}</b></p>
+<p>Password: <b>${payload.password}</b></p>
+
+<p>Please change the password in ${SETTINGS_URL} after login.</p>
+
 <p>${TAIGER_SIGNATURE}</p>
 
 `;

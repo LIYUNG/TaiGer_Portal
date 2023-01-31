@@ -452,12 +452,13 @@ class DocModificationThreadPage extends Component {
               <Col>
                 <h5>Instruction</h5>
                 <p>
-                  請填好我們的 TaiGer Template。請填好並在這個討論串夾帶在和您的
-                  Editor 討論。
+                  請填好我們的 TaiGer Template，並在這個討論串夾帶在和您的
+                  Editor 討論。回覆時請用 <b>英語(English)</b>{' '}
+                  好讓外籍顧問方便溝通。
                 </p>
                 <p>
                   Please fill our TaiGer template and attach the filled template
-                  in this discussion.
+                  and reply in <b>English</b> in this discussion.
                 </p>
                 <p>
                   Download template:{' '}

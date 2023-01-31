@@ -116,9 +116,13 @@ class StudDocsDashboard extends React.Component {
             {this.props.student.academic_background.language.german_score}
           </td>
           <td>
-            {this.props.student.academic_background.language.english_test_date}
+            {this.props.student.academic_background.language
+              .english_isPassed === 'X' &&
+              this.props.student.academic_background.language.english_test_date}
             <br />
-            {this.props.student.academic_background.language.german_test_date}
+            {this.props.student.academic_background.language.german_isPassed ===
+              'X' &&
+              this.props.student.academic_background.language.german_test_date}
           </td>
         </tr>
       </>

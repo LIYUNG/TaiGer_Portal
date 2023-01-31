@@ -484,8 +484,16 @@ const getMessages = asyncHandler(async (req, res) => {
       throw new ErrorResponse(403, 'Unauthorized request');
     }
   }
+  const agents = await Agent.find({
+    _id: document_thread.student_id.agents
+  }).select('firstname lastname');
+  const editors = await Editor.find({
+    _id: document_thread.student_id.editors
+  }).select('firstname lastname');
 
-  res.status(200).send({ success: true, data: document_thread });
+  res
+    .status(200)
+    .send({ success: true, data: document_thread, agents, editors });
 });
 
 const postImageInThread = asyncHandler(async (req, res) => {

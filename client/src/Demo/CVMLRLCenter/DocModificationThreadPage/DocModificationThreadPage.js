@@ -16,8 +16,6 @@ import {
 import { BASE_URL } from '../../../api/request';
 
 import {
-  getTemplateDownload,
-  deleteDoc,
   SubmitMessageWithAttachment,
   getMessagThread,
   deleteAMessageInThread,
@@ -37,6 +35,8 @@ class DocModificationThreadPage extends Component {
     buttonDisabled: false,
     editorState: {},
     expand: true,
+    editors: [],
+    agents: [],
     SetAsFinalFileModel: false,
     accordionKeys: [0], // to expand all]
     res_status: 0,
@@ -46,12 +46,14 @@ class DocModificationThreadPage extends Component {
   componentDidMount() {
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
-        const { success, data } = resp.data;
+        const { success, data, editors, agents } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             success,
             thread: data,
+            editors,
+            agents,
             isLoaded: true,
             documentsthreadId: this.props.match.params.documentsthreadId,
             file: null,
@@ -445,85 +447,128 @@ class DocModificationThreadPage extends Component {
             </Card>
           </Row>
         )}
+        <Row className="pb-2">
+          <Col className="px-0">
+            <Card className="my-0 mx-0">
+              <Card.Body>
+                <Row>
+                  <Col md={10}>
+                    <h5>Instruction</h5>
+                    <p></p>
+                    <p>
+                      請填好我們的 TaiGer Template，並在這個討論串夾帶在和您的
+                      Editor 討論。回覆時請用 <b>英語(English)</b>{' '}
+                      好讓外籍顧問方便溝通。
+                    </p>
+                    <p>
+                      Please fill our TaiGer template and attach the filled
+                      template and reply in <b>English</b> in this discussion.
+                    </p>
+                    <p>
+                      Download template:{' '}
+                      {template_obj ? (
+                        <b>
+                          <a
+                            href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
+                            target="_blank"
+                          >
+                            Link [點我下載]
+                          </a>
+                        </b>
+                      ) : (
+                        <>Not available</>
+                      )}
+                    </p>
+                    <h6>
+                      <b>Requirements:</b>
+                      {is_TaiGer_AdminAgent(this.props.user) &&
+                        this.state.thread.program_id && (
+                          <Link
+                            to={`/programs/${this.state.thread.program_id._id.toString()}`}
+                            target="_blank"
+                          >
+                            {' '}
+                            [Update]
+                          </Link>
+                        )}
+                    </h6>
+                    {this.state.thread.program_id ? (
+                      <>{this.getRequirement(this.state.thread)}</>
+                    ) : (
+                      <>
+                        <p>No</p>
+                      </>
+                    )}
+                  </Col>
+                  <Col md={2}>
+                    <h6>
+                      <b>Agent:</b>
+                      {this.state.agents.map((agent, i) => (
+                        <p>
+                          {is_TaiGer_role(this.props.user) ? (
+                            <Link
+                              to={`/teams/agents/${agent._id.toString()}`}
+                              target="_blank"
+                            >
+                              {agent.firstname} {agent.lastname}
+                            </Link>
+                          ) : (
+                            <>
+                              {agent.firstname} {agent.lastname}
+                            </>
+                          )}
+                        </p>
+                      ))}
+                    </h6>
+                    <h6>
+                      <b>Editor:</b>
+                      {this.state.editors.map((editor, i) => (
+                        <p>
+                          {is_TaiGer_role(this.props.user) ? (
+                            <Link
+                              to={`/teams/editors/${editor._id.toString()}`}
+                              target="_blank"
+                            >
+                              {editor.firstname} {editor.lastname}
+                            </Link>
+                          ) : (
+                            <>
+                              {editor.firstname} {editor.lastname}
+                            </>
+                          )}
+                        </p>
+                      ))}
+                    </h6>
 
-        <Row>
-          <Card className="mb-2 mx-0">
-            <Card.Body>
-              <Col>
-                <h5>Instruction</h5>
-                <p>
-                  請填好我們的 TaiGer Template，並在這個討論串夾帶在和您的
-                  Editor 討論。回覆時請用 <b>英語(English)</b>{' '}
-                  好讓外籍顧問方便溝通。
-                </p>
-                <p>
-                  Please fill our TaiGer template and attach the filled template
-                  and reply in <b>English</b> in this discussion.
-                </p>
-                <p>
-                  Download template:{' '}
-                  {template_obj ? (
-                    <b>
-                      <a
-                        href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
-                        target="_blank"
-                      >
-                        Link [點我下載]
-                      </a>
-                    </b>
-                  ) : (
-                    <>Not available</>
-                  )}
-                </p>
-              </Col>
-              <Col>
-                <h6>
-                  <b>Requirements:</b>
-                  {is_TaiGer_AdminAgent(this.props.user) &&
-                    this.state.thread.program_id && (
-                      <Link
-                        to={`/programs/${this.state.thread.program_id._id.toString()}`}
-                        target="_blank"
-                      >
-                        {' '}
-                        [Update]
-                      </Link>
+                    <h6>
+                      <b>Deadline</b>
+                      {is_TaiGer_AdminAgent(this.props.user) &&
+                        this.state.thread.program_id && (
+                          <Link
+                            to={`/programs/${this.state.thread.program_id._id.toString()}`}
+                            target="_blank"
+                          >
+                            {' '}
+                            [Update]
+                          </Link>
+                        )}
+                    </h6>
+                    {this.state.thread.program_id && (
+                      <h6>
+                        {this.state.thread.student_id.application_preference &&
+                        this.state.thread.student_id.application_preference
+                          .expected_application_date
+                          ? this.state.thread.student_id.application_preference
+                              .expected_application_date + '-'
+                          : ''}
+                        {this.state.thread.program_id.application_deadline}
+                      </h6>
                     )}
-                </h6>
-                {this.state.thread.program_id ? (
-                  <>{this.getRequirement(this.state.thread)}</>
-                ) : (
-                  <>
-                    <p>No</p>
-                  </>
-                )}
-                <h6>
-                  <b>Deadline</b>
-                  {is_TaiGer_AdminAgent(this.props.user) &&
-                    this.state.thread.program_id && (
-                      <Link
-                        to={`/programs/${this.state.thread.program_id._id.toString()}`}
-                        target="_blank"
-                      >
-                        {' '}
-                        [Update]
-                      </Link>
-                    )}
-                </h6>
-                {this.state.thread.program_id && (
-                  <h6>
-                    {this.state.thread.student_id.application_preference &&
-                    this.state.thread.student_id.application_preference
-                      .expected_application_date
-                      ? this.state.thread.student_id.application_preference
-                          .expected_application_date + '-'
-                      : ''}
-                    {this.state.thread.program_id.application_deadline}
-                  </h6>
-                )}
-              </Col>
-            </Card.Body>
-          </Card>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
         <Row>
           <MessageList

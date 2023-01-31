@@ -37,6 +37,7 @@ class DocModificationThreadPage extends Component {
     expand: true,
     editors: [],
     agents: [],
+    deadline: '',
     SetAsFinalFileModel: false,
     accordionKeys: [0], // to expand all]
     res_status: 0,
@@ -46,7 +47,7 @@ class DocModificationThreadPage extends Component {
   componentDidMount() {
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
-        const { success, data, editors, agents } = resp.data;
+        const { success, data, editors, agents, deadline } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
@@ -54,6 +55,7 @@ class DocModificationThreadPage extends Component {
             thread: data,
             editors,
             agents,
+            deadline,
             isLoaded: true,
             documentsthreadId: this.props.match.params.documentsthreadId,
             file: null,
@@ -541,7 +543,7 @@ class DocModificationThreadPage extends Component {
                     </h6>
 
                     <h6>
-                      <b>Deadline</b>
+                      <b>Deadline:</b>
                       {is_TaiGer_AdminAgent(this.props.user) &&
                         this.state.thread.program_id && (
                           <Link
@@ -553,7 +555,8 @@ class DocModificationThreadPage extends Component {
                           </Link>
                         )}
                     </h6>
-                    {this.state.thread.program_id && (
+                    <p>{this.state.deadline}</p>
+                    {/* {this.state.thread.program_id && (
                       <h6>
                         {this.state.thread.student_id.application_preference &&
                         this.state.thread.student_id.application_preference
@@ -563,7 +566,7 @@ class DocModificationThreadPage extends Component {
                           : ''}
                         {this.state.thread.program_id.application_deadline}
                       </h6>
-                    )}
+                    )} */}
                   </Col>
                 </Row>
               </Card.Body>

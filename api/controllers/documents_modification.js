@@ -20,7 +20,10 @@ const {
   // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
-const { getNumberOfDays } = require('../constants');
+const {
+  getNumberOfDays,
+  application_deadline_calculator
+} = require('../constants');
 
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -490,10 +493,40 @@ const getMessages = asyncHandler(async (req, res) => {
   const editors = await Editor.find({
     _id: document_thread.student_id.editors
   }).select('firstname lastname');
-
-  res
-    .status(200)
-    .send({ success: true, data: document_thread, agents, editors });
+  const student = await Student.findById(
+    document_thread.student_id._id.toString()
+  ).populate('applications.programId');
+  let deadline = 'x';
+  if (document_thread.file_type.includes('CV')) {
+    const today = new Date();
+    let days_left_min = 3000;
+    let CV_deadline = '';
+    for (let i = 0; i < student.applications.length; i += 1) {
+      const application_deadline_temp = application_deadline_calculator(
+        student,
+        student.applications[i]
+      );
+      const day_left = getNumberOfDays(today, application_deadline_temp);
+      if (days_left_min > day_left) {
+        days_left_min = day_left;
+        CV_deadline = application_deadline_temp;
+      }
+    }
+    deadline = CV_deadline;
+  } else {
+    const application = student.applications.find(
+      (app) =>
+        app.programId._id.toString() === document_thread.program_id._id.toString()
+    );
+    deadline = application_deadline_calculator(student, application);
+  }
+  res.status(200).send({
+    success: true,
+    data: document_thread,
+    agents,
+    editors,
+    deadline
+  });
 });
 
 const postImageInThread = asyncHandler(async (req, res) => {

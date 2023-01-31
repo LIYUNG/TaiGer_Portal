@@ -512,21 +512,22 @@ class SingleStudentPage extends React.Component {
                   >
                     {this.state.student.firstname}
                     {' ,'}
-                    {this.state.student.lastname}.
+                    {this.state.student.lastname}
                     <span
-                      className="text-light mb-1 me-2"
-                      style={{ float: 'right', cursor: 'pointer' }}
+                      className="text-light mb-1 me-2 "
+                      style={{ float: 'right' }}
                     >
-                      Last Login: {convertDate(this.state.student.lastLoginAt)}
                       <Button
                         size="sm"
-                        className="ms-2 mt-0"
-                        // onClick={(e) =>
+                        className="ms-2 "
                         onClick={this.onChangeView}
                       >
                         Switch to Student View
                       </Button>
                     </span>
+                    <p className="text-light mt-2" style={{ float: 'right' }}>
+                      Last Login: {convertDate(this.state.student.lastLoginAt)}
+                    </p>
                   </h4>
                 </Card>
               </Col>
@@ -693,7 +694,7 @@ class SingleStudentPage extends React.Component {
           <>
             <Row>
               <Col>
-                <Card className="my-2 mx-0" bg={'secondary'} text={'light'}>
+                <Card className="my-2 mx-0" bg={'secondary'} text={'white'}>
                   <h4
                     className="text-light mt-4 ms-4"
                     style={{ textAlign: 'left' }}
@@ -703,7 +704,7 @@ class SingleStudentPage extends React.Component {
                     <span style={{ float: 'right', cursor: 'pointer' }}>
                       <Button
                         size="sm"
-                        className="text-light mb-3 me-4"
+                        className="ms-2 mb-2"
                         onClick={this.onChangeView}
                       >
                         Switch Back

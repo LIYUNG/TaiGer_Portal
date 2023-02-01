@@ -10,6 +10,7 @@ const { Documentthread } = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
 const {
   sendNewApplicationMessageInThreadEmail,
+  sendAssignEditorReminderEmail,
   sendNewGeneraldocMessageInThreadEmail,
   sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
@@ -516,7 +517,8 @@ const getMessages = asyncHandler(async (req, res) => {
   } else {
     const application = student.applications.find(
       (app) =>
-        app.programId._id.toString() === document_thread.program_id._id.toString()
+        app.programId._id.toString() ===
+        document_thread.program_id._id.toString()
     );
     deadline = application_deadline_calculator(student, application);
   }
@@ -594,7 +596,7 @@ const postMessages = asyncHandler(async (req, res) => {
   // in student (User) collections.
   const student = await Student.findById(document_thread.student_id)
     .populate('applications.programId')
-    .populate('editors', 'firstname lastname email')
+    .populate('editors agents', 'firstname lastname email')
     .exec();
   if (document_thread.program_id) {
     const application = student.applications.find(
@@ -630,47 +632,63 @@ const postMessages = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: document_thread2 });
 
   if (user.role === Role.Student) {
-    // Inform Editor
-    // const student = user;
-    for (let i = 0; i < student.editors.length; i++) {
-      if (document_thread.program_id) {
-        sendNewApplicationMessageInThreadEmail(
+    // If no editor, inform agent to assign
+    if (!student.editors || student.editors.length === 0) {
+      for (let i = 0; i < student.agents.length; i += 1) {
+        sendAssignEditorReminderEmail(
           {
-            firstname: student.editors[i].firstname,
-            lastname: student.editors[i].lastname,
-            address: student.editors[i].email
+            firstname: student.agents[i].firstname,
+            lastname: student.agents[i].lastname,
+            address: student.agents[i].email
           },
           {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
             student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            uploaded_documentname: document_thread.file_type,
-            school: document_thread.program_id.school,
-            program_name: document_thread.program_id.program_name,
-            thread_id: document_thread._id.toString(),
-            uploaded_updatedAt: new Date(),
-            message
+            student_lastname: student.lastname
           }
         );
-      } else {
-        sendNewGeneraldocMessageInThreadEmail(
-          {
-            firstname: student.editors[i].firstname,
-            lastname: student.editors[i].lastname,
-            address: student.editors[i].email
-          },
-          {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            uploaded_documentname: document_thread.file_type,
-            thread_id: document_thread._id.toString(),
-            uploaded_updatedAt: new Date(),
-            message
-          }
-        );
+      }
+    } else {
+      // Inform Editor
+      for (let i = 0; i < student.editors.length; i += 1) {
+        if (document_thread.program_id) {
+          sendNewApplicationMessageInThreadEmail(
+            {
+              firstname: student.editors[i].firstname,
+              lastname: student.editors[i].lastname,
+              address: student.editors[i].email
+            },
+            {
+              writer_firstname: user.firstname,
+              writer_lastname: user.lastname,
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              uploaded_documentname: document_thread.file_type,
+              school: document_thread.program_id.school,
+              program_name: document_thread.program_id.program_name,
+              thread_id: document_thread._id.toString(),
+              uploaded_updatedAt: new Date(),
+              message
+            }
+          );
+        } else {
+          sendNewGeneraldocMessageInThreadEmail(
+            {
+              firstname: student.editors[i].firstname,
+              lastname: student.editors[i].lastname,
+              address: student.editors[i].email
+            },
+            {
+              writer_firstname: user.firstname,
+              writer_lastname: user.lastname,
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              uploaded_documentname: document_thread.file_type,
+              thread_id: document_thread._id.toString(),
+              uploaded_updatedAt: new Date(),
+              message
+            }
+          );
+        }
       }
     }
   }
@@ -719,7 +737,7 @@ const postMessages = asyncHandler(async (req, res) => {
   if (user.role === Role.Agent || user.role === Role.Admin) {
     // Inform Editor
     // const student = user;
-    for (let i = 0; i < student.editors.length; i++) {
+    for (let i = 0; i < student.editors.length; i += 1) {
       if (document_thread.program_id) {
         sendNewApplicationMessageInThreadEmail(
           {

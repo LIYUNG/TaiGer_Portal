@@ -223,9 +223,9 @@ class ButtonSetNotNeeded extends React.Component {
               disabled={!this.state.isLoaded}
               onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
             >
-              Ok
+              Yes
             </Button>
-            <Button onClick={this.closeSetNeededWindow}>Ok</Button>
+            <Button onClick={this.closeSetNeededWindow}>No</Button>
           </Modal.Footer>
         </Modal>
         <Offcanvas

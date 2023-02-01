@@ -1668,6 +1668,26 @@ Some reminder email template.
   return sendEmail(recipient, subject, message);
 };
 
+const sendAssignEditorReminderEmail = async (recipient, payload) => {
+  const subject = '[Action Required] Assign Editor Reminder';
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+請指派 Editor 給學生 ${payload.student_firstname} - ${payload.student_lastname}
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+Please assign Editor to the student ${payload.student_firstname} - ${payload.student_lastname}
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -1709,5 +1729,6 @@ module.exports = {
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
-  updateCoursesDataAgentEmail
+  updateCoursesDataAgentEmail,
+  sendAssignEditorReminderEmail
 };

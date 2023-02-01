@@ -223,7 +223,7 @@ window.profile_list = {
   Bachelor_Certificate: 'Bachelor Certificate',
   Bachelor_Transcript: 'Bachelor Transcript',
   Englisch_Certificate: 'TOEFL or IELTS',
-  German_Certificate: 'TestDaF or Goethe-B2/C1',
+  German_Certificate: 'TestDaF or Goethe-A1-C1',
   GREGMAT: 'GRE or GMAT',
   ECTS_Conversion: 'ECTS Conversion',
   Course_Description: 'Course Description',

@@ -738,9 +738,13 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${editor} 將會是您的外語文件編輯，她/他會輔助您完成您的動機信、推薦信、個人履歷。</p>
+<p>從現在開始我們的外籍顧問 ${editor} 會正式開始幫你修改、潤飾申請資料，並且全權負責申請資料(動機信、推薦信、個人履歷)的製作。</p>
 
-<p>請至 <a href="${ORIGIN}">TaiGer portal</a> 開始準備您的第一份文件吧！</p>
+<p>若有任何疑問請直接與 ${editor} 在每個修改文件 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 的討論串做溝通。</p>
+
+<p>如果有任何的技術上問題，請詢問您的顧問作協助。</p>
+
+<p>在 Portal 的文件修改討論船，請用<b>英文</b>溝通。</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -748,9 +752,14 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${editor} will be your editor!</p>
+<p>Let me introduce our professional Editor ${editor}. From now on, ${editor} will be fully responsible for editing your application documents (CV, Motivation letters, Recommendation Letters).</p>
 
-<p>Please go to <a href="${ORIGIN}">TaiGer portal</a> , and prepare your first documents!</p>
+<p>Please directly provide your feedback to ${editor} in each documents discussion threads in the <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a>. </p>
+
+<p>If you have any technical problems, please ask your agent for help.</p>
+
+<p>In each TaiGer Portal's CV/ML/RL Center document discussion thread, please use <b>English</b> to provide your feedback with your edtior.</p>
+
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1673,13 +1682,17 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-請指派 Editor 給學生 ${payload.student_firstname} - ${payload.student_lastname}
+<p>${payload.student_firstname} - ${payload.student_lastname} 上傳了一份文件至他的 CVMLRL Cetner，但他目前並無任何Editor。</p>
+
+<p>請指派 Editor 給學生 ${payload.student_firstname} - ${payload.student_lastname}</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
 <p>${SPLIT_LINE}</p>
 
-Please assign Editor to the student ${payload.student_firstname} - ${payload.student_lastname}
+<p>${payload.student_firstname} - ${payload.student_lastname} has uploaded some input in his/her CVMLRL Center, but she/he did not have any Editor yet。</p>
+
+<p>Please assign an Editor to the student ${payload.student_firstname} - ${payload.student_lastname}</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

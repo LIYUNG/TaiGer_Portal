@@ -345,15 +345,18 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
   }
 });
 
-// () TODO email : agent better notification! (only added or removed should be informed.)
+// (O) TODO email : agent better notification! (only added should be informed.)
 // () TODO email : student better notification ()
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId },
     body: agentsId // agentsId is json (or agentsId array with boolean)
   } = req;
+  const student = await Student.findById(studentId);
   const agentsId_arr = Object.keys(agentsId);
   let updated_agent_id = [];
+  let before_change_agent_arr = student.agents;
+  let to_be_informed_agents = [];
   let updated_agent = [];
   for (let i = 0; i < agentsId_arr.length; i += 1) {
     if (agentsId[agentsId_arr[i]]) {
@@ -364,10 +367,16 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
         lastname: agent.lastname,
         email: agent.email
       });
+      if (!before_change_agent_arr.includes(agentsId_arr[i])) {
+        to_be_informed_agents.push({
+          firstname: agent.firstname,
+          lastname: agent.lastname,
+          email: agent.email
+        });
+      }
     }
   }
 
-  const student = await Student.findById(studentId);
   if (updated_agent_id.length > 0) {
     student.notification.isRead_new_agent_assigned = false;
   }
@@ -379,12 +388,12 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     .exec();
   res.status(200).send({ success: true, data: student_upated });
 
-  for (let i = 0; i < updated_agent.length; i += 1) {
+  for (let i = 0; i < to_be_informed_agents.length; i += 1) {
     await informAgentNewStudentEmail(
       {
-        firstname: updated_agent[i].firstname,
-        lastname: updated_agent[i].lastname,
-        address: updated_agent[i].email
+        firstname: to_be_informed_agents[i].firstname,
+        lastname: to_be_informed_agents[i].lastname,
+        address: to_be_informed_agents[i].email
       },
       {
         std_firstname: student.firstname,
@@ -415,33 +424,31 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     body: editorsId
   } = req;
   const keys = Object.keys(editorsId);
+  const student = await Student.findById(studentId);
 
-  var updated_editor_id = [];
-  var updated_editor = [];
-  for (let i = 0; i < keys.length; i++) {
-    // const agent = await Agent.findById(({ editorsId }) => editorsId);
+  let updated_editor_id = [];
+  let before_change_editor_arr = student.editors;
+  let to_be_informed_editors = [];
+  let updated_editor = [];
+  for (let i = 0; i < keys.length; i += 1) {
     if (editorsId[keys[i]]) {
       updated_editor_id.push(keys[i]);
-      const editor = await Editor.findByIdAndUpdate(
-        keys[i],
-        {
-          $addToSet: { students: studentId }
-        },
-        { new: true }
-      );
+      const editor = await Editor.findById(keys[i]);
       updated_editor.push({
         firstname: editor.firstname,
         lastname: editor.lastname,
         email: editor.email
       });
-    } else {
-      await Editor.findByIdAndUpdate(keys[i], {
-        $pull: { students: studentId }
-      });
+      if (!before_change_editor_arr.includes(keys[i])) {
+        to_be_informed_editors.push({
+          firstname: editor.firstname,
+          lastname: editor.lastname,
+          email: editor.email
+        });
+      }
     }
   }
 
-  const student = await Student.findById(studentId);
   student.notification.isRead_new_editor_assigned = false;
   student.editors = updated_editor_id;
   await student.save();
@@ -452,12 +459,12 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
 
   res.status(200).send({ success: true, data: student_upated });
 
-  for (let i = 0; i < updated_editor.length; i += 1) {
+  for (let i = 0; i < to_be_informed_editors.length; i += 1) {
     await informEditorNewStudentEmail(
       {
-        firstname: updated_editor[i].firstname,
-        lastname: updated_editor[i].lastname,
-        address: updated_editor[i].email
+        firstname: to_be_informed_editors[i].firstname,
+        lastname: to_be_informed_editors[i].lastname,
+        address: to_be_informed_editors[i].email
       },
       {
         std_firstname: student.firstname,

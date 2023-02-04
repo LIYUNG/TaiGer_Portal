@@ -29,10 +29,6 @@ const getTeamMembers = asyncHandler(async (req, res) => {
 
 const getAgents = asyncHandler(async (req, res, next) => {
   const agents = await Agent.find().populate('students', '_id name');
-  // if (!agents) {
-  //   logger.error('getAgents : no agents');
-  //   throw new ErrorResponse(400, 'no agents');
-  // }
   res.status(200).send({ success: true, data: agents });
 });
 
@@ -41,9 +37,8 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
   const agent = await Agent.findById(agent_id).select(
     'students firstname lastname'
   );
-  // TODO: query by agents field: student.agents include agent_id
+  // query by agents field: student.agents include agent_id
   const students = await Student.find({
-    // _id: { $in: agent.students },
     agents: agent_id,
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -56,10 +51,6 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
     .select('-notification')
     .lean()
     .exec();
-  // if (!agents) {
-  //   logger.error('getAgents : no agents');
-  //   throw new ErrorResponse(400, 'no agents');
-  // }
   res.status(200).send({ success: true, data: { students, agent } });
 });
 
@@ -68,10 +59,6 @@ const getEditors = asyncHandler(async (req, res, next) => {
     'students',
     '_id name firstname lastname'
   );
-  // if (!editors) {
-  //   logger.error('getgetEditorsAgents : no editors');
-  //   throw new ErrorResponse(400, 'no editors');
-  // }
   res.status(200).send({ success: true, data: editors });
 });
 
@@ -80,9 +67,8 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
   const editor = await Editor.findById(editor_id).select(
     'students firstname lastname'
   );
-  // TODO: query by agents field: student.editors include editor_id
+  // query by agents field: student.editors include editor_id
   const students = await Student.find({
-    // _id: { $in: editor.students },
     editors: editor_id,
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -93,10 +79,6 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
       '-messages'
     )
     .select('-notification');
-  // if (!editors) {
-  //   logger.error('getgetEditorsAgents : no editors');
-  //   throw new ErrorResponse(400, 'no editors');
-  // }
   res.status(200).send({ success: true, data: { students, editor } });
 });
 

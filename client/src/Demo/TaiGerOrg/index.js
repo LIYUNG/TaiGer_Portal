@@ -115,7 +115,6 @@ class Survey extends React.Component {
                 <b>
                   <Link to={`/teams/agents/${agent._id.toString()}`}>
                     {agent.firstname} {agent.lastname}{' '}
-                    {/* {agent.students ? agent.students.length : 0} */}
                   </Link>
                 </b>
               </p>
@@ -126,7 +125,6 @@ class Survey extends React.Component {
                 <b>
                   <Link to={`/teams/editors/${editor._id.toString()}`}>
                     {editor.firstname} {editor.lastname}{' '}
-                    {/* {editor.students ? editor.students.length : 0} */}
                   </Link>
                 </b>
               </p>

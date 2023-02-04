@@ -39,7 +39,7 @@ class ToggleableUploadFileForm extends Component {
               <option value="">Please Select</option>
               <option value="ML">ML</option>
               <option value="Essay">Essay</option>
-              <option value="Scholarship_Form">Scholarship Form</option>
+              <option value="Scholarship_Form">Scholarship Form / ML</option>
               <option value="RL_A">RL (Referee A)</option>
               <option value="RL_B">RL (Referee B)</option>
               <option value="RL_C">RL (Referee C)</option>

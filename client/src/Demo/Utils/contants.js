@@ -56,9 +56,9 @@ export const study_group = [
   { key: 'cs', value: 'Computer Science' },
   { key: 'mgm', value: 'Business/Management' },
   { key: 'dsbi', value: 'Data Science/Business Intelligence' },
+  { key: 'psy', value: 'Psychology' },
   { key: 'me', value: 'Mechanical Engineering' },
   { key: 'mtl', value: 'Materials Science' }
-  // { key: 'visa', value: 'Visa' }
 ];
 
 export const valid_categories = [

@@ -10,6 +10,7 @@ import sys
 column_len_array = []
 
 # FPSO: http://www.en.mcls.uni-muenchen.de/study_programs/master/documents/index.html
+# http://www.en.mcls.uni-muenchen.de/study_programs/master/documents1/faq_application.pdf
 
 
 def LMU_PSYCHOLOGY_LEARNING_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
@@ -49,30 +50,35 @@ def LMU_PSYCHOLOGY_LEARNING_SCIENCE(transcript_sorted_group_map, df_transcript_a
     program_category = [
         PROG_SPEC_LEARNING_SCIENCE_PARAM,  # learning science
         PROG_SPEC_SCIENTIFIC_METHODE_STATISTICS_PARAM,
-        PROG_SPEC_ACADEMIC_SKILLS_PARAM,  # 作業研究
+
+        # 專題 paper essay 研究  responsibilities in your classes/internship
+        PROG_SPEC_ACADEMIC_SKILLS_PARAM,
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
         PROG_SPEC_OTHERS,  # 微積分
+        PROG_SPEC_OTHERS,  # 線性代數
+        PROG_SPEC_OTHERS,  # 機率
         PROG_SPEC_OTHERS,  # 數學
         PROG_SPEC_OTHERS,  # 經濟
         PROG_SPEC_OTHERS,  # 計量經濟
         PROG_SPEC_OTHERS,  # 企業
         PROG_SPEC_OTHERS,  # 管理
-        PROG_SPEC_OTHERS,  # 會計
         PROG_SPEC_SCIENTIFIC_METHODE_STATISTICS_PARAM,  # 統計
         PROG_SPEC_OTHERS,  # 金融
         PROG_SPEC_OTHERS,  # 行銷
         PROG_SPEC_ACADEMIC_SKILLS_PARAM,  # 作業研究
-        PROG_SPEC_ACADEMIC_SKILLS_PARAM,  # 觀察研究
+        PROG_SPEC_LEARNING_SCIENCE_PARAM,  # 觀察研究
         PROG_SPEC_OTHERS,  # 程式
         PROG_SPEC_SCIENTIFIC_METHODE_STATISTICS_PARAM,  # 資料科學
-        PROG_SPEC_OTHERS,  # 論文
-        PROG_SPEC_OTHERS,  # 心理學
-        PROG_SPEC_OTHERS,  # 認知
+        PROG_SPEC_ACADEMIC_SKILLS_PARAM,  # 論文
+        PROG_SPEC_LEARNING_SCIENCE_PARAM,  # 心理學
+        PROG_SPEC_LEARNING_SCIENCE_PARAM,  # 心理學實驗
+        PROG_SPEC_LEARNING_SCIENCE_PARAM,  # 認知
         PROG_SPEC_OTHERS,  # 行為
+        PROG_SPEC_OTHERS,  # 神經科學
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -89,157 +95,6 @@ def LMU_PSYCHOLOGY_LEARNING_SCIENCE(transcript_sorted_group_map, df_transcript_a
 
     WriteToExcel(writer, program_name, program_category, program_category_map,
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
-
-
-def LMU_NEURO_COGN_PSYCHOLOGY(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    program_name = 'LMU_NEURO_COGN_PSYCHOLOGY'
-    print("Create " + program_name + " sheet")
-    df_transcript_array_temp = []
-    df_category_courses_sugesstion_data_temp = []
-    for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
-    for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
-    #####################################################################
-    ############## Program Specific Parameters ##########################
-    #####################################################################
-
-    # Create transcript_sorted_group to program_category mapping
-    # Statistik, Empirische Forschungsmethoden, Quantitative Methoden, Mathematik
-    PROG_SPEC_EMPIRIAL_METHODE_PARAM = {
-        'Program_Category': 'BWL, Quantitative Method, Mathematik', 'Required_ECTS': 15}  # 15 PUnkto
-    #  Bachelorarbeit, eines Projekts, eines wissenschaftlichen Aufsatzes
-    PROG_SPEC_BACHELORARBEIT_PARAM = {
-        'Program_Category': 'Bachelor Thesis', 'Required_ECTS': 5}                # 5 Punkte
-    # quantitativen Entscheidungsunterstützung mit Methoden des Operations Research
-    PROG_SPEC_BWL_PARAM = {
-        'Program_Category': 'BWL', 'Required_ECTS': 6}                           # 6 Punkte
-    # VWL mind. 5 Credits oder Module aus dem Bereich Consumer Behavior mind. 5 Credits
-    PROG_SPEC_VWL_PARAM = {
-        'Program_Category': 'Volkswirtschaftliche Module', 'Required_ECTS': 10}   # 10 Punkte
-    PROG_SPEC_OTHERS = {
-        'Program_Category': 'Others', 'Required_ECTS': 0}
-
-    # This fixed to program course category.
-    program_category = [
-        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 觀察研究, 研究方法, 量化分析, 數學
-        PROG_SPEC_BACHELORARBEIT_PARAM,  # 論文
-        PROG_SPEC_BWL_PARAM,  # 企業管理
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_OTHERS  # 其他
-    ]
-
-    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
-    program_category_map = [
-        PROG_SPEC_OTHERS,  # 微積分
-        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 數學
-        PROG_SPEC_VWL_PARAM,  # 企業
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 計量經濟
-        PROG_SPEC_BWL_PARAM,  # 管理
-        PROG_SPEC_OTHERS,  # 會計
-        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 統計
-        PROG_SPEC_OTHERS,  # 金融
-        PROG_SPEC_OTHERS,  # 行銷
-        PROG_SPEC_OTHERS,  # 作業研究
-        PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 觀察研究
-        PROG_SPEC_OTHERS,  # 程式
-        PROG_SPEC_OTHERS,  # 資料科學
-        PROG_SPEC_BACHELORARBEIT_PARAM,  # 論文
-        PROG_SPEC_OTHERS,  # 心理學
-        PROG_SPEC_OTHERS,  # 認知
-        PROG_SPEC_OTHERS,  # 行為
-        PROG_SPEC_OTHERS  # 其他
-    ]
-
-    # Development check
-    if len(program_category_map) != len(df_transcript_array):
-        print("program_category_map size: " + str(len(program_category_map)))
-        print("df_transcript_array size:  " + str(len(df_transcript_array)))
-        print("Please check the number of program_category_map again!")
-        sys.exit()
-
-    #####################################################################
-    ####################### End #########################################
-    #####################################################################
-
-    WriteToExcel(writer, program_name, program_category, program_category_map,
-                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
-
-
-def FU_BERLIN_COGN_NEUROSCIENCE(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    program_name = 'FU_BERLIN_COGN_NEUROSCIENCE'
-    print("Create " + program_name + " sheet")
-    df_transcript_array_temp = []
-    df_category_courses_sugesstion_data_temp = []
-    for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
-    for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
-    #####################################################################
-    ############## Program Specific Parameters ##########################
-    #####################################################################
-
-    # Create transcript_sorted_group to program_category mapping
-    PROG_SPEC_VWL_PARAM = {
-        'Program_Category': 'Economics', 'Required_ECTS': 18}   # 18 Punkte
-    # Statistik, Empirische Forschungsmethoden, Quantitative Methoden, Mathematik
-    PROG_SPEC_STATISTIK_MATH_PARAM = {
-        'Program_Category': 'Statistics and Math', 'Required_ECTS': 15}  # 15 PUnkto
-    # quantitativen Entscheidungsunterstützung mit Methoden des Operations Research
-    PROG_SPEC_BWL_PARAM = {
-        'Program_Category': 'Business Administration', 'Required_ECTS': 48}  # 48 Punkte
-    # VWL mind. 5 Credits oder Module aus dem Bereich Consumer Behavior mind. 5 Credits
-
-    PROG_SPEC_OTHERS = {
-        'Program_Category': 'Others', 'Required_ECTS': 0}
-
-    # This fixed to program course category.
-    program_category = [
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_STATISTIK_MATH_PARAM,  # 數學 統計
-        PROG_SPEC_BWL_PARAM,  # 企業管理
-        PROG_SPEC_OTHERS  # 其他
-    ]
-
-    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
-    program_category_map = [
-        PROG_SPEC_STATISTIK_MATH_PARAM,  # 微積分
-        PROG_SPEC_STATISTIK_MATH_PARAM,  # 數學
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_VWL_PARAM,  # 計量經濟
-        PROG_SPEC_BWL_PARAM,  # 企業
-        PROG_SPEC_BWL_PARAM,  # 管理
-        PROG_SPEC_BWL_PARAM,  # 會計
-        PROG_SPEC_STATISTIK_MATH_PARAM,  # 統計
-        PROG_SPEC_BWL_PARAM,  # 金融
-        PROG_SPEC_OTHERS,  # 行銷
-        PROG_SPEC_OTHERS,  # 作業研究
-        PROG_SPEC_OTHERS,  # 觀察研究
-        PROG_SPEC_OTHERS,  # 程式
-        PROG_SPEC_OTHERS,  # 資料科學
-        PROG_SPEC_OTHERS,  # 論文
-        PROG_SPEC_OTHERS,  # 心理學
-        PROG_SPEC_OTHERS,  # 認知
-        PROG_SPEC_OTHERS,  # 行為
-        PROG_SPEC_OTHERS  # 其他
-    ]
-
-    # Development check
-    if len(program_category_map) != len(df_transcript_array):
-        print("program_category_map size: " + str(len(program_category_map)))
-        print("df_transcript_array size:  " + str(len(df_transcript_array)))
-        print("Please check the number of program_category_map again!")
-        sys.exit()
-
-    #####################################################################
-    ####################### End #########################################
-    #####################################################################
-
-    WriteToExcel(writer, program_name, program_category, program_category_map,
-                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
-
-# https://www.uni-mannheim.de/studium/studienangebot/mannheim-master-in-management/#c35913
 
 
 def TU_BERLIN_COMP_NEUROSCIENCE(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
@@ -256,28 +111,35 @@ def TU_BERLIN_COMP_NEUROSCIENCE(transcript_sorted_group_map, df_transcript_array
     #####################################################################
 
     # Create transcript_sorted_group to program_category mapping
-    PROG_SPEC_BWL_PARAM = {
-        'Program_Category': 'Business Administration', 'Required_ECTS': 36}  # 36 Punkte
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Mathematics', 'Required_ECTS': 12}
+    PROG_SPEC_LINEAR_ALG_PARAM = {
+        'Program_Category': 'Linear Algebra', 'Required_ECTS': 6}
+    PROG_SPEC_PROB_STAT_PARAM = {
+        'Program_Category': 'Probability and Statistics', 'Required_ECTS': 6}
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_ECTS': 0}
 
     # This fixed to program course category.
     program_category = [
-        PROG_SPEC_BWL_PARAM,  # 企業管理
+        PROG_SPEC_MATH_PARAM,  # 企業管理
+        PROG_SPEC_LINEAR_ALG_PARAM,  # 線性代數
+        PROG_SPEC_PROB_STAT_PARAM,  # 機率與統計
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
-        PROG_SPEC_OTHERS,  # 微積分
-        PROG_SPEC_OTHERS,  # 數學
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_LINEAR_ALG_PARAM,  # 線性代數
+        PROG_SPEC_PROB_STAT_PARAM,  # 機率
+        PROG_SPEC_MATH_PARAM,  # 數學
         PROG_SPEC_OTHERS,  # 經濟
         PROG_SPEC_OTHERS,  # 計量經濟
-        PROG_SPEC_BWL_PARAM,  # 企業
-        PROG_SPEC_BWL_PARAM,  # 管理
-        PROG_SPEC_BWL_PARAM,  # 會計
-        PROG_SPEC_OTHERS,  # 統計
-        PROG_SPEC_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 企業
+        PROG_SPEC_OTHERS,  # 管理
+        PROG_SPEC_PROB_STAT_PARAM,  # 統計
+        PROG_SPEC_OTHERS,  # 金融
         PROG_SPEC_OTHERS,  # 行銷
         PROG_SPEC_OTHERS,  # 作業研究
         PROG_SPEC_OTHERS,  # 觀察研究
@@ -285,8 +147,10 @@ def TU_BERLIN_COMP_NEUROSCIENCE(transcript_sorted_group_map, df_transcript_array
         PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS,  # 心理學
+        PROG_SPEC_OTHERS,  # 心理學實驗
         PROG_SPEC_OTHERS,  # 認知
         PROG_SPEC_OTHERS,  # 行為
+        PROG_SPEC_OTHERS,  # 神經科學
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -322,41 +186,42 @@ def UNI_BREMEN_NEUROSCIENCES(transcript_sorted_group_map, df_transcript_array, d
     #####################################################################
 
     # Create transcript_sorted_group to program_category mapping
-    # statistics, math, decision analysis, econometrics)
-    PROG_SPEC_QUAN_MODULE_PARAM = {
-        'Program_Category': 'Quantitative Modules', 'Required_ECTS': 18}  # 18 PUnkte
-    PROG_SPEC_ECO_BWL_PARAM = {
-        'Program_Category': 'Economics / Business Modules', 'Required_ECTS': 60}  # 60 Punkte
+
+    PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM = {
+        'Program_Category': 'Cognitive Science', 'Required_ECTS': 60}  #
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_ECTS': 0}
 
     # This fixed to program course category.
     program_category = [
-        PROG_SPEC_QUAN_MODULE_PARAM,  # statistics, math, decision analysis, econometrics)
-        PROG_SPEC_ECO_BWL_PARAM,  # 經濟 企業管理
+        # statistics, math, decision analysis, econometrics)
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
-        PROG_SPEC_QUAN_MODULE_PARAM,  # 微積分
-        PROG_SPEC_QUAN_MODULE_PARAM,  # 數學
-        PROG_SPEC_ECO_BWL_PARAM,  # 經濟
-        PROG_SPEC_QUAN_MODULE_PARAM,  # 計量經濟
-        PROG_SPEC_ECO_BWL_PARAM,  # 企業
-        PROG_SPEC_ECO_BWL_PARAM,  # 管理
-        PROG_SPEC_ECO_BWL_PARAM,  # 會計
-        PROG_SPEC_QUAN_MODULE_PARAM,  # 統計
-        PROG_SPEC_ECO_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 微積分
+        PROG_SPEC_OTHERS,  # 線性代數
+        PROG_SPEC_OTHERS,  # 機率
+        PROG_SPEC_OTHERS,  # 數學
+        PROG_SPEC_OTHERS,  # 經濟
+        PROG_SPEC_OTHERS,  # 計量經濟
+        PROG_SPEC_OTHERS,  # 企業
+        PROG_SPEC_OTHERS,  # 管理
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 統計
+        PROG_SPEC_OTHERS,  # 金融
         PROG_SPEC_OTHERS,  # 行銷
-        PROG_SPEC_OTHERS,  # 作業研究
-        PROG_SPEC_OTHERS,  # 觀察研究
-        PROG_SPEC_OTHERS,  # 程式
-        PROG_SPEC_OTHERS,  # 資料科學
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 作業研究
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 觀察研究
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 程式
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 資料科學
         PROG_SPEC_OTHERS,  # 論文
-        PROG_SPEC_OTHERS,  # 心理學
-        PROG_SPEC_OTHERS,  # 認知
-        PROG_SPEC_OTHERS,  # 行為
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 心理學
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 心理學實驗
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 認知
+        PROG_SPEC_COGNITIVE_SCIENCE_MODULE_PARAM,  # 行為
+        PROG_SPEC_OTHERS,  # 神經科學
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -391,46 +256,46 @@ def UNI_OLDENBURG_NEUROSCIENCES(transcript_sorted_group_map, df_transcript_array
     #####################################################################
 
     # Create transcript_sorted_group to program_category mapping
-    # economics
-    PROG_SPEC_VWL_PARAM = {
-        'Program_Category': 'Economics', 'Required_ECTS': 20}   # 18 Punkte
-    # BA
-    PROG_SPEC_BWL_PARAM = {
-        'Program_Category': 'Business Administration', 'Required_ECTS': 20}  # 48 Punkte
-    # mathematics, statistics, econometrics, operations research, programming, data analytics
-    PROG_SPEC_QUAN_METHOD_PARAM = {
-        'Program_Category': 'Statistics and Math', 'Required_ECTS': 20}  # 15 PUnkto
+
+    PROG_SPEC_NEURO_SCIENCE_PARAM = {
+        'Program_Category': 'Neuroscience', 'Required_ECTS': 12}
+    # math
+    PROG_SPEC_MATH_STAT_PROGRAMMING_PARAM = {
+        'Program_Category': 'Mathematics, Statistics / Programming', 'Required_ECTS': 12}
+
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_ECTS': 0}
 
     # This fixed to program course category.
     program_category = [
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_BWL_PARAM,  # 企業管理
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 數學 統計 量化經濟
+        PROG_SPEC_NEURO_SCIENCE_PARAM,  # 神經科學
+        PROG_SPEC_MATH_STAT_PROGRAMMING_PARAM,  # Mathematics, Statistics / Programming
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 微積分
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 數學
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 計量經濟
-        PROG_SPEC_BWL_PARAM,  # 企業
-        PROG_SPEC_BWL_PARAM,  # 管理
-        PROG_SPEC_BWL_PARAM,  # 會計
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 統計
-        PROG_SPEC_BWL_PARAM,  # 金融
+        PROG_SPEC_MATH_STAT_PROGRAMMING_PARAM,  # 微積分
+        PROG_SPEC_MATH_STAT_PROGRAMMING_PARAM,  # 線性代數
+        PROG_SPEC_MATH_STAT_PROGRAMMING_PARAM,  # 機率
+        PROG_SPEC_MATH_STAT_PROGRAMMING_PARAM,  # 數學
+        PROG_SPEC_OTHERS,  # 經濟
+        PROG_SPEC_OTHERS,  # 計量經濟
+        PROG_SPEC_OTHERS,  # 企業
+        PROG_SPEC_OTHERS,  # 管理
+        PROG_SPEC_MATH_STAT_PROGRAMMING_PARAM,  # 統計
+        PROG_SPEC_OTHERS,  # 金融
         PROG_SPEC_OTHERS,  # 行銷
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 作業研究
+        PROG_SPEC_OTHERS,  # 作業研究
         PROG_SPEC_OTHERS,  # 觀察研究
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 程式
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 資料科學
+        PROG_SPEC_OTHERS,  # 程式
+        PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS,  # 心理學
-        PROG_SPEC_OTHERS,  # 認知
+        PROG_SPEC_OTHERS,  # 心理學實驗
+        PROG_SPEC_NEURO_SCIENCE_PARAM,  # 認知
         PROG_SPEC_OTHERS,  # 行為
+        PROG_SPEC_NEURO_SCIENCE_PARAM,  # 神經科學
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -463,46 +328,50 @@ def UNI_OLDENBURG_NEUROCOGN_PSY(transcript_sorted_group_map, df_transcript_array
     #####################################################################
 
     # Create transcript_sorted_group to program_category mapping
-    # economics
-    PROG_SPEC_VWL_PARAM = {
-        'Program_Category': 'Economics', 'Required_ECTS': 20}   # 18 Punkte
-    # BA
-    PROG_SPEC_BWL_PARAM = {
-        'Program_Category': 'Business Administration', 'Required_ECTS': 20}  # 48 Punkte
-    # mathematics, statistics, econometrics, operations research, programming, data analytics
-    PROG_SPEC_QUAN_METHOD_PARAM = {
-        'Program_Category': 'Statistics and Math', 'Required_ECTS': 20}  # 15 PUnkto
+    # Statistics
+    PROG_SPEC_STAT_PARAM = {
+        'Program_Category': 'Statistics', 'Required_ECTS': 5}
+    PROG_SPEC_PSY_EXP_PARAM = {
+        'Program_Category': 'Experimental work', 'Required_ECTS': 5}
+    PROG_SPEC_PSY_PARAM = {
+        'Program_Category': 'General / Cognitive Psychology', 'Required_ECTS': 6}
+    PROG_SPEC_BIO_PSY_NEUROSCIENCE_PARAM = {
+        'Program_Category': 'Biological Psychology / Neuroscience', 'Required_ECTS': 5}
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_ECTS': 0}
 
     # This fixed to program course category.
     program_category = [
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_BWL_PARAM,  # 企業管理
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 數學 統計 量化經濟
+        PROG_SPEC_STAT_PARAM,  # 統計
+        PROG_SPEC_PSY_EXP_PARAM,  # 實驗 (心理實驗 神經科學 實習 小論文 學術著作)
+        PROG_SPEC_PSY_PARAM,  # Psycholgoy
+        PROG_SPEC_BIO_PSY_NEUROSCIENCE_PARAM,  # 生物心理 神經科學
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 微積分
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 數學
-        PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 計量經濟
-        PROG_SPEC_BWL_PARAM,  # 企業
-        PROG_SPEC_BWL_PARAM,  # 管理
-        PROG_SPEC_BWL_PARAM,  # 會計
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 統計
-        PROG_SPEC_BWL_PARAM,  # 金融
+        PROG_SPEC_OTHERS,  # 微積分
+        PROG_SPEC_OTHERS,  # 線性代數
+        PROG_SPEC_OTHERS,  # 機率
+        PROG_SPEC_OTHERS,  # 數學
+        PROG_SPEC_OTHERS,  # 經濟
+        PROG_SPEC_OTHERS,  # 計量經濟
+        PROG_SPEC_OTHERS,  # 企業
+        PROG_SPEC_OTHERS,  # 管理
+        PROG_SPEC_STAT_PARAM,  # 統計
+        PROG_SPEC_OTHERS,  # 金融
         PROG_SPEC_OTHERS,  # 行銷
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 作業研究
+        PROG_SPEC_OTHERS,  # 作業研究
         PROG_SPEC_OTHERS,  # 觀察研究
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 程式
-        PROG_SPEC_QUAN_METHOD_PARAM,  # 資料科學
-        PROG_SPEC_OTHERS,  # 論文
-        PROG_SPEC_OTHERS,  # 心理學
-        PROG_SPEC_OTHERS,  # 認知
+        PROG_SPEC_OTHERS,  # 程式
+        PROG_SPEC_OTHERS,  # 資料科學
+        PROG_SPEC_PSY_EXP_PARAM,  # 論文
+        PROG_SPEC_PSY_PARAM,  # 心理學
+        PROG_SPEC_PSY_EXP_PARAM,  # 心理學實驗
+        PROG_SPEC_PSY_PARAM,  # 認知
         PROG_SPEC_OTHERS,  # 行為
+        PROG_SPEC_BIO_PSY_NEUROSCIENCE_PARAM,  # 神經科學
         PROG_SPEC_OTHERS  # 其他
     ]
 
@@ -521,5 +390,80 @@ def UNI_OLDENBURG_NEUROCOGN_PSY(transcript_sorted_group_map, df_transcript_array
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
-program_sort_function = [LMU_PSYCHOLOGY_LEARNING_SCIENCE, LMU_NEURO_COGN_PSYCHOLOGY,
-                         FU_BERLIN_COGN_NEUROSCIENCE, TU_BERLIN_COMP_NEUROSCIENCE, UNI_BREMEN_NEUROSCIENCES, UNI_OLDENBURG_NEUROSCIENCES, UNI_OLDENBURG_NEUROCOGN_PSY]
+def TU_DARMSTADT_COGNITIVE_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TU_DARMSTADT_COGNITIVE_SCIENCE'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    # CS
+    PROG_SPEC_CS_PARAM = {
+        'Program_Category': 'Economics', 'Required_ECTS': 30}
+    # foundations of cognitive science (psychology, movement science, cognitive science, neuroscience, or related disciplines)
+    PROG_SPEC_COGNITIVE_SCIENCE_PARAM = {
+        'Program_Category': 'Cognitive Science', 'Required_ECTS': 30}
+    # advanced courses in cognitive science: linguistics, philosophy, sports science, psychology
+    PROG_SPEC_ADVANCED_COGNITIVE_SCIENCE_PARAM = {
+        'Program_Category': 'Advanced Cognitive Science', 'Required_ECTS': 20}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_CS_PARAM,  # CS
+        PROG_SPEC_COGNITIVE_SCIENCE_PARAM,  # 基礎認知科學
+        PROG_SPEC_ADVANCED_COGNITIVE_SCIENCE_PARAM,  # 進階認知科學
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_OTHERS,  # 微積分
+        PROG_SPEC_OTHERS,  # 線性代數
+        PROG_SPEC_OTHERS,  # 機率
+        PROG_SPEC_OTHERS,  # 數學
+        PROG_SPEC_OTHERS,  # 經濟
+        PROG_SPEC_OTHERS,  # 計量經濟
+        PROG_SPEC_OTHERS,  # 企業
+        PROG_SPEC_OTHERS,  # 管理
+        PROG_SPEC_OTHERS,  # 統計
+        PROG_SPEC_OTHERS,  # 金融
+        PROG_SPEC_OTHERS,  # 行銷
+        PROG_SPEC_OTHERS,  # 作業研究
+        PROG_SPEC_OTHERS,  # 觀察研究
+        PROG_SPEC_CS_PARAM,  # 程式
+        PROG_SPEC_CS_PARAM,  # 資料科學
+        PROG_SPEC_OTHERS,  # 論文
+        PROG_SPEC_COGNITIVE_SCIENCE_PARAM,  # 心理學
+        PROG_SPEC_COGNITIVE_SCIENCE_PARAM,  # 心理學實驗
+        PROG_SPEC_COGNITIVE_SCIENCE_PARAM,  # 認知
+        PROG_SPEC_COGNITIVE_SCIENCE_PARAM,  # 行為
+        PROG_SPEC_OTHERS,  # 神經科學
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
+program_sort_function = [LMU_PSYCHOLOGY_LEARNING_SCIENCE,
+                         TU_BERLIN_COMP_NEUROSCIENCE, UNI_BREMEN_NEUROSCIENCES, UNI_OLDENBURG_NEUROSCIENCES, UNI_OLDENBURG_NEUROCOGN_PSY, TU_DARMSTADT_COGNITIVE_SCIENCE]

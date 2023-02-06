@@ -57,6 +57,7 @@ ee:   Electrical/Electronics Engineering
 cs:   Computer Science, Data Science
 me:   Mechanical Engineering, Robotics
 dsbi: Data Science/Business Informatics
+psy: Psychology
 mgm:  Management, Business Administration
 ```
 ## Enviroment :

@@ -8,6 +8,7 @@ from database.ElectricalEngineering.EE_sorter import EE_sorter
 from database.ComputerScience.CS_sorter import CS_sorter
 from database.MechanicalEngineering.ME_sorter import ME_sorter
 from database.MaterialsScience.MTL_sorter import MTL_sorter
+from database.Psychology.PSY_sorter import PSY_sorter
 from database.Management.MGM_sorter import MGM_sorter
 from database.DataScience_BusinessIntelligence.DSBI_sorter import DSBI_sorter
 from database.TransportationEngineering.TE_sorter import TE_sorter
@@ -42,6 +43,9 @@ if __name__ == "__main__":
         program_selection_path = file_path + '/database/Management/MGM_Programs.xlsx'
     elif sys.argv[2] == 'dsbi':
         program_selection_path = file_path + '/database/DataScience_BusinessIntelligence/DSBI_Programs.xlsx'
+    elif sys.argv[2] == 'psy':  # Psychology
+        program_selection_path = file_path + \
+            '/database/Psychology/PSY_Programs.xlsx'
     elif sys.argv[2] == 'mtl': # Materials Science
         program_selection_path = file_path + '/database/MaterialsScience/MTL_Programs.xlsx'
     elif sys.argv[2] == 'cme':  # Chemical Engineering
@@ -79,6 +83,8 @@ if __name__ == "__main__":
         MGM_sorter(program_idx, obj_arr, 'MGM', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'dsbi':
         DSBI_sorter(program_idx, obj_arr, 'DSBI', studentId, student_name, analysis_language)
+    elif sys.argv[2] == 'psy':
+        PSY_sorter(program_idx, obj_arr, 'PSY', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'mtl':
         MTL_sorter(program_idx, obj_arr, 'MTL', studentId, student_name, analysis_language)
     elif sys.argv[2] == 'te':

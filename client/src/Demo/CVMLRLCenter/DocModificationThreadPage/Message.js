@@ -89,11 +89,10 @@ class Message extends Component {
       : false;
     const full_name = `${firstname} ${lastname}`;
     const files_info = this.props.message.file.map((file, i) => (
-      <Card key={i} className="my-0 mx-0">
-        <Card.Body>
+      <Card key={i}>
+        <Card.Body className="py-2 px-0">
           <Row>
-            <Col md={1} style={{ height: '15%', width: '15%' }}>
-              {/* <h5> */}
+            <Col>
               <span>
                 {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
                 <a
@@ -104,27 +103,36 @@ class Message extends Component {
                   }`}
                   target="_blank"
                 >
-                  <FileIcon
-                    // style={{ cursor: 'pointer', width: '0%', size: 12 }}
-                    extension={file.name.split('.').pop()}
-                    {...defaultStyles[file.name.split('.').pop()]}
-                  />
+                  <svg
+                    width="36"
+                    height="36"
+                    viewBox="0 0 36 36"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="mx-2"
+                  >
+                    <FileIcon
+                      extension={file.name.split('.').pop()}
+                      {...defaultStyles[file.name.split('.').pop()]}
+                    />
+                  </svg>
+                  {file.name}
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
+                      stroke="#000"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    ></path>
+                  </svg>
                 </a>
               </span>
-              {/* </h5> */}
-            </Col>
-            <Col className="my-4" style={{ height: '15%' }}>
-              {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
-              <a
-                href={`${BASE_URL}/api/document-threads/${
-                  this.props.documentsthreadId
-                }/${this.props.message._id.toString()}/${
-                  file.path.replace(/\\/g, '/').split('/')[2]
-                }`}
-                target="_blank"
-              >
-                {file.name}
-              </a>
             </Col>
           </Row>
         </Card.Body>

@@ -39,7 +39,8 @@ class Message extends Component {
       ...state,
       editorState: initialEditorState,
       ConvertedContent: initialEditorState,
-      isLoaded: this.props.isLoaded
+      isLoaded: this.props.isLoaded,
+      deleteMessageModalShow: false
     }));
   }
 
@@ -56,6 +57,7 @@ class Message extends Component {
 
   onDeleteSingleMessage = (e) => {
     e.preventDefault();
+    this.setState({ deleteMessageModalShow: false });
     this.props.onDeleteSingleMessage(e, this.state.message_id);
   };
 
@@ -89,7 +91,7 @@ class Message extends Component {
       : false;
     const full_name = `${firstname} ${lastname}`;
     const files_info = this.props.message.file.map((file, i) => (
-      <Card key={i}>
+      <Card key={i} className="my-0">
         <Card.Body className="py-2 px-0">
           <Row>
             <Col>

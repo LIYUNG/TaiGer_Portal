@@ -58,7 +58,7 @@ function DocThreadEditor(props) {
       <Row>
         <Col md={8}>
           <Form.Group controlId="formFile" className="mb-2">
-            <Form.Control type="file" onChange={(e) => props.onFileChange(e)} />
+            <Form.Control type="file" multiple onChange={(e) => props.onFileChange(e)} />
           </Form.Group>
         </Col>
         <Col className="mt-2" md={4}>

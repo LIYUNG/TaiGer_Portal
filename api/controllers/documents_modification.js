@@ -39,26 +39,148 @@ const s3 = new aws.S3({
 });
 
 const ThreadS3GarbageCollector = async () => {
-  const doc_threads = await Documentthread.find();
+  try {
+    // TODO: could be bottleneck if number of thread increase.
+    const doc_threads = await Documentthread.find();
 
-  const deleteParams = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Delete: { Objects: [] }
-  };
+    const deleteParams = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
 
-  const delete_files_Params = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Delete: { Objects: [] }
-  };
+    const delete_files_Params = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
 
-  logger.info(
-    'Trying to delete redundant images S3 of corresponding message thread'
-  );
-  for (let j = 0; j < doc_threads.length; j += 1) {
+    logger.info(
+      'Trying to delete redundant images S3 of corresponding message thread'
+    );
+    for (let j = 0; j < doc_threads.length; j += 1) {
+      // eslint-disable-next-line no-underscore-dangle
+      const thread_id = doc_threads[j]._id.toString();
+      const student_id = doc_threads[j].student_id.toString();
+      const message_a = doc_threads[j].messages;
+      let directory_img = path.join(student_id, thread_id, 'img');
+      directory_img = directory_img.replace(/\\/g, '/');
+      let directory_files = path.join(student_id, thread_id);
+      directory_files = directory_files.replace(/\\/g, '/');
+      const listParamsPublic = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Delimiter: '/',
+        Prefix: `${directory_img}/`
+      };
+      const listParamsPublic_files = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Delimiter: '/',
+        Prefix: `${directory_files}/`
+      };
+      const listedObjectsPublic = await s3
+        .listObjectsV2(listParamsPublic)
+        .promise();
+
+      const listedObjectsPublic_files = await s3
+        .listObjectsV2(listParamsPublic_files)
+        .promise();
+      if (listedObjectsPublic.Contents.length > 0) {
+        listedObjectsPublic.Contents.forEach((Obj) => {
+          let file_found = false;
+          const temp_date = new Date();
+          if (message_a.length === 0) {
+            deleteParams.Delete.Objects.push({ Key: Obj.Key });
+          }
+          for (let i = 0; i < message_a.length; i += 1) {
+            const file_name = Obj.Key.split('/')[3];
+            if (message_a[i].message.includes(file_name)) {
+              file_found = true;
+              break;
+            }
+          }
+          if (!file_found) {
+            // if until last message_a still not found, add the Key to the delete list
+            // Delete only older than 2 week
+            if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+              deleteParams.Delete.Objects.push({ Key: Obj.Key });
+            }
+          }
+        });
+      }
+      if (listedObjectsPublic_files.Contents.length > 0) {
+        listedObjectsPublic_files.Contents.forEach((Obj2) => {
+          let file_found = false;
+          const temp_date = new Date();
+          if (message_a.length === 0) {
+            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+          }
+          for (let i = 0; i < message_a.length; i += 1) {
+            const file_name = Obj2.Key.split('/')[2];
+            for (let k = 0; k < message_a[i].file.length; k += 1) {
+              if (message_a[i].file[k].path.includes(file_name)) {
+                file_found = true;
+                break;
+              }
+            }
+            if (file_found) {
+              break;
+            }
+          }
+          if (!file_found) {
+            // if until last message_a still not found, add the Key to the delete list
+            // Delete only older than 2 week
+            if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
+              delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+            }
+          }
+        });
+      }
+    }
+    if (deleteParams.Delete.Objects.length > 0) {
+      await s3.deleteObjects(deleteParams).promise();
+      logger.info('Deleted redundant images for threads.');
+      logger.info(deleteParams.Delete.Objects);
+    } else {
+      logger.info('No images to be deleted for threads.');
+    }
+
+    if (delete_files_Params.Delete.Objects.length > 0) {
+      await s3.deleteObjects(delete_files_Params).promise();
+      logger.info('Deleted redundant files for threads.');
+      logger.info(delete_files_Params.Delete.Objects);
+    } else {
+      logger.info('No files to be deleted for threads.');
+    }
+  } catch (e) {
+    logger.error(e);
+    logger.error('Error during garbage collection.');
+  }
+};
+
+const SingleThreadThreadS3GarbageCollector = async (ThreadId) => {
+  // This functino will be called when thread marked as finished.
+  try {
+    // TODO: could be bottleneck if number of thread increase.
+    const doc_thread = await Documentthread.findById(ThreadId);
+    if (!doc_thread) {
+      throw new ErrorResponse(404, 'Invalid ThreadId');
+    }
+
+    const deleteParams = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
+
+    const delete_files_Params = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
+
+    logger.info(
+      'Trying to delete redundant images S3 of corresponding message thread'
+    );
     // eslint-disable-next-line no-underscore-dangle
-    const thread_id = doc_threads[j]._id.toString();
-    const student_id = doc_threads[j].student_id.toString();
-    const message_a = doc_threads[j].messages;
+    const thread_id = doc_thread._id.toString();
+    const student_id = doc_thread.student_id.toString();
+    const message_a = doc_thread.messages;
     let directory_img = path.join(student_id, thread_id, 'img');
     directory_img = directory_img.replace(/\\/g, '/');
     let directory_files = path.join(student_id, thread_id);
@@ -97,9 +219,9 @@ const ThreadS3GarbageCollector = async () => {
         if (!file_found) {
           // if until last message_a still not found, add the Key to the delete list
           // Delete only older than 2 week
-          if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-            deleteParams.Delete.Objects.push({ Key: Obj.Key });
-          }
+          // if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+          deleteParams.Delete.Objects.push({ Key: Obj.Key });
+          // }
         }
       });
     }
@@ -125,27 +247,31 @@ const ThreadS3GarbageCollector = async () => {
         if (!file_found) {
           // if until last message_a still not found, add the Key to the delete list
           // Delete only older than 2 week
-          if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
-            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-          }
+          // if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
+          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+          // }
         }
       });
     }
-  }
-  if (deleteParams.Delete.Objects.length > 0) {
-    await s3.deleteObjects(deleteParams).promise();
-    logger.info('Deleted redundant images for threads.');
-    logger.info(deleteParams.Delete.Objects);
-  } else {
-    logger.info('Nothing to be deleted for threads.');
-  }
 
-  if (delete_files_Params.Delete.Objects.length > 0) {
-    await s3.deleteObjects(delete_files_Params).promise();
-    logger.info('Deleted redundant file for threads.');
-    logger.info(delete_files_Params.Delete.Objects);
-  } else {
-    logger.info('Nothing to be deleted for threads.');
+    if (deleteParams.Delete.Objects.length > 0) {
+      await s3.deleteObjects(deleteParams).promise();
+      logger.info('Deleted redundant images for threads.');
+      logger.info(deleteParams.Delete.Objects);
+    } else {
+      logger.info('No images to be deleted for threads.');
+    }
+
+    if (delete_files_Params.Delete.Objects.length > 0) {
+      await s3.deleteObjects(delete_files_Params).promise();
+      logger.info('Deleted redundant files for threads.');
+      logger.info(delete_files_Params.Delete.Objects);
+    } else {
+      logger.info('No files to be deleted for threads.');
+    }
+  } catch (e) {
+    logger.error(e);
+    logger.error('Error during garbage collection.');
   }
 };
 
@@ -572,13 +698,20 @@ const postMessages = asyncHandler(async (req, res) => {
     }
   }
   let newfile = [];
-  if (req.file) {
-    newfile = [
-      {
-        name: req.file.key,
-        path: path.join(req.file.metadata.path, req.file.key)
-      }
-    ];
+  for (let i = 0; i < req.files.length; i += 1) {
+    newfile.push({
+      name: req.files[i].key,
+      path: path.join(req.files[i].metadata.path, req.files[i].key)
+    });
+    // Check for duplicate file extensions
+    const fileExtensions = req.files.map((file) => file.mimetype.split('/')[1]);
+    const uniqueFileExtensions = new Set(fileExtensions);
+    if (fileExtensions.length !== uniqueFileExtensions.size) {
+      throw new ErrorResponse(
+        423,
+        'Error: Duplicate file extensions found. Due to the system automatical naming mechanism, the files with same extension (said .pdf) will be overwritten. You can not upload 2 same files extension (2 .pdf or 2 .docx) at the same message. But 1 .pdf and 1 .docx are allowed.'
+      );
+    }
   }
 
   const new_message = {
@@ -910,8 +1043,12 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     Bucket: directory
   };
 
-  const cache_key = `${messageId}${req.originalUrl.split('/')[5]}`;
-  const value = one_month_cache.get(cache_key); // image name
+  // messageid + extension
+  const cache_key = `${messageId}${encodeURIComponent(
+    req.originalUrl.split('/')[5].split('.')[1]
+  )}`;
+  const value = one_month_cache.get(cache_key); // file name
+  // console.log(cache_key);
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
@@ -989,7 +1126,11 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         updatedAt: document_thread.updatedAt
       }
     });
-
+    if (document_thread.isFinalVersion) {
+      // cleanup
+      console.log('cleanup prgraom thread');
+      await SingleThreadThreadS3GarbageCollector(messagesThreadId);
+    }
     await sendSetAsFinalProgramSpecificFileForStudentEmail(
       {
         firstname: student.firstname,
@@ -1052,7 +1193,11 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         updatedAt: document_thread.updatedAt
       }
     });
-
+    if (document_thread.isFinalVersion) {
+      // cleanup
+      console.log('cleanup cv');
+      await SingleThreadThreadS3GarbageCollector(messagesThreadId);
+    }
     await sendSetAsFinalGeneralFileForStudentEmail(
       {
         firstname: student.firstname,
@@ -1183,6 +1328,10 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     logger.error('deleteAMessageInThread : Invalid message thread id');
     throw new ErrorResponse(404, 'Invalid message thread id');
   }
+  if (thread.isFinalVersion) {
+    logger.error('deleteAMessageInThread : FinalVersion is read only');
+    throw new ErrorResponse(423, 'FinalVersion is read only');
+  }
   const msg = thread.messages.find(
     (message) => message._id.toString() === messageId
   );
@@ -1199,6 +1348,18 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(409, 'You can only delete your own message.');
   }
 
+  // Messageid + extension (because extension is unique per message id)
+  for (let i = 0; i < msg.file.length; i += 1) {
+    const cache_key = `${messageId}${encodeURIComponent(
+      msg.file[i].name.split('.')[1]
+    )}`;
+    // console.log(cache_key);
+    const value = one_month_cache.del(cache_key);
+    // console.log(value);
+    if (value === 1) {
+      console.log('file cache key deleted successfully');
+    }
+  }
   // Don't need so delete in S3 , will delete by garbage collector
   await Documentthread.findByIdAndUpdate(messagesThreadId, {
     $pull: {

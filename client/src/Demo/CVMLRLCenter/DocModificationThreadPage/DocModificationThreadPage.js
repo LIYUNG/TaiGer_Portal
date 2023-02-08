@@ -94,7 +94,15 @@ class DocModificationThreadPage extends Component {
 
   onFileChange = (e) => {
     e.preventDefault();
-    this.setState({ file: e.target.files[0] });
+    const file_num = e.target.files.length;
+    if (file_num <= 3) {
+      this.setState({ file: Array.from(e.target.files) });
+    } else {
+      this.setState({
+        res_modal_message: "You can only select up to 3 files.",
+        res_modal_status: 423
+      });
+    }
   };
 
   ConfirmError = () => {
@@ -183,7 +191,14 @@ class DocModificationThreadPage extends Component {
     this.setState({ buttonDisabled: true });
     var message = JSON.stringify(editorState);
     const formData = new FormData();
-    formData.append('file', this.state.file);
+
+    if (this.state.file) {
+      this.state.file.forEach((file) => {
+        formData.append('files', file);
+      });
+    }
+
+    // formData.append('files', this.state.file);
     formData.append('message', message);
 
     SubmitMessageWithAttachment(

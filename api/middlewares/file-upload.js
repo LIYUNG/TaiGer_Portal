@@ -442,8 +442,10 @@ const upload_messagesthread_file_s3 = multer({
         new ErrorResponse(
           413,
           `您的檔案不得超過 ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${MAX_DOC_FILE_SIZE_MB / (1024 * 1024)} MB!`
+            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${
+            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
         )
       );
     }
@@ -492,7 +494,7 @@ module.exports = {
   VPDfileUpload: upload_vpd_s3.single('file'),
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
-  MessagesThreadUpload: upload_messagesthread_file_s3.single('file'),
+  MessagesThreadUpload: upload_messagesthread_file_s3.array('files'),
   MessagesImageThreadUpload: upload_messagesthread_image_s3.single('file'),
   upload: upload.single('file')
 };

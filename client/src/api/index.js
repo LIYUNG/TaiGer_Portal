@@ -267,12 +267,9 @@ export const SubmitMessageWithAttachment = (
 ) =>
   request.post(
     `/api/document-threads/${documentsthreadId}/${studentId}`,
-    newFile,
-    {
-      'Content-Type': 'multipart/form-data',
-      Accept: 'application/json'
-    }
+    newFile
   );
+
 export const getMessageFileDownload = (documentsthreadId, messageId, fileId) =>
   request.get(
     `/api/document-threads/${documentsthreadId}/${messageId}/${fileId}`,

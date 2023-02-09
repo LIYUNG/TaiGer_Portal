@@ -286,7 +286,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     })
       .populate(
         'applications.programId',
-        'school program_name application_deadline semester'
+        'school program_name degree application_deadline semester'
       )
       .populate(
         'generaldocs_threads.doc_thread_id',
@@ -308,7 +308,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     })
       .populate(
         'applications.programId',
-        'school program_name application_deadline semester'
+        'school program_name degree application_deadline semester'
       )
       .populate(
         'generaldocs_threads.doc_thread_id',
@@ -332,7 +332,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     })
       .populate(
         'applications.programId',
-        'school program_name application_deadline semester'
+        'school program_name degree application_deadline semester'
       )
       .populate(
         'generaldocs_threads.doc_thread_id',
@@ -351,7 +351,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     const student = await Student.findById(user._id)
       .populate(
         'applications.programId',
-        'school program_name application_deadline semester'
+        'school program_name degree application_deadline semester'
       )
       .populate(
         'generaldocs_threads.doc_thread_id',

@@ -405,7 +405,9 @@ class DocModificationThreadPage extends Component {
         this.state.thread.student_id.lastname +
         ' - ' +
         this.state.thread.program_id.school +
-        ' ' +
+        '-(' +
+        this.state.thread.program_id.degree +
+        ') ' +
         this.state.thread.program_id.program_name +
         ' ' +
         this.state.thread.file_type;

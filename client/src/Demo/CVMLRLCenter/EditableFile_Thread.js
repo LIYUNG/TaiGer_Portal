@@ -48,6 +48,8 @@ class EditableFile_Thread extends Component {
       school_program_name =
         this.props.application.programId.school +
         ' - ' +
+        this.props.application.programId.degree +
+        ' - ' +
         this.props.application.programId.program_name;
       documenName =
         this.props.student.firstname +

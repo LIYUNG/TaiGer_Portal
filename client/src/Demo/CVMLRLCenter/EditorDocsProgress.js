@@ -695,6 +695,8 @@ class EditorDocsProgress extends React.Component {
                                   <b>
                                     {application.programId.school}
                                     {' - '}
+                                    {application.programId.degree}
+                                    {' - '}
                                     {application.programId.program_name}
                                   </b>
                                 </h5>
@@ -702,6 +704,8 @@ class EditorDocsProgress extends React.Component {
                                 <h5 className="text-danger">
                                   <b>
                                     {application.programId.school}
+                                    {' - '}
+                                    {application.programId.degree}
                                     {' - '}
                                     {application.programId.program_name}
                                   </b>

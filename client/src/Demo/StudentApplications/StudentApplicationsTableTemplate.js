@@ -581,7 +581,9 @@ class StudentApplicationsTableTemplate extends React.Component {
             <Row className="my-2 mx-0">
               <Button
                 size="sm"
-                disabled={!this.state.application_status_changed}
+                disabled={
+                  !this.state.application_status_changed || !this.state.isLoaded
+                }
                 onClick={(e) =>
                   this.handleSubmit(
                     e,
@@ -590,7 +592,13 @@ class StudentApplicationsTableTemplate extends React.Component {
                   )
                 }
               >
-                Update
+                {this.state.isLoaded ? (
+                  'Update'
+                ) : (
+                  <Spinner animation="border" size='sm' role="status">
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                )}
               </Button>
             </Row>
             {is_TaiGer_role(this.props.user) && (

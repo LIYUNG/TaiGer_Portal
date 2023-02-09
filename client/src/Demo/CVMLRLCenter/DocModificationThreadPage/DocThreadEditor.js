@@ -62,7 +62,7 @@ function DocThreadEditor(props) {
           </Form.Group>
         </Col>
         <Col className="mt-2" md={4}>
-          (max. 2MB)
+          (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and overall 2MB!)
         </Col>
       </Row>
       <Row>

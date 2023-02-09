@@ -764,6 +764,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
+    .populate('agents editors', 'firstname lastname email')
     .select('-profile -notification -application_preference')
     .lean();
 

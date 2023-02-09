@@ -273,6 +273,7 @@ function Table2({ columns, data, userId }) {
   let [statedataTable2, setStatedataTable2] = useState({
     success: false,
     isloaded: false,
+    isAssgining: false,
     error: null,
     modalShowAssignWindow: false,
     modalShowAssignSuccessWindow: false,
@@ -389,6 +390,10 @@ function Table2({ columns, data, userId }) {
 
   const assignProgram = (assign_data) => {
     const { student_id, program_ids } = assign_data;
+    setStatedataTable2((state) => ({
+      ...state,
+      isAssgining: true
+    }));
     assignProgramToStudent(student_id, program_ids).then(
       (resp) => {
         const { success } = resp.data;
@@ -399,6 +404,7 @@ function Table2({ columns, data, userId }) {
           setStatedataTable2((state) => ({
             ...state,
             isLoaded: true,
+            isAssgining: false,
             modalShowAssignSuccessWindow: true,
             modalShowAssignWindow: false,
             success,
@@ -409,6 +415,7 @@ function Table2({ columns, data, userId }) {
           setStatedataTable2((state) => ({
             ...state,
             isLoaded: true,
+            isAssgining: false,
             res_modal_message: message,
             res_modal_status: status
           }));
@@ -419,6 +426,7 @@ function Table2({ columns, data, userId }) {
         setStatedataTable2((state) => ({
           ...state,
           isLoaded: true,
+          isAssgining: false,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
@@ -652,6 +660,7 @@ function Table2({ columns, data, userId }) {
         uni_name={programs.schools}
         program_name={programs.program_names}
         handleChange2={handleSetStudentId}
+        isAssgining={statedataTable2.isAssgining}
         onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
       />
       <Modal

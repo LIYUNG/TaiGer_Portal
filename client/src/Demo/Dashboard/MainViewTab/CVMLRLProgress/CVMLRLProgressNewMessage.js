@@ -216,6 +216,8 @@ class CVMLRLProgressNewMessage extends React.Component {
                           {' - '}
                           {application.programId.school}
                           {' - '}
+                          {application.programId.degree}
+                          {' - '}
                           {application.programId.program_name}
                         </Link>
                       </td>

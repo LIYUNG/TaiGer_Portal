@@ -99,7 +99,7 @@ class DocModificationThreadPage extends Component {
       this.setState({ file: Array.from(e.target.files) });
     } else {
       this.setState({
-        res_modal_message: "You can only select up to 3 files.",
+        res_modal_message: 'You can only select up to 3 files.',
         res_modal_status: 423
       });
     }
@@ -432,26 +432,31 @@ class DocModificationThreadPage extends Component {
         <Row>
           <Card className="mb-2 mx-0">
             <Card.Header>
-              <Card.Title as="h5">
+              <h4 className="mt-1 ms-0" style={{ textAlign: 'left' }}>
                 {docName}
                 {' Discussion thread'}
                 {'   '}
-                {this.state.expand ? (
-                  <Button
-                    className="btn-sm float-right"
-                    onClick={() => this.AllCollapsetHandler()}
-                  >
-                    Collaspse
-                  </Button>
-                ) : (
-                  <Button
-                    className="btn-sm float-right"
-                    onClick={() => this.AllExpandtHandler()}
-                  >
-                    Expand
-                  </Button>
-                )}
-              </Card.Title>
+                <span
+                  className="text-light mb-0 me-2 "
+                  style={{ float: 'right' }}
+                >
+                  {this.state.expand ? (
+                    <Button
+                      className="btn-sm float-right"
+                      onClick={() => this.AllCollapsetHandler()}
+                    >
+                      Collapse
+                    </Button>
+                  ) : (
+                    <Button
+                      className="btn-sm float-right"
+                      onClick={() => this.AllExpandtHandler()}
+                    >
+                      Expand
+                    </Button>
+                  )}
+                </span>
+              </h4>
             </Card.Header>
           </Card>
         </Row>
@@ -484,14 +489,16 @@ class DocModificationThreadPage extends Component {
                       template and reply in <b>English</b> in this discussion.
                     </p>
                     <p>
-                      Download template:{' '}
+                      模板下載 Download template:{' '}
                       {template_obj ? (
                         <b>
                           <a
                             href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
                             target="_blank"
                           >
-                            Link [點我下載]
+                            <Button size="sm" variant="secondary">
+                              <b>Link [點我下載]</b>
+                            </Button>
                           </a>
                         </b>
                       ) : (

@@ -275,49 +275,38 @@ class BaseDocument_StudentView extends React.Component {
     let object_init = {};
     let object_message = {};
     let object_time_init = {};
-    for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = { status: 'missing', link: '' };
-      object_message[keys2[i]] = '';
-      object_time_init[keys2[i]] = '';
-    }
+    keys2.forEach((key) => {
+      object_init[key] = { status: 'missing', link: '' };
+      object_message[key] = '';
+      object_time_init[key] = '';
+    });
     // TODO: what if this.state.student.profile[i].name key not in base_docs_link[i].key?
     if (this.props.base_docs_link) {
-      for (let i = 0; i < this.props.base_docs_link.length; i++) {
-        object_init[this.props.base_docs_link[i].key].link =
-          this.props.base_docs_link[i].link;
-      }
+      this.props.base_docs_link.forEach((baseDoc) => {
+        object_init[baseDoc.key].link = baseDoc.link;
+      });
     }
     if (this.state.student.profile) {
-      for (let i = 0; i < this.state.student.profile.length; i++) {
-        let document_split = this.state.student.profile[i].path.replace(
-          /\\/g,
-          '/'
-        );
-        if (this.state.student.profile[i].status === 'uploaded') {
-          object_init[this.state.student.profile[i].name].status = 'uploaded';
-          object_init[this.state.student.profile[i].name].path =
-            document_split.split('/')[1];
-        } else if (this.state.student.profile[i].status === 'accepted') {
-          object_init[this.state.student.profile[i].name].status = 'accepted';
-          object_init[this.state.student.profile[i].name].path =
-            document_split.split('/')[1];
-        } else if (this.state.student.profile[i].status === 'rejected') {
-          object_init[this.state.student.profile[i].name].status = 'rejected';
-          object_init[this.state.student.profile[i].name].path =
-            document_split.split('/')[1];
-        } else if (this.state.student.profile[i].status === 'notneeded') {
-          object_init[this.state.student.profile[i].name].status = 'notneeded';
-        } else if (this.state.student.profile[i].status === 'missing') {
-          object_init[this.state.student.profile[i].name].status = 'missing';
+      this.state.student.profile.forEach((profile) => {
+        let document_split = profile.path.replace(/\\/g, '/');
+        let document_name = document_split.split('/')[1];
+
+        switch (profile.status) {
+          case 'uploaded':
+          case 'accepted':
+          case 'rejected':
+            object_init[profile.name].status = profile.status;
+            object_init[profile.name].path = document_name;
+            break;
+          case 'notneeded':
+          case 'missing':
+            object_init[profile.name].status = profile.status;
+            break;
         }
-        object_message[this.state.student.profile[i].name] = this.state.student
-          .profile[i].feedback
-          ? this.state.student.profile[i].feedback
-          : '';
-        object_time_init[this.state.student.profile[i].name] =
-          this.state.student.profile[i].updatedAt;
-      }
-    } else {
+
+        object_message[profile.name] = profile.feedback || '';
+        object_time_init[profile.name] = profile.updatedAt;
+      });
     }
     var file_information;
     file_information = keys2.map((k, i) =>

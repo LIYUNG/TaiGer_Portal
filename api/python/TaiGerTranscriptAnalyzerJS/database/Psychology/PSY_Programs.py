@@ -406,7 +406,7 @@ def TU_DARMSTADT_COGNITIVE_SCIENCE(transcript_sorted_group_map, df_transcript_ar
     # Create transcript_sorted_group to program_category mapping
     # CS
     PROG_SPEC_CS_PARAM = {
-        'Program_Category': 'Economics', 'Required_ECTS': 30}
+        'Program_Category': 'Basic Computer Science', 'Required_ECTS': 30}
     # foundations of cognitive science (psychology, movement science, cognitive science, neuroscience, or related disciplines)
     PROG_SPEC_COGNITIVE_SCIENCE_PARAM = {
         'Program_Category': 'Cognitive Science', 'Required_ECTS': 30}

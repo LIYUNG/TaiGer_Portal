@@ -144,42 +144,22 @@ class DocModificationThreadPage extends Component {
 
   getRequirement = (thread) => {
     if (thread.file_type.includes('Essay')) {
-      if (thread.program_id.essay_required === 'yes') {
-        return (
-          <p>
-            {this.state.thread.program_id.essay_requirements
-              ? this.state.thread.program_id.essay_requirements
-              : 'No'}
-          </p>
-        );
-      } else {
-        return <p>No</p>;
-      }
+      return (
+        <p>
+          {thread.program_id.essay_required === 'yes'
+            ? this.state.thread.program_id.essay_requirements || 'No'
+            : 'No'}
+        </p>
+      );
     } else if (thread.file_type.includes('ML')) {
       if (thread.program_id.ml_required === 'yes') {
-        return (
-          <p>
-            {this.state.thread.program_id.ml_requirements
-              ? this.state.thread.program_id.ml_requirements
-              : 'No'}
-          </p>
-        );
+        return <p>{this.state.thread.program_id.ml_requirements || 'No'}</p>;
       } else {
         return <p>No</p>;
       }
     } else if (thread.file_type.includes('RL')) {
-      if (
-        thread.program_id.rl_required === '1' ||
-        thread.program_id.rl_required === '2' ||
-        thread.program_id.rl_required === '3'
-      ) {
-        return (
-          <p>
-            {this.state.thread.program_id.rl_requirements
-              ? this.state.thread.program_id.rl_requirements
-              : 'No'}
-          </p>
-        );
+      if (['1', '2', '3'].includes(thread.program_id.rl_required)) {
+        return <p>{this.state.thread.program_id.rl_requirements || 'No'}</p>;
       } else {
         return <p>No</p>;
       }
@@ -396,7 +376,7 @@ class DocModificationThreadPage extends Component {
     let template_obj = window.templatelist.find(({ prop }) =>
       prop.includes(this.state.thread.file_type.split('_')[0])
     );
-
+    console.log(template_obj);
     let docName;
     if (this.state.thread.program_id) {
       docName =
@@ -478,15 +458,14 @@ class DocModificationThreadPage extends Component {
                 <Row>
                   <Col md={10}>
                     <h5>Instruction</h5>
-                    <p></p>
                     <p>
                       請填好我們的 TaiGer Template，並在這個討論串夾帶在和您的
                       Editor 討論。回覆時請用 <b>英語(English)</b>{' '}
                       好讓外籍顧問方便溝通。
-                    </p>
-                    <p>
+                      <br />
                       Please fill our TaiGer template and attach the filled
-                      template and reply in <b>English</b> in this discussion.
+                      template and reply in
+                      <b> English</b> in this discussion.
                     </p>
                     <p>
                       模板下載 Download template:{' '}
@@ -521,9 +500,7 @@ class DocModificationThreadPage extends Component {
                     {this.state.thread.program_id ? (
                       <>{this.getRequirement(this.state.thread)}</>
                     ) : (
-                      <>
-                        <p>No</p>
-                      </>
+                      <p>No</p>
                     )}
                   </Col>
                   <Col md={2}>

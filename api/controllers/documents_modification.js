@@ -430,8 +430,6 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     updatedAt: new Date(),
     createdAt: new Date()
   });
-
-  temp.student_id = studentId;
   student.generaldocs_threads.push(temp);
   student.notification.isRead_new_cvmlrl_tasks_created = false;
   await student.save();
@@ -543,8 +541,6 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     updatedAt: new Date(),
     createdAt: new Date()
   });
-
-  temp.student_id = studentId;
   student.applications[idx].doc_modification_thread.push(temp);
   student.notification.isRead_new_cvmlrl_tasks_created = false;
   await student.save();
@@ -558,12 +554,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     );
   res.status(200).send({ success: true, data: temp });
 
-  let documentname =
-    document_category +
-    ' - ' +
-    application.programId.school +
-    ' - ' +
-    application.programId.program_name;
+  const documentname = `${document_category} - ${application.programId.school} - ${application.programId.program_name}`;
   for (let i = 0; i < student.editors.length; i += 1) {
     await assignDocumentTaskToEditorEmail(
       {

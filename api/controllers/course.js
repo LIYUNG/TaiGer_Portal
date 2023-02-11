@@ -24,15 +24,16 @@ const s3 = new aws.S3({
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
+  const student = await Student.findById(studentId);
+  if (!student) {
+    logger.info('getCourse: no student found');
+    throw new ErrorResponse(500, 'Invalid student');
+  }
   const courses = await Course.findOne({
     student_id: studentId
-  });
+  }).populate('student_id', 'firstname lastname agents editors');
+
   if (!courses) {
-    const student = await Student.findById(studentId);
-    if (!student) {
-      logger.info('getCourse: no student found');
-      throw new ErrorResponse(500, 'Invalid student');
-    }
     return res.send({
       success: true,
       data: {
@@ -43,14 +44,12 @@ const getCourse = asyncHandler(async (req, res) => {
           agents: student.agents,
           editors: student.editors
         },
-        table_data_string: '[{}]'
+        table_data_string:
+          '[{"course_chinese":"(Example)物理一","course_english":null,"credits":"2","grades":"73"},{"course_chinese":"(Example)微積分一","course_english":null,"credits":"2","grades":"44"}]'
       }
     });
   }
-  const courses2 = await Course.findOne({
-    student_id: studentId
-  }).populate('student_id', 'firstname lastname agents editors');
-  return res.send({ success: true, data: courses2 });
+  return res.send({ success: true, data: courses });
 });
 
 const createCourse = asyncHandler(async (req, res) => {
@@ -165,52 +164,43 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
 
-  let course;
-  if (user.role === Role.Student || user.role === 'Guest') {
-    // eslint-disable-next-line no-underscore-dangle
-    course = await Course.findOne({ student_id: user._id.toString() });
-  } else {
-    course = await Course.findOne({ student_id: studentId });
-  }
+  const studentIdToUse =
+    user.role === Role.Student || user.role === 'Guest' ? user._id : studentId;
+  const course = await Course.findOne({
+    student_id: studentIdToUse.toString()
+  });
   if (!course) {
     logger.error('downloadXLSX: Invalid student id');
     throw new ErrorResponse(404, 'Invalid student id');
   }
 
-  if (course.analysis.path === '' || !course.analysis.isAnalysed) {
+  if (!course.analysis.isAnalysed || !course.analysis.path) {
     logger.error('downloadXLSX: not analysed yet');
-    throw new ErrorResponse(404, 'Transcript not analysed  yet');
+    throw new ErrorResponse(404, 'Transcript not analysed yet');
   }
 
-  let analysed_transcript_excel_split = course.analysis.path.replace(
-    /\\/g,
-    '/'
-  );
-  analysed_transcript_excel_split = analysed_transcript_excel_split.split('/');
-  const fileKey = analysed_transcript_excel_split[1];
-  let directory = analysed_transcript_excel_split[0];
+  const fileKey = course.analysis.path.replace(/\\/g, '/').split('/')[1];
+  const directory = path
+    .join(
+      AWS_S3_BUCKET_NAME,
+      course.analysis.path.replace(/\\/g, '/').split('/')[0]
+    )
+    .replace(/\\/g, '/');
   logger.info(`Trying to download transcript excel file ${fileKey}`);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
+
   const url_split = req.originalUrl.split('/');
   const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
-  // console.log(cache_key);
-  // console.log(req.originalUrl);
   const value = one_month_cache.get(cache_key);
   if (value === undefined) {
+    const options = {
+      Key: fileKey,
+      Bucket: directory
+    };
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (err) return err;
-
-      // No error happened
       // Convert Body from a Buffer to a String
       const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
-
-      const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
 
       const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
@@ -220,30 +210,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
       res.attachment(fileKey_converted);
       // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
       return res.end(data.Body);
-      // return res.send(data);
-
-      // const fileStream = data.createReadStream();
-      // fileStream.pipe(res);
     });
-
-    // s3.headObject(options)
-    //   .promise()
-    //   .then(() => {
-    //     // This will not throw error anymore
-    //     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
-    //     res.attachment(fileKey_converted);
-    //     const fileStream = s3.getObject(options).createReadStream();
-    //     fileStream.pipe(res);
-    //   })
-    //   .catch((error) => {
-    //     if (error.statusCode === 404) {
-    //       // Catching NoSuchKey
-    //       logger.error('downloadXLSX: ', error);
-    //     }
-    //     return res
-    //       .status(error.statusCode)
-    //       .json({ success: false, message: error.message });
-    //   });
   } else {
     console.log('cache hit');
     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
@@ -253,6 +220,10 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 });
 
 const deleteCourse = asyncHandler(async (req, res) => {
+  const course = await Course.findById(req.params.id);
+  if (!course) {
+    return res.status(404).send({ error: 'Course not found' });
+  }
   await Course.findByIdAndDelete(req.params.id);
   return res.send({ success: true });
 });

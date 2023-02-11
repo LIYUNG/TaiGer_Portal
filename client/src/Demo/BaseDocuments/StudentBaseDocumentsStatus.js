@@ -22,36 +22,37 @@ class StudentBaseDocumentsStatus extends React.Component {
     let object_message = {};
     let object_date_init = {};
     let object_time_init = {};
-    for (let i = 0; i < keys2.length; i++) {
-      object_init[keys2[i]] = 'missing';
-      object_message[keys2[i]] = '';
-      object_date_init[keys2[i]] = '';
-      object_time_init[keys2[i]] = '';
-    }
+    keys2.forEach((key) => {
+      object_init[key] = 'missing';
+      object_message[key] = '';
+      object_date_init[key] = '';
+      object_time_init[key] = '';
+    });
 
     if (this.props.student.profile) {
       for (let i = 0; i < this.props.student.profile.length; i++) {
-        if (this.props.student.profile[i].status === 'uploaded') {
-          object_init[this.props.student.profile[i].name] = 'uploaded';
-        } else if (this.props.student.profile[i].status === 'accepted') {
-          object_init[this.props.student.profile[i].name] = 'accepted';
-        } else if (this.props.student.profile[i].status === 'rejected') {
-          object_init[this.props.student.profile[i].name] = 'rejected';
-        } else if (this.props.student.profile[i].status === 'notneeded') {
-          object_init[this.props.student.profile[i].name] = 'notneeded';
-        } else if (this.props.student.profile[i].status === 'missing') {
-          object_init[this.props.student.profile[i].name] = 'missing';
+        const { status, name, feedback, updatedAt } =
+          this.props.student.profile[i];
+        switch (status) {
+          case 'uploaded':
+            object_init[name] = 'uploaded';
+            break;
+          case 'accepted':
+            object_init[name] = 'accepted';
+            break;
+          case 'rejected':
+            object_init[name] = 'rejected';
+            break;
+          case 'notneeded':
+            object_init[name] = 'notneeded';
+            break;
+          case 'missing':
+            object_init[name] = 'missing';
+            break;
         }
-        object_message[this.props.student.profile[i].name] = this.props.student
-          .profile[i].feedback
-          ? this.props.student.profile[i].feedback
-          : '';
-        object_date_init[this.props.student.profile[i].name] = new Date(
-          this.props.student.profile[i].updatedAt
-        ).toLocaleDateString();
-        object_time_init[this.props.student.profile[i].name] = new Date(
-          this.props.student.profile[i].updatedAt
-        ).toLocaleTimeString();
+        object_message[name] = feedback || '';
+        object_date_init[name] = new Date(updatedAt).toLocaleDateString();
+        object_time_init[name] = new Date(updatedAt).toLocaleTimeString();
       }
     } else {
     }

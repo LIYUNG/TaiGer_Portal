@@ -15,7 +15,6 @@ const {
   createPortalCredentials,
   getPortalCredentials
   //   updateCourses,
-  //   deleteCourse
 } = require('../controllers/portal_informations');
 
 const router = Router();

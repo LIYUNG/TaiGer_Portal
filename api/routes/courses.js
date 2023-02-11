@@ -15,7 +15,6 @@ const {
   getCourse,
   createCourse
   //   updateCourses,
-  //   deleteCourse
 } = require('../controllers/course');
 
 const router = Router();

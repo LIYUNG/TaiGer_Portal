@@ -306,14 +306,15 @@ export const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
   }
-  if (!application.programId.application_deadline) {
+  const { application_deadline, semester } = application.programId;
+
+  if (!application_deadline) {
     return 'No Data';
   }
-  if (application.programId.application_deadline.includes('olling')) {
+  if (application_deadline.includes('olling')) {
     // include Rolling
     return 'Rolling';
   }
-  // let year_now = new Date().getFullYear();
   let application_year = '<TBD>';
   if (
     student.application_preference &&
@@ -323,25 +324,24 @@ export const application_deadline_calculator = (student, application) => {
       student.application_preference.expected_application_date
     );
   }
-  if (!application.programId.application_deadline) {
+  if (!application_deadline) {
     return `${application_year}-<TBD>`;
   }
-  let application_semester = application.programId.semester;
   let deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0]
   );
   let deadline_day = parseInt(
     application.programId.application_deadline.split('-')[1]
   );
-  if (application_semester === undefined) {
+  if (semester === undefined) {
     return 'Err';
   }
-  if (application_semester === 'WS') {
+  if (semester === 'WS') {
     if (deadline_month > 9) {
       application_year = application_year - 1;
     }
   }
-  if (application_semester === 'SS') {
+  if (semester === 'SS') {
     if (deadline_month > 3) {
       application_year = application_year - 1;
     }
@@ -431,19 +431,6 @@ export const check_application_selection = (student) => {
   return true;
 };
 
-export const checkSurveyCompleted = (keys, object_init) => {
-  for (let i = 0; i < keys.length; i += 1) {
-    if (
-      object_init[keys[i]] !== 'accepted' &&
-      object_init[keys[i]] !== 'notneeded' &&
-      object_init[keys[i]] !== 'uploaded'
-    ) {
-      return true;
-    }
-  }
-  return false;
-};
-
 export const is_num_Program_Not_specified = (student) => {
   if (
     student.applying_program_count === 0 ||
@@ -484,18 +471,18 @@ export const num_applications_submitted = (student) => {
 };
 
 export const check_all_applications_decided = (student) => {
-  if (student.applications === undefined) {
+  if (
+    !student.applications ||
+    student.applying_program_count === 0 ||
+    student.applications.length === 0
+  ) {
     return false;
   }
-  if (student.applying_program_count === 0) {
-    return false;
-  }
+
   if (student.applications.length < student.applying_program_count) {
     return false;
   }
-  if (!student.applications || student.applications.length === 0) {
-    return false;
-  }
+
   for (let j = 0; j < student.applications.length; j += 1)
     if (
       !student.applications[j].decided ||
@@ -509,24 +496,11 @@ export const check_all_applications_decided = (student) => {
 };
 
 export const check_all_applications_submitted = (keys, student) => {
-  if (student.applications === undefined) {
+  if (!student.applications || student.applications.length === 0) {
     return false;
   }
-  if (student.applications.length === 0) {
-    return false;
-  }
-  for (let i = 0; i < keys.length; i += 1) {
-    for (let j = 0; j < student.applications.length; j += 1) {
-      if (
-        !student.applications[j].closed ||
-        (student.applications[j].closed !== undefined &&
-          student.applications[j].closed !== 'O')
-      ) {
-        return false;
-      }
-    }
-  }
-  return true;
+
+  return student.applications.every((app) => app.closed === 'O');
 };
 
 export const check_program_uni_assist_needed = (application) => {
@@ -541,51 +515,37 @@ export const check_program_uni_assist_needed = (application) => {
 };
 
 export const check_uni_assist_needed = (student) => {
-  if (student.applications === undefined) {
+  if (!student.applications) {
     return false;
   }
-  for (let j = 0; j < student.applications.length; j += 1) {
-    if (
-      student.applications[j].decided === 'O' &&
-      student.applications[j].programId.uni_assist &&
-      (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('FULL'))
-    ) {
-      return true;
-    }
-  }
-  return false;
+  //  Array.some() method to check if there's an application that matches the conditions.
+  return student.applications.some((app) => {
+    return (
+      app.decided === 'O' &&
+      app.programId.uni_assist &&
+      (app.programId.uni_assist.includes('VPD') ||
+        app.programId.uni_assist.includes('FULL'))
+    );
+  });
 };
 
 export const num_uni_assist_vpd_uploaded = (student) => {
   let counter = 0;
-  if (student.applications === undefined) {
+  if (!student.applications) {
     return counter;
   }
-  for (let j = 0; j < student.applications.length; j += 1) {
+  for (const application of student.applications) {
     if (
-      student.applications[j].decided === 'O' &&
-      student.applications[j].programId.uni_assist &&
-      (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('FULL'))
+      application.decided === 'O' &&
+      application.programId.uni_assist &&
+      (application.programId.uni_assist.includes('VPD') ||
+        application.programId.uni_assist.includes('FULL')) &&
+      application.uni_assist &&
+      application.uni_assist.status !== 'notneeded' &&
+      (application.uni_assist.status === 'uploaded' ||
+        application.uni_assist.vpd_file_path)
     ) {
-      if (!student.applications[j].uni_assist) {
-        continue;
-      }
-      if (
-        student.applications[j].uni_assist &&
-        student.applications[j].uni_assist.status === 'notneeded'
-      ) {
-        continue;
-      }
-      if (
-        student.applications[j].uni_assist &&
-        (student.applications[j].uni_assist.status === 'uploaded' ||
-          student.applications[j].uni_assist.vpd_file_path !== '' ||
-          student.applications[j].uni_assist.vpd_file_path === null)
-      ) {
-        counter += 1;
-      }
+      counter += 1;
     }
   }
   return counter;
@@ -593,7 +553,7 @@ export const num_uni_assist_vpd_uploaded = (student) => {
 
 export const num_uni_assist_vpd_needed = (student) => {
   let counter = 0;
-  if (student.applications === undefined) {
+  if (!student.applications) {
     return counter;
   }
   for (let j = 0; j < student.applications.length; j += 1) {
@@ -620,12 +580,10 @@ export const num_uni_assist_vpd_needed = (student) => {
 
 export const is_program_ml_rl_essay_finished = (application) => {
   // check ML, RL, Essay
-  for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
-    if (!application.doc_modification_thread[i].isFinalVersion) {
-      return false;
-    }
-  }
-  return true;
+  return (
+    application.doc_modification_thread.length === 0 ||
+    application.doc_modification_thread.every((thread) => thread.isFinalVersion)
+  );
 };
 
 export const is_cv_assigned = (student) => {
@@ -645,25 +603,12 @@ export const is_cv_assigned = (student) => {
 };
 
 export const is_cv_finished = (student) => {
-  // check CV
-  if (!student.generaldocs_threads) {
-    return false;
-  }
-  if (
-    student.generaldocs_threads.findIndex(
+  const cv_thread =
+    student.generaldocs_threads &&
+    student.generaldocs_threads.find(
       (thread) => thread.doc_thread_id.file_type === 'CV'
-    ) === -1
-  ) {
-    return false;
-  }
-  const cv_thread = student.generaldocs_threads.find(
-    (thread) => thread.doc_thread_id.file_type === 'CV'
-  );
-
-  if (!cv_thread.isFinalVersion) {
-    return false;
-  }
-  return true;
+    );
+  return !!(cv_thread && cv_thread.isFinalVersion);
 };
 
 export const is_program_ml_rl_essay_ready = (application) => {

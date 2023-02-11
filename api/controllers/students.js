@@ -76,25 +76,20 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
 });
 
 const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
-  const {
-    params: { studentId }
-  } = req;
   const { link, key, category } = req.body;
-  // TODO: if not in database, then create one
+  // if not in database, then create one
   // otherwise: update the existing one.
-  let helper_link = await Basedocumentationslink.findOne({ category, key });
-  if (!helper_link) {
-    helper_link = await Basedocumentationslink.create({
-      category,
-      key,
-      link,
-      updatedAt: new Date()
-    });
-  } else {
-    helper_link.link = link;
-    helper_link.updatedAt = new Date();
-    await helper_link.save();
-  }
+  let helper_link = await Basedocumentationslink.findOneAndUpdate(
+    { category, key },
+    {
+      $set: {
+        link,
+        updatedAt: new Date()
+      }
+    },
+    { upsert: true, new: true }
+  );
+
   const updated_helper_link = await Basedocumentationslink.find({
     category
   });
@@ -186,10 +181,6 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     })
       .select('firstname lastname profile')
       .lean();
-    // const base_docs_link = await Basedocumentationslink.find({
-    //   category: 'base-documents'
-    // });
-    // res.status(200).send({ success: true, data: students, base_docs_link });
     res.status(200).send({ success: true, data: students, base_docs_link: {} });
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
@@ -510,11 +501,7 @@ const ToggleProgramStatus = asyncHandler(async (req, res) => {
     logger.error('ToggleProgramStatus: Invalid application id');
     throw new ErrorResponse(404, 'Invalid application id');
   }
-  if (application.closed === 'O') {
-    application.closed = 'X';
-  } else {
-    application.closed = 'O';
-  }
+  application.closed = application.closed === 'O' ? 'X' : 'O';
   await student.save();
 
   res.status(201).send({ success: true, data: student });
@@ -555,115 +542,107 @@ const createApplication = asyncHandler(async (req, res) => {
       `${student.firstname} ${student.lastname} has more than ${max_application} programs!`
     );
   }
-  try {
-    const programIds = student.applications.map(({ programId }) =>
-      programId._id.toString()
+
+  const programIds = student.applications.map(({ programId }) =>
+    programId._id.toString()
+  );
+
+  // Create programId array only new for student.
+  const new_programIds = program_id_set.filter(
+    (id) => !programIds.includes(id)
+  );
+
+  // Insert only new programIds for student.
+  for (let i = 0; i < new_programIds.length; i += 1) {
+    const application = student.applications.create({
+      programId: new_programIds[i]
+    });
+    let program = program_ids.find(
+      ({ _id }) => _id.toString() === new_programIds[i]
     );
-
-    // Create programId array only new for student.
-    const new_programIds = [];
-    for (let i = 0; i < program_id_set.length; i += 1) {
-      // if new for student, push it in array.
-      if (!programIds.includes(program_id_set[i])) {
-        new_programIds.push(program_id_set[i]);
-      }
-    }
-
-    // Insert only new programIds for student.
-    for (let i = 0; i < new_programIds.length; i += 1) {
-      const application = student.applications.create({
-        programId: new_programIds[i]
+    if (program.ml_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'ML',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
       });
-      let program = program_ids.find(
-        ({ _id }) => _id.toString() === new_programIds[i]
-      );
-      if (program.ml_required === 'yes') {
-        const new_doc_thread = new Documentthread({
-          student_id: studentId,
-          file_type: 'ML',
-          program_id: new_programIds[i],
-          updatedAt: new Date()
-        });
-        const temp = application.doc_modification_thread.create({
-          doc_thread_id: new_doc_thread._id,
-          updatedAt: new Date(),
-          createdAt: new Date()
-        });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
 
-        temp.student_id = studentId;
-        application.doc_modification_thread.push(temp);
-        await new_doc_thread.save();
-      }
-      // TODO: check if RL required, if yes, create new thread
-      if (
-        program.rl_required !== undefined &&
-        Number.isInteger(parseInt(program.rl_required)) >= 0
-      ) {
-        for (let j = 0; j < parseInt(program.rl_required); j += 1) {
-          const new_doc_thread = new Documentthread({
-            student_id: studentId,
-            file_type: RLs_CONSTANT[j],
-            program_id: new_programIds[i],
-            updatedAt: new Date()
-          });
-          const temp = application.doc_modification_thread.create({
-            doc_thread_id: new_doc_thread._id,
-            updatedAt: new Date(),
-            createdAt: new Date()
-          });
-
-          temp.student_id = studentId;
-          application.doc_modification_thread.push(temp);
-          await new_doc_thread.save();
-        }
-      }
-      if (program.essay_required === 'yes') {
-        const new_doc_thread = new Documentthread({
-          student_id: studentId,
-          file_type: 'Essay',
-          program_id: new_programIds[i],
-          updatedAt: new Date()
-        });
-        const temp = application.doc_modification_thread.create({
-          doc_thread_id: new_doc_thread._id,
-          updatedAt: new Date(),
-          createdAt: new Date()
-        });
-
-        temp.student_id = studentId;
-        application.doc_modification_thread.push(temp);
-        await new_doc_thread.save();
-      }
-      student.notification.isRead_new_programs_assigned = false;
-      student.applications.push(application);
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
     }
-    await student.save();
-    //   });
-    //     programId: program_id_set[i]
-    //   });
-    //   // const { requiredDocuments, optionalDocuments } = program;
-    //   const now = new Date();
-    //   const application = student.applications.create({
-    //     programId: program_id_set[i]
-    //   });
-    //   // application.documents = [
-    //   //   ...requiredDocuments.map((name) => ({
-    //   //     name,
-    //   //     required: true,
-    //   //     updatedAt: now,
-    //   //   })),
-    //   //   ...optionalDocuments.map((name) => ({
-    //   //     name,
-    //   //     required: false,
-    //   //     updatedAt: now,
-    //   //   })),
-    //   // ];
-    //   student.applications.push(application);
-    //   await student.save();
-  } catch (err) {
-    logger.error('createApplication: ', err);
-    throw new ErrorResponse(400, err);
+    // TODO: check if RL required, if yes, create new thread
+    if (
+      program.rl_required !== undefined &&
+      Number.isInteger(parseInt(program.rl_required)) >= 0
+    ) {
+      for (let j = 0; j < parseInt(program.rl_required); j += 1) {
+        const new_doc_thread = new Documentthread({
+          student_id: studentId,
+          file_type: RLs_CONSTANT[j],
+          program_id: new_programIds[i],
+          updatedAt: new Date()
+        });
+        const temp = application.doc_modification_thread.create({
+          doc_thread_id: new_doc_thread._id,
+          updatedAt: new Date(),
+          createdAt: new Date()
+        });
+
+        temp.student_id = studentId;
+        application.doc_modification_thread.push(temp);
+        await new_doc_thread.save();
+      }
+    }
+    if (program.essay_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Essay',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
+
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    student.notification.isRead_new_programs_assigned = false;
+    student.applications.push(application);
   }
+  await student.save();
+  //   });
+  //     programId: program_id_set[i]
+  //   });
+  //   // const { requiredDocuments, optionalDocuments } = program;
+  //   const now = new Date();
+  //   const application = student.applications.create({
+  //     programId: program_id_set[i]
+  //   });
+  //   // application.documents = [
+  //   //   ...requiredDocuments.map((name) => ({
+  //   //     name,
+  //   //     required: true,
+  //   //     updatedAt: now,
+  //   //   })),
+  //   //   ...optionalDocuments.map((name) => ({
+  //   //     name,
+  //   //     required: false,
+  //   //     updatedAt: now,
+  //   //   })),
+  //   // ];
+  //   student.applications.push(application);
+  //   await student.save();
 
   res.status(201).send({ success: true, data: program_id_set });
 

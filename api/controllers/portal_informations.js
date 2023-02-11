@@ -39,12 +39,15 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
 const createPortalCredentials = asyncHandler(async (req, res) => {
   const { studentId, programId } = req.params;
   const credentials = req.body;
-    // console.log(credentials);
+  // console.log(credentials);
   const student = await Student.findById(studentId);
   const application = student.applications.find(
-    (application) => application.programId.toString() === programId
+    (appli) => appli.programId.toString() === programId
   );
-  //   console.log(application);
+  if (!application) {
+    logger.error('createPortalCredentials: Application not found');
+    throw new ErrorResponse(400, 'Application not found');
+  }
   const portal_credentials = {
     application_portal_a: {
       account: credentials.account_portal_a,
@@ -57,7 +60,6 @@ const createPortalCredentials = asyncHandler(async (req, res) => {
   };
   application.portal_credentials = portal_credentials;
   await student.save();
-//   console.log(student);
   return res.send({ success: true, data: student });
 });
 

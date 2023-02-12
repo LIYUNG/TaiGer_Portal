@@ -350,6 +350,26 @@ export const application_deadline_calculator = (student, application) => {
   return `${application_year}-${deadline_month}-${deadline_day}`;
 };
 
+export const GetCVDeadline = (student) => {
+  var today = new Date();
+  let daysLeftMin = 3000;
+  let CVDeadline = '';
+  student.applications.forEach((application) => {
+    const applicationDeadline = application_deadline_calculator(
+      student,
+      application
+    );
+    const daysLeft = getNumberOfDays(today, applicationDeadline);
+
+    if (daysLeft < daysLeftMin) {
+      daysLeftMin = daysLeft;
+      CVDeadline = applicationDeadline;
+    }
+  });
+
+  return { daysLeftMin, CVDeadline };
+};
+
 export const check_application_preference_filled = (application_preference) => {
   if (!application_preference) {
     return false;

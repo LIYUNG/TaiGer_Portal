@@ -3,7 +3,8 @@ import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import {
   is_TaiGer_role,
-  application_deadline_calculator
+  application_deadline_calculator,
+  GetCVDeadline
 } from '../../../Utils/checking-functions';
 
 import { convertDate, is_new_message_status } from '../../../Utils/contants';
@@ -27,28 +28,10 @@ class CVMLRLProgress extends React.Component {
   };
   render() {
     var today = new Date();
-
     let general_document_items = <></>;
-    // TODO: implement:
-    let no_started_general_document_items = <></>;
     let application_document_items = <></>;
-    let days_left_min = 3000;
-    let CV_deadline = '';
-    for (let i = 0; i < this.props.student.applications.length; i += 1) {
-      let application_deadline_temp = application_deadline_calculator(
-        this.props.student,
-        this.props.student.applications[i]
-      );
-      let day_left = parseInt(
-        getNumberOfDays(today, application_deadline_temp)
-      );
-      if (days_left_min > day_left) {
-        days_left_min = day_left;
-        CV_deadline = application_deadline_temp;
-      }
-    }
-    // TODO: implement:
-    let no_started_application_document_items = <></>;
+    const { CV_deadline, days_left_min } = GetCVDeadline(this.props.student);
+  
     general_document_items =
       this.props.student.generaldocs_threads &&
       this.props.student.generaldocs_threads.map(
@@ -257,8 +240,6 @@ class CVMLRLProgress extends React.Component {
       );
     return (
       <>
-        {no_started_general_document_items}
-        {no_started_application_document_items}
         {general_document_items}
         {application_document_items}
       </>

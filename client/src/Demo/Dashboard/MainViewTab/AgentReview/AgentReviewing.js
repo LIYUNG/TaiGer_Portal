@@ -142,7 +142,7 @@ class AgentReviewing extends React.Component {
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
-                    className="my-0 mx-2"
+                    className="py-0 my-0 mx-2"
                   />
                 </p>
               ) : (
@@ -150,7 +150,7 @@ class AgentReviewing extends React.Component {
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
-                    className="my-0 mx-2"
+                    className="py-0 my-0 mx-2"
                   />
                 </p>
               )}
@@ -288,25 +288,25 @@ class AgentReviewing extends React.Component {
               to={'/student-database/' + this.props.student._id + '/profile'}
               style={{ textDecoration: 'none' }}
             >
-              {isMissingBaseDocs ? (
-                <p className="text-warning" title="incomplete">
+              <p
+                className="text-warning"
+                title={isMissingBaseDocs ? 'incomplete' : 'complete'}
+              >
+                {isMissingBaseDocs ? (
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
                     className="my-0 mx-2"
                   />
-                  {total_accepted_base_docs_needed}/{total_base_docs_needed}
-                </p>
-              ) : (
-                <p className="text-warning" title="complete">
+                ) : (
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
                     className="my-0 mx-2"
                   />
-                  {total_accepted_base_docs_needed}/{total_base_docs_needed}
-                </p>
-              )}
+                )}
+                {total_accepted_base_docs_needed}/{total_base_docs_needed}
+              </p>
             </Link>
           </td>
           <td>

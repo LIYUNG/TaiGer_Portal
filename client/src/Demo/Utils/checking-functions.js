@@ -359,15 +359,13 @@ export const GetCVDeadline = (student) => {
       student,
       application
     );
-    const daysLeft = getNumberOfDays(today, applicationDeadline);
+    const daysLeft = parseInt(getNumberOfDays(today, applicationDeadline));
 
     if (daysLeft < daysLeftMin) {
       daysLeftMin = daysLeft;
       CVDeadline = applicationDeadline;
     }
   });
-  console.log(daysLeftMin);
-  console.log(CVDeadline);
   return { daysLeftMin, CVDeadline };
 };
 

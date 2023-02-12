@@ -303,10 +303,22 @@ const routes = [
     component: TaiGerOrgAgent
   },
   {
+    path: '/teams/agents/archiv/:user_id',
+    exact: true,
+    name: 'Archiv Students',
+    component: ArchivStudent
+  },
+  {
     path: '/teams/editors/:user_id',
     exact: true,
     name: '',
     component: TaiGerOrgEditor
+  },
+  {
+    path: '/teams/editors/archiv/:user_id',
+    exact: true,
+    name: 'Archiv Students',
+    component: ArchivStudent
   },
   {
     path: '/teams/admins/:user_id',

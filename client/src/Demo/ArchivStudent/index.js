@@ -26,7 +26,9 @@ class ArchivStudents extends React.Component {
   };
 
   componentDidMount() {
-    getArchivStudents().then(
+    const TaiGerStaffId =
+      this.props.match.params.user_id || this.props.user._id.toString();
+    getArchivStudents(TaiGerStaffId).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -57,7 +59,9 @@ class ArchivStudents extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isLoaded === false) {
-      getArchivStudents().then(
+      const TaiGerStaffId =
+        this.props.match.params.user_id || this.props.user._id.toString();
+      getArchivStudents(TaiGerStaffId).then(
         (resp) => {
           const { data, success } = resp.data;
           const { status } = resp;

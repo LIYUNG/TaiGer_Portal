@@ -21,7 +21,7 @@ ME_PHYSICS_EXP_KEY_WORDS = ['物理']
 ME_PHYSICS_EXP_ANTI_KEY_WORDS = ['半導體', '元件', '車輛', '通識', '生活']
 ME_MASCHINENGESTALTUNG_KEY_WORDS = [
     '繪圖', '製圖', '電腦輔助', '機械設計', '機械', '工程圖', 'CAD']
-ME_MASCHINENGESTALTUNG_ANTI_KEY_WORDS = ['asdgladfj;l', '製造', '實習']
+ME_MASCHINENGESTALTUNG_ANTI_KEY_WORDS = ['asdgladfj;l', '製造', '實習', '材料']
 ME_MASCHINEN_ELEMENTE_KEY_WORDS = [
     '機構', '機械構']
 ME_MASCHINEN_ELEMENTE_ANTI_KEY_WORDS = ['asdgladfj;l', '實習']

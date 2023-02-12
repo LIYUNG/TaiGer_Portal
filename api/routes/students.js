@@ -25,7 +25,6 @@ const {
   getStudents,
   getAllStudents,
   getArchivStudent,
-  getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,
   assignEditorToStudent,
@@ -90,15 +89,6 @@ router
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     getStudentAndDocLinks
-  );
-
-router
-  .route('/archiv')
-  .get(
-    filter_archiv_user,
-    GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor),
-    getArchivStudents
   );
 
 router

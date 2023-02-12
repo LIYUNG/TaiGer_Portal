@@ -82,10 +82,39 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: { students, editor } });
 });
 
+const getArchivStudents = asyncHandler(async (req, res) => {
+  const { TaiGerStaffId } = req.params;
+  const user = await User.findById(TaiGerStaffId);
+  if (user.role === Role.Admin) {
+    const students = await Student.find({ archiv: true }).exec();
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === Role.Agent) {
+    const students = await Student.find({
+      agents: TaiGerStaffId,
+      archiv: true
+    })
+      .populate('applications.programId')
+      .lean()
+      .exec();
+
+    res.status(200).send({ success: true, data: students });
+  } else if (user.role === Role.Editor) {
+    const students = await Student.find({
+      editors: TaiGerStaffId,
+      archiv: true
+    }).populate('applications.programId');
+    res.status(200).send({ success: true, data: students });
+  } else {
+    // Guest
+    res.status(200).send({ success: true, data: [] });
+  }
+});
+
 module.exports = {
   getTeamMembers,
   getAgents,
   getSingleAgent,
   getEditors,
-  getSingleEditor
+  getSingleEditor,
+  getArchivStudents
 };

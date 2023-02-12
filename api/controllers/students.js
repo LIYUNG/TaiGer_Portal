@@ -4,7 +4,7 @@ const async = require('async');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor } = require('../models/User');
+const { Role, User, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
@@ -231,38 +231,6 @@ const getArchivStudent = asyncHandler(async (req, res) => {
   }).populate('applications.programId agents editors');
   // .lean();
   res.status(200).send({ success: true, data: students[0] });
-});
-
-const getArchivStudents = asyncHandler(async (req, res) => {
-  const {
-    user
-    // params: { userId },
-  } = req;
-
-  if (user.role === Role.Admin) {
-    const students = await Student.find({ archiv: true }).exec();
-
-    res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Agent) {
-    const students = await Student.find({
-      agents: user._id,
-      archiv: true
-    })
-      .populate('applications.programId')
-      .lean()
-      .exec();
-
-    res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Editor) {
-    const students = await Student.find({
-      editors: user._id,
-      archiv: true
-    }).populate('applications.programId');
-    res.status(200).send({ success: true, data: students });
-  } else {
-    // Guest
-    res.status(200).send({ success: true, data: [] });
-  }
 });
 
 // () TODO email : agent better notification! (only added or removed should be informed.)
@@ -749,7 +717,6 @@ module.exports = {
   getStudents,
   getStudentsAndDocLinks,
   getArchivStudent,
-  getArchivStudents,
   updateStudentsArchivStatus,
   assignAgentToStudent,
   assignEditorToStudent,

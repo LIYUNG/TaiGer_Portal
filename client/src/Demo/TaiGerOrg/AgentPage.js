@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Spinner, Row, Col } from 'react-bootstrap';
+import { Card, Spinner, Row, Col, Button } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
@@ -106,6 +106,11 @@ class AgentPage extends React.Component {
           success={this.state.success}
           students={this.state.students}
         />
+        <Row className="my-2 mx-0">
+          <Link to={`/teams/agents/archiv/${this.state.agent._id.toString()}`}>
+            <Button>See Archiv Student</Button>
+          </Link>
+        </Row>
       </Aux>
     );
   }

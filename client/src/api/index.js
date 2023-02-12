@@ -47,7 +47,8 @@ export const getAdmissions = () => request.get(`/api/admissions`);
 export const getStudent = (studentId) =>
   request.get(`/api/students/${studentId}`);
 
-export const getArchivStudents = () => request.get(`/api/students/archiv`);
+export const getArchivStudents = (TaiGerStaffId) =>
+  request.get(`/api/teams/archiv/${TaiGerStaffId}`);
 
 export const updateArchivStudents = (studentId, isArchived) =>
   request.post(`/api/students/archiv/${studentId}`, { isArchived: isArchived });

@@ -617,8 +617,8 @@ const getMessages = asyncHandler(async (req, res) => {
   let deadline = 'x';
   if (document_thread.file_type.includes('CV')) {
     const today = new Date();
-    let days_left_min = 3000;
-    let CV_deadline = '';
+    let daysLeftMin = 3000;
+    let CVDeadline = '';
     for (let i = 0; i < student.applications.length; i += 1) {
       const application_deadline_temp = application_deadline_calculator(
         student,
@@ -627,12 +627,12 @@ const getMessages = asyncHandler(async (req, res) => {
       const day_left = parseInt(
         getNumberOfDays(today, application_deadline_temp)
       );
-      if (days_left_min > day_left) {
-        days_left_min = day_left;
-        CV_deadline = application_deadline_temp;
+      if (daysLeftMin > day_left) {
+        daysLeftMin = day_left;
+        CVDeadline = application_deadline_temp;
       }
     }
-    deadline = CV_deadline;
+    deadline = CVDeadline;
   } else {
     const application = student.applications.find(
       (app) =>

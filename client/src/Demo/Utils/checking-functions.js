@@ -366,7 +366,8 @@ export const GetCVDeadline = (student) => {
       CVDeadline = applicationDeadline;
     }
   });
-
+  console.log(daysLeftMin);
+  console.log(CVDeadline);
   return { daysLeftMin, CVDeadline };
 };
 

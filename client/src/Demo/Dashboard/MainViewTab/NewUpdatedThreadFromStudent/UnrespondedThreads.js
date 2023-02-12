@@ -13,7 +13,7 @@ class UnrespondedThreads extends React.Component {
     var today = new Date();
     var unread_general_generaldocs = 0;
     var unread_applications_docthread = 0;
-    const { CV_deadline, days_left_min } = GetCVDeadline(this.props.student);
+    const { CVDeadline, daysLeftMin } = GetCVDeadline(this.props.student);
 
     if (
       this.props.student.applications === undefined ||
@@ -59,7 +59,7 @@ class UnrespondedThreads extends React.Component {
                       {generaldocs_threads.doc_thread_id.file_type}
                     </Link>
                   </td>
-                  <td>{CV_deadline}</td>
+                  <td>{CVDeadline}</td>
                   <td> {convertDate(generaldocs_threads.updatedAt)}</td>
                 </>
               )}

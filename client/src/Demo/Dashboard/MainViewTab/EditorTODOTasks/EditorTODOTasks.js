@@ -12,7 +12,7 @@ class EditorTODOTasks extends React.Component {
     var today = new Date();
     var unread_general_generaldocs;
     var unread_applications_docthread;
-    const { CV_deadline, days_left_min } = GetCVDeadline(this.props.student);
+    const { CVDeadline, daysLeftMin } = GetCVDeadline(this.props.student);
 
     if (
       this.props.student.applications === undefined ||
@@ -54,7 +54,7 @@ class EditorTODOTasks extends React.Component {
                     {generaldocs_threads.doc_thread_id.file_type}
                   </Link>
                 </td>
-                <td>{CV_deadline}</td>
+                <td>{CVDeadline}</td>
                 <td>
                   {new Date(generaldocs_threads.updatedAt).toLocaleDateString()}
                   {', '}

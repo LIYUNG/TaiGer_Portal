@@ -30,7 +30,7 @@ class CVMLRLProgressNewMessage extends React.Component {
     var today = new Date();
     let general_document_items = <></>;
     let application_document_items = <></>;
-    const { CV_deadline, days_left_min } = GetCVDeadline(this.props.student);
+    const { CVDeadline, daysLeftMin } = GetCVDeadline(this.props.student);
 
     general_document_items =
       this.props.student.generaldocs_threads &&
@@ -113,8 +113,8 @@ class CVMLRLProgressNewMessage extends React.Component {
                     {!generaldocs_thread.isFinalVersion &&
                       getNumberOfDays(generaldocs_thread.updatedAt, today)}
                   </td>
-                  <td>{CV_deadline}</td>
-                  <td>{days_left_min}</td>
+                  <td>{CVDeadline}</td>
+                  <td>{daysLeftMin}</td>
                 </>
               )}
             </tr>

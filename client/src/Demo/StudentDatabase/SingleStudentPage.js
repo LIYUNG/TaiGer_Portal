@@ -624,7 +624,6 @@ class SingleStudentPage extends React.Component {
                   <EditorDocsProgress
                     student={this.state.student}
                     idx={0}
-                    accordionKeys={[0]}
                     singleExpandtHandler={this.singleExpandtHandler}
                     user={this.props.user}
                   />

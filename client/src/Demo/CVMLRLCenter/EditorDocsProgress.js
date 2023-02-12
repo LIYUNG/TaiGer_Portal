@@ -18,7 +18,8 @@ import {
   showButtonIfMyStudent,
   check_generaldocs,
   is_program_ml_rl_essay_finished,
-  is_program_closed
+  is_program_closed,
+  application_deadline_calculator
 } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -137,6 +138,7 @@ class EditorDocsProgress extends React.Component {
             this.setState((state) => ({
               ...state,
               isLoaded: true,
+              delete_field: '',
               res_modal_message: message,
               res_modal_status: status
             }));
@@ -147,6 +149,7 @@ class EditorDocsProgress extends React.Component {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
+            delete_field: '',
             error,
             res_modal_status: 500,
             res_modal_message: statusText
@@ -168,16 +171,19 @@ class EditorDocsProgress extends React.Component {
               (application) =>
                 application.programId._id.toString() === this.state.program_id
             );
-            let doc_thread_idx = student_temp.applications[
-              application_idx
-            ].doc_modification_thread.findIndex(
-              (thread) =>
-                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
-            );
-            if (doc_thread_idx !== -1) {
-              student_temp.applications[
+            if (application_idx !== -1) {
+              let doc_thread_idx = student_temp.applications[
                 application_idx
-              ].doc_modification_thread.splice(doc_thread_idx, 1);
+              ].doc_modification_thread.findIndex(
+                (thread) =>
+                  thread.doc_thread_id._id.toString() ===
+                  this.state.doc_thread_id
+              );
+              if (doc_thread_idx !== -1) {
+                student_temp.applications[
+                  application_idx
+                ].doc_modification_thread.splice(doc_thread_idx, 1);
+              }
             }
             this.setState((state) => ({
               ...state,
@@ -186,6 +192,7 @@ class EditorDocsProgress extends React.Component {
               doc_thread_id: '',
               isLoaded: true,
               student: student_temp,
+              delete_field: '',
               success: success,
               deleteFileWarningModel: false,
               res_modal_status: status
@@ -195,6 +202,7 @@ class EditorDocsProgress extends React.Component {
             this.setState((state) => ({
               ...state,
               isLoaded: true,
+              delete_field: '',
               res_modal_message: message,
               res_modal_status: status
             }));
@@ -206,6 +214,7 @@ class EditorDocsProgress extends React.Component {
             ...state,
             isLoaded: true,
             error,
+            delete_field: '',
             res_modal_status: 500,
             res_modal_message: statusText
           }));
@@ -229,6 +238,7 @@ class EditorDocsProgress extends React.Component {
         const { status } = resp;
         if (success) {
           let student_temp = { ...this.state.student };
+          let targetThread;
           if (this.state.program_id) {
             let application_idx = student_temp.applications.findIndex(
               (application) =>
@@ -241,30 +251,19 @@ class EditorDocsProgress extends React.Component {
               (thread) =>
                 thread.doc_thread_id._id.toString() === this.state.doc_thread_id
             );
-
-            student_temp.applications[application_idx].doc_modification_thread[
-              thread_idx
-            ].isFinalVersion = data.isFinalVersion;
-
-            student_temp.applications[application_idx].doc_modification_thread[
-              thread_idx
-            ].updatedAt = data.updatedAt;
-            student_temp.applications[application_idx].doc_modification_thread[
-              thread_idx
-            ].doc_thread_id.updatedAt = data.updatedAt;
+            targetThread =
+              student_temp.applications[application_idx]
+                .doc_modification_thread[thread_idx];
           } else {
             let general_doc_idx = student_temp.generaldocs_threads.findIndex(
               (docs) =>
                 docs.doc_thread_id._id.toString() === this.state.doc_thread_id
             );
-            student_temp.generaldocs_threads[general_doc_idx].isFinalVersion =
-              data.isFinalVersion;
-            student_temp.generaldocs_threads[general_doc_idx].updatedAt =
-              data.updatedAt;
-            student_temp.generaldocs_threads[
-              general_doc_idx
-            ].doc_thread_id.updatedAt = data.updatedAt;
+            targetThread = student_temp.generaldocs_threads[general_doc_idx];
           }
+          targetThread.isFinalVersion = data.isFinalVersion;
+          targetThread.updatedAt = data.updatedAt;
+          targetThread.doc_thread_id.updatedAt = data.updatedAt;
 
           this.setState((state) => ({
             ...state,
@@ -391,54 +390,47 @@ class EditorDocsProgress extends React.Component {
     document_catgory,
     thread_name
   ) => {
-    if ('1' === '') {
-      e.preventDefault();
-      alert('Please select file group');
-    } else {
-      e.preventDefault();
-      initApplicationMessageThread(studentId, programId, document_catgory)
-        .then((resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            let student_temp = { ...this.state.student };
-            let application_idx = student_temp.applications.findIndex(
-              (application) =>
-                application.programId._id.toString() === programId
-            );
-            student_temp.applications[
-              application_idx
-            ].doc_modification_thread.push(data);
+    e.preventDefault();
+    initApplicationMessageThread(studentId, programId, document_catgory)
+      .then((resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          let student_temp = { ...this.state.student };
+          let application_idx = student_temp.applications.findIndex(
+            (application) => application.programId._id.toString() === programId
+          );
+          student_temp.applications[
+            application_idx
+          ].doc_modification_thread.push(data);
 
-            this.setState({
-              isLoaded: true, //false to reload everything
-              student: student_temp,
-              success: success,
-              file: '',
-              res_modal_status: status
-            });
-          } else {
-            // TODO: handle frontend render if create duplicate thread
-            const { message } = resp.data;
-            this.setState((state) => ({
-              ...state,
-              isLoaded: true,
-              res_modal_message: message,
-              res_modal_status: status
-            }));
-          }
-        })
-        .catch((error) => {
-          const { statusText } = resp;
+          this.setState({
+            isLoaded: true, //false to reload everything
+            student: student_temp,
+            success: success,
+            file: '',
+            res_modal_status: status
+          });
+        } else {
+          const { message } = resp.data;
           this.setState((state) => ({
             ...state,
             isLoaded: true,
-            error,
-            res_modal_status: 500,
-            res_modal_message: statusText
+            res_modal_message: message,
+            res_modal_status: status
           }));
-        });
-    }
+        }
+      })
+      .catch((error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      });
   };
 
   initGeneralFileThread = (e, studentId, document_catgory, thread_name) => {
@@ -514,454 +506,386 @@ class EditorDocsProgress extends React.Component {
     const create_generaldoc_reminder = check_generaldocs(this.state.student);
     return (
       <>
-        <Collapse
-          in={this.props.accordionKeys[this.props.idx] === this.props.idx}
-        >
-          <div id="accordion1">
-            {res_modal_status >= 400 && (
-              <ModalMain
-                ConfirmError={this.ConfirmError}
-                res_modal_status={res_modal_status}
-                res_modal_message={res_modal_message}
-              />
+        <div>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
+          <Card.Body>
+            <Row className="mb-4 mx-0">
+              <Col md={8}>
+                <b className="text-light">
+                  General Documents (CV, Recommendation Letters)
+                </b>
+              </Col>
+            </Row>
+            {create_generaldoc_reminder && (
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Body>
+                  <p className="text-light my-0">
+                    The following general documents are not started yet, please{' '}
+                    <b>create</b> the discussion thread below:{' '}
+                    {this.state.student.generaldocs_threads &&
+                      this.state.student.generaldocs_threads.findIndex(
+                        (thread) => thread.doc_thread_id.file_type === 'CV'
+                      ) === -1 && (
+                        <li>
+                          <b>CV</b>
+                        </li>
+                      )}{' '}
+                  </p>
+                </Card.Body>
+              </Card>
             )}
-            <Card.Body>
-              <Row className="mb-4 mx-0">
-                <Col md={8}>
-                  <b className="text-light">
-                    General Documents (CV, Recommendation Letters)
-                  </b>
-                </Col>
-              </Row>
-              {create_generaldoc_reminder && (
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                  <Card.Body>
-                    <p className="text-light my-0">
-                      The following general documents are not started yet,
-                      please <b>create</b> the discussion thread below:{' '}
-                      {this.state.student.generaldocs_threads &&
-                        this.state.student.generaldocs_threads.findIndex(
-                          (thread) => thread.doc_thread_id.file_type === 'CV'
-                        ) === -1 && (
-                          <li>
-                            <b>CV</b>
-                          </li>
-                        )}{' '}
-                    </p>
-                  </Card.Body>
-                </Card>
-              )}
 
-              <ManualFiles
-                onDeleteFileThread={this.onDeleteFileThread}
-                handleAsFinalFile={this.handleAsFinalFile}
-                user={this.props.user}
-                student={this.state.student}
-                filetype={'General'}
-                initGeneralFileThread={this.initGeneralFileThread}
-                initProgramSpecificFileThread={
-                  this.initProgramSpecificFileThread
-                }
-                application={null}
-              />
-              <hr></hr>
+            <ManualFiles
+              onDeleteFileThread={this.onDeleteFileThread}
+              handleAsFinalFile={this.handleAsFinalFile}
+              user={this.props.user}
+              student={this.state.student}
+              filetype={'General'}
+              initGeneralFileThread={this.initGeneralFileThread}
+              initProgramSpecificFileThread={this.initProgramSpecificFileThread}
+              application={null}
+            />
+            <hr></hr>
 
-              {this.state.student.applications &&
-                this.state.student.applications.map((application, i) => (
-                  <div key={i}>
-                    {((application.decided !== undefined &&
+            {this.state.student.applications &&
+              this.state.student.applications.map((application, i) => (
+                <div key={i}>
+                  {((application.decided !== undefined &&
+                    application.decided === 'O' &&
+                    application.programId.ml_required !== undefined &&
+                    application.programId.ml_required === 'yes' &&
+                    application.doc_modification_thread.findIndex(
+                      (thread) => thread.doc_thread_id.file_type === 'ML'
+                    ) === -1) ||
+                    (application.decided !== undefined &&
                       application.decided === 'O' &&
-                      application.programId.ml_required !== undefined &&
-                      application.programId.ml_required === 'yes' &&
+                      application.programId.essay_required !== undefined &&
+                      application.programId.essay_required === 'yes' &&
                       application.doc_modification_thread.findIndex(
-                        (thread) => thread.doc_thread_id.file_type === 'ML'
-                      ) === -1) ||
-                      (application.decided !== undefined &&
-                        application.decided === 'O' &&
-                        application.programId.essay_required !== undefined &&
-                        application.programId.essay_required === 'yes' &&
-                        application.doc_modification_thread.findIndex(
-                          (thread) => thread.doc_thread_id.file_type === 'Essay'
-                        ) === -1)) && (
-                      <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                        <Card.Body>
-                          The followings application documents are not started
-                          or finished yet:{' '}
-                          {application.programId.ml_required !== undefined &&
-                            application.programId.ml_required === 'yes' &&
-                            application.doc_modification_thread.findIndex(
-                              (thread) =>
-                                thread.doc_thread_id.file_type === 'ML'
-                            ) === -1 &&
-                            application.programId.ml_requirements !== '' && (
-                              <li>
-                                <b>ML</b>
-                              </li>
-                            )}
-                          {application.programId.essay_required !== undefined &&
-                            application.programId.essay_required === 'yes' &&
-                            application.doc_modification_thread.findIndex(
-                              (thread) =>
-                                thread.doc_thread_id.file_type === 'Essay'
-                            ) === -1 && (
-                              <li>
-                                <b>Essay</b>
-                              </li>
-                            )}
-                        </Card.Body>
-                      </Card>
-                    )}
-
-                    {application.decided !== undefined &&
-                    application.decided === 'O' ? (
-                      <>
-                        <Row className="my-2 mx-0">
-                          {is_program_ml_rl_essay_finished(application) ? (
-                            <>
-                              {is_program_closed(application) ? (
-                                <>
-                                  <Col md={1}>
-                                    {showButtonIfMyStudent(
-                                      this.props.user,
-                                      this.state.student
-                                    ) && (
-                                      <ImCheckmark
-                                        size={24}
-                                        color="limegreen"
-                                        title="This program is closed"
-                                      />
-                                    )}
-                                  </Col>
-                                  <Col md={1}>
-                                    {showButtonIfMyStudent(
-                                      this.props.user,
-                                      this.state.student
-                                    ) && (
-                                      <AiOutlineUndo
-                                        size={24}
-                                        color="red"
-                                        title="Re-open this program as it was not submitted"
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() =>
-                                          this.handleProgramStatus(
-                                            this.state.student._id.toString(),
-                                            application.programId._id.toString()
-                                          )
-                                        }
-                                      />
-                                    )}
-                                  </Col>
-                                </>
-                              ) : (
-                                <>
-                                  <Col md={1}>
-                                    {showButtonIfMyStudent(
-                                      this.props.user,
-                                      this.state.student
-                                    ) && (
-                                      <AiOutlineCheck
-                                        size={24}
-                                        color="white"
-                                        style={{ cursor: 'pointer' }}
-                                        title="Close this program - marked as finished."
-                                        onClick={() =>
-                                          this.handleProgramStatus(
-                                            this.state.student._id.toString(),
-                                            application.programId._id.toString()
-                                          )
-                                        }
-                                      />
-                                    )}
-                                  </Col>
-                                  <Col md={1}></Col>
-                                </>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              <Col md={1}></Col>
-                              <Col md={1}></Col>
-                            </>
+                        (thread) => thread.doc_thread_id.file_type === 'Essay'
+                      ) === -1)) && (
+                    <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
+                      <Card.Body>
+                        The followings application documents are not started or
+                        finished yet:{' '}
+                        {application.programId.ml_required !== undefined &&
+                          application.programId.ml_required === 'yes' &&
+                          application.doc_modification_thread.findIndex(
+                            (thread) => thread.doc_thread_id.file_type === 'ML'
+                          ) === -1 &&
+                          application.programId.ml_requirements !== '' && (
+                            <li>
+                              <b>ML</b>
+                            </li>
                           )}
+                        {application.programId.essay_required !== undefined &&
+                          application.programId.essay_required === 'yes' &&
+                          application.doc_modification_thread.findIndex(
+                            (thread) =>
+                              thread.doc_thread_id.file_type === 'Essay'
+                          ) === -1 && (
+                            <li>
+                              <b>Essay</b>
+                            </li>
+                          )}
+                      </Card.Body>
+                    </Card>
+                  )}
 
-                          <Col md={4}>
-                            <Link
-                              to={'/programs/' + application.programId._id}
-                              style={{ textDecoration: 'none' }}
-                              className="text-info"
+                  {application.decided === 'O' ? (
+                    <>
+                      <Row className="my-2 mx-0">
+                        {is_program_ml_rl_essay_finished(application) ? (
+                          <>
+                            {is_program_closed(application) ? (
+                              <>
+                                <Col md={1}>
+                                  {showButtonIfMyStudent(
+                                    this.props.user,
+                                    this.state.student
+                                  ) && (
+                                    <ImCheckmark
+                                      size={24}
+                                      color="limegreen"
+                                      title="This program is closed"
+                                    />
+                                  )}
+                                </Col>
+                                <Col md={1}>
+                                  {showButtonIfMyStudent(
+                                    this.props.user,
+                                    this.state.student
+                                  ) && (
+                                    <AiOutlineUndo
+                                      size={24}
+                                      color="red"
+                                      title="Re-open this program as it was not submitted"
+                                      style={{ cursor: 'pointer' }}
+                                      onClick={() =>
+                                        this.handleProgramStatus(
+                                          this.state.student._id.toString(),
+                                          application.programId._id.toString()
+                                        )
+                                      }
+                                    />
+                                  )}
+                                </Col>
+                              </>
+                            ) : (
+                              <>
+                                <Col md={1}>
+                                  {showButtonIfMyStudent(
+                                    this.props.user,
+                                    this.state.student
+                                  ) && (
+                                    <AiOutlineCheck
+                                      size={24}
+                                      color="white"
+                                      style={{ cursor: 'pointer' }}
+                                      title="Close this program - marked as finished."
+                                      onClick={() =>
+                                        this.handleProgramStatus(
+                                          this.state.student._id.toString(),
+                                          application.programId._id.toString()
+                                        )
+                                      }
+                                    />
+                                  )}
+                                </Col>
+                                <Col md={1}></Col>
+                              </>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <Col md={1}></Col>
+                            <Col md={1}></Col>
+                          </>
+                        )}
+
+                        <Col md={4}>
+                          <Link
+                            to={`/programs/${application.programId._id}`}
+                            style={{ textDecoration: 'none' }}
+                            className="text-info"
+                          >
+                            <h5
+                              className={`text-${
+                                application.closed === 'O'
+                                  ? 'warning'
+                                  : 'danger'
+                              }`}
                             >
-                              {application.closed === 'O' ? (
-                                <h5 className="text-warning">
-                                  <b>
-                                    {application.programId.school}
-                                    {' - '}
-                                    {application.programId.degree}
-                                    {' - '}
-                                    {application.programId.program_name}
-                                  </b>
-                                </h5>
-                              ) : (
-                                <h5 className="text-danger">
-                                  <b>
-                                    {application.programId.school}
-                                    {' - '}
-                                    {application.programId.degree}
-                                    {' - '}
-                                    {application.programId.program_name}
-                                  </b>
-                                </h5>
-                              )}
-                            </Link>
-                          </Col>
-                          <Col md={2}>
-                            {application.programId.ml_required !== undefined &&
-                            application.programId.ml_required === 'yes' ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="secondary"
-                                  onClick={() =>
-                                    this.openRequirements_ModalWindow(
-                                      application.programId.ml_requirements
-                                    )
-                                  }
-                                >
-                                  ML
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                            {application.programId.rl_required !== undefined &&
-                            application.programId.rl_required > 0 ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="info"
-                                  onClick={() =>
-                                    this.openRequirements_ModalWindow(
-                                      application.programId.rl_requirements
-                                    )
-                                  }
-                                >
-                                  RL
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                            {application.programId.essay_required !==
-                              undefined &&
-                            application.programId.essay_required === 'yes' ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="light"
-                                  onClick={() =>
-                                    this.openRequirements_ModalWindow(
-                                      application.programId.essay_requirements
-                                    )
-                                  }
-                                >
-                                  Essay
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </Col>
-                          <Col>
-                            <p className="text-light">
-                              Deadline:{' '}
-                              {application.programId.application_deadline
-                                ? this.state.student.application_preference &&
-                                  this.state.student.application_preference
-                                    .expected_application_date
-                                  ? this.state.student.application_preference
-                                      .expected_application_date +
-                                    '-' +
-                                    application.programId.application_deadline
-                                  : application.programId.application_deadline
-                                : '-'}
-                            </p>
-                          </Col>
-                          <Col md={1}>
-                            <p className="text-light">Status: </p>
-                          </Col>
-                          <Col md={1}>
-                            {application.closed === 'O' ? (
-                              <p className="text-warning">
-                                <b>Close</b>
-                              </p>
-                            ) : (
-                              <p className="text-danger">
-                                <b>Open</b>
-                              </p>
-                            )}
-                          </Col>
-                        </Row>
-                        <ManualFiles
-                          onDeleteFileThread={this.onDeleteFileThread}
-                          handleAsFinalFile={this.handleAsFinalFile}
-                          user={this.props.user}
-                          student={this.state.student}
-                          application={application}
-                          filetype={'ProgramSpecific'}
-                          initGeneralFileThread={this.initGeneralFileThread}
-                          initProgramSpecificFileThread={
-                            this.initProgramSpecificFileThread
-                          }
-                        />
-                        <hr></hr>
-                      </>
-                    ) : (
-                      <>
-                        <Row className="my-2 mx-0">
-                          <Col md={2}></Col>
-                          <Col md={4}>
-                            <Link
-                              to={
-                                '/programs/' +
-                                application.programId._id.toString()
+                              <b>
+                                {application.programId.school} -{' '}
+                                {application.programId.degree} -{' '}
+                                {application.programId.program_name}
+                              </b>
+                            </h5>
+                          </Link>
+                        </Col>
+                        <Col md={2}>
+                          {application.programId.ml_required === 'yes' && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="secondary"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId.ml_requirements
+                                )
                               }
-                              style={{ textDecoration: 'none' }}
-                              className="text-info"
                             >
-                              <h5 className="text-secondary">
-                                <b>
-                                  {application.programId.school}
-                                  {' - '}
-                                  {application.programId.program_name}
-                                </b>
-                              </h5>
-                            </Link>
-                          </Col>
-                          <Col md={2}>
-                            {application.programId.ml_required !== undefined &&
-                            application.programId.ml_required === 'yes' ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="secondary"
-                                  onClick={() =>
-                                    this.openRequirements_ModalWindow(
-                                      application.programId.ml_requirements
-                                    )
-                                  }
-                                >
-                                  ML
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
+                              ML
+                            </Button>
+                          )}
+                          {application.programId.rl_required > 0 && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="info"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId.rl_requirements
+                                )
+                              }
+                            >
+                              RL
+                            </Button>
+                          )}
+                          {application.programId.essay_required === 'yes' && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="light"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId.essay_requirements
+                                )
+                              }
+                            >
+                              Essay
+                            </Button>
+                          )}
+                        </Col>
+                        <Col>
+                          <p className="text-light">
+                            Deadline:{' '}
+                            {application_deadline_calculator(
+                              this.state.student,
+                              application
                             )}
-                            {application.programId.rl_required !== undefined &&
-                            application.programId.rl_required > 0 ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="info"
-                                  onClick={() =>
-                                    this.openRequirements_ModalWindow(
-                                      application.programId.rl_requirements
-                                    )
-                                  }
-                                >
-                                  RL
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                            {application.programId.essay_required !==
-                              undefined &&
-                            application.programId.essay_required === 'yes' ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  title="Comments"
-                                  variant="light"
-                                  onClick={() =>
-                                    this.openRequirements_ModalWindow(
-                                      application.programId.essay_requirements
-                                    )
-                                  }
-                                >
-                                  Essay
-                                  {/* <AiOutlineMore size={20} /> */}
-                                </Button>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </Col>
-                          <Col>
-                            <p className="text-light">
-                              Deadline:{' '}
-                              {application.programId.application_deadline
-                                ? this.state.student.application_preference &&
-                                  this.state.student.application_preference
-                                    .expected_application_date
-                                  ? this.state.student.application_preference
-                                      .expected_application_date +
-                                    '-' +
-                                    application.programId.application_deadline
-                                  : application.programId.application_deadline
-                                : '-'}
+                          </p>
+                        </Col>
+                        <Col md={1}>
+                          <p className="text-light">Status: </p>
+                        </Col>
+                        <Col md={1}>
+                          {application.closed === 'O' ? (
+                            <p className="text-warning">
+                              <b>Close</b>
                             </p>
-                          </Col>
-                          <Col md={1}>
-                            <p className="text-light">Status: </p>
-                          </Col>
-                          <Col md={1}>
+                          ) : (
                             <p className="text-danger">
-                              <b>Undecided</b>
+                              <b>Open</b>
                             </p>
-                          </Col>
-                        </Row>
-                        <Row className="my-2 mx-0">
-                          <Col md={2}></Col>
-                          <Col md={4}>
-                            <p className="text-light">
-                              Please make sure the program should be proceeded.
-                              {showButtonIfMyStudent(
-                                this.props.user,
-                                this.state.student
-                              ) && (
-                                <Link
-                                  to={
-                                    '/student-applications/' +
-                                    this.state.student._id.toString()
-                                  }
-                                  style={{ textDecoration: 'none' }}
-                                  className="text-info"
-                                >
-                                  {' '}
-                                  click here
-                                </Link>
-                              )}
-                            </p>
-                          </Col>
-                        </Row>
-                      </>
-                    )}
-                  </div>
-                ))}
-            </Card.Body>
-          </div>
-        </Collapse>{' '}
-        {!isLoaded && (
-          <div style={spinner_style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )}
+                          )}
+                        </Col>
+                      </Row>
+                      <ManualFiles
+                        onDeleteFileThread={this.onDeleteFileThread}
+                        handleAsFinalFile={this.handleAsFinalFile}
+                        user={this.props.user}
+                        student={this.state.student}
+                        application={application}
+                        filetype={'ProgramSpecific'}
+                        initGeneralFileThread={this.initGeneralFileThread}
+                        initProgramSpecificFileThread={
+                          this.initProgramSpecificFileThread
+                        }
+                      />
+                      <hr></hr>
+                    </>
+                  ) : (
+                    <>
+                      <Row className="my-2 mx-0">
+                        <Col md={2}></Col>
+                        <Col md={4}>
+                          <Link
+                            to={
+                              '/programs/' +
+                              application.programId._id.toString()
+                            }
+                            style={{ textDecoration: 'none' }}
+                            className="text-info"
+                          >
+                            <h5 className="text-secondary">
+                              <b>
+                                {application.programId.school} -{' '}
+                                {application.programId.degree} -{' '}
+                                {application.programId.program_name}
+                              </b>
+                            </h5>
+                          </Link>
+                        </Col>
+                        <Col md={2}>
+                          {application.programId.ml_required === 'yes' && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="secondary"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId.ml_requirements
+                                )
+                              }
+                            >
+                              ML
+                            </Button>
+                          )}
+                          {application.programId.rl_required > 0 && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="info"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId.rl_requirements
+                                )
+                              }
+                            >
+                              RL
+                            </Button>
+                          )}
+                          {application.programId.essay_required === 'yes' && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="light"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId.essay_requirements
+                                )
+                              }
+                            >
+                              Essay
+                            </Button>
+                          )}
+                        </Col>
+                        <Col>
+                          <p className="text-light">
+                            Deadline:{' '}
+                            {application_deadline_calculator(
+                              this.state.student,
+                              application
+                            )}
+                          </p>
+                        </Col>
+                        <Col md={1}>
+                          <p className="text-light">Status: </p>
+                        </Col>
+                        <Col md={1}>
+                          <p className="text-danger">
+                            <b>Undecided</b>
+                          </p>
+                        </Col>
+                      </Row>
+                      <Row className="my-2 mx-0">
+                        <Col md={2}></Col>
+                        <Col md={4}>
+                          <p className="text-light">
+                            Please make sure the program should be proceeded.
+                            {showButtonIfMyStudent(
+                              this.props.user,
+                              this.state.student
+                            ) && (
+                              <Link
+                                to={
+                                  '/student-applications/' +
+                                  this.state.student._id.toString()
+                                }
+                                style={{ textDecoration: 'none' }}
+                                className="text-info"
+                              >
+                                {' '}
+                                click here
+                              </Link>
+                            )}
+                          </p>
+                        </Col>
+                      </Row>
+                    </>
+                  )}
+                </div>
+              ))}
+          </Card.Body>
+        </div>
         <Modal
           show={this.state.deleteFileWarningModel}
           onHide={this.closeWarningWindow}

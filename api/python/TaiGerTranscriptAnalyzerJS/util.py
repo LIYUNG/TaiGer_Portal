@@ -298,21 +298,8 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
 
 def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name, analysis_language):
 
-    # program_idx, file_path, abbrev
     Database_Path = env_file_path + '/'
-    # Output_Path = os.path.split(file_path)
-    # Output_Path = Output_Path[0]
-    # Output_Path = Output_Path + '/output/'
-    # print("output file path " + Output_Path)
-
-    # if not os.path.exists(Output_Path):
-    #     print("create output folder")
-    #     os.makedirs(Output_Path)
-
     Database_file_name = abbrev + '_Course_database.xlsx'
-    # input_file_name = os.path.split(file_path)
-    # input_file_name = input_file_name[1]
-    # print("input file name " + input_file_name)
 
     df_transcript = pd.DataFrame.from_dict(obj_arr)
     # TODO: move the checking mechanism to util.py!
@@ -353,20 +340,13 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
         df_category_courses_sugesstion_data.append(
             pd.DataFrame(data=category_courses_sugesstion_data, columns=['建議修課']))
 
-    if analysis_language == 'en':
+    if analysis_language in ['en', None]:
         # 基本分類課程 (與申請學程無關)
         df_category_data = CourseSorting(
             df_transcript, df_category_data, transcript_sorted_group_map, "course_english")
         # 基本分類電機課程資料庫
         df_category_courses_sugesstion_data = DatabaseCourseSorting(
             df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "所有科目_英語")
-    elif analysis_language == 'zh':
-        # 基本分類課程 (與申請學程無關)
-        df_category_data = CourseSorting(
-            df_transcript, df_category_data, transcript_sorted_group_map, "course_chinese")
-        # 基本分類電機課程資料庫
-        df_category_courses_sugesstion_data = DatabaseCourseSorting(
-            df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "所有科目")
     else:
         # 基本分類課程 (與申請學程無關)
         df_category_data = CourseSorting(
@@ -440,11 +420,3 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     transcript_path = studentId + '/analysed_transcript_' + student_name + '.xlsx'
     s3.Bucket(AWS_S3_BUCKET_NAME).put_object(Key=transcript_path, Body=data)
     sys.exit(0)
-
-
-
-
-    # writer.save()
-    # print("output data at: " + Output_Path + output_file_name)
-    # print("Students' courses analysis and courses suggestion in " +
-    #       abbrev + " area finished! ")

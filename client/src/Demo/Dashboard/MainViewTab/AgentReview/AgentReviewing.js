@@ -33,20 +33,17 @@ class AgentReviewing extends React.Component {
     }
 
     if (this.props.student.profile) {
-      for (let i = 0; i < this.props.student.profile.length; i++) {
-        if (this.props.student.profile[i].status === 'uploaded') {
-          object_init[this.props.student.profile[i].name] = 'uploaded';
-        } else if (this.props.student.profile[i].status === 'accepted') {
-          object_init[this.props.student.profile[i].name] = 'accepted';
-        } else if (this.props.student.profile[i].status === 'rejected') {
-          object_init[this.props.student.profile[i].name] = 'rejected';
-        } else if (this.props.student.profile[i].status === 'missing') {
-          object_init[this.props.student.profile[i].name] = 'missing';
-        } else if (this.props.student.profile[i].status === 'notneeded') {
-          object_init[this.props.student.profile[i].name] = 'notneeded';
-        }
-      }
-    } else {
+      const statuses = {
+        uploaded: 'uploaded',
+        accepted: 'accepted',
+        rejected: 'rejected',
+        missing: 'missing',
+        notneeded: 'notneeded'
+      };
+
+      this.props.student.profile.forEach((item) => {
+        object_init[item.name] = statuses[item.status] || '';
+      });
     }
     let isMissingBaseDocs = false;
     let total_base_docs_needed = 0;
@@ -387,41 +384,31 @@ class AgentReviewing extends React.Component {
               to={'/student-applications/' + this.props.student._id}
               style={{ textDecoration: 'none' }}
             >
-              {is_all_applications_decided ? (
-                <p className="text-warning">
+              <p className="text-warning">
+                {is_all_applications_decided ? (
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
                     title="complete"
                     className="my-0 mx-2"
                   />
-                  (
-                  {num_apps_decided >
-                  this.props.student.applying_program_count ? (
-                    <b>{num_apps_decided}</b>
-                  ) : (
-                    num_apps_decided
-                  )}
-                  /{this.props.student.applying_program_count})
-                </p>
-              ) : (
-                <p className="text-warning">
+                ) : (
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
                     title="incomplete"
                     className="my-0 mx-2"
                   />
-                  (
-                  {num_apps_decided >
-                  this.props.student.applying_program_count ? (
-                    <b>{num_apps_decided}</b>
-                  ) : (
-                    num_apps_decided
-                  )}
-                  /{this.props.student.applying_program_count})
-                </p>
-              )}
+                )}
+                (
+                {num_apps_decided >
+                this.props.student.applying_program_count ? (
+                  <b>{num_apps_decided}</b>
+                ) : (
+                  num_apps_decided
+                )}
+                /{this.props.student.applying_program_count})
+              </p>
             </Link>
           </td>
           <td>

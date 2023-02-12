@@ -31,12 +31,12 @@ class CVMLRLProgress extends React.Component {
     let general_document_items = <></>;
     let application_document_items = <></>;
     const { CVDeadline, daysLeftMin } = GetCVDeadline(this.props.student);
-  
+
     general_document_items =
       this.props.student.generaldocs_threads &&
       this.props.student.generaldocs_threads.map(
         (generaldocs_thread, i) =>
-          !is_new_message_status(this.props.user, generaldocs_thread) && (
+          this.props.showTasks(this.props.user, generaldocs_thread) && (
             <tr key={i}>
               {!generaldocs_thread.isFinalVersion && (
                 <>
@@ -125,7 +125,7 @@ class CVMLRLProgress extends React.Component {
       this.props.student.applications.map((application, i) =>
         application.doc_modification_thread.map(
           (doc_thread, j) =>
-            !is_new_message_status(this.props.user, doc_thread) && (
+            this.props.showTasks(this.props.user, doc_thread) && (
               <tr key={j}>
                 {application.decided === 'O' &&
                   !doc_thread.isFinalVersion &&

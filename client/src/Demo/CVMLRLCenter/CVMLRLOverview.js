@@ -11,9 +11,12 @@ import {
 } from 'react-bootstrap';
 
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
-import CVMLRLProgressNewMessage from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressNewMessage';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
-import { spinner_style } from '../Utils/contants';
+import {
+  spinner_style,
+  is_new_message_status,
+  is_pending_status
+} from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -189,22 +192,24 @@ class CVMLRLOverview extends React.Component {
     }
 
     const cvmlrl_new_message = this.state.students.map((student, i) => (
-      <CVMLRLProgressNewMessage
-        key={i}
-        user={this.props.user}
-        student={student}
-        isDashboard={true}
-        handleAsFinalFile={this.handleAsFinalFile}
-      />
-    ));
-
-    const cvmlrl_progress = this.state.students.map((student, i) => (
       <CVMLRLProgress
         key={i}
         user={this.props.user}
         student={student}
         isDashboard={true}
         handleAsFinalFile={this.handleAsFinalFile}
+        showTasks={is_new_message_status}
+      />
+    ));
+
+    const cvmlrl_pending_progress = this.state.students.map((student, i) => (
+      <CVMLRLProgress
+        key={i}
+        user={this.props.user}
+        student={student}
+        isDashboard={true}
+        handleAsFinalFile={this.handleAsFinalFile}
+        showTasks={is_pending_status}
       />
     ));
     const cvmlrl_progress_closed = this.state.students.map((student, i) => (
@@ -293,7 +298,7 @@ class CVMLRLOverview extends React.Component {
                       ))}
                     </tr>
                   </thead>
-                  <tbody>{cvmlrl_progress}</tbody>
+                  <tbody>{cvmlrl_pending_progress}</tbody>
                 </Table>
               </Tab>
               <Tab eventKey="closed" title="Closed">

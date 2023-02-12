@@ -8,7 +8,7 @@ import {
   AiOutlineUndo
 } from 'react-icons/ai';
 
-import { convertDate } from '../../../Utils/contants';
+import { convertDate, return_thread_status } from '../../../Utils/contants';
 import {
   is_TaiGer_role,
   application_deadline_calculator
@@ -31,55 +31,8 @@ class CVMLRLProgressClosed extends React.Component {
     );
   };
   render() {
-    const return_thread_status = (user, thread) => {
-      if (thread.isFinalVersion) {
-        return (
-          <td className="mb-1 text-info">
-            <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />
-          </td>
-        );
-      }
-      if (
-        thread.latest_message_left_by_id === undefined ||
-        thread.latest_message_left_by_id === ''
-      ) {
-        if (user.role !== 'Student') {
-          return (
-            <td className="mb-1 text-info">
-              <AiFillQuestionCircle
-                size={24}
-                color="lightgray"
-                title="Waiting feedback"
-              />
-            </td>
-          );
-        }
-      }
-      if (user._id.toString() === thread.latest_message_left_by_id) {
-        return (
-          <td className="mb-1 text-info">
-            <AiFillQuestionCircle
-              size={24}
-              color="lightgray"
-              title="Waiting feedback"
-            />
-          </td>
-        );
-      } else {
-        return (
-          <td className="mb-1 text-info">
-            <BiCommentDots size={24} color="red" title="New Message" />
-          </td>
-        );
-      }
-    };
-
     let general_document_items = <></>;
-    // TODO: implement:
-    let no_started_general_document_items = <></>;
     let application_document_items = <></>;
-    // TODO: implement:
-    let no_started_application_document_items = <></>;
     general_document_items =
       this.props.student.generaldocs_threads &&
       this.props.student.generaldocs_threads.map((generaldocs_thread, i) => (
@@ -257,8 +210,6 @@ class CVMLRLProgressClosed extends React.Component {
       );
     return (
       <>
-        {no_started_general_document_items}
-        {no_started_application_document_items}
         {general_document_items}
         {application_document_items}
       </>

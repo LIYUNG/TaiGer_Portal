@@ -277,3 +277,7 @@ export const is_new_message_status = (user, thread) => {
     return true;
   }
 };
+
+export const is_pending_status = (user, thread) => {
+  return !is_new_message_status(user, thread);
+};

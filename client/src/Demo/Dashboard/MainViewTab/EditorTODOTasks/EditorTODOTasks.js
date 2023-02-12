@@ -20,7 +20,9 @@ class EditorTODOTasks extends React.Component {
         this.props.student,
         this.props.student.applications[i]
       );
-      let day_left = getNumberOfDays(today, application_deadline_temp);
+      let day_left = parseInt(
+        getNumberOfDays(today, application_deadline_temp)
+      );
       if (days_left_min > day_left) {
         days_left_min = day_left;
         CV_deadline = application_deadline_temp;

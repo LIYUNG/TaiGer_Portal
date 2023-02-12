@@ -39,7 +39,9 @@ class CVMLRLProgressNewMessage extends React.Component {
         this.props.student,
         this.props.student.applications[i]
       );
-      let day_left = getNumberOfDays(today, application_deadline_temp);
+      let day_left = parseInt(
+        getNumberOfDays(today, application_deadline_temp)
+      );
       if (days_left_min > day_left) {
         days_left_min = day_left;
         CV_deadline = application_deadline_temp;
@@ -129,7 +131,7 @@ class CVMLRLProgressNewMessage extends React.Component {
                       getNumberOfDays(generaldocs_thread.updatedAt, today)}
                   </td>
                   <td>{CV_deadline}</td>
-                  <td>{getNumberOfDays(today, CV_deadline)}</td>
+                  <td>{days_left_min}</td>
                 </>
               )}
             </tr>

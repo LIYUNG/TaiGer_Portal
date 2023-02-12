@@ -1,6 +1,6 @@
-import React from "react";
-import { Table, Form, Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import React from 'react';
+import { Table, Form, Modal } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 class EditEditorsSubpage extends React.Component {
   // edit Editor subpage
   render() {
@@ -33,11 +33,9 @@ class EditEditorsSubpage extends React.Component {
                           name="student_id"
                           defaultChecked={
                             this.props.student.editors
-                              ? this.props.student.editors.findIndex(
-                                  (Editor) => Editor._id === editor._id
-                                ) > -1
-                                ? true
-                                : false
+                              ? this.props.student.editors.some(
+                                  (e) => e._id === editor._id
+                                )
                               : false
                           }
                           onChange={(e) => this.props.handleChangeEditorlist(e)}

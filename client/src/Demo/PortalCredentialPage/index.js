@@ -39,29 +39,25 @@ export default function PortalCredentialPage(props) {
           let credentials_temp = {};
           let isUpdateLoaded_temp = {};
           if (data.applications) {
-            for (let i = 0; i < data.applications.length; i += 1) {
-              isUpdateLoaded_temp[
-                data.applications[i].programId._id.toString()
-              ] = true;
-              credentials_temp[data.applications[i].programId._id.toString()] =
-                {
-                  account_portal_a: data.applications[i].portal_credentials
-                    ? data.applications[i].portal_credentials
-                        .application_portal_a.account
-                    : '',
-                  account_portal_b: data.applications[i].portal_credentials
-                    ? data.applications[i].portal_credentials
-                        .application_portal_b.account
-                    : '',
-                  password_portal_a: data.applications[i].portal_credentials
-                    ? data.applications[i].portal_credentials
-                        .application_portal_a.password
-                    : '',
-                  password_portal_b: data.applications[i].portal_credentials
-                    ? data.applications[i].portal_credentials
-                        .application_portal_b.password
-                    : ''
-                };
+            for (const application of data.applications) {
+              const programId = application.programId._id.toString();
+              isUpdateLoaded_temp[programId] = true;
+
+              const portalCredentials = application.portal_credentials;
+              credentials_temp[programId] = {
+                account_portal_a: portalCredentials
+                  ? portalCredentials.application_portal_a.account
+                  : '',
+                account_portal_b: portalCredentials
+                  ? portalCredentials.application_portal_b.account
+                  : '',
+                password_portal_a: portalCredentials
+                  ? portalCredentials.application_portal_a.password
+                  : '',
+                password_portal_b: portalCredentials
+                  ? portalCredentials.application_portal_b.password
+                  : ''
+              };
             }
           }
 

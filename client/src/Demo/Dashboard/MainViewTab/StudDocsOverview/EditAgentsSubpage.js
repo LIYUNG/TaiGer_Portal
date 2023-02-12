@@ -1,6 +1,6 @@
-import React from "react";
-import { Table, Form, Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import React from 'react';
+import { Table, Form, Modal } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 class EditAgentsSubpage extends React.Component {
   // edit Agent subpage
   render() {
@@ -15,16 +15,12 @@ class EditAgentsSubpage extends React.Component {
                 name="agent_id"
                 defaultChecked={
                   this.props.student.agents
-                    ? this.props.student.agents.findIndex(
-                        (Agent) => Agent._id === agent._id
-                      ) > -1
-                      ? true
-                      : false
+                    ? this.props.student.agents.some((a) => a._id === agent._id)
                     : false
                 }
                 onChange={(e) => this.props.handleChangeAgentlist(e)}
                 value={agent._id}
-                id={"agent" + i + 1}
+                id={'agent' + i + 1}
               />
             </Form.Group>
           </td>

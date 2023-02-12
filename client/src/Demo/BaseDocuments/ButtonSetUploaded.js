@@ -8,6 +8,7 @@ import {
   AiOutlineWarning,
   AiOutlineDelete
 } from 'react-icons/ai';
+import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
@@ -433,33 +434,17 @@ class ButtonSetUploaded extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
-        <Offcanvas
+        <OffcanvasBaseDocument
           show={this.state.baseDocsflagOffcanvas}
           onHide={this.closeOffcanvasWindow}
-          placement="end"
-        >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Edit</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Documentation Link for <b>{this.props.docName}</b>
-              </Form.Label>
-              <Form.Control
-                placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
-                defaultValue={this.state.link}
-                onChange={(e) => this.onChangeURL(e)}
-              />
-            </Form.Group>
-            <Button
-              onClick={(e) => this.updateDocLink(e)}
-              disabled={this.state.baseDocsflagOffcanvasButtonDisable}
-            >
-              Save
-            </Button>
-          </Offcanvas.Body>
-        </Offcanvas>
+          link={this.state.link}
+          docName={this.props.docName}
+          onChangeURL={this.onChangeURL}
+          updateDocLink={this.updateDocLink}
+          baseDocsflagOffcanvasButtonDisable={
+            this.state.baseDocsflagOffcanvasButtonDisable
+          }
+        />
       </>
     );
   }

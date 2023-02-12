@@ -344,6 +344,10 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
 
   const student_upated = await Student.findById(studentId)
     .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
     .exec();
   res.status(200).send({ success: true, data: student_upated });
 
@@ -414,6 +418,10 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
 
   const student_upated = await Student.findById(studentId)
     .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
     .exec();
 
   res.status(200).send({ success: true, data: student_upated });

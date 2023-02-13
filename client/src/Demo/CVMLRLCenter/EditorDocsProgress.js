@@ -556,16 +556,12 @@ class EditorDocsProgress extends React.Component {
             {this.state.student.applications &&
               this.state.student.applications.map((application, i) => (
                 <div key={i}>
-                  {((application.decided !== undefined &&
-                    application.decided === 'O' &&
-                    application.programId.ml_required !== undefined &&
+                  {((application.decided === 'O' &&
                     application.programId.ml_required === 'yes' &&
                     application.doc_modification_thread.findIndex(
                       (thread) => thread.doc_thread_id.file_type === 'ML'
                     ) === -1) ||
-                    (application.decided !== undefined &&
-                      application.decided === 'O' &&
-                      application.programId.essay_required !== undefined &&
+                    (application.decided === 'O' &&
                       application.programId.essay_required === 'yes' &&
                       application.doc_modification_thread.findIndex(
                         (thread) => thread.doc_thread_id.file_type === 'Essay'
@@ -574,18 +570,15 @@ class EditorDocsProgress extends React.Component {
                       <Card.Body>
                         The followings application documents are not started or
                         finished yet:{' '}
-                        {application.programId.ml_required !== undefined &&
-                          application.programId.ml_required === 'yes' &&
+                        {application.programId.ml_required === 'yes' &&
                           application.doc_modification_thread.findIndex(
                             (thread) => thread.doc_thread_id.file_type === 'ML'
-                          ) === -1 &&
-                          application.programId.ml_requirements !== '' && (
+                          ) === -1 && (
                             <li>
                               <b>ML</b>
                             </li>
                           )}
-                        {application.programId.essay_required !== undefined &&
-                          application.programId.essay_required === 'yes' &&
+                        {application.programId.essay_required === 'yes' &&
                           application.doc_modification_thread.findIndex(
                             (thread) =>
                               thread.doc_thread_id.file_type === 'Essay'
@@ -597,10 +590,9 @@ class EditorDocsProgress extends React.Component {
                       </Card.Body>
                     </Card>
                   )}
-
-                  {application.decided === 'O' ? (
-                    <>
-                      <Row className="my-2 mx-0">
+                  <Row className="my-2 mx-0">
+                    {application.decided === 'O' ? (
+                      <>
                         {is_program_ml_rl_essay_finished(application) ? (
                           <>
                             {is_program_closed(application) ? (
@@ -757,131 +749,131 @@ class EditorDocsProgress extends React.Component {
                             </p>
                           )}
                         </Col>
-                      </Row>
-                      <ManualFiles
-                        onDeleteFileThread={this.onDeleteFileThread}
-                        handleAsFinalFile={this.handleAsFinalFile}
-                        user={this.props.user}
-                        student={this.state.student}
-                        application={application}
-                        filetype={'ProgramSpecific'}
-                        initGeneralFileThread={this.initGeneralFileThread}
-                        initProgramSpecificFileThread={
-                          this.initProgramSpecificFileThread
-                        }
-                      />
-                      <hr></hr>
-                    </>
-                  ) : (
-                    <>
-                      <Row className="my-2 mx-0">
-                        <Col md={2}></Col>
-                        <Col md={4}>
-                          <Link
-                            to={
-                              '/programs/' +
-                              application.programId._id.toString()
-                            }
-                            style={{ textDecoration: 'none' }}
-                            className="text-info"
-                          >
-                            <h5 className="text-secondary">
-                              <b>
-                                {application.programId.school} -{' '}
-                                {application.programId.degree} -{' '}
-                                {application.programId.program_name}
-                              </b>
-                            </h5>
-                          </Link>
-                        </Col>
-                        <Col md={2}>
-                          {application.programId.ml_required === 'yes' && (
-                            <Button
-                              size="sm"
-                              title="Comments"
-                              variant="secondary"
-                              onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId.ml_requirements
-                                )
+                        <ManualFiles
+                          onDeleteFileThread={this.onDeleteFileThread}
+                          handleAsFinalFile={this.handleAsFinalFile}
+                          user={this.props.user}
+                          student={this.state.student}
+                          application={application}
+                          filetype={'ProgramSpecific'}
+                          initGeneralFileThread={this.initGeneralFileThread}
+                          initProgramSpecificFileThread={
+                            this.initProgramSpecificFileThread
+                          }
+                        />
+                        <hr></hr>
+                      </>
+                    ) : (
+                      <>
+                        <Row className="my-2 mx-0">
+                          <Col md={2}></Col>
+                          <Col md={4}>
+                            <Link
+                              to={
+                                '/programs/' +
+                                application.programId._id.toString()
                               }
+                              style={{ textDecoration: 'none' }}
+                              className="text-info"
                             >
-                              ML
-                            </Button>
-                          )}
-                          {application.programId.rl_required > 0 && (
-                            <Button
-                              size="sm"
-                              title="Comments"
-                              variant="info"
-                              onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId.rl_requirements
-                                )
-                              }
-                            >
-                              RL
-                            </Button>
-                          )}
-                          {application.programId.essay_required === 'yes' && (
-                            <Button
-                              size="sm"
-                              title="Comments"
-                              variant="light"
-                              onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId.essay_requirements
-                                )
-                              }
-                            >
-                              Essay
-                            </Button>
-                          )}
-                        </Col>
-                        <Col>
-                          <p className="text-light">
-                            Deadline:{' '}
-                            {application_deadline_calculator(
-                              this.state.student,
-                              application
-                            )}
-                          </p>
-                        </Col>
-                        <Col md={1}>
-                          <p className="text-light">Status: </p>
-                        </Col>
-                        <Col md={1}>
-                          <p className="text-danger">
-                            <b>Undecided</b>
-                          </p>
-                        </Col>
-                      </Row>
-                      <Row className="my-2 mx-0">
-                        <Col md={2}></Col>
-                        <Col md={4}>
-                          <p className="text-light">
-                            Please make sure the program should be proceeded.
-                            {showButtonIfMyStudent(
-                              this.props.user,
-                              this.state.student
-                            ) && (
-                              <Link
-                                to={
-                                  '/student-applications/' +
-                                  this.state.student._id.toString()
+                              <h5 className="text-secondary">
+                                <b>
+                                  {application.programId.school} -{' '}
+                                  {application.programId.degree} -{' '}
+                                  {application.programId.program_name}
+                                </b>
+                              </h5>
+                            </Link>
+                          </Col>
+                          <Col md={2}>
+                            {application.programId.ml_required === 'yes' && (
+                              <Button
+                                size="sm"
+                                title="Comments"
+                                variant="secondary"
+                                onClick={() =>
+                                  this.openRequirements_ModalWindow(
+                                    application.programId.ml_requirements
+                                  )
                                 }
-                                style={{ textDecoration: 'none' }}
-                                className="text-info"
                               >
-                                {' '}
-                                click here
-                              </Link>
+                                ML
+                              </Button>
                             )}
-                          </p>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
+                            {application.programId.rl_required > 0 && (
+                              <Button
+                                size="sm"
+                                title="Comments"
+                                variant="info"
+                                onClick={() =>
+                                  this.openRequirements_ModalWindow(
+                                    application.programId.rl_requirements
+                                  )
+                                }
+                              >
+                                RL
+                              </Button>
+                            )}
+                            {application.programId.essay_required === 'yes' && (
+                              <Button
+                                size="sm"
+                                title="Comments"
+                                variant="light"
+                                onClick={() =>
+                                  this.openRequirements_ModalWindow(
+                                    application.programId.essay_requirements
+                                  )
+                                }
+                              >
+                                Essay
+                              </Button>
+                            )}
+                          </Col>
+                          <Col>
+                            <p className="text-light">
+                              Deadline:{' '}
+                              {application_deadline_calculator(
+                                this.state.student,
+                                application
+                              )}
+                            </p>
+                          </Col>
+                          <Col md={1}>
+                            <p className="text-light">Status: </p>
+                          </Col>
+                          <Col md={1}>
+                            <p className="text-danger">
+                              <b>Undecided</b>
+                            </p>
+                          </Col>
+                        </Row>
+                        <Row className="my-2 mx-0">
+                          <Col md={2}></Col>
+                          <Col md={4}>
+                            <p className="text-light">
+                              Please make sure the program should be proceeded.
+                              {showButtonIfMyStudent(
+                                this.props.user,
+                                this.state.student
+                              ) && (
+                                <Link
+                                  to={
+                                    '/student-applications/' +
+                                    this.state.student._id.toString()
+                                  }
+                                  style={{ textDecoration: 'none' }}
+                                  className="text-info"
+                                >
+                                  {' '}
+                                  click here
+                                </Link>
+                              )}
+                            </p>
+                          </Col>
+                        </Row>
+                      </>
+                    )}
+                  </Row>
                 </div>
               ))}
           </Card.Body>

@@ -50,7 +50,7 @@ class CVMLRLProgress extends React.Component {
                       }
                       style={{ textDecoration: 'none' }}
                     >
-                      <p className="text-light">
+                      <p className="text-light my-0">
                         <b>
                           {this.props.student.firstname}{' '}
                           {this.props.student.lastname}
@@ -114,7 +114,15 @@ class CVMLRLProgress extends React.Component {
                       getNumberOfDays(generaldocs_thread.updatedAt, today)}
                   </td>
                   <td>{CVDeadline}</td>
-                  <td>{daysLeftMin}</td>
+                  <td>
+                    <p
+                      className={`text-${
+                        daysLeftMin > 30 ? 'light' : 'danger'
+                      } my-0`}
+                    >
+                      {daysLeftMin}
+                    </p>
+                  </td>
                 </>
               )}
             </tr>
@@ -141,7 +149,7 @@ class CVMLRLProgress extends React.Component {
                           }
                           style={{ textDecoration: 'none' }}
                         >
-                          <p className="text-light">
+                          <p className="text-light my-0">
                             <b>
                               {this.props.student.firstname}{' '}
                               {this.props.student.lastname}
@@ -217,18 +225,33 @@ class CVMLRLProgress extends React.Component {
                         )}
                       </td>
                       <td>
-                        {application.closed === 'O'
-                          ? '-'
-                          : application.programId.application_deadline
+                        {application.programId.application_deadline
                           ? this.props.student.application_preference &&
                             this.props.student.application_preference
-                              .expected_application_date &&
-                            getNumberOfDays(
-                              today,
-                              application_deadline_calculator(
-                                this.props.student,
-                                application
-                              )
+                              .expected_application_date && (
+                              <p
+                                className={`text-${
+                                  parseInt(
+                                    getNumberOfDays(
+                                      today,
+                                      application_deadline_calculator(
+                                        this.props.student,
+                                        application
+                                      )
+                                    )
+                                  ) > 30
+                                    ? 'light'
+                                    : 'danger'
+                                } my-0`}
+                              >
+                                {getNumberOfDays(
+                                  today,
+                                  application_deadline_calculator(
+                                    this.props.student,
+                                    application
+                                  )
+                                )}
+                              </p>
                             )
                           : '-'}
                       </td>

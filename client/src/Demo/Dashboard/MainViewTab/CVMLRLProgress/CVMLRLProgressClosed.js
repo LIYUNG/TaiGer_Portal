@@ -47,7 +47,7 @@ class CVMLRLProgressClosed extends React.Component {
                   }
                   style={{ textDecoration: 'none' }}
                 >
-                  <p className="text-light">
+                  <p className="text-light my-0">
                     <b>
                       {this.props.student.firstname}{' '}
                       {this.props.student.lastname}
@@ -130,7 +130,7 @@ class CVMLRLProgressClosed extends React.Component {
                     }
                     style={{ textDecoration: 'none' }}
                   >
-                    <p className="text-light">
+                    <p className="text-light my-0">
                       <b>
                         {this.props.student.firstname}{' '}
                         {this.props.student.lastname}
@@ -202,7 +202,15 @@ class CVMLRLProgressClosed extends React.Component {
                     application
                   )}
                 </td>
-                <td>{application.closed === 'O' ? 'CLOSE' : 'OPEN'}</td>
+                <td>
+                  <p
+                    className={`text-${
+                      application.closed === 'O' ? 'warning' : 'danger'
+                    } my-0`}
+                  >
+                    {application.closed === 'O' ? 'CLOSE' : 'OPEN'}
+                  </p>
+                </td>
               </>
             )}
           </tr>

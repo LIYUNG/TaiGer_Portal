@@ -138,7 +138,7 @@ class AgentReviewing extends React.Component {
               style={{ textDecoration: 'none' }}
             >
               {isSurveyCompleted ? (
-                <p className="text-warning" title="complete">
+                <p className="text-warning my-0" title="complete">
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
@@ -146,7 +146,7 @@ class AgentReviewing extends React.Component {
                   />
                 </p>
               ) : (
-                <p className="text-warning" title="incomplete">
+                <p className="text-warning my-0" title="incomplete">
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
@@ -166,7 +166,7 @@ class AgentReviewing extends React.Component {
                 }
                 style={{ textDecoration: 'none' }}
               >
-                <p className="text-danger">No info</p>
+                <p className="text-danger my-0">No info</p>
               </Link>
             ) : (
               <>
@@ -182,7 +182,7 @@ class AgentReviewing extends React.Component {
                     style={{ textDecoration: 'none' }}
                   >
                     {isEnglishPassed ? (
-                      <p className="text-warning">
+                      <p className="text-warning my-0">
                         <IoCheckmarkCircle
                           size={24}
                           color="limegreen"
@@ -202,7 +202,10 @@ class AgentReviewing extends React.Component {
                       !check_english_language_Notneeded(
                         this.props.student.academic_background
                       ) && (
-                        <p className="text-warning" title="Expected Test Date">
+                        <p
+                          className="text-warning my-0"
+                          title="Expected Test Date"
+                        >
                           <AiFillQuestionCircle
                             size={24}
                             color="lightgray"
@@ -233,7 +236,7 @@ class AgentReviewing extends React.Component {
                     style={{ textDecoration: 'none' }}
                   >
                     {isGermanPassed ? (
-                      <p className="text-warning">
+                      <p className="text-warning my-0">
                         <IoCheckmarkCircle
                           size={24}
                           color="limegreen"
@@ -253,7 +256,10 @@ class AgentReviewing extends React.Component {
                       !check_german_language_Notneeded(
                         this.props.student.academic_background
                       ) && (
-                        <p className="text-warning" title="Expected Test Date">
+                        <p
+                          className="text-warning my-0"
+                          title="Expected Test Date"
+                        >
                           <AiFillQuestionCircle
                             size={24}
                             color="lightgray"
@@ -274,7 +280,7 @@ class AgentReviewing extends React.Component {
                       .english_isPassed === '--' &&
                       this.props.student.academic_background.language
                         .german_isPassed === '--' && (
-                        <p className="text-warning" title="Not needed">
+                        <p className="text-warning my-0" title="Not needed">
                           Not needed
                         </p>
                       )}
@@ -289,7 +295,7 @@ class AgentReviewing extends React.Component {
               style={{ textDecoration: 'none' }}
             >
               <p
-                className="text-warning"
+                className="text-warning my-0"
                 title={isMissingBaseDocs ? 'incomplete' : 'complete'}
               >
                 {isMissingBaseDocs ? (
@@ -316,7 +322,7 @@ class AgentReviewing extends React.Component {
             >
               {!isCVFinished ? (
                 isCVAssigned ? (
-                  <p className="text-warning">
+                  <p className="text-warning my-0">
                     <AiFillQuestionCircle
                       size={24}
                       color="lightgray"
@@ -325,7 +331,7 @@ class AgentReviewing extends React.Component {
                     />
                   </p>
                 ) : (
-                  <p className="text-warning">
+                  <p className="text-warning my-0">
                     <BsFillExclamationCircleFill
                       size={23}
                       color="red"
@@ -335,7 +341,7 @@ class AgentReviewing extends React.Component {
                   </p>
                 )
               ) : (
-                <p className="text-warning">
+                <p className="text-warning my-0">
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"
@@ -353,7 +359,7 @@ class AgentReviewing extends React.Component {
             >
               {is_uni_assist_needed ? (
                 isall_uni_assist_vpd_uploaded ? (
-                  <p className="text-warning" title="complete">
+                  <p className="text-warning my-0" title="complete">
                     <IoCheckmarkCircle
                       size={24}
                       color="limegreen"
@@ -362,7 +368,7 @@ class AgentReviewing extends React.Component {
                     />
                   </p>
                 ) : (
-                  <p className="text-warning" title="incomplete">
+                  <p className="text-warning my-0" title="incomplete">
                     <AiFillQuestionCircle
                       size={24}
                       color="lightgray"
@@ -373,7 +379,7 @@ class AgentReviewing extends React.Component {
                   </p>
                 )
               ) : (
-                <p className="text-warning" title="Not needed">
+                <p className="text-warning my-0" title="Not needed">
                   <BsDash size={24} color="lightgray" className="mx-2" />
                 </p>
               )}
@@ -384,7 +390,7 @@ class AgentReviewing extends React.Component {
               to={'/student-applications/' + this.props.student._id}
               style={{ textDecoration: 'none' }}
             >
-              <p className="text-warning">
+              <p className="text-warning my-0">
                 {is_all_applications_decided ? (
                   <IoCheckmarkCircle
                     size={24}
@@ -417,7 +423,7 @@ class AgentReviewing extends React.Component {
               style={{ textDecoration: 'none' }}
             >
               {is_All_Applications_Submitted ? (
-                <p className="text-warning">
+                <p className="text-warning my-0">
                   {num_apps_closed >=
                   this.props.student.applying_program_count ? (
                     <>
@@ -442,7 +448,7 @@ class AgentReviewing extends React.Component {
                   /{this.props.student.applying_program_count})
                 </p>
               ) : (
-                <p className="text-warning" title="incomplete">
+                <p className="text-warning my-0" title="incomplete">
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"

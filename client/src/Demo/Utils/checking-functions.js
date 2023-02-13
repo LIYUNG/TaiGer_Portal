@@ -366,7 +366,9 @@ export const GetCVDeadline = (student) => {
       CVDeadline = applicationDeadline;
     }
   });
-  return { daysLeftMin, CVDeadline };
+  return daysLeftMin === 3000
+    ? { daysLeftMin: '-', CVDeadline: '-' }
+    : { daysLeftMin, CVDeadline };
 };
 
 export const check_application_preference_filled = (application_preference) => {

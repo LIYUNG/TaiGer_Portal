@@ -355,15 +355,17 @@ export const GetCVDeadline = (student) => {
   let daysLeftMin = 3000;
   let CVDeadline = '';
   student.applications.forEach((application) => {
-    const applicationDeadline = application_deadline_calculator(
-      student,
-      application
-    );
-    const daysLeft = parseInt(getNumberOfDays(today, applicationDeadline));
+    if (application.decided === 'O') {
+      const applicationDeadline = application_deadline_calculator(
+        student,
+        application
+      );
+      const daysLeft = parseInt(getNumberOfDays(today, applicationDeadline));
 
-    if (daysLeft < daysLeftMin) {
-      daysLeftMin = daysLeft;
-      CVDeadline = applicationDeadline;
+      if (daysLeft < daysLeftMin) {
+        daysLeftMin = daysLeft;
+        CVDeadline = applicationDeadline;
+      }
     }
   });
   return daysLeftMin === 3000

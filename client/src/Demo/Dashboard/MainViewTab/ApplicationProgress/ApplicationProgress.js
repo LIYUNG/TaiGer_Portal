@@ -174,12 +174,11 @@ class ApplicationProgress extends React.Component {
 
       application_decided = this.props.student.applications.map(
         (application, i) =>
-          application.decided !== undefined && application.decided === 'O' ? (
+          application.decided === 'O' ? (
             <p className="mb-1 text-info" key={i}>
               O
             </p>
-          ) : application.decided !== undefined &&
-            application.decided === 'X' ? (
+          ) : application.decided === 'X' ? (
             <p className="mb-1 text-info" key={application._id}>
               X
             </p>
@@ -191,11 +190,11 @@ class ApplicationProgress extends React.Component {
       );
       application_closed = this.props.student.applications.map(
         (application, i) =>
-          application.closed !== undefined && application.closed === 'O' ? (
+          application.closed === 'O' ? (
             <p className="mb-1 text-info" key={i}>
               O
             </p>
-          ) : application.closed !== undefined && application.closed === 'X' ? (
+          ) : application.closed === 'X' ? (
             <p className="mb-1 text-danger" key={application._id}>
               ?
             </p>
@@ -208,13 +207,11 @@ class ApplicationProgress extends React.Component {
 
       application_admission = this.props.student.applications.map(
         (application, i) =>
-          application.admission !== undefined &&
           application.admission === 'O' ? (
             <p className="mb-1 text-info" key={i}>
               O
             </p>
-          ) : application.admission !== undefined &&
-            application.admission === 'X' ? (
+          ) : application.admission === 'X' ? (
             <p className="mb-1 text-info" key={application._id}>
               X
             </p>
@@ -231,10 +228,7 @@ class ApplicationProgress extends React.Component {
             {application.closed === 'O'
               ? '-'
               : application.programId.application_deadline
-              ? this.props.student.application_preference &&
-                this.props.student.application_preference
-                  .expected_application_date &&
-                getNumberOfDays(
+              ? getNumberOfDays(
                   today,
                   application_deadline_calculator(
                     this.props.student,

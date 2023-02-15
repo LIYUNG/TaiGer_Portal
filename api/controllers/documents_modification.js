@@ -275,6 +275,26 @@ const SingleThreadThreadS3GarbageCollector = async (ThreadId) => {
   }
 };
 
+const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
+  const students = await Student.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .populate(
+      'applications.programId',
+      'school program_name degree application_deadline semester'
+    )
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      'file_type isFinalVersion updatedAt'
+    )
+    .populate('editors agents', 'firstname lastname')
+    .select(
+      'applications generaldocs_threads firstname lastname application_preference '
+    )
+    .lean();
+  res.status(200).send({ success: true, data: students });
+});
+
 const getCVMLRLOverview = asyncHandler(async (req, res) => {
   const {
     user
@@ -1365,6 +1385,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 
 module.exports = {
   ThreadS3GarbageCollector,
+  getAllCVMLRLOverview,
   getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,

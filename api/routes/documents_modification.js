@@ -26,6 +26,7 @@ const {
 } = require('../middlewares/file-upload');
 
 const {
+  getAllCVMLRLOverview,
   getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,
@@ -43,6 +44,14 @@ const {
 const router = Router();
 
 router.use(protect);
+
+router
+  .route('/overview/all')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Agent, Role.Editor),
+    getAllCVMLRLOverview
+  );
 
 router
   .route('/overview')

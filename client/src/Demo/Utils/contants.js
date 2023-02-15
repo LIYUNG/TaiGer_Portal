@@ -259,6 +259,20 @@ export const return_thread_status = (user, thread) => {
   }
 };
 
+export const is_not_started_tasks_status = (user, thread) => {
+  if (thread.isFinalVersion) {
+    return false;
+  }
+  if (
+    thread.latest_message_left_by_id === undefined ||
+    thread.latest_message_left_by_id === ''
+  ) {
+    return true;
+  }
+};
+export const is_started_tasks_status = (user, thread) => {
+  return !is_not_started_tasks_status(user, thread);
+};
 export const is_new_message_status = (user, thread) => {
   if (thread.isFinalVersion) {
     return false;

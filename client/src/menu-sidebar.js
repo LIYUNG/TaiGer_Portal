@@ -302,6 +302,14 @@ export default {
           icon: 'feather icon-cloud'
         },
         {
+          id: 'editor_center',
+          title: 'Tasks Dashboard',
+          type: 'item',
+          url: '/dashboard/cv-ml-rl',
+          classes: 'nav-item',
+          icon: 'feather icon-edit-1'
+        },
+        {
           id: 'teams_overview',
           title: 'TaiGer Teams',
           type: 'item',

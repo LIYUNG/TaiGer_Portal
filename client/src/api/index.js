@@ -167,6 +167,10 @@ export const deleteProgramSpecificFileThread = (
     `/api/document-threads/${documentsthreadId}/${programId}/${studentId}`
   );
 
+  
+export const getAllCVMLRLOverview = () =>
+  request.get(`/api/document-threads/overview/all`);
+
 export const getCVMLRLOverview = () =>
   request.get(`/api/document-threads/overview`);
 

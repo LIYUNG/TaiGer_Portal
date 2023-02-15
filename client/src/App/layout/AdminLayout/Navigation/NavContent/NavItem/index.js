@@ -78,6 +78,7 @@ class NavItem extends Component {
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Student Database' ||
+        itemTitle === 'Tasks Dashboard' ||
         itemTitle === 'TaiGer Teams' ||
         itemTitle === 'User List'
       ) {
@@ -103,6 +104,7 @@ class NavItem extends Component {
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Documentation' ||
         itemTitle === 'Student Database' ||
+        itemTitle === 'Tasks Dashboard' ||
         itemTitle === 'TaiGer Teams' ||
         itemTitle === 'User List'
       ) {

@@ -24,7 +24,7 @@ const MyCoursesAnalysis = React.lazy(() =>
 );
 
 const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
-
+const CVMLRLDashboard = React.lazy(() => import('./Demo/CVMLRLCenter/indexAll'));
 const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/index'));
 const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
 const TaiGerOrgEditor = React.lazy(() => import('./Demo/TaiGerOrg/EditorPage'));
@@ -271,6 +271,12 @@ const routes = [
     exact: true,
     name: 'Portal Information',
     component: PortalCredentialPage
+  },
+  {
+    path: '/dashboard/cv-ml-rl',
+    exact: true,
+    name: 'CV/ML/RL Dashboard',
+    component: CVMLRLDashboard
   },
   {
     path: '/cv-ml-rl-center',

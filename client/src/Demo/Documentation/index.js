@@ -23,6 +23,7 @@ class Documentation extends React.Component {
     success: false,
     editorState: null,
     isEdit: false,
+    author: '',
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -35,6 +36,7 @@ class Documentation extends React.Component {
         const { status } = resp;
         if (success) {
           var initialEditorState = null;
+          const author = data.author;
           if (data.text) {
             initialEditorState = JSON.parse(data.text);
           } else {
@@ -45,6 +47,7 @@ class Documentation extends React.Component {
           this.setState({
             isLoaded: true,
             editorState: initialEditorState,
+            author,
             success: success,
             res_status: status
           });
@@ -79,6 +82,7 @@ class Documentation extends React.Component {
         (resp) => {
           const { data, success } = resp.data;
           const { status } = resp;
+          const author = data.author;
           if (success) {
             var initialEditorState = null;
             if (data.text) {
@@ -92,6 +96,7 @@ class Documentation extends React.Component {
             this.setState({
               isLoaded: true,
               editorState: initialEditorState,
+              author,
               success: success,
               res_status: status
             });
@@ -136,6 +141,7 @@ class Documentation extends React.Component {
             document_title: data.title,
             editorState,
             isEdit: !this.state.isEdit,
+            author: data.author,
             isLoaded: true,
             res_modal_status: status
           });
@@ -270,6 +276,7 @@ class Documentation extends React.Component {
             document_title={this.state.document_title}
             editorState={this.state.editorState}
             isLoaded={isLoaded}
+            author={this.state.author}
             user={this.props.user}
             handleClickEditToggle={this.handleClickEditToggle}
           />

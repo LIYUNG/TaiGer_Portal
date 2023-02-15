@@ -302,7 +302,7 @@ export default {
           icon: 'feather icon-cloud'
         },
         {
-          id: 'editor_center',
+          id: 'tasks_dashboard',
           title: 'Tasks Dashboard',
           type: 'item',
           url: '/dashboard/cv-ml-rl',

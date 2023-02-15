@@ -34,6 +34,7 @@ class SingleDoc extends React.Component {
         }
         if (success) {
           var initialEditorState = null;
+          const author = data.author;
           if (data.text) {
             initialEditorState = JSON.parse(data.text);
           } else {
@@ -46,6 +47,7 @@ class SingleDoc extends React.Component {
             category: data.category,
             internal: data.internal,
             editorState: initialEditorState,
+            author,
             success: success,
             res_status: status
           });
@@ -90,6 +92,7 @@ class SingleDoc extends React.Component {
             document_title: data.title,
             editorState,
             isEdit: !this.state.isEdit,
+            author: data.author,
             isLoaded: true,
             res_status: status
           });
@@ -136,6 +139,7 @@ class SingleDoc extends React.Component {
           document={document}
           document_title={this.state.document_title}
           editorState={this.state.editorState}
+          author={this.state.author}
           isLoaded={isLoaded}
           handleClickEditToggle={this.handleClickEditToggle}
           handleClickSave={this.handleClickSave}
@@ -149,6 +153,7 @@ class SingleDoc extends React.Component {
           document={document}
           document_title={this.state.document_title}
           editorState={this.state.editorState}
+          author={this.state.author}
           isLoaded={isLoaded}
           user={this.props.user}
           handleClickEditToggle={this.handleClickEditToggle}

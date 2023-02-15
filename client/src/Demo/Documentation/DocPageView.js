@@ -67,9 +67,17 @@ class DocPageView extends React.Component {
                   <Col md={2}>
                     <p className="my-0">Updated at</p>
                   </Col>
-                  <Col md={10}>
+                  <Col md={2}>
                     <p className="my-0">
                       {convertDate(this.props.editorState.time)}
+                    </p>
+                  </Col>
+                  <Col md={2}>
+                    <p className="my-0">Updated by</p>
+                  </Col>
+                  <Col md={6}>
+                    <p className="my-0">
+                      {this.props.author ? this.props.author : '-'}
                     </p>
                   </Col>
                 </Row>

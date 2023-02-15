@@ -93,16 +93,13 @@ const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
     logger.error('updateInternalDocumentationPage : Not authorized');
     throw new ErrorResponse(403, 'Not authorized');
   }
+  fields.author = `${req.user.firstname} ${req.user.lastname}`;
   const interna_doc_page_existed = await Docspage.findOneAndUpdate(
     { category: 'internal' },
-    req.body,
-    { new: true }
+    fields,
+    { upsert: true, new: true }
   );
-  let newDocPage;
-  if (!interna_doc_page_existed) {
-    newDocPage = await Docspage.create(fields);
-    return res.status(201).send({ success: true, data: newDocPage });
-  }
+
   return res
     .status(201)
     .send({ success: true, data: interna_doc_page_existed });
@@ -126,16 +123,12 @@ const getInternalDocumentationsPage = asyncHandler(async (req, res) => {
 
 const updateDocumentationPage = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
+  fields.author = `${req.user.firstname} ${req.user.lastname}`;
   const doc_page_existed = await Docspage.findOneAndUpdate(
     { category: req.params.category },
-    req.body,
-    { new: true }
+    fields,
+    { upsert: true, new: true }
   );
-  let newDocPage;
-  if (!doc_page_existed) {
-    newDocPage = await Docspage.create(fields);
-    return res.status(201).send({ success: true, data: newDocPage });
-  }
   const success = one_month_cache.set(req.url, doc_page_existed);
   if (success) {
     console.log('cache set update successfully');
@@ -305,18 +298,22 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
 });
 
 const updateDocumentation = asyncHandler(async (req, res) => {
+  const fields = req.body;
+  fields.author = `${req.user.firstname} ${req.user.lastname}`;
   const updated_doc = await Documentation.findByIdAndUpdate(
     req.params.id,
-    req.body,
+    fields,
     { new: true }
   );
   return res.status(201).send({ success: true, data: updated_doc });
 });
 
 const updateInternalDocumentation = asyncHandler(async (req, res) => {
+  const fields = req.body;
+  fields.author = `${req.user.firstname} ${req.user.lastname}`;
   const updated_doc = await Internaldoc.findByIdAndUpdate(
     req.params.id,
-    req.body,
+    fields,
     { new: true }
   );
   return res.status(201).send({ success: true, data: updated_doc });

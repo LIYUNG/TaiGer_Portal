@@ -9,6 +9,7 @@ const docspagesSchema = new mongoose.Schema({
   title: { type: String, default: '' },
   category: { type: String, default: '' },
   prop: { type: String, default: '' },
+  author: { type: String, default: '' },
   text: { type: String, default: '' },
   country: { type: String, default: '' },
   updatedAt: Date

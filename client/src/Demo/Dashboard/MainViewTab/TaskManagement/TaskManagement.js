@@ -47,9 +47,11 @@ class TaskManagement extends React.Component {
                     {this.props.student.editors &&
                     this.props.student.editors.length > 0 ? (
                       this.props.student.editors.map((editor, i) => (
-                        <p className="text-light my-0">
-                          <b>{`${editor.firstname} ${editor.lastname}`}</b>
-                        </p>
+                        <Link to={`/teams/editors/${editor._id.toString()}`}>
+                          <p className="text-light my-0">
+                            <b>{`${editor.firstname} ${editor.lastname}`}</b>
+                          </p>
+                        </Link>
                       ))
                     ) : (
                       <p className="text-danger my-0">

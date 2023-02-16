@@ -14,6 +14,9 @@ const {
   CLEAN_UP_SCHEDULE,
   WEEKLY_TASKS_REMINDER_SCHEDULE,
   DAILY_TASKS_REMINDER_SCHEDULE,
+  AWS_S3_PUBLIC_BUCKET,
+  AWS_S3_PUBLIC_BUCKET_NAME,
+  AWS_S3_BUCKET_NAME,
   MONGODB_URI
 } = require('./config');
 const logger = require('./services/logger');
@@ -37,6 +40,26 @@ process.on('SIGINT', () => {
 });
 
 const launch = async () => {
+  if (isDev()) {
+    if (
+      AWS_S3_BUCKET_NAME.includes('production') ||
+      AWS_S3_PUBLIC_BUCKET_NAME.includes('production') ||
+      MONGODB_URI.includes('TaiGer_Prod')
+    ) {
+      logger.error('Database / S3 bucket name not consistent for Dev');
+      return;
+    }
+  }
+  if (isProd()) {
+    if (
+      !AWS_S3_BUCKET_NAME.includes('production') ||
+      !AWS_S3_PUBLIC_BUCKET_NAME.includes('production') ||
+      !MONGODB_URI.includes('TaiGer_Prod')
+    ) {
+      logger.error('Database / S3 bucket name not consistent for Prod');
+      return;
+    }
+  }
   try {
     const conn = await connectToDatabase(MONGODB_URI, 5000);
     logger.info(`Database connected: ${conn.host}`);

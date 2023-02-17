@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 
-import EditDownloadFilesSubpage from './EditDownloadFilesSubpage';
+import EditDownloadFiles from './EditDownloadFiles';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -208,7 +208,7 @@ class DownloadPage extends React.Component {
                   Download TaiGer Document Templates
                 </Card.Title>
               </Card.Header>
-              <EditDownloadFilesSubpage
+              <EditDownloadFiles
                 isLoaded={isLoaded}
                 role={this.props.user.role}
                 userId={this.props.user._id}

@@ -3,7 +3,7 @@ import { Button, Table, Col, Form, Spinner } from 'react-bootstrap';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL } from '../../api/request';
 
-class EditDownloadFilesSubpage extends React.Component {
+class EditDownloadFiles extends React.Component {
   state = {};
 
   submitFile = (e, prop) => {
@@ -110,4 +110,4 @@ class EditDownloadFilesSubpage extends React.Component {
   }
 }
 
-export default EditDownloadFilesSubpage;
+export default EditDownloadFiles;

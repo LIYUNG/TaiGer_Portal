@@ -222,6 +222,8 @@ class UsersList extends React.Component {
         )}
         <Table
           responsive
+          bordered
+          hover
           className="my-0 mx-0"
           variant="dark"
           text="light"

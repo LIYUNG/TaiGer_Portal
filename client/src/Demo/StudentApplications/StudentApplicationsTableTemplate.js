@@ -559,6 +559,8 @@ class StudentApplicationsTableTemplate extends React.Component {
                   />
                   <Table
                     size="sm"
+                    bordered
+                    hover
                     responsive
                     className="my-0 mx-0"
                     variant="dark"
@@ -594,7 +596,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                 {this.state.isLoaded ? (
                   'Update'
                 ) : (
-                  <Spinner animation="border" size='sm' role="status">
+                  <Spinner animation="border" size="sm" role="status">
                     <span className="visually-hidden"></span>
                   </Spinner>
                 )}

@@ -149,7 +149,7 @@ export default function CourseAnalysis(props) {
         ...state,
         isLoaded: true,
         res_modal_status: 500,
-        res_modal_message: "Please try it later",
+        res_modal_message: 'Please try it later',
         isDownloading: false
       }));
     }
@@ -272,26 +272,6 @@ export default function CourseAnalysis(props) {
                       columns={columns}
                     />
                   </Tab>
-                  //   <Tab eventKey={`${sheetName}`} title={`${sheetName}`}>
-                  //     <Table responsive>
-                  //       <thead>
-                  //         <tr>
-                  //           {statedata.sheets[sheetName][0].map((h, j) => (
-                  //             <th key={h}>{h}</th>
-                  //           ))}
-                  //         </tr>
-                  //       </thead>
-                  //       <tbody>
-                  //         {statedata.sheets[sheetName].map((row) => (
-                  //           <tr>
-                  //             {row.map((c) => (
-                  //               <td>{c}</td>
-                  //             ))}
-                  //           </tr>
-                  //         ))}
-                  //       </tbody>
-                  //     </Table>
-                  //   </Tab>
                 ))}
               </Tabs>
               <Row className="my-2">

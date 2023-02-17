@@ -496,6 +496,7 @@ function Table2({ columns, data, userId }) {
         variant="dark"
         text="light"
         responsive
+        bordered
         hover
         size="sm"
         {...getTableProps()}

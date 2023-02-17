@@ -405,6 +405,8 @@ class BaseDocument_StudentView extends React.Component {
         <Row>
           <Table
             responsive
+            bordered
+            hover
             className="py-0 my-0 mx-0"
             variant="dark"
             text="light"

@@ -113,8 +113,12 @@ export const valid_internal_categories = [
 
 export const convertDate = (date) => {
   let date_str = '';
-  let dat = new Date(date).toLocaleDateString();
-  let time = new Date(date).toLocaleTimeString();
+  let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+  let time = new Date(date).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
   return dat + ', ' + time;
 };
 

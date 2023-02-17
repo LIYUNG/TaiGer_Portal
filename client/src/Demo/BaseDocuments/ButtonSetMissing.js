@@ -131,6 +131,7 @@ class ButtonSetMissing extends React.Component {
             </a>
           )}
         </td>
+        <td></td>
         {this.props.role === 'Student' ||
         this.props.role === 'Admin' ||
         this.props.role === 'Agent' ? (

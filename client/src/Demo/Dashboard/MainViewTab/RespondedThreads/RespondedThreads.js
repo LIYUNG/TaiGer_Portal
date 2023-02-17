@@ -108,16 +108,7 @@ class RespondedThreads extends React.Component {
                           {application.programId.program_name}
                         </Link>
                       </td>
-                      <td>
-                        {' '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleDateString()}
-                        {', '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleTimeString()}
-                      </td>
+                      <td> {convertDate(application_doc_thread.updatedAt)}</td>
                     </>
                   )}
               </tr>

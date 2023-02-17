@@ -414,6 +414,7 @@ class BaseDocument_StudentView extends React.Component {
               <tr>
                 <th>Status</th>
                 <th>File Name:</th>
+                <th>Updated</th>
                 <th></th>
                 <th></th>
                 <th></th>

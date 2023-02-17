@@ -100,16 +100,7 @@ class StudentTasks extends React.Component {
                           {application.programId.program_name}
                         </Link>
                       </td>
-                      <td>
-                        {' '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleDateString()}
-                        {', '}
-                        {new Date(
-                          application_doc_thread.updatedAt
-                        ).toLocaleTimeString()}
-                      </td>
+                      <td> {convertDate(application_doc_thread.updatedAt)}</td>
                     </>
                   )}
               </tr>
@@ -198,7 +189,9 @@ class StudentTasks extends React.Component {
                 Base Documents
               </Link>
             </td>
-            <td>Some of Base Documents are still missing. Please upload them.</td>
+            <td>
+              Some of Base Documents are still missing. Please upload them.
+            </td>
             <td></td>
           </tr>
         )}

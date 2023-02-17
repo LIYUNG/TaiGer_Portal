@@ -175,9 +175,8 @@ class ButtonSetUploaded extends React.Component {
               [Edit]
             </a>
           )}
-          {' - '}
-          {convertDate(this.props.time)}
         </td>
+        <td>{convertDate(this.props.time)}</td>
         <td>
           <Col md>
             <a

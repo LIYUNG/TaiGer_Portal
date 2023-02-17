@@ -557,17 +557,6 @@ class DocModificationThreadPage extends Component {
                         )}
                     </h6>
                     <p>{this.state.deadline}</p>
-                    {/* {this.state.thread.program_id && (
-                      <h6>
-                        {this.state.thread.student_id.application_preference &&
-                        this.state.thread.student_id.application_preference
-                          .expected_application_date
-                          ? this.state.thread.student_id.application_preference
-                              .expected_application_date + '-'
-                          : ''}
-                        {this.state.thread.program_id.application_deadline}
-                      </h6>
-                    )} */}
                   </Col>
                 </Row>
               </Card.Body>

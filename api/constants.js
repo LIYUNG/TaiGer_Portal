@@ -110,7 +110,7 @@ const application_deadline_calculator = (student, application) => {
     }
   }
 
-  return `${application_year}-${deadline_month}-${deadline_day}`;
+  return `${application_year}/${deadline_month}/${deadline_day}`;
 };
 
 const TaskStatus = {

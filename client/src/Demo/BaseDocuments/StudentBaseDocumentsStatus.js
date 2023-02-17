@@ -19,14 +19,8 @@ class StudentBaseDocumentsStatus extends React.Component {
   render() {
     let keys2 = Object.keys(window.profile_list);
     let object_init = {};
-    let object_message = {};
-    let object_date_init = {};
-    let object_time_init = {};
     keys2.forEach((key) => {
       object_init[key] = 'missing';
-      object_message[key] = '';
-      object_date_init[key] = '';
-      object_time_init[key] = '';
     });
 
     if (this.props.student.profile) {
@@ -50,9 +44,6 @@ class StudentBaseDocumentsStatus extends React.Component {
             object_init[name] = 'missing';
             break;
         }
-        object_message[name] = feedback || '';
-        object_date_init[name] = new Date(updatedAt).toLocaleDateString();
-        object_time_init[name] = new Date(updatedAt).toLocaleTimeString();
       }
     } else {
     }

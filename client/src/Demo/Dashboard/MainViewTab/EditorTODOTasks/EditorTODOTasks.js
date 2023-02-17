@@ -55,11 +55,7 @@ class EditorTODOTasks extends React.Component {
                   </Link>
                 </td>
                 <td>{CVDeadline}</td>
-                <td>
-                  {new Date(generaldocs_threads.updatedAt).toLocaleDateString()}
-                  {', '}
-                  {new Date(generaldocs_threads.updatedAt).toLocaleTimeString()}
-                </td>
+                <td>{convertDate(generaldocs_threads.updatedAt)}</td>
               </>
             )}
           </tr>

@@ -121,9 +121,8 @@ class ButtonSetNotNeeded extends React.Component {
               [Edit]
             </a>
           )}
-          {' - '}
-          {convertDate(this.props.time)}
         </td>
+        <td>{convertDate(this.props.time)}</td>
         {this.props.role === 'Editor' ? (
           <>
             <td></td>

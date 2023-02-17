@@ -214,10 +214,10 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     // Delete thread that user has
     await Documentthread.deleteMany({ student_id: user_id });
-    console.log('Threads deleted');
+    logger.info('Threads deleted');
     // Delete course that user has
     await Course.deleteMany({ student_id: user_id });
-    console.log('Courses deleted');
+    logger.info('Courses deleted');
 
     // remove student from agents
     const agents = await Agent.updateMany(
@@ -229,7 +229,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       },
       { multi: true }
     );
-    console.log('student from agent removed');
+    logger.info('student from agent removed');
     // remove student from editors
     const editors = await Editor.updateMany(
       {
@@ -240,13 +240,11 @@ const deleteUser = asyncHandler(async (req, res) => {
       },
       { multi: true }
     );
-    console.log('student from editor removed');
+    logger.info('student from editor removed');
     // delete user in database
     await User.findByIdAndDelete(user_id);
-    console.log('studnet deleted');
+    logger.info('studnet deleted');
   }
-
-  // logger.warn('User is deleted');
   res.status(200).send({ success: true });
 });
 

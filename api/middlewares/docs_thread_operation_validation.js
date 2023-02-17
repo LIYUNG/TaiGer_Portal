@@ -10,7 +10,7 @@ const doc_thread_ops_validator = async (req, res, next) => {
     return next(
       new ErrorResponse(
         423,
-        'The finished thread cannot be deleted. Please undo finish and delete again.'
+        'The finished thread cannot be modified. Please undo finish and do the operation again.'
       )
     );
   }

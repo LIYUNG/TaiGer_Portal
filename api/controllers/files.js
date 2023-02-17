@@ -261,7 +261,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         }
       );
 
-      for (let i = 0; i < student.agents.length; i++) {
+      for (let i = 0; i < student.agents.length; i += 1) {
         await sendUploadedProfileFilesRemindForAgentEmail(
           {
             firstname: student.agents[i].firstname,

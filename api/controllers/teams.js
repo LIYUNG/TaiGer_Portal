@@ -28,14 +28,14 @@ const getTeamMembers = asyncHandler(async (req, res) => {
 });
 
 const getAgents = asyncHandler(async (req, res, next) => {
-  const agents = await Agent.find().populate('students', '_id name');
+  const agents = await Agent.find().select('firstname lastname');
   res.status(200).send({ success: true, data: agents });
 });
 
 const getSingleAgent = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
   const agent = await Agent.findById(agent_id).select(
-    'students firstname lastname'
+    'firstname lastname'
   );
   // query by agents field: student.agents include agent_id
   const students = await Student.find({
@@ -55,17 +55,14 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
 });
 
 const getEditors = asyncHandler(async (req, res, next) => {
-  const editors = await Editor.find().populate(
-    'students',
-    '_id name firstname lastname'
-  );
+  const editors = await Editor.find().select('firstname lastname');
   res.status(200).send({ success: true, data: editors });
 });
 
 const getSingleEditor = asyncHandler(async (req, res, next) => {
   const { editor_id } = req.params;
   const editor = await Editor.findById(editor_id).select(
-    'students firstname lastname'
+    'firstname lastname'
   );
   // query by agents field: student.editors include editor_id
   const students = await Student.find({

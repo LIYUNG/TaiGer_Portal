@@ -698,6 +698,12 @@ const postMessages = asyncHandler(async (req, res) => {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(404, 'Invalid message thread id');
   }
+
+  // if isFinal
+  if (document_thread.isFinalVersion) {
+    logger.info('postMessages: thread is closed! Please refresh!');
+    throw new ErrorResponse(404, ' thread is closed! Please refresh!');
+  }
   try {
     JSON.parse(message);
   } catch (e) {

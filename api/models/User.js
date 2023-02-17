@@ -384,7 +384,7 @@ const Agent = User.discriminator(
   'Agent',
   new Schema(
     {
-      students: [{ type: ObjectId, ref: 'Student' }],
+      // students: [{ type: ObjectId, ref: 'Student' }],
       agent_notification: {
         isRead_new_base_docs_uploaded: [
           {
@@ -425,7 +425,7 @@ const Editor = User.discriminator(
   'Editor',
   new Schema(
     {
-      students: [{ type: ObjectId, ref: 'Student' }],
+      // students: [{ type: ObjectId, ref: 'Student' }],
       editor_notification: {
         isRead_survey_not_complete: {
           type: Boolean,

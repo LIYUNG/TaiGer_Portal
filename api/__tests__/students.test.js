@@ -99,8 +99,6 @@ describe('POST /api/students/:id/agents', () => {
     const updatedStudent = await Student.findById(studentId).lean();
     expect(updatedStudent.agents.map(String)).toEqual(agents_arr);
 
-    // const updatedAgent = await Agent.findById(agentId).lean();
-    // expect(updatedAgent.students.map(String)).toEqual([studentId]);
   });
 });
 

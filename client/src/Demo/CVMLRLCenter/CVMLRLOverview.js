@@ -9,6 +9,7 @@ import {
   Tab,
   Tabs
 } from 'react-bootstrap';
+import { useTable, useSortBy } from 'react-table';
 
 import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
@@ -17,11 +18,80 @@ import {
   is_new_message_status,
   is_pending_status
 } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
+
+function SortTable({ columns, data }) {
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data
+      },
+      useSortBy
+    );
+
+  // We don't want to render all 2000 rows for this example, so cap
+  // it at 20 for this use case
+  const firstPageRows = rows.slice(0, 20);
+
+  return (
+    <>
+      <Table
+        responsive
+        bordered
+        hover
+        className="my-0 mx-0"
+        variant="dark"
+        text="light"
+        size="sm"
+        {...getTableProps()}
+      >
+        <thead>
+          {headerGroups.map((headerGroup) => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                // Add the sorting props to control sorting. For this example
+                // we can add them into the header props
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render('Header')}
+                  {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
+                  {/* Add a sort direction indicator */}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : '🔽🔼'}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {firstPageRows.map((row, i) => {
+            prepareRow(row);
+            return (
+              <tr {...row.getRowProps()}>
+                {row.cells.map((cell) => {
+                  return (
+                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+      <br />
+      <div>Showing the first 20 results of {rows.length} rows</div>
+    </>
+  );
+}
 
 class CVMLRLOverview extends React.Component {
   state = {
@@ -191,6 +261,54 @@ class CVMLRLOverview extends React.Component {
       );
     }
 
+    const columns = [
+      {
+        Header: 'First-, Last Name',
+        accessor: 'firstname_lastname'
+      },
+      {
+        Header: 'Documents',
+        accessor: 'document_name'
+      },
+      {
+        Header: 'Last Update',
+        accessor: 'updatedAt'
+      },
+      {
+        Header: 'Ages Days',
+        accessor: 'aged_days'
+      },
+      {
+        Header: 'Deadline',
+        accessor: 'deadline'
+      },
+      {
+        Header: 'Days left',
+        accessor: 'days_left'
+      }
+    ];
+    const open_tasks_arr = open_tasks(this.state.students);
+    // console.log(open_tasks_arr);
+    const cvmlrl_new_message_v2 = open_tasks_arr.filter(
+      (open_task) =>
+        !open_task.isFinalVersion &&
+        is_new_message_status(this.props.user, open_task)
+    );
+    console.log(cvmlrl_new_message_v2);
+    const cvmlrl_followup_v2 = open_tasks_arr.filter(
+      (open_task) =>
+        !open_task.isFinalVersion &&
+        is_pending_status(this.props.user, open_task) &&
+        open_task.latest_message_left_by_id !== ''
+    );
+    console.log(cvmlrl_followup_v2);
+    const cvmlrl_pending_progress_v2 = open_tasks_arr.filter(
+      (open_task) =>
+        !open_task.isFinalVersion &&
+        is_pending_status(this.props.user, open_task) &&
+        open_task.latest_message_left_by_id === ''
+    );
+    console.log(cvmlrl_pending_progress_v2);
     const cvmlrl_new_message = this.state.students.map((student, i) => (
       <CVMLRLProgress
         key={i}
@@ -267,6 +385,7 @@ class CVMLRLOverview extends React.Component {
                   </thead>
                   <tbody>{cvmlrl_new_message}</tbody>
                 </Table>
+                <SortTable columns={columns} data={cvmlrl_new_message_v2} />
                 <Banner
                   ReadOnlyMode={true}
                   bg={'info'}

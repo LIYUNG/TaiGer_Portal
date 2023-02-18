@@ -73,8 +73,7 @@ class TaskManagement extends React.Component {
                   </td>
                   <td>{convertDate(generaldocs_thread.updatedAt)}</td>
                   <td>
-                    {!generaldocs_thread.isFinalVersion &&
-                      getNumberOfDays(generaldocs_thread.updatedAt, today)}
+                    {getNumberOfDays(generaldocs_thread.updatedAt, today)}
                   </td>
                   <td>{CVDeadline}</td>
                   <td>

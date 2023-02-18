@@ -17,7 +17,7 @@ import {
   is_started_tasks_status,
   is_not_started_tasks_status
 } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { SetFileAsFinal } from '../../api';
@@ -190,7 +190,8 @@ class CVMLRLDashboard extends React.Component {
         </div>
       );
     }
-
+    const open_tasks_arr = open_tasks(this.state.students);
+    console.log(open_tasks_arr);
     const cvmlrl_new_message = this.state.students.map((student, i) => (
       <TaskManagement
         key={i}
@@ -307,9 +308,7 @@ class CVMLRLDashboard extends React.Component {
                   bg={'success'}
                   title={'Closed'}
                   path={'/'}
-                  text={
-                    ''
-                  }
+                  text={''}
                   link_name={''}
                   removeBanner={this.removeBanner}
                   notification_key={'x'}

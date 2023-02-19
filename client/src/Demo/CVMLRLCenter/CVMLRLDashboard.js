@@ -9,19 +9,211 @@ import {
   Tab,
   Tabs
 } from 'react-bootstrap';
+import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 
+import {
+  useTable,
+  useSortBy,
+  useFilters,
+  useGlobalFilter,
+  useAsyncDebounce,
+  useRowSelect,
+  usePagination
+} from 'react-table';
+import { Link } from 'react-router-dom';
 import TaskManagement from '../Dashboard/MainViewTab/TaskManagement/TaskManagement';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import {
   spinner_style,
   is_started_tasks_status,
-  is_not_started_tasks_status
+  is_not_started_tasks_status,
+  is_new_message_status,
+  is_pending_status,
+  return_thread_status2
 } from '../Utils/contants';
-import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';
+import {
+  is_TaiGer_role,
+  open_tasks,
+  open_tasks_with_editors
+} from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
+
+function SortTable({ columns, data, user, handleAsFinalFile }) {
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    visibleColumns,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    preGlobalFilteredRows,
+    setGlobalFilter
+  } = useTable(
+    {
+      columns,
+      data
+    },
+    useFilters, // useFilters!
+    useSortBy
+  );
+
+  // We don't want to render all 2000 rows for this example, so cap
+  // it at 20 for this use case
+  const firstPageRows = rows.slice(0, 20);
+
+  const handleAsFinalFileThread = (
+    thread_id,
+    student_id,
+    program_id,
+    documenName,
+    isFinalVersion
+  ) => {
+    handleAsFinalFile(
+      thread_id,
+      student_id,
+      program_id,
+      documenName,
+      isFinalVersion
+    );
+  };
+
+  return (
+    <>
+      <Table
+        responsive
+        bordered
+        hover
+        className="my-0 mx-0"
+        variant="dark"
+        text="light"
+        size="sm"
+        {...getTableProps()}
+      >
+        <thead>
+          {headerGroups.map((headerGroup) => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column, i) => (
+                // Add the sorting props to control sorting. For this example
+                // we can add them into the header props
+                <>
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render('Header')}
+                    {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
+                    {/* Add a sort direction indicator */}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? ' 🔽'
+                          : ' 🔼'
+                        : ' ⮃'}
+                    </span>
+                  </th>
+
+                  {/* <th {...column.getHeaderProps()}>
+                      {column.canFilter ? column.render('Filter') : null}
+                  </th> */}
+                </>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {firstPageRows.map((row, i) => {
+            prepareRow(row);
+            return (
+              <tr {...row.getRowProps()}>
+                {row.cells.map((cell, j) => {
+                  return j === 0 ? (
+                    <td {...cell.getCellProps()}>
+                      <Link
+                        target="_blank"
+                        to={`/student-database/${row.original.student_id}/profile`}
+                        className="text-light"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <b>{cell.render('Cell')}</b>
+                      </Link>
+                    </td>
+                  ) : j === 1 ? (
+                    <td {...cell.getCellProps()}>
+                      {cell.value && cell.value.length > 0 ? (
+                        cell.value.map((editor, i) => (
+                          <Link
+                            target="_blank"
+                            to={`/teams/editors/${editor._id.toString()}`}
+                            style={{ textDecoration: 'none' }}
+                          >
+                            <p className="text-light my-0">
+                              <b>{`${editor.firstname} ${editor.lastname}`}</b>
+                            </p>
+                          </Link>
+                        ))
+                      ) : (
+                        <p className="text-danger my-0">
+                          <b>No Editor</b>
+                        </p>
+                      )}
+                    </td>
+                  ) : j === 4 ? (
+                    <td {...cell.getCellProps()}>
+                      <Link
+                        target="_blank"
+                        to={'/document-modification/' + row.original.thread_id}
+                        className="text-info"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        {cell.render('Cell')}
+                      </Link>
+                    </td>
+                  ) : j === 5 ? (
+                    cell.value > 14 ? (
+                      <td {...cell.getCellProps()}>
+                        <p className="text-danger my-0">
+                          {cell.render('Cell')}
+                        </p>
+                      </td>
+                    ) : (
+                      <td {...cell.getCellProps()}>
+                        <p className="text-light my-0">{cell.render('Cell')}</p>
+                      </td>
+                    )
+                  ) : j === 3 ? (
+                    cell.value < 30 ? (
+                      <td {...cell.getCellProps()}>
+                        <p className="text-danger my-0">
+                          {cell.render('Cell')}
+                        </p>
+                      </td>
+                    ) : (
+                      <td {...cell.getCellProps()}>
+                        <p className="text-light my-0">{cell.render('Cell')}</p>
+                      </td>
+                    )
+                  ) : (
+                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+      <br />
+      <div>Showing the first 20 results of {rows.length} rows</div>
+    </>
+  );
+}
 
 class CVMLRLDashboard extends React.Component {
   state = {
@@ -190,8 +382,50 @@ class CVMLRLDashboard extends React.Component {
         </div>
       );
     }
-    const open_tasks_arr = open_tasks(this.state.students);
-    console.log(open_tasks_arr);
+
+    const columns = [
+      {
+        Header: 'First-, Last Name',
+        accessor: 'firstname_lastname',
+        filter: 'fuzzyText'
+      },
+      {
+        Header: 'Editor',
+        accessor: 'editors',
+        filter: 'fuzzyText'
+      },
+      {
+        Header: 'Deadline',
+        accessor: 'deadline'
+      },
+      {
+        Header: 'Days left',
+        accessor: 'days_left'
+      },
+      {
+        Header: 'Documents',
+        accessor: 'document_name',
+        filter: 'fuzzyText'
+      },
+      {
+        Header: 'Ages Days',
+        accessor: 'aged_days'
+      },
+      {
+        Header: 'Last Update',
+        accessor: 'updatedAt'
+      }
+    ];
+    const open_tasks_arr = open_tasks_with_editors(this.state.students);
+    const cvmlrl_active_tasks = open_tasks_arr.filter(
+      (open_task) =>
+        !open_task.isFinalVersion && open_task.latest_message_left_by_id !== ''
+    );
+    console.log(cvmlrl_active_tasks);
+    const cvmlrl_idle_tasks = open_tasks_arr.filter(
+      (open_task) =>
+        !open_task.isFinalVersion && open_task.latest_message_left_by_id === ''
+    );
     const cvmlrl_new_message = this.state.students.map((student, i) => (
       <TaskManagement
         key={i}
@@ -241,13 +475,13 @@ class CVMLRLDashboard extends React.Component {
                   title={'Active:'}
                   path={'/'}
                   text={
-                    'Received students inputs and Active Tasks. Please finish it asap.'
+                    'Received students inputs and Active Tasks. Be aware of the deadline!'
                   }
                   link_name={''}
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
-                <Table
+                {/* <Table
                   responsive
                   bordered
                   hover
@@ -268,7 +502,13 @@ class CVMLRLDashboard extends React.Component {
                     </tr>
                   </thead>
                   <tbody>{cvmlrl_new_message}</tbody>
-                </Table>
+                </Table> */}
+                <SortTable
+                  columns={columns}
+                  data={cvmlrl_active_tasks}
+                  user={this.props.user}
+                  handleAsFinalFile={this.handleAsFinalFile}
+                />
                 <Banner
                   ReadOnlyMode={true}
                   bg={'info'}
@@ -279,7 +519,7 @@ class CVMLRLDashboard extends React.Component {
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
-                <Table
+                {/* <Table
                   responsive
                   bordered
                   hover
@@ -300,7 +540,13 @@ class CVMLRLDashboard extends React.Component {
                     </tr>
                   </thead>
                   <tbody>{cvmlrl_pending_progress}</tbody>
-                </Table>
+                </Table> */}
+                <SortTable
+                  columns={columns}
+                  data={cvmlrl_idle_tasks}
+                  user={this.props.user}
+                  handleAsFinalFile={this.handleAsFinalFile}
+                />
               </Tab>
               <Tab eventKey="closed" title="Closed">
                 <Banner

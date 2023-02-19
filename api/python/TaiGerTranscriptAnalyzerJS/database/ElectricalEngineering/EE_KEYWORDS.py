@@ -28,9 +28,9 @@ EE_PHYSICS_EXP_KEY_WORDS = ['物理']
 EE_PHYSICS_EXP_ANTI_KEY_WORDS = ['半導體', '元件', '史', '服務']
 EE_ELECTRONICS_KEY_WORDS = ['電子', '電子電路']
 EE_ELECTRONICS_ANTI_KEY_WORDS = [
-    '實驗', '專題', '電力', '固態', '自動化', '倫理', '素養', '進階', '材料', '藝術', '視覺']
+    '實驗', '專題', '電力', '固態', '自動化', '倫理', '素養', '進階', '材料', '藝術', '視覺', '近代']
 EE_ELECTRONICS_EXP_KEY_WORDS = ['電子實驗', '電子', '電工實驗']
-EE_ELECTRONICS_EXP_ANTI_KEY_WORDS = ['專題', '電力', '固態', '藝術', '材料']
+EE_ELECTRONICS_EXP_ANTI_KEY_WORDS = ['專題', '電力', '固態', '自動化', '藝術', '材料', '近代']
 EE_ELECTRO_CIRCUIT_KEY_WORDS = ['電路', '數位邏輯', '邏輯系統', '邏輯設計']
 EE_ELECTRO_CIRCUIT_ANTI_KEY_WORDS = [
     '超大型', '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']

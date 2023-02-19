@@ -158,7 +158,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                     <td {...cell.getCellProps()}>
                       <Link
                         target="_blank"
-                        to={'/document-modification/' + row.original.thread_id}
+                        to={`/student-database/${row.original.student_id}/profile`}
                         className="text-light"
                         style={{ textDecoration: 'none' }}
                       >
@@ -169,7 +169,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                     <td {...cell.getCellProps()}>
                       {return_thread_status2(user, row.original)}
                     </td>
-                  ) : j === 3 ? (
+                  ) : j === 5 ? (
                     <td {...cell.getCellProps()}>
                       <Link
                         target="_blank"
@@ -180,7 +180,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                         {cell.render('Cell')}
                       </Link>
                     </td>
-                  ) : j === (is_TaiGer_role(user) ? 5 : 4) ? (
+                  ) : j === 6 ? (
                     cell.value > 14 ? (
                       <td {...cell.getCellProps()}>
                         <p className="text-danger my-0">
@@ -192,7 +192,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                         <p className="text-light my-0">{cell.render('Cell')}</p>
                       </td>
                     )
-                  ) : j === 7 ? (
+                  ) : j === 4 ? (
                     cell.value < 30 ? (
                       <td {...cell.getCellProps()}>
                         <p className="text-danger my-0">
@@ -479,29 +479,28 @@ class CVMLRLOverview extends React.Component {
         filter: 'fuzzyText'
       },
       {
-        Header: 'Documents',
-        accessor: 'document_name',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Last Update',
-        accessor: 'updatedAt'
-      },
-      {
-        Header: 'Ages Days',
-        accessor: 'aged_days'
-      },
-      {
         Header: 'Deadline',
         accessor: 'deadline'
       },
       {
         Header: 'Days left',
         accessor: 'days_left'
+      },
+      {
+        Header: 'Documents',
+        accessor: 'document_name',
+        filter: 'fuzzyText'
+      },
+      {
+        Header: 'Ages Days',
+        accessor: 'aged_days'
+      },
+      {
+        Header: 'Last Update',
+        accessor: 'updatedAt'
       }
     ];
     const open_tasks_arr = open_tasks(this.state.students);
-    // console.log(open_tasks_arr);
     const cvmlrl_new_message_v2 = open_tasks_arr.filter(
       (open_task) =>
         !open_task.isFinalVersion &&

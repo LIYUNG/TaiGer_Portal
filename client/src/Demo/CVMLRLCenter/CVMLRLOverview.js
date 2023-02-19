@@ -65,7 +65,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
 
   // We don't want to render all 2000 rows for this example, so cap
   // it at 20 for this use case
-  const firstPageRows = rows.slice(0, 20);
+  const firstPageRows = rows.slice(0, 2000);
 
   const handleAsFinalFileThread = (
     thread_id,
@@ -257,7 +257,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
         </tbody>
       </Table>
       <br />
-      <div>Showing the first 20 results of {rows.length} rows</div>
+      {/* <div>Showing the first 20 results of {rows.length} rows</div> */}
     </>
   );
 }

@@ -72,10 +72,6 @@ const application_deadline_calculator = (student, application) => {
   if (!application.programId.application_deadline) {
     return 'No Data';
   }
-  if (application.programId.application_deadline.includes('olling')) {
-    // include Rolling
-    return 'Rolling';
-  }
   // let year_now = new Date().getFullYear();
   let application_year = '<TBD>';
   if (
@@ -88,6 +84,10 @@ const application_deadline_calculator = (student, application) => {
   }
   if (!application.programId.application_deadline) {
     return `${application_year}-<TBD>`;
+  }
+  if (application.programId.application_deadline.includes('olling')) {
+    // include Rolling
+    return `${application_year}-Rolling`;
   }
   let application_semester = application.programId.semester;
   let deadline_month = parseInt(

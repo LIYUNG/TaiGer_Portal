@@ -316,10 +316,6 @@ export const application_deadline_calculator = (student, application) => {
   if (!application_deadline) {
     return 'No Data';
   }
-  if (application_deadline.includes('olling')) {
-    // include Rolling
-    return 'Rolling';
-  }
   let application_year = '<TBD>';
   if (
     student.application_preference &&
@@ -331,6 +327,10 @@ export const application_deadline_calculator = (student, application) => {
   }
   if (!application_deadline) {
     return `${application_year}-<TBD>`;
+  }
+  if (application.programId.application_deadline.includes('olling')) {
+    // include Rolling
+    return `${application_year}-Rolling`;
   }
   let deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0]

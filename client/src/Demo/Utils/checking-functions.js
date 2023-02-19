@@ -778,6 +778,7 @@ export const open_tasks = (students) => {
               application_deadline_calculator(student, application)
             )
           ),
+          program_id: application.programId._id.toString(),
           thread_id: thread.doc_thread_id._id.toString(),
           document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
           updatedAt: convertDate(thread.doc_thread_id.updatedAt)

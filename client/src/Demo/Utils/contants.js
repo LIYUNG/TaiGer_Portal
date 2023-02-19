@@ -220,10 +220,41 @@ export const compare = (a, b) => {
   return 0;
 };
 
+export const return_thread_status2 = (user, thread) => {
+  if (thread.isFinalVersion) {
+    return <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />;
+  }
+  if (
+    thread.latest_message_left_by_id === undefined ||
+    thread.latest_message_left_by_id === ''
+  ) {
+    if (user.role !== 'Student') {
+      return (
+        <AiFillQuestionCircle
+          size={24}
+          color="lightgray"
+          title="Waiting feedback"
+        />
+      );
+    }
+  }
+  if (user._id.toString() === thread.latest_message_left_by_id) {
+    return (
+      <AiFillQuestionCircle
+        size={24}
+        color="lightgray"
+        title="Waiting feedback"
+      />
+    );
+  } else {
+    return <BiCommentDots size={24} color="red" title="New Message" />;
+  }
+};
+
 export const return_thread_status = (user, thread) => {
   if (thread.isFinalVersion) {
     return (
-      <td className="mb-1 text-info">
+      <td className="my-0 text-info">
         <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />
       </td>
     );
@@ -234,7 +265,7 @@ export const return_thread_status = (user, thread) => {
   ) {
     if (user.role !== 'Student') {
       return (
-        <td className="mb-1 text-info">
+        <td className="my-0 text-info">
           <AiFillQuestionCircle
             size={24}
             color="lightgray"
@@ -246,7 +277,7 @@ export const return_thread_status = (user, thread) => {
   }
   if (user._id.toString() === thread.latest_message_left_by_id) {
     return (
-      <td className="mb-1 text-info">
+      <td className="my-0 text-info">
         <AiFillQuestionCircle
           size={24}
           color="lightgray"
@@ -256,7 +287,7 @@ export const return_thread_status = (user, thread) => {
     );
   } else {
     return (
-      <td className="mb-1 text-info">
+      <td className="my-0 text-info">
         <BiCommentDots size={24} color="red" title="New Message" />
       </td>
     );

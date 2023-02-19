@@ -84,6 +84,7 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
         PROG_SPEC_OS_PARAM,  # 作業系統
         PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
         PROG_SPEC_OTHERS,  # 數理邏輯
+        PROG_SPEC_OTHERS,  # 圖論
         PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 正規方法
         PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 函數程式
         PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
@@ -197,6 +198,7 @@ def RWTH_DATA_SCIENCE_CS_BG(transcript_sorted_group_map, df_transcript_array, df
         PROG_SPEC_OS_PARAM,  # 作業系統
         PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
         PROG_SPEC_MATH_LOGIC_PARAM,  # 數理邏輯
+        PROG_SPEC_MATH_LOGIC_PARAM,  # 圖論
         PROG_SPEC_FORMAL_AUTOMATEN_PARAM,  # 正規方法
         PROG_SPEC_FORMAL_AUTOMATEN_PARAM,  # 函數程式
         PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
@@ -275,6 +277,7 @@ def RWTH_DATA_SCIENCE_MATH_BG(transcript_sorted_group_map, df_transcript_array, 
         PROG_SPEC_OTHERS,  # 作業系統
         PROG_SPEC_OTHERS,  # 電腦網路
         PROG_SPEC_OTHERS,  # 數理邏輯
+        PROG_SPEC_OTHERS,  # 圖論
         PROG_SPEC_OTHERS,  # 正規方法
         PROG_SPEC_OTHERS,  # 函數程式
         PROG_SPEC_OTHERS,  # 演算法 資料結構
@@ -387,6 +390,7 @@ def RWTH_SOFTWARE_SYS_ENG(transcript_sorted_group_map, df_transcript_array, df_c
         PROG_SPEC_OS_PARAM,  # 作業系統
         PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
         PROG_SPEC_MATH_LOGIC_PARAM,  # 數理邏輯
+        PROG_SPEC_MATH_LOGIC_PARAM,  # 圖論
         PROG_SPEC_FORMAL_AUTOMATEN_PARAM,  # 正規方法
         PROG_SPEC_FORMAL_AUTOMATEN_PARAM,  # 函數程式
         PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
@@ -499,6 +503,7 @@ def RWTH_MEDIA_INFO(transcript_sorted_group_map, df_transcript_array, df_categor
         PROG_SPEC_OS_PARAM,  # 作業系統
         PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
         PROG_SPEC_MATH_LOGIC_PARAM,  # 數理邏輯
+        PROG_SPEC_MATH_LOGIC_PARAM,  # 圖論
         PROG_SPEC_FORMAL_AUTOMATEN_PARAM,  # 正規方法
         PROG_SPEC_FORMAL_AUTOMATEN_PARAM,  # 函數程式
         PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
@@ -585,6 +590,7 @@ def FU_BERLIN_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_
         PROG_SPEC_CS_MODULE_PARAM,  # 作業系統
         PROG_SPEC_CS_MODULE_PARAM,  # 電腦網路
         PROG_SPEC_CS_MODULE_PARAM,  # 數理邏輯
+        PROG_SPEC_CS_MODULE_PARAM,  # 圖論
         PROG_SPEC_CS_MODULE_PARAM,  # 正規方法
         PROG_SPEC_CS_MODULE_PARAM,  # 函數程式
         PROG_SPEC_DS_ALGO_PARAM,  # 演算法 資料結構
@@ -666,6 +672,7 @@ def TU_BERLIN_COMPUTER_SCIENCE(transcript_sorted_group_map, df_transcript_array,
         PROG_SPEC_TECHNICAL_INFO_PARAM,  # 作業系統
         PROG_SPEC_TECHNICAL_INFO_PARAM,  # 電腦網路
         PROG_SPEC_THEORETICAL_INFO_PARAM,  # 數理邏輯
+        PROG_SPEC_THEORETICAL_INFO_PARAM,  # 圖論
         PROG_SPEC_THEORETICAL_INFO_PARAM,  # 正規方法
         PROG_SPEC_THEORETICAL_INFO_PARAM,  # 函數程式
         PROG_SPEC_METHO_PRACTICAL_INFO_PARAM,  # 演算法 資料結構
@@ -768,6 +775,7 @@ def TUM_DATA_ENGINEERING_ANALYTICS(transcript_sorted_group_map, df_transcript_ar
         PROG_SPEC_OS_PARAM,  # 作業系統
         PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
         PROG_SPEC_OTHERS,  # 數理邏輯
+        PROG_SPEC_OTHERS,  # 圖論
         PROG_SPEC_OTHERS,  # 正規方法
         PROG_SPEC_OTHERS,  # 函數程式
         PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
@@ -849,6 +857,7 @@ def TU_Delft_CS(transcript_sorted_group_map, df_transcript_array, df_category_co
         PROG_SPEC_OTHERS,  # 作業系統
         PROG_SPEC_COMP_SYS_PARAM,  # 電腦網路
         PROG_SPEC_OTHERS,  # 數理邏輯
+        PROG_SPEC_OTHERS,  # 圖論
         PROG_SPEC_OTHERS,  # 正規方法
         PROG_SPEC_OTHERS,  # 函數程式
         PROG_SPEC_FUNDAMENTAL_CS_PARAM,  # 演算法 資料結構
@@ -920,6 +929,7 @@ def RWTH_DDS(transcript_sorted_group_map, df_transcript_array, df_category_cours
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 作業系統
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 電腦網路
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 數理邏輯
+        PROG_SPEC_NS_INFO_ENG_PARAM,  # 圖論
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 正規方法
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 函數程式
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 演算法 資料結構
@@ -995,6 +1005,7 @@ def RWTH_TIME(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 作業系統
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 電腦網路
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 數理邏輯
+        PROG_SPEC_NS_INFO_ENG_PARAM,  # 圖論
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 正規方法
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 函數程式
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 演算法 資料結構
@@ -1070,6 +1081,7 @@ def UNI_GOETTINGEN_APPLIED_CS(transcript_sorted_group_map, df_transcript_array, 
         PROG_SPEC_INFO_PARAM,  # 作業系統
         PROG_SPEC_INFO_PARAM,  # 電腦網路
         PROG_SPEC_INFO_PARAM,  # 數理邏輯
+        PROG_SPEC_INFO_PARAM,  # 圖論
         PROG_SPEC_ADV_CS_MATH_PARAM,  # 正規方法
         PROG_SPEC_ADV_CS_MATH_PARAM,  # 函數程式
         PROG_SPEC_INFO_PARAM,  # 演算法 資料結構
@@ -1143,6 +1155,7 @@ def TUM_MATH_DATA_SCI_MATH_BACKGROUND(transcript_sorted_group_map, df_transcript
         PROG_SPEC_INFO_PARAM,  # 作業系統
         PROG_SPEC_INFO_PARAM,  # 電腦網路
         PROG_SPEC_MATH_PARAM,  # 數理邏輯
+        PROG_SPEC_MATH_PARAM,  # 圖論
         PROG_SPEC_INFO_PARAM,  # 正規方法
         PROG_SPEC_INFO_PARAM,  # 函數程式
         PROG_SPEC_INFO_PARAM,  # 演算法 資料結構
@@ -1214,6 +1227,7 @@ def TUM_MATH_DATA_SCI_CS_BACKGROUND(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_INFO_PARAM,  # 作業系統
         PROG_SPEC_INFO_PARAM,  # 電腦網路
         PROG_SPEC_MATH_PARAM,  # 數理邏輯
+        PROG_SPEC_MATH_PARAM,  # 圖論
         PROG_SPEC_INFO_PARAM,  # 正規方法
         PROG_SPEC_INFO_PARAM,  # 函數程式
         PROG_SPEC_INFO_PARAM,  # 演算法 資料結構
@@ -1244,6 +1258,97 @@ def TUM_MATH_DATA_SCI_CS_BACKGROUND(transcript_sorted_group_map, df_transcript_a
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
+def TUHH_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUHH_DATA_SCIENCE'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # MATH
+    PROG_SPEC_LINEAR_ALGEBRA_PARAM = {
+        'Program_Category': 'Linear Algebra', 'Required_ECTS': 8}   # 8 Punkte
+    PROG_SPEC_CALCULUS_PARAM = {
+        'Program_Category': 'Calculus', 'Required_ECTS': 8}   # 8 Punkte
+    PROG_SPEC_DISCRETE_MATH_PARAM = {
+        'Program_Category': 'Discrete Mathematics', 'Required_ECTS': 6}  # 6 Punkte
+    PROG_SPEC_STOCHASTICS_PARAM = {
+        'Program_Category': 'Stochastic Mathematics', 'Required_ECTS': 6}  # 6 Punkte
+    PROG_SPEC_NUMERICAL_STATISTICS_PARAM = {
+        'Program_Category': 'Statistics or Numerical Mathematics', 'Required_ECTS': 6}  # 6 Punkte
+    # CS
+    PROG_SPEC_PROGRAMMING_PARAM = {
+        'Program_Category': 'Programming', 'Required_ECTS': 12}  # 12 Punkte
+    PROG_SPEC_ALGORITHMS_DATASTRUCTURES_PARAM = {
+        'Program_Category': 'Algorithms and Data Structures', 'Required_ECTS': 6}  # 6 Punkte
+    PROG_SPEC_THEORETICAL_CS_PARAM = {
+        'Program_Category': 'Theoretical CS (Automata theory, Computability/ Complexity theory', 'Required_ECTS': 6}  # 6 Punkte
+    PROG_SPEC_MACHINE_LEARNING_PARAM = {
+        'Program_Category': 'Machine Learning', 'Required_ECTS': 6}  # 6 Punkte
+    PROG_SPEC_SIGNAL_SYSTEM_GRAPH_THEORY_PARAM = {
+        'Program_Category': 'Signal System and Graph Theory', 'Required_ECTS': 6}  # 6 Punkte
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_LINEAR_ALGEBRA_PARAM,
+        PROG_SPEC_CALCULUS_PARAM,
+        PROG_SPEC_DISCRETE_MATH_PARAM,
+        PROG_SPEC_STOCHASTICS_PARAM,
+        PROG_SPEC_NUMERICAL_STATISTICS_PARAM,
+        PROG_SPEC_PROGRAMMING_PARAM,
+        PROG_SPEC_ALGORITHMS_DATASTRUCTURES_PARAM,
+        PROG_SPEC_THEORETICAL_CS_PARAM,
+        PROG_SPEC_MACHINE_LEARNING_PARAM,
+        PROG_SPEC_SIGNAL_SYSTEM_GRAPH_THEORY_PARAM,
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_PROGRAMMING_PARAM,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 基礎電機電子
+        PROG_SPEC_PROGRAMMING_PARAM,  # 程式設計
+        PROG_SPEC_OTHERS,  # computer architecture
+        PROG_SPEC_OTHERS,  # software engineering
+        PROG_SPEC_OTHERS,  # 資料庫
+        PROG_SPEC_OTHERS,  # 作業系統
+        PROG_SPEC_OTHERS,  # 電腦網路
+        PROG_SPEC_SIGNAL_SYSTEM_GRAPH_THEORY_PARAM,  # 數理邏輯
+        PROG_SPEC_SIGNAL_SYSTEM_GRAPH_THEORY_PARAM,  # 圖論
+        PROG_SPEC_OTHERS,  # 正規方法
+        PROG_SPEC_OTHERS,  # 函數程式
+        PROG_SPEC_ALGORITHMS_DATASTRUCTURES_PARAM,  # 演算法 資料結構
+        PROG_SPEC_THEORETICAL_CS_PARAM,  # 可運算度 複雜度
+        PROG_SPEC_DISCRETE_MATH_PARAM,  # 離散
+        PROG_SPEC_LINEAR_ALGEBRA_PARAM,  # 線性代數
+        PROG_SPEC_NUMERICAL_STATISTICS_PARAM,  # 數值分析
+        PROG_SPEC_CALCULUS_PARAM,  # 微積分 分析
+        PROG_SPEC_STOCHASTICS_PARAM,  # 機率
+        PROG_SPEC_MACHINE_LEARNING_PARAM,  # 進階資工
+        PROG_SPEC_OTHERS,  # 物理化學工程
+        PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
 program_sort_function = [TUM_CS,
                          RWTH_DATA_SCIENCE_CS_BG,
                          RWTH_DATA_SCIENCE_MATH_BG,
@@ -1257,4 +1362,4 @@ program_sort_function = [TUM_CS,
                          RWTH_TIME,
                          UNI_GOETTINGEN_APPLIED_CS,
                          TUM_MATH_DATA_SCI_MATH_BACKGROUND,
-                         TUM_MATH_DATA_SCI_CS_BACKGROUND]
+                         TUM_MATH_DATA_SCI_CS_BACKGROUND, TUHH_DATA_SCIENCE]

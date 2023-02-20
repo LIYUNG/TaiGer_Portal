@@ -9,7 +9,10 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
-import { WidgetanalyzedFileDownload, WidgetTranscriptanalyser } from '../../api';
+import {
+  WidgetanalyzedFileDownload,
+  WidgetTranscriptanalyser
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 
@@ -267,7 +270,7 @@ export default function CourseWidget(props) {
             <Card.Header text={'dark'}>
               <Card.Title>
                 <Row>
-                  <Col className="my-0 mx-0 text-light">Course Analyser</Col>
+                  <Col className="my-0 mx-0 text-light">Pre-Customer Course Analyser</Col>
                 </Row>
               </Card.Title>
             </Card.Header>
@@ -358,7 +361,7 @@ export default function CourseWidget(props) {
                           Download
                         </Button>
                         <Link
-                          to={`/my-courses/analysis/${props.user._id.toString()}`}
+                          to={`/internal/widgets/${props.user._id.toString()}`}
                           target="_blank"
                         >
                           View Online

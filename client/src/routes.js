@@ -289,6 +289,12 @@ const routes = [
     component: CoursesAnalysisWidget
   },
   {
+    path: '/internal/widgets/:admin_id',
+    exact: true,
+    name: 'My MyCourses Analysis',
+    component: MyCoursesAnalysis
+  },
+  {
     path: '/cv-ml-rl-center',
     exact: true,
     name: 'CV/ML/RL Center',

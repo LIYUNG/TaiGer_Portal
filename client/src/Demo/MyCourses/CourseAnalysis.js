@@ -18,7 +18,10 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import 'react-datasheet-grid/dist/style.css';
 
-import { analyzedFileDownload_test } from '../../api';
+import {
+  analyzedFileDownload_test,
+  WidgetanalyzedFileDownload
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 
 export default function CourseAnalysis(props) {
@@ -44,62 +47,116 @@ export default function CourseAnalysis(props) {
   });
 
   useEffect(() => {
-    const student_id = props.match.params.student_id
-      ? props.match.params.student_id
-      : props.user._id.toString();
-    analyzedFileDownload_test(student_id).then(
-      (resp) => {
-        // TODO: timeout? success?
-        const { status } = resp;
-        if (status < 300) {
-          const actualFileName = decodeURIComponent(
-            resp.headers['content-disposition'].split('"')[1]
-          );
-          const temp = actualFileName.split('_');
-          const lastname = temp[3].split('.');
-          const student_name_temp = `${temp[2]} - ${lastname[0]}`;
-          const { data: blob } = resp;
-          if (blob.size === 0) return;
-          handleFile(blob).then((wb) => {
-            const { mySheetData: sheets, ModifiedDate: LastModified } =
-              readDataFormExcel(wb);
-            const sheetNames = Object.keys(sheets);
+    if (props.match.params.admin_id) {
+      WidgetanalyzedFileDownload(props.user._id.toString()).then(
+        (resp) => {
+          // TODO: timeout? success?
+          const { status } = resp;
+          if (status < 300) {
+            const actualFileName = decodeURIComponent(
+              resp.headers['content-disposition'].split('"')[1]
+            );
+            const student_name_temp = `Pre-Customer`;
+            const { data: blob } = resp;
+            if (blob.size === 0) return;
+            handleFile(blob).then((wb) => {
+              const { mySheetData: sheets, ModifiedDate: LastModified } =
+                readDataFormExcel(wb);
+              const sheetNames = Object.keys(sheets);
+              setStatedata((state) => ({
+                ...state,
+                sheets,
+                student_name: student_name_temp,
+                excel_file: blob,
+                isLoaded: true,
+                file_name: actualFileName,
+                LastModified,
+                sheetNames,
+                res_modal_status: status,
+                isUpdating: false
+              }));
+            });
+          } else {
+            const { statusText } = resp;
             setStatedata((state) => ({
               ...state,
-              sheets,
-              student_name: student_name_temp,
-              excel_file: blob,
               isLoaded: true,
-              file_name: actualFileName,
-              LastModified,
-              sheetNames,
               res_modal_status: status,
+              res_modal_message: statusText,
               isUpdating: false
             }));
-          });
-        } else {
+          }
+        },
+        (error) => {
           const { statusText } = resp;
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
-            res_modal_status: status,
+            error,
+            res_modal_status: 500,
             res_modal_message: statusText,
             isUpdating: false
           }));
         }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setStatedata((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText,
-          isUpdating: false
-        }));
-      }
-    );
+      );
+    } else {
+      const student_id = props.match.params.student_id
+        ? props.match.params.student_id
+        : props.user._id.toString();
+      analyzedFileDownload_test(student_id).then(
+        (resp) => {
+          // TODO: timeout? success?
+          const { status } = resp;
+          if (status < 300) {
+            const actualFileName = decodeURIComponent(
+              resp.headers['content-disposition'].split('"')[1]
+            );
+            const temp = actualFileName.split('_');
+            const lastname = temp[3].split('.');
+            const student_name_temp = `${temp[2]} - ${lastname[0]}`;
+            const { data: blob } = resp;
+            if (blob.size === 0) return;
+            handleFile(blob).then((wb) => {
+              const { mySheetData: sheets, ModifiedDate: LastModified } =
+                readDataFormExcel(wb);
+              const sheetNames = Object.keys(sheets);
+              setStatedata((state) => ({
+                ...state,
+                sheets,
+                student_name: student_name_temp,
+                excel_file: blob,
+                isLoaded: true,
+                file_name: actualFileName,
+                LastModified,
+                sheetNames,
+                res_modal_status: status,
+                isUpdating: false
+              }));
+            });
+          } else {
+            const { statusText } = resp;
+            setStatedata((state) => ({
+              ...state,
+              isLoaded: true,
+              res_modal_status: status,
+              res_modal_message: statusText,
+              isUpdating: false
+            }));
+          }
+        },
+        (error) => {
+          const { statusText } = resp;
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_modal_status: 500,
+            res_modal_message: statusText,
+            isUpdating: false
+          }));
+        }
+      );
+    }
   }, []);
 
   const readAsArrayBuffer = (blob) => {

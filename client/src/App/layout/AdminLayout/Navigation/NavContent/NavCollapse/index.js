@@ -35,6 +35,7 @@ class NavCollapse extends Component {
       if (this.props.role === 'Agent') {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'Tools' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
@@ -45,6 +46,7 @@ class NavCollapse extends Component {
       if (this.props.role === 'Editor') {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'Tools' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
@@ -56,6 +58,7 @@ class NavCollapse extends Component {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
+          collapse.title === 'Tools' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
@@ -67,6 +70,7 @@ class NavCollapse extends Component {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
+          collapse.title === 'Tools' ||
           collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {

@@ -21,18 +21,15 @@ const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
   secretAccessKey: AWS_S3_ACCESS_KEY
 });
+const student_name = 'PreCustomer';
 
 const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
   const {
     params: { category, language },
     body: { courses }
   } = req;
-  console.log(courses);
-  console.log(req.body);
   const stringified_courses = JSON.stringify(JSON.stringify(courses));
-  console.log(stringified_courses);
   let exitCode_Python = -1;
-  const student_name = 'PreCustomer';
   const studentId = req.user._id.toString();
   const python = spawn(
     'python',
@@ -91,25 +88,17 @@ const WidgetdownloadXLSX = asyncHandler(async (req, res, next) => {
     params: { adminId }
   } = req;
 
-  const studentIdToUse = adminId;
-  const course = await Course.findOne({
-    student_id: studentIdToUse.toString()
-  });
-  if (!course) {
-    logger.error('WidgetdownloadXLSX: Invalid student id');
-    throw new ErrorResponse(404, 'Invalid student id');
-  }
-
-  if (!course.analysis.isAnalysed || !course.analysis.path) {
-    logger.error('WidgetdownloadXLSX: not analysed yet');
-    throw new ErrorResponse(404, 'Transcript not analysed yet');
-  }
-
-  const fileKey = course.analysis.path.replace(/\\/g, '/').split('/')[1];
+  const fileKey = path
+    .join(adminId, `analysed_transcript_${student_name}.xlsx`)
+    .replace(/\\/g, '/')
+    .split('/')[1];
   const directory = path
     .join(
       AWS_S3_BUCKET_NAME,
-      course.analysis.path.replace(/\\/g, '/').split('/')[0]
+      path
+        .join(adminId, `analysed_transcript_${student_name}.xlsx`)
+        .replace(/\\/g, '/')
+        .split('/')[0]
     )
     .replace(/\\/g, '/');
   logger.info(`Trying to download transcript excel file ${fileKey}`);

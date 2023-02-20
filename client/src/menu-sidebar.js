@@ -310,6 +310,33 @@ export default {
           icon: 'feather icon-edit-1'
         },
         {
+          id: 'taiger_widgets',
+          title: 'Tools',
+          type: 'collapse',
+          classes: 'nav-item',
+          icon: 'feather icon-codepen',
+          children: [
+            {
+              id: 'course-analyser',
+              title: 'Course Analyser',
+              type: 'item',
+              url: '/internal/widgets/course-analyser',
+              icon: 'feather icon-gitlab',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'wdiget-placeholder',
+              title: 'Placeholder',
+              type: 'item',
+              url: '/internal/widgets/course-analyser',
+              icon: 'feather icon-github',
+              target: false,
+              breadcrumbs: false
+            }
+          ]
+        },
+        {
           id: 'teams_overview',
           title: 'TaiGer Teams',
           type: 'item',

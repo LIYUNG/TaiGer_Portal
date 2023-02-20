@@ -12,6 +12,7 @@ const portalsRouter = require('./portal_information');
 const programsRouter = require('./programs');
 const docsModiRouter = require('./documents_modification');
 const tasksRouter = require('./tasks');
+const widgetsRouter = require('./widget');
 const admissionsRouter = require('./admissions');
 const teamsRouter = require('./teams');
 // const interviewsRouter = require('./interviews');
@@ -31,6 +32,7 @@ const router = (app) => {
   apiRouter.use('/programs', programsRouter);
   apiRouter.use('/document-threads', docsModiRouter);
   apiRouter.use('/tasks', tasksRouter);
+  apiRouter.use('/widgets', widgetsRouter);
   apiRouter.use('/admissions', admissionsRouter);
   apiRouter.use('/teams', teamsRouter);
   // apiRouter.use('/interviews', interviewsRouter);

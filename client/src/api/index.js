@@ -127,7 +127,12 @@ export const getTemplateDownload = (category) =>
   request.get(`/api/account/files/template/${category}`, {
     responseType: 'blob'
   });
-
+export const WidgetTranscriptanalyser = (category, language, courses) =>
+  request.post(`/api/widgets/transcript/${category}/${language}`, { courses });
+export const WidgetanalyzedFileDownload = (adminId) =>
+  request.get(`/api/widgets/transcript/${adminId}`, {
+    responseType: 'blob'
+  });
 export const transcriptanalyser_test = (studentId, category, language) =>
   request.post(`/api/account/transcript/${studentId}/${category}/${language}`);
 export const analyzedFileDownload_test = (studentId, filename) =>
@@ -167,7 +172,6 @@ export const deleteProgramSpecificFileThread = (
     `/api/document-threads/${documentsthreadId}/${programId}/${studentId}`
   );
 
-  
 export const getAllCVMLRLOverview = () =>
   request.get(`/api/document-threads/overview/all`);
 

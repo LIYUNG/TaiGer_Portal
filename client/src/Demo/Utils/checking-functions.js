@@ -183,6 +183,17 @@ export const are_base_documents_missing = (student) => {
   return false;
 };
 
+export const to_register_application_portals = (student) => {
+  if (!student.applications || student.applications.length === 0) {
+    return false;
+  }
+  for (application of student.applications) {
+    if (application.portal_credentials) {
+    }
+  }
+  return false;
+};
+
 export const check_base_documents = (student) => {
   let documentlist2_keys = Object.keys(window.profile_list);
   let object_init = {};

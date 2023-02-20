@@ -6,10 +6,15 @@ import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { showButtonIfMyStudentB } from '../Utils/checking-functions';
+import {
+  is_TaiGer_role,
+  showButtonIfMyStudentB
+} from '../Utils/checking-functions';
 
 import { getPortalCredentials, postPortalCredentials } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import { Redirect } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 export default function PortalCredentialPage(props) {
   let [statedata, setStatedata] = useState({
@@ -26,7 +31,9 @@ export default function PortalCredentialPage(props) {
     res_modal_status: 0,
     res_modal_message: ''
   });
-
+  if (is_TaiGer_role(props.user) && !props.match.params.student_id) {
+    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
   useEffect(() => {
     const student_id = props.match.params.student_id
       ? props.match.params.student_id
@@ -217,9 +224,11 @@ export default function PortalCredentialPage(props) {
       </div>
     );
   }
+
   TabTitle(
     `Student ${statedata.student.firstname} ${statedata.student.lastname} || Portal Credentials`
   );
+
   if (statedata.res_status >= 400) {
     return <ErrorPage res_status={statedata.res_status} />;
   }

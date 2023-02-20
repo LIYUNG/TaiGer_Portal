@@ -9,7 +9,8 @@ import {
   check_languages_filled,
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded,
-  are_base_documents_missing
+  are_base_documents_missing,
+  to_register_application_portals
 } from '../../../Utils/checking-functions';
 
 class StudentTasks extends React.Component {
@@ -195,6 +196,24 @@ class StudentTasks extends React.Component {
             <td></td>
           </tr>
         )}
+        {/* TODO: portal credential registration. */}
+        {/* {to_register_application_portals(this.props.student) && (
+          <tr>
+            <td>
+              <Link
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                Base Documents
+              </Link>
+            </td>
+            <td>
+              Some of Base Documents are still missing. Please upload them.
+            </td>
+            <td></td>
+          </tr>
+        )} */}
         {unread_general_generaldocs}
         {unread_applications_docthread}
       </>

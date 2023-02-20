@@ -22,9 +22,13 @@ const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const MyCoursesAnalysis = React.lazy(() =>
   import('./Demo/MyCourses/CourseAnalysis')
 );
-
+const CoursesAnalysisWidget = React.lazy(() =>
+  import('./Demo/MyCourses/CourseWidget')
+);
 const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
-const CVMLRLDashboard = React.lazy(() => import('./Demo/CVMLRLCenter/indexAll'));
+const CVMLRLDashboard = React.lazy(() =>
+  import('./Demo/CVMLRLCenter/indexAll')
+);
 const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/index'));
 const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
 const TaiGerOrgEditor = React.lazy(() => import('./Demo/TaiGerOrg/EditorPage'));
@@ -277,6 +281,12 @@ const routes = [
     exact: true,
     name: 'CV/ML/RL Dashboard',
     component: CVMLRLDashboard
+  },
+  {
+    path: '/internal/widgets/course-analyser',
+    exact: true,
+    name: 'Course Analyser',
+    component: CoursesAnalysisWidget
   },
   {
     path: '/cv-ml-rl-center',

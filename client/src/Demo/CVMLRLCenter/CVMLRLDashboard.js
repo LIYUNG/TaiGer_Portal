@@ -421,32 +421,31 @@ class CVMLRLDashboard extends React.Component {
       (open_task) =>
         !open_task.isFinalVersion && open_task.latest_message_left_by_id !== ''
     );
-    console.log(cvmlrl_active_tasks);
     const cvmlrl_idle_tasks = open_tasks_arr.filter(
       (open_task) =>
         !open_task.isFinalVersion && open_task.latest_message_left_by_id === ''
     );
-    const cvmlrl_new_message = this.state.students.map((student, i) => (
-      <TaskManagement
-        key={i}
-        user={this.props.user}
-        student={student}
-        isDashboard={true}
-        handleAsFinalFile={this.handleAsFinalFile}
-        showTasks={is_started_tasks_status}
-      />
-    ));
+    // const cvmlrl_new_message = this.state.students.map((student, i) => (
+    //   <TaskManagement
+    //     key={i}
+    //     user={this.props.user}
+    //     student={student}
+    //     isDashboard={true}
+    //     handleAsFinalFile={this.handleAsFinalFile}
+    //     showTasks={is_started_tasks_status}
+    //   />
+    // ));
 
-    const cvmlrl_pending_progress = this.state.students.map((student, i) => (
-      <TaskManagement
-        key={i}
-        user={this.props.user}
-        student={student}
-        isDashboard={true}
-        handleAsFinalFile={this.handleAsFinalFile}
-        showTasks={is_not_started_tasks_status}
-      />
-    ));
+    // const cvmlrl_pending_progress = this.state.students.map((student, i) => (
+    //   <TaskManagement
+    //     key={i}
+    //     user={this.props.user}
+    //     student={student}
+    //     isDashboard={true}
+    //     handleAsFinalFile={this.handleAsFinalFile}
+    //     showTasks={is_not_started_tasks_status}
+    //   />
+    // ));
     const cvmlrl_progress_closed = this.state.students.map((student, i) => (
       <CVMLRLProgressClosed
         key={i}

@@ -763,6 +763,7 @@ export const open_tasks = (students) => {
         student_id: student._id.toString(),
         thread_id: thread.doc_thread_id._id.toString(),
         deadline: CVDeadline,
+        show: true,
         aged_days: parseInt(
           getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
         ),
@@ -790,6 +791,7 @@ export const open_tasks = (students) => {
             )
           ),
           program_id: application.programId._id.toString(),
+          show: application.decided === 'O' ? true : false,
           thread_id: thread.doc_thread_id._id.toString(),
           document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
           updatedAt: convertDate(thread.doc_thread_id.updatedAt)

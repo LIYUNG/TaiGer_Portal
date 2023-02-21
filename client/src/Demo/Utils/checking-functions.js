@@ -815,6 +815,7 @@ export const open_tasks_with_editors = (students) => {
         student_id: student._id.toString(),
         editors: student.editors,
         agents: student.agents,
+        show: true,
         thread_id: thread.doc_thread_id._id.toString(),
         deadline: CVDeadline,
         aged_days: parseInt(
@@ -846,6 +847,7 @@ export const open_tasks_with_editors = (students) => {
             )
           ),
           program_id: application.programId._id.toString(),
+          show: application.decided === 'O' ? true : false,
           thread_id: thread.doc_thread_id._id.toString(),
           document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
           updatedAt: convertDate(thread.doc_thread_id.updatedAt)

@@ -419,11 +419,15 @@ class CVMLRLDashboard extends React.Component {
     const open_tasks_arr = open_tasks_with_editors(this.state.students);
     const cvmlrl_active_tasks = open_tasks_arr.filter(
       (open_task) =>
-        !open_task.isFinalVersion && open_task.latest_message_left_by_id !== ''
+        open_task.show &&
+        !open_task.isFinalVersion &&
+        open_task.latest_message_left_by_id !== ''
     );
     const cvmlrl_idle_tasks = open_tasks_arr.filter(
       (open_task) =>
-        !open_task.isFinalVersion && open_task.latest_message_left_by_id === ''
+        open_task.show &&
+        !open_task.isFinalVersion &&
+        open_task.latest_message_left_by_id === ''
     );
     // const cvmlrl_new_message = this.state.students.map((student, i) => (
     //   <TaskManagement

@@ -98,7 +98,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     return res.send({ success: true, data: {} });
   }
   const stringified_courses = JSON.stringify(courses.table_data_string);
-  console.log(stringified_courses);
+  // console.log(stringified_courses);
   let exitCode_Python = -1;
   // TODO: multitenancy studentId?
   let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;

@@ -81,8 +81,10 @@ def DataPreparation(df_database, df_transcript):
     if '所有科目_英語' in df_database.columns:
         df_database['所有科目_英語'] = df_database['所有科目_英語'].str.lower()
     # unify course naming convention
-    df_transcript = Naming_Convention_ZH(df_transcript)
-    df_transcript = Naming_Convention_EN(df_transcript)
+    if 'course_chinese' in df_transcript.columns:
+        df_transcript = Naming_Convention_ZH(df_transcript)
+    if 'course_english' in df_transcript.columns:
+        df_transcript = Naming_Convention_EN(df_transcript)
     
     df_transcript['credits'] = df_transcript['credits'].astype(float, errors='ignore')
     df_transcript['grades'] = df_transcript['grades'].astype(float, errors='ignore')

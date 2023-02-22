@@ -121,11 +121,17 @@ const TaskStatus = {
   NotNeeded: 'notneeded'
 };
 const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
-
+const General_Docs = [
+  'Recommendation_Letter_A',
+  'Recommendation_Letter_B',
+  'Recommendation_Letter_C',
+  'CV',
+  'Others'
+];
 const profile_list = {
   High_School_Diploma: 'High School Diploma',
   High_School_Transcript: 'High School Transcript',
-  University_Entrance_Examination_GSAT: 'GSAT/SAT (學測)',
+  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE Test (學測/統測)',
   Bachelor_Certificate: 'Bachelor Certificate',
   Bachelor_Transcript: 'Bachelor Transcript',
   Englisch_Certificate: 'TOEFL or IELTS',
@@ -1279,6 +1285,7 @@ module.exports = {
   CheckListStatus,
   TaskStatus,
   RLs_CONSTANT,
+  General_Docs,
   base_documents_summary,
   is_deadline_within30days_needed,
   does_editor_have_pending_tasks,

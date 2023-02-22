@@ -376,7 +376,6 @@ class DocModificationThreadPage extends Component {
     let template_obj = window.templatelist.find(({ prop }) =>
       prop.includes(this.state.thread.file_type.split('_')[0])
     );
-    console.log(template_obj);
     let docName;
     if (this.state.thread.program_id) {
       docName =

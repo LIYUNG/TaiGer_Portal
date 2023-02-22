@@ -23,6 +23,7 @@ const {
 const logger = require('../services/logger');
 const {
   getNumberOfDays,
+  General_Docs,
   application_deadline_calculator
 } = require('../constants');
 
@@ -635,7 +636,7 @@ const getMessages = asyncHandler(async (req, res) => {
     document_thread.student_id._id.toString()
   ).populate('applications.programId');
   let deadline = 'x';
-  if (document_thread.file_type.includes('CV')) {
+  if (General_Docs.includes(document_thread.file_type)) {
     const today = new Date();
     let daysLeftMin = 3000;
     let CVDeadline = '';

@@ -22,6 +22,9 @@ class ToggleableUploadFileForm extends Component {
             >
               <option value="">Please Select</option>
               <option value="CV">CV</option>
+              <option value="Recommendation_Letter_A">Recommendation Letter (A)</option>
+              <option value="Recommendation_Letter_B">Recommendation Letter (B)</option>
+              <option value="Recommendation_Letter_C">Recommendation Letter (C)</option>
               <option value="Others">Others</option>
             </Form.Control>
           </Form.Group>

@@ -110,7 +110,6 @@ export default function CourseWidget(props) {
           }));
         } else {
           const { message } = resp.data;
-          console.log(message);
           setStatedata((state) => ({
             ...state,
             isLoaded: true,

@@ -48,9 +48,11 @@ const template_storage_s3 = multerS3({
   },
   key: (req, file, cb) => {
     const { category_name } = req.params;
-    const temp_name = `${category_name}_TaiGer_Template${path.extname(
+    let temp_name = `${category_name}_TaiGer_Template${path.extname(
       file.originalname
     )}`;
+    temp_name = temp_name.replace(/\//g, '_');
+
     cb(null, temp_name);
   }
 });
@@ -75,7 +77,9 @@ const upload_template_s3 = multer({
           413,
           `您的檔案不得超過 ${
             MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          } MB / File size is limited to ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
         )
       );
     }
@@ -119,6 +123,7 @@ const storage_vpd_s3 = multerS3({
             student.firstname
           }_${program_name}_VPD${path.extname(file.originalname)}`;
           temp_name = temp_name.replace(/ /g, '_');
+          temp_name = temp_name.replace(/\//g, '_');
           cb(null, temp_name);
         });
       }
@@ -159,9 +164,10 @@ const storage_profile_s3 = multerS3({
       .exec()
       .then((student) => {
         if (student) {
-          const temp_name = `${student.lastname}_${student.firstname}_${
+          let temp_name = `${student.lastname}_${student.firstname}_${
             req.params.category
           }${path.extname(file.originalname)}`;
+          temp_name = temp_name.replace(/\//g, '_');
 
           return {
             fileName: temp_name
@@ -226,7 +232,9 @@ const upload_doc_image_s3 = multer({
           413,
           `您的檔案不得超過 ${
             MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          } MB / File size is limited to ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
         )
       );
     }
@@ -251,7 +259,9 @@ const upload_doc_docs_s3 = multer({
           413,
           `您的檔案不得超過 ${
             MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          } MB / File size is limited to ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
         )
       );
     }
@@ -273,7 +283,9 @@ const upload_vpd_s3 = multer({
           413,
           `您的檔案不得超過 ${
             MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          } MB / File size is limited to ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
         )
       );
     }
@@ -307,7 +319,9 @@ const upload_profile_s3 = multer({
           413,
           `您的檔案不得超過 ${
             MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          } MB / File size is limited to ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
         )
       );
     }
@@ -367,6 +381,7 @@ const storage_messagesthread_file_s3 = multerS3({
               thread.file_type
             }_v${version_number.toString()}${path.extname(file.originalname)}`;
             temp_name = temp_name.replace(/ /g, '_');
+            temp_name = temp_name.replace(/\//g, '_');
 
             cb(null, temp_name);
           });
@@ -391,6 +406,7 @@ const storage_messagesthread_file_s3 = multerS3({
             file.originalname
           )}`;
           temp_name = temp_name.replace(/ /g, '_');
+          temp_name = temp_name.replace(/\//g, '_');
           cb(null, temp_name);
         }
       });
@@ -469,7 +485,9 @@ const upload_messagesthread_image_s3 = multer({
           413,
           `您的檔案不得超過 ${
             MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+          } MB / File size is limited to ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
         )
       );
     }

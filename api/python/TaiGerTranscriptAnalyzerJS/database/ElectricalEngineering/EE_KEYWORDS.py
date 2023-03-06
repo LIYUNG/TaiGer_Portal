@@ -16,7 +16,7 @@ EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS = ['計算機', '演算', '資料', '運算'
 EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS = [
     '倫理', 'Python', '機器學習', '傳輸', '素人', '思考']
 EE_PROGRAMMING_KEY_WORDS = ['程式設計', '程式語言',
-                            '物件', 'Python', 'C++', 'C語言', '組合語言']
+                            '物件', 'python', 'c++', 'java', 'c語言', '組合語言']
 EE_PROGRAMMING_ANTI_KEY_WORDS = ['倫理', 'Python', '機器學習']
 EE_SOFTWARE_SYSTEM_KEY_WORDS = ['軟體工程', ]
 EE_SOFTWARE_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l']

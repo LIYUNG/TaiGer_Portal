@@ -54,7 +54,7 @@ EE_ELEC_MATERIALS_ANTI_KEY_WORDS = ['專題', '倫理', '藝術', '素養']
 EE_ADVANCED_ELECTRO_KEY_WORDS = ['積體電路', '自動化',  '藍芽', '晶片', '類比', '數位訊號', '數位信號',
                                  '微算機', '微處理', 'VLSI', '嵌入式', '人工智慧', '機器學習']
 EE_ADVANCED_ELECTRO_ANTI_KEY_WORDS = ['倫理', '藝術', '素養']
-EE_APPLICATION_ORIENTED_KEY_WORDS = ['生醫', '光機電', '電腦', '微系統', '物聯網', '聲學', '微機電',
+EE_APPLICATION_ORIENTED_KEY_WORDS = ['生醫', '光機電', '電腦', '微系統', '物聯網', '聲學', '微機電', '控制',
                                      '影像', '深度學習', '光電', '應用', '綠能', '雲端運算', '醫學工程', '再生能源']
 EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟', '微波']
 EE_MACHINE_RELATED_KEY_WORDS = ['力學', '流體',

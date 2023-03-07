@@ -674,18 +674,23 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   await student.save();
   res.status(201).send({ success: true, data: student });
   // Reminder for Student:
-  await sendChangedProfileFileStatusEmail(
-    {
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email
-    },
-    {
-      message: feedback,
-      status,
-      category: category.replace(/_/g, ' ')
-    }
-  );
+  if (
+    status !== DocumentStatus.NotNeeded &&
+    status !== DocumentStatus.Missing
+  ) {
+    await sendChangedProfileFileStatusEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        message: feedback,
+        status,
+        category: category.replace(/_/g, ' ')
+      }
+    );
+  }
 });
 
 // () TODO: notification student email works includding tasks if decided

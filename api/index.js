@@ -14,23 +14,22 @@ const {
   CLEAN_UP_SCHEDULE,
   WEEKLY_TASKS_REMINDER_SCHEDULE,
   DAILY_TASKS_REMINDER_SCHEDULE,
-  AWS_S3_PUBLIC_BUCKET,
   AWS_S3_PUBLIC_BUCKET_NAME,
   AWS_S3_BUCKET_NAME,
   MONGODB_URI
 } = require('./config');
 const logger = require('./services/logger');
-const {
-  DocumentationS3GarbageCollector
-} = require('./controllers/documentations');
-const {
-  ThreadS3GarbageCollector
-} = require('./controllers/documents_modification');
+// const {
+//   DocumentationS3GarbageCollector
+// } = require('./controllers/documentations');
+// const {
+//   ThreadS3GarbageCollector
+// } = require('./controllers/documents_modification');
 const {
   TasksReminderEmails,
   UrgentTasksReminderEmails
 } = require('./utils/utils_function');
-const { UserS3GarbageCollector } = require('./controllers/users');
+// const { UserS3GarbageCollector } = require('./controllers/users');
 
 process.on('SIGINT', () => {
   disconnectFromDatabase(() => {
@@ -112,12 +111,12 @@ const launch = async () => {
     UrgentTasksReminderEmails
   );
 
-  console.log(`isProd : ${isProd()}`);
-  console.log(`isDev : ${isDev()}`);
+  logger.info(`isProd : ${isProd()}`);
+  logger.info(`isDev : ${isDev()}`);
   if (isProd()) {
     // launch http server
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      logger.info(`Server running on port ${PORT}`);
     });
   } else {
     // local development

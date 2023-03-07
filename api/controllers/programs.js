@@ -13,7 +13,7 @@ const getPrograms = asyncHandler(async (req, res) => {
     if (value === undefined) {
       // cache miss
       const programs = await Program.find().select(
-        '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated -country'
+        '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
       );
       const success = two_weeks_cache.set(req.originalUrl, programs);
       if (success) {
@@ -26,7 +26,7 @@ const getPrograms = asyncHandler(async (req, res) => {
   } else {
     // Option 2: No cache, good when programs are still frequently updated
     const programs = await Program.find().select(
-      '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated -country'
+      '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
     );
     res.send({ success: true, data: programs });
   }

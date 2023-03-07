@@ -8,7 +8,6 @@ import App from './App/index';
 import * as serviceWorker from './serviceWorker';
 import reducer from './store/reducer';
 import config from './config';
-// import "./style.css";
 import './index.css';
 // import "mdb-react-ui-kit/dist/css/mdb.min.css";
 

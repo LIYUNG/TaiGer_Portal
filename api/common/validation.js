@@ -38,7 +38,7 @@ const checkUserRole = body('role', 'Invalid role').isIn(Object.values(Role));
 
 const checkToken = body('token').isString().notEmpty();
 
-const checkObjectID = param('id', 'Invalid id').custom(ObjectID.isValid);
+// const checkObjectID = param('id', 'Invalid id').custom(ObjectID.isValid);
 
 module.exports = {
   fieldsValidation,
@@ -49,5 +49,5 @@ module.exports = {
   checkPassword,
   checkUserRole,
   checkToken,
-  checkObjectID
+  // checkObjectID
 };

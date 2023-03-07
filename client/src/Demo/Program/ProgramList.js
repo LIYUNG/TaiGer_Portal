@@ -758,6 +758,12 @@ function ProgramList(props) {
             filter: 'fuzzyText'
           },
           {
+            Header: 'Country',
+            accessor: 'country',
+            // Use our custom `fuzzyText` filter on this column
+            filter: 'fuzzyText'
+          },
+          {
             Header: 'Degree',
             accessor: 'degree',
             // Filter: SelectColumnFilter,

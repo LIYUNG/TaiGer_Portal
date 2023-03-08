@@ -15,7 +15,8 @@ const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
   AWS_S3_BUCKET_NAME,
-  AWS_S3_PUBLIC_BUCKET_NAME
+  AWS_S3_PUBLIC_BUCKET_NAME,
+  isProd
 } = require('../config');
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -103,8 +104,9 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   // TODO: multitenancy studentId?
   let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
   student_name = student_name.replace(/ /g, '-');
+  const python_command = isProd() ? 'python3' : 'python';
   const python = spawn(
-    'python',
+    python_command,
     [
       path.join(
         __dirname,
@@ -119,14 +121,14 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       student_name,
       language
     ],
-    { stdio: 'inherit' }
+    { stdio: 'inherit', detached: true }
   );
-  python.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+  python.stdout.on('data', (data) => {
+    logger.log(`${data}`);
   });
   python.on('error', (err) => {
-    console.log('error');
-    console.log(err);
+    logger.log('error');
+    logger.log(err);
     exitCode_Python = err;
     // res.sendStatus(500);
     // res.status(500).send({ success: false });
@@ -153,7 +155,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       exitCode_Python = 0;
       res.status(200).send({ success: true, data: courses.analysis });
     } else {
-      res.status(404).send({ message: code });
+      res.status(403).send({ message: code });
     }
   });
 });

@@ -17,11 +17,11 @@ file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)
 
 if __name__ == "__main__":
-    print("--------------------------", flush=True)
-    print("New Transcript Analyser", flush=True)
-    print("Python version:", flush=True)
-    print(sys.version, flush=True)
-    print("--------------------------", flush=True)
+    print("--------------------------")
+    print("New Transcript Analyser")
+    print("Python version:")
+    print(sys.version)
+    print("--------------------------")
     ## print course:
     obj = json.loads(sys.argv[1])
     obj_arr = json.loads(obj)

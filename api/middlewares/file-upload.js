@@ -248,7 +248,10 @@ const upload_doc_docs_s3 = multer({
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       return cb(
-        new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
+        new ErrorResponse(
+          415,
+          'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
+        )
       );
     }
 
@@ -298,18 +301,19 @@ const upload_vpd_s3 = multer({
  *   /account/files/:studentId/:docName (student upload)
  */
 
-// upload profile pdf/docx/image
 const upload_profile_s3 = multer({
   storage: storage_profile_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          415,
-          'Only .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
+    const { category } = req.params;
+    if (category === 'Passport_Photo') {
+      if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
+        return cb(
+          new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
+        );
+      }
+    } else if (!ALLOWED_MIME_PDF_TYPES.includes(file.mimetype)) {
+      return cb(new ErrorResponse(415, 'Only .pdf format are allowed'));
     }
 
     const fileSize = parseInt(req.headers['content-length'], 10);

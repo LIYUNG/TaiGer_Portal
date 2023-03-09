@@ -71,12 +71,10 @@ class AgentMainView extends React.Component {
           this.setState((state) => ({
             ...state,
             success: success,
-            isLoaded: true,
             res_status: status
           }));
         } else {
           this.setState({
-            isLoaded: true,
             res_status: status
           });
         }
@@ -84,7 +82,6 @@ class AgentMainView extends React.Component {
       (error) => {
         this.setState((state) => ({
           ...state,
-          isLoaded: true,
           error,
           res_status: 500
         }));

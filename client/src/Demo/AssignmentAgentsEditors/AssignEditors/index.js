@@ -54,38 +54,6 @@ class AssignEditors extends React.Component {
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      getStudents().then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              students: data,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
-
   editEditor = (student) => {
     getEditors().then(
       (resp) => {
@@ -208,7 +176,7 @@ class AssignEditors extends React.Component {
     const { isLoaded, res_status, res_modal_status, res_modal_message } =
       this.state;
 
-    if (!isLoaded && !this.state.students) {
+    if (!isLoaded) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">

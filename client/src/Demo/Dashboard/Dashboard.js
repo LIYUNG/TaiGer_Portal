@@ -69,38 +69,6 @@ class Dashboard extends React.Component {
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      getStudents().then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              students: data,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
-
   editAgent = (student) => {
     getAgents().then(
       (resp) => {
@@ -407,7 +375,7 @@ class Dashboard extends React.Component {
     const { res_modal_status, res_modal_message, isLoaded, res_status } =
       this.state;
     TabTitle('Home Page');
-    if (!isLoaded && !this.state.data) {
+    if (!isLoaded || !this.state.students) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -463,7 +431,6 @@ class Dashboard extends React.Component {
           <AgentMainView
             user={this.props.user}
             role={this.props.user.role}
-            isLoaded={isLoaded}
             students={this.state.students}
             updateStudentArchivStatus={this.updateStudentArchivStatus}
             isDashboard={this.state.isDashboard}

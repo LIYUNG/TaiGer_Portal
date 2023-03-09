@@ -15,7 +15,8 @@ const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
   AWS_S3_BUCKET_NAME,
-  AWS_S3_PUBLIC_BUCKET_NAME
+  AWS_S3_PUBLIC_BUCKET_NAME,
+  isProd
 } = require('../config');
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -31,8 +32,9 @@ const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
   const stringified_courses = JSON.stringify(JSON.stringify(courses));
   let exitCode_Python = -1;
   const studentId = req.user._id.toString();
+  const python_command = isProd() ? 'python3' : 'python';
   const python = spawn(
-    'python',
+    python_command,
     [
       path.join(
         __dirname,

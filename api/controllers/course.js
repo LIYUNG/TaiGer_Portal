@@ -121,9 +121,9 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       student_name,
       language
     ],
-    { stdio: 'inherit', detached: true }
+    { stdio: 'inherit' }
   );
-  python.stdout.on('data', (data) => {
+  python.on('data', (data) => {
     logger.log(`${data}`);
   });
   python.on('error', (err) => {

@@ -5,7 +5,6 @@ import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudB
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import UnrespondedThreads from '../MainViewTab/NewUpdatedThreadFromStudent/UnrespondedThreads';
-import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
 import EditorTODOTasks from '../MainViewTab/EditorTODOTasks/EditorTODOTasks';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 

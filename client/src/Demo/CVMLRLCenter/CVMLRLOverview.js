@@ -14,20 +14,20 @@ import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import {
   useTable,
   useSortBy,
-  useFilters,
-  useGlobalFilter,
-  useAsyncDebounce,
-  useRowSelect,
-  usePagination
+  useFilters
+  // useGlobalFilter,
+  // useAsyncDebounce,
+  // useRowSelect,
+  // usePagination
 } from 'react-table';
 import { Link } from 'react-router-dom';
-import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
+// import CVMLRLProgress from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgress';
 import CVMLRLProgressClosed from '../Dashboard/MainViewTab/CVMLRLProgress/CVMLRLProgressClosed';
 import {
   spinner_style,
   is_new_message_status,
   is_pending_status,
-  return_thread_status,
+  // return_thread_status,
   return_thread_status2
 } from '../Utils/contants';
 import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';

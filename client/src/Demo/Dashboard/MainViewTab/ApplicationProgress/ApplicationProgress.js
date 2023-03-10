@@ -1,11 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import {
-  AiFillEdit,
-  AiFillQuestionCircle,
-  AiOutlineUndo
-} from 'react-icons/ai';
+import { AiFillEdit } from 'react-icons/ai';
 
 import { getNumberOfDays } from '../../../Utils/contants';
 import {

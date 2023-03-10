@@ -3,7 +3,7 @@ import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Redirect, Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
-import { convertDate, spinner_style, study_group } from '../Utils/contants';
+import { spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { is_TaiGer_role } from '../Utils/checking-functions';
@@ -269,7 +269,9 @@ export default function CourseWidget(props) {
             <Card.Header text={'dark'}>
               <Card.Title>
                 <Row>
-                  <Col className="my-0 mx-0 text-light">Pre-Customer Course Analyser</Col>
+                  <Col className="my-0 mx-0 text-light">
+                    Pre-Customer Course Analyser
+                  </Col>
                 </Row>
               </Card.Title>
             </Card.Header>

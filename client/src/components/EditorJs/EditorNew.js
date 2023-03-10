@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
-import { BASE_URL } from '../../api/request';
+// import { BASE_URL } from '../../api/request';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';

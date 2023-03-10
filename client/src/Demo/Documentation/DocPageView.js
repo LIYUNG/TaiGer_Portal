@@ -3,7 +3,7 @@ import { Row, Col, Card, Button } from 'react-bootstrap';
 import EditorNew from '../../components/EditorJs/EditorNew';
 import { convertDate } from '../Utils/contants';
 // import Blocks from 'editorjs-blocks-react-renderer';
-import Output from 'editorjs-react-renderer';
+// import Output from 'editorjs-react-renderer';
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 
 class DocPageView extends React.Component {

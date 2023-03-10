@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Spinner, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import SurveyEditableComponent from './SurveyEditableComponent';

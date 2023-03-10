@@ -6,7 +6,6 @@ import {
   Form,
   Button,
   Card,
-  Collapse,
   Modal,
   Spinner
 } from 'react-bootstrap';

@@ -1,9 +1,4 @@
-import {
-  getNumberOfDays,
-  convertDate,
-  is_new_message_status,
-  is_pending_status
-} from './contants';
+import { getNumberOfDays, convertDate } from './contants';
 export const is_TaiGer_role = (user) =>
   user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
 export const is_TaiGer_AdminAgent = (user) =>

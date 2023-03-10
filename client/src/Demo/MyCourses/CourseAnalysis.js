@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Spinner,
-  Button,
-  Card,
-  Tab,
-  Tabs,
-  Table
-} from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card, Tab, Tabs } from 'react-bootstrap';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import * as XLSX from 'xlsx/xlsx.mjs';
 

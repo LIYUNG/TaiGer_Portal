@@ -6,7 +6,7 @@ import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { deleteUser, updateUser, changeUserRole } from '../../api';
+import { deleteUser, changeUserRole } from '../../api';
 
 class UsersList extends React.Component {
   state = {

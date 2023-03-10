@@ -63,7 +63,7 @@ function AdminLayout(props) {
         }));
       }
     );
-  }, [userdata.isLoaded]);
+  }, []);
 
   useEffect(() => {
     if (

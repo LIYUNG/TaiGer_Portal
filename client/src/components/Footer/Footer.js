@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Row, Col, Card } from 'react-bootstrap';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import React from 'react';
 
 export default function Footer(props) {
   return (

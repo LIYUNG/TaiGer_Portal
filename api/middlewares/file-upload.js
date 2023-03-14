@@ -356,7 +356,7 @@ const storage_messagesthread_file_s3 = multerS3({
       .populate('student_id')
       .then((thread) => {
         if (!thread) {
-          throw new ErrorResponse(404, 'Invalid message thread id');
+          throw new ErrorResponse(403, 'Invalid message thread id');
         }
         let program_name = '';
         if (thread.program_id) {

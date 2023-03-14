@@ -467,7 +467,7 @@ const ToggleProgramStatus = asyncHandler(async (req, res) => {
     );
   if (!student) {
     logger.error('ToggleProgramStatus: Invalid student id');
-    throw new ErrorResponse(404, 'Invalid student id');
+    throw new ErrorResponse(403, 'Invalid student id');
   }
 
   const application = student.applications.find(
@@ -475,7 +475,7 @@ const ToggleProgramStatus = asyncHandler(async (req, res) => {
   );
   if (!application) {
     logger.error('ToggleProgramStatus: Invalid application id');
-    throw new ErrorResponse(404, 'Invalid application id');
+    throw new ErrorResponse(403, 'Invalid application id');
   }
   application.closed = application.closed === 'O' ? 'X' : 'O';
   await student.save();
@@ -553,11 +553,24 @@ const createApplication = asyncHandler(async (req, res) => {
       application.doc_modification_thread.push(temp);
       await new_doc_thread.save();
     }
-    // TODO: check if RL required, if yes, create new thread
+    // check if RL required, if yes, create new thread
     if (
       program.rl_required !== undefined &&
       Number.isInteger(parseInt(program.rl_required)) >= 0
     ) {
+      // TODO: if no specific requirement,
+      if (!program.rl_requirements) {
+        // check if general RL is created, if not, create ones!
+        if (!student.generaldocs_threads.find((thread) => thread.file_type)) {
+          // TODO: create general tasks, WARNING: be careful of racing condition.
+          console.log('Create general RL tasks!');
+        }
+        // if general existed, then do nothing.
+      } else {
+        // TODO: with requirements, create special tasks! WARNING: be careful of racing condition.
+        console.log('Create specific RL tasks!');
+      }
+
       for (let j = 0; j < parseInt(program.rl_required); j += 1) {
         const new_doc_thread = new Documentthread({
           student_id: studentId,
@@ -653,7 +666,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     .lean();
   if (!student) {
     logger.error('deleteApplication: Invalid student id');
-    throw new ErrorResponse(404, 'Invalid student id');
+    throw new ErrorResponse(403, 'Invalid student id');
   }
 
   const application = student.applications.find(
@@ -661,7 +674,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   );
   if (!application) {
     logger.error('deleteApplication: Invalid application id');
-    throw new ErrorResponse(404, 'Invalid application id');
+    throw new ErrorResponse(403, 'Invalid application id');
   }
 
   // checking if delete is safe?

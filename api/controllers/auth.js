@@ -217,7 +217,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: token.userId, email });
   if (!user) {
     logger.error('resetPassword: Invalid email or token');
-    throw new ErrorResponse(404, 'Invalid email or token');
+    throw new ErrorResponse(403, 'Invalid email or token');
   }
 
   user.password = password;

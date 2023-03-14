@@ -78,7 +78,7 @@ const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
       exitCode_Python = 0;
       res.status(200).send({ success: true, data: metadata.analysis });
     } else {
-      res.status(404).send({ message: code });
+      res.status(403).send({ message: code });
     }
   });
 });

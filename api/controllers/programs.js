@@ -42,7 +42,7 @@ const getProgram = asyncHandler(async (req, res) => {
       ) === -1
     ) {
       logger.error('getProgram: Invalid program id in your applications');
-      throw new ErrorResponse(404, 'Invalid program id in your applications');
+      throw new ErrorResponse(403, 'Invalid program id in your applications');
     }
   }
 
@@ -52,7 +52,7 @@ const getProgram = asyncHandler(async (req, res) => {
     const program = await Program.findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');
-      throw new ErrorResponse(404, 'Invalid program id');
+      throw new ErrorResponse(403, 'Invalid program id');
     }
     const success = one_month_cache.set(req.originalUrl, program);
     if (success) {

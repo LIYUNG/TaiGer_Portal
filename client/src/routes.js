@@ -29,6 +29,9 @@ const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
   import('./Demo/CVMLRLCenter/indexAll')
 );
+const InternalDashboard = React.lazy(() =>
+  import('./Demo/TaiGerOrg/InternalDashboard/index')
+);
 const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/index'));
 const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
 const TaiGerOrgEditor = React.lazy(() => import('./Demo/TaiGerOrg/EditorPage'));
@@ -317,6 +320,12 @@ const routes = [
     exact: true,
     name: '',
     component: TaiGerOrg
+  },
+  {
+    path: '/dashboard/internal',
+    exact: true,
+    name: '',
+    component: InternalDashboard
   },
   {
     path: '/teams/agents/:user_id',

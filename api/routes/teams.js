@@ -10,6 +10,7 @@ const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { Role } = require('../models/User');
 const {
   getTeamMembers,
+  getStatistics,
   getArchivStudents,
   getAgents,
   getSingleAgent,
@@ -24,6 +25,10 @@ router.use(protect, permit(Role.Admin, Role.Agent, Role.Editor));
 router
   .route('/')
   .get(filter_archiv_user, GeneralGETRequestRateLimiter, getTeamMembers);
+router
+  .route('/statistics')
+  .get(filter_archiv_user, GeneralGETRequestRateLimiter, getStatistics);
+
 router
   .route('/archiv/:TaiGerStaffId')
   .get(

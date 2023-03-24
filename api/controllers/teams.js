@@ -27,6 +27,27 @@ const getTeamMembers = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: users });
 });
 
+const getStatistics = asyncHandler(async (req, res) => {
+  const documents = await Documentthread.find({ isFinalVersion: false });
+  const agents = await Agent.find();
+  const editors = await Editor.find();
+  const students = await Student.find();
+  const users = await User.find({
+    role: { $in: ['Admin', 'Agent', 'Editor'] }
+  }).lean();
+  res.status(200).send({
+    success: true,
+    data: users,
+    documents: documents.length,
+    students: {
+      isClose: students.filter((student) => student.archiv === true).length,
+      isOpen: students.filter((student) => student.archiv !== true).length
+    },
+    agents: agents.length,
+    editors: editors.length
+  });
+});
+
 const getAgents = asyncHandler(async (req, res, next) => {
   const agents = await Agent.find().select('firstname lastname');
   res.status(200).send({ success: true, data: agents });
@@ -34,9 +55,7 @@ const getAgents = asyncHandler(async (req, res, next) => {
 
 const getSingleAgent = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
-  const agent = await Agent.findById(agent_id).select(
-    'firstname lastname'
-  );
+  const agent = await Agent.findById(agent_id).select('firstname lastname');
   // query by agents field: student.agents include agent_id
   const students = await Student.find({
     agents: agent_id,
@@ -61,9 +80,7 @@ const getEditors = asyncHandler(async (req, res, next) => {
 
 const getSingleEditor = asyncHandler(async (req, res, next) => {
   const { editor_id } = req.params;
-  const editor = await Editor.findById(editor_id).select(
-    'firstname lastname'
-  );
+  const editor = await Editor.findById(editor_id).select('firstname lastname');
   // query by agents field: student.editors include editor_id
   const students = await Student.find({
     editors: editor_id,
@@ -109,6 +126,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
 
 module.exports = {
   getTeamMembers,
+  getStatistics,
   getAgents,
   getSingleAgent,
   getEditors,

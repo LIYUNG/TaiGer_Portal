@@ -339,9 +339,25 @@ export default {
         {
           id: 'teams_overview',
           title: 'TaiGer Teams',
-          type: 'item',
-          icon: 'feather icon-star',
-          url: '/teams'
+          type: 'collapse',
+          classes: 'nav-item',
+          icon: 'feather icon-menu',
+          children: [
+            {
+              id: 'teams_member',
+              title: 'TaiGer Teams',
+              type: 'item',
+              icon: 'feather icon-star',
+              url: '/teams'
+            },
+            {
+              id: 'internal_dashboard',
+              title: 'TaiGer Dashboard',
+              type: 'item',
+              icon: 'feather icon-target',
+              url: '/dashboard/internal'
+            }
+          ]
         },
         // {
         //   id: 'settings',

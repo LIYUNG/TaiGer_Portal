@@ -11,7 +11,7 @@ import { getTeamMembers } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 
-class Survey extends React.Component {
+class TaiGerOrg extends React.Component {
   state = {
     error: '',
     role: '',
@@ -136,4 +136,4 @@ class Survey extends React.Component {
   }
 }
 
-export default Survey;
+export default TaiGerOrg;

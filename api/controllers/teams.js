@@ -28,23 +28,64 @@ const getTeamMembers = asyncHandler(async (req, res) => {
 });
 
 const getStatistics = asyncHandler(async (req, res) => {
-  const documents = await Documentthread.find({ isFinalVersion: false });
+  const documents_cv = await Documentthread.find({
+    isFinalVersion: false,
+    file_type: 'CV'
+  }).count();
+  // TODO: this include the tasks that created by not shown, because the programs are not decided.
+  // So that is why the number is more than what we actually see in UI.
+  const documents_ml = await Documentthread.find({
+    isFinalVersion: false,
+    file_type: 'ML'
+  }).count();
+  const documents_rl = await Documentthread.find({
+    isFinalVersion: false,
+    $or: [{ file_type: 'RL_A' }, { file_type: 'RL_B' }, { file_type: 'RL_C' }]
+  }).count();
+  const documents_data = {};
+  documents_data.CV = { count: documents_cv };
+  documents_data.ML = { count: documents_ml };
+  documents_data.RL = { count: documents_rl };
   const agents = await Agent.find();
   const editors = await Editor.find();
   const students = await Student.find();
+  const agents_data = [];
+  const editors_data = [];
+  for (let i = 0; i < agents.length; i += 1) {
+    const Obj = {};
+    Obj.firstname = agents[i].firstname;
+    Obj.lastname = agents[i].lastname;
+    Obj.student_num = await Student.find({
+      agents: agents[i]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).count();
+    agents_data.push(Obj);
+  }
+  console.log(agents_data);
+  for (let i = 0; i < editors.length; i += 1) {
+    const Obj = {};
+    Obj.firstname = editors[i].firstname;
+    Obj.lastname = editors[i].lastname;
+    Obj.student_num = await Student.find({
+      editors: editors[i]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).count();
+    editors_data.push(Obj);
+  }
+
   const users = await User.find({
     role: { $in: ['Admin', 'Agent', 'Editor'] }
   }).lean();
   res.status(200).send({
     success: true,
     data: users,
-    documents: documents.length,
+    documents: documents_data,
     students: {
       isClose: students.filter((student) => student.archiv === true).length,
       isOpen: students.filter((student) => student.archiv !== true).length
     },
-    agents: agents.length,
-    editors: editors.length
+    agents: agents_data,
+    editors: editors_data
   });
 });
 

@@ -740,6 +740,7 @@ const postMessages = asyncHandler(async (req, res) => {
     createdAt: new Date(),
     file: newfile
   };
+  // TODO: prevent abuse! if document_thread.messages.length > 30, too much message in a thread!
   document_thread.messages.push(new_message);
   document_thread.updatedAt = new Date();
   await document_thread.save();

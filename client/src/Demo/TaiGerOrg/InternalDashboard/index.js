@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
+import NVD3Chart from 'react-nvd3';
 
 import Aux from '../../../hoc/_Aux';
 import { spinner_style } from '../../Utils/contants';
@@ -87,7 +88,41 @@ class InternalDashboard extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
+    const colors = [
+      '#ff8a65',
+      '#f4c22b',
+      '#04a9f5',
+      '#3ebfea',
+      '#4F5467',
+      '#1de9b6',
+      '#a389d4',
+      '#FE8A7D'
+    ];
+    const agents_data = [];
+    agents.forEach((agent, i) => {
+      agents_data.push({
+        key: `${agent.firstname}`,
+        y: agent.student_num,
+        color: colors[i]
+      });
+    });
+    const editors_data = [];
+    editors.forEach((editor, i) => {
+      editors_data.push({
+        key: `${editor.firstname}`,
+        y: editor.student_num,
+        color: colors[i]
+      });
+    });
+    const documents_data = [];
+    const cat = ['ML', 'CV', 'RL'];
+    cat.forEach((ca, i) => {
+      documents_data.push({
+        key: `${ca}`,
+        y: documents[ca].count,
+        color: colors[i]
+      });
+    });
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -127,7 +162,17 @@ class InternalDashboard extends React.Component {
                   </Row>
                 </Card.Title>
               </Card.Header>
-              <Card.Body>Number of Task: {documents}</Card.Body>
+              <Card.Body>
+                Number of Open Tasks:{' '}
+                <NVD3Chart
+                  id="chart"
+                  height={300}
+                  type="pieChart"
+                  datum={documents_data}
+                  x="key"
+                  y="y"
+                />
+              </Card.Body>
             </Card>
           </Col>
           <Col md={4}>
@@ -139,19 +184,17 @@ class InternalDashboard extends React.Component {
                   </Row>
                 </Card.Title>
               </Card.Header>
-              <Card.Body>Number of Task: {documents}</Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Agents</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>Number of Agent: {agents}</Card.Body>
+              <Card.Body>
+                Number of Agent: {agents.length}{' '}
+                <NVD3Chart
+                  id="chart"
+                  height={300}
+                  type="pieChart"
+                  datum={agents_data}
+                  x="key"
+                  y="y"
+                />
+              </Card.Body>
             </Card>
           </Col>
           <Col md={4}>
@@ -163,7 +206,17 @@ class InternalDashboard extends React.Component {
                   </Row>
                 </Card.Title>
               </Card.Header>
-              <Card.Body>Number of Editors: {editors}</Card.Body>
+              <Card.Body>
+                Number of Editors: {editors.length}
+                <NVD3Chart
+                  id="chart"
+                  height={300}
+                  type="pieChart"
+                  datum={editors_data}
+                  x="key"
+                  y="y"
+                />
+              </Card.Body>
             </Card>
           </Col>
         </Row>

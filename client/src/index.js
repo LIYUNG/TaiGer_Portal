@@ -231,7 +231,7 @@ window.profile_wtih_doc_link_list = {
     name: 'GSAT/SAT/TVE Test (學測/統測)',
     link: ''
   },
-  Bachelor_Certificate: { name: 'Bachelor Certificate', link: '' },
+  Bachelor_Certificate: { name: 'Bachelor Certificate/Enrolment', link: '' },
   Bachelor_Transcript: { name: 'Bachelor Transcript', link: '' },
   Englisch_Certificate: { name: 'TOEFL or IELTS', link: '' },
   German_Certificate: { name: 'TestDaF or Goethe B2/C1', link: '' },
@@ -249,7 +249,7 @@ window.profile_list = {
   High_School_Diploma: 'High School Diploma',
   High_School_Transcript: 'High School Transcript',
   University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE Test (學測/統測)',
-  Bachelor_Certificate: 'Bachelor Certificate',
+  Bachelor_Certificate: 'Bachelor Certificate/Enrolment',
   Bachelor_Transcript: 'Bachelor Transcript',
   Englisch_Certificate: 'TOEFL or IELTS',
   German_Certificate: 'TestDaF or Goethe-A1-C1',

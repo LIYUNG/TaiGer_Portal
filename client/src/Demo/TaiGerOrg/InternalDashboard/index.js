@@ -115,7 +115,7 @@ class InternalDashboard extends React.Component {
       });
     });
     const documents_data = [];
-    const cat = ['ML', 'CV', 'RL'];
+    const cat = ['ML', 'CV', 'RL', 'ESSAY'];
     cat.forEach((ca, i) => {
       documents_data.push({
         key: `${ca}`,

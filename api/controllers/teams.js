@@ -40,12 +40,24 @@ const getStatistics = asyncHandler(async (req, res) => {
   }).count();
   const documents_rl = await Documentthread.find({
     isFinalVersion: false,
-    $or: [{ file_type: 'RL_A' }, { file_type: 'RL_B' }, { file_type: 'RL_C' }]
+    $or: [
+      { file_type: 'RL_A' },
+      { file_type: 'RL_B' },
+      { file_type: 'RL_C' },
+      { file_type: 'Recommendation_Letter_A' },
+      { file_type: 'Recommendation_Letter_B' },
+      { file_type: 'Recommendation_Letter_C' }
+    ]
+  }).count();
+  const documents_essay = await Documentthread.find({
+    isFinalVersion: false,
+    file_type: 'Essay'
   }).count();
   const documents_data = {};
   documents_data.CV = { count: documents_cv };
   documents_data.ML = { count: documents_ml };
   documents_data.RL = { count: documents_rl };
+  documents_data.ESSAY = { count: documents_essay };
   const agents = await Agent.find();
   const editors = await Editor.find();
   const students = await Student.find();

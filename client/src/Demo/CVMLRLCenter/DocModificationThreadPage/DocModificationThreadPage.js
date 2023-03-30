@@ -8,6 +8,7 @@ import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style } from '../../Utils/contants';
+
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_role,
@@ -372,6 +373,12 @@ class DocModificationThreadPage extends Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
+    let widths = [];
+    if (this.state.thread.file_type === 'CV') {
+      widths = [9, 2, 1];
+    } else {
+      widths = [10, 2];
+    }
 
     let template_obj = window.templatelist.find(({ prop }) =>
       prop.includes(this.state.thread.file_type.split('_')[0])
@@ -455,7 +462,7 @@ class DocModificationThreadPage extends Component {
             <Card className="my-0 mx-0">
               <Card.Body>
                 <Row>
-                  <Col md={10}>
+                  <Col md={widths[0]}>
                     <h5>Instruction</h5>
                     <p>
                       請填好我們的 TaiGer Template，並在這個討論串夾帶在和您的
@@ -502,7 +509,7 @@ class DocModificationThreadPage extends Component {
                       <p>No</p>
                     )}
                   </Col>
-                  <Col md={2}>
+                  <Col md={widths[1]}>
                     <h6>
                       <b>Agent:</b>
                       {this.state.agents.map((agent, i) => (
@@ -557,6 +564,21 @@ class DocModificationThreadPage extends Component {
                     </h6>
                     <p>{this.state.deadline}</p>
                   </Col>
+                  {this.state.thread.file_type === 'CV' && (
+                    <Col md={widths[2]}>
+                      <h6>
+                        <b>Profile photo:</b>
+                        <img
+                          // className="d-block w-100"
+                          src={`${BASE_URL}/api/students/${this.state.thread.student_id._id}/files/Passport_Photo`}
+                          height="100%"
+                          width="100%"
+                        />
+                      </h6>
+                      If image not shown, please go to Base Documents and upload
+                      Passport Photo.
+                    </Col>
+                  )}
                 </Row>
               </Card.Body>
             </Card>

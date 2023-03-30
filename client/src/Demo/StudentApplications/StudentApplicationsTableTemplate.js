@@ -363,7 +363,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                 <Form.Control
                   as="select"
                   onChange={(e) => this.handleChange(e, application_idx)}
-                  defaultValue={application.decided}
+                  value={application.decided}
                 >
                   <option value={'-'}>-</option>
                   <option value={'X'}>No</option>
@@ -388,7 +388,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                           application.decided !== 'X'
                         )
                       }
-                      defaultValue={application.closed}
+                      value={application.closed}
                     >
                       <option value={'-'}>-</option>
                       <option value={'X'}>No</option>
@@ -425,7 +425,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                         application.closed !== '-' && application.closed !== 'X'
                       )
                     }
-                    defaultValue={application.admission}
+                    value={application.admission}
                   >
                     <option value={'-'}>-</option>
                     <option value={'X'}>No</option>
@@ -518,7 +518,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                     <Form.Group controlId="applying_program_count">
                       <Form.Control
                         as="select"
-                        defaultValue={this.state.student.applying_program_count}
+                        value={this.state.student.applying_program_count}
                         onChange={(e) => this.handleChangeProgramCount(e)}
                       >
                         <option value="0">Please Select</option>

@@ -249,13 +249,7 @@ class ApplicationProgress extends React.Component {
                   to={'/student-applications/' + this.props.student._id}
                   style={{ textDecoration: 'none' }}
                 >
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    key={this.props.student._id}
-                  >
-                    <AiFillEdit size={16} />
-                  </Button>
+                  <AiFillEdit color="grey" size={16} />
                 </Link>
               )}
           </td>

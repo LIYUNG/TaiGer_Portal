@@ -185,7 +185,7 @@ class InternalDashboard extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                Number of Agent: {agents.length}{' '}
+                Number of students per agent:
                 <NVD3Chart
                   id="chart"
                   height={300}
@@ -197,6 +197,8 @@ class InternalDashboard extends React.Component {
               </Card.Body>
             </Card>
           </Col>
+        </Row>
+        <Row>
           <Col md={4}>
             <Card>
               <Card.Header text={'dark'}>
@@ -207,7 +209,51 @@ class InternalDashboard extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                Number of Editors: {editors.length}
+                Number of students per editor:
+                <NVD3Chart
+                  id="chart"
+                  height={300}
+                  type="pieChart"
+                  datum={editors_data}
+                  x="key"
+                  y="y"
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={4}>
+            <Card>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0">Applications</Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Number of Applications [TODO]:
+                <NVD3Chart
+                  id="chart"
+                  height={300}
+                  type="pieChart"
+                  datum={editors_data}
+                  x="key"
+                  y="y"
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={4}>
+            <Card>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0">Admissions</Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Number of Admissions [TODO]:
                 <NVD3Chart
                   id="chart"
                   height={300}

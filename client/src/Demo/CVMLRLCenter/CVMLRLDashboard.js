@@ -9,7 +9,6 @@ import {
   Tab,
   Tabs
 } from 'react-bootstrap';
-import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 
 import {
   useTable,

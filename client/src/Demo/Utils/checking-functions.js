@@ -856,34 +856,57 @@ export const open_tasks_with_editors = (students) => {
 export const programs_refactor = (students) => {
   const applications = [];
   for (const student of students) {
-    for (const application of student.applications) {
+    if (
+      student.applications === undefined ||
+      student.applications.length === 0
+    ) {
       applications.push({
-        school: application.programId.school,
+        school: 'No University',
         firstname_lastname: `${student.firstname}, ${student.lastname}`,
-        program_name: application.programId.program_name,
-        semester: application.programId.semester,
-        degree: application.programId.degree,
-        toefl: application.programId.toefl,
-        ielts: application.programId.ielts,
-        program_id: application.programId._id.toString(),
-        application_deadline: application_deadline_calculator(
-          student,
-          application
-        ),
-        decided: application.decided,
-        closed: application.closed,
-        admission: application.admission,
+        program_name: 'No Program',
+        semester: '-',
+        degree: '-',
+        toefl: '-',
+        ielts: '-',
+        program_id: '-',
+        application_deadline: '-',
+        decided: '-',
+        closed: '-',
+        admission: '-',
         student_id: student._id.toString(),
-        deadline: application_deadline_calculator(student, application),
-        days_left: parseInt(
-          getNumberOfDays(
-            new Date(),
-            application_deadline_calculator(student, application)
-          )
-        ),
-        program_id: application.programId._id.toString(),
-        show: application.decided === 'O' ? true : false
+        deadline: '-',
+        days_left: '-',
+        show: '-'
       });
+    } else {
+      for (const application of student.applications) {
+        applications.push({
+          school: application.programId.school,
+          firstname_lastname: `${student.firstname}, ${student.lastname}`,
+          program_name: application.programId.program_name,
+          semester: application.programId.semester,
+          degree: application.programId.degree,
+          toefl: application.programId.toefl,
+          ielts: application.programId.ielts,
+          program_id: application.programId._id.toString(),
+          application_deadline: application_deadline_calculator(
+            student,
+            application
+          ),
+          decided: application.decided,
+          closed: application.closed,
+          admission: application.admission,
+          student_id: student._id.toString(),
+          deadline: application_deadline_calculator(student, application),
+          days_left: parseInt(
+            getNumberOfDays(
+              new Date(),
+              application_deadline_calculator(student, application)
+            )
+          ),
+          show: application.decided === 'O' ? true : false
+        });
+      }
     }
   }
   return applications;

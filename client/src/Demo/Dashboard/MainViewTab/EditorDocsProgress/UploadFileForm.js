@@ -38,7 +38,9 @@ class UploadFileForm extends React.Component {
           />
         </Form.Group>
         <Button onClick={this.handleSubmit}>{submitText}</Button>
-        <Button onClick={this.props.onFormClose}>Cancel</Button>
+        <Button onClick={this.props.onFormClose} variant="light">
+          Cancel
+        </Button>
       </>
     );
   }

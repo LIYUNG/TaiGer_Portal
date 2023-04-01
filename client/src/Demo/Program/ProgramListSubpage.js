@@ -126,14 +126,16 @@ class ProgramListSubpage extends React.Component {
             onClick={(e) => this.props.onSubmitAddToStudentProgramList(e)}
           >
             {this.props.isAssgining ? (
-              <Spinner animation="border" size='sm' role="status">
+              <Spinner animation="border" size="sm" role="status">
                 <span className="visually-hidden"></span>
               </Spinner>
             ) : (
               'Assign'
             )}
           </Button>
-          <Button onClick={this.props.setModalHide}>Cancel</Button>
+          <Button onClick={this.props.setModalHide} variant="light">
+            Cancel
+          </Button>
         </Modal.Footer>
       </Modal>
     );

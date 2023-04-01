@@ -68,7 +68,9 @@ class EditAgentsSubpage extends React.Component {
           >
             Update
           </Button>
-          <Button onClick={this.props.setmodalhide}>Cancel</Button>
+          <Button onClick={this.props.setmodalhide} variant="light">
+            Cancel
+          </Button>
         </Modal.Footer>
       </Modal>
     );

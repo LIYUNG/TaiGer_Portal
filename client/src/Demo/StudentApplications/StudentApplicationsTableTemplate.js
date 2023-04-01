@@ -648,7 +648,10 @@ class StudentApplicationsTableTemplate extends React.Component {
                 >
                   Yes
                 </Button>
-                <Button onClick={this.onHideModalDeleteApplication}>
+                <Button
+                  onClick={this.onHideModalDeleteApplication}
+                  variant="light"
+                >
                   Close
                 </Button>
               </Modal.Footer>

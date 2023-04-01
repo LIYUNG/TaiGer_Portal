@@ -596,7 +596,11 @@ class SingleProgramEdit extends React.Component {
         >
           Update
         </Button>
-        <Button size="sm" onClick={() => this.props.handleClick()}>
+        <Button
+          size="sm"
+          onClick={() => this.props.handleClick()}
+          variant="light"
+        >
           Cancel
         </Button>
       </>

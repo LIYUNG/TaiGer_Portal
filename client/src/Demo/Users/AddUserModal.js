@@ -76,7 +76,10 @@ class AddUserModal extends React.Component {
           >
             {this.props.isLoaded ? 'Add User' : 'Loading'}
           </Button>
-          <Button variant="secondary" onClick={this.props.cloaseAddUserModal}>
+          <Button
+            onClick={this.props.cloaseAddUserModal}
+            variant="light"
+          >
             Cancel
           </Button>
         </Modal.Footer>

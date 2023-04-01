@@ -56,7 +56,10 @@ class UserDeleteWarning extends React.Component {
           >
             {this.props.isLoaded ? 'Yes' : 'Loading'}
           </Button>
-          <Button variant="secondary" onClick={this.props.setModalHideDDelete}>
+          <Button
+            onClick={this.props.setModalHideDDelete}
+            variant="light"
+          >
             No
           </Button>
         </Modal.Footer>

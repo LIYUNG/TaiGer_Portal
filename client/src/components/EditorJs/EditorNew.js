@@ -262,7 +262,10 @@ const EditorNew = (props) => {
             >
               Save
             </Button>
-            <Button onClick={(e) => props.handleClickEditToggle(e)}>
+            <Button
+              onClick={(e) => props.handleClickEditToggle(e)}
+              variant="light"
+            >
               Cancel
             </Button>
           </Col>

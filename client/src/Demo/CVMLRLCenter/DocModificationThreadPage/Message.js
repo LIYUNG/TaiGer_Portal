@@ -243,7 +243,9 @@ class Message extends Component {
             >
               {this.props.isLoaded ? 'Delete' : 'Pending'}
             </Button>
-            <Button onClick={this.onHidedeleteMessageModalShow}>Cancel</Button>
+            <Button onClick={this.onHidedeleteMessageModalShow} variant="light">
+              Cancel
+            </Button>
           </Modal.Footer>
         </Modal>
       </>

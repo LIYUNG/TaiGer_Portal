@@ -50,7 +50,9 @@ class UsersListSubpage extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={(e) => this.props.onSubmit2(e)}>Assign</Button>
-          <Button onClick={this.props.setModalHide}>Cancel</Button>
+          <Button onClick={this.props.setModalHide} variant="light">
+            Cancel
+          </Button>
         </Modal.Footer>
       </Modal>
     );

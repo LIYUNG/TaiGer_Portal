@@ -48,7 +48,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.school
                           ? this.state.program.school
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -69,7 +69,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.program_name
                           ? this.state.program.program_name
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -90,7 +90,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.degree
                           ? this.state.program.degree
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -111,7 +111,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.semester
                           ? this.state.program.semester
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -133,7 +133,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.language
                           ? this.state.program.language
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -154,7 +154,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.application_start
                           ? this.state.program.application_start
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -175,7 +175,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.application_deadline
                           ? this.state.program.application_deadline
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -214,7 +214,7 @@ class NewProgramEdit extends React.Component {
                       placeholder="88"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.toefl ? this.state.program.toefl : ""
+                        this.state.program.toefl ? this.state.program.toefl : ''
                       }
                     />
                   </Form.Group>
@@ -233,7 +233,7 @@ class NewProgramEdit extends React.Component {
                       placeholder="6.5"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.ielts ? this.state.program.ielts : ""
+                        this.state.program.ielts ? this.state.program.ielts : ''
                       }
                     />
                   </Form.Group>
@@ -254,7 +254,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.testdaf
                           ? this.state.program.testdaf
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -273,7 +273,7 @@ class NewProgramEdit extends React.Component {
                       placeholder="V145Q160"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.gre ? this.state.program.gre : ""
+                        this.state.program.gre ? this.state.program.gre : ''
                       }
                     />
                   </Form.Group>
@@ -292,7 +292,7 @@ class NewProgramEdit extends React.Component {
                       placeholder="640"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.gmat ? this.state.program.gmat : ""
+                        this.state.program.gmat ? this.state.program.gmat : ''
                       }
                     />
                   </Form.Group>
@@ -312,7 +312,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.ml_required
                           ? this.state.program.ml_required
-                          : ""
+                          : ''
                       }
                     >
                       <option value="no">no</option>
@@ -337,7 +337,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.ml_requirements
                           ? this.state.program.ml_requirements
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -357,7 +357,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.rl_required
                           ? this.state.program.rl_required
-                          : "no"
+                          : 'no'
                       }
                     >
                       <option value="no">no</option>
@@ -384,7 +384,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.rl_requirements
                           ? this.state.program.rl_requirements
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -404,7 +404,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.essay_required
                           ? this.state.program.essay_required
-                          : ""
+                          : ''
                       }
                     >
                       <option value="no">no</option>
@@ -428,7 +428,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.essay_requirements
                           ? this.state.program.essay_requirements
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -450,7 +450,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.special_notes
                           ? this.state.program.special_notes
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -458,7 +458,7 @@ class NewProgramEdit extends React.Component {
               </Col>
             </Row>
             <Row>
-              {" "}
+              {' '}
               <Col md={4}>
                 <h5>Comments</h5>
               </Col>
@@ -473,7 +473,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.comments
                           ? this.state.program.comments
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -494,7 +494,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.application_portal_a
                           ? this.state.program.application_portal_a
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -515,7 +515,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.application_portal_b
                           ? this.state.program.application_portal_b
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -536,7 +536,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.website
                           ? this.state.program.website
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -555,7 +555,7 @@ class NewProgramEdit extends React.Component {
                       placeholder="url"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.fpso ? this.state.program.fpso : ""
+                        this.state.program.fpso ? this.state.program.fpso : ''
                       }
                     />
                   </Form.Group>
@@ -576,7 +576,7 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.study_group_flag
                           ? this.state.program.study_group_flag
-                          : ""
+                          : ''
                       }
                     />
                   </Form.Group>
@@ -591,7 +591,11 @@ class NewProgramEdit extends React.Component {
         >
           Create
         </Button>
-        <Button size="sm" onClick={() => this.props.handleClick()}>
+        <Button
+          size="sm"
+          onClick={() => this.props.handleClick()}
+          variant="light"
+        >
           Cancel
         </Button>
       </>

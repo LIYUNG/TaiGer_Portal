@@ -313,7 +313,9 @@ class ButtonSetUploaded extends React.Component {
                 'Yes'
               )}
             </Button>
-            <Button onClick={this.closeWarningWindow}>No</Button>
+            <Button onClick={this.closeWarningWindow} variant="light">
+              No
+            </Button>
           </Modal.Footer>
         </Modal>
         <Modal

@@ -559,6 +559,7 @@ const createApplication = asyncHandler(async (req, res) => {
       Number.isInteger(parseInt(program.rl_required)) >= 0
     ) {
       // TODO: if no specific requirement,
+
       if (!program.rl_requirements) {
         // check if general RL is created, if not, create ones!
         if (!student.generaldocs_threads.find((thread) => thread.file_type)) {

@@ -34,6 +34,7 @@ const getStatistics = asyncHandler(async (req, res) => {
   }).count();
   // TODO: this include the tasks that created by not shown, because the programs are not decided.
   // So that is why the number is more than what we actually see in UI.
+  // Case 2: if student in Archiv, but the tasks are still open!! then the number is not correct!
   const documents_ml = await Documentthread.find({
     isFinalVersion: false,
     file_type: 'ML'
@@ -60,7 +61,7 @@ const getStatistics = asyncHandler(async (req, res) => {
   documents_data.ESSAY = { count: documents_essay };
   const agents = await Agent.find();
   const editors = await Editor.find();
-  const students = await Student.find();
+  const students = await Student.find().populate('applications.programId');
   const agents_data = [];
   const editors_data = [];
   for (let i = 0; i < agents.length; i += 1) {
@@ -73,7 +74,6 @@ const getStatistics = asyncHandler(async (req, res) => {
     }).count();
     agents_data.push(Obj);
   }
-  console.log(agents_data);
   for (let i = 0; i < editors.length; i += 1) {
     const Obj = {};
     Obj.firstname = editors[i].firstname;
@@ -97,7 +97,9 @@ const getStatistics = asyncHandler(async (req, res) => {
       isOpen: students.filter((student) => student.archiv !== true).length
     },
     agents: agents_data,
-    editors: editors_data
+    editors: editors_data,
+    students_details: students,
+    applications: []
   });
 });
 

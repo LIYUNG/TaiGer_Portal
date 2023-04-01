@@ -189,7 +189,7 @@ ${activationLink}
 <p>Password: <b>${payload.password}</b></p>
 
 <p>密碼為臨時，登入後請至 ${SETTINGS_URL} 盡速更換您的密碼</p>
-<p></p>
+<p> </p>
 <p>${TAIGER_SIGNATURE}</p>
 
 <p>${SPLIT_LINE}</p>

@@ -288,9 +288,9 @@ class DocCreatePage extends React.Component {
         </Row>
         <Row>
           <Col sm={12}>
-            <Card className="mb-2 mx-0">
-              {this.state.isEdit ? (
-                <>
+            {this.state.isEdit ? (
+              <>
+                <Card className="mb-2 mx-0">
                   <Card.Body>
                     <Row>
                       <Col>
@@ -333,21 +333,29 @@ class DocCreatePage extends React.Component {
                       role={this.props.role}
                     />
                   </Card.Body>
-                </>
-              ) : (
-                <Card.Body>
+                </Card>
+              </>
+            ) : (
+              <>
+                <Row className="mb-2">
                   {documentlist_key.map((catego, i) => (
-                    <Row className="mb-4" key={i}>
-                      <h5>- {window.documentlist[`${catego}`]}</h5>
-                      {document_list(catego)}
-                    </Row>
+                    <Col md={4}>
+                      <Card className="mb-1 mx-0">
+                        <Card.Header>
+                          <Card.Title className="my-0 mx-0">
+                            {window.documentlist[`${catego}`]}
+                          </Card.Title>
+                        </Card.Header>
+                        <Card.Body>{document_list(catego)}</Card.Body>
+                      </Card>
+                    </Col>
                   ))}
-                  {is_TaiGer_AdminAgent(this.props.user) && (
-                    <Button onClick={this.handleClick}>Add</Button>
-                  )}
-                </Card.Body>
-              )}
-            </Card>
+                </Row>
+                {is_TaiGer_AdminAgent(this.props.user) && (
+                  <Button onClick={this.handleClick}>Add</Button>
+                )}
+              </>
+            )}
           </Col>
         </Row>
         <Modal

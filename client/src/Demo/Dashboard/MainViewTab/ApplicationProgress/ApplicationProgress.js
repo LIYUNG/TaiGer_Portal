@@ -191,8 +191,8 @@ class ApplicationProgress extends React.Component {
               O
             </p>
           ) : application.closed === 'X' ? (
-            <p className="mb-1 text-danger" key={application._id}>
-              ?
+            <p className="mb-1 text-info" key={application._id}>
+              X
             </p>
           ) : (
             <p className="mb-1 text-danger" key={application._id}>

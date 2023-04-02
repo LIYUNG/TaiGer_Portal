@@ -105,6 +105,9 @@ class SingleProgram extends React.Component {
       res_modal_message,
       program
     } = this.state;
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
     if (!isLoaded || !program) {
       return (
         <div style={spinner_style}>
@@ -115,9 +118,6 @@ class SingleProgram extends React.Component {
       );
     }
     TabTitle(`${program.school} - ${program.program_name}`);
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
 
     if (this.state.isEdit) {
       return (

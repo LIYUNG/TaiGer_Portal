@@ -721,6 +721,10 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     const application = student.applications.find(
       (app) => app._id == applications[i]._id
     );
+    if (!application) {
+      logger.error('UpdateStudentApplications: Invalid document status');
+      throw new ErrorResponse(403, 'Invalid application. Please refresh the page and try updating again.');
+    }
     if (
       applications[i].decided === 'O' &&
       application.decided !== applications[i].decided
@@ -759,10 +763,6 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   }
   await student.save();
 
-  // const student_updated = await Student.findById(studentId)
-  //   .populate('applications.programId')
-  //   .populate('agents editors', 'firstname lastname email')
-  //   .lean();
   const student_updated = await Student.findById(studentId)
     .populate('applications.programId')
     .populate(

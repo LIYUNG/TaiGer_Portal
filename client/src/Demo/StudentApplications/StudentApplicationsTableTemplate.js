@@ -518,7 +518,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                     <Form.Group controlId="applying_program_count">
                       <Form.Control
                         as="select"
-                        value={this.state.student.applying_program_count}
+                        defaultValue={this.state.student.applying_program_count}
                         onChange={(e) => this.handleChangeProgramCount(e)}
                       >
                         <option value="0">Please Select</option>

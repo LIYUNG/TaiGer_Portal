@@ -575,8 +575,9 @@ class DocModificationThreadPage extends Component {
                           width="100%"
                         />
                       </h6>
-                      If image not shown, please go to Base Documents and upload
-                      Passport Photo.
+                      If image not shown, please go to{' '}
+                      <a href="/base-documents">Base Documents</a> and upload
+                      the Passport Photo.
                     </Col>
                   )}
                 </Row>

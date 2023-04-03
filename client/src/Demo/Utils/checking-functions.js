@@ -169,7 +169,7 @@ export const are_base_documents_missing = (student) => {
 
   for (let i = 0; i < documentlist2_keys.length; i++) {
     if (
-      object_init[documentlist2_keys[i]] !== 'accepted' ||
+      object_init[documentlist2_keys[i]] !== 'accepted' &&
       object_init[documentlist2_keys[i]] !== 'notneeded'
     ) {
       return true;

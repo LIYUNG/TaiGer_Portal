@@ -238,7 +238,7 @@ const UrgentTasksReminderEmails = async () => {
           { students: agent_students }
         );
         console.log(
-          `Daily urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
+          `Daily urgent emails sent to ${agents[j].firstname} ${agents[j].lastname}`
         );
       }
     }

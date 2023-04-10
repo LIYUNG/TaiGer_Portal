@@ -497,7 +497,9 @@ class ButtonSetRejected extends React.Component {
                   </Button>
                 )}
 
-                <Button onClick={this.closeCommentWindow}>Close</Button>
+                <Button onClick={this.closeCommentWindow} variant="light">
+                  Close
+                </Button>
               </Modal.Footer>
             </>
           )}

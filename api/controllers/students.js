@@ -12,6 +12,8 @@ const { emptyS3Directory } = require('../utils/utils_function');
 const logger = require('../services/logger');
 
 const {
+  informEditorArchivedStudentEmail,
+  informStudentArchivedStudentEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
   informEditorNewStudentEmail,
@@ -234,7 +236,8 @@ const getArchivStudent = asyncHandler(async (req, res) => {
 });
 
 // () TODO email : agent better notification! (only added or removed should be informed.)
-// () TODO email : student better notification
+// (O) email : inform student close service
+// (O) email : inform editor that student is archived.
 const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
   const {
     user,
@@ -242,13 +245,17 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
     body: { isArchived }
   } = req;
 
+  // TODO: data validation for isArchived and studentId
   let student = await Student.findByIdAndUpdate(
     studentId,
     {
       archiv: isArchived
     },
     { new: true, strict: false }
-  );
+  )
+    .populate('editors')
+    .lean()
+    .exec();
   if (isArchived) {
     // return dashboard students
     if (user.role === Role.Admin) {
@@ -275,6 +282,28 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
       }).populate('applications.programId agents editors');
       res.status(200).send({ success: true, data: students });
     }
+    // (O): send editor email.
+    for (let i = 0; i < student.editors.length; i += 1) {
+      await informEditorArchivedStudentEmail(
+        {
+          firstname: student.editors[i].firstname,
+          lastname: student.editors[i].lastname,
+          address: student.editors[i].email
+        },
+        {
+          std_firstname: student.firstname,
+          std_lastname: student.lastname
+        }
+      );
+    }
+    await informStudentArchivedStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {}
+    );
   } else {
     if (user.role === Role.Admin) {
       const students = await Student.find({ archiv: true })
@@ -304,7 +333,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
   }
 });
 
-// (O) TODO email : agent better notification! (only added should be informed.)
+// (O) email : agent better notification! (only added should be informed.)
 // () TODO email : student better notification ()
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
@@ -312,6 +341,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     body: agentsId // agentsId is json (or agentsId array with boolean)
   } = req;
   const student = await Student.findById(studentId);
+  // TODO: data validation for studentId, agentsId
   const agentsId_arr = Object.keys(agentsId);
   let updated_agent_id = [];
   let before_change_agent_arr = student.agents;
@@ -388,7 +418,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   } = req;
   const keys = Object.keys(editorsId);
   const student = await Student.findById(studentId);
-
+  // TODO: data validation for studentId, editorsId
   let updated_editor_id = [];
   let before_change_editor_arr = student.editors;
   let to_be_informed_editors = [];
@@ -483,7 +513,7 @@ const ToggleProgramStatus = asyncHandler(async (req, res) => {
   res.status(201).send({ success: true, data: student });
 });
 // (O) email : student notification
-// (O) TODO: auto-create document thread for student: ML,RL,Essay
+// (O) auto-create document thread for student: ML,RL,Essay
 // (if applicable, depending on program list)
 const createApplication = asyncHandler(async (req, res) => {
   const {

@@ -13,6 +13,7 @@ const UNI_ASSIST_FOR_STUDENT_URL = new URL('/uni-assist', ORIGIN).href;
 const UNI_ASSIST_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/uni-assist`, ORIGIN).href;
 const THREAD_URL = new URL('/document-modification', ORIGIN).href;
+const ARCHIVED_STUDENTS_URL = new URL('/archiv/students', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
 const BASE_DOCUMENT_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/profile`, ORIGIN).href;
@@ -1315,6 +1316,7 @@ module.exports = {
   UNI_ASSIST_FOR_STUDENT_URL,
   UNI_ASSIST_FOR_AGENT_URL,
   THREAD_URL,
+  ARCHIVED_STUDENTS_URL,
   BASE_DOCUMENT_URL,
   BASE_DOCUMENT_FOR_AGENT_URL,
   TEMPLATE_DOWNLOAD_URL,

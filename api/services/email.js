@@ -10,6 +10,7 @@ const {
   RESEND_ACTIVATION_URL,
   PASSWORD_RESET_URL,
   FORGOT_PASSWORD_URL,
+  ARCHIVED_STUDENTS_URL,
   CVMLRL_CENTER_URL,
   CVMLRL_FOR_EDITOR_URL,
   UNI_ASSIST_FOR_STUDENT_URL,
@@ -715,6 +716,48 @@ const informEditorNewStudentEmail = async (recipient, msg) => {
 <p>Please go to ${CVMLRL_FOR_EDITOR_URL(
     msg.std_id
   )} , and check if the CV task is created and say hello to your student!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informEditorArchivedStudentEmail = async (recipient, msg) => {
+  const subject = `[Close] Student ${msg.std_firstname} ${msg.std_lastname} is close.`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.std_firstname} ${msg.std_lastname} is close! No further tasks needed for the student.</p>
+
+<p>Please go to ${ARCHIVED_STUDENTS_URL} , and see the archived student!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informStudentArchivedStudentEmail = async (recipient, msg) => {
+  const subject = `[${recipient.firstname} ${recipient.lastname}] TaiGer Portal service ends`;
+  const message = `\
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>您在 TaiGer Portal 上的服務已結束。</p>
+
+<p>感謝您的使用。祝您在未來在求學的路上一帆風順。</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Your service in TaiGer Portal is close! </p>
+
+<p>Thank you! We wish you success in your future endeavors</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1740,6 +1783,8 @@ module.exports = {
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
   informEditorNewStudentEmail,
+  informEditorArchivedStudentEmail,
+  informStudentArchivedStudentEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
   updateCoursesDataAgentEmail,

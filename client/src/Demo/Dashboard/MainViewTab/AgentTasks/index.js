@@ -258,6 +258,7 @@ class AgentTasks extends React.Component {
             <td></td>
           </tr>
         )}
+        {/* TODO: add Portal register tasks */}
       </>
     );
   }

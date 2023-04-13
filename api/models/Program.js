@@ -103,6 +103,14 @@ const programSchema = new mongoose.Schema(
       type: String
       // required: true,
     },
+    application_portal_a_instructions: {
+      type: String
+      // required: true,
+    },
+    application_portal_b_instructions: {
+      type: String
+      // required: true,
+    },
     uni_assist_link: {
       type: String
       // required: true,

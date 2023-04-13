@@ -326,19 +326,22 @@ export default function PortalCredentialPage(props) {
                         application.programId.application_portal_b) && (
                         <>
                           <Row>
-                            <Col md={4}>
+                            <Col md={3}>
                               <b>Account</b>
                             </Col>
                             <Col md={3}>
                               <b>Password</b>
                             </Col>
-                            <Col md={5}>
+                            <Col md={3}>
                               <b>Link</b>
+                            </Col>
+                            <Col md={3}>
+                              <b>Instructions</b>
                             </Col>
                           </Row>
                           {application.programId.application_portal_a && (
                             <Row>
-                              <Col md={4}>
+                              <Col md={3}>
                                 <Form.Group
                                   controlId={`${application.programId._id.toString()}_application_portal_a_account`}
                                   className="my-0 mx-0"
@@ -372,7 +375,7 @@ export default function PortalCredentialPage(props) {
                                   />
                                 </Form.Group>
                               </Col>
-                              <Col md={5}>
+                              <Col md={3}>
                                 <a
                                   href={`${application.programId.application_portal_a}`}
                                   target="_blank"
@@ -380,11 +383,22 @@ export default function PortalCredentialPage(props) {
                                   {application.programId.application_portal_a}
                                 </a>
                               </Col>
+                              <Col md={3}>
+                                <a
+                                  href={`${application.programId.application_portal_a_instructions}`}
+                                  target="_blank"
+                                >
+                                  {
+                                    application.programId
+                                      .application_portal_a_instructions
+                                  }
+                                </a>
+                              </Col>
                             </Row>
                           )}
                           {application.programId.application_portal_b && (
                             <Row>
-                              <Col md={4}>
+                              <Col md={3}>
                                 <Form.Group
                                   controlId={`${application.programId._id.toString()}_application_portal_b_account`}
                                   className="my-1 mx-0"
@@ -418,12 +432,23 @@ export default function PortalCredentialPage(props) {
                                   />
                                 </Form.Group>
                               </Col>
-                              <Col md={5}>
+                              <Col md={3}>
                                 <a
                                   href={`${application.programId.application_portal_b}`}
                                   target="_blank"
                                 >
                                   {application.programId.application_portal_b}
+                                </a>
+                              </Col>
+                              <Col md={3}>
+                                <a
+                                  href={`${application.programId.application_portal_b_instructions}`}
+                                  target="_blank"
+                                >
+                                  {
+                                    application.programId
+                                      .application_portal_b_instructions
+                                  }
                                 </a>
                               </Col>
                             </Row>

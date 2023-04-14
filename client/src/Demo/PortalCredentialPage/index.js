@@ -12,6 +12,7 @@ import {
 } from '../Utils/checking-functions';
 
 import { getPortalCredentials, postPortalCredentials } from '../../api';
+import Banner from '../../components/Banner/Banner';
 import { TabTitle } from '../Utils/TabTitle';
 import { Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
@@ -21,6 +22,7 @@ export default function PortalCredentialPage(props) {
     error: '',
     isLoaded: false,
     isUpdateLoaded: {},
+    isChanged: {},
     applications: [],
     confirmModalWindowOpen: false,
     success: false,
@@ -45,11 +47,12 @@ export default function PortalCredentialPage(props) {
         if (success) {
           let credentials_temp = {};
           let isUpdateLoaded_temp = {};
+          let isChanged_temp = {};
           if (data.applications) {
             for (const application of data.applications) {
               const programId = application.programId._id.toString();
               isUpdateLoaded_temp[programId] = true;
-
+              isChanged_temp[programId] = false;
               const portalCredentials = application.portal_credentials;
               credentials_temp[programId] = {
                 account_portal_a: portalCredentials
@@ -105,6 +108,7 @@ export default function PortalCredentialPage(props) {
       if (event_id.includes('application_portal_a')) {
         setStatedata((state) => ({
           ...state,
+          isChanged: { ...state.isChanged, [program_id]: true },
           credentials: {
             ...state.credentials,
             [program_id]: {
@@ -117,6 +121,7 @@ export default function PortalCredentialPage(props) {
       if (event_id.includes('application_portal_b')) {
         setStatedata((state) => ({
           ...state,
+          isChanged: { ...state.isChanged, [program_id]: true },
           credentials: {
             ...state.credentials,
             [program_id]: {
@@ -131,6 +136,7 @@ export default function PortalCredentialPage(props) {
       if (event_id.includes('application_portal_a')) {
         setStatedata((state) => ({
           ...state,
+          isChanged: { ...state.isChanged, [program_id]: true },
           credentials: {
             ...state.credentials,
             [program_id]: {
@@ -143,6 +149,7 @@ export default function PortalCredentialPage(props) {
       if (event_id.includes('application_portal_b')) {
         setStatedata((state) => ({
           ...state,
+          isChanged: { ...state.isChanged, [program_id]: true },
           credentials: {
             ...state.credentials,
             [program_id]: {
@@ -169,6 +176,7 @@ export default function PortalCredentialPage(props) {
             ...state,
             isLoaded: true,
             confirmModalWindowOpen: true,
+            isChanged: { ...state.isChanged, [program_id]: false },
             isUpdateLoaded: { ...state.isUpdateLoaded, [program_id]: true },
             success: success,
             isUpdating: false,
@@ -311,6 +319,9 @@ export default function PortalCredentialPage(props) {
                               disabled={
                                 !statedata.isUpdateLoaded[
                                   application.programId._id.toString()
+                                ] ||
+                                !statedata.isChanged[
+                                  application.programId._id.toString()
                                 ]
                               }
                             >
@@ -325,6 +336,36 @@ export default function PortalCredentialPage(props) {
                       {(application.programId.application_portal_a ||
                         application.programId.application_portal_b) && (
                         <>
+                          {((application.programId.application_portal_a &&
+                            (!statedata.credentials[
+                              application.programId._id.toString()
+                            ].account_portal_a ||
+                              !statedata.credentials[
+                                application.programId._id.toString()
+                              ].password_portal_a)) ||
+                            (application.programId.application_portal_b &&
+                              (!statedata.credentials[
+                                application.programId._id.toString()
+                              ].account_portal_b ||
+                                !statedata.credentials[
+                                  application.programId._id.toString()
+                                ].password_portal_b))) && (
+                            <div>
+                              <Banner
+                                ReadOnlyMode={true}
+                                bg={'danger'}
+                                title={'Warning:'}
+                                path={'/'}
+                                text={
+                                  'Please register and provide credentials here:'
+                                }
+                                link_name={''}
+                                // removeBanner={this.removeBanner}
+                                notification_key={'x'}
+                              ></Banner>
+                            </div>
+                          )}
+
                           <Row>
                             <Col md={3}>
                               <b>Account</b>

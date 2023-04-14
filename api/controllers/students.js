@@ -58,20 +58,57 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
     .populate('agents editors', 'firstname lastname email')
     .populate(
       'applications.programId',
-      'school program_name toefl ielts degree semester application_deadline ml_required ml_requirements rl_required uni_assist rl_requirements essay_required essay_requirements'
+      'school program_name toefl ielts degree semester application_deadline ml_required ml_requirements rl_required uni_assist rl_requirements essay_required essay_requirements application_portal_a application_portal_b'
     )
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
-    .select('-taigerai')
+    .select(
+      '-taigerai +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+    )
     .lean();
+
+  for (let i = 0; i < student.applications.length; i += 1) {
+    if (student.applications[i].programId.application_portal_a) {
+      if (
+        student.applications[i].portal_credentials &&
+        student.applications[i].portal_credentials.application_portal_a &&
+        student.applications[i].portal_credentials.application_portal_a
+          .account &&
+        student.applications[i].portal_credentials.application_portal_a.password
+      ) {
+        student.applications[i].credential_a_filled = true;
+      } else {
+        student.applications[i].credential_a_filled = false;
+      }
+    } else {
+      student.applications[i].credential_a_filled = true;
+    }
+    if (student.applications[i].programId.application_portal_b) {
+      if (
+        student.applications[i].portal_credentials &&
+        student.applications[i].portal_credentials.application_portal_b &&
+        student.applications[i].portal_credentials.application_portal_b
+          .account &&
+        student.applications[i].portal_credentials.application_portal_b.password
+      ) {
+        student.applications[i].credential_b_filled = true;
+      } else {
+        student.applications[i].credential_b_filled = false;
+      }
+    } else {
+      student.applications[i].credential_b_filled = true;
+    }
+    delete student.applications[i].portal_credentials;
+  }
   const base_docs_link = await Basedocumentationslink.find({
     category: 'base-documents'
   });
   const survey_link = await Basedocumentationslink.find({
     category: 'survey'
   });
+
   res
     .status(200)
     .send({ success: true, data: student, base_docs_link, survey_link });

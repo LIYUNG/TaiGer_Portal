@@ -285,36 +285,44 @@ const UrgentTasksReminderEmails = async () => {
 const add_portals_registered_status = (student_input) => {
   const student = student_input;
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].programId.application_portal_a) {
-      if (
-        student.applications[i].portal_credentials &&
-        student.applications[i].portal_credentials.application_portal_a &&
-        student.applications[i].portal_credentials.application_portal_a
-          .account &&
-        student.applications[i].portal_credentials.application_portal_a.password
-      ) {
-        student.applications[i].credential_a_filled = true;
+    if (student.applications[i].decided === 'O') {
+      if (student.applications[i].programId.application_portal_a) {
+        if (
+          student.applications[i].portal_credentials &&
+          student.applications[i].portal_credentials.application_portal_a &&
+          student.applications[i].portal_credentials.application_portal_a
+            .account &&
+          student.applications[i].portal_credentials.application_portal_a
+            .password
+        ) {
+          student.applications[i].credential_a_filled = true;
+        } else {
+          student.applications[i].credential_a_filled = false;
+        }
       } else {
-        student.applications[i].credential_a_filled = false;
+        student.applications[i].credential_a_filled = true;
+      }
+      if (student.applications[i].programId.application_portal_b) {
+        if (
+          student.applications[i].portal_credentials &&
+          student.applications[i].portal_credentials.application_portal_b &&
+          student.applications[i].portal_credentials.application_portal_b
+            .account &&
+          student.applications[i].portal_credentials.application_portal_b
+            .password
+        ) {
+          student.applications[i].credential_b_filled = true;
+        } else {
+          student.applications[i].credential_b_filled = false;
+        }
+      } else {
+        student.applications[i].credential_b_filled = true;
       }
     } else {
       student.applications[i].credential_a_filled = true;
-    }
-    if (student.applications[i].programId.application_portal_b) {
-      if (
-        student.applications[i].portal_credentials &&
-        student.applications[i].portal_credentials.application_portal_b &&
-        student.applications[i].portal_credentials.application_portal_b
-          .account &&
-        student.applications[i].portal_credentials.application_portal_b.password
-      ) {
-        student.applications[i].credential_b_filled = true;
-      } else {
-        student.applications[i].credential_b_filled = false;
-      }
-    } else {
       student.applications[i].credential_b_filled = true;
     }
+
     delete student.applications[i].portal_credentials;
   }
   return student;

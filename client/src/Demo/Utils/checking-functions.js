@@ -179,11 +179,10 @@ export const are_base_documents_missing = (student) => {
 };
 
 export const to_register_application_portals = (student) => {
-  if (!student.applications || student.applications.length === 0) {
-    return false;
-  }
-  for (application of student.applications) {
-    if (application.portal_credentials) {
+  console.log(student);
+  for (const application of student.applications) {
+    if (!application.credential_a_filled || !application.credential_b_filled) {
+      return true;
     }
   }
   return false;

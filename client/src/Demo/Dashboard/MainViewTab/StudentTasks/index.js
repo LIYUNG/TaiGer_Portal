@@ -196,24 +196,23 @@ class StudentTasks extends React.Component {
             <td></td>
           </tr>
         )}
-        {/* TODO: portal credential registration. */}
-        {/* {to_register_application_portals(this.props.student) && (
+        {to_register_application_portals(this.props.student) && (
           <tr>
             <td>
               <Link
-                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                to={`${DEMO.PORTALS_MANAGEMENT_LINK}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
-                Base Documents
+                Portals Management
               </Link>
             </td>
             <td>
-              Some of Base Documents are still missing. Please upload them.
+              Some of Portals are still not registered. Please register and provide the credentials as soon as possible.
             </td>
             <td></td>
           </tr>
-        )} */}
+        )}
         {unread_general_generaldocs}
         {unread_applications_docthread}
       </>

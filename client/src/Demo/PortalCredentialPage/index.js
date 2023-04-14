@@ -274,12 +274,8 @@ export default function PortalCredentialPage(props) {
                 <Col>
                   <p>
                     Please share your universities' application portals
-                    credentials here if you want your agent(s) helping you
-                    review your applications in universities' application
-                    portals.
-                  </p>
-                  <p>
-                    <b>If you don't want to share, </b>left it blank.
+                    credentials here. Your agent(s) can help you review your
+                    applications in universities' application portals, when you are blocked.
                   </p>
                 </Col>
               </Row>

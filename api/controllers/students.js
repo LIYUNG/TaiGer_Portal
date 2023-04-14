@@ -8,7 +8,10 @@ const { Role, User, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
-const { emptyS3Directory } = require('../utils/utils_function');
+const {
+  emptyS3Directory,
+  add_portals_registered_status
+} = require('../utils/utils_function');
 const logger = require('../services/logger');
 
 const {
@@ -69,39 +72,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
     )
     .lean();
 
-  for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].programId.application_portal_a) {
-      if (
-        student.applications[i].portal_credentials &&
-        student.applications[i].portal_credentials.application_portal_a &&
-        student.applications[i].portal_credentials.application_portal_a
-          .account &&
-        student.applications[i].portal_credentials.application_portal_a.password
-      ) {
-        student.applications[i].credential_a_filled = true;
-      } else {
-        student.applications[i].credential_a_filled = false;
-      }
-    } else {
-      student.applications[i].credential_a_filled = true;
-    }
-    if (student.applications[i].programId.application_portal_b) {
-      if (
-        student.applications[i].portal_credentials &&
-        student.applications[i].portal_credentials.application_portal_b &&
-        student.applications[i].portal_credentials.application_portal_b
-          .account &&
-        student.applications[i].portal_credentials.application_portal_b.password
-      ) {
-        student.applications[i].credential_b_filled = true;
-      } else {
-        student.applications[i].credential_b_filled = false;
-      }
-    } else {
-      student.applications[i].credential_b_filled = true;
-    }
-    delete student.applications[i].portal_credentials;
-  }
+  const student_new = add_portals_registered_status(student);
   const base_docs_link = await Basedocumentationslink.find({
     category: 'base-documents'
   });
@@ -111,7 +82,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
 
   res
     .status(200)
-    .send({ success: true, data: student, base_docs_link, survey_link });
+    .send({ success: true, data: student_new, base_docs_link, survey_link });
 });
 
 const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
@@ -158,9 +129,15 @@ const getStudents = asyncHandler(async (req, res) => {
         'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
         '-messages'
       )
-      .select('-notification')
+      .select(
+        '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+      )
       .lean();
-    res.status(200).send({ success: true, data: students });
+    const students_new = [];
+    for (let j = 0; j < students.length; j += 1) {
+      students_new.push(add_portals_registered_status(students[j]));
+    }
+    res.status(200).send({ success: true, data: students_new });
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
       agents: user._id,
@@ -172,14 +149,19 @@ const getStudents = asyncHandler(async (req, res) => {
         'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
         '-messages'
       )
-      .select('-notification')
+      .select(
+        '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+      )
       .lean()
       .exec();
     // console.log(Object.entries(students[0].applications[0].programId)); // looks ok!
     // console.log(students[0].applications[0].programId); // looks ok!
     // console.log(students[0].applications[0].programId.school);
-
-    res.status(200).send({ success: true, data: students });
+    const students_new = [];
+    for (let j = 0; j < students.length; j += 1) {
+      students_new.push(add_portals_registered_status(students[j]));
+    }
+    res.status(200).send({ success: true, data: students_new });
   } else if (user.role === Role.Editor) {
     const students = await Student.find({
       editors: user._id,
@@ -206,42 +188,9 @@ const getStudents = asyncHandler(async (req, res) => {
         '+applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
-    for (let i = 0; i < student.applications.length; i += 1) {
-      if (student.applications[i].programId.application_portal_a) {
-        if (
-          student.applications[i].portal_credentials &&
-          student.applications[i].portal_credentials.application_portal_a &&
-          student.applications[i].portal_credentials.application_portal_a
-            .account &&
-          student.applications[i].portal_credentials.application_portal_a
-            .password
-        ) {
-          student.applications[i].credential_a_filled = true;
-        } else {
-          student.applications[i].credential_a_filled = false;
-        }
-      } else {
-        student.applications[i].credential_a_filled = true;
-      }
-      if (student.applications[i].programId.application_portal_b) {
-        if (
-          student.applications[i].portal_credentials &&
-          student.applications[i].portal_credentials.application_portal_b &&
-          student.applications[i].portal_credentials.application_portal_b
-            .account &&
-          student.applications[i].portal_credentials.application_portal_b
-            .password
-        ) {
-          student.applications[i].credential_b_filled = true;
-        } else {
-          student.applications[i].credential_b_filled = false;
-        }
-      } else {
-        student.applications[i].credential_b_filled = true;
-      }
-      delete student.applications[i].portal_credentials;
-    }
-    res.status(200).send({ success: true, data: [student] });
+
+    const student_new = add_portals_registered_status(student);
+    res.status(200).send({ success: true, data: [student_new] });
   } else {
     // Guest
     res.status(200).send({ success: true, data: [user] });

@@ -21,7 +21,8 @@ import {
   check_uni_assist_needed,
   is_all_uni_assist_vpd_uploaded,
   num_uni_assist_vpd_needed,
-  num_uni_assist_vpd_uploaded
+  num_uni_assist_vpd_uploaded,
+  to_register_application_portals
 } from '../../../Utils/checking-functions';
 
 class AgentReviewing extends React.Component {
@@ -351,6 +352,27 @@ class AgentReviewing extends React.Component {
                 </p>
               )}
             </Link>
+          </td>
+          <td>
+            {to_register_application_portals(this.props.student) ? (
+              <p className="text-warning my-0">
+                <AiFillQuestionCircle
+                  size={24}
+                  color="lightgray"
+                  title="Working"
+                  className="my-0 mx-2"
+                />
+              </p>
+            ) : (
+              <p className="text-warning my-0">
+                <IoCheckmarkCircle
+                  size={24}
+                  color="limegreen"
+                  title="complete"
+                  className="my-0 mx-2"
+                />
+              </p>
+            )}
           </td>
           <td>
             <Link

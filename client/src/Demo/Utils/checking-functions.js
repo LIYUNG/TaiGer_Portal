@@ -179,7 +179,6 @@ export const are_base_documents_missing = (student) => {
 };
 
 export const to_register_application_portals = (student) => {
-  console.log(student);
   for (const application of student.applications) {
     if (!application.credential_a_filled || !application.credential_b_filled) {
       return true;
@@ -855,6 +854,49 @@ export const open_tasks_with_editors = (students) => {
 export const programs_refactor = (students) => {
   const applications = [];
   for (const student of students) {
+    var applying_university;
+    var applying_program;
+    var application_deadline;
+    var application_program_readiniess;
+    var application_base_documents;
+    var application_uni_assist;
+    var application_cv;
+    var application_mlrlessay;
+    let isMissingBaseDocs = false;
+
+    let keys = Object.keys(window.profile_list);
+    let object_init = {};
+    for (let i = 0; i < keys.length; i++) {
+      object_init[keys[i]] = 'missing';
+    }
+
+    if (student.profile) {
+      for (let i = 0; i < student.profile.length; i++) {
+        if (student.profile[i].status === 'uploaded') {
+          object_init[student.profile[i].name] = 'uploaded';
+        } else if (student.profile[i].status === 'accepted') {
+          object_init[student.profile[i].name] = 'accepted';
+        } else if (student.profile[i].status === 'rejected') {
+          object_init[student.profile[i].name] = 'rejected';
+        } else if (student.profile[i].status === 'missing') {
+          object_init[student.profile[i].name] = 'missing';
+        } else if (student.profile[i].status === 'notneeded') {
+          object_init[student.profile[i].name] = 'notneeded';
+        }
+      }
+    } else {
+    }
+    for (let i = 0; i < keys.length; i += 1) {
+      if (
+        object_init[keys[i]] !== 'accepted' &&
+        object_init[keys[i]] !== 'notneeded'
+      ) {
+        isMissingBaseDocs = true;
+        break;
+      }
+    }
+    const is_cv_done = is_cv_finished(student);
+
     if (
       student.applications === undefined ||
       student.applications.length === 0
@@ -875,6 +917,11 @@ export const programs_refactor = (students) => {
         student_id: student._id.toString(),
         deadline: '-',
         days_left: '-',
+        base_docs: '-',
+        uniassist: '-',
+        cv: '-',
+        ml_rl: '-',
+        ready: '-',
         show: '-'
       });
     } else {
@@ -903,6 +950,40 @@ export const programs_refactor = (students) => {
               application_deadline_calculator(student, application)
             )
           ),
+          base_docs:
+            application.closed === 'O' ? '-' : isMissingBaseDocs ? 'X' : 'O',
+          uniassist:
+            application.closed === 'O'
+              ? '-'
+              : check_program_uni_assist_needed(application)
+              ? application.uni_assist &&
+                application.uni_assist.status === 'uploaded'
+                ? 'O'
+                : 'X'
+              : 'Not Needed',
+          cv: application.closed === 'O' ? '-' : is_cv_done ? 'O' : 'X',
+          ml_rl:
+            application.decided === 'O'
+              ? application.closed === 'O'
+                ? '-'
+                : is_program_ml_rl_essay_finished(application)
+                ? 'O'
+                : 'X'
+              : 'X',
+          ready:
+            application.decided === 'O'
+              ? application.closed === 'O'
+                ? '-'
+                : !isMissingBaseDocs &&
+                  (!check_program_uni_assist_needed(application) ||
+                    (check_program_uni_assist_needed(application) &&
+                      application.uni_assist &&
+                      application.uni_assist.status === 'uploaded')) &&
+                  is_cv_done &&
+                  is_program_ml_rl_essay_finished(application)
+                ? 'Ready!'
+                : 'No'
+              : 'Undecided',
           show: application.decided === 'O' ? true : false
         });
       }

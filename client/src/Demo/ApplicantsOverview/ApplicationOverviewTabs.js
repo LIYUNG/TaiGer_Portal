@@ -1,5 +1,14 @@
 import React from 'react';
-import { Row, Col, Spinner, Table, Card, Tabs, Tab, Button } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Spinner,
+  Table,
+  Card,
+  Tabs,
+  Tab,
+  Button
+} from 'react-bootstrap';
 import { AiFillEdit } from 'react-icons/ai';
 
 import {
@@ -359,6 +368,50 @@ class ApplicationOverviewTabs extends React.Component {
       }
     ];
 
+    const columns2 = [
+      {
+        Header: 'First-, Last Name',
+        accessor: 'firstname_lastname',
+        filter: 'fuzzyText'
+      },
+      {
+        Header: 'University',
+        accessor: 'school',
+        filter: 'fuzzyText'
+      },
+      {
+        Header: 'Degree',
+        accessor: 'degree'
+      },
+      {
+        Header: 'Program',
+        accessor: 'program_name'
+      },
+      {
+        Header: 'Deadline',
+        accessor: 'deadline'
+      },
+      {
+        Header: 'Base Docs',
+        accessor: 'base_docs'
+      },
+      {
+        Header: 'Uni-Assist',
+        accessor: 'uniassist'
+      },
+      {
+        Header: 'CV',
+        accessor: 'cv'
+      },
+      {
+        Header: 'ML/RL',
+        accessor: 'ml_rl'
+      },
+      {
+        Header: 'Ready',
+        accessor: 'ready'
+      }
+    ];
     const applications_arr = programs_refactor(this.state.students);
 
     return (
@@ -423,7 +476,7 @@ class ApplicationOverviewTabs extends React.Component {
               </Col>
             </Row>
           </Tab>
-          <Tab
+          {/* <Tab
             eventKey="application_documents_overview"
             title="Application Document Overview"
           >
@@ -453,6 +506,44 @@ class ApplicationOverviewTabs extends React.Component {
                   </thead>
                   <tbody>{application_documents_overview}</tbody>
                 </Table>
+              </Col>
+            </Row>
+          </Tab> */}
+          <Tab
+            eventKey="application_documents_overview"
+            title="Application Document Overview"
+          >
+            <Row>
+              <Col>
+                {/* <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <thead>
+                    <tr>
+                      {is_TaiGer_role(this.props.user) && (
+                        <th>First-, Last Name</th>
+                      )}
+                      <th>University</th>
+                      <th>Programs</th>
+                      <th>Deadline</th>
+                      {window.programs_files_checklist.map((doc, index) => (
+                        <th key={index}>{doc.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{application_documents_overview}</tbody>
+                </Table> */}
+                <SortTable
+                  columns={columns2}
+                  data={applications_arr}
+                  user={this.props.user}
+                />
               </Col>
             </Row>
           </Tab>

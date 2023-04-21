@@ -854,14 +854,7 @@ export const open_tasks_with_editors = (students) => {
 export const programs_refactor = (students) => {
   const applications = [];
   for (const student of students) {
-    var applying_university;
-    var applying_program;
     var application_deadline;
-    var application_program_readiniess;
-    var application_base_documents;
-    var application_uni_assist;
-    var application_cv;
-    var application_mlrlessay;
     let isMissingBaseDocs = false;
 
     let keys = Object.keys(window.profile_list);

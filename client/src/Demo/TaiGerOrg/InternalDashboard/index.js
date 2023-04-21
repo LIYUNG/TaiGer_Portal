@@ -22,6 +22,7 @@ import { spinner_style } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
 import {
   is_TaiGer_role,
+  open_tasks,
   programs_refactor
 } from '../../Utils/checking-functions';
 
@@ -131,6 +132,13 @@ class InternalDashboard extends React.Component {
       '#a389d4',
       '#FE8A7D'
     ];
+    const frequencyDistribution = (str) => {
+      const map = {};
+      for (let i = 0; i < str.length; i++) {
+        map[str[i]] = (map[str[i]] || 0) + 1;
+      }
+      return map;
+    };
     const agents_data = [];
     agents.forEach((agent, i) => {
       agents_data.push({
@@ -199,7 +207,22 @@ class InternalDashboard extends React.Component {
         uv: obj2[status]
       });
     });
-
+    const task_distribution = open_tasks(students_details).map(
+      ({ deadline }) => {
+        return deadline;
+      }
+    );
+    const distr = frequencyDistribution(task_distribution);
+    const sort_date = Object.keys(
+      frequencyDistribution(task_distribution)
+    ).sort();
+    const sorted_date_freq_pair = [];
+    sort_date.forEach((date, i) => {
+      sorted_date_freq_pair.push({
+        name: `${date}`,
+        uv: distr[date]
+      });
+    });
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -212,6 +235,44 @@ class InternalDashboard extends React.Component {
                   </Row>
                 </Card.Title>
               </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Card>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0">Tasks Distribution</Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Tasks distribute among the date. Note that CVs, MLs, RLs, and Essay are mixed together.
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart
+                    data={sorted_date_freq_pair}
+                    margin={{
+                      top: 20,
+                      right: 20,
+                      left: 10,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    {/* <Tooltip /> */}
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="uv"
+                      fill="#8884d8"
+                      label={{ position: 'top' }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card.Body>
             </Card>
           </Col>
         </Row>

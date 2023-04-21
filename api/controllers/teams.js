@@ -61,7 +61,12 @@ const getStatistics = asyncHandler(async (req, res) => {
   documents_data.ESSAY = { count: documents_essay };
   const agents = await Agent.find();
   const editors = await Editor.find();
-  const students = await Student.find().populate('applications.programId');
+  const students = await Student.find()
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    );
   const agents_data = [];
   const editors_data = [];
   for (let i = 0; i < agents.length; i += 1) {

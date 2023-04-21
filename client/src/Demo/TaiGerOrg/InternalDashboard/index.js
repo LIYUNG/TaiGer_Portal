@@ -2,6 +2,20 @@ import React from 'react';
 import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 import NVD3Chart from 'react-nvd3';
+import {
+  BarChart,
+  CartesianGrid,
+  Tooltip,
+  XAxis,
+  YAxis,
+  Legend,
+  Bar,
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+  ResponsiveContainer
+} from 'recharts';
 
 import Aux from '../../../hoc/_Aux';
 import { spinner_style } from '../../Utils/contants';
@@ -137,11 +151,12 @@ class InternalDashboard extends React.Component {
     const cat = ['ML', 'CV', 'RL', 'ESSAY'];
     cat.forEach((ca, i) => {
       documents_data.push({
-        key: `${ca}`,
-        y: documents[ca].count,
-        color: colors[i]
+        name: `${ca}`,
+        uv: documents[ca].count
+        // color: colors[i]
       });
     });
+
     const application_status = ['Open', 'Close'];
     const applications_decided = programs_refactor(students_details).filter(
       (application) =>
@@ -157,9 +172,9 @@ class InternalDashboard extends React.Component {
     const applications_data = [];
     application_status.forEach((status, i) => {
       applications_data.push({
-        key: `${status}`,
-        y: obj[status],
-        color: colors[i]
+        name: `${status}`,
+        uv: obj[status]
+        // color: colors[i]
       });
     });
     const admissions_data = [];
@@ -180,11 +195,11 @@ class InternalDashboard extends React.Component {
     };
     admission_status.forEach((status, i) => {
       admissions_data.push({
-        key: `${status}`,
-        y: obj2[status],
-        color: colors[i]
+        name: `${status}`,
+        uv: obj2[status]
       });
     });
+
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -226,14 +241,32 @@ class InternalDashboard extends React.Component {
               </Card.Header>
               <Card.Body>
                 Number of Open Tasks:{' '}
-                <NVD3Chart
-                  id="chart"
-                  height={300}
-                  type="pieChart"
-                  datum={documents_data}
-                  x="key"
-                  y="y"
-                />
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={documents_data}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    {/* <Tooltip /> */}
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="uv"
+                      fill="#8884d8"
+                      label={{ position: 'top' }}
+                    >
+                      {documents_data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </Card.Body>
             </Card>
           </Col>
@@ -294,14 +327,40 @@ class InternalDashboard extends React.Component {
               </Card.Header>
               <Card.Body>
                 Number of Applications:
-                <NVD3Chart
+                {/* <NVD3Chart
                   id="chart"
                   height={300}
                   type="pieChart"
                   datum={applications_data}
                   x="key"
                   y="y"
-                />
+                /> */}
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={applications_data}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    {/* <Tooltip /> */}
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="uv"
+                      fill="#8884d8"
+                      label={{ position: 'top' }}
+                    >
+                      {applications_data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </Card.Body>
             </Card>
           </Col>
@@ -316,14 +375,32 @@ class InternalDashboard extends React.Component {
               </Card.Header>
               <Card.Body>
                 Number of Admissions:
-                <NVD3Chart
-                  id="chart"
-                  height={300}
-                  type="pieChart"
-                  datum={admissions_data}
-                  x="key"
-                  y="y"
-                />
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={admissions_data}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    {/* <Tooltip /> */}
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="uv"
+                      fill="#8884d8"
+                      label={{ position: 'top' }}
+                    >
+                      {admissions_data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </Card.Body>
             </Card>
           </Col>

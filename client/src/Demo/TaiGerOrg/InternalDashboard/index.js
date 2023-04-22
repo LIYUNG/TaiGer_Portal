@@ -132,11 +132,24 @@ class InternalDashboard extends React.Component {
       '#a389d4',
       '#FE8A7D'
     ];
-    const frequencyDistribution = (str) => {
+    const frequencyDistribution = (tasks) => {
       const map = {};
-      for (let i = 0; i < str.length; i++) {
-        map[str[i]] = (map[str[i]] || 0) + 1;
+      for (let i = 0; i < tasks.length; i++) {
+        map[tasks[i].deadline] = map[tasks[i].deadline]
+          ? tasks[i].show
+            ? {
+                show: map[tasks[i].deadline].show + 1,
+                potentials: map[tasks[i].deadline].potentials
+              }
+            : {
+                show: map[tasks[i].deadline].show,
+                potentials: map[tasks[i].deadline].potentials + 1
+              }
+          : tasks[i].show
+          ? { show: 1, potentials: 0 }
+          : { show: 0, potentials: 1 };
       }
+      console.log(map);
       return map;
     };
     const agents_data = [];
@@ -209,21 +222,22 @@ class InternalDashboard extends React.Component {
     });
     // Only open tasks. Closed tasks are excluded
     const task_distribution = open_tasks(students_details)
-      .filter(({ deadline }) => deadline !== 'CLOSE')
-      .map(({ deadline }) => {
-        return deadline;
+      .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
+      .map(({ deadline, show }) => {
+        return { deadline, show };
       });
-    const distr = frequencyDistribution(task_distribution);
-    const sort_date = Object.keys(
-      frequencyDistribution(task_distribution)
-    ).sort();
+    const open_distr = frequencyDistribution(task_distribution);
+    const sort_date = Object.keys(open_distr).sort();
+    console.log(sort_date);
     const sorted_date_freq_pair = [];
     sort_date.forEach((date, i) => {
       sorted_date_freq_pair.push({
         name: `${date}`,
-        count: distr[date]
+        active: open_distr[date].show,
+        potentials: open_distr[date].potentials
       });
     });
+    console.log(sorted_date_freq_pair);
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -252,13 +266,22 @@ class InternalDashboard extends React.Component {
               <Card.Body>
                 Tasks distribute among the date. Note that CVs, MLs, RLs, and
                 Essay are mixed together.
+                <p className="my-0">
+                  <b style={{ color: 'red' }}>active:</b> students decide
+                  programs. These will be shown in <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+                </p>
+                <p className="my-0">
+                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
+                  not decide programs yet. But the tasks will be potentially
+                  active when they decided.
+                </p>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={sorted_date_freq_pair}
                     margin={{
                       top: 20,
-                      right: 20,
-                      left: 10,
+                      right: 10,
+                      left: 0,
                       bottom: 40
                     }}
                   >
@@ -272,11 +295,19 @@ class InternalDashboard extends React.Component {
                       axisLine={false}
                     />
                     <YAxis allowDecimals={false} />
+                    <Legend verticalAlign="top" />
                     <Tooltip />
-                    {/* <Legend /> */}
+
                     <Bar
-                      dataKey="count"
-                      fill="#8884d8"
+                      dataKey="active"
+                      fill="#FF0000"
+                      stackId={'a'}
+                      label={{ position: 'top' }}
+                    />
+                    <Bar
+                      dataKey="potentials"
+                      fill="#A9A9A9"
+                      stackId={'a'}
                       label={{ position: 'top' }}
                     />
                   </BarChart>

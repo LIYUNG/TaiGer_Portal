@@ -149,7 +149,6 @@ class InternalDashboard extends React.Component {
           ? { show: 1, potentials: 0 }
           : { show: 0, potentials: 1 };
       }
-      console.log(map);
       return map;
     };
     const agents_data = [];
@@ -166,15 +165,6 @@ class InternalDashboard extends React.Component {
         key: `${editor.firstname}`,
         y: editor.student_num,
         color: colors[i]
-      });
-    });
-    const documents_data = [];
-    const cat = ['ML', 'CV', 'RL', 'ESSAY'];
-    cat.forEach((ca, i) => {
-      documents_data.push({
-        name: `${ca}`,
-        uv: documents[ca].count
-        // color: colors[i]
       });
     });
 
@@ -223,12 +213,12 @@ class InternalDashboard extends React.Component {
     // Only open tasks. Closed tasks are excluded
     const task_distribution = open_tasks(students_details)
       .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
-      .map(({ deadline, show }) => {
-        return { deadline, show };
+      .map(({ deadline, file_type, show }) => {
+        return { deadline, file_type, show };
       });
     const open_distr = frequencyDistribution(task_distribution);
     const sort_date = Object.keys(open_distr).sort();
-    console.log(sort_date);
+
     const sorted_date_freq_pair = [];
     sort_date.forEach((date, i) => {
       sorted_date_freq_pair.push({
@@ -237,7 +227,15 @@ class InternalDashboard extends React.Component {
         potentials: open_distr[date].potentials
       });
     });
-    console.log(sorted_date_freq_pair);
+    const documents_data = [];
+    const cat = ['ML', 'CV', 'RL', 'ESSAY'];
+    cat.forEach((ca, i) => {
+      documents_data.push({
+        name: `${ca}`,
+        uv: documents[ca].count
+        // color: colors[i]
+      });
+    });
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -268,7 +266,8 @@ class InternalDashboard extends React.Component {
                 Essay are mixed together.
                 <p className="my-0">
                   <b style={{ color: 'red' }}>active:</b> students decide
-                  programs. These will be shown in <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+                  programs. These will be shown in{' '}
+                  <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
                 </p>
                 <p className="my-0">
                   <b style={{ color: '#A9A9A9' }}>potentials:</b> students do

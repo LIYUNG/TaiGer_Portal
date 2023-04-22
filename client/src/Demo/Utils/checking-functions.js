@@ -356,7 +356,9 @@ export const application_deadline_calculator = (student, application) => {
     }
   }
 
-  return `${application_year}/${deadline_month}/${deadline_day}`;
+  return `${application_year}/${
+    application.programId.application_deadline.split('-')[0]
+  }/${application.programId.application_deadline.split('-')[1]}`;
 };
 
 export const GetCVDeadline = (student) => {

@@ -207,11 +207,12 @@ class InternalDashboard extends React.Component {
         uv: obj2[status]
       });
     });
-    const task_distribution = open_tasks(students_details).map(
-      ({ deadline }) => {
+    // Only open tasks. Closed tasks are excluded
+    const task_distribution = open_tasks(students_details)
+      .filter(({ deadline }) => deadline !== 'CLOSE')
+      .map(({ deadline }) => {
         return deadline;
-      }
-    );
+      });
     const distr = frequencyDistribution(task_distribution);
     const sort_date = Object.keys(
       frequencyDistribution(task_distribution)
@@ -220,7 +221,7 @@ class InternalDashboard extends React.Component {
     sort_date.forEach((date, i) => {
       sorted_date_freq_pair.push({
         name: `${date}`,
-        uv: distr[date]
+        count: distr[date]
       });
     });
     return (
@@ -249,24 +250,32 @@ class InternalDashboard extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                Tasks distribute among the date. Note that CVs, MLs, RLs, and Essay are mixed together.
-                <ResponsiveContainer width="100%" height={200}>
+                Tasks distribute among the date. Note that CVs, MLs, RLs, and
+                Essay are mixed together.
+                <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={sorted_date_freq_pair}
                     margin={{
                       top: 20,
                       right: 20,
                       left: 10,
-                      bottom: 5
+                      bottom: 40
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    {/* <Tooltip /> */}
+                    <XAxis
+                      dataKey="name"
+                      angle={315}
+                      dx={0}
+                      dy={25}
+                      minTickGap={-200}
+                      axisLine={false}
+                    />
+                    <YAxis allowDecimals={false} />
+                    <Tooltip />
                     {/* <Legend /> */}
                     <Bar
-                      dataKey="uv"
+                      dataKey="count"
                       fill="#8884d8"
                       label={{ position: 'top' }}
                     />
@@ -307,14 +316,14 @@ class InternalDashboard extends React.Component {
                     data={documents_data}
                     margin={{
                       top: 20,
-                      right: 30,
-                      left: 20,
+                      right: 0,
+                      left: 0,
                       bottom: 5
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis />
+                    <YAxis allowDecimals={false} />
                     {/* <Tooltip /> */}
                     {/* <Legend /> */}
                     <Bar
@@ -401,14 +410,14 @@ class InternalDashboard extends React.Component {
                     data={applications_data}
                     margin={{
                       top: 20,
-                      right: 30,
-                      left: 20,
+                      right: 0,
+                      left: 0,
                       bottom: 5
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis />
+                    <YAxis allowDecimals={false} />
                     {/* <Tooltip /> */}
                     {/* <Legend /> */}
                     <Bar
@@ -441,14 +450,14 @@ class InternalDashboard extends React.Component {
                     data={admissions_data}
                     margin={{
                       top: 20,
-                      right: 30,
-                      left: 20,
+                      right: 0,
+                      left: 0,
                       bottom: 5
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis />
+                    <YAxis allowDecimals={false} />
                     {/* <Tooltip /> */}
                     {/* <Legend /> */}
                     <Bar

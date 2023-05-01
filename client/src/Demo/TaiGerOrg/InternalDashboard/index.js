@@ -23,6 +23,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 import {
   is_TaiGer_role,
   open_tasks,
+  open_tasks_with_editors,
   programs_refactor
 } from '../../Utils/checking-functions';
 
@@ -211,7 +212,8 @@ class InternalDashboard extends React.Component {
       });
     });
     // Only open tasks. Closed tasks are excluded
-    const task_distribution = open_tasks(students_details)
+    const open_tasks_arr = open_tasks_with_editors(students_details);
+    const task_distribution = open_tasks_arr
       .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
       .map(({ deadline, file_type, show }) => {
         return { deadline, file_type, show };
@@ -228,6 +230,7 @@ class InternalDashboard extends React.Component {
       });
     });
     const documents_data = [];
+    const editor_tasks_distribution_data = [];
     const cat = ['ML', 'CV', 'RL', 'ESSAY'];
     cat.forEach((ca, i) => {
       documents_data.push({
@@ -236,6 +239,32 @@ class InternalDashboard extends React.Component {
         // color: colors[i]
       });
     });
+    console.log(open_tasks_arr);
+    console.log(editors);
+    editors.forEach((editor, i) => {
+      editor_tasks_distribution_data.push({
+        name: `${editor.firstname}`,
+        active: open_tasks_arr.filter(
+          ({ editors, isFinalVersion, show }) =>
+            editors.findIndex(
+              (ed) => ed._id.toString() === editor._id.toString()
+            ) !== -1 &&
+            isFinalVersion !== true &&
+            show
+        ).length,
+        potentials: open_tasks_arr.filter(
+          ({ editors, isFinalVersion, show }) =>
+            editors.findIndex(
+              (ed) => ed._id == editor._id
+            ) !== -1 &&
+            isFinalVersion !== true &&
+            !show
+        ).length
+
+        // color: colors[i]
+      });
+    });
+    console.log(editor_tasks_distribution_data);
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -413,6 +442,54 @@ class InternalDashboard extends React.Component {
                   x="key"
                   y="y"
                 />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={4}>
+            <Card>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0">Editors</Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Number of tasks per editor:
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={editor_tasks_distribution_data}
+                    layout={'vertical'}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 40,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" allowDecimals={false} />
+                    <YAxis type="category" dataKey="name" />
+                    <Tooltip />
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="active"
+                      fill={'#8884d8'}
+                      stackId={'a'}
+                      label={{ position: 'right' }}
+                    >
+                      {editor_tasks_distribution_data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} />
+                      ))}
+                    </Bar>
+                    <Bar
+                      dataKey="potentials"
+                      fill="#A9A9A9"
+                      stackId={'a'}
+                      label={{ position: 'right' }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
               </Card.Body>
             </Card>
           </Col>

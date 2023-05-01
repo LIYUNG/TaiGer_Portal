@@ -32,7 +32,6 @@ import {
 } from '../Utils/contants';
 import {
   is_TaiGer_role,
-  open_tasks,
   open_tasks_with_editors
 } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';

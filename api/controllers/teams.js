@@ -62,6 +62,7 @@ const getStatistics = asyncHandler(async (req, res) => {
   const agents = await Agent.find();
   const editors = await Editor.find();
   const students = await Student.find()
+    .populate('agents editors', 'firstname lastname')
     .populate('applications.programId')
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -71,6 +72,7 @@ const getStatistics = asyncHandler(async (req, res) => {
   const editors_data = [];
   for (let i = 0; i < agents.length; i += 1) {
     const Obj = {};
+    Obj._id = agents[i]._id.toString();
     Obj.firstname = agents[i].firstname;
     Obj.lastname = agents[i].lastname;
     Obj.student_num = await Student.find({
@@ -81,6 +83,7 @@ const getStatistics = asyncHandler(async (req, res) => {
   }
   for (let i = 0; i < editors.length; i += 1) {
     const Obj = {};
+    Obj._id = editors[i]._id.toString();
     Obj.firstname = editors[i].firstname;
     Obj.lastname = editors[i].lastname;
     Obj.student_num = await Student.find({

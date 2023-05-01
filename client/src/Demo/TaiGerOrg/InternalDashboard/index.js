@@ -152,19 +152,12 @@ class InternalDashboard extends React.Component {
       }
       return map;
     };
-    const agents_data = [];
-    agents.forEach((agent, i) => {
-      agents_data.push({
-        key: `${agent.firstname}`,
-        y: agent.student_num,
-        color: colors[i]
-      });
-    });
+
     const editors_data = [];
     editors.forEach((editor, i) => {
       editors_data.push({
         key: `${editor.firstname}`,
-        y: editor.student_num,
+        student_num: editor.student_num,
         color: colors[i]
       });
     });
@@ -239,8 +232,6 @@ class InternalDashboard extends React.Component {
         // color: colors[i]
       });
     });
-    console.log(open_tasks_arr);
-    console.log(editors);
     editors.forEach((editor, i) => {
       editor_tasks_distribution_data.push({
         name: `${editor.firstname}`,
@@ -254,17 +245,21 @@ class InternalDashboard extends React.Component {
         ).length,
         potentials: open_tasks_arr.filter(
           ({ editors, isFinalVersion, show }) =>
-            editors.findIndex(
-              (ed) => ed._id == editor._id
-            ) !== -1 &&
+            editors.findIndex((ed) => ed._id == editor._id) !== -1 &&
             isFinalVersion !== true &&
             !show
         ).length
-
         // color: colors[i]
       });
     });
-    console.log(editor_tasks_distribution_data);
+    const agents_data = [];
+    agents.forEach((agent, i) => {
+      agents_data.push({
+        key: `${agent.firstname}`,
+        student_num: agent.student_num,
+        color: colors[i]
+      });
+    });
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -410,14 +405,34 @@ class InternalDashboard extends React.Component {
               </Card.Header>
               <Card.Body>
                 Number of students per agent:
-                <NVD3Chart
-                  id="chart"
-                  height={300}
-                  type="pieChart"
-                  datum={agents_data}
-                  x="key"
-                  y="y"
-                />
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={agents_data}
+                    layout={'vertical'}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" allowDecimals={false} />
+                    <YAxis type="category" dataKey="key" />
+                    <Tooltip />
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="student_num"
+                      fill={'#8884d8'}
+                      stackId={'a'}
+                      label={{ position: 'right' }}
+                    >
+                      {editor_tasks_distribution_data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </Card.Body>
             </Card>
           </Col>
@@ -434,14 +449,34 @@ class InternalDashboard extends React.Component {
               </Card.Header>
               <Card.Body>
                 Number of students per editor:
-                <NVD3Chart
-                  id="chart"
-                  height={300}
-                  type="pieChart"
-                  datum={editors_data}
-                  x="key"
-                  y="y"
-                />
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={editors_data}
+                    layout={'vertical'}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" allowDecimals={false} />
+                    <YAxis type="category" dataKey="key" />
+                    <Tooltip />
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="student_num"
+                      fill={'#8884d8'}
+                      stackId={'a'}
+                      label={{ position: 'right' }}
+                    >
+                      {editor_tasks_distribution_data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </Card.Body>
             </Card>
           </Col>

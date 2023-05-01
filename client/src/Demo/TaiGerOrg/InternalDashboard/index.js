@@ -418,7 +418,7 @@ class InternalDashboard extends React.Component {
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" allowDecimals={false} />
-                    <YAxis type="category" dataKey="key" />
+                    <YAxis type="category" dataKey="key" interval={0} />
                     <Tooltip />
                     {/* <Legend /> */}
                     <Bar
@@ -456,7 +456,7 @@ class InternalDashboard extends React.Component {
                     margin={{
                       top: 20,
                       right: 30,
-                      left: 20,
+                      left: 40,
                       bottom: 5
                     }}
                   >

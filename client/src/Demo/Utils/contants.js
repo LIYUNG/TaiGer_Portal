@@ -201,7 +201,7 @@ export const APPLICATION_YEARS_FUTURE = () => {
 export const EXPECTATION_APPLICATION_YEARS = () => {
   return (
     <>
-      {create_years(2022, 2050).map((year, idx) => (
+      {create_years(2018, 2050).map((year, idx) => (
         <option key={idx} value={year}>
           {year}
         </option>

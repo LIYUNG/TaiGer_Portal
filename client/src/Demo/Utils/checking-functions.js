@@ -686,11 +686,13 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
     if (!application.uni_assist) {
       return false;
     }
-
     if (
-      application.uni_assist.status !== 'uploaded' ||
-      application.uni_assist.vpd_file_path === ''
+      application.uni_assist.status === 'uploaded' ||
+      application.uni_assist.status === 'notneeded'
     ) {
+      return true;
+    }
+    if (application.uni_assist.vpd_file_path === '') {
       return false;
     }
   }

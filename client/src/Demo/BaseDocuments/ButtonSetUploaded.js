@@ -1,12 +1,15 @@
 import React from 'react';
 import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
+
+import FilePreview from '../../components/FilePreview/FilePreview';
 import { BASE_URL } from '../../api/request';
 import {
   AiOutlineDownload,
   AiOutlineCheck,
   AiOutlineFieldTime,
   AiOutlineWarning,
-  AiOutlineDelete
+  AiOutlineDelete,
+  AiOutlineClose
 } from 'react-icons/ai';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
@@ -26,6 +29,8 @@ class ButtonSetUploaded extends React.Component {
     feedback: '',
     deleteFileWarningModel: false,
     CommentModel: false,
+    showPreview: false,
+    preview_path: '#',
     rejectProfileFileModel: false,
     acceptProfileFileModel: false,
     baseDocsflagOffcanvas: false,
@@ -51,6 +56,19 @@ class ButtonSetUploaded extends React.Component {
 
   closeCommentWindow = () => {
     this.setState((state) => ({ ...state, CommentModel: false }));
+  };
+
+  closePreviewWindow = () => {
+    this.setState((state) => ({ ...state, showPreview: false }));
+  };
+
+  showPreview = (e, path) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      showPreview: true,
+      preview_path: path
+    }));
   };
 
   closeRejectWarningWindow = () => {
@@ -179,7 +197,7 @@ class ButtonSetUploaded extends React.Component {
         <td>{convertDate(this.props.time)}</td>
         <td>
           <Col md>
-            <a
+            {/* <a
               href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
                 this.props.path
               }`}
@@ -188,7 +206,14 @@ class ButtonSetUploaded extends React.Component {
               <Button size="sm" type="submit" title="Download">
                 <AiOutlineDownload size={16} />
               </Button>
-            </a>
+            </a> */}
+            <Button
+              size="sm"
+              title="Download"
+              onClick={(e) => this.showPreview(e, this.props.path)}
+            >
+              <AiOutlineDownload size={16} />
+            </Button>
           </Col>
         </td>
         {this.props.role === 'Editor' || this.props.role === 'Student' ? (
@@ -431,6 +456,80 @@ class ButtonSetUploaded extends React.Component {
                 </div>
               ) : (
                 'Ok'
+              )}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.showPreview}
+          onHide={this.closePreviewWindow}
+          aria-labelledby="contained-modal-title-vcenter2"
+          size="xl"
+          centered
+        >
+          <Modal.Body>
+            <FilePreview
+              path={this.state.preview_path}
+              student_id={this.state.student_id.toString()}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            {!(
+              this.props.role === 'Editor' || this.props.role === 'Student'
+            ) && (
+              <Button
+                variant={acceptStyle}
+                size="sm"
+                type="submit"
+                title="Mark as finshed"
+                disabled={!this.state.isLoaded}
+                onClick={(e) =>
+                  this.onUpdateProfileDocStatus(
+                    e,
+                    this.props.k,
+                    this.state.student_id,
+                    'accepted'
+                  )
+                }
+              >
+                <AiOutlineCheck />
+              </Button>
+            )}
+            {!(
+              this.props.role === 'Editor' || this.props.role === 'Student'
+            ) && (
+              <Button
+                variant={rejectStyle}
+                size="sm"
+                type="submit"
+                title="Mark as reject"
+                disabled={!this.state.isLoaded}
+                onClick={(e) =>
+                  this.onUpdateProfileDocStatus(
+                    e,
+                    this.props.k,
+                    this.state.student_id,
+                    'rejected'
+                  )
+                }
+              >
+                <AiOutlineWarning size={16} />
+              </Button>
+            )}
+            <Button size="sm" onClick={this.closePreviewWindow}>
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                <AiOutlineClose size={16} />
               )}
             </Button>
           </Modal.Footer>

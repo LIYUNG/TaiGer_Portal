@@ -1,10 +1,12 @@
 import React from 'react';
 import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
 import { BASE_URL } from '../../api/request';
+import FilePreview from '../../components/FilePreview/FilePreview';
 import {
   AiOutlineDownload,
   AiOutlineWarning,
-  AiOutlineDelete
+  AiOutlineDelete,
+  AiOutlineClose
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { FiExternalLink } from 'react-icons/fi';
@@ -25,6 +27,8 @@ class ButtonSetAccepted extends React.Component {
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: false,
     CommentModel: false,
+    showPreview: false,
+    preview_path: '#',
     rejectProfileFileModel: false,
     acceptProfileFileModel: false,
     baseDocsflagOffcanvas: false,
@@ -53,6 +57,19 @@ class ButtonSetAccepted extends React.Component {
 
   closeCommentWindow = () => {
     this.setState((state) => ({ ...state, CommentModel: false }));
+  };
+
+  closePreviewWindow = () => {
+    this.setState((state) => ({ ...state, showPreview: false }));
+  };
+
+  showPreview = (e, path) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      showPreview: true,
+      preview_path: path
+    }));
   };
 
   closeRejectWarningWindow = () => {
@@ -188,7 +205,7 @@ class ButtonSetAccepted extends React.Component {
         <td>{convertDate(this.props.time)}</td>
         <td>
           <Col md>
-            <a
+            {/* <a
               href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
                 this.props.path
               }`}
@@ -197,7 +214,14 @@ class ButtonSetAccepted extends React.Component {
               <Button size="sm" title="Download">
                 <AiOutlineDownload size={16} />
               </Button>
-            </a>
+            </a> */}
+            <Button
+              size="sm"
+              title="Download"
+              onClick={(e) => this.showPreview(e, this.props.path)}
+            >
+              <AiOutlineDownload size={16} />
+            </Button>
           </Col>
         </td>
         <td></td>
@@ -404,6 +428,63 @@ class ButtonSetAccepted extends React.Component {
                 </div>
               ) : (
                 'Ok'
+              )}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.showPreview}
+          onHide={this.closePreviewWindow}
+          aria-labelledby="contained-modal-title-vcenter2"
+          size="xl"
+          centered
+        >
+          <Modal.Body>
+            <FilePreview
+              path={this.state.preview_path}
+              student_id={this.state.student_id.toString()}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            {!(
+              this.props.role === 'Editor' || this.props.role === 'Student'
+            ) && (
+              <Form
+                onSubmit={(e) =>
+                  this.onUpdateProfileDocStatus(
+                    e,
+                    this.props.k,
+                    this.state.student_id,
+                    'rejected'
+                  )
+                }
+              >
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Button
+                    variant={rejectStyle}
+                    size="sm"
+                    type="submit"
+                    disabled={!this.state.isLoaded}
+                  >
+                    <AiOutlineWarning size={16} />
+                  </Button>
+                </Form.Group>
+              </Form>
+            )}
+            <Button size="sm" onClick={this.closePreviewWindow}>
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                <AiOutlineClose size={16} />
               )}
             </Button>
           </Modal.Footer>

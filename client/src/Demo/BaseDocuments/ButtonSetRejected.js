@@ -5,10 +5,12 @@ import {
   AiOutlineCheck,
   AiFillCloseCircle,
   AiOutlineComment,
-  AiOutlineDelete
+  AiOutlineDelete,
+  AiOutlineClose
 } from 'react-icons/ai';
 import { FiExternalLink } from 'react-icons/fi';
 
+import FilePreview from '../../components/FilePreview/FilePreview';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
@@ -34,6 +36,8 @@ class ButtonSetRejected extends React.Component {
     isLoaded: this.props.isLoaded,
     deleteFileWarningModel: this.props.deleteFileWarningModel,
     CommentModel: this.props.CommentModel,
+    showPreview: false,
+    preview_path: '#',
     rejectProfileFileModel: this.props.rejectProfileFileModel,
     acceptProfileFileModel: this.props.acceptProfileFileModel,
     baseDocsflagOffcanvas: false,
@@ -74,6 +78,19 @@ class ButtonSetRejected extends React.Component {
 
   closeCommentWindow = () => {
     this.setState((state) => ({ ...state, CommentModel: false }));
+  };
+
+  closePreviewWindow = () => {
+    this.setState((state) => ({ ...state, showPreview: false }));
+  };
+
+  showPreview = (e, path) => {
+    e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      showPreview: true,
+      preview_path: path
+    }));
   };
 
   closeRejectWarningWindow = () => {
@@ -261,7 +278,7 @@ class ButtonSetRejected extends React.Component {
         <td>{convertDate(this.props.time)}</td>
         <td>
           <Col>
-            <a
+            {/* <a
               href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
                 this.props.path
               }`}
@@ -270,7 +287,14 @@ class ButtonSetRejected extends React.Component {
               <Button size="sm" type="submit" title="Download">
                 <AiOutlineDownload size={16} />
               </Button>
-            </a>
+            </a> */}
+            <Button
+              size="sm"
+              title="Download"
+              onClick={(e) => this.showPreview(e, this.props.path)}
+            >
+              <AiOutlineDownload size={16} />
+            </Button>
           </Col>
         </td>
         <td>
@@ -503,6 +527,64 @@ class ButtonSetRejected extends React.Component {
               </Modal.Footer>
             </>
           )}
+        </Modal>
+        <Modal
+          show={this.state.showPreview}
+          onHide={this.closePreviewWindow}
+          aria-labelledby="contained-modal-title-vcenter2"
+          size="xl"
+          centered
+        >
+          <Modal.Body>
+            <FilePreview
+              path={this.state.preview_path}
+              student_id={this.state.student_id.toString()}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            {!(
+              this.props.role === 'Editor' || this.props.role === 'Student'
+            ) && (
+              <Form
+                onSubmit={(e) =>
+                  this.onUpdateProfileDocStatus(
+                    e,
+                    this.props.k,
+                    this.state.student_id,
+                    'accepted'
+                  )
+                }
+              >
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Button
+                    variant={acceptStyle}
+                    size="sm"
+                    type="submit"
+                    title="Mark as finshed"
+                    disabled={!this.state.isLoaded}
+                  >
+                    <AiOutlineCheck size={16} />
+                  </Button>
+                </Form.Group>
+              </Form>
+            )}
+            <Button size="sm" onClick={this.closePreviewWindow}>
+              {!this.state.isLoaded ? (
+                <div>
+                  <Spinner
+                    animation="border"
+                    role="status"
+                    variant="light"
+                    size="sm"
+                  >
+                    <span className="visually-hidden"></span>
+                  </Spinner>
+                </div>
+              ) : (
+                <AiOutlineClose size={16} />
+              )}
+            </Button>
+          </Modal.Footer>
         </Modal>
         <OffcanvasBaseDocument
           show={this.state.baseDocsflagOffcanvas}

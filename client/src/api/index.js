@@ -44,6 +44,8 @@ export const getAllStudents = () => request.get(`/api/students/all`);
 
 export const getAdmissions = () => request.get(`/api/admissions`);
 
+export const getExpenses = () => request.get(`/api/expenses`);
+
 export const getStudent = (studentId) =>
   request.get(`/api/students/${studentId}`);
 

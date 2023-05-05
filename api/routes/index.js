@@ -3,6 +3,7 @@ const { Router } = require('express');
 const authRouter = require('./auth');
 const accountRouter = require('./account');
 const usersRouter = require('./users');
+const expensesRouter = require('./expenses');
 const agentsRouter = require('./agents');
 const editorsRouter = require('./editors');
 const studentsRouter = require('./students');
@@ -27,6 +28,7 @@ const router = (app) => {
   apiRouter.use('/editors', editorsRouter);
 
   apiRouter.use('/docs', documentationsRouter);
+  apiRouter.use('/expenses', expensesRouter);
   apiRouter.use('/courses', coursesRouter);
   apiRouter.use('/portal-informations', portalsRouter);
   apiRouter.use('/programs', programsRouter);

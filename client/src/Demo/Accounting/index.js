@@ -1,14 +1,78 @@
-import React from 'react';
-import { Row, Col, Card, Spinner } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Row, Col, Card, Spinner, Collapse, Table } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 // import AdmissionsTable from './AdmissionsTable';
 import ErrorPage from '../Utils/ErrorPage';
 import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 
-import { getAdmissions } from '../../api';
+import { getExpenses } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+
+function ExtendableTable({ data }) {
+  const [selectedRows, setSelectedRows] = useState([
+    new Array(data.length)
+      .fill()
+      .map((x, i) => (i === data.length - 1 ? i : -1))
+  ]);
+  const toggleRow = (index) => {
+    let selectedRows_temp = { ...selectedRows };
+    selectedRows_temp[index] = selectedRows_temp[index] !== index ? index : -1;
+    setSelectedRows(selectedRows_temp);
+  };
+  return (
+    <Table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th># Applications</th>
+          <th>Income</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((item, index) => (
+          <React.Fragment key={index}>
+            <tr
+              className="bg-secondary text-light"
+              onClick={() => toggleRow(index)}
+            >
+              <td>
+                <b>
+                  {item.firstname}
+                  {item.lastname}
+                </b>
+              </td>
+              <td>{item.applying_program_count}</td>
+              <td>{item.expenses}</td>
+            </tr>
+
+            <Collapse in={selectedRows[index] === index}>
+              <tr>
+                <td colSpan="4">
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Column 2</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th>1</th>
+                        <th>b 2</th>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </td>
+              </tr>
+            </Collapse>
+          </React.Fragment>
+        ))}
+      </tbody>
+    </Table>
+  );
+}
 
 class Accounting extends React.Component {
   state = {
@@ -20,7 +84,7 @@ class Accounting extends React.Component {
   };
 
   componentDidMount() {
-    getAdmissions().then(
+    getExpenses().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -77,7 +141,8 @@ class Accounting extends React.Component {
             <Col>
               <Card>
                 <Card.Body>
-                  <h4>Coming soon!</h4>
+                  <h4>In Progress!</h4>
+                  <ExtendableTable data={this.state.students} />
                 </Card.Body>
               </Card>
             </Col>

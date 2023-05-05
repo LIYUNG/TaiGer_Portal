@@ -655,17 +655,6 @@ export const is_program_ml_rl_essay_ready = (application) => {
       return false;
     }
   }
-  // check uni-assist?
-  if (
-    application.programId.uni_assist &&
-    application.programId.uni_assist.includes('Yes') &&
-    (!application.uni_assist || application.uni_assist.status !== 'uploaded')
-  ) {
-    return false;
-  }
-  // check basedocuments
-
-  // Check CV
   return true;
 };
 
@@ -683,8 +672,14 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
   if (
     application.decided === 'O' &&
     application.programId.uni_assist &&
-    (application.programId.uni_assist.includes('VPD') ||
-      application.programId.uni_assist.includes('FULL'))
+    application.programId.uni_assist.includes('FULL')
+  ) {
+    return true;
+  }
+  if (
+    application.decided === 'O' &&
+    application.programId.uni_assist &&
+    application.programId.uni_assist.includes('VPD')
   ) {
     if (!application.uni_assist) {
       return false;

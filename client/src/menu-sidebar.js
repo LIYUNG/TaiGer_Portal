@@ -356,6 +356,13 @@ export default {
               type: 'item',
               icon: 'feather icon-target',
               url: '/dashboard/internal'
+            },
+            {
+              id: 'internal_accounting',
+              title: 'TaiGer Accounting',
+              type: 'item',
+              icon: 'feather icon-bank',
+              url: '/internal/accounting'
             }
           ]
         },

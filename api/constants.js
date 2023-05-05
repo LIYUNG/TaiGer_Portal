@@ -70,10 +70,14 @@ const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
   }
-  if (!application.programId.application_deadline) {
+  if (application.closed === 'X') {
+    return 'WITHDRAW';
+  }
+  const { application_deadline, semester } = application.programId;
+
+  if (!application_deadline) {
     return 'No Data';
   }
-  // let year_now = new Date().getFullYear();
   let application_year = '<TBD>';
   if (
     student.application_preference &&
@@ -83,35 +87,36 @@ const application_deadline_calculator = (student, application) => {
       student.application_preference.expected_application_date
     );
   }
-  if (!application.programId.application_deadline) {
+  if (!application_deadline) {
     return `${application_year}-<TBD>`;
   }
-  if (application.programId.application_deadline.includes('olling')) {
+  if (application_deadline.includes('olling')) {
     // include Rolling
     return `${application_year}-Rolling`;
   }
-  let application_semester = application.programId.semester;
   let deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0]
   );
   let deadline_day = parseInt(
     application.programId.application_deadline.split('-')[1]
   );
-  if (application_semester === undefined) {
+  if (semester === undefined) {
     return 'Err';
   }
-  if (application_semester === 'WS') {
+  if (semester === 'WS') {
     if (deadline_month > 9) {
       application_year = application_year - 1;
     }
   }
-  if (application_semester === 'SS') {
+  if (semester === 'SS') {
     if (deadline_month > 3) {
       application_year = application_year - 1;
     }
   }
 
-  return `${application_year}/${deadline_month}/${deadline_day}`;
+  return `${application_year}/${
+    application.programId.application_deadline.split('-')[0]
+  }/${application.programId.application_deadline.split('-')[1]}`;
 };
 
 const TaskStatus = {

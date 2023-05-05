@@ -315,6 +315,9 @@ export const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
   }
+  if (application.closed === 'X') {
+    return 'WITHDRAW';
+  }
   const { application_deadline, semester } = application.programId;
 
   if (!application_deadline) {
@@ -332,7 +335,7 @@ export const application_deadline_calculator = (student, application) => {
   if (!application_deadline) {
     return `${application_year}-<TBD>`;
   }
-  if (application.programId.application_deadline.includes('olling')) {
+  if (application_deadline.includes('olling')) {
     // include Rolling
     return `${application_year}-Rolling`;
   }

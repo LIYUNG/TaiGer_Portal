@@ -16,11 +16,22 @@ const FilePreview = ({ path, student_id }) => {
           width="100%"
         ></object>
       ) : (
-        <img
-          src={`${BASE_URL}/api/students/${student_id}/files/${path}`}
-          width="100%"
-          height="100%"
-        />
+        <div
+          className="center"
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            'align-items': 'center',
+            'justify-content': 'center'
+          }}
+        >
+          <img
+            src={`${BASE_URL}/api/students/${student_id}/files/${path}`}
+            width="30%"
+            height="30%"
+          />
+        </div>
       )}
     </div>
   );

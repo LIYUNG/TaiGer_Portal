@@ -592,6 +592,8 @@ const createApplication = asyncHandler(async (req, res) => {
     let program = program_ids.find(
       ({ _id }) => _id.toString() === new_programIds[i]
     );
+
+    // Create ML task
     if (program.ml_required === 'yes') {
       const new_doc_thread = new Documentthread({
         student_id: studentId,
@@ -646,10 +648,47 @@ const createApplication = asyncHandler(async (req, res) => {
         await new_doc_thread.save();
       }
     }
+    // Create essay task
     if (program.essay_required === 'yes') {
       const new_doc_thread = new Documentthread({
         student_id: studentId,
         file_type: 'Essay',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
+
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    // Create portfolio task
+    if (program.portfolio_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Portfolio',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
+
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    // Create supplementary form task
+    if (program.supplementary_form_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Supplementary_Form',
         program_id: new_programIds[i],
         updatedAt: new Date()
       });

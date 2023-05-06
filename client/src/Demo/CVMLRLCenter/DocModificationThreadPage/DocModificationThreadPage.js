@@ -158,6 +158,25 @@ class DocModificationThreadPage extends Component {
       } else {
         return <p>No</p>;
       }
+    } else if (thread.file_type.includes('Portfolio')) {
+      if (thread.program_id.portfolio_required === 'yes') {
+        return (
+          <p>{this.state.thread.program_id.portfolio_requirements || 'No'}</p>
+        );
+      } else {
+        return <p>No</p>;
+      }
+    } else if (thread.file_type.includes('Supplementary_Form')) {
+      if (thread.program_id.supplementary_form_required === 'yes') {
+        return (
+          <p>
+            {this.state.thread.program_id.supplementary_form_requirements ||
+              'No'}
+          </p>
+        );
+      } else {
+        return <p>No</p>;
+      }
     } else if (thread.file_type.includes('RL')) {
       if (['1', '2', '3'].includes(thread.program_id.rl_required)) {
         return <p>{this.state.thread.program_id.rl_requirements || 'No'}</p>;

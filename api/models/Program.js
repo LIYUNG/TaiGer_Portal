@@ -87,6 +87,22 @@ const programSchema = new mongoose.Schema(
       type: String
       // required: true,
     },
+    portfolio_required: {
+      type: String
+      // required: true,
+    },
+    portfolio_requirements: {
+      type: String
+      // required: true,
+    },
+    supplementary_form_required: {
+      type: String
+      // required: true,
+    },
+    supplementary_form_requirements: {
+      type: String
+      // required: true,
+    },
     special_notes: {
       type: String
       // required: true,

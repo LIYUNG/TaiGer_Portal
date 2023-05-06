@@ -439,6 +439,11 @@ class ButtonSetAccepted extends React.Component {
           size="xl"
           centered
         >
+          <Modal.Header>
+            <Modal.Title id="contained-d-title-vcenter">
+              {this.props.path}
+            </Modal.Title>
+          </Modal.Header>
           <Modal.Body>
             <FilePreview
               path={this.state.preview_path}
@@ -446,6 +451,19 @@ class ButtonSetAccepted extends React.Component {
             />
           </Modal.Body>
           <Modal.Footer>
+            {this.props.path.split('.')[1] !== 'pdf' && (
+              <a
+                href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
+                  this.props.path
+                }`}
+                download
+                target="_blank"
+              >
+                <Button size="sm" title="Download">
+                  <AiOutlineDownload size={16} />
+                </Button>
+              </a>
+            )}
             {!(
               this.props.role === 'Editor' || this.props.role === 'Student'
             ) && (

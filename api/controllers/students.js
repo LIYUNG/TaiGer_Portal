@@ -529,7 +529,7 @@ const ToggleProgramStatus = asyncHandler(async (req, res) => {
     logger.error('ToggleProgramStatus: Invalid application id');
     throw new ErrorResponse(403, 'Invalid application id');
   }
-  application.closed = application.closed === 'O' ? 'X' : 'O';
+  application.closed = application.closed === 'O' ? '-' : 'O';
   await student.save();
 
   res.status(201).send({ success: true, data: student });
@@ -574,6 +574,10 @@ const createApplication = asyncHandler(async (req, res) => {
   const programIds = student.applications.map(({ programId }) =>
     programId._id.toString()
   );
+
+  // () TODO: check if the same university accept more than 1 application (different programs)
+  // () TODO: differentiate the case of different year / semester?
+  // () TODO: or only show warning?
 
   // Create programId array only new for student.
   const new_programIds = program_id_set.filter(

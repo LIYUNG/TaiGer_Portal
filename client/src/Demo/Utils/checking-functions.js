@@ -659,7 +659,7 @@ export const is_program_ml_rl_essay_ready = (application) => {
 };
 
 export const is_program_closed = (application) => {
-  if (application.closed === 'O') {
+  if (application.closed === 'O' || application.closed === 'X') {
     return true;
   }
   return false;

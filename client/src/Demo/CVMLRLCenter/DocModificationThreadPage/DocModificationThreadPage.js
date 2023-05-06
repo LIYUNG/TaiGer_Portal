@@ -486,11 +486,21 @@ class DocModificationThreadPage extends Component {
                     <p>
                       請填好我們的 TaiGer Template，並在這個討論串夾帶在和您的
                       Editor 討論。回覆時請用 <b>英語(English)</b>{' '}
-                      好讓外籍顧問方便溝通。
+                      好讓外籍顧問方便溝通。有任何流程疑問{' '}
+                      <Link to="/docs/cv-ml-rl">
+                        <Button size="sm" variant="info">
+                          點我
+                        </Button>
+                      </Link>
                       <br />
                       Please fill our TaiGer template and attach the filled
                       template and reply in
-                      <b> English</b> in this discussion.
+                      <b> English</b> in this discussion. Any process question: {' '}
+                      <Link to="/docs/cv-ml-rl">
+                        <Button size="sm" variant="info">
+                          Read More
+                        </Button>
+                      </Link>
                     </p>
                     <p>
                       模板下載 Download template:{' '}

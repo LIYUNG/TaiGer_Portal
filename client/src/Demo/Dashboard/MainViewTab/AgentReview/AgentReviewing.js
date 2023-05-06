@@ -354,25 +354,30 @@ class AgentReviewing extends React.Component {
             </Link>
           </td>
           <td>
-            {to_register_application_portals(this.props.student) ? (
-              <p className="text-warning my-0">
-                <AiFillQuestionCircle
-                  size={24}
-                  color="lightgray"
-                  title="Working"
-                  className="my-0 mx-2"
-                />
-              </p>
-            ) : (
-              <p className="text-warning my-0">
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="complete"
-                  className="my-0 mx-2"
-                />
-              </p>
-            )}
+            <Link
+              to={'/portal-informations/' + this.props.student._id}
+              style={{ textDecoration: 'none' }}
+            >
+              {to_register_application_portals(this.props.student) ? (
+                <p className="text-warning my-0">
+                  <AiFillQuestionCircle
+                    size={24}
+                    color="lightgray"
+                    title="Working"
+                    className="my-0 mx-2"
+                  />
+                </p>
+              ) : (
+                <p className="text-warning my-0">
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    title="complete"
+                    className="my-0 mx-2"
+                  />
+                </p>
+              )}
+            </Link>
           </td>
           <td>
             <Link

@@ -204,6 +204,54 @@ class SingleProgramView extends React.Component {
               </Col>
             </Row>
             <Row>
+              {' '}
+              <Col md={4}>
+                <p className="my-0">
+                  <b>Portfolio Required?</b>
+                </p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">{this.props.program.portfolio_required}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <p className="my-0">
+                  <b>Portfolio Requirements</b>
+                </p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">
+                  {this.props.program.portfolio_requirements}
+                </p>
+              </Col>
+            </Row>
+            <Row>
+              {' '}
+              <Col md={4}>
+                <p className="my-0">
+                  <b>Supplementary Form Required?</b>
+                </p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">
+                  {this.props.program.supplementary_form_required}
+                </p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <p className="my-0">
+                  <b>Supplementary Form Requirements</b>
+                </p>
+              </Col>
+              <Col md={8}>
+                <p className="my-0">
+                  {this.props.program.supplementary_form_requirements}
+                </p>
+              </Col>
+            </Row>
+            <Row>
               <Col md={4}>
                 <p className="my-0">
                   <b>Special Notes</b>

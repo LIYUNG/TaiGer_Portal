@@ -442,6 +442,94 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
+                <h5>Portfolio Required?</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="portfolio_required">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.portfolio_required
+                          ? this.state.program.portfolio_required
+                          : ''
+                      }
+                    >
+                      <option value="no">no</option>
+                      <option value="yes">yes</option>
+                    </Form.Control>
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Portfolio Requirements</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="portfolio_requirements">
+                    <Form.Control
+                      type="text"
+                      placeholder="2000 words"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.portfolio_requirements
+                          ? this.state.program.portfolio_requirements
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Supplementary Form Required?</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="supplementary_form_required">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.supplementary_form_required
+                          ? this.state.program.supplementary_form_required
+                          : ''
+                      }
+                    >
+                      <option value="no">no</option>
+                      <option value="yes">yes</option>
+                    </Form.Control>
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Supplementary Form Requirements</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="supplementary_form_requirements">
+                    <Form.Control
+                      type="text"
+                      placeholder="2000 words"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.supplementary_form_requirements
+                          ? this.state.program.supplementary_form_requirements
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
                 <h5>Special Notes</h5>
               </Col>
               <Col md={6}>

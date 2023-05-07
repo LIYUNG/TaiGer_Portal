@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
-import NVD3Chart from 'react-nvd3';
 import {
   BarChart,
   CartesianGrid,
@@ -31,6 +30,7 @@ import {
 import { getStatistics } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
+import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 
 class InternalDashboard extends React.Component {
   state = {
@@ -280,43 +280,7 @@ class InternalDashboard extends React.Component {
                   not decide programs yet. But the tasks will be potentially
                   active when they decided.
                 </p>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={sorted_date_freq_pair}
-                    margin={{
-                      top: 20,
-                      right: 10,
-                      left: 0,
-                      bottom: 40
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="name"
-                      angle={315}
-                      dx={0}
-                      dy={25}
-                      minTickGap={-200}
-                      axisLine={false}
-                    />
-                    <YAxis allowDecimals={false} />
-                    <Legend verticalAlign="top" />
-                    <Tooltip />
-
-                    <Bar
-                      dataKey="active"
-                      fill="#FF0000"
-                      stackId={'a'}
-                      label={{ position: 'top' }}
-                    />
-                    <Bar
-                      dataKey="potentials"
-                      fill="#A9A9A9"
-                      stackId={'a'}
-                      label={{ position: 'top' }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                <TasksDistributionBarChart data={sorted_date_freq_pair} />
               </Card.Body>
             </Card>
           </Col>

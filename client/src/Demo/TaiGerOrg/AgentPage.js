@@ -8,9 +8,15 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getAgent } from '../../api';
 import { spinner_style } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  frequencyDistribution,
+  is_TaiGer_role,
+  open_tasks_with_editors,
+  programs_refactor
+} from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 
 class AgentPage extends React.Component {
   state = {
@@ -80,6 +86,25 @@ class AgentPage extends React.Component {
       `Agent: ${this.state.agent.firstname}, ${this.state.agent.lastname}`
     );
 
+    const open_applications_arr = programs_refactor(this.state.students);
+    const applications_distribution = open_applications_arr
+      .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
+      .map(({ deadline, file_type, show }) => {
+        return { deadline, file_type, show };
+      });
+    const open_distr = frequencyDistribution(applications_distribution);
+
+    const sort_date = Object.keys(open_distr).sort();
+
+    const sorted_date_freq_pair = [];
+    sort_date.forEach((date, i) => {
+      sorted_date_freq_pair.push({
+        name: `${date}`,
+        active: open_distr[date].show,
+        potentials: open_distr[date].potentials
+      });
+    });
+
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -97,6 +122,36 @@ class AgentPage extends React.Component {
                   </Row>
                 </Card.Title>
               </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Card>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0">
+                      {this.state.agent.firstname} {this.state.agent.lastname}{' '}
+                      Open Applications Distribution
+                    </Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Applications distribute among the date.
+                <p className="my-0">
+                  <b style={{ color: 'red' }}>active:</b> students decided
+                  programs. These will be shown in{' '}
+                  <Link to={'/student-applications'}>Application Overview</Link>
+                </p>
+                <p className="my-0">
+                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
+                  not decide programs yet. But the applications will be potentially
+                  activated when they would decide.
+                </p>
+                <TasksDistributionBarChart data={sorted_date_freq_pair} />
+              </Card.Body>
             </Card>
           </Col>
         </Row>

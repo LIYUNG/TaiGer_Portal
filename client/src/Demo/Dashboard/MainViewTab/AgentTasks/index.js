@@ -155,7 +155,7 @@ class AgentTasks extends React.Component {
             is_program_ml_rl_essay_ready(application) &&
             is_the_uni_assist_vpd_uploaded(application) &&
             !is_program_closed(application) && (
-              <tr>
+              <tr key={i}>
                 <td>
                   <Link
                     to={

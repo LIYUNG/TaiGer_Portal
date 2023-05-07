@@ -1,20 +1,6 @@
 import React from 'react';
-import { Card, Spinner, Row, Col } from 'react-bootstrap';
+import { Card, Spinner, Row, Col, Button } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
-import {
-  BarChart,
-  CartesianGrid,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Legend,
-  Bar,
-  PieChart,
-  Pie,
-  Sector,
-  Cell,
-  ResponsiveContainer
-} from 'recharts';
 
 import Aux from '../../hoc/_Aux';
 import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
@@ -29,6 +15,7 @@ import {
 } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 
 class EditorPage extends React.Component {
   state = {
@@ -143,8 +130,7 @@ class EditorPage extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0">
-                      {this.state.editor.firstname} {this.state.editor.lastname}
-                      {' '}
+                      {this.state.editor.firstname} {this.state.editor.lastname}{' '}
                       Open Tasks Distribution
                     </Col>
                   </Row>
@@ -163,43 +149,7 @@ class EditorPage extends React.Component {
                   not decide programs yet. But the tasks will be potentially
                   active when they decided.
                 </p>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={sorted_date_freq_pair}
-                    margin={{
-                      top: 20,
-                      right: 10,
-                      left: 0,
-                      bottom: 40
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="name"
-                      angle={315}
-                      dx={0}
-                      dy={25}
-                      minTickGap={-200}
-                      axisLine={false}
-                    />
-                    <YAxis allowDecimals={false} />
-                    <Legend verticalAlign="top" />
-                    <Tooltip />
-
-                    <Bar
-                      dataKey="active"
-                      fill="#FF0000"
-                      stackId={'a'}
-                      label={{ position: 'top' }}
-                    />
-                    <Bar
-                      dataKey="potentials"
-                      fill="#A9A9A9"
-                      stackId={'a'}
-                      label={{ position: 'top' }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                <TasksDistributionBarChart data={sorted_date_freq_pair} />
               </Card.Body>
             </Card>
           </Col>
@@ -210,6 +160,13 @@ class EditorPage extends React.Component {
           success={this.state.success}
           students={this.state.students}
         />
+        <Row className="my-2 mx-0">
+          <Link
+            to={`/teams/editors/archiv/${this.state.editor._id.toString()}`}
+          >
+            <Button>See Archiv Student</Button>
+          </Link>
+        </Row>
       </Aux>
     );
   }

@@ -109,8 +109,8 @@ class AgentMainView extends React.Component {
       <>
         {this.state.user.agent_notification &&
           this.state.user.agent_notification.isRead_new_base_docs_uploaded.map(
-            (student) => (
-              <Row>
+            (student, i) => (
+              <Row key={i}>
                 <Col>
                   <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                     <p

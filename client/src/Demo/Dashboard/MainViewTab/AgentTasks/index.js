@@ -150,6 +150,7 @@ class AgentTasks extends React.Component {
         {/* check program reday to be submitted */}
         {this.props.student.applications.map(
           (application, i) =>
+            application.decided === 'O' &&
             is_cv_finished(this.props.student) &&
             is_program_ml_rl_essay_ready(application) &&
             is_the_uni_assist_vpd_uploaded(application) &&

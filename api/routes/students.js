@@ -51,7 +51,14 @@ router
   .route('/')
   .get(
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.Guest
+    ),
     getStudents
   );
 
@@ -60,7 +67,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getAllStudents
   );
 router
@@ -68,7 +75,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     updateDocumentationHelperLink
   );
 
@@ -77,7 +84,7 @@ router
   .route('/doc-links')
   .get(
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getStudentsAndDocLinks
   );
 
@@ -86,7 +93,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     getStudentAndDocLinks
   );
@@ -96,14 +103,14 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     multitenant_filter,
     getArchivStudent
   )
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     multitenant_filter,
     updateStudentsArchivStatus
   );
@@ -113,7 +120,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     getStudent
   );
@@ -133,7 +140,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin),
+    permit(Role.Admin, Role.Manager),
     multitenant_filter,
     assignEditorToStudent
   );
@@ -143,7 +150,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     createApplication
@@ -154,7 +161,7 @@ router
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     ToggleProgramStatus
@@ -165,7 +172,7 @@ router
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateVPDFileNecessity
@@ -173,14 +180,14 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
     downloadVPDFile
   )
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     VPDfileUpload,
@@ -189,7 +196,7 @@ router
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteVPDFile
@@ -199,7 +206,7 @@ router
   .route('/:studentId/applications/:program_id')
   .delete(
     filter_archiv_user,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteApplication
@@ -210,7 +217,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
     downloadProfileFileURL
   );
@@ -220,7 +227,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     ProfilefileUpload,
@@ -229,7 +236,7 @@ router
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteProfileFile
@@ -240,7 +247,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateProfileDocumentStatus

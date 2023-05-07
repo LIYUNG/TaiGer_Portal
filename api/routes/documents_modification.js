@@ -49,7 +49,7 @@ router
   .route('/overview/all')
   .get(
     getMessagesRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getAllCVMLRLOverview
   );
 
@@ -57,7 +57,7 @@ router
   .route('/overview')
   .get(
     getMessagesRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getCVMLRLOverview
   );
 
@@ -66,7 +66,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     initGeneralMessagesThread
@@ -77,7 +77,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     initApplicationMessagesThread
@@ -88,7 +88,7 @@ router
   .put(
     filter_archiv_user,
     SetStatusMessagesThreadRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     SetStatusMessagesThread
@@ -96,7 +96,7 @@ router
   .post(
     filter_archiv_user,
     postMessagesRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     doc_thread_ops_validator,
     MessagesThreadUpload,
@@ -108,7 +108,7 @@ router
   .delete(
     filter_archiv_user,
     postMessagesImageRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     deleteAMessageInThread
   );
 // Get image in thread
@@ -117,7 +117,7 @@ router
   .get(
     filter_archiv_user,
     postMessagesImageRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     getMessageImageDownload
   );
@@ -126,7 +126,7 @@ router
   .post(
     filter_archiv_user,
     postMessagesImageRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     doc_thread_ops_validator,
     MessagesImageThreadUpload,
@@ -138,7 +138,7 @@ router
   .route('/:messagesThreadId')
   .get(
     getMessagesRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getMessages
   );
 
@@ -147,7 +147,7 @@ router
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     multitenant_filter,
     doc_thread_ops_validator,
     InnerTaigerMultitenantFilter,
@@ -161,7 +161,7 @@ router
   .get(
     filter_archiv_user,
     getMessageFileRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getMessageFileDownload
   );
 
@@ -170,7 +170,7 @@ router
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     doc_thread_ops_validator,

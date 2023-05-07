@@ -19,14 +19,14 @@ router
   .route('/transcript/:category/:language')
   .post(
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     WidgetProcessTranscript
   );
 router
   .route('/transcript/:adminId')
   .get(
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     WidgetdownloadXLSX
   );
 

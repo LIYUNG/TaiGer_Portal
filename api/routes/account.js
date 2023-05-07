@@ -50,7 +50,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getMyfiles
   );
 
@@ -59,7 +59,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getTemplates
   );
 
@@ -71,11 +71,11 @@ router
     TemplatefileUpload,
     uploadTemplate
   )
-  .delete(filter_archiv_user, permit(Role.Admin), deleteTemplate)
+  .delete(filter_archiv_user, permit(Role.Admin, Role.Manager), deleteTemplate)
   .get(
     filter_archiv_user,
     DownloadTemplateRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     downloadTemplateFile
   );
 
@@ -84,7 +84,7 @@ router
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     UpdateStudentApplications
@@ -96,7 +96,7 @@ router
   .post(
     filter_archiv_user,
     TranscriptAnalyserRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     processTranscript_test
@@ -107,7 +107,7 @@ router
   .get(
     filter_archiv_user,
     DownloadTemplateRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     downloadXLSX
   );
@@ -118,7 +118,14 @@ router
   .post(
     filter_archiv_user,
     RemoveNotificationRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.Guest
+    ),
     removeNotification
   );
 
@@ -146,7 +153,14 @@ router
   .post(
     filter_archiv_user,
     updatePersonalInformationRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.Guest
+    ),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateAcademicBackground
@@ -157,7 +171,14 @@ router
   .post(
     filter_archiv_user,
     updatePersonalInformationRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.Guest
+    ),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateLanguageSkill
@@ -168,7 +189,14 @@ router
   .post(
     filter_archiv_user,
     updatePersonalInformationRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.Guest
+    ),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateApplicationPreferenceSkill
@@ -179,14 +207,28 @@ router
   .post(
     filter_archiv_user,
     updatePersonalInformationRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.Guest
+    ),
     updatePersonalData
   );
 router
   .route('/credentials')
   .post(
     updateCredentialRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.Guest
+    ),
     localAuth,
     updateCredentials
   );

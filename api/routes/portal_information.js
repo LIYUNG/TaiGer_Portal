@@ -26,7 +26,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Student, Role.Guest),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student, Role.Guest),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     createPortalCredentials

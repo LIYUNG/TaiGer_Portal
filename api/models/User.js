@@ -10,6 +10,7 @@ const { DocumentStatus, CheckListStatus } = require('../constants');
 
 const Role = {
   Admin: 'Admin',
+  Manager: 'Manager',
   Guest: 'Guest',
   Agent: 'Agent',
   Editor: 'Editor',
@@ -380,6 +381,40 @@ const Student = User.discriminator(
   Role.Student
 );
 
+const Manager = User.discriminator(
+  'Manager',
+  new Schema(
+    {
+      agents: [{ type: ObjectId, ref: 'Agent' }],
+      editors: [{ type: ObjectId, ref: 'Editor' }],
+      manager_notification: {
+        isRead_new_base_docs_uploaded: [
+          {
+            student_id: {
+              type: String,
+              default: ''
+            },
+            student_firstname: {
+              type: String,
+              default: ''
+            },
+            student_lastname: {
+              type: String,
+              default: ''
+            }
+          }
+        ],
+        isRead_new_programs_assigned: {
+          type: Boolean,
+          default: false
+        }
+      }
+    },
+    options
+  ),
+  Role.Manager
+);
+
 const Agent = User.discriminator(
   'Agent',
   new Schema(
@@ -452,4 +487,4 @@ const Editor = User.discriminator(
 
 const Admin = User.discriminator('Admin', new Schema({}, options), Role.Admin);
 
-module.exports = { Role, User, Guest, Student, Agent, Editor, Admin };
+module.exports = { Role, User, Guest, Student, Agent, Editor, Manager, Admin };

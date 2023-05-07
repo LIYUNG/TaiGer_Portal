@@ -13,7 +13,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getExpenses
   );
 

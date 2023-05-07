@@ -48,7 +48,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     createInternalDocumentation
   );
 router
@@ -56,7 +56,7 @@ router
   .get(
     filter_archiv_user,
     DocumentationGETRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     getAllInternalDocumentations
   );
 router
@@ -64,7 +64,7 @@ router
   .get(
     filter_archiv_user,
     DocumentationGETRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     getInternalDocumentation
   );
 router
@@ -72,13 +72,13 @@ router
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     updateInternalDocumentation
   )
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     deleteInternalDocumentation
   );
 
@@ -87,13 +87,13 @@ router
   .get(
     filter_archiv_user,
     DocumentationGETRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     getInternalDocumentationsPage
   )
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     updateInternalDocumentationPage
   );
 
@@ -102,7 +102,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     imageUpload,
     uploadDocImage
   );
@@ -111,7 +111,7 @@ router
   .get(
     filter_archiv_user,
     DocumentationGETRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getDocFile
   );
 
@@ -120,7 +120,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     documentationDocsUpload,
     uploadDocDocs
   );
@@ -165,13 +165,13 @@ router
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     updateDocumentation
   )
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     deleteDocumentation
   );
 

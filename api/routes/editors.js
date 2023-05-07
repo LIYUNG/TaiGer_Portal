@@ -7,7 +7,7 @@ const { getEditors } = require('../controllers/teams');
 
 const router = Router();
 
-router.use(protect, permit(Role.Admin));
+router.use(protect, permit(Role.Admin, Role.Manager));
 
 router
   .route('/')

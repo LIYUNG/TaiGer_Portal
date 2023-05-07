@@ -26,23 +26,27 @@ router
   .get(
     filter_archiv_user,
     GetProgramListRateLimiter,
-    permit(Role.Admin, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     getPrograms
   )
-  .post(filter_archiv_user, permit(Role.Admin, Role.Agent), createProgram);
+  .post(
+    filter_archiv_user,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    createProgram
+  );
 
 router
   .route('/:programId')
   .get(
     filter_archiv_user,
     GetProgramRateLimiter,
-    permit(Role.Admin, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getProgram
   )
   .put(
     filter_archiv_user,
     UpdateProgramRateLimiter,
-    permit(Role.Admin, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     updateProgram
   );
 // .delete(DeleteProgramRateLimiter, permit(Role.Admin), deleteProgram);

@@ -21,6 +21,7 @@ import Aux from '../../../hoc/_Aux';
 import { spinner_style } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
 import {
+  frequencyDistribution,
   is_TaiGer_role,
   open_tasks,
   open_tasks_with_editors,
@@ -133,25 +134,6 @@ class InternalDashboard extends React.Component {
       '#a389d4',
       '#FE8A7D'
     ];
-    const frequencyDistribution = (tasks) => {
-      const map = {};
-      for (let i = 0; i < tasks.length; i++) {
-        map[tasks[i].deadline] = map[tasks[i].deadline]
-          ? tasks[i].show
-            ? {
-                show: map[tasks[i].deadline].show + 1,
-                potentials: map[tasks[i].deadline].potentials
-              }
-            : {
-                show: map[tasks[i].deadline].show,
-                potentials: map[tasks[i].deadline].potentials + 1
-              }
-          : tasks[i].show
-          ? { show: 1, potentials: 0 }
-          : { show: 0, potentials: 1 };
-      }
-      return map;
-    };
 
     const editors_data = [];
     editors.forEach((editor, i) => {

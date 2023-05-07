@@ -28,6 +28,12 @@ const getTeamMembers = asyncHandler(async (req, res) => {
 });
 
 const getStatistics = asyncHandler(async (req, res) => {
+  // const documents_all_open = await Documentthread.find({
+  //   isFinalVersion: false
+  // })
+  //   .populate('student_id', 'firstname lastname')
+  //   .populate('student_id', 'editors agents');
+  // console.log(documents_all_open);
   const documents_cv = await Documentthread.find({
     isFinalVersion: false,
     file_type: 'CV'
@@ -99,6 +105,7 @@ const getStatistics = asyncHandler(async (req, res) => {
   res.status(200).send({
     success: true,
     data: users,
+    // documents_all_open,
     documents: documents_data,
     students: {
       isClose: students.filter((student) => student.archiv === true).length,

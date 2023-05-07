@@ -986,3 +986,23 @@ export const programs_refactor = (students) => {
   }
   return applications;
 };
+
+export const frequencyDistribution = (tasks) => {
+  const map = {};
+  for (let i = 0; i < tasks.length; i++) {
+    map[tasks[i].deadline] = map[tasks[i].deadline]
+      ? tasks[i].show
+        ? {
+            show: map[tasks[i].deadline].show + 1,
+            potentials: map[tasks[i].deadline].potentials
+          }
+        : {
+            show: map[tasks[i].deadline].show,
+            potentials: map[tasks[i].deadline].potentials + 1
+          }
+      : tasks[i].show
+      ? { show: 1, potentials: 0 }
+      : { show: 0, potentials: 1 };
+  }
+  return map;
+};

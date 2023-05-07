@@ -1,6 +1,20 @@
 import React from 'react';
 import { Card, Spinner, Row, Col } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
+import {
+  BarChart,
+  CartesianGrid,
+  Tooltip,
+  XAxis,
+  YAxis,
+  Legend,
+  Bar,
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+  ResponsiveContainer
+} from 'recharts';
 
 import Aux from '../../hoc/_Aux';
 import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
@@ -8,7 +22,11 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getEditor } from '../../api';
 import { spinner_style } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  frequencyDistribution,
+  is_TaiGer_role,
+  open_tasks_with_editors
+} from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 
@@ -78,6 +96,25 @@ class EditorPage extends React.Component {
       `Editor: ${this.state.editor.firstname}, ${this.state.editor.lastname}`
     );
 
+    const open_tasks_arr = open_tasks_with_editors(this.state.students);
+    const task_distribution = open_tasks_arr
+      .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
+      .map(({ deadline, file_type, show }) => {
+        return { deadline, file_type, show };
+      });
+    const open_distr = frequencyDistribution(task_distribution);
+
+    const sort_date = Object.keys(open_distr).sort();
+
+    const sorted_date_freq_pair = [];
+    sort_date.forEach((date, i) => {
+      sorted_date_freq_pair.push({
+        name: `${date}`,
+        active: open_distr[date].show,
+        potentials: open_distr[date].potentials
+      });
+    });
+
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -96,6 +133,74 @@ class EditorPage extends React.Component {
                   </Row>
                 </Card.Title>
               </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Card>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0">
+                      {this.state.editor.firstname} {this.state.editor.lastname}
+                      {' '}
+                      Open Tasks Distribution
+                    </Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Tasks distribute among the date. Note that CVs, MLs, RLs, and
+                Essay are mixed together.
+                <p className="my-0">
+                  <b style={{ color: 'red' }}>active:</b> students decide
+                  programs. These will be shown in{' '}
+                  <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+                </p>
+                <p className="my-0">
+                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
+                  not decide programs yet. But the tasks will be potentially
+                  active when they decided.
+                </p>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={sorted_date_freq_pair}
+                    margin={{
+                      top: 20,
+                      right: 10,
+                      left: 0,
+                      bottom: 40
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="name"
+                      angle={315}
+                      dx={0}
+                      dy={25}
+                      minTickGap={-200}
+                      axisLine={false}
+                    />
+                    <YAxis allowDecimals={false} />
+                    <Legend verticalAlign="top" />
+                    <Tooltip />
+
+                    <Bar
+                      dataKey="active"
+                      fill="#FF0000"
+                      stackId={'a'}
+                      label={{ position: 'top' }}
+                    />
+                    <Bar
+                      dataKey="potentials"
+                      fill="#A9A9A9"
+                      stackId={'a'}
+                      label={{ position: 'top' }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card.Body>
             </Card>
           </Col>
         </Row>

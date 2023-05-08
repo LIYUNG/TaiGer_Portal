@@ -1531,7 +1531,9 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 於 ${
 
 <p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
-<p>請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節。</p>
+<p>請至 <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
+      msg.program_name
+    } ${msg.uploaded_documentname}</a>  查看細節。</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1549,7 +1551,9 @@ for ${msg.student_firstname} ${msg.student_lastname}.</p>
 
 <p>Double check this document and finalize the application if applicable. </p>
 
-<p>Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.</p>
+<p>Please go to <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
+      msg.program_name
+    } ${msg.uploaded_documentname}</a> for more details.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1573,7 +1577,9 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 為未完成
 
 <p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
-<p>請至 ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} 查看細節。</p>
+<p>請至 <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
+      msg.program_name
+    } ${msg.uploaded_documentname}</a> 查看細節。</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1591,7 +1597,9 @@ on ${msg.uploaded_updatedAt} for ${msg.student_firstname} ${
 
 <p>Double check this document and finalize the application if applicable. </p>
 
-<p>Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.</p>
+<p>Please go to <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
+      msg.program_name
+    } ${msg.uploaded_documentname}</a> for more details.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

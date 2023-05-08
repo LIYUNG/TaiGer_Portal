@@ -1165,6 +1165,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
         program_name: student_application.programId.program_name,
         uploaded_documentname: application_thread.doc_thread_id.file_type,
         uploaded_updatedAt: new Date(),
+        thread_id: messagesThreadId,
         isFinalVersion: application_thread.isFinalVersion
       }
     );
@@ -1189,6 +1190,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
           program_name: student_application.programId.program_name,
           uploaded_documentname: application_thread.doc_thread_id.file_type,
           uploaded_updatedAt: new Date(),
+          thread_id: messagesThreadId,
           isFinalVersion: application_thread.isFinalVersion
         }
       );

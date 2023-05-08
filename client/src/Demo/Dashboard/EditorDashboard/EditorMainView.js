@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Tabs, Tab, Table, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 // import Card from '../../../App/components/MainCard';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
@@ -7,6 +8,8 @@ import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgen
 import UnrespondedThreads from '../MainViewTab/NewUpdatedThreadFromStudent/UnrespondedThreads';
 import EditorTODOTasks from '../MainViewTab/EditorTODOTasks/EditorTODOTasks';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
+import { frequencyDistribution, open_tasks_with_editors } from '../../Utils/checking-functions';
 
 class EditorMainView extends React.Component {
   render() {
@@ -78,8 +81,60 @@ class EditorMainView extends React.Component {
       </>
     );
 
+    const open_tasks_arr = open_tasks_with_editors(this.props.students);
+    const task_distribution = open_tasks_arr
+      .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
+      .map(({ deadline, file_type, show }) => {
+        return { deadline, file_type, show };
+      });
+    const open_distr = frequencyDistribution(task_distribution);
+
+    const sort_date = Object.keys(open_distr).sort();
+
+    const sorted_date_freq_pair = [];
+    sort_date.forEach((date, i) => {
+      sorted_date_freq_pair.push({
+        name: `${date}`,
+        active: open_distr[date].show,
+        potentials: open_distr[date].potentials
+      });
+    });
+
     return (
       <>
+        <Row>
+          <Col md={12}>
+            <Card>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0">
+                      <b>
+                        {this.props.user.firstname} {this.props.user.lastname}
+                      </b>{' '}
+                      Open Tasks Distribution
+                    </Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Tasks distribute among the date. Note that CVs, MLs, RLs, and
+                Essay are mixed together.
+                <p className="my-0">
+                  <b style={{ color: 'red' }}>active:</b> students decide
+                  programs. These will be shown in{' '}
+                  <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+                </p>
+                <p className="my-0">
+                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
+                  not decide programs yet. But the tasks will be potentially
+                  active when they decided.
+                </p>
+                <TasksDistributionBarChart data={sorted_date_freq_pair} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Card className="px-0 mb-2 mx-0" bg={'danger'} text={'light'}>
             <Card.Header>

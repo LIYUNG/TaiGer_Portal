@@ -14,8 +14,8 @@ const {
   AWS_S3_PUBLIC_BUCKET_NAME
 } = require('../config');
 
-const MAX_FILE_SIZE_MB = 5 * 1024 * 1024; // 5 MB
-const MAX_DOC_FILE_SIZE_MB = 2 * 1024 * 1024; // 2 MB
+const MAX_FILE_SIZE_MB = 2 * 1024 * 1024; // 2 MB
+const MAX_DOC_FILE_SIZE_MB = 1 * 1024 * 1024; // 1 MB
 const ALLOWED_MIME_TYPES = [
   'application/pdf',
   'image/png',

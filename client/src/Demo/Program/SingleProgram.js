@@ -17,18 +17,20 @@ class SingleProgram extends React.Component {
     success: false,
     isEdit: false,
     res_status: 0,
+    students: [],
     res_modal_message: '',
     res_modal_status: 0
   };
   componentDidMount() {
     getProgram(this.props.match.params.programId).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { data, success, students } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             program: data,
+            students,
             success: success,
             res_status: status
           });
@@ -103,7 +105,8 @@ class SingleProgram extends React.Component {
       isLoaded,
       res_modal_status,
       res_modal_message,
-      program
+      program,
+      students
     } = this.state;
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
@@ -151,6 +154,8 @@ class SingleProgram extends React.Component {
             program={program}
             isLoaded={isLoaded}
             user={this.props.user}
+            students={students}
+            programId={this.props.match.params.programId}
           />
           {is_TaiGer_AdminAgent(this.props.user) && (
             <Button size="sm" onClick={() => this.handleClick()}>

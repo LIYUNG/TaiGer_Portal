@@ -1,7 +1,7 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Program } = require('../models/Program');
-const { User, Role } = require('../models/User');
+const { User, Role, Student } = require('../models/User');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
 const { two_weeks_cache } = require('../cache/node-cache');
@@ -58,10 +58,48 @@ const getProgram = asyncHandler(async (req, res) => {
     if (success) {
       console.log('programs cache set successfully');
     }
+    if (
+      user.role === 'Admin' ||
+      user.role === 'Agent' ||
+      user.role === 'Editor'
+    ) {
+      const students = await Student.find({
+        applications: {
+          $elemMatch: {
+            programId: req.params.programId,
+            decided: 'O',
+            closed: 'O'
+          }
+        }
+      }).select('firstname lastname applications application_preference.expected_application_date');
+
+      return res.send({ success: true, data: program, students });
+    }
     return res.send({ success: true, data: program });
   }
   console.log('programs cache hit');
-  res.send({ success: true, data: value });
+
+  if (
+    user.role === 'Admin' ||
+    user.role === 'Agent' ||
+    user.role === 'Editor'
+  ) {
+    const students = await Student.find({
+      applications: {
+        $elemMatch: {
+          programId: req.params.programId,
+          decided: 'O',
+          closed: 'O'
+        }
+      }
+    }).select(
+      'firstname lastname applications application_preference.expected_application_date'
+    );
+
+    res.send({ success: true, data: value, students });
+  } else {
+    res.send({ success: true, data: value });
+  }
 });
 
 const createProgram = asyncHandler(async (req, res) => {

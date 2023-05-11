@@ -425,6 +425,8 @@ export default function MyCourses(props) {
                   </Button>
                 )}
               </Row>
+              <br ></br>
+              <p>After you updated the course table, please contact your agent for your course analysis.</p>
             </Card.Body>
           </Card>
           {props.user.role === 'Guest' && (

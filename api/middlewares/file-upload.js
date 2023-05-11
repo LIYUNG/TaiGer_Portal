@@ -22,6 +22,7 @@ const ALLOWED_MIME_TYPES = [
   'image/jpg',
   'image/jpeg',
   'application/vnd.ms-excel',
+  'application/vnd.ms-excel.sheet.macroenabled.12',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ];
@@ -66,7 +67,7 @@ const upload_template_s3 = multer({
       return cb(
         new ErrorResponse(
           415,
-          'Only .xls .xlsx .pdf .png, .jpg and .jpeg .docx format are allowed'
+          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
     }
@@ -251,7 +252,7 @@ const upload_doc_docs_s3 = multer({
       return cb(
         new ErrorResponse(
           415,
-          'Only .xls .xlsx .pdf .png, .jpg and .jpeg .docx format are allowed'
+          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
     }
@@ -453,7 +454,7 @@ const upload_messagesthread_file_s3 = multer({
       return cb(
         new ErrorResponse(
           415,
-          'Only .xls .xlsx .pdf .png, .jpg and .jpeg .docx format are allowed'
+          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
         )
       );
     }

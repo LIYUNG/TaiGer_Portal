@@ -204,6 +204,15 @@ export default {
           icon: 'feather icon-help-circle',
           children: [
             {
+              id: 'howtostart',
+              title: 'How to Start',
+              type: 'item',
+              url: '/docs/howtostart',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            },
+            {
               id: 'base-documents',
               title: 'Base Documents',
               type: 'item',

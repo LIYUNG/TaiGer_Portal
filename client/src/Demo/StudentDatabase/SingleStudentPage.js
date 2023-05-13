@@ -93,14 +93,12 @@ class SingleStudentPage extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
         this.setState((state) => ({
           ...state,
           isLoaded: temp_isLoaded,
           isLoaded2: true,
           error,
-          res_modal_status: 500,
-          res_modal_message: statusText
+          res_status: 500
         }));
       }
     );

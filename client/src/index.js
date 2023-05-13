@@ -17,6 +17,7 @@ const store = createStore(
 );
 
 window.documentlist = {
+  'howtostart': 'How to Start TaiGer Portal',
   'base-documents': 'Base Documents',
   'cv-ml-rl': 'CV/ML/RL',
   application: 'Application Instruction',

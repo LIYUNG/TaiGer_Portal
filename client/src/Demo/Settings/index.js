@@ -400,14 +400,45 @@ class Settings extends React.Component {
                 </Row>
               </Card.Body>
             </Card>
-            {!isLoaded && (
-              <div style={spinner_style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Col>
+          {/* 
+          <Col md={6}>
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Email Settings
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <Row className="my-0 mx-0">
+                  <Col></Col>
+                </Row>
+                <Row className="my-0 mx-0">
+                  <Col>
+                    <h4 className='text-info'>Coming soon</h4>
+                    <br />
+                    <Button
+                      disabled={
+                        this.state.credentials.current_password === '' ||
+                        this.state.credentials.new_password === '' ||
+                        this.state.credentials.new_password_again === ''
+                      }
+                      variant="primary"
+                      // onClick={(e) =>
+                      //   this.handleSubmit_Credentials(
+                      //     e,
+                      //     this.state.credentials,
+                      //     this.props.user.email
+                      //   )
+                      // }
+                    >
+                      Save
+                    </Button>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col> */}
         </Row>
         <Modal
           show={this.state.updateconfirmed}

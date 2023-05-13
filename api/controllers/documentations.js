@@ -24,6 +24,7 @@ const s3 = new aws.S3({
 });
 
 const valid_categories = [
+  'howtostart',
   'application',
   'base-documents',
   'cv-ml-rl',

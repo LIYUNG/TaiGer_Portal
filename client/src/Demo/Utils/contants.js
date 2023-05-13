@@ -62,6 +62,7 @@ export const study_group = [
 ];
 
 export const valid_categories = [
+  { key: 'howtostart', value: 'How to Start' },
   { key: 'application', value: 'Application' },
   { key: 'base-documents', value: 'Base-documents' },
   { key: 'cv-ml-rl', value: 'CV/ML/RL' },

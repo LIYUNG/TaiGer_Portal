@@ -394,13 +394,23 @@ export default function MyCourses(props) {
             <Card.Body>
               <Row>
                 <Col>
-                  <p>
-                    Please fill the courses you have taken. (Ignore if you are
-                    high school student)
-                  </p>
-                  <p>
-                    <b>Only Bachelor's courses </b>are considered in this table.
-                  </p>
+                  <h4>
+                    請把<b>大學學士學位成績單</b>
+                    上面出現的所有課程填入這個表單內
+                  </h4>
+                  <h4>
+                    Please fill <b>all your courses in the Bachelor's study</b>{' '}
+                    in this table
+                  </h4>
+                  <li>若學士時期有交換，請填入交換時的成績單</li>
+                  <li>若有在大學部時期修過的碩士課程也可以放上去</li>
+                  <li>
+                    <b>
+                      若你已就讀碩士或仍然是碩士班在學，請勿放碩士班成績單上的課程
+                    </b>
+                  </li>
+                  <li>若目前尚未畢業，請即時更新這個表單</li>
+                  <li>若您仍是高中生，請忽略此表格</li>
                 </Col>
               </Row>
               <br />
@@ -425,8 +435,11 @@ export default function MyCourses(props) {
                   </Button>
                 )}
               </Row>
-              <br ></br>
-              <p>After you updated the course table, please contact your agent for your course analysis.</p>
+              <br></br>
+              <p>
+                After you updated the course table, please contact your agent
+                for your course analysis.
+              </p>
             </Card.Body>
           </Card>
           {props.user.role === 'Guest' && (

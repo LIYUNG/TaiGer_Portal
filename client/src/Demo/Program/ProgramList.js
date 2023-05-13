@@ -475,15 +475,6 @@ function Table2({ columns, data, userId }) {
   };
   return (
     <>
-      {programs.programIds.length !== 0 && (
-        <>
-          <DropdownButton size="sm" title="Option" variant="primary">
-            <Dropdown.Item eventKey="2" onClick={setModalShow2}>
-              Assign to student...
-            </Dropdown.Item>
-          </DropdownButton>
-        </>
-      )}
       {statedataTable2.res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -491,6 +482,40 @@ function Table2({ columns, data, userId }) {
           res_modal_message={statedataTable2.res_modal_message}
         />
       )}
+      <Table variant="dark" text="light" bordered hover size="sm">
+        <thead>
+          <tr>
+            <th
+              colSpan={visibleColumns.length}
+              style={{
+                textAlign: 'left'
+              }}
+            >
+              <span
+                className="mx-2"
+                style={{ cursor: 'pointer' }}
+              >
+                {programs.programIds.length !== 0 && (
+                  <i
+                    className="feather icon-user-plus"
+                    onClick={setModalShow2}
+                  />
+                )}
+              </span>
+              {/* {programs.programIds.length !== 0 &&
+                programs.programIds.length === 1 && (
+                  <i className="feather icon-trash-2" />
+                )} */}
+              <GlobalFilter
+                preGlobalFilteredRows={preGlobalFilteredRows}
+                globalFilter={state.globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+            </th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </Table>
       <Table
         className="my-0 mx-2"
         variant="dark"
@@ -501,7 +526,6 @@ function Table2({ columns, data, userId }) {
         size="sm"
         {...getTableProps()}
       >
-        {/* <table {...getTableProps()}> */}
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -514,20 +538,6 @@ function Table2({ columns, data, userId }) {
               ))}
             </tr>
           ))}
-          <tr>
-            <th
-              colSpan={visibleColumns.length}
-              style={{
-                textAlign: 'left'
-              }}
-            >
-              <GlobalFilter
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                globalFilter={state.globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-            </th>
-          </tr>
         </thead>
         <tbody {...getTableBodyProps()}>
           {page.map((row, i) => {
@@ -556,103 +566,75 @@ function Table2({ columns, data, userId }) {
             );
           })}
         </tbody>
-        {/* </table> */}
       </Table>
-      <div className="pagination">
+      <div>
         <Row>
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => gotoPage(0)}
-              disabled={!canPreviousPage}
-            >
-              {'<<'}
-            </Button>
-          </Col>{' '}
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => previousPage()}
-              disabled={!canPreviousPage}
-            >
-              {'<'}
-            </Button>
-          </Col>{' '}
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => nextPage()}
-              disabled={!canNextPage}
-            >
-              {'>'}
-            </Button>
-          </Col>{' '}
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => gotoPage(pageCount - 1)}
-              disabled={!canNextPage}
-            >
-              {'>>'}
-            </Button>
-          </Col>{' '}
-          <Col md={2}>
-            <span className="text-light">
-              Page{' '}
-              <strong>
-                {pageIndex + 1} of {pageOptions.length}
-              </strong>{' '}
-            </span>
-          </Col>
-          <Col md={4}>
-            <span className="text-light">
-              | Go to page:{' '}
-              <input
-                type="number"
-                defaultValue={pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  gotoPage(page);
-                }}
-                style={{ width: '50px' }}
-              />
-            </span>
-          </Col>
-          <Col md={2}>
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}
-            >
-              {[20, 40, 60, 80, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
+          <Col md={12}>
+            <p className="my-1">
+              <span
+                className="ms-4"
+                style={{ color: !canPreviousPage ? 'grey' : 'white' }}
+              >
+                <i
+                  className="mx-1 feather icon-chevrons-left"
+                  onClick={() => gotoPage(0)}
+                  disabled={!canPreviousPage}
+                />
+              </span>
+              <span style={{ color: !canPreviousPage ? 'grey' : 'white' }}>
+                <i
+                  className="mx-1 feather icon-chevron-left"
+                  onClick={() => previousPage()}
+                  disabled={!canPreviousPage}
+                />
+              </span>
+              <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
+                <i
+                  className="mx-1 feather icon-chevron-right"
+                  onClick={() => nextPage()}
+                  disabled={!canNextPage}
+                />
+              </span>
+              <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
+                <i
+                  className="mx-1 feather icon-chevrons-right"
+                  onClick={() => gotoPage(pageCount - 1)}
+                  disabled={!canNextPage}
+                />
+              </span>
+              <span className="text-light mx-2" style={{ float: 'right' }}>
+                Go to page:{' '}
+                <input
+                  type="number"
+                  defaultValue={pageIndex + 1}
+                  onChange={(e) => {
+                    const page = e.target.value
+                      ? Number(e.target.value) - 1
+                      : 0;
+                    gotoPage(page);
+                  }}
+                  style={{ width: '50px' }}
+                />
+                <strong className="mx-2">
+                  {pageIndex + 1} / {pageOptions.length}
+                </strong>{' '}
+                <select
+                  style={{ float: 'right' }}
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                  }}
+                >
+                  {[20, 40, 60, 80, 100].map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      Show {pageSize}
+                    </option>
+                  ))}
+                </select>
+              </span>
+            </p>
           </Col>
         </Row>
-      </div>
-
-      <div>
-        {/* <pre>
-          <code>{JSON.stringify(state.filters, null, 2)}</code>
-        </pre>
-        <pre>
-          <code>
-            {JSON.stringify(
-              {
-                selectedRowIds: selectedRowIds,
-                'selectedFlatRows[].original': selectedFlatRows.map(
-                  (d) => d.original._id
-                )
-              },
-              null,
-              2
-            )}
-          </code>
-        </pre> */}
       </div>
       <ProgramListSubpage
         userId={userId}

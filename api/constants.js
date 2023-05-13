@@ -25,6 +25,8 @@ const SURVEY_URL_FOR_AGENT_URL = (studentId) =>
 const SETTINGS_URL = new URL('/settings', ORIGIN).href;
 const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
+const STUDENT_PROFILE_FOR_AGENT_URL = (studentId) =>
+  new URL(`/student-database/${studentId}/profile`, ORIGIN).href;
 const STUDENT_COURSE_URL = (studentId) =>
   new URL(`/my-courses/${studentId}`, ORIGIN).href;
 
@@ -450,7 +452,9 @@ const unsubmitted_applications_escalation_agent_summary = (student) => {
     ) {
       if (x === 0) {
         unsubmitted_applications = `
-        <b>${student.firstname} ${student.lastname}</b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
+          student._id.toString()
+        )}">${student.firstname} ${student.lastname}</a></b><br />
         
         The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
         <ul>
@@ -681,7 +685,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        <b>${student.firstname} ${student.lastname}</b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
+          student._id.toString()
+        )}">${student.firstname} ${student.lastname}</a></b><br />
 
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
@@ -706,7 +712,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        <b>${student.firstname} ${student.lastname}</b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
+          student._id.toString()
+        )}">${student.firstname} ${student.lastname}</a></b><br />
 
         The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
         <ul>
@@ -752,7 +760,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        <b>${student.firstname} ${student.lastname}</b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
+          student._id.toString()
+        )}">${student.firstname} ${student.lastname}</a></b><br />
 
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
@@ -784,7 +794,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        <b>${student.firstname} ${student.lastname}</b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
+          student._id.toString()
+        )}">${student.firstname} ${student.lastname}</a></b><br />
         
         The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
         <ul>
@@ -1329,6 +1341,7 @@ module.exports = {
   STUDENT_SURVEY_URL,
   SETTINGS_URL,
   STUDENT_BACKGROUND_FOR_AGENT_URL,
+  STUDENT_PROFILE_FOR_AGENT_URL,
   STUDENT_COURSE_URL,
   TAIGER_SIGNATURE,
   SPLIT_LINE,

@@ -12,8 +12,8 @@ const {
   getPrograms,
   getProgram,
   createProgram,
-  updateProgram
-  // deleteProgram
+  updateProgram,
+  deleteProgram
 } = require('../controllers/programs');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 
@@ -48,7 +48,7 @@ router
     UpdateProgramRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     updateProgram
-  );
-// .delete(DeleteProgramRateLimiter, permit(Role.Admin), deleteProgram);
+  )
+  .delete(DeleteProgramRateLimiter, permit(Role.Admin), deleteProgram);
 
 module.exports = router;

@@ -24,7 +24,7 @@ class ProgramDeleteWarning extends React.Component {
         <Modal.Footer>
           <Button
             variant="primary"
-            onClick={() => this.props.RemoveProgramHandler3(this.props.program_id)}
+            onClick={() => this.props.RemoveProgramHandler(this.props.program_id)}
           >
             Yes
           </Button>

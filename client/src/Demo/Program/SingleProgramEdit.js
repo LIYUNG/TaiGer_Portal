@@ -423,11 +423,12 @@ class SingleProgramEdit extends React.Component {
               <Col md={4}>
                 <h5>Essay Requirements</h5>
               </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <h5>
                   <Form.Group controlId="essay_requirements">
                     <Form.Control
-                      type="text"
+                      as="textarea"
+                      rows="5"
                       placeholder="2000 words"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
@@ -444,7 +445,7 @@ class SingleProgramEdit extends React.Component {
               <Col md={4}>
                 <h5>Portfolio Required?</h5>
               </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <h5>
                   <Form.Group controlId="portfolio_required">
                     <Form.Control
@@ -467,11 +468,12 @@ class SingleProgramEdit extends React.Component {
               <Col md={4}>
                 <h5>Portfolio Requirements</h5>
               </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <h5>
                   <Form.Group controlId="portfolio_requirements">
                     <Form.Control
-                      type="text"
+                      as="textarea"
+                      rows="5"
                       placeholder="2000 words"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
@@ -488,7 +490,7 @@ class SingleProgramEdit extends React.Component {
               <Col md={4}>
                 <h5>Supplementary Form Required?</h5>
               </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <h5>
                   <Form.Group controlId="supplementary_form_required">
                     <Form.Control
@@ -576,7 +578,7 @@ class SingleProgramEdit extends React.Component {
               <Col md={4}>
                 <h5>Tuition Fees</h5>
               </Col>
-              <Col md={6}>
+              <Col md={4}>
                 <h5>
                   <Form.Group controlId="tuition_fees">
                     <Form.Control
@@ -680,7 +682,7 @@ class SingleProgramEdit extends React.Component {
               <Col md={4}>
                 <h5>Group</h5>
               </Col>
-              <Col md={6}>
+              <Col md={4}>
                 <h5>
                   <Form.Group controlId="study_group_flag">
                     <Form.Control

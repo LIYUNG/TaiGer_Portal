@@ -3,11 +3,17 @@ import { Spinner, Button } from 'react-bootstrap';
 import { getProgram, updateProgram } from '../../api';
 import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
+import ProgramDeleteWarning from './ProgramDeleteWarning';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
+import {
+  is_TaiGer_AdminAgent,
+  is_TaiGer_Admin
+} from '../Utils/checking-functions';
+
+import { deleteProgram } from '../../api';
 
 class SingleProgram extends React.Component {
   state = {
@@ -16,6 +22,7 @@ class SingleProgram extends React.Component {
     program: null,
     success: false,
     isEdit: false,
+    deleteProgramWarning: false,
     res_status: 0,
     students: [],
     res_modal_message: '',
@@ -99,6 +106,32 @@ class SingleProgram extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
 
+  setModalShowDDelete = () => {
+    this.setState({
+      deleteProgramWarning: true
+    });
+  };
+
+  setModalHideDDelete = () => {
+    this.setState({
+      deleteProgramWarning: false
+    });
+  };
+  RemoveProgramHandler = (program_id) => {
+    // this.setState({
+    //   deleteProgramWarning: false
+    // });
+    deleteProgram(program_id).then(
+      (resp) => {
+        console.log(resp);
+        this.setState({
+          deleteProgramWarning: false
+        });
+      },
+      (error) => {}
+    );
+  };
+
   render() {
     const {
       res_status,
@@ -158,10 +191,29 @@ class SingleProgram extends React.Component {
             programId={this.props.match.params.programId}
           />
           {is_TaiGer_AdminAgent(this.props.user) && (
-            <Button size="sm" onClick={() => this.handleClick()}>
-              Edit
-            </Button>
+            <>
+              <Button size="sm" onClick={() => this.handleClick()}>
+                Edit
+              </Button>
+              {is_TaiGer_Admin(this.props.user) && (
+                <Button
+                  size="sm"
+                  variant="danger"
+                  onClick={() => this.setModalShowDDelete()}
+                >
+                  Delete
+                </Button>
+              )}
+            </>
           )}
+          <ProgramDeleteWarning
+            deleteProgramWarning={this.state.deleteProgramWarning}
+            setModalHideDDelete={this.setModalHideDDelete}
+            uni_name={program.school}
+            program_name={program.program_name}
+            RemoveProgramHandler={this.RemoveProgramHandler}
+            program_id={program._id.toString()}
+          />
         </>
       );
     }

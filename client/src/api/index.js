@@ -243,7 +243,8 @@ export const getPrograms = () => request.get('/api/programs');
 export const getProgram = (programId) =>
   request.get(`/api/programs/${programId}`);
 
-export const deleteProgram = (id) => request.delete(`/api/programs/${id}`);
+export const deleteProgram = (programId) =>
+  request.delete(`/api/programs/${programId}`);
 
 export const createProgram = (program) =>
   request.post('/api/programs', program);

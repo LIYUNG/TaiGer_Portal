@@ -138,7 +138,6 @@ const updateProgram = asyncHandler(async (req, res) => {
 });
 
 const deleteProgram = asyncHandler(async (req, res) => {
-  // TODO: check if anyone applied this program
   const students = await Student.find({
     applications: {
       $elemMatch: {
@@ -146,15 +145,21 @@ const deleteProgram = asyncHandler(async (req, res) => {
       }
     }
   }).select('firstname lastname applications.programId');
-  console.log(students);
+  // Check if anyone applied this program
   if (students.length === 0) {
     console.log('it can be deleted!');
+    await Program.findByIdAndDelete(req.params.programId);
+    console.log('The program deleted!');
+
+    const value = one_month_cache.del(req.originalUrl);
+    if (value === 1) {
+      console.log('cache key deleted successfully due to delete');
+    }
   } else {
     console.log('it can not be deleted!');
     console.log('The following students have these programs!');
     console.log(students);
   }
-  // await Program.findByIdAndDelete(req.params.programId);
   res.status(200).send({ success: true });
 });
 

@@ -641,19 +641,21 @@ const getMessages = asyncHandler(async (req, res) => {
     let daysLeftMin = 3000;
     let CVDeadline = '';
     for (let i = 0; i < student.applications.length; i += 1) {
-      const application_deadline_temp = application_deadline_calculator(
-        student,
-        student.applications[i]
-      );
-      const day_left = parseInt(
-        getNumberOfDays(today, application_deadline_temp)
-      );
-      if (daysLeftMin > day_left) {
-        daysLeftMin = day_left;
-        CVDeadline = application_deadline_temp;
+      if (student.applications[i].decided === 'O') {
+        const application_deadline_temp = application_deadline_calculator(
+          student,
+          student.applications[i]
+        );
+        const day_left = parseInt(
+          getNumberOfDays(today, application_deadline_temp)
+        );
+        if (daysLeftMin > day_left) {
+          daysLeftMin = day_left;
+          CVDeadline = application_deadline_temp;
+        }
       }
     }
-    deadline = CVDeadline;
+    deadline = daysLeftMin === 3000 ? '-' : CVDeadline;
   } else {
     const application = student.applications.find(
       (app) =>

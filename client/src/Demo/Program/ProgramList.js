@@ -731,7 +731,7 @@ function ProgramList(props) {
             Header: 'University',
             accessor: 'school',
             Filter: SelectColumnFilter,
-            filter: 'includes'
+            filter: 'fuzzyText'
           },
           {
             Header: 'Program',
@@ -755,7 +755,7 @@ function ProgramList(props) {
             Header: 'Semester',
             accessor: 'semester',
             Filter: SelectColumnFilter,
-            filter: 'includes'
+            filter: 'fuzzyText'
           },
           {
             Header: 'Language',

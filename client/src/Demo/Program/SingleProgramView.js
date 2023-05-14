@@ -274,7 +274,6 @@ class SingleProgramView extends React.Component {
                   </Col>
                 </Row>
                 <Row>
-                  {' '}
                   <Col md={4}>
                     <p className="my-0">
                       <b>Comments</b>
@@ -282,6 +281,16 @@ class SingleProgramView extends React.Component {
                   </Col>
                   <Col md={8}>
                     <p className="my-0">{this.props.program.comments}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={4}>
+                    <p className="my-0">
+                      <b>Tuition Fees</b>
+                    </p>
+                  </Col>
+                  <Col md={8}>
+                    <p className="my-0">{this.props.program.tuition_fees}</p>
                   </Col>
                 </Row>
                 <Row>

@@ -71,7 +71,9 @@ const getProgram = asyncHandler(async (req, res) => {
             closed: 'O'
           }
         }
-      }).select('firstname lastname applications application_preference.expected_application_date');
+      }).select(
+        'firstname lastname applications application_preference.expected_application_date'
+      );
 
       return res.send({ success: true, data: program, students });
     }
@@ -136,7 +138,23 @@ const updateProgram = asyncHandler(async (req, res) => {
 });
 
 const deleteProgram = asyncHandler(async (req, res) => {
-  await Program.findByIdAndDelete(req.params.programId);
+  // TODO: check if anyone applied this program
+  const students = await Student.find({
+    applications: {
+      $elemMatch: {
+        programId: req.params.programId
+      }
+    }
+  }).select('firstname lastname applications.programId');
+  console.log(students);
+  if (students.length === 0) {
+    console.log('it can be deleted!');
+  } else {
+    console.log('it can not be deleted!');
+    console.log('The following students have these programs!');
+    console.log(students);
+  }
+  // await Program.findByIdAndDelete(req.params.programId);
   res.status(200).send({ success: true });
 });
 

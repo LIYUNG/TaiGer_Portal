@@ -144,6 +144,10 @@ const programSchema = new mongoose.Schema(
       type: String
       // required: true,
     },
+    tuition_fees: {
+      type: String
+      // required: true,
+    },
     study_group_flag: {
       type: String
       // required: true,

@@ -551,7 +551,6 @@ class SingleProgramEdit extends React.Component {
               </Col>
             </Row>
             <Row>
-              {' '}
               <Col md={4}>
                 <h5>Comments</h5>
               </Col>
@@ -566,6 +565,28 @@ class SingleProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.comments
                           ? this.state.program.comments
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Tuition Fees</h5>
+              </Col>
+              <Col md={6}>
+                <h5>
+                  <Form.Group controlId="tuition_fees">
+                    <Form.Control
+                      as="textarea"
+                      rows="5"
+                      placeholder="2000 words"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.tuition_fees
+                          ? this.state.program.tuition_fees
                           : ''
                       }
                     />

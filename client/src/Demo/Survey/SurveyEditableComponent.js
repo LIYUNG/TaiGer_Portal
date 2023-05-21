@@ -216,6 +216,60 @@ class SurveyEditableComponent extends React.Component {
                         <b>Bachelor Degree graduate status</b>
                       </li>
                     )}
+                  {this.props.academic_background &&
+                    this.props.academic_background.university &&
+                    (!this.props.academic_background.university
+                      .Has_Exchange_Experience ||
+                      this.props.academic_background.university
+                        .Has_Exchange_Experience === '-') && (
+                      <li>
+                        <b>Exchange Student Experience</b>
+                      </li>
+                    )}
+                  {this.props.academic_background &&
+                    this.props.academic_background.university &&
+                    (!this.props.academic_background.university.isGraduated ||
+                      this.props.academic_background.university.isGraduated ===
+                        'Yes' ||
+                      this.props.academic_background.university.isGraduated ===
+                        'pending') && (
+                      <>
+                        {this.props.academic_background &&
+                          this.props.academic_background.university &&
+                          (!this.props.academic_background.university
+                            .Highest_GPA_Uni ||
+                            this.props.academic_background.university
+                              .Highest_GPA_Uni === '-') && (
+                            <li>
+                              <b>
+                                Highest Score GPA of your university program
+                              </b>
+                            </li>
+                          )}
+                        {this.props.academic_background &&
+                          this.props.academic_background.university &&
+                          (!this.props.academic_background.university
+                            .Passing_GPA_Uni ||
+                            this.props.academic_background.university
+                              .Passing_GPA_Uni === '-') && (
+                            <li>
+                              <b>
+                                Passing Score GPA of your university program
+                              </b>
+                            </li>
+                          )}
+                        {this.props.academic_background &&
+                          this.props.academic_background.university &&
+                          (!this.props.academic_background.university
+                            .My_GPA_Uni ||
+                            this.props.academic_background.university
+                              .My_GPA_Uni === '-') && (
+                            <li>
+                              <b>My GPA</b>
+                            </li>
+                          )}
+                      </>
+                    )}
                   {this.props.application_preference &&
                     !this.props.application_preference
                       .expected_application_date && (
@@ -500,7 +554,8 @@ class SurveyEditableComponent extends React.Component {
                         disabled={isReadonly}
                         defaultValue={
                           this.state.academic_background.university &&
-                          this.state.academic_background.university.Has_Exchange_Experience
+                          this.state.academic_background.university
+                            .Has_Exchange_Experience
                             ? this.state.academic_background.university
                                 .Has_Exchange_Experience
                             : '-'

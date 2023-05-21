@@ -1109,6 +1109,8 @@ const missing_academic_background = (student, user) => {
     !student.academic_background.university.attended_university_program ||
     !student.academic_background.university.isGraduated ||
     student.academic_background.university.isGraduated === '-' ||
+    !student.academic_background.university.Has_Exchange_Experience ||
+    student.academic_background.university.Has_Exchange_Experience === '-' ||
     !student.application_preference.expected_application_date ||
     !student.application_preference.expected_application_semester ||
     student.academic_background.language.english_isPassed === '-' ||
@@ -1146,6 +1148,12 @@ const missing_academic_background = (student, user) => {
     }
     if (!student.application_preference.expected_application_date) {
       missing_background_fields += '<li>Expected Application Year</li>';
+    }
+    if (
+      !student.academic_background.university.Has_Exchange_Experience ||
+      student.academic_background.university.Has_Exchange_Experience === '-'
+    ) {
+      missing_background_fields += ' <li>Exchange student experience ?</li>';
     }
     if (!student.application_preference.expected_application_semester) {
       missing_background_fields += '<li>Expected Application Semester</li>';

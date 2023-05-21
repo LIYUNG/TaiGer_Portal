@@ -399,6 +399,7 @@ class DocModificationThreadPage extends Component {
       widths = [10, 2];
     }
 
+    // Only CV, ML RL has instructions and template.
     let template_obj = window.templatelist.find(({ prop }) =>
       prop.includes(this.state.thread.file_type.split('_')[0])
     );
@@ -483,42 +484,60 @@ class DocModificationThreadPage extends Component {
                 <Row>
                   <Col md={widths[0]}>
                     <h5>Instruction</h5>
-                    <p>
-                      請填好我們的 TaiGer Template，並在這個討論串夾帶在和您的
-                      Editor 討論。回覆時請用 <b>英語(English)</b>{' '}
-                      好讓外籍顧問方便溝通。有任何流程疑問{' '}
-                      <Link to="/docs/cv-ml-rl">
-                        <Button size="sm" variant="info">
-                          點我
-                        </Button>
-                      </Link>
-                      <br />
-                      Please fill our TaiGer template and attach the filled
-                      template and reply in
-                      <b> English</b> in this discussion. Any process question: {' '}
-                      <Link to="/docs/cv-ml-rl">
-                        <Button size="sm" variant="info">
-                          Read More
-                        </Button>
-                      </Link>
-                    </p>
-                    <p>
-                      模板下載 Download template:{' '}
-                      {template_obj ? (
-                        <b>
-                          <a
-                            href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
-                            target="_blank"
-                          >
-                            <Button size="sm" variant="secondary">
-                              <b>Link [點我下載]</b>
+                    {template_obj ? (
+                      <>
+                        <p>
+                          請填好我們的 TaiGer
+                          Template，並在這個討論串夾帶在和您的 Editor
+                          討論。回覆時請用 <b>英語(English)</b>{' '}
+                          好讓外籍顧問方便溝通。有任何流程疑問{' '}
+                          <Link to="/docs/cv-ml-rl">
+                            <Button size="sm" variant="info">
+                              點我
                             </Button>
-                          </a>
-                        </b>
-                      ) : (
-                        <>Not available</>
-                      )}
-                    </p>
+                          </Link>
+                          <br />
+                          Please fill our TaiGer template and attach the filled
+                          template and reply in
+                          <b> English</b> in this discussion. Any process
+                          question:{' '}
+                          <Link to="/docs/cv-ml-rl">
+                            <Button size="sm" variant="info">
+                              Read More
+                            </Button>
+                          </Link>
+                        </p>
+                        <p>
+                          模板下載 Download template:{' '}
+                          {template_obj ? (
+                            <b>
+                              <a
+                                href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
+                                target="_blank"
+                              >
+                                <Button size="sm" variant="secondary">
+                                  <b>Link [點我下載]</b>
+                                </Button>
+                              </a>
+                            </b>
+                          ) : (
+                            <>Not available</>
+                          )}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p>
+                          {this.state.thread.file_type === 'Portfolio'
+                            ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
+                            : this.state.thread.file_type ===
+                              'Supplementary_Form'
+                            ? '請填好這個 program 的 Supplementory Form / Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                            : '-'}
+                        </p>
+                      </>
+                    )}
+
                     <h6>
                       <b>Requirements:</b>
                       {is_TaiGer_AdminAgent(this.props.user) &&

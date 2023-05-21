@@ -4,12 +4,14 @@ export const is_TaiGer_role = (user) =>
 export const is_TaiGer_AdminAgent = (user) =>
   user.role === 'Admin' || user.role === 'Agent';
 export const is_TaiGer_Admin = (user) => user.role === 'Admin';
+export const is_TaiGer_Student = (user) => user.role === 'Student';
+export const is_TaiGer_Guest = (user) => user.role === 'Guest';
 
 export const showButtonIfMyStudent = (user, student) => {
   if (
-    user.role === 'Admin' ||
-    user.role === 'Student' ||
-    user.role === 'Guest'
+    is_TaiGer_Admin(user) ||
+    is_TaiGer_Student(user) ||
+    is_TaiGer_Guest(user)
   ) {
     return true;
   }

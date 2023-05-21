@@ -10,7 +10,7 @@ import {
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { FiExternalLink } from 'react-icons/fi';
-import { convertDate } from '../Utils/contants';
+import { DELETE_STYLE, REJECT_STYLE, convertDate } from '../Utils/contants';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 
@@ -170,8 +170,6 @@ class ButtonSetAccepted extends React.Component {
   };
 
   render() {
-    const deleteStyle = 'danger';
-    const rejectStyle = 'secondary';
     var ButttonRow_Accepted;
     ButttonRow_Accepted = (
       <tr>
@@ -247,7 +245,7 @@ class ButtonSetAccepted extends React.Component {
                 >
                   <Form.Group controlId="exampleForm.ControlSelect1">
                     <Button
-                      variant={rejectStyle}
+                      variant={REJECT_STYLE}
                       size="sm"
                       type="submit"
                       disabled={!this.state.isLoaded}
@@ -274,7 +272,7 @@ class ButtonSetAccepted extends React.Component {
                   >
                     <Form.Group controlId="exampleForm.ControlSelect1">
                       <Button
-                        variant={deleteStyle}
+                        variant={DELETE_STYLE}
                         size="sm"
                         type="submit"
                         title="Delete"
@@ -479,7 +477,7 @@ class ButtonSetAccepted extends React.Component {
               >
                 <Form.Group controlId="exampleForm.ControlSelect1">
                   <Button
-                    variant={rejectStyle}
+                    variant={REJECT_STYLE}
                     size="sm"
                     type="submit"
                     disabled={!this.state.isLoaded}

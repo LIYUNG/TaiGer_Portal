@@ -17,7 +17,7 @@ import {
   is_TaiGer_AdminAgent,
   showButtonIfMyStudent
 } from '../Utils/checking-functions';
-import { convertDate } from '../Utils/contants';
+import { ACCEPT_STYLE, DELETE_STYLE, convertDate } from '../Utils/contants';
 import { BASE_URL } from '../../api/request';
 
 import { updateProfileDocumentStatus, deleteFile } from '../../api';
@@ -247,8 +247,6 @@ class ButtonSetRejected extends React.Component {
 
   render() {
     const { res_status, res_modal_status, res_modal_message } = this.state;
-    const deleteStyle = 'danger';
-    const acceptStyle = 'success';
     var ButttonRow_Rejected;
     ButttonRow_Rejected = (
       <tr>
@@ -302,7 +300,7 @@ class ButtonSetRejected extends React.Component {
             <Col>
               {showButtonIfMyStudent(this.props.user, this.state.student) && (
                 <Button
-                  variant={acceptStyle}
+                  variant={ACCEPT_STYLE}
                   size="sm"
                   type="submit"
                   title="Mark as finished"
@@ -345,7 +343,7 @@ class ButtonSetRejected extends React.Component {
               <Col>
                 {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
-                    variant={deleteStyle}
+                    variant={DELETE_STYLE}
                     size="sm"
                     type="submit"
                     title="Delete"
@@ -575,7 +573,7 @@ class ButtonSetRejected extends React.Component {
               >
                 <Form.Group controlId="exampleForm.ControlSelect1">
                   <Button
-                    variant={acceptStyle}
+                    variant={ACCEPT_STYLE}
                     size="sm"
                     type="submit"
                     title="Mark as finshed"

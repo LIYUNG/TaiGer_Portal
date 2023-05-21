@@ -5,7 +5,7 @@ import { Redirect, Link } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_Admin, is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getTeamMembers } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
@@ -94,7 +94,7 @@ class TaiGerOrg extends React.Component {
         </Row>
         <Card>
           <Card.Body>
-            {this.props.user.role === 'Admin' && (
+            {is_TaiGer_Admin(this.props.user) && (
               <>
                 <h4>Admin:</h4>
                 {admins.map((admin, i) => (

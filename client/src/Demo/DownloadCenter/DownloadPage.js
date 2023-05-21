@@ -43,7 +43,8 @@ class DownloadPage extends React.Component {
         } else {
           this.setState({
             isLoaded: true,
-            res_status: status
+            res_status: status,
+            areLoaded: {}
           });
         }
       },
@@ -209,9 +210,8 @@ class DownloadPage extends React.Component {
                 </Card.Title>
               </Card.Header>
               <EditDownloadFiles
-                isLoaded={isLoaded}
                 role={this.props.user.role}
-                userId={this.props.user._id}
+                user={this.props.user}
                 templates={this.state.templates}
                 submitFile={this.submitFile}
                 onFileChange={this.onFileChange}

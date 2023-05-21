@@ -13,7 +13,7 @@ import {
 } from 'react-icons/ai';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import { showButtonIfMyStudent } from '../Utils/checking-functions';
-import { convertDate } from '../Utils/contants';
+import { ACCEPT_STYLE, DELETE_STYLE, REJECT_STYLE, convertDate } from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetUploaded extends React.Component {
@@ -161,9 +161,6 @@ class ButtonSetUploaded extends React.Component {
   };
 
   render() {
-    const deleteStyle = 'danger';
-    const rejectStyle = 'secondary';
-    const acceptStyle = 'success';
     var ButttonRow_Uploaded;
     ButttonRow_Uploaded = (
       <tr>
@@ -228,7 +225,7 @@ class ButtonSetUploaded extends React.Component {
               <Col md>
                 {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
-                    variant={acceptStyle}
+                    variant={ACCEPT_STYLE}
                     size="sm"
                     type="submit"
                     title="Mark as finshed"
@@ -251,7 +248,7 @@ class ButtonSetUploaded extends React.Component {
               <Col md>
                 {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
-                    variant={rejectStyle}
+                    variant={REJECT_STYLE}
                     size="sm"
                     type="submit"
                     title="Mark as reject"
@@ -280,7 +277,7 @@ class ButtonSetUploaded extends React.Component {
             <Col md>
               {showButtonIfMyStudent(this.props.user, this.state.student) && (
                 <Button
-                  variant={deleteStyle}
+                  variant={DELETE_STYLE}
                   size="sm"
                   type="submit"
                   title="Delete"
@@ -496,7 +493,7 @@ class ButtonSetUploaded extends React.Component {
               this.props.role === 'Editor' || this.props.role === 'Student'
             ) && (
               <Button
-                variant={acceptStyle}
+                variant={ACCEPT_STYLE}
                 size="sm"
                 type="submit"
                 title="Mark as finshed"
@@ -517,7 +514,7 @@ class ButtonSetUploaded extends React.Component {
               this.props.role === 'Editor' || this.props.role === 'Student'
             ) && (
               <Button
-                variant={rejectStyle}
+                variant={REJECT_STYLE}
                 size="sm"
                 type="submit"
                 title="Mark as reject"

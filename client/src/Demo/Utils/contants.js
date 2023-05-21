@@ -187,6 +187,19 @@ const create_years = (start_year, end_year) => {
   const year_array = Array.from({ length: num }, (_, i) => i + start_year);
   return year_array;
 };
+
+export const ENGLISH_CERTIFICATE_OPTIONS = () => {
+  return (
+    <>
+      <option value="">Please Select</option>
+      <option value="TOEFL">TOEFL</option>
+      <option value="IELTS">IELTS</option>
+      <option value="Duolingo">Duolingo</option>
+      <option value="Native">Native</option>
+    </>
+  );
+};
+
 export const APPLICATION_YEARS_FUTURE = () => {
   return (
     <>
@@ -327,6 +340,10 @@ export const is_new_message_status = (user, thread) => {
     return true;
   }
 };
+
+export const DELETE_STYLE = 'danger';
+export const REJECT_STYLE = 'secondary';
+export const ACCEPT_STYLE = 'success';
 
 export const is_pending_status = (user, thread) => {
   return !is_new_message_status(user, thread);

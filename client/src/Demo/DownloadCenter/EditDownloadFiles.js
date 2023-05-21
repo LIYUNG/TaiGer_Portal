@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Table, Col, Form, Spinner } from 'react-bootstrap';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL } from '../../api/request';
+import { is_TaiGer_Admin } from '../Utils/checking-functions';
+import { DELETE_STYLE } from '../Utils/contants';
 
 class EditDownloadFiles extends React.Component {
   state = {};
@@ -12,7 +14,6 @@ class EditDownloadFiles extends React.Component {
   };
 
   render() {
-    const deleteStyle = 'danger';
     let object_init = {};
     for (let i = 0; i < this.props.templatelist.length; i++) {
       object_init[this.props.templatelist[i].prop] = 'missing';
@@ -26,11 +27,11 @@ class EditDownloadFiles extends React.Component {
         <tr key={i + 1}>
           <td>{template.name}</td>
           <td>
-            {this.props.role === 'Admin' && (
+            {is_TaiGer_Admin(this.props.user) && (
               <Col>
                 {object_init[template.prop] === 'uploaded' ? (
                   <Button
-                    variant={deleteStyle}
+                    variant={DELETE_STYLE}
                     size="sm"
                     type="submit"
                     title="Delete"
@@ -66,28 +67,29 @@ class EditDownloadFiles extends React.Component {
                 </a>
               </Col>
             ) : (
-              this.props.role === 'Admin' && (
+              is_TaiGer_Admin(this.props.user) && (
                 <Col>
-                  <Form onSubmit={(e) => this.submitFile(e, template.prop)}>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                      <Button size="sm" type="submit">
-                        {!this.props.areLoaded[template.prop] ? (
-                          <div>
-                            <Spinner
-                              size="sm"
-                              animation="border"
-                              role="status"
-                              variant="light"
-                            >
-                              <span className="visually-hidden"></span>
-                            </Spinner>
-                          </div>
-                        ) : (
-                          'Upload'
-                        )}
-                      </Button>
-                    </Form.Group>
-                  </Form>
+                  <Button
+                    size="sm"
+                    disabled={!this.props.areLoaded[template.prop]}
+                    type="submit"
+                    onClick={(e) => this.submitFile(e, template.prop)}
+                  >
+                    {!this.props.areLoaded[template.prop] ? (
+                      <div>
+                        <Spinner
+                          size="sm"
+                          animation="border"
+                          role="status"
+                          variant="light"
+                        >
+                          <span className="visually-hidden"></span>
+                        </Spinner>
+                      </div>
+                    ) : (
+                      'Upload'
+                    )}
+                  </Button>
                 </Col>
               )
             )}

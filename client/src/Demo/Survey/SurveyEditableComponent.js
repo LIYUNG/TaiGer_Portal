@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
-import { convertDate } from '../Utils/contants';
+import { ENGLISH_CERTIFICATE_OPTIONS, convertDate } from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 import {
   check_academic_background_filled,
@@ -972,11 +972,7 @@ class SurveyEditableComponent extends React.Component {
                               }
                               onChange={(e) => this.handleChange_Language(e)}
                             >
-                              <option value="">Please Select</option>
-                              <option value="TOEFL">TOEFL</option>
-                              <option value="IELTS">IELTS</option>
-                              <option value="Duolingo">Duolingo</option>
-                              <option value="Native">Native</option>
+                              <>{ENGLISH_CERTIFICATE_OPTIONS()}</>
                             </Form.Control>
                           </Form.Group>
                         </Col>
@@ -1030,10 +1026,7 @@ class SurveyEditableComponent extends React.Component {
                               }
                               onChange={(e) => this.handleChange_Language(e)}
                             >
-                              <option value="">Please Select</option>
-                              <option value="TOEFL">TOEFL</option>
-                              <option value="IELTS">IELTS</option>
-                              <option value="Duolingo">Duolingo</option>
+                              <>{ENGLISH_CERTIFICATE_OPTIONS()}</>
                             </Form.Control>
                           </Form.Group>
                         </Col>

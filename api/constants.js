@@ -148,6 +148,7 @@ const profile_list = {
   ECTS_Conversion: 'ECTS Conversion',
   Course_Description: 'Course Description',
   Internship: 'Internship Certificate',
+  Exchange_Student_Certificate: 'Exchange Student Certificate',
   Employment_Certificate: 'Employment Certificate',
   Passport_Photo: 'Passport Photo',
   Passport: 'Passport Copy',
@@ -452,9 +453,9 @@ const unsubmitted_applications_escalation_agent_summary = (student) => {
     ) {
       if (x === 0) {
         unsubmitted_applications = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
-          student._id.toString()
-        )}">${student.firstname} ${student.lastname}</a></b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+          student.firstname
+        } ${student.lastname}</a></b><br />
         
         The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
         <ul>
@@ -685,9 +686,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
-          student._id.toString()
-        )}">${student.firstname} ${student.lastname}</a></b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+            student.firstname
+          } ${student.lastname}</a></b><br />
 
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
@@ -712,9 +713,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
       ) {
         if (kk === 0) {
           missing_doc_list = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
-          student._id.toString()
-        )}">${student.firstname} ${student.lastname}</a></b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+            student.firstname
+          } ${student.lastname}</a></b><br />
 
         The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
         <ul>
@@ -760,9 +761,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
-          student._id.toString()
-        )}">${student.firstname} ${student.lastname}</a></b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+                student.firstname
+              } ${student.lastname}</a></b><br />
 
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
@@ -794,9 +795,9 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
           ) {
             if (kk === 0) {
               missing_doc_list = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(
-          student._id.toString()
-        )}">${student.firstname} ${student.lastname}</a></b><br />
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+                student.firstname
+              } ${student.lastname}</a></b><br />
         
         The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
         <ul>
@@ -1022,6 +1023,7 @@ const profile_keys_list = [
   'ECTS_Conversion',
   'Course_Description',
   'Internship',
+  'Exchange_Student_Certificate',
   'Employment_Certificate',
   'Passport',
   'Others'
@@ -1225,6 +1227,7 @@ const profile_name_list = {
   ECTS_Conversion: 'ECTS_Conversion',
   Course_Description: 'Course_Description',
   Internship: 'Internship',
+  Exchange_Student_Certificate: 'Exchange_Student_Certificate',
   Employment_Certificate: 'Employment_Certificate',
   Passport: 'Passport',
   Others: 'Others'

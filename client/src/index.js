@@ -241,6 +241,7 @@ window.profile_wtih_doc_link_list = {
   Course_Description: { name: 'Course Description', link: '' },
   Internship: { name: 'Internship Certificate', link: '' },
   Employment_Certificate: { name: 'Employment Certificate', link: '' },
+  Exchange_Student_Certificate: { name: 'Exchange Student Certificate', link: '' },
   Passport_Photo: { name: 'Passport Photo', link: '' },
   Passport: { name: 'Passport Copy', link: '' },
   Others: { name: 'Others', link: '' }
@@ -259,6 +260,7 @@ window.profile_list = {
   Course_Description: 'Course Description',
   Internship: 'Internship Certificate',
   Employment_Certificate: 'Employment Certificate',
+  Exchange_Student_Certificate: 'Exchange Student Certificate',
   Passport_Photo: 'Passport Photo',
   Passport: 'Passport Copy',
   Others: 'Others'

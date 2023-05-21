@@ -723,7 +723,10 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     );
     if (!application) {
       logger.error('UpdateStudentApplications: Invalid document status');
-      throw new ErrorResponse(403, 'Invalid application. Please refresh the page and try updating again.');
+      throw new ErrorResponse(
+        403,
+        'Invalid application. Please refresh the page and try updating again.'
+      );
     }
     if (
       applications[i].decided === 'O' &&
@@ -1165,7 +1168,6 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
           ects_conversion_doc.status = DocumentStatus.NotNeeded;
         }
       }
-      await updatedStudent.save();
     } else {
       let bachelor_diploma_doc = updatedStudent.profile.find(
         (doc) => doc.name === profile_name_list.Bachelor_Certificate
@@ -1259,8 +1261,53 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       } else if (ects_conversion_doc.status === DocumentStatus.NotNeeded) {
         ects_conversion_doc.status = DocumentStatus.Missing;
       }
-      await updatedStudent.save();
     }
+
+    if (
+      updatedStudent.academic_background.university.Has_Exchange_Experience ===
+      'Yes'
+    ) {
+      // make sure if existing uploaded file
+      let exchange_certificate = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Exchange_Student_Certificate
+      );
+      if (!exchange_certificate) {
+        // Set not needed
+        exchange_certificate = updatedStudent.profile.create({
+          name: profile_name_list.Exchange_Student_Certificate
+        });
+        exchange_certificate.status = DocumentStatus.Missing;
+        exchange_certificate.required = true;
+        exchange_certificate.updatedAt = new Date();
+        exchange_certificate.path = '';
+        updatedStudent.profile.push(exchange_certificate);
+      } else {
+        if (exchange_certificate.status === DocumentStatus.NotNeeded) {
+          exchange_certificate.status = DocumentStatus.Missing;
+        }
+      }
+    } else {
+      // make sure if existing uploaded file
+      let exchange_certificate = updatedStudent.profile.find(
+        (doc) => doc.name === profile_name_list.Exchange_Student_Certificate
+      );
+      if (!exchange_certificate) {
+        // Set not needed
+        exchange_certificate = updatedStudent.profile.create({
+          name: profile_name_list.Exchange_Student_Certificate
+        });
+        exchange_certificate.status = DocumentStatus.NotNeeded;
+        exchange_certificate.required = true;
+        exchange_certificate.updatedAt = new Date();
+        exchange_certificate.path = '';
+        updatedStudent.profile.push(exchange_certificate);
+      } else {
+        if (exchange_certificate.status === DocumentStatus.Missing) {
+          exchange_certificate.status = DocumentStatus.NotNeeded;
+        }
+      }
+    }
+    await updatedStudent.save();
 
     // TODO: minor: profile field not used for student.
     res.status(200).send({

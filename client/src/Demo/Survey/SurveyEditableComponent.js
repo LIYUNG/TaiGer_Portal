@@ -321,7 +321,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="high_school_isGraduated">
                       <Form.Label className="my-0 mx-0 text-light">
-                        High School already graduated?
+                        High School already graduated ?
                       </Form.Label>
                       <Form.Control
                         as="select"
@@ -433,7 +433,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="isGraduated">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Already Bachelor graduated?
+                        Already Bachelor graduated ?
                       </Form.Label>
                       <Form.Control
                         as="select"
@@ -488,6 +488,32 @@ class SurveyEditableComponent extends React.Component {
                         </Form.Group>
                       </Col>
                     )}
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="Has_Exchange_Experience">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Exchange student experience ?
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        disabled={isReadonly}
+                        defaultValue={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university.Has_Exchange_Experience
+                            ? this.state.academic_background.university
+                                .Has_Exchange_Experience
+                            : '-'
+                        }
+                        onChange={(e) => this.handleChange_Academic(e)}
+                      >
+                        <option value="-">-</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
                 </Row>
                 <Row>
                   <Col md={6}>
@@ -926,7 +952,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={4}>
                     <Form.Group controlId="english_isPassed">
                       <Form.Label className="my-0 mx-0 text-light">
-                        English Passed?
+                        English Passed ?
                       </Form.Label>
                       <Form.Control
                         as="select"
@@ -1061,7 +1087,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={4}>
                     <Form.Group controlId="german_isPassed">
                       <Form.Label className="my-0 mx-0 text-light">
-                        German Passed? (Set <b>Not need</b> if applying English
+                        German Passed ? (Set <b>Not need</b> if applying English
                         taught programs.)
                       </Form.Label>
                       <Form.Control

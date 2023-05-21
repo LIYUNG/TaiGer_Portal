@@ -197,6 +197,10 @@ const UserSchema = new Schema(
         Highest_GPA_Uni: {
           type: Number
         },
+        Has_Exchange_Experience: {
+          type: String,
+          default: '-'
+        },
         Passing_GPA_Uni: {
           type: Number
         },

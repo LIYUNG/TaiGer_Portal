@@ -22,27 +22,17 @@ import { uploadImage, uploadDocumentThreadImage } from '../../api';
 const EditorSimple = (props) => {
   const ejInstance = useRef();
   // This will run only once
-  const [editorState, setEditorState] = useState();
   var editor;
-  useEffect(() => {
-    if (!ejInstance.current) {
-      initEditor();
-      // setEditorState(props.editorState);
-    }
-    return () => {
-      ejInstance.current && ejInstance.current.destroy();
-      ejInstance.current = null;
-    };
-  }, [props.editorState]);
-  const initEditor = () => {
-    editor = new EditorJS({
+
+  let configuration;
+  if (props.imageEnable) {
+    configuration = {
       holder: `${props.holder}`,
       logLevel: 'ERROR',
       data: props.editorState,
       onReady: () => {
         ejInstance.current = editor;
       },
-      // onChange: props.handleEditorChange,
       onChange: async (api, event) => {
         api.saver.save().then((outputData) => {
           // console.log('outputData ', outputData);
@@ -66,10 +56,6 @@ const EditorSimple = (props) => {
           class: List,
           inlineToolbar: true
         },
-        // Marker: {
-        //   class: Marker
-        //   // shortcut: 'CMD+SHIFT+M'
-        // },
         Marker: {
           class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
           config: {
@@ -118,7 +104,6 @@ const EditorSimple = (props) => {
           }
         },
         textAlign: TextAlign,
-
         image: {
           class: ImageTool,
           config: {
@@ -171,7 +156,116 @@ const EditorSimple = (props) => {
           // shortcut: 'CMD+SHIFT+M'
         }
       }
-    });
+    };
+  } else {
+    configuration = {
+      holder: `${props.holder}`,
+      logLevel: 'ERROR',
+      data: props.editorState,
+      onReady: () => {
+        ejInstance.current = editor;
+      },
+      onChange: async (api, event) => {
+        api.saver.save().then((outputData) => {
+          // console.log('outputData ', outputData);
+          props.handleEditorChange(outputData);
+        });
+      },
+      readOnly: props.readOnly,
+      autofocus: true,
+      minHeight: props.defaultHeight,
+      tools: {
+        header: {
+          class: Header,
+          config: {
+            placeholder: 'Enter a header',
+            levels: [2, 3, 4, 5, 6],
+            defaultLevel: 3
+          },
+          inlineToolbar: true
+        },
+        list: {
+          class: List,
+          inlineToolbar: true
+        },
+        Marker: {
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            defaultColor: '#FFF',
+            type: 'marker'
+          }
+        },
+
+        underline: Underline,
+        code: CodeTool,
+        // quote: Quote,
+        table: {
+          class: Table,
+          inlineToolbar: true,
+          config: {
+            rows: 2,
+            cols: 3
+          }
+        },
+        Color: {
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            type: 'text'
+          }
+        },
+        textAlign: TextAlign,
+        elimiter: Delimiter,
+        embed: {
+          class: Embed,
+          inlineToolbar: false,
+          config: {
+            services: {
+              youtube: true,
+              coub: true
+            }
+          }
+        },
+        inlineCode: {
+          class: InlineCode
+          // shortcut: 'CMD+SHIFT+M'
+        }
+      }
+    };
+  }
+
+  useEffect(() => {
+    if (!ejInstance.current) {
+      initEditor();
+    }
+    return () => {
+      ejInstance.current && ejInstance.current.destroy();
+      ejInstance.current = null;
+    };
+  }, [props.editorState]);
+  const initEditor = () => {
+    editor = new EditorJS(configuration);
   };
 
   return (

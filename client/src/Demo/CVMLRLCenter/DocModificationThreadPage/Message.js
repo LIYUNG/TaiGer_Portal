@@ -212,6 +212,7 @@ class Message extends Component {
               <EditorSimple
                 holder={`${this.props.message._id.toString()}`}
                 readOnly={true}
+                imageEnable={true}
                 handleClickSave={this.props.handleClickSave}
                 editorState={this.state.editorState}
                 defaultHeight={0}

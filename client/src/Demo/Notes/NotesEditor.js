@@ -1,37 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import EditorSimple from '../../../components/EditorJs/EditorSimple';
 import {
   Row,
   Col,
   Button,
-  Form,
   OverlayTrigger,
   Tooltip,
   Card
 } from 'react-bootstrap';
 
-function DocThreadEditor(props) {
+import EditorSimple from '../../components/EditorJs/EditorSimple';
+
+function NotesEditor(props) {
   const [show, setShow] = useState(false);
   let [statedata, setStatedata] = useState({
-    editorState: props.editorState
+    editorState: props.editorState,
+    buttonDisabled: props.buttonDisabled
   });
   useEffect(() => {
     setStatedata((state) => ({
       ...state,
-      editorState: props.editorState
+      editorState: props.editorState,
+      buttonDisabled: props.buttonDisabled
     }));
-  }, [props.editorState]);
+  }, [props.editorState, props.buttonDisabled]);
   const handleEditorChange = (content) => {
     setStatedata((state) => ({
       ...state,
-      editorState: content
+      editorState: content,
+      buttonDisabled: false
     }));
   };
 
   const renderTooltip = (props) => (
     <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and
-      understanding.
+      Please write some text to improve the communication and understanding.
     </Tooltip>
   );
 
@@ -46,9 +48,7 @@ function DocThreadEditor(props) {
                 thread={props.thread}
                 defaultHeight={0}
                 readOnly={false}
-                imageEnable={true}
                 handleEditorChange={handleEditorChange}
-                handleClickSave={props.handleClickSave}
                 editorState={props.editorState}
                 setStatedata={setStatedata}
               />
@@ -57,20 +57,10 @@ function DocThreadEditor(props) {
         </Col>
       </Row>
       <Row>
-        <Col md={8}>
-          <Form.Group controlId="formFile" className="mb-2">
-            <Form.Control type="file" multiple onChange={(e) => props.onFileChange(e)} />
-          </Form.Group>
-        </Col>
-        <Col className="mt-2" md={4}>
-          (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and overall 2MB!)
-        </Col>
-      </Row>
-      <Row>
         <Col className="my-0 mx-0">
           {!statedata.editorState.blocks ||
           statedata.editorState.blocks.length === 0 ||
-          props.buttonDisabled ? (
+          statedata.buttonDisabled ? (
             <OverlayTrigger
               placement="right"
               delay={{ show: 250, hide: 400 }}
@@ -95,4 +85,4 @@ function DocThreadEditor(props) {
   );
 }
 
-export default DocThreadEditor;
+export default NotesEditor;

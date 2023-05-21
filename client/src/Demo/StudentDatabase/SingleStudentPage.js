@@ -16,6 +16,7 @@ import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView'
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import SurveyComponent from '../Survey/SurveyComponent';
+import Notes from '../Notes/index';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import StudentDashboard from '../Dashboard/StudentDashboard/StudentDashboard';
@@ -470,15 +471,14 @@ class SingleStudentPage extends React.Component {
       res_status,
       base_docs_link,
       res_modal_message,
-      isLoaded2,
-      ready
+      isLoaded2
     } = this.state;
 
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
 
-    if (!ready && !this.state.student) {
+    if (!this.state.student) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -684,6 +684,16 @@ class SingleStudentPage extends React.Component {
                         <Button>Go to Courses Table </Button>
                       </Link>
                     </Row>
+                  </Card.Body>
+                </Card>
+              </Tab>
+              <Tab eventKey="Notes" title="Notes">
+                <Card className="my-0 mx-0">
+                  <Card.Body>
+                    <Notes
+                      user={this.props.user}
+                      student_id={this.state.student._id.toString()}
+                    />
                   </Card.Body>
                 </Card>
               </Tab>

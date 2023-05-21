@@ -352,6 +352,11 @@ export const updateApplicationPreference = (
 
 export const getMyAcademicBackground = () => request.get('/api/account/survey');
 
+export const getStudentNotes = (student_id) =>
+  request.get(`/api/notes/${student_id}`);
+export const updateStudentNotes = (student_id, notes) =>
+  request.put(`/api/notes/${student_id}`, { notes });
+
 // Teams
 export const getTeamMembers = () => request.get('/api/teams');
 export const getStatistics = () => request.get('/api/teams/statistics');

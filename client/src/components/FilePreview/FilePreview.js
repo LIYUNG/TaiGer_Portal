@@ -12,7 +12,7 @@ const FilePreview = ({ path, student_id }) => {
         <object
           data={`${BASE_URL}/api/students/${student_id}/files/${path}`}
           type="application/pdf"
-          height={700}
+          height={600}
           width="100%"
         ></object>
       ) : (

@@ -4,6 +4,8 @@ export const is_TaiGer_role = (user) =>
 export const is_TaiGer_AdminAgent = (user) =>
   user.role === 'Admin' || user.role === 'Agent';
 export const is_TaiGer_Admin = (user) => user.role === 'Admin';
+export const is_TaiGer_Editor = (user) => user.role === 'Editor';
+export const is_TaiGer_Agent = (user) => user.role === 'Agent';
 export const is_TaiGer_Student = (user) => user.role === 'Student';
 export const is_TaiGer_Guest = (user) => user.role === 'Guest';
 

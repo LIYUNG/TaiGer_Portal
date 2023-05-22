@@ -12,8 +12,16 @@ import {
   AiOutlineClose
 } from 'react-icons/ai';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
-import { ACCEPT_STYLE, DELETE_STYLE, REJECT_STYLE, convertDate } from '../Utils/contants';
+import {
+  is_TaiGer_AdminAgent,
+  showButtonIfMyStudent
+} from '../Utils/checking-functions';
+import {
+  ACCEPT_STYLE,
+  DELETE_STYLE,
+  REJECT_STYLE,
+  convertDate
+} from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 
 class ButtonSetUploaded extends React.Component {
@@ -31,6 +39,11 @@ class ButtonSetUploaded extends React.Component {
     CommentModel: false,
     showPreview: false,
     preview_path: '#',
+    num_points: window.base_documents_checklist[this.props.k]
+      ? window.base_documents_checklist[this.props.k].length
+      : 0,
+    num_checked_points: 0,
+    checkedBoxes: [],
     rejectProfileFileModel: false,
     acceptProfileFileModel: false,
     baseDocsflagOffcanvas: false,
@@ -158,6 +171,28 @@ class ButtonSetUploaded extends React.Component {
       this.state.status,
       this.state.feedback
     );
+  };
+
+  onChecked = (e) => {
+    const id = e.target.id;
+    const isChecked = e.target.checked;
+    const temp_checkedBoxes = [...this.state.checkedBoxes];
+    if (isChecked) {
+      // Add the ID to the list
+      temp_checkedBoxes.push(id);
+    } else {
+      // Remove the ID from the list
+      const index = temp_checkedBoxes.indexOf(id);
+      if (index > -1) {
+        temp_checkedBoxes.splice(index, 1);
+      }
+    }
+
+    console.log(id, temp_checkedBoxes);
+    this.setState((state) => ({
+      ...state,
+      checkedBoxes: temp_checkedBoxes
+    }));
   };
 
   render() {
@@ -474,6 +509,33 @@ class ButtonSetUploaded extends React.Component {
               path={this.state.preview_path}
               student_id={this.state.student_id.toString()}
             />
+            {is_TaiGer_AdminAgent(this.props.user) && (
+              <>
+                <h4>
+                  {window.base_documents_checklist[this.props.k] &&
+                    window.base_documents_checklist[this.props.k].length !==
+                      0 &&
+                    'Check list: Please check the following points so that you can flag this document as valid.'}
+                </h4>
+                <p>
+                  {window.base_documents_checklist[this.props.k]
+                    ? window.base_documents_checklist[this.props.k].map(
+                        (check_item, i) => (
+                          <Form.Check
+                            key={i}
+                            type={'checkbox'}
+                            id={`${check_item}-${i}`}
+                            label={`${check_item}`}
+                            onChange={(e) => this.onChecked(e)}
+                          />
+                        )
+                      )
+                    : 'No'}
+                </p>
+              </>
+            )}
+            {/* <p>{this.state.num_points}</p>
+            <p>{this.state.checkedBoxes}</p> */}
           </Modal.Body>
           <Modal.Footer>
             {this.props.path.split('.')[1] !== 'pdf' && (
@@ -489,47 +551,46 @@ class ButtonSetUploaded extends React.Component {
                 </Button>
               </a>
             )}
-            {!(
-              this.props.role === 'Editor' || this.props.role === 'Student'
-            ) && (
-              <Button
-                variant={ACCEPT_STYLE}
-                size="sm"
-                type="submit"
-                title="Mark as finshed"
-                disabled={!this.state.isLoaded}
-                onClick={(e) =>
-                  this.onUpdateProfileDocStatus(
-                    e,
-                    this.props.k,
-                    this.state.student_id,
-                    'accepted'
-                  )
-                }
-              >
-                <AiOutlineCheck />
-              </Button>
-            )}
-            {!(
-              this.props.role === 'Editor' || this.props.role === 'Student'
-            ) && (
-              <Button
-                variant={REJECT_STYLE}
-                size="sm"
-                type="submit"
-                title="Mark as reject"
-                disabled={!this.state.isLoaded}
-                onClick={(e) =>
-                  this.onUpdateProfileDocStatus(
-                    e,
-                    this.props.k,
-                    this.state.student_id,
-                    'rejected'
-                  )
-                }
-              >
-                <AiOutlineWarning size={16} />
-              </Button>
+            {is_TaiGer_AdminAgent(this.props.user) && (
+              <>
+                <Button
+                  variant={ACCEPT_STYLE}
+                  size="sm"
+                  type="submit"
+                  title="Mark as finshed"
+                  disabled={
+                    !this.state.isLoaded ||
+                    this.state.num_points !== this.state.checkedBoxes.length
+                  }
+                  onClick={(e) =>
+                    this.onUpdateProfileDocStatus(
+                      e,
+                      this.props.k,
+                      this.state.student_id,
+                      'accepted'
+                    )
+                  }
+                >
+                  <AiOutlineCheck />
+                </Button>
+                <Button
+                  variant={REJECT_STYLE}
+                  size="sm"
+                  type="submit"
+                  title="Mark as reject"
+                  disabled={!this.state.isLoaded}
+                  onClick={(e) =>
+                    this.onUpdateProfileDocStatus(
+                      e,
+                      this.props.k,
+                      this.state.student_id,
+                      'rejected'
+                    )
+                  }
+                >
+                  <AiOutlineWarning size={16} />
+                </Button>
+              </>
             )}
             <Button size="sm" onClick={this.closePreviewWindow}>
               {!this.state.isLoaded ? (

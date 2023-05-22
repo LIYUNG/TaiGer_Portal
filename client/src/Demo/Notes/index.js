@@ -75,7 +75,6 @@ class Notes extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    console.log(this.state.notes);
     return (
       <Aux>
         <NotesCard

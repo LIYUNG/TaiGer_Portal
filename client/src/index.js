@@ -17,7 +17,7 @@ const store = createStore(
 );
 
 window.documentlist = {
-  'howtostart': 'How to Start TaiGer Portal',
+  howtostart: 'How to Start TaiGer Portal',
   'base-documents': 'Base Documents',
   'cv-ml-rl': 'CV/ML/RL',
   application: 'Application Instruction',
@@ -241,7 +241,10 @@ window.profile_wtih_doc_link_list = {
   Course_Description: { name: 'Course Description', link: '' },
   Internship: { name: 'Internship Certificate', link: '' },
   Employment_Certificate: { name: 'Employment Certificate', link: '' },
-  Exchange_Student_Certificate: { name: 'Exchange Student Certificate', link: '' },
+  Exchange_Student_Certificate: {
+    name: 'Exchange Student Certificate',
+    link: ''
+  },
   Passport_Photo: { name: 'Passport Photo', link: '' },
   Passport: { name: 'Passport Copy', link: '' },
   Others: { name: 'Others', link: '' }
@@ -264,6 +267,34 @@ window.profile_list = {
   Passport_Photo: 'Passport Photo',
   Passport: 'Passport Copy',
   Others: 'Others'
+};
+
+window.base_documents_checklist = {
+  High_School_Diploma: ['English version ?', 'School Stamp or signature'],
+  High_School_Transcript: ['English version ?', 'Grading system existed ?'],
+  University_Entrance_Examination_GSAT: ['English version ?'],
+  Bachelor_Certificate: ['English version ?'],
+  Bachelor_Transcript: [
+    'Grading system existed ?',
+    'GPA (1.7-4.3 system) and not 100-60 system ?',
+    'Date of referral ? (if graduated)'
+  ],
+  Englisch_Certificate: ['Not expired ?'],
+  German_Certificate: ['Not expired ?'],
+  GREGMAT: ['Not expired ?'],
+  ECTS_Conversion: [],
+  Course_Description: [],
+  Internship: [
+    'Name and Birthday ?',
+    'Start date and end date ?',
+    'Working hours per week ?',
+    'Stamp ?'
+  ],
+  Employment_Certificate: ['Start date and end date ?'],
+  Exchange_Student_Certificate: ['With transcript ?'],
+  Passport_Photo: ['Formal'],
+  Passport: ['Signature ?', 'Not expired ?'],
+  Others: []
 };
 
 window.academic_background_header = {

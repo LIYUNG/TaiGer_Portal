@@ -24,7 +24,7 @@ const {
   createApplicationToStudentEmail
 } = require('../services/email');
 
-const { RLs_CONSTANT } = require('../constants');
+const { RLs_CONSTANT, isNotArchiv } = require('../constants');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
@@ -382,6 +382,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
         to_be_informed_agents.push({
           firstname: agent.firstname,
           lastname: agent.lastname,
+          archiv: agent.archiv,
           email: agent.email
         });
       }
@@ -404,30 +405,34 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: student_upated });
 
   for (let i = 0; i < to_be_informed_agents.length; i += 1) {
-    await informAgentNewStudentEmail(
-      {
-        firstname: to_be_informed_agents[i].firstname,
-        lastname: to_be_informed_agents[i].lastname,
-        address: to_be_informed_agents[i].email
-      },
-      {
-        std_firstname: student.firstname,
-        std_lastname: student.lastname,
-        std_id: student._id.toString()
-      }
-    );
+    if (isNotArchiv(to_be_informed_agents[i])) {
+      await informAgentNewStudentEmail(
+        {
+          firstname: to_be_informed_agents[i].firstname,
+          lastname: to_be_informed_agents[i].lastname,
+          address: to_be_informed_agents[i].email
+        },
+        {
+          std_firstname: student.firstname,
+          std_lastname: student.lastname,
+          std_id: student._id.toString()
+        }
+      );
+    }
   }
   if (updated_agent.length !== 0) {
-    await informStudentTheirAgentEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        agents: updated_agent
-      }
-    );
+    if (isNotArchiv(student)) {
+      await informStudentTheirAgentEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          agents: updated_agent
+        }
+      );
+    }
   }
 });
 
@@ -458,6 +463,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
         to_be_informed_editors.push({
           firstname: editor.firstname,
           lastname: editor.lastname,
+          archiv: editor.archiv,
           email: editor.email
         });
       }
@@ -479,30 +485,34 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: student_upated });
 
   for (let i = 0; i < to_be_informed_editors.length; i += 1) {
-    await informEditorNewStudentEmail(
-      {
-        firstname: to_be_informed_editors[i].firstname,
-        lastname: to_be_informed_editors[i].lastname,
-        address: to_be_informed_editors[i].email
-      },
-      {
-        std_firstname: student.firstname,
-        std_lastname: student.lastname,
-        std_id: student._id.toString()
-      }
-    );
+    if (isNotArchiv(to_be_informed_editors[i])) {
+      await informEditorNewStudentEmail(
+        {
+          firstname: to_be_informed_editors[i].firstname,
+          lastname: to_be_informed_editors[i].lastname,
+          address: to_be_informed_editors[i].email
+        },
+        {
+          std_firstname: student.firstname,
+          std_lastname: student.lastname,
+          std_id: student._id.toString()
+        }
+      );
+    }
   }
   if (updated_editor.length !== 0) {
-    await informStudentTheirEditorEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        editors: updated_editor
-      }
-    );
+    if (isNotArchiv(student)) {
+      await informStudentTheirEditorEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          editors: updated_editor
+        }
+      );
+    }
   }
 });
 
@@ -731,18 +741,20 @@ const createApplication = asyncHandler(async (req, res) => {
 
   res.status(201).send({ success: true, data: program_id_set });
 
-  await createApplicationToStudentEmail(
-    {
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email
-    },
-    {
-      agent_firstname: user.firstname,
-      agent_lastname: user.lastname,
-      programs: program_ids
-    }
-  );
+  if (isNotArchiv(student)) {
+    await createApplicationToStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        agent_firstname: user.firstname,
+        agent_lastname: user.lastname,
+        programs: program_ids
+      }
+    );
+  }
 });
 
 // () TODO email : agent notification

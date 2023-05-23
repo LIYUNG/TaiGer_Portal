@@ -21,7 +21,8 @@ const {
   does_editor_have_pending_tasks,
   is_deadline_within30days_needed,
   is_cv_ml_rl_reminder_needed,
-  application_deadline_calculator
+  application_deadline_calculator,
+  isNotArchiv
 } = require('../constants');
 
 const { AWS_S3_ACCESS_KEY_ID, AWS_S3_ACCESS_KEY } = require('../config');
@@ -97,14 +98,16 @@ const TasksReminderEmails = async () => {
       .lean()
       .exec();
     if (agent_students.length > 0) {
-      await AgentTasksReminderEmail(
-        {
-          firstname: agents[j].firstname,
-          lastname: agents[j].lastname,
-          address: agents[j].email
-        },
-        { students: agent_students, agent: agents[j] }
-      );
+      if (isNotArchiv(agents[j])) {
+        await AgentTasksReminderEmail(
+          {
+            firstname: agents[j].firstname,
+            lastname: agents[j].lastname,
+            address: agents[j].email
+          },
+          { students: agent_students, agent: agents[j] }
+        );
+      }
     }
   }
   for (let j = 0; j < editors.length; j += 1) {
@@ -121,14 +124,16 @@ const TasksReminderEmails = async () => {
       .select('-notification');
     if (editor_students.length > 0) {
       if (does_editor_have_pending_tasks(editor_students, editors[j])) {
-        await EditorTasksReminderEmail(
-          {
-            firstname: editors[j].firstname,
-            lastname: editors[j].lastname,
-            address: editors[j].email
-          },
-          { students: editor_students, editor: editors[j] }
-        );
+        if (isNotArchiv(editors[j])) {
+          await EditorTasksReminderEmail(
+            {
+              firstname: editors[j].firstname,
+              lastname: editors[j].lastname,
+              address: editors[j].email
+            },
+            { students: editor_students, editor: editors[j] }
+          );
+        }
       }
     }
   }

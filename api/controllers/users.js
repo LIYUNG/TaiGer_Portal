@@ -29,6 +29,7 @@ const {
   AWS_S3_PUBLIC_BUCKET_NAME,
   AWS_S3_BUCKET_NAME
 } = require('../config');
+const { isNotArchiv } = require('../constants');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,

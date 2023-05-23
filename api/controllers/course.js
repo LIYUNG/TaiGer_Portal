@@ -10,7 +10,7 @@ const Course = require('../models/Course');
 const { Role, Student, User } = require('../models/User');
 const logger = require('../services/logger');
 const { updateCoursesDataAgentEmail } = require('../services/email');
-const { one_month_cache, two_month_cache } = require('../cache/node-cache');
+const { one_month_cache } = require('../cache/node-cache');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
@@ -18,6 +18,7 @@ const {
   AWS_S3_PUBLIC_BUCKET_NAME,
   isProd
 } = require('../config');
+const { isNotArchiv } = require('../constants');
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
   secretAccessKey: AWS_S3_ACCESS_KEY
@@ -71,18 +72,20 @@ const createCourse = asyncHandler(async (req, res) => {
       .populate('agents', 'firstname lastname email')
       .exec();
     for (let i = 0; i < student.agents.length; i += 1) {
-      await updateCoursesDataAgentEmail(
-        {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
-        },
-        {
-          student_id: studentId,
-          student_firstname: courses2.student_id.firstname,
-          student_lastname: courses2.student_id.lastname
-        }
-      );
+      if (isNotArchiv(student)) {
+        await updateCoursesDataAgentEmail(
+          {
+            firstname: student.agents[i].firstname,
+            lastname: student.agents[i].lastname,
+            address: student.agents[i].email
+          },
+          {
+            student_id: studentId,
+            student_firstname: courses2.student_id.firstname,
+            student_lastname: courses2.student_id.lastname
+          }
+        );
+      }
     }
   }
 });
@@ -154,6 +157,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       }
       exitCode_Python = 0;
       res.status(200).send({ success: true, data: courses.analysis });
+      // TODO: send analysed link email to student
     } else {
       res.status(403).send({ message: code });
     }

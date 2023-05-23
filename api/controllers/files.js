@@ -7,7 +7,11 @@ const { Template } = require('../models/Template');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const { Documentthread } = require('../models/Documentthread');
 const { ErrorResponse } = require('../common/errors');
-const { DocumentStatus, profile_name_list } = require('../constants');
+const {
+  DocumentStatus,
+  profile_name_list,
+  isNotArchiv
+} = require('../constants');
 const {
   deleteTemplateSuccessEmail,
   uploadTemplateSuccessEmail,
@@ -211,7 +215,7 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   const student = await Student.findById(studentId)
-    .populate('agents editors', 'firstname lastname email')
+    .populate('agents editors', 'firstname lastname email archiv')
     .populate('applications.programId');
   if (!student) {
     logger.error('saveProfileFilePath: Invalid student id!');
@@ -249,48 +253,54 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         }
         await agent.save();
       }
-      await sendUploadedProfileFilesEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          uploaded_documentname: document.name.replace(/_/g, ' '),
-          uploaded_updatedAt: document.updatedAt
-        }
-      );
-
-      for (let i = 0; i < student.agents.length; i += 1) {
-        await sendUploadedProfileFilesRemindForAgentEmail(
+      if (isNotArchiv(student)) {
+        await sendUploadedProfileFilesEmail(
           {
-            firstname: student.agents[i].firstname,
-            lastname: student.agents[i].lastname,
-            address: student.agents[i].email
+            firstname: student.firstname,
+            lastname: student.lastname,
+            address: student.email
           },
           {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            student_id: student._id.toString(),
             uploaded_documentname: document.name.replace(/_/g, ' '),
             uploaded_updatedAt: document.updatedAt
           }
         );
       }
-    } else {
-      await sendAgentUploadedProfileFilesForStudentEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          agent_firstname: user.firstname,
-          agent_lastname: user.lastname,
-          uploaded_documentname: document.name.replace(/_/g, ' '),
-          uploaded_updatedAt: document.updatedAt
+
+      for (let i = 0; i < student.agents.length; i += 1) {
+        if (isNotArchiv(student.agents[i])) {
+          await sendUploadedProfileFilesRemindForAgentEmail(
+            {
+              firstname: student.agents[i].firstname,
+              lastname: student.agents[i].lastname,
+              address: student.agents[i].email
+            },
+            {
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              student_id: student._id.toString(),
+              uploaded_documentname: document.name.replace(/_/g, ' '),
+              uploaded_updatedAt: document.updatedAt
+            }
+          );
         }
-      );
+      }
+    } else {
+      if (isNotArchiv(student)) {
+        await sendAgentUploadedProfileFilesForStudentEmail(
+          {
+            firstname: student.firstname,
+            lastname: student.lastname,
+            address: student.email
+          },
+          {
+            agent_firstname: user.firstname,
+            agent_lastname: user.lastname,
+            uploaded_documentname: document.name.replace(/_/g, ' '),
+            uploaded_updatedAt: document.updatedAt
+          }
+        );
+      }
     }
     return;
   }
@@ -325,48 +335,55 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
       }
       await agent.save();
     }
-    await sendUploadedProfileFilesEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        uploaded_documentname: document.name.replace(/_/g, ' '),
-        uploaded_updatedAt: document.updatedAt
-      }
-    );
-    // Reminder for Agent:
-    for (let i = 0; i < student.agents.length; i++) {
-      await sendUploadedProfileFilesRemindForAgentEmail(
+    if (isNotArchiv(student)) {
+      await sendUploadedProfileFilesEmail(
         {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
         },
         {
-          student_firstname: student.firstname,
-          student_lastname: student.lastname,
-          student_id: student._id.toString(),
           uploaded_documentname: document.name.replace(/_/g, ' '),
           uploaded_updatedAt: document.updatedAt
         }
       );
     }
-  } else {
-    await sendAgentUploadedProfileFilesForStudentEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        agent_firstname: user.firstname,
-        agent_lastname: user.lastname,
-        uploaded_documentname: document.name.replace(/_/g, ' '),
-        uploaded_updatedAt: document.updatedAt
+
+    // Reminder for Agent:
+    for (let i = 0; i < student.agents.length; i++) {
+      if (isNotArchiv(student.agents[i])) {
+        await sendUploadedProfileFilesRemindForAgentEmail(
+          {
+            firstname: student.agents[i].firstname,
+            lastname: student.agents[i].lastname,
+            address: student.agents[i].email
+          },
+          {
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
+            student_id: student._id.toString(),
+            uploaded_documentname: document.name.replace(/_/g, ' '),
+            uploaded_updatedAt: document.updatedAt
+          }
+        );
       }
-    );
+    }
+  } else {
+    if (isNotArchiv(student)) {
+      await sendAgentUploadedProfileFilesForStudentEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          agent_firstname: user.firstname,
+          agent_lastname: user.lastname,
+          uploaded_documentname: document.name.replace(/_/g, ' '),
+          uploaded_updatedAt: document.updatedAt
+        }
+      );
+    }
   }
 });
 
@@ -450,52 +467,59 @@ const saveVPDFilePath = asyncHandler(async (req, res) => {
 
   const student_updated = await Student.findById(studentId).populate(
     'agents',
-    'firstname lastname email'
+    'firstname lastname email archiv'
   );
 
   if (user.role === Role.Student) {
-    await sendUploadedVPDEmail(
-      {
-        firstname: student_updated.firstname,
-        lastname: student_updated.lastname,
-        address: student_updated.email
-      },
-      {
-        uploaded_documentname: req.file.key.replace(/_/g, ' '),
-        uploaded_updatedAt: app.uni_assist.updatedAt
-      }
-    );
-    // Reminder for Agent:
-    for (let i = 0; i < student_updated.agents.length; i++) {
-      await sendUploadedVPDRemindForAgentEmail(
+    if (isNotArchiv(student_updated)) {
+      await sendUploadedVPDEmail(
         {
-          firstname: student_updated.agents[i].firstname,
-          lastname: student_updated.agents[i].lastname,
-          address: student_updated.agents[i].email
+          firstname: student_updated.firstname,
+          lastname: student_updated.lastname,
+          address: student_updated.email
         },
         {
-          student_firstname: student_updated.firstname,
-          student_lastname: student_updated.lastname,
-          student_id: student_updated._id.toString(),
           uploaded_documentname: req.file.key.replace(/_/g, ' '),
           uploaded_updatedAt: app.uni_assist.updatedAt
         }
       );
     }
-  } else {
-    await sendAgentUploadedVPDForStudentEmail(
-      {
-        firstname: student_updated.firstname,
-        lastname: student_updated.lastname,
-        address: student_updated.email
-      },
-      {
-        agent_firstname: user.firstname,
-        agent_lastname: user.lastname,
-        uploaded_documentname: req.file.key.replace(/_/g, ' '),
-        uploaded_updatedAt: app.uni_assist.updatedAt
+
+    // Reminder for Agent:
+    for (let i = 0; i < student_updated.agents.length; i += 1) {
+      if (isNotArchiv(student_updated.agents[i])) {
+        await sendUploadedVPDRemindForAgentEmail(
+          {
+            firstname: student_updated.agents[i].firstname,
+            lastname: student_updated.agents[i].lastname,
+            address: student_updated.agents[i].email
+          },
+          {
+            student_firstname: student_updated.firstname,
+            student_lastname: student_updated.lastname,
+            student_id: student_updated._id.toString(),
+            uploaded_documentname: req.file.key.replace(/_/g, ' '),
+            uploaded_updatedAt: app.uni_assist.updatedAt
+          }
+        );
       }
-    );
+    }
+  } else {
+    if (isNotArchiv(student_updated)) {
+      await sendAgentUploadedVPDForStudentEmail(
+        {
+          firstname: student_updated.firstname,
+          lastname: student_updated.lastname,
+          address: student_updated.email
+        },
+        {
+          agent_firstname: user.firstname,
+          agent_lastname: user.lastname,
+          uploaded_documentname: req.file.key.replace(/_/g, ' '),
+          uploaded_updatedAt: app.uni_assist.updatedAt
+        }
+      );
+    }
   }
 });
 
@@ -674,22 +698,24 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   await student.save();
   res.status(201).send({ success: true, data: student });
   // Reminder for Student:
-  if (
-    status !== DocumentStatus.NotNeeded &&
-    status !== DocumentStatus.Missing
-  ) {
-    await sendChangedProfileFileStatusEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      {
-        message: feedback,
-        status,
-        category: category.replace(/_/g, ' ')
-      }
-    );
+  if (isNotArchiv(student)) {
+    if (
+      status !== DocumentStatus.NotNeeded &&
+      status !== DocumentStatus.Missing
+    ) {
+      await sendChangedProfileFileStatusEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          message: feedback,
+          status,
+          category: category.replace(/_/g, ' ')
+        }
+      );
+    }
   }
 });
 
@@ -772,48 +798,19 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
-    .populate('agents editors', 'firstname lastname email')
+    .populate('agents editors', 'firstname lastname email archiv')
     .select('-profile -notification -application_preference')
     .lean();
 
   res.status(201).send({ success: true, data: student_updated });
   if (user.role === Role.Student) {
     for (let i = 0; i < student_updated.agents.length; i += 1) {
-      await UpdateStudentApplicationsEmail(
-        {
-          firstname: student_updated.agents[i].firstname,
-          lastname: student_updated.agents[i].lastname,
-          address: student_updated.agents[i].email
-        },
-        {
-          sender_firstname: student_updated.firstname,
-          sender_lastname: student_updated.lastname,
-          student_applications: student_updated.applications,
-          new_app_decided_idx: new_app_decided_idx
-        }
-      );
-    }
-
-    await UpdateStudentApplicationsEmail(
-      {
-        firstname: student_updated.firstname,
-        lastname: student_updated.lastname,
-        address: student_updated.email
-      },
-      {
-        sender_firstname: student_updated.firstname,
-        sender_lastname: student_updated.lastname,
-        student_applications: student_updated.applications,
-        new_app_decided_idx: new_app_decided_idx
-      }
-    );
-    if (new_task_flag) {
-      for (let i = 0; i < student_updated.editors.length; i += 1) {
-        await NewMLRLEssayTasksEmail(
+      if (isNotArchiv(student_updated.agents[i])) {
+        await UpdateStudentApplicationsEmail(
           {
-            firstname: student_updated.editors[i].firstname,
-            lastname: student_updated.editors[i].lastname,
-            address: student_updated.editors[i].email
+            firstname: student_updated.agents[i].firstname,
+            lastname: student_updated.agents[i].lastname,
+            address: student_updated.agents[i].email
           },
           {
             sender_firstname: student_updated.firstname,
@@ -824,37 +821,77 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
         );
       }
     }
-  } else {
-    await UpdateStudentApplicationsEmail(
-      {
-        firstname: student_updated.firstname,
-        lastname: student_updated.lastname,
-        address: student_updated.email
-      },
-      {
-        sender_firstname: user.firstname,
-        sender_lastname: user.lastname,
-        student_applications: student_updated.applications,
-        new_app_decided_idx: new_app_decided_idx
-      }
-    );
+    if (isNotArchiv(student_updated)) {
+      await UpdateStudentApplicationsEmail(
+        {
+          firstname: student_updated.firstname,
+          lastname: student_updated.lastname,
+          address: student_updated.email
+        },
+        {
+          sender_firstname: student_updated.firstname,
+          sender_lastname: student_updated.lastname,
+          student_applications: student_updated.applications,
+          new_app_decided_idx: new_app_decided_idx
+        }
+      );
+    }
+
     if (new_task_flag) {
       for (let i = 0; i < student_updated.editors.length; i += 1) {
-        await NewMLRLEssayTasksEmailFromTaiGer(
-          {
-            firstname: student_updated.editors[i].firstname,
-            lastname: student_updated.editors[i].lastname,
-            address: student_updated.editors[i].email
-          },
-          {
-            student_firstname: student_updated.firstname,
-            student_lastname: student_updated.lastname,
-            sender_firstname: user.firstname,
-            sender_lastname: user.lastname,
-            student_applications: student_updated.applications,
-            new_app_decided_idx: new_app_decided_idx
-          }
-        );
+        if (isNotArchiv(student_updated.editors[i])) {
+          await NewMLRLEssayTasksEmail(
+            {
+              firstname: student_updated.editors[i].firstname,
+              lastname: student_updated.editors[i].lastname,
+              address: student_updated.editors[i].email
+            },
+            {
+              sender_firstname: student_updated.firstname,
+              sender_lastname: student_updated.lastname,
+              student_applications: student_updated.applications,
+              new_app_decided_idx: new_app_decided_idx
+            }
+          );
+        }
+      }
+    }
+  } else {
+    if (isNotArchiv(student_updated)) {
+      await UpdateStudentApplicationsEmail(
+        {
+          firstname: student_updated.firstname,
+          lastname: student_updated.lastname,
+          address: student_updated.email
+        },
+        {
+          sender_firstname: user.firstname,
+          sender_lastname: user.lastname,
+          student_applications: student_updated.applications,
+          new_app_decided_idx
+        }
+      );
+    }
+
+    if (new_task_flag) {
+      for (let i = 0; i < student_updated.editors.length; i += 1) {
+        if (isNotArchiv(student_updated.editors[i])) {
+          await NewMLRLEssayTasksEmailFromTaiGer(
+            {
+              firstname: student_updated.editors[i].firstname,
+              lastname: student_updated.editors[i].lastname,
+              address: student_updated.editors[i].email
+            },
+            {
+              student_firstname: student_updated.firstname,
+              student_lastname: student_updated.lastname,
+              sender_firstname: user.firstname,
+              sender_lastname: user.lastname,
+              student_applications: student_updated.applications,
+              new_app_decided_idx: new_app_decided_idx
+            }
+          );
+        }
       }
     }
   }
@@ -1316,14 +1353,16 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       profile: updatedStudent.profile
     });
 
-    await updateAcademicBackgroundEmail(
-      {
-        firstname: updatedStudent.firstname,
-        lastname: updatedStudent.lastname,
-        address: updatedStudent.email
-      },
-      {}
-    );
+    if (isNotArchiv(updatedStudent)) {
+      await updateAcademicBackgroundEmail(
+        {
+          firstname: updatedStudent.firstname,
+          lastname: updatedStudent.lastname,
+          address: updatedStudent.email
+        },
+        {}
+      );
+    }
   } catch (err) {
     logger.error(err);
     throw new ErrorResponse(400, JSON.stringify(err));
@@ -1428,27 +1467,32 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     profile: updatedStudent.profile
   });
   if (user.role === Role.Student) {
-    await updateLanguageSkillEmail(
-      {
-        firstname: updatedStudent.firstname,
-        lastname: updatedStudent.lastname,
-        address: updatedStudent.email
-      },
-      {}
-    );
+    if (isNotArchiv(updatedStudent)) {
+      await updateLanguageSkillEmail(
+        {
+          firstname: updatedStudent.firstname,
+          lastname: updatedStudent.lastname,
+          address: updatedStudent.email
+        },
+        {}
+      );
+    }
+
     // TODO : inform agents
   } else {
-    await updateLanguageSkillEmailFromTaiGer(
-      {
-        firstname: updatedStudent.firstname,
-        lastname: updatedStudent.lastname,
-        address: updatedStudent.email
-      },
-      {
-        sender_firstname: user.firstname,
-        sender_lastname: user.lastname
-      }
-    );
+    if (isNotArchiv(updatedStudent)) {
+      await updateLanguageSkillEmailFromTaiGer(
+        {
+          firstname: updatedStudent.firstname,
+          lastname: updatedStudent.lastname,
+          address: updatedStudent.email
+        },
+        {
+          sender_firstname: user.firstname,
+          sender_lastname: user.lastname
+        }
+      );
+    }
   }
 });
 
@@ -1483,14 +1527,16 @@ const updateApplicationPreferenceSkill = asyncHandler(
       data: updatedStudent.application_preference
     });
     if (user.role === Role.Student) {
-      await updateApplicationPreferenceEmail(
-        {
-          firstname: updatedStudent.firstname,
-          lastname: updatedStudent.lastname,
-          address: updatedStudent.email
-        },
-        {}
-      );
+      if (isNotArchiv(updatedStudent)) {
+        await updateApplicationPreferenceEmail(
+          {
+            firstname: updatedStudent.firstname,
+            lastname: updatedStudent.lastname,
+            address: updatedStudent.email
+          },
+          {}
+        );
+      }
     }
   }
 );
@@ -1521,14 +1567,16 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
         birthday: personaldata.birthday
       }
     });
-    await updatePersonalDataEmail(
-      {
-        firstname: personaldata.firstname,
-        lastname: personaldata.lastname,
-        address: user.email
-      },
-      {}
-    );
+    if (isNotArchiv(updatedStudent)) {
+      await updatePersonalDataEmail(
+        {
+          firstname: personaldata.firstname,
+          lastname: personaldata.lastname,
+          address: user.email
+        },
+        {}
+      );
+    }
   } catch (err) {
     logger.error(err);
   }

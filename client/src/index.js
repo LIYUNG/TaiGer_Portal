@@ -547,6 +547,10 @@ window.UserlistHeader = [
     prop: 'isAccountActivated'
   },
   {
+    name: 'Archived',
+    prop: 'archiv'
+  },
+  {
     name: 'User Type',
     prop: 'role'
   }

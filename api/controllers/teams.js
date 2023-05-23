@@ -4,9 +4,7 @@ const aws = require('aws-sdk');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { User, Agent, Editor, Student, Role } = require('../models/User');
-const Course = require('../models/Course');
 const { Documentthread } = require('../models/Documentthread');
-const { updateNotificationEmail } = require('../services/email');
 const logger = require('../services/logger');
 
 const {

@@ -6,11 +6,7 @@ const { ErrorResponse } = require('../common/errors');
 const path = require('path');
 
 const { asyncHandler } = require('../middlewares/error-handler');
-const Course = require('../models/Course');
-const { Role, Student, User } = require('../models/User');
 const logger = require('../services/logger');
-const { updateCoursesDataAgentEmail } = require('../services/email');
-const { one_month_cache, two_month_cache } = require('../cache/node-cache');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,

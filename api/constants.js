@@ -68,6 +68,12 @@ const getNumberOfDays = (start, end) => {
   return diffInDays.toString();
 };
 
+const isNotArchiv = (user) => {
+  if (user.archiv === undefined || !user.archiv) {
+    return true;
+  }
+  return false;
+};
 const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
@@ -1331,6 +1337,7 @@ module.exports = {
   profile_keys_list,
   profile_name_list,
   getNumberOfDays,
+  isNotArchiv,
   check_english_language_passed,
   check_german_language_passed,
   check_languages_filled,

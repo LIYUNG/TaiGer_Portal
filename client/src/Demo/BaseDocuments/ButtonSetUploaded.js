@@ -188,7 +188,6 @@ class ButtonSetUploaded extends React.Component {
       }
     }
 
-    console.log(id, temp_checkedBoxes);
     this.setState((state) => ({
       ...state,
       checkedBoxes: temp_checkedBoxes

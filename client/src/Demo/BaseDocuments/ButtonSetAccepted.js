@@ -232,7 +232,7 @@ class ButtonSetAccepted extends React.Component {
         ) : (
           <>
             <td>
-              <Col md>
+              {/* <Col md>
                 <Form
                   onSubmit={(e) =>
                     this.onUpdateProfileDocStatus(
@@ -254,7 +254,7 @@ class ButtonSetAccepted extends React.Component {
                     </Button>
                   </Form.Group>
                 </Form>
-              </Col>
+              </Col> */}
             </td>
             <td></td>
             <td>

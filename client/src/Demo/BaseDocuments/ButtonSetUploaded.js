@@ -279,7 +279,7 @@ class ButtonSetUploaded extends React.Component {
               </Col> */}
             </td>
             <td>
-              <Col md>
+              {/* <Col md>
                 {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
                     variant={REJECT_STYLE}
@@ -299,7 +299,7 @@ class ButtonSetUploaded extends React.Component {
                     <AiOutlineWarning size={16} />
                   </Button>
                 )}
-              </Col>
+              </Col> */}
             </td>
           </>
         )}

@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BsDownload, BsZoomIn, BsZoomOut } from 'react-icons/bs';
+import { pdfjs, Document, Page } from 'react-pdf';
+import { Button } from 'react-bootstrap';
 
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from 'react-pdf';
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-// import { Document } from 'react-pdf/dist/entry.noworker';
 import { getProfilePdf } from '../../api';
-// import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const PDFViewer = (student_id, path) => {
   const [pdfData, setPdfData] = useState(null);
@@ -22,8 +20,6 @@ const PDFViewer = (student_id, path) => {
   useEffect(() => {
     const fetchPdfData = async () => {
       const pdf = await getProfilePdf(student_id, path); // Call the function to retrieve the PDF data
-      const blob = new Blob([pdf.data], { type: 'application/pdf' });
-      const data = URL.createObjectURL(blob);
       setPdfData(pdf.data); // Set the PDF data in the state
     };
 
@@ -31,7 +27,7 @@ const PDFViewer = (student_id, path) => {
   }, []);
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
-    setPageWidth(containerRef.current.offsetWidth);
+    setPageWidth(containerRef.current.offsetWidth - 30);
   };
 
   const goToPreviousPage = () => {
@@ -68,7 +64,7 @@ const PDFViewer = (student_id, path) => {
     const container = containerRef.current;
     const scrollPosition = container.scrollTop;
     const pageHeight = container.scrollHeight / numPages;
-    const newPage = Math.ceil(scrollPosition / pageHeight) + 1;
+    const newPage = Math.floor(scrollPosition / pageHeight) + 1;
     setCurrentPage(newPage);
   };
 
@@ -93,7 +89,7 @@ const PDFViewer = (student_id, path) => {
                   pageNumber={index + 1}
                   renderTextLayer={false}
                   scale={zoomLevel}
-                  width={pageWidth - 30} // Adjust the width of the Page component to fit the container
+                  width={pageWidth} // Adjust the width of the Page component to fit the container
                 />
               ))}
             </Document>
@@ -103,22 +99,30 @@ const PDFViewer = (student_id, path) => {
           </p>
           <div>
             <div>
-              <button onClick={handleZoomIn}>
+              <Button size="sm" onClick={handleZoomIn}>
                 <BsZoomIn />
-              </button>
-              <button onClick={handleZoomOut}>
+              </Button>
+              <Button size="sm" onClick={handleZoomOut}>
                 <BsZoomOut />
-              </button>
+              </Button>
             </div>
-            <button onClick={goToPreviousPage} disabled={pageNumber === 1}>
+            <Button
+              size="sm"
+              onClick={goToPreviousPage}
+              disabled={pageNumber === 1}
+            >
               Previous Page
-            </button>
-            <button onClick={goToNextPage} disabled={pageNumber === numPages}>
+            </Button>
+            <Button
+              size="sm"
+              onClick={goToNextPage}
+              disabled={pageNumber === numPages}
+            >
               Next Page
-            </button>
-            <button onClick={handleDownload}>
+            </Button>
+            <Button size="sm" onClick={handleDownload}>
               <BsDownload /> Download
-            </button>
+            </Button>
           </div>
         </>
       ) : (

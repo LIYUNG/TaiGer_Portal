@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 // import request from '../../api/request';
 // import FileViewer from 'react-file-viewer';
 // import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';

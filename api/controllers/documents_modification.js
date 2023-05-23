@@ -1207,26 +1207,28 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     );
 
     for (let i = 0; i < student.agents.length; i += 1) {
-      if (isNotArchiv(student3.agents[i])) {
-        await sendSetAsFinalProgramSpecificFileForAgentEmail(
-          {
-            firstname: student3.agents[i].firstname,
-            lastname: student3.agents[i].lastname,
-            address: student3.agents[i].email
-          },
-          {
-            student_firstname: student3.firstname,
-            student_lastname: student3.lastname,
-            editor_firstname: user.firstname,
-            editor_lastname: user.lastname,
-            school: student_application.programId.school,
-            program_name: student_application.programId.program_name,
-            uploaded_documentname: application_thread.doc_thread_id.file_type,
-            uploaded_updatedAt: new Date(),
-            thread_id: messagesThreadId,
-            isFinalVersion: application_thread.isFinalVersion
-          }
-        );
+      if (isNotArchiv(student3)) {
+        if (isNotArchiv(student3.agents[i])) {
+          await sendSetAsFinalProgramSpecificFileForAgentEmail(
+            {
+              firstname: student3.agents[i].firstname,
+              lastname: student3.agents[i].lastname,
+              address: student3.agents[i].email
+            },
+            {
+              student_firstname: student3.firstname,
+              student_lastname: student3.lastname,
+              editor_firstname: user.firstname,
+              editor_lastname: user.lastname,
+              school: student_application.programId.school,
+              program_name: student_application.programId.program_name,
+              uploaded_documentname: application_thread.doc_thread_id.file_type,
+              uploaded_updatedAt: new Date(),
+              thread_id: messagesThreadId,
+              isFinalVersion: application_thread.isFinalVersion
+            }
+          );
+        }
       }
     }
   } else {
@@ -1278,24 +1280,26 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     );
 
     for (let i = 0; i < student.agents.length; i += 1) {
-      if (isNotArchiv(student3.agents[i])) {
-        await sendSetAsFinalGeneralFileForAgentEmail(
-          {
-            firstname: student3.agents[i].firstname,
-            lastname: student3.agents[i].lastname,
-            address: student3.agents[i].email
-          },
-          {
-            student_firstname: student3.firstname,
-            student_lastname: student3.lastname,
-            student_id: student3._id.toString(),
-            editor_firstname: user.firstname,
-            editor_lastname: user.lastname,
-            uploaded_documentname: generaldocs_thread.doc_thread_id.file_type,
-            uploaded_updatedAt: new Date(),
-            isFinalVersion: generaldocs_thread.isFinalVersion
-          }
-        );
+      if (isNotArchiv(student3)) {
+        if (isNotArchiv(student3.agents[i])) {
+          await sendSetAsFinalGeneralFileForAgentEmail(
+            {
+              firstname: student3.agents[i].firstname,
+              lastname: student3.agents[i].lastname,
+              address: student3.agents[i].email
+            },
+            {
+              student_firstname: student3.firstname,
+              student_lastname: student3.lastname,
+              student_id: student3._id.toString(),
+              editor_firstname: user.firstname,
+              editor_lastname: user.lastname,
+              uploaded_documentname: generaldocs_thread.doc_thread_id.file_type,
+              uploaded_updatedAt: new Date(),
+              isFinalVersion: generaldocs_thread.isFinalVersion
+            }
+          );
+        }
       }
     }
   }

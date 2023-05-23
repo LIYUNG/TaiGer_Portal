@@ -35,31 +35,29 @@ function AdminLayout(props) {
         if (success) {
           // TODO: to be remove in production
           // setTimeout(function () {
-            setUserdata((state) => ({
-              ...state,
-              success: success,
-              data: data,
-              isLoaded: true
-            }));
+          setUserdata((state) => ({
+            ...state,
+            success: success,
+            data: data,
+            isLoaded: true
+          }));
           // }, 1000);
         } else {
           // setTimeout(function () {
-            setUserdata((state) => ({
-              ...state,
-              data: null,
-              isLoaded: true
-            }));
+          setUserdata((state) => ({
+            ...state,
+            data: null,
+            isLoaded: true
+          }));
           // }, 1000);
         }
       },
       (error) => {
-        const { statusText } = resp;
         setUserdata((state) => ({
           ...state,
           isLoaded: true,
           error,
-          res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_status: 500
         }));
       }
     );

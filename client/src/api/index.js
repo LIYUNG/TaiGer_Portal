@@ -78,6 +78,16 @@ export const downloadProfile = (category, studentId) =>
     responseType: 'blob'
   });
 
+export const getProfilePdf = (studentId, path) =>
+  request.get(`/api/students/${studentId}/files/${path}`, {
+    responseType: 'blob'
+  });
+
+// export const getProfilePdf = (path, studentId) =>
+//   request.get(`/api/students/${studentId}/files/${path}`, {
+//     responseType: 'blob'
+//   });
+
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
 

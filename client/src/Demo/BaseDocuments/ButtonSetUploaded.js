@@ -252,12 +252,11 @@ class ButtonSetUploaded extends React.Component {
           <>
             <td></td>
             <td></td>
-            <td></td>
           </>
         ) : (
           <>
             <td>
-              <Col md>
+              {/* <Col md>
                 {showButtonIfMyStudent(this.props.user, this.state.student) && (
                   <Button
                     variant={ACCEPT_STYLE}
@@ -277,7 +276,7 @@ class ButtonSetUploaded extends React.Component {
                     <AiOutlineCheck />
                   </Button>
                 )}
-              </Col>
+              </Col> */}
             </td>
             <td>
               <Col md>
@@ -302,9 +301,9 @@ class ButtonSetUploaded extends React.Component {
                 )}
               </Col>
             </td>
-            <td></td>
           </>
         )}
+        <td></td>
         {this.props.role === 'Editor' ? (
           <td></td>
         ) : (
@@ -557,7 +556,7 @@ class ButtonSetUploaded extends React.Component {
                   variant={ACCEPT_STYLE}
                   size="sm"
                   type="submit"
-                  title="Mark as finshed"
+                  title="Mark as finished"
                   disabled={
                     !this.state.isLoaded ||
                     this.state.num_points !== this.state.checkedBoxes.length

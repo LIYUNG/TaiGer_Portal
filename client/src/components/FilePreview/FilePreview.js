@@ -4,18 +4,20 @@ import React, { useEffect, useState } from 'react';
 // import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 // import FileViewer from 'react-pdf';
 import { BASE_URL } from '../../api/request';
-
+// import PDFViewer from '../../components/PDFViewer/index';
+// TODO: under constrution. prevent PDF download, prevent browser default setting.
 const FilePreview = ({ path, student_id }) => {
   return (
-    <div>
+    <>
       {path.split('.')[1] === 'pdf' ? (
-        <object
-          data={`${BASE_URL}/api/students/${student_id}/files/${path}`}
+        <embed
+          src={`${BASE_URL}/api/students/${student_id}/files/${path}`}
           type="application/pdf"
           height={600}
           width="100%"
-        ></object>
+        ></embed>
       ) : (
+        // <div>{PDFViewer(student_id, path)}</div>
         <div
           className="center"
           style={{
@@ -33,7 +35,7 @@ const FilePreview = ({ path, student_id }) => {
           />
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -296,7 +296,7 @@ class ButtonSetRejected extends React.Component {
           </Col>
         </td>
         <td>
-          {is_TaiGer_AdminAgent(this.props.user) && (
+          {/* {is_TaiGer_AdminAgent(this.props.user) && (
             <Col>
               {showButtonIfMyStudent(this.props.user, this.state.student) && (
                 <Button
@@ -318,7 +318,7 @@ class ButtonSetRejected extends React.Component {
                 </Button>
               )}
             </Col>
-          )}
+          )} */}
         </td>
         <td>
           <Button

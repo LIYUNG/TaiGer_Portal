@@ -138,6 +138,7 @@ const updateProgram = asyncHandler(async (req, res) => {
 });
 
 const deleteProgram = asyncHandler(async (req, res) => {
+  // All students including archived
   const students = await Student.find({
     applications: {
       $elemMatch: {
@@ -159,6 +160,7 @@ const deleteProgram = asyncHandler(async (req, res) => {
     console.log('it can not be deleted!');
     console.log('The following students have these programs!');
     console.log(students);
+    // TODO: make sure delete failed to user (Admin)
   }
   res.status(200).send({ success: true });
 });

@@ -305,6 +305,8 @@ export const check_academic_background_filled = (academic_background) => {
     !academic_background.university.attended_high_school ||
     !academic_background.university.high_school_isGraduated ||
     academic_background.university.high_school_isGraduated === '-' ||
+    !academic_background.university.Has_Exchange_Experience ||
+    academic_background.university.Has_Exchange_Experience === '-' ||
     !academic_background.university.attended_university ||
     !academic_background.university.attended_university_program
     // ||

@@ -10,6 +10,7 @@ import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflic
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 
 import { updateAgentBanner } from '../../../api';
+import { profile_list } from '../../Utils/contants';
 
 class AgentMainView extends React.Component {
   state = {
@@ -20,7 +21,7 @@ class AgentMainView extends React.Component {
   checkMissingBaseDocument = (students) => {
     for (let stud_idx = 0; stud_idx < students.length; stud_idx += 1) {
       let student = students[stud_idx];
-      let keys = Object.keys(window.profile_list);
+      let keys = Object.keys(profile_list);
       let object_init = {};
       for (let i = 0; i < keys.length; i++) {
         object_init[keys[i]] = 'missing';

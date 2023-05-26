@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_internal_categories, spinner_style } from '../Utils/contants';
+import { valid_internal_categories, spinner_style, internal_documentation_categories } from '../Utils/contants';
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_role
@@ -224,7 +224,7 @@ class InternalDocCreatePage extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    const documentlist_key = Object.keys(window.internaldocumentlist);
+    const documentlist_key = Object.keys(internal_documentation_categories);
 
     const document_list = (cat) => {
       let sections = {};
@@ -312,7 +312,7 @@ class InternalDocCreatePage extends React.Component {
                 <Card.Body>
                   {documentlist_key.map((catego, i) => (
                     <Row className="mb-4" key={i}>
-                      <h5>- {window.internaldocumentlist[`${catego}`]}</h5>
+                      <h5>- {internal_documentation_categories[`${catego}`]}</h5>
                       {document_list(catego)}
                     </Row>
                   ))}

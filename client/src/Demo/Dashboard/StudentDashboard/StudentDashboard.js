@@ -19,6 +19,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 
 import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
+import { programstatuslist } from '../../Utils/contants';
 
 class StudentDashboard extends React.Component {
   state = {
@@ -280,7 +281,7 @@ class StudentDashboard extends React.Component {
                     ) : (
                       <th></th>
                     )}
-                    {window.programstatuslist.map((doc, index) => (
+                    {programstatuslist.map((doc, index) => (
                       <th key={index}>{doc.name}</th>
                     ))}
                   </tr>

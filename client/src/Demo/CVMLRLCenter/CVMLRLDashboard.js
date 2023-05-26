@@ -28,7 +28,8 @@ import {
   is_not_started_tasks_status,
   is_new_message_status,
   is_pending_status,
-  return_thread_status2
+  return_thread_status2,
+  cvmlrlclosedlist
 } from '../Utils/contants';
 import {
   is_TaiGer_role,
@@ -482,28 +483,6 @@ class CVMLRLDashboard extends React.Component {
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
-                {/* <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <>
-                        <th></th>
-                        <th>First-, Last Name</th>
-                      </>
-                      {window.tasksmanagementllist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{cvmlrl_new_message}</tbody>
-                </Table> */}
                 <SortTable
                   columns={columns}
                   data={cvmlrl_active_tasks}
@@ -520,28 +499,6 @@ class CVMLRLDashboard extends React.Component {
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
-                {/* <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <>
-                        <th></th>
-                        <th>First-, Last Name</th>
-                      </>
-                      {window.tasksmanagementllist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{cvmlrl_pending_progress}</tbody>
-                </Table> */}
                 <SortTable
                   columns={columns}
                   data={cvmlrl_idle_tasks}
@@ -574,7 +531,7 @@ class CVMLRLDashboard extends React.Component {
                       <th></th>
                       <th>First-, Last Name</th>
                       {is_TaiGer_role(this.props.user) && <th>Action</th>}
-                      {window.cvmlrlclosedlist.map((doc, index) => (
+                      {cvmlrlclosedlist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
                     </tr>

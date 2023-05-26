@@ -8,7 +8,8 @@ import {
   SYMBOL_EXPLANATION,
   split_header,
   spinner_style,
-  spinner_style2
+  spinner_style2,
+  profile_list
 } from '../Utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ErrorPage from '../Utils/ErrorPage';
@@ -92,7 +93,7 @@ class BaseDocuments extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    let profile_list_keys = Object.values(window.profile_list);
+    let profile_list_keys = Object.values(profile_list);
 
     const student_profile = this.state.students.map((student, i) => (
       <StudentBaseDocumentsStatus

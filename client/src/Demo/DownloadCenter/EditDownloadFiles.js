@@ -3,7 +3,7 @@ import { Button, Table, Col, Form, Spinner } from 'react-bootstrap';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL } from '../../api/request';
 import { is_TaiGer_Admin } from '../Utils/checking-functions';
-import { DELETE_STYLE } from '../Utils/contants';
+import { DELETE_STYLE, templatelist } from '../Utils/contants';
 
 class EditDownloadFiles extends React.Component {
   state = {};
@@ -15,14 +15,14 @@ class EditDownloadFiles extends React.Component {
 
   render() {
     let object_init = {};
-    for (let i = 0; i < this.props.templatelist.length; i++) {
-      object_init[this.props.templatelist[i].prop] = 'missing';
+    for (let i = 0; i < templatelist.length; i++) {
+      object_init[templatelist[i].prop] = 'missing';
     }
     for (let i = 0; i < this.props.templates.length; i++) {
       object_init[this.props.templates[i].category_name] = 'uploaded';
     }
     let templatelist2;
-    templatelist2 = this.props.templatelist.map((template, i) => {
+    templatelist2 = templatelist.map((template, i) => {
       return (
         <tr key={i + 1}>
           <td>{template.name}</td>

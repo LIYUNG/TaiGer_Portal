@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
-import { convertDate } from '../Utils/contants';
+import { UserlistHeader, convertDate } from '../Utils/contants';
 class User extends React.Component {
   render() {
     if (this.props.success) {
@@ -43,7 +43,7 @@ class User extends React.Component {
             </DropdownButton>
             {/* )} */}
           </th>
-          {this.props.header.map((y, k) => (
+          {UserlistHeader.map((y, k) => (
             <td key={k}>
               {typeof this.props.user[y.prop] == 'boolean'
                 ? this.props.user[y.prop]

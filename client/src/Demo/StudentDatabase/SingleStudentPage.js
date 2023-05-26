@@ -24,7 +24,9 @@ import {
   SYMBOL_EXPLANATION,
   profile_name_list,
   spinner_style,
-  convertDate
+  convertDate,
+  programstatuslist,
+  profile_wtih_doc_link_list
 } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
@@ -63,7 +65,7 @@ class SingleStudentPage extends React.Component {
   };
 
   componentDidMount() {
-    let keys2 = Object.keys(window.profile_wtih_doc_link_list);
+    let keys2 = Object.keys(profile_wtih_doc_link_list);
     let temp_isLoaded = {};
     for (let i = 0; i < keys2.length; i++) {
       temp_isLoaded[keys2[i]] = true;
@@ -555,7 +557,7 @@ class SingleStudentPage extends React.Component {
                               <th>#</th>
                             </>
                           )}
-                          {window.programstatuslist.map((doc, index) => (
+                          {programstatuslist.map((doc, index) => (
                             <th key={index}>{doc.name}</th>
                           ))}
                         </tr>

@@ -28,7 +28,8 @@ import {
   is_new_message_status,
   is_pending_status,
   // return_thread_status,
-  return_thread_status2
+  return_thread_status2,
+  cvmlrlclosedlist
 } from '../Utils/contants';
 import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -574,29 +575,6 @@ class CVMLRLOverview extends React.Component {
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
-                {/* <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <>
-                        <th></th>
-                        <th>First-, Last Name</th>
-                        {is_TaiGer_role(this.props.user) && <th>Action</th>}
-                      </>
-                      {window.cvmlrllist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{cvmlrl_new_message}</tbody>
-                </Table> */}
                 <SortTable
                   columns={columns}
                   data={cvmlrl_new_message_v2}
@@ -629,29 +607,6 @@ class CVMLRLOverview extends React.Component {
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
-                {/* <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <>
-                        <th></th>
-                        <th>First-, Last Name</th>
-                        {is_TaiGer_role(this.props.user) && <th>Action</th>}
-                      </>
-                      {window.cvmlrllist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{cvmlrl_pending_progress}</tbody>
-                </Table> */}
                 <SortTable
                   columns={columns}
                   data={cvmlrl_pending_progress_v2}
@@ -674,7 +629,7 @@ class CVMLRLOverview extends React.Component {
                       <th></th>
                       <th>First-, Last Name</th>
                       {is_TaiGer_role(this.props.user) && <th>Action</th>}
-                      {window.cvmlrlclosedlist.map((doc, index) => (
+                      {cvmlrlclosedlist.map((doc, index) => (
                         <th key={index}>{doc.name}</th>
                       ))}
                     </tr>

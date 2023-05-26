@@ -7,6 +7,7 @@ import {
   AiOutlineFieldTime
 } from 'react-icons/ai';
 import { BsDash } from 'react-icons/bs';
+import { profile_list } from '../Utils/contants';
 
 class StudentBaseDocumentsStatus extends React.Component {
   state = {
@@ -17,7 +18,7 @@ class StudentBaseDocumentsStatus extends React.Component {
   };
 
   render() {
-    let keys2 = Object.keys(window.profile_list);
+    let keys2 = Object.keys(profile_list);
     let object_init = {};
     keys2.forEach((key) => {
       object_init[key] = 'missing';
@@ -47,7 +48,7 @@ class StudentBaseDocumentsStatus extends React.Component {
       }
     } else {
     }
-    let profile_list_keys = Object.keys(window.profile_list);
+    let profile_list_keys = Object.keys(profile_list);
     const style_ok = {
       background: 'green'
     };

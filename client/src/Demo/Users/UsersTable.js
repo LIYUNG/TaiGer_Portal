@@ -144,7 +144,6 @@ class UsersTable extends React.Component {
                 isLoaded={this.state.isLoaded}
                 user={this.state.user}
                 onSubmit2={this.onSubmit2}
-                header={window.UserlistHeader}
               />
             </Card>
           </Col>

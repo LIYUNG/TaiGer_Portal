@@ -437,37 +437,6 @@ class ApplicationOverviewTabs extends React.Component {
             )}
             <Row>
               <Col>
-                {/* <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th></th>
-                      {is_TaiGer_role(this.props.user) && (
-                        <>
-                          <th>First-, Last Name</th>
-                          <th
-                            title={
-                              'Number of applications student should submit'
-                            }
-                          >
-                            #
-                          </th>
-                        </>
-                      )}
-                      {window.programstatuslist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{application_progress}</tbody>
-                </Table> */}
                 <SortTable
                   columns={columns}
                   data={applications_arr}
@@ -476,69 +445,12 @@ class ApplicationOverviewTabs extends React.Component {
               </Col>
             </Row>
           </Tab>
-          {/* <Tab
-            eventKey="application_documents_overview"
-            title="Application Document Overview"
-          >
-            <Row>
-              <Col>
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      {is_TaiGer_role(this.props.user) && (
-                        <th>First-, Last Name</th>
-                      )}
-                      <th>University</th>
-                      <th>Programs</th>
-                      <th>Deadline</th>
-                      {window.programs_files_checklist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{application_documents_overview}</tbody>
-                </Table>
-              </Col>
-            </Row>
-          </Tab> */}
           <Tab
             eventKey="application_documents_overview"
             title="Application Document Overview"
           >
             <Row>
               <Col>
-                {/* <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      {is_TaiGer_role(this.props.user) && (
-                        <th>First-, Last Name</th>
-                      )}
-                      <th>University</th>
-                      <th>Programs</th>
-                      <th>Deadline</th>
-                      {window.programs_files_checklist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{application_documents_overview}</tbody>
-                </Table> */}
                 <SortTable
                   columns={columns2}
                   data={applications_arr}

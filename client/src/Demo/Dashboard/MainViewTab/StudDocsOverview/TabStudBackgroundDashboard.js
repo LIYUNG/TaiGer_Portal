@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import StudDocsDashboard from './StudDocsDashboard';
+import { academic_background_header } from '../../../Utils/contants';
 
 class TabStudBackgroundDashboard extends React.Component {
   render() {
@@ -18,7 +19,7 @@ class TabStudBackgroundDashboard extends React.Component {
         ))}
       </tbody>
     );
-    let header = Object.values(window.academic_background_header);
+    let header = Object.values(academic_background_header);
     return (
       <Table
         size="sm"

@@ -8,7 +8,7 @@ import {
 import { IoCheckmarkCircle } from 'react-icons/io5';
 
 import DEMO from '../../../store/constant';
-import { convertDate } from '../../Utils/contants';
+import { convertDate, profile_list } from '../../Utils/contants';
 import { BsDash } from 'react-icons/bs';
 
 class StudentMyself extends React.Component {
@@ -18,7 +18,7 @@ class StudentMyself extends React.Component {
 
   render() {
     let studentDocOverview;
-    let documentlist2_keys = Object.keys(window.profile_list);
+    let documentlist2_keys = Object.keys(profile_list);
     let object_init = {};
     let object_time_init = {};
     for (let i = 0; i < documentlist2_keys.length; i++) {

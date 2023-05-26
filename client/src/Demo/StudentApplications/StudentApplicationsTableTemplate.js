@@ -24,7 +24,7 @@ import {
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
-import { getNumberOfDays, spinner_style } from '../Utils/contants';
+import { getNumberOfDays, programstatuslist, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -569,7 +569,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                     <thead>
                       <tr>
                         {this.props.role !== 'Student' && <th></th>}
-                        {window.programstatuslist.map((doc, index) => (
+                        {programstatuslist.map((doc, index) => (
                           <th key={index}>{doc.name}</th>
                         ))}
                       </tr>

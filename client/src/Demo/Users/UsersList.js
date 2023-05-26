@@ -7,6 +7,7 @@ import UserDeleteWarning from './UserDeleteWarning';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { deleteUser, changeUserRole } from '../../api';
+import { UserlistHeader } from '../Utils/contants';
 
 class UsersList extends React.Component {
   state = {
@@ -193,7 +194,7 @@ class UsersList extends React.Component {
     const headers = (
       <tr>
         <th> </th>
-        {this.props.header.map((x, i) => (
+        {UserlistHeader.map((x, i) => (
           <th key={i}>{x.name}</th>
         ))}
         <th>Last Login</th>
@@ -204,7 +205,6 @@ class UsersList extends React.Component {
       <User
         key={user._id}
         user={user}
-        header={this.props.header}
         setModalShowDelete={this.setModalShowDelete}
         setModalShow={this.setModalShow}
         success={this.state.success}

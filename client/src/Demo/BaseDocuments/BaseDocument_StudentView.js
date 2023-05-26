@@ -6,7 +6,7 @@ import ButtonSetRejected from './ButtonSetRejected';
 import ButtonSetNotNeeded from './ButtonSetNotNeeded';
 import ButtonSetMissing from './ButtonSetMissing';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { spinner_style, convertDate } from '../Utils/contants';
+import { spinner_style, convertDate, profile_wtih_doc_link_list, profile_list } from '../Utils/contants';
 
 import {
   uploadforstudent,
@@ -32,7 +32,7 @@ class BaseDocument_StudentView extends React.Component {
   };
 
   componentDidMount() {
-    let keys2 = Object.keys(window.profile_wtih_doc_link_list);
+    let keys2 = Object.keys(profile_wtih_doc_link_list);
     let temp_isLoaded = {};
     for (let i = 0; i < keys2.length; i++) {
       temp_isLoaded[keys2[i]] = true;
@@ -270,8 +270,8 @@ class BaseDocument_StudentView extends React.Component {
         </div>
       );
     }
-    let value2 = Object.values(window.profile_list);
-    let keys2 = Object.keys(window.profile_wtih_doc_link_list);
+    let value2 = Object.values(profile_list);
+    let keys2 = Object.keys(profile_wtih_doc_link_list);
     let object_init = {};
     let object_message = {};
     let object_time_init = {};

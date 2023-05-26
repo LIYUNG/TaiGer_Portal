@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_categories, spinner_style } from '../Utils/contants';
+import { valid_categories, spinner_style, documentation_categories } from '../Utils/contants';
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_role
@@ -243,7 +243,7 @@ class DocCreatePage extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    const documentlist_key = Object.keys(window.documentlist);
+    const documentlist_key = Object.keys(documentation_categories);
 
     const document_list = (cat) => {
       let sections = {};
@@ -343,7 +343,7 @@ class DocCreatePage extends React.Component {
                       <Card className="mb-1 mx-0">
                         <Card.Header>
                           <Card.Title className="my-0 mx-0">
-                            {window.documentlist[`${catego}`]}
+                            {documentation_categories[`${catego}`]}
                           </Card.Title>
                         </Card.Header>
                         <Card.Body>{document_list(catego)}</Card.Body>

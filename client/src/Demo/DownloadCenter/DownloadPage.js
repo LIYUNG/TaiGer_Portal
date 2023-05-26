@@ -3,7 +3,7 @@ import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 
 import EditDownloadFiles from './EditDownloadFiles';
-import { spinner_style } from '../Utils/contants';
+import { spinner_style, templatelist } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -30,8 +30,8 @@ class DownloadPage extends React.Component {
         const { status } = resp;
         if (success) {
           let areLoaded_temp = {};
-          for (let i = 0; i < window.templatelist.length; i++) {
-            areLoaded_temp[window.templatelist[i].prop] = true;
+          for (let i = 0; i < templatelist.length; i++) {
+            areLoaded_temp[templatelist[i].prop] = true;
           }
           this.setState({
             isLoaded: true, //false to reload everything
@@ -215,7 +215,7 @@ class DownloadPage extends React.Component {
                 templates={this.state.templates}
                 submitFile={this.submitFile}
                 onFileChange={this.onFileChange}
-                templatelist={window.templatelist}
+                templatelist={templatelist}
                 areLoaded={this.state.areLoaded}
                 onDeleteTemplateFile={this.onDeleteTemplateFile}
               />

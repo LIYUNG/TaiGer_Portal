@@ -1,4 +1,4 @@
-import { getNumberOfDays, convertDate } from './contants';
+import { getNumberOfDays, convertDate, profile_list } from './contants';
 export const is_TaiGer_role = (user) =>
   user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
 export const is_TaiGer_AdminAgent = (user) =>
@@ -146,7 +146,7 @@ export const check_german_language_Notneeded = (academic_background) => {
 };
 
 export const are_base_documents_missing = (student) => {
-  let documentlist2_keys = Object.keys(window.profile_list);
+  let documentlist2_keys = Object.keys(profile_list);
   let object_init = {};
   for (let i = 0; i < documentlist2_keys.length; i++) {
     object_init[documentlist2_keys[i]] = 'missing';
@@ -193,7 +193,7 @@ export const to_register_application_portals = (student) => {
 };
 
 export const check_base_documents = (student) => {
-  let documentlist2_keys = Object.keys(window.profile_list);
+  let documentlist2_keys = Object.keys(profile_list);
   let object_init = {};
   for (let i = 0; i < documentlist2_keys.length; i++) {
     object_init[documentlist2_keys[i]] = 'missing';
@@ -230,7 +230,7 @@ export const check_base_documents = (student) => {
 };
 
 export const check_base_documents_rejected = (student) => {
-  let documentlist2_keys = Object.keys(window.profile_list);
+  let documentlist2_keys = Object.keys(profile_list);
   let object_init = {};
   for (let i = 0; i < documentlist2_keys.length; i++) {
     object_init[documentlist2_keys[i]] = 'missing';
@@ -866,7 +866,7 @@ export const programs_refactor = (students) => {
     var application_deadline;
     let isMissingBaseDocs = false;
 
-    let keys = Object.keys(window.profile_list);
+    let keys = Object.keys(profile_list);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = 'missing';

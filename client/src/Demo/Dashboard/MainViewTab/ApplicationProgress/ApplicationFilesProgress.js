@@ -6,6 +6,7 @@ import {
   check_program_uni_assist_needed,
   application_deadline_calculator
 } from '../../../Utils/checking-functions';
+import { profile_list } from '../../../Utils/contants';
 
 class ApplicationFilesProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
@@ -22,7 +23,7 @@ class ApplicationFilesProgress extends React.Component {
     var application_mlrlessay;
     let isMissingBaseDocs = false;
 
-    let keys = Object.keys(window.profile_list);
+    let keys = Object.keys(profile_list);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = 'missing';

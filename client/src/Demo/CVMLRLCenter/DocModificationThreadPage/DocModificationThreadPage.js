@@ -7,7 +7,7 @@ import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { spinner_style } from '../../Utils/contants';
+import { spinner_style, templatelist } from '../../Utils/contants';
 
 import {
   is_TaiGer_AdminAgent,
@@ -400,7 +400,7 @@ class DocModificationThreadPage extends Component {
     }
 
     // Only CV, ML RL has instructions and template.
-    let template_obj = window.templatelist.find(({ prop }) =>
+    let template_obj = templatelist.find(({ prop }) =>
       prop.includes(this.state.thread.file_type.split('_')[0])
     );
     let docName;

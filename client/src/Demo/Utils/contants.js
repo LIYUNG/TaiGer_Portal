@@ -348,3 +348,241 @@ export const ACCEPT_STYLE = 'success';
 export const is_pending_status = (user, thread) => {
   return !is_new_message_status(user, thread);
 };
+
+export const documentation_categories = {
+  howtostart: 'How to Start TaiGer Portal',
+  'base-documents': 'Base Documents',
+  'cv-ml-rl': 'CV/ML/RL',
+  application: 'Application Instruction',
+  'portal-instruction': 'Portal Instruction',
+  certification: 'Certification Instruction',
+  uniassist: 'Uni-Assist Instruction',
+  visa: 'Visa Instruction'
+};
+
+export const internal_documentation_categories = {
+  agents: 'Agents',
+  editors: 'Editors',
+  admin: 'Admin',
+  'base-documents-internal': 'Base Documents Internal',
+  'uniassist-internal': 'Uni-Assist Internal'
+};
+
+export const cvmlrlclosedlist = [
+  {
+    name: 'Status',
+    prop: 'status'
+  },
+  {
+    name: 'Documents',
+    prop: 'documents'
+  },
+  {
+    name: 'Last Update',
+    prop: 'last_update'
+  },
+  {
+    name: 'Deadline',
+    prop: 'deadline'
+  },
+  {
+    name: 'Application',
+    prop: 'application'
+  }
+];
+
+
+export const programstatuslist = [
+  {
+    name: 'University',
+    prop: 'university'
+  },
+  {
+    name: 'Degree',
+    prop: 'degree'
+  },
+  {
+    name: 'Programs',
+    prop: 'programs'
+  },
+  {
+    name: 'Semester',
+    prop: 'semester'
+  },
+  {
+    name: 'TOEFL',
+    prop: 'toefl'
+  },
+  {
+    name: 'IELTS',
+    prop: 'ielts'
+  },
+  {
+    name: 'Deadline',
+    prop: 'deadline'
+  },
+  {
+    name: 'Decided',
+    prop: 'decided'
+  },
+  {
+    name: 'Submitted',
+    prop: 'Submitted'
+  },
+  {
+    name: 'Offer',
+    prop: 'offer'
+  },
+  {
+    name: 'Days left',
+    prop: 'days_left'
+  }
+];
+
+export const profile_wtih_doc_link_list = {
+  High_School_Diploma: { name: 'High School Diploma', link: '' },
+  High_School_Transcript: { name: 'High School Transcript', link: '' },
+  University_Entrance_Examination_GSAT: {
+    name: 'GSAT/SAT/TVE Test (學測/統測)',
+    link: ''
+  },
+  Bachelor_Certificate: { name: 'Bachelor Certificate/Enrolment', link: '' },
+  Bachelor_Transcript: { name: 'Bachelor Transcript', link: '' },
+  Englisch_Certificate: { name: 'TOEFL or IELTS', link: '' },
+  German_Certificate: { name: 'TestDaF or Goethe B2/C1', link: '' },
+  GREGMAT: { name: 'GRE or GMAT', link: '' },
+  ECTS_Conversion: { name: 'ECTS Conversion', link: '' },
+  Course_Description: { name: 'Course Description', link: '' },
+  Internship: { name: 'Internship Certificate', link: '' },
+  Employment_Certificate: { name: 'Employment Certificate', link: '' },
+  Exchange_Student_Certificate: {
+    name: 'Exchange Student Certificate',
+    link: ''
+  },
+  Passport_Photo: { name: 'Passport Photo', link: '' },
+  Passport: { name: 'Passport Copy', link: '' },
+  Others: { name: 'Others', link: '' }
+};
+
+export const profile_list = {
+  High_School_Diploma: 'High School Diploma',
+  High_School_Transcript: 'High School Transcript',
+  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE Test (學測/統測)',
+  Bachelor_Certificate: 'Bachelor Certificate/Enrolment',
+  Bachelor_Transcript: 'Bachelor Transcript',
+  Englisch_Certificate: 'TOEFL or IELTS',
+  German_Certificate: 'TestDaF or Goethe-A1-C1',
+  GREGMAT: 'GRE or GMAT',
+  ECTS_Conversion: 'ECTS Conversion',
+  Course_Description: 'Course Description',
+  Internship: 'Internship Certificate',
+  Employment_Certificate: 'Employment Certificate',
+  Exchange_Student_Certificate: 'Exchange Student Certificate',
+  Passport_Photo: 'Passport Photo',
+  Passport: 'Passport Copy',
+  Others: 'Others'
+};
+
+export const base_documents_checklist = {
+  High_School_Diploma: ['English version ?', 'School Stamp or signature'],
+  High_School_Transcript: ['English version ?', 'Grading system existed ?'],
+  University_Entrance_Examination_GSAT: ['English version ?'],
+  Bachelor_Certificate: ['English version ?'],
+  Bachelor_Transcript: [
+    'Grading system existed ?',
+    'GPA (1.7-4.3 system) and not 100-60 system ?',
+    'Date of referral ? (if graduated)'
+  ],
+  Englisch_Certificate: ['Not expired ?'],
+  German_Certificate: ['Not expired ?'],
+  GREGMAT: ['Not expired ?'],
+  ECTS_Conversion: [],
+  Course_Description: [],
+  Internship: [
+    'Name and Birthday ?',
+    'Start date and end date ?',
+    'Working hours per week ?',
+    'Stamp ?'
+  ],
+  Employment_Certificate: ['Start date and end date ?'],
+  Exchange_Student_Certificate: ['With transcript ?'],
+  Passport_Photo: ['Formal'],
+  Passport: ['Signature ?', 'Not expired ?'],
+  Others: []
+};
+
+export const academic_background_header = {
+  School: 'School / Program',
+  Application_Fields: 'Target',
+  English_German: 'English/German',
+  Score: 'Score',
+  Next_Test_Date: 'Next Test Date'
+};
+
+
+export const templatelist = [
+  {
+    name: 'CV Survey Template (履歷模板)',
+    prop: 'Example_CV_english'
+  },
+  {
+    name: 'ML (Motivation Letter) Survey Template (動機信模板)',
+    prop: 'ML_Survey'
+  },
+  {
+    name: 'RL (Recommendation Letter) Survey Template (Academic) (教授推薦信模板(學術))',
+    prop: 'RL_academic_survey_lock'
+  },
+  {
+    name: 'RL (Recommendation Letter) Survey Template (Employer) (主管推薦信模板(工作))',
+    prop: 'RL_employer_survey_lock'
+  },
+  {
+    name: 'Internship Certificate (實習證明)',
+    prop: 'Internship_Certificate_Example'
+  },
+  {
+    name: 'Employment Certificate (工作證明)',
+    prop: 'Employment_Template'
+  },
+  {
+    name: 'Module Description (課程描述)',
+    prop: 'Module_Catalog'
+  },
+  {
+    name: 'ECTS Conversion (台灣Credits轉換歐洲ECTS學分證明)',
+    prop: 'ECTS_Conv_example'
+  }
+];
+
+
+export const UserlistHeader = [
+  {
+    name: 'First Name',
+    prop: 'firstname'
+  },
+  {
+    name: 'Last Name',
+    prop: 'lastname'
+  },
+  {
+    name: 'Birthday',
+    prop: 'birthday'
+  },
+  {
+    name: 'Email Address',
+    prop: 'email'
+  },
+  {
+    name: 'Activated',
+    prop: 'isAccountActivated'
+  },
+  {
+    name: 'Archived',
+    prop: 'archiv'
+  },
+  {
+    name: 'User Type',
+    prop: 'role'
+  }
+];

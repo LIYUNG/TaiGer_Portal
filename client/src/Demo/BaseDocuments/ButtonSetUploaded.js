@@ -20,6 +20,7 @@ import {
   ACCEPT_STYLE,
   DELETE_STYLE,
   REJECT_STYLE,
+  base_documents_checklist,
   convertDate
 } from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
@@ -39,8 +40,8 @@ class ButtonSetUploaded extends React.Component {
     CommentModel: false,
     showPreview: false,
     preview_path: '#',
-    num_points: window.base_documents_checklist[this.props.k]
-      ? window.base_documents_checklist[this.props.k].length
+    num_points: base_documents_checklist[this.props.k]
+      ? base_documents_checklist[this.props.k].length
       : 0,
     num_checked_points: 0,
     checkedBoxes: [],
@@ -510,14 +511,14 @@ class ButtonSetUploaded extends React.Component {
             {is_TaiGer_AdminAgent(this.props.user) && (
               <>
                 <h4>
-                  {window.base_documents_checklist[this.props.k] &&
-                    window.base_documents_checklist[this.props.k].length !==
+                  {base_documents_checklist[this.props.k] &&
+                    base_documents_checklist[this.props.k].length !==
                       0 &&
                     'Check list: Please check the following points so that you can flag this document as valid.'}
                 </h4>
                 <p>
-                  {window.base_documents_checklist[this.props.k]
-                    ? window.base_documents_checklist[this.props.k].map(
+                  {base_documents_checklist[this.props.k]
+                    ? base_documents_checklist[this.props.k].map(
                         (check_item, i) => (
                           <Form.Check
                             key={i}

@@ -24,10 +24,11 @@ import {
   num_uni_assist_vpd_uploaded,
   to_register_application_portals
 } from '../../../Utils/checking-functions';
+import { profile_list } from '../../../Utils/contants';
 
 class AgentReviewing extends React.Component {
   render() {
-    let keys = Object.keys(window.profile_list);
+    let keys = Object.keys(profile_list);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
       object_init[keys[i]] = 'missing';

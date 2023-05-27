@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Card, Spinner, Button, Modal, Row, Col } from 'react-bootstrap';
+import { Spinner, Button, Modal } from 'react-bootstrap';
 
-import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { convertDate, spinner_style } from '../Utils/contants';
 import NotesEditor from './NotesEditor';
 import { updateStudentNotes } from '../../api';

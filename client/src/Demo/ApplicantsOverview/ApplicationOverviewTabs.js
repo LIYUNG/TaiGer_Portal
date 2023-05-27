@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Spinner,
-  Table,
-  Card,
-  Tabs,
-  Tab,
-  Button
-} from 'react-bootstrap';
+import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
 import { AiFillEdit } from 'react-icons/ai';
 
 import {
@@ -22,14 +13,12 @@ import {
 } from 'react-table';
 import { Link } from 'react-router-dom';
 
-import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
-import ApplicationFilesProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationFilesProgress';
 import {
   isProgramNotSelectedEnough,
   programs_refactor,
   is_TaiGer_role
 } from '../Utils/checking-functions';
-import { spinner_style } from '../Utils/contants';
+import { applicationFileOverviewHeader, applicationOverviewHeader, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { updateArchivStudents } from '../../api';
@@ -292,126 +281,6 @@ class ApplicationOverviewTabs extends React.Component {
       )
     );
 
-    const application_progress = this.state.students.map((student, i) => (
-      <ApplicationProgress
-        key={i}
-        user={this.props.user}
-        student={student}
-        updateStudentArchivStatus={this.updateStudentArchivStatus}
-        isDashboard={true}
-      />
-    ));
-
-    const application_documents_overview = this.state.students.map(
-      (student, i) => (
-        <ApplicationFilesProgress
-          key={i}
-          role={this.props.user.role}
-          student={student}
-          updateStudentArchivStatus={this.updateStudentArchivStatus}
-          isDashboard={true}
-        />
-      )
-    );
-
-    const columns = [
-      {
-        Header: 'First-, Last Name',
-        accessor: 'firstname_lastname',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'University',
-        accessor: 'school',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Degree',
-        accessor: 'degree'
-      },
-      {
-        Header: 'Program',
-        accessor: 'program_name'
-      },
-      {
-        Header: 'Semester',
-        accessor: 'semester',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'TOEFL',
-        accessor: 'toefl'
-      },
-      {
-        Header: 'IELTS',
-        accessor: 'ielts'
-      },
-      {
-        Header: 'Deadline',
-        accessor: 'application_deadline'
-      },
-      {
-        Header: 'Decided',
-        accessor: 'decided'
-      },
-      {
-        Header: 'Submitted',
-        accessor: 'closed'
-      },
-      {
-        Header: 'Offer',
-        accessor: 'admission'
-      },
-      {
-        Header: 'Days left',
-        accessor: 'days_left'
-      }
-    ];
-
-    const columns2 = [
-      {
-        Header: 'First-, Last Name',
-        accessor: 'firstname_lastname',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'University',
-        accessor: 'school',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Degree',
-        accessor: 'degree'
-      },
-      {
-        Header: 'Program',
-        accessor: 'program_name'
-      },
-      {
-        Header: 'Deadline',
-        accessor: 'deadline'
-      },
-      {
-        Header: 'Base Docs',
-        accessor: 'base_docs'
-      },
-      {
-        Header: 'Uni-Assist',
-        accessor: 'uniassist'
-      },
-      {
-        Header: 'CV',
-        accessor: 'cv'
-      },
-      {
-        Header: 'ML/RL',
-        accessor: 'ml_rl'
-      },
-      {
-        Header: 'Ready',
-        accessor: 'ready'
-      }
-    ];
     const applications_arr = programs_refactor(this.state.students);
 
     return (
@@ -438,7 +307,7 @@ class ApplicationOverviewTabs extends React.Component {
             <Row>
               <Col>
                 <SortTable
-                  columns={columns}
+                  columns={applicationOverviewHeader}
                   data={applications_arr}
                   user={this.props.user}
                 />
@@ -452,7 +321,7 @@ class ApplicationOverviewTabs extends React.Component {
             <Row>
               <Col>
                 <SortTable
-                  columns={columns2}
+                  columns={applicationFileOverviewHeader}
                   data={applications_arr}
                   user={this.props.user}
                 />

@@ -368,6 +368,76 @@ export const internal_documentation_categories = {
   'uniassist-internal': 'Uni-Assist Internal'
 };
 
+export const cvmlrl_overview_closed_header = [
+  {
+    Header: 'First-, Last Name',
+    accessor: 'firstname_lastname',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Action',
+    accessor: 'action',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Status',
+    accessor: 'status',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Deadline',
+    accessor: 'deadline'
+  },
+  {
+    Header: 'Last Update',
+    accessor: 'updatedAt'
+  },
+  {
+    Header: 'Documents',
+    accessor: 'document_name',
+    filter: 'fuzzyText'
+  }
+];
+
+export const cvmlrl_overview_header = [
+  {
+    Header: 'First-, Last Name',
+    accessor: 'firstname_lastname',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Action',
+    accessor: 'action',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Status',
+    accessor: 'status',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Deadline',
+    accessor: 'deadline'
+  },
+  {
+    Header: 'Days left',
+    accessor: 'days_left'
+  },
+  {
+    Header: 'Documents',
+    accessor: 'document_name',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Ages Days',
+    accessor: 'aged_days'
+  },
+  {
+    Header: 'Last Update',
+    accessor: 'updatedAt'
+  }
+];
+
 export const cvmlrlclosedlist = [
   {
     name: 'Status',
@@ -390,7 +460,6 @@ export const cvmlrlclosedlist = [
     prop: 'application'
   }
 ];
-
 
 export const programstatuslist = [
   {
@@ -519,7 +588,6 @@ export const academic_background_header = {
   Next_Test_Date: 'Next Test Date'
 };
 
-
 export const templatelist = [
   {
     name: 'CV Survey Template (履歷模板)',
@@ -555,7 +623,6 @@ export const templatelist = [
   }
 ];
 
-
 export const UserlistHeader = [
   {
     name: 'First Name',
@@ -584,5 +651,138 @@ export const UserlistHeader = [
   {
     name: 'User Type',
     prop: 'role'
+  }
+];
+
+export const taskTashboardHeader = [
+  {
+    Header: 'First-, Last Name',
+    accessor: 'firstname_lastname',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Editor',
+    accessor: 'editors',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Deadline',
+    accessor: 'deadline'
+  },
+  {
+    Header: 'Days left',
+    accessor: 'days_left'
+  },
+  {
+    Header: 'Documents',
+    accessor: 'document_name',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Ages Days',
+    accessor: 'aged_days'
+  },
+  {
+    Header: 'Last Update',
+    accessor: 'updatedAt'
+  }
+];
+
+export const applicationOverviewHeader = [
+  {
+    Header: 'First-, Last Name',
+    accessor: 'firstname_lastname',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'University',
+    accessor: 'school',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Degree',
+    accessor: 'degree'
+  },
+  {
+    Header: 'Program',
+    accessor: 'program_name'
+  },
+  {
+    Header: 'Semester',
+    accessor: 'semester',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'TOEFL',
+    accessor: 'toefl'
+  },
+  {
+    Header: 'IELTS',
+    accessor: 'ielts'
+  },
+  {
+    Header: 'Deadline',
+    accessor: 'application_deadline'
+  },
+  {
+    Header: 'Decided',
+    accessor: 'decided'
+  },
+  {
+    Header: 'Submitted',
+    accessor: 'closed'
+  },
+  {
+    Header: 'Offer',
+    accessor: 'admission'
+  },
+  {
+    Header: 'Days left',
+    accessor: 'days_left'
+  }
+];
+
+export const applicationFileOverviewHeader = [
+  {
+    Header: 'First-, Last Name',
+    accessor: 'firstname_lastname',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'University',
+    accessor: 'school',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Degree',
+    accessor: 'degree'
+  },
+  {
+    Header: 'Program',
+    accessor: 'program_name'
+  },
+  {
+    Header: 'Deadline',
+    accessor: 'deadline'
+  },
+  {
+    Header: 'Base Docs',
+    accessor: 'base_docs'
+  },
+  {
+    Header: 'Uni-Assist',
+    accessor: 'uniassist'
+  },
+  {
+    Header: 'CV',
+    accessor: 'cv'
+  },
+  {
+    Header: 'ML/RL',
+    accessor: 'ml_rl'
+  },
+  {
+    Header: 'Ready',
+    accessor: 'ready'
   }
 ];

@@ -1,7 +1,10 @@
 import React from 'react';
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import {
+  is_TaiGer_role,
+  showButtonIfMyStudent
+} from '../Utils/checking-functions';
 
 class ManualFiles extends React.Component {
   state = {
@@ -60,10 +63,7 @@ class ManualFiles extends React.Component {
           application={this.props.application}
         />
 
-        {this.props.user.role === 'Student' ||
-        this.props.user.role === 'Guest' ? (
-          <></>
-        ) : (
+        {is_TaiGer_role(this.props.user) &&
           (!this.props.application ||
             (this.props.application &&
               this.props.application.closed !== 'O')) &&
@@ -83,8 +83,7 @@ class ManualFiles extends React.Component {
               filetype={this.props.filetype}
               application={this.props.application}
             />
-          )
-        )}
+          )}
       </>
     );
   }

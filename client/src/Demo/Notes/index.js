@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
 import NotesCard from './NotesCard';
-import { profile_name_list, spinner_style } from '../Utils/contants';
+import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 

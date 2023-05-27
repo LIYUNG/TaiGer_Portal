@@ -29,7 +29,9 @@ import {
   is_pending_status,
   // return_thread_status,
   return_thread_status2,
-  cvmlrlclosedlist
+  cvmlrlclosedlist,
+  cvmlrl_overview_header,
+  cvmlrl_overview_closed_header
 } from '../Utils/contants';
 import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -217,7 +219,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                             onClick={() =>
                               handleAsFinalFileThread(
                                 row.original.thread_id,
-                                row.original.student._id,
+                                row.original.student_id,
                                 row.original.program_id
                                   ? row.original.program_id
                                   : null,
@@ -463,44 +465,6 @@ class CVMLRLOverview extends React.Component {
       );
     }
 
-    const columns = [
-      {
-        Header: 'First-, Last Name',
-        accessor: 'firstname_lastname',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Action',
-        accessor: 'action',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Deadline',
-        accessor: 'deadline'
-      },
-      {
-        Header: 'Days left',
-        accessor: 'days_left'
-      },
-      {
-        Header: 'Documents',
-        accessor: 'document_name',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Ages Days',
-        accessor: 'aged_days'
-      },
-      {
-        Header: 'Last Update',
-        accessor: 'updatedAt'
-      }
-    ];
     const open_tasks_arr = open_tasks(this.state.students);
     const cvmlrl_new_message_v2 = open_tasks_arr.filter(
       (open_task) =>
@@ -522,36 +486,9 @@ class CVMLRLOverview extends React.Component {
         is_pending_status(this.props.user, open_task) &&
         open_task.latest_message_left_by_id === ''
     );
-    // const cvmlrl_new_message = this.state.students.map((student, i) => (
-    //   <CVMLRLProgress
-    //     key={i}
-    //     user={this.props.user}
-    //     student={student}
-    //     isDashboard={true}
-    //     handleAsFinalFile={this.handleAsFinalFile}
-    //     showTasks={is_new_message_status}
-    //   />
-    // ));
-
-    // const cvmlrl_pending_progress = this.state.students.map((student, i) => (
-    //   <CVMLRLProgress
-    //     key={i}
-    //     user={this.props.user}
-    //     student={student}
-    //     isDashboard={true}
-    //     handleAsFinalFile={this.handleAsFinalFile}
-    //     showTasks={is_pending_status}
-    //   />
-    // ));
-    const cvmlrl_progress_closed = this.state.students.map((student, i) => (
-      <CVMLRLProgressClosed
-        key={i}
-        user={this.props.user}
-        student={student}
-        isDashboard={true}
-        handleAsFinalFile={this.handleAsFinalFile}
-      />
-    ));
+    const cvmlrl_closed_v2 = open_tasks_arr.filter(
+      (open_task) => open_task.show && open_task.isFinalVersion
+    );
     return (
       <>
         {res_modal_status >= 400 && (
@@ -576,7 +513,7 @@ class CVMLRLOverview extends React.Component {
                   notification_key={'x'}
                 />
                 <SortTable
-                  columns={columns}
+                  columns={cvmlrl_overview_header}
                   data={cvmlrl_new_message_v2}
                   user={this.props.user}
                   handleAsFinalFile={this.handleAsFinalFile}
@@ -592,7 +529,7 @@ class CVMLRLOverview extends React.Component {
                   notification_key={'x'}
                 />
                 <SortTable
-                  columns={columns}
+                  columns={cvmlrl_overview_header}
                   data={cvmlrl_followup_v2}
                   user={this.props.user}
                   handleAsFinalFile={this.handleAsFinalFile}
@@ -608,34 +545,19 @@ class CVMLRLOverview extends React.Component {
                   notification_key={'x'}
                 />
                 <SortTable
-                  columns={columns}
+                  columns={cvmlrl_overview_header}
                   data={cvmlrl_pending_progress_v2}
                   user={this.props.user}
                   handleAsFinalFile={this.handleAsFinalFile}
                 />
               </Tab>
               <Tab eventKey="closed" title="Closed">
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th>First-, Last Name</th>
-                      {is_TaiGer_role(this.props.user) && <th>Action</th>}
-                      {cvmlrlclosedlist.map((doc, index) => (
-                        <th key={index}>{doc.name}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{cvmlrl_progress_closed}</tbody>
-                </Table>
+                <SortTable
+                  columns={cvmlrl_overview_closed_header}
+                  data={cvmlrl_closed_v2}
+                  user={this.props.user}
+                  handleAsFinalFile={this.handleAsFinalFile}
+                />
                 <Row className="mt-4">
                   <p>
                     Note: if the documents are not closed but locate here, it is

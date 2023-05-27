@@ -29,7 +29,8 @@ import {
   is_new_message_status,
   is_pending_status,
   return_thread_status2,
-  cvmlrlclosedlist
+  cvmlrlclosedlist,
+  taskTashboardHeader
 } from '../Utils/contants';
 import {
   is_TaiGer_role,
@@ -382,39 +383,6 @@ class CVMLRLDashboard extends React.Component {
       );
     }
 
-    const columns = [
-      {
-        Header: 'First-, Last Name',
-        accessor: 'firstname_lastname',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Editor',
-        accessor: 'editors',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Deadline',
-        accessor: 'deadline'
-      },
-      {
-        Header: 'Days left',
-        accessor: 'days_left'
-      },
-      {
-        Header: 'Documents',
-        accessor: 'document_name',
-        filter: 'fuzzyText'
-      },
-      {
-        Header: 'Ages Days',
-        accessor: 'aged_days'
-      },
-      {
-        Header: 'Last Update',
-        accessor: 'updatedAt'
-      }
-    ];
     const open_tasks_arr = open_tasks_with_editors(this.state.students);
     const cvmlrl_active_tasks = open_tasks_arr.filter(
       (open_task) =>
@@ -484,7 +452,7 @@ class CVMLRLDashboard extends React.Component {
                   notification_key={'x'}
                 />
                 <SortTable
-                  columns={columns}
+                  columns={taskTashboardHeader}
                   data={cvmlrl_active_tasks}
                   user={this.props.user}
                   handleAsFinalFile={this.handleAsFinalFile}
@@ -500,7 +468,7 @@ class CVMLRLDashboard extends React.Component {
                   notification_key={'x'}
                 />
                 <SortTable
-                  columns={columns}
+                  columns={taskTashboardHeader}
                   data={cvmlrl_idle_tasks}
                   user={this.props.user}
                   handleAsFinalFile={this.handleAsFinalFile}

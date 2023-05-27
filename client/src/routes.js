@@ -51,10 +51,6 @@ const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
 const UsersTable = React.lazy(() => import('./Demo/Users/UsersTable'));
 const Survey = React.lazy(() => import('./Demo/Survey/index'));
 const Settings = React.lazy(() => import('./Demo/Settings/index'));
-// const Nvd3Chart = React.lazy(() => import('./Demo/Charts/Nvd3Chart/index'));
-// const Statistics = React.lazy(() =>
-//   import('./Demo/Statistics/Nvd3Chart/index')
-// );
 const Admissions = React.lazy(() => import('./Demo/Admissions/Admissions'));
 const StudentDatabase = React.lazy(() =>
   import('./Demo/StudentDatabase/index')
@@ -180,19 +176,6 @@ const routes = [
     name: 'SingleStudentPage',
     component: SingleStudentPage
   },
-
-  // {
-  //   path: '/statistics',
-  //   exact: true,
-  //   name: 'Statistics',
-  //   component: Statistics
-  // },
-  // {
-  //   path: '/charts/nvd3',
-  //   exact: true,
-  //   name: 'Nvd3 Chart',
-  //   component: Nvd3Chart
-  // },
   {
     path: '/maps/google-map',
     exact: true,

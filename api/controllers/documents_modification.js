@@ -718,19 +718,23 @@ const postMessages = asyncHandler(async (req, res) => {
     }
   }
   let newfile = [];
-  for (let i = 0; i < req.files.length; i += 1) {
-    newfile.push({
-      name: req.files[i].key,
-      path: path.join(req.files[i].metadata.path, req.files[i].key)
-    });
-    // Check for duplicate file extensions
-    const fileExtensions = req.files.map((file) => file.mimetype.split('/')[1]);
-    const uniqueFileExtensions = new Set(fileExtensions);
-    if (fileExtensions.length !== uniqueFileExtensions.size) {
-      throw new ErrorResponse(
-        423,
-        'Error: Duplicate file extensions found. Due to the system automatical naming mechanism, the files with same extension (said .pdf) will be overwritten. You can not upload 2 same files extension (2 .pdf or 2 .docx) at the same message. But 1 .pdf and 1 .docx are allowed.'
+  if (req.files) {
+    for (let i = 0; i < req.files.length; i += 1) {
+      newfile.push({
+        name: req.files[i].key,
+        path: path.join(req.files[i].metadata.path, req.files[i].key)
+      });
+      // Check for duplicate file extensions
+      const fileExtensions = req.files.map(
+        (file) => file.mimetype.split('/')[1]
       );
+      const uniqueFileExtensions = new Set(fileExtensions);
+      if (fileExtensions.length !== uniqueFileExtensions.size) {
+        throw new ErrorResponse(
+          423,
+          'Error: Duplicate file extensions found. Due to the system automatical naming mechanism, the files with same extension (said .pdf) will be overwritten. You can not upload 2 same files extension (2 .pdf or 2 .docx) at the same message. But 1 .pdf and 1 .docx are allowed.'
+        );
+      }
     }
   }
 

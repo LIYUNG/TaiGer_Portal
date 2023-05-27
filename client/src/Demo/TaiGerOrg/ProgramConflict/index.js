@@ -6,11 +6,14 @@ import { TabTitle } from '../../Utils/TabTitle';
 import TabProgramConflict from '../../Dashboard/MainViewTab/ProgramConflict/TabProgramConflict';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { SYMBOL_EXPLANATION, spinner_style } from '../../Utils/contants';
+import { spinner_style } from '../../Utils/contants';
 
 import { getAllCVMLRLOverview, getAllStudents } from '../../../api';
+import { is_TaiGer_role } from '../../Utils/checking-functions';
+import DEMO from '../../../store/constant';
+import { Redirect } from 'react-router-dom';
 
-class Dashboard extends React.Component {
+class ProgramConflictDashboard extends React.Component {
   state = {
     error: '',
     agent_list: [],
@@ -66,9 +69,12 @@ class Dashboard extends React.Component {
   };
 
   render() {
+    if (!is_TaiGer_role(this.props.user)) {
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
     const { res_modal_status, res_modal_message, isLoaded, res_status } =
       this.state;
-    TabTitle('Home Page');
+    TabTitle('Program Conflict Dashboard');
     if (!isLoaded || !this.state.students) {
       return (
         <div style={spinner_style}>
@@ -97,4 +103,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default ProgramConflictDashboard;

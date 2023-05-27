@@ -501,6 +501,19 @@ class SingleStudentPage extends React.Component {
             res_modal_message={res_modal_message}
           />
         )}
+        {this.state.student.archiv && (
+          <Row className="sticky-top">
+            <Col>
+              <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
+                <Card.Header>
+                  <Card.Title as="h5" className="text-light">
+                    Status: <b>Close</b>
+                  </Card.Title>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
+        )}
         {this.state.taiger_view ? (
           <>
             <Row>

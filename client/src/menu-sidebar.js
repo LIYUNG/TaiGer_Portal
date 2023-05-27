@@ -367,10 +367,17 @@ export default {
               url: '/dashboard/internal'
             },
             {
+              id: 'internal_program_conflict',
+              title: 'Program Conflict',
+              type: 'item',
+              icon: 'feather icon-package',
+              url: '/internal/program-conflict'
+            },
+            {
               id: 'internal_accounting',
               title: 'TaiGer Accounting',
               type: 'item',
-              icon: 'feather icon-bank',
+              icon: 'fa fa-dollar',
               url: '/internal/accounting'
             }
           ]

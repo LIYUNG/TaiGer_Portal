@@ -1,8 +1,7 @@
 import React from 'react';
-import EditorNew from '../../components/EditorJs/EditorNew';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import '../../components/DraftEditor.css';
 import { Row, Col } from 'react-bootstrap';
+
+import EditorNew from '../../components/EditorJs/EditorNew';
 
 function DocumentsListItemsEditor(props) {
   return (

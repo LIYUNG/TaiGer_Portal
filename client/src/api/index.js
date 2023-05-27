@@ -172,9 +172,6 @@ export const UpdateStudentApplications = (
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);
 
-export const uploadImageDraftEditorCallBack = (msg) =>
-  request.post(`/api/upload`, { msg });
-
 export const deleteProgramSpecificFileThread = (
   documentsthreadId,
   programId,

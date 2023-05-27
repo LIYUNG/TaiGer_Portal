@@ -30,18 +30,6 @@ const PDFViewer = (student_id, path) => {
     setPageWidth(containerRef.current.offsetWidth - 30);
   };
 
-  const goToPreviousPage = () => {
-    if (pageNumber > 1) {
-      setPageNumber(pageNumber - 1);
-    }
-  };
-
-  const goToNextPage = () => {
-    if (pageNumber < numPages) {
-      setPageNumber(pageNumber + 1);
-    }
-  };
-
   const handleZoomIn = () => {
     setZoomLevel(zoomLevel + 0.2);
   };

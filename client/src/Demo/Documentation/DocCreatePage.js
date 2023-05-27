@@ -161,10 +161,6 @@ class DocCreatePage extends React.Component {
 
   handleClickSave = (e, editorState) => {
     e.preventDefault();
-    // react-draftjs-wysiwyg
-    // const message = JSON.stringify(
-    //   convertToRaw(editorState.getCurrentContent())
-    // );
 
     // Editorjs. editorState is in JSON form
     const message = JSON.stringify(editorState);

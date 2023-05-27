@@ -5,7 +5,7 @@ import {
   is_num_Program_Not_specified,
   isProgramNotSelectedEnough,
   check_applications_decision_from_student,
-  is_cv_finished,
+  isCVFinished,
   is_cv_assigned,
   is_all_uni_assist_vpd_uploaded,
   is_program_ml_rl_essay_ready,
@@ -151,7 +151,7 @@ class AgentTasks extends React.Component {
         {this.props.student.applications.map(
           (application, i) =>
             application.decided === 'O' &&
-            is_cv_finished(this.props.student) &&
+            isCVFinished(this.props.student) &&
             is_program_ml_rl_essay_ready(application) &&
             is_the_uni_assist_vpd_uploaded(application) &&
             !is_program_closed(application) && (
@@ -185,7 +185,7 @@ class AgentTasks extends React.Component {
               </tr>
             )
         )}
-        {!is_cv_finished(this.props.student) &&
+        {!isCVFinished(this.props.student) &&
           !is_cv_assigned(this.props.student) && (
             <tr>
               <td>

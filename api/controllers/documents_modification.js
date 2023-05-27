@@ -693,10 +693,9 @@ const postMessages = asyncHandler(async (req, res) => {
   } = req;
   const { message } = req.body;
 
-  const document_thread = await Documentthread.findById(messagesThreadId)
-    .populate('student_id program_id')
-    .exec();
-
+  const document_thread = await Documentthread.findById(
+    messagesThreadId
+  ).populate('student_id program_id');
   if (!document_thread) {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
@@ -745,22 +744,22 @@ const postMessages = asyncHandler(async (req, res) => {
   document_thread.messages.push(new_message);
   document_thread.updatedAt = new Date();
   await document_thread.save();
-  const document_thread2 = await Documentthread.findById(messagesThreadId)
-    .populate('student_id program_id messages.user_id')
-    .exec();
+  const document_thread2 = await Documentthread.findById(
+    messagesThreadId
+  ).populate('student_id program_id messages.user_id');
   // in student (User) collections.
   const student = await Student.findById(document_thread.student_id)
     .populate('applications.programId')
-    .populate('editors agents', 'firstname lastname email archiv')
-    .exec();
+    .populate('editors agents', 'firstname lastname email archiv');
+
   if (document_thread.program_id) {
     const application = student.applications.find(
       ({ programId }) =>
-        programId.toString() === document_thread.program_id.toString()
+        programId._id.toString() === document_thread.program_id._id.toString()
     );
     const doc_thread = application.doc_modification_thread.find(
       ({ doc_thread_id }) =>
-        doc_thread_id._id.toString() === document_thread._id.toString()
+        doc_thread_id.toString() === document_thread._id.toString()
     );
     if (user.role === Role.Student) {
     }
@@ -772,7 +771,7 @@ const postMessages = asyncHandler(async (req, res) => {
   } else {
     const general_thread = student.generaldocs_threads.find(
       ({ doc_thread_id }) =>
-        doc_thread_id.toString() == document_thread._id.toString()
+        doc_thread_id.toString() === document_thread._id.toString()
     );
     if (user.role === Role.Student) {
     }

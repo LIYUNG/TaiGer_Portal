@@ -4,8 +4,8 @@ import { AiFillQuestionCircle } from 'react-icons/ai';
 import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
-  check_if_there_is_language_info,
-  check_if_there_is_english_language_info,
+  isLanguageInfoComplete,
+  isEnglishLanguageInfoComplete,
   check_if_there_is_german_language_info,
   check_english_language_Notneeded,
   check_german_language_Notneeded,
@@ -16,7 +16,7 @@ import {
   num_applications_submitted,
   check_all_applications_decided,
   check_all_applications_submitted,
-  is_cv_finished,
+  isCVFinished,
   is_cv_assigned,
   check_uni_assist_needed,
   is_all_uni_assist_vpd_uploaded,
@@ -87,7 +87,7 @@ class AgentReviewing extends React.Component {
       this.props.student
     );
 
-    const isCVFinished = is_cv_finished(this.props.student);
+    const isCVFinished_b = isCVFinished(this.props.student);
     const isCVAssigned = is_cv_assigned(this.props.student);
 
     var is_uni_assist_needed = check_uni_assist_needed(this.props.student);
@@ -159,9 +159,7 @@ class AgentReviewing extends React.Component {
             </Link>
           </td>
           <td>
-            {!check_if_there_is_language_info(
-              this.props.student.academic_background
-            ) ? (
+            {!isLanguageInfoComplete(this.props.student.academic_background) ? (
               <Link
                 to={
                   '/student-database/' + this.props.student._id + '/background'
@@ -172,7 +170,7 @@ class AgentReviewing extends React.Component {
               </Link>
             ) : (
               <>
-                {check_if_there_is_english_language_info(
+                {isEnglishLanguageInfoComplete(
                   this.props.student.academic_background
                 ) && (
                   <Link
@@ -322,7 +320,7 @@ class AgentReviewing extends React.Component {
               to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
               style={{ textDecoration: 'none' }}
             >
-              {!isCVFinished ? (
+              {!isCVFinished_b ? (
                 isCVAssigned ? (
                   <p className="text-warning my-0">
                     <AiFillQuestionCircle

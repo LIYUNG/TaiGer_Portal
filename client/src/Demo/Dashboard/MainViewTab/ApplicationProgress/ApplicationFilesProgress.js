@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  is_cv_finished,
+  isCVFinished,
   is_program_ml_rl_essay_finished,
   check_program_uni_assist_needed,
   application_deadline_calculator
@@ -54,7 +54,7 @@ class ApplicationFilesProgress extends React.Component {
         break;
       }
     }
-    const is_cv_done = is_cv_finished(this.props.student);
+    const is_cv_done = isCVFinished(this.props.student);
     if (
       this.props.student.applications === undefined ||
       this.props.student.applications.length === 0

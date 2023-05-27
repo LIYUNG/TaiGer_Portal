@@ -19,7 +19,7 @@ import {
   is_num_Program_Not_specified,
   is_program_ml_rl_essay_ready,
   is_the_uni_assist_vpd_uploaded,
-  is_cv_finished,
+  isCVFinished,
   application_deadline_calculator
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
@@ -376,7 +376,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                 {/* When all thread finished */}
                 {application.closed === 'O' ||
                 (is_program_ml_rl_essay_ready(application) &&
-                  is_cv_finished(this.state.student) &&
+                  isCVFinished(this.state.student) &&
                   is_the_uni_assist_vpd_uploaded(application)) ? (
                   <Form.Group controlId="closed">
                     <Form.Control
@@ -398,7 +398,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                 ) : (
                   <OverlayButton
                     text={`Please make sure ${
-                      !is_cv_finished(this.state.student) ? 'CV ' : ''
+                      !isCVFinished(this.state.student) ? 'CV ' : ''
                     }${
                       !is_program_ml_rl_essay_ready(application)
                         ? 'ML/RL/Essay '

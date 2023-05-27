@@ -582,7 +582,7 @@ const createApplication = asyncHandler(async (req, res) => {
   }
 
   const programIds = student.applications.map(({ programId }) =>
-    programId._id.toString()
+    programId.toString()
   );
 
   // () TODO: check if the same university accept more than 1 application (different programs)

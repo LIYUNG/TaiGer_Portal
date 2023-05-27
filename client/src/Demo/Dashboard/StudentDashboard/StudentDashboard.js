@@ -13,7 +13,7 @@ import {
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing,
-  check_base_documents_rejected
+  isBaseDocumentsRejected
 } from '../../Utils/checking-functions';
 import ErrorPage from '../../Utils/ErrorPage';
 
@@ -235,7 +235,7 @@ class StudentDashboard extends React.Component {
           )}
         {student.notification &&
           !student.notification.isRead_base_documents_rejected &&
-          check_base_documents_rejected(student) && (
+          isBaseDocumentsRejected(student) && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}
               bg={'danger'}

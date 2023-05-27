@@ -98,27 +98,11 @@ const PDFViewer = (student_id, path) => {
             Current Page: {currentPage} of {numPages}
           </p>
           <div>
-            <div>
-              <Button size="sm" onClick={handleZoomIn}>
-                <BsZoomIn />
-              </Button>
-              <Button size="sm" onClick={handleZoomOut}>
-                <BsZoomOut />
-              </Button>
-            </div>
-            <Button
-              size="sm"
-              onClick={goToPreviousPage}
-              disabled={pageNumber === 1}
-            >
-              Previous Page
+            <Button size="sm" onClick={handleZoomIn}>
+              <BsZoomIn />
             </Button>
-            <Button
-              size="sm"
-              onClick={goToNextPage}
-              disabled={pageNumber === numPages}
-            >
-              Next Page
+            <Button size="sm" onClick={handleZoomOut}>
+              <BsZoomOut />
             </Button>
             <Button size="sm" onClick={handleDownload}>
               <BsDownload /> Download

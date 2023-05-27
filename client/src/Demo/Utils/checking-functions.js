@@ -984,7 +984,6 @@ export const isDocumentsMissingAssign = (application) => {
   };
   const keys = Object.keys(file_category_const);
   let flag = false;
-  console.log(application);
   for (let i = 0; i < keys.length; i += 1) {
     flag =
       flag ||

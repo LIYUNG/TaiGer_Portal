@@ -77,9 +77,7 @@ export const isLanguageInfoComplete = (academic_background) => {
   return true;
 };
 
-export const isEnglishLanguageInfoComplete = (
-  academic_background
-) => {
+export const isEnglishLanguageInfoComplete = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;
   }
@@ -975,4 +973,27 @@ export const frequencyDistribution = (tasks) => {
       : { show: 0, potentials: 1 };
   }
   return map;
+};
+
+export const isDocumentsMissingAssign = (application) => {
+  const file_category_const = {
+    ml_required: 'ML',
+    essay_required: 'Essay',
+    portfolio_required: 'Portfolio',
+    supplementary_form_required: 'Supplementary_Form'
+  };
+  const keys = Object.keys(file_category_const);
+  let flag = false;
+  console.log(application);
+  for (let i = 0; i < keys.length; i += 1) {
+    flag =
+      flag ||
+      (application.decided === 'O' &&
+        application.programId[keys[i]] === 'yes' &&
+        application.doc_modification_thread.findIndex(
+          (thread) =>
+            thread.doc_thread_id.file_type === file_category_const[keys[i]]
+        ) === -1);
+  }
+  return flag;
 };

@@ -1,14 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Row,
-  Col,
-  Form,
-  Button,
-  Card,
-  Modal,
-  Spinner
-} from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
 
@@ -18,7 +10,8 @@ import {
   check_generaldocs,
   is_program_ml_rl_essay_finished,
   is_program_closed,
-  application_deadline_calculator
+  application_deadline_calculator,
+  isDocumentsMissingAssign
 } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -551,20 +544,11 @@ class EditorDocsProgress extends React.Component {
               application={null}
             />
             <hr></hr>
-
+            {/* TODO: simplify this! with array + function! */}
             {this.state.student.applications &&
               this.state.student.applications.map((application, i) => (
                 <div key={i}>
-                  {((application.decided === 'O' &&
-                    application.programId.ml_required === 'yes' &&
-                    application.doc_modification_thread.findIndex(
-                      (thread) => thread.doc_thread_id.file_type === 'ML'
-                    ) === -1) ||
-                    (application.decided === 'O' &&
-                      application.programId.essay_required === 'yes' &&
-                      application.doc_modification_thread.findIndex(
-                        (thread) => thread.doc_thread_id.file_type === 'Essay'
-                      ) === -1)) && (
+                  {isDocumentsMissingAssign(application) && (
                     <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
                       <Card.Body>
                         The followings application documents are not started or
@@ -584,6 +568,26 @@ class EditorDocsProgress extends React.Component {
                           ) === -1 && (
                             <li>
                               <b>Essay</b>
+                            </li>
+                          )}
+                        {application.programId.portfolio_required === 'yes' &&
+                          application.doc_modification_thread.findIndex(
+                            (thread) =>
+                              thread.doc_thread_id.file_type === 'Portfolio'
+                          ) === -1 && (
+                            <li>
+                              <b>Portfolio</b>
+                            </li>
+                          )}
+                        {application.programId.supplementary_form_required ===
+                          'yes' &&
+                          application.doc_modification_thread.findIndex(
+                            (thread) =>
+                              thread.doc_thread_id.file_type ===
+                              'Supplementary_Form'
+                          ) === -1 && (
+                            <li>
+                              <b>Supplementary Form</b>
                             </li>
                           )}
                       </Card.Body>
@@ -724,6 +728,37 @@ class EditorDocsProgress extends React.Component {
                               Essay
                             </Button>
                           )}
+                          {application.programId.portfolio_required ===
+                            'yes' && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="light"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId.portfolio_requirements
+                                )
+                              }
+                            >
+                              Portfolio
+                            </Button>
+                          )}
+                          {application.programId.supplementary_form_required ===
+                            'yes' && (
+                            <Button
+                              size="sm"
+                              title="Comments"
+                              variant="light"
+                              onClick={() =>
+                                this.openRequirements_ModalWindow(
+                                  application.programId
+                                    .supplementary_form_requirements
+                                )
+                              }
+                            >
+                              Supp. Form
+                            </Button>
+                          )}
                         </Col>
                         <Col>
                           <p className="text-light">
@@ -825,6 +860,37 @@ class EditorDocsProgress extends React.Component {
                                 }
                               >
                                 Essay
+                              </Button>
+                            )}
+                            {application.programId.portfolio_required ===
+                              'yes' && (
+                              <Button
+                                size="sm"
+                                title="Comments"
+                                variant="light"
+                                onClick={() =>
+                                  this.openRequirements_ModalWindow(
+                                    application.programId.portfolio_requirements
+                                  )
+                                }
+                              >
+                                Portfolio
+                              </Button>
+                            )}
+                            {application.programId
+                              .supplementary_form_required === 'yes' && (
+                              <Button
+                                size="sm"
+                                title="Comments"
+                                variant="light"
+                                onClick={() =>
+                                  this.openRequirements_ModalWindow(
+                                    application.programId
+                                      .supplementary_form_requirements
+                                  )
+                                }
+                              >
+                                Supp. Form
                               </Button>
                             )}
                           </Col>

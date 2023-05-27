@@ -689,7 +689,7 @@ class EditorDocsProgress extends React.Component {
                           {application.programId.ml_required === 'yes' && (
                             <Button
                               size="sm"
-                              title="Comments"
+                              title="ML"
                               variant="secondary"
                               onClick={() =>
                                 this.openRequirements_ModalWindow(
@@ -703,7 +703,7 @@ class EditorDocsProgress extends React.Component {
                           {application.programId.rl_required > 0 && (
                             <Button
                               size="sm"
-                              title="Comments"
+                              title="RL"
                               variant="info"
                               onClick={() =>
                                 this.openRequirements_ModalWindow(

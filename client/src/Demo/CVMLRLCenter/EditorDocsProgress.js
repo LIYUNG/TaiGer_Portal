@@ -11,7 +11,8 @@ import {
   is_program_ml_rl_essay_finished,
   is_program_closed,
   application_deadline_calculator,
-  isDocumentsMissingAssign
+  isDocumentsMissingAssign,
+  file_category_const
 } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -25,6 +26,7 @@ import {
   initGeneralMessageThread,
   initApplicationMessageThread
 } from '../../api';
+import { List } from '@editorjs/list';
 
 class EditorDocsProgress extends React.Component {
   state = {
@@ -496,6 +498,7 @@ class EditorDocsProgress extends React.Component {
     }
 
     const create_generaldoc_reminder = check_generaldocs(this.state.student);
+    const required_doc_keys = Object.keys(file_category_const);
     return (
       <>
         <div>
@@ -551,50 +554,26 @@ class EditorDocsProgress extends React.Component {
                   {isDocumentsMissingAssign(application) && (
                     <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
                       <Card.Body>
-                        Please assign the following documents to the student
-                        for{' '}
+                        Please assign the following documents to the student for{' '}
                         <b>
                           {application.programId.school}{' '}
                           {application.programId.program_name}
                         </b>
                         :{' '}
-                        {application.programId.ml_required === 'yes' &&
-                          application.doc_modification_thread.findIndex(
-                            (thread) => thread.doc_thread_id.file_type === 'ML'
-                          ) === -1 && (
-                            <li>
-                              <b>ML</b>
-                            </li>
-                          )}
-                        {application.programId.essay_required === 'yes' &&
-                          application.doc_modification_thread.findIndex(
-                            (thread) =>
-                              thread.doc_thread_id.file_type === 'Essay'
-                          ) === -1 && (
-                            <li>
-                              <b>Essay</b>
-                            </li>
-                          )}
-                        {application.programId.portfolio_required === 'yes' &&
-                          application.doc_modification_thread.findIndex(
-                            (thread) =>
-                              thread.doc_thread_id.file_type === 'Portfolio'
-                          ) === -1 && (
-                            <li>
-                              <b>Portfolio</b>
-                            </li>
-                          )}
-                        {application.programId.supplementary_form_required ===
-                          'yes' &&
-                          application.doc_modification_thread.findIndex(
-                            (thread) =>
-                              thread.doc_thread_id.file_type ===
-                              'Supplementary_Form'
-                          ) === -1 && (
-                            <li>
-                              <b>Supplementary Form</b>
-                            </li>
-                          )}
+                        {required_doc_keys.map((doc_reqired_key, i) => (
+                          <>
+                            {application.programId[doc_reqired_key] === 'yes' &&
+                              application.doc_modification_thread.findIndex(
+                                (thread) =>
+                                  thread.doc_thread_id.file_type ===
+                                  file_category_const[doc_reqired_key]
+                              ) === -1 && (
+                                <li>
+                                  <b>{file_category_const[doc_reqired_key]}</b>
+                                </li>
+                              )}
+                          </>
+                        ))}
                       </Card.Body>
                     </Card>
                   )}
@@ -602,73 +581,70 @@ class EditorDocsProgress extends React.Component {
                     {application.decided === 'O' ? (
                       <>
                         {is_program_ml_rl_essay_finished(application) ? (
-                          <>
-                            {is_program_closed(application) ? (
-                              <>
-                                <Col md={1}>
-                                  {showButtonIfMyStudent(
-                                    this.props.user,
-                                    this.state.student
-                                  ) && (
-                                    <ImCheckmark
-                                      size={24}
-                                      color="limegreen"
-                                      title="This program is closed"
-                                    />
-                                  )}
-                                </Col>
-                                <Col md={1}>
-                                  {showButtonIfMyStudent(
-                                    this.props.user,
-                                    this.state.student
-                                  ) && (
-                                    <AiOutlineUndo
-                                      size={24}
-                                      color="red"
-                                      title="Re-open this program as it was not submitted"
-                                      style={{ cursor: 'pointer' }}
-                                      onClick={() =>
-                                        this.handleProgramStatus(
-                                          this.state.student._id.toString(),
-                                          application.programId._id.toString()
-                                        )
-                                      }
-                                    />
-                                  )}
-                                </Col>
-                              </>
-                            ) : (
-                              <>
-                                <Col md={1}>
-                                  {showButtonIfMyStudent(
-                                    this.props.user,
-                                    this.state.student
-                                  ) && (
-                                    <AiOutlineCheck
-                                      size={24}
-                                      color="white"
-                                      style={{ cursor: 'pointer' }}
-                                      title="Close this program - marked as finished."
-                                      onClick={() =>
-                                        this.handleProgramStatus(
-                                          this.state.student._id.toString(),
-                                          application.programId._id.toString()
-                                        )
-                                      }
-                                    />
-                                  )}
-                                </Col>
-                                <Col md={1}></Col>
-                              </>
-                            )}
-                          </>
+                          is_program_closed(application) ? (
+                            <>
+                              <Col md={1}>
+                                {showButtonIfMyStudent(
+                                  this.props.user,
+                                  this.state.student
+                                ) && (
+                                  <ImCheckmark
+                                    size={24}
+                                    color="limegreen"
+                                    title="This program is closed"
+                                  />
+                                )}
+                              </Col>
+                              <Col md={1}>
+                                {showButtonIfMyStudent(
+                                  this.props.user,
+                                  this.state.student
+                                ) && (
+                                  <AiOutlineUndo
+                                    size={24}
+                                    color="red"
+                                    title="Re-open this program as it was not submitted"
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() =>
+                                      this.handleProgramStatus(
+                                        this.state.student._id.toString(),
+                                        application.programId._id.toString()
+                                      )
+                                    }
+                                  />
+                                )}
+                              </Col>
+                            </>
+                          ) : (
+                            <>
+                              <Col md={1}>
+                                {showButtonIfMyStudent(
+                                  this.props.user,
+                                  this.state.student
+                                ) && (
+                                  <AiOutlineCheck
+                                    size={24}
+                                    color="white"
+                                    style={{ cursor: 'pointer' }}
+                                    title="Close this program - marked as finished."
+                                    onClick={() =>
+                                      this.handleProgramStatus(
+                                        this.state.student._id.toString(),
+                                        application.programId._id.toString()
+                                      )
+                                    }
+                                  />
+                                )}
+                              </Col>
+                              <Col md={1}></Col>
+                            </>
+                          )
                         ) : (
                           <>
                             <Col md={1}></Col>
                             <Col md={1}></Col>
                           </>
                         )}
-
                         <Col md={4}>
                           <Link
                             to={`/programs/${application.programId._id}`}
@@ -691,20 +667,25 @@ class EditorDocsProgress extends React.Component {
                           </Link>
                         </Col>
                         <Col md={2}>
-                          {application.programId.ml_required === 'yes' && (
-                            <Button
-                              size="sm"
-                              title="ML"
-                              variant="secondary"
-                              onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId.ml_requirements
-                                )
-                              }
-                            >
-                              ML
-                            </Button>
-                          )}
+                          {required_doc_keys.map((doc_reqired_key, i) => (
+                            <>
+                              {application.programId[doc_reqired_key] ===
+                                'yes' && (
+                                <Button
+                                  size="sm"
+                                  title={`${file_category_const[doc_reqired_key]}`}
+                                  variant="secondary"
+                                  onClick={() =>
+                                    this.openRequirements_ModalWindow(
+                                      application.programId.ml_requirements
+                                    )
+                                  }
+                                >
+                                  {file_category_const[doc_reqired_key]}
+                                </Button>
+                              )}
+                            </>
+                          ))}
                           {application.programId.rl_required > 0 && (
                             <Button
                               size="sm"
@@ -717,51 +698,6 @@ class EditorDocsProgress extends React.Component {
                               }
                             >
                               RL
-                            </Button>
-                          )}
-                          {application.programId.essay_required === 'yes' && (
-                            <Button
-                              size="sm"
-                              title="Comments"
-                              variant="light"
-                              onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId.essay_requirements
-                                )
-                              }
-                            >
-                              Essay
-                            </Button>
-                          )}
-                          {application.programId.portfolio_required ===
-                            'yes' && (
-                            <Button
-                              size="sm"
-                              title="Comments"
-                              variant="light"
-                              onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId.portfolio_requirements
-                                )
-                              }
-                            >
-                              Portfolio
-                            </Button>
-                          )}
-                          {application.programId.supplementary_form_required ===
-                            'yes' && (
-                            <Button
-                              size="sm"
-                              title="Comments"
-                              variant="light"
-                              onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId
-                                    .supplementary_form_requirements
-                                )
-                              }
-                            >
-                              Supp. Form
                             </Button>
                           )}
                         </Col>
@@ -825,20 +761,25 @@ class EditorDocsProgress extends React.Component {
                             </Link>
                           </Col>
                           <Col md={2}>
-                            {application.programId.ml_required === 'yes' && (
-                              <Button
-                                size="sm"
-                                title="Comments"
-                                variant="secondary"
-                                onClick={() =>
-                                  this.openRequirements_ModalWindow(
-                                    application.programId.ml_requirements
-                                  )
-                                }
-                              >
-                                ML
-                              </Button>
-                            )}
+                            {required_doc_keys.map((doc_reqired_key, i) => (
+                              <>
+                                {application.programId[doc_reqired_key] ===
+                                  'yes' && (
+                                  <Button
+                                    size="sm"
+                                    title={`${file_category_const[doc_reqired_key]}`}
+                                    variant="secondary"
+                                    onClick={() =>
+                                      this.openRequirements_ModalWindow(
+                                        application.programId.ml_requirements
+                                      )
+                                    }
+                                  >
+                                    {file_category_const[doc_reqired_key]}
+                                  </Button>
+                                )}
+                              </>
+                            ))}
                             {application.programId.rl_required > 0 && (
                               <Button
                                 size="sm"
@@ -851,51 +792,6 @@ class EditorDocsProgress extends React.Component {
                                 }
                               >
                                 RL
-                              </Button>
-                            )}
-                            {application.programId.essay_required === 'yes' && (
-                              <Button
-                                size="sm"
-                                title="Comments"
-                                variant="light"
-                                onClick={() =>
-                                  this.openRequirements_ModalWindow(
-                                    application.programId.essay_requirements
-                                  )
-                                }
-                              >
-                                Essay
-                              </Button>
-                            )}
-                            {application.programId.portfolio_required ===
-                              'yes' && (
-                              <Button
-                                size="sm"
-                                title="Comments"
-                                variant="light"
-                                onClick={() =>
-                                  this.openRequirements_ModalWindow(
-                                    application.programId.portfolio_requirements
-                                  )
-                                }
-                              >
-                                Portfolio
-                              </Button>
-                            )}
-                            {application.programId
-                              .supplementary_form_required === 'yes' && (
-                              <Button
-                                size="sm"
-                                title="Comments"
-                                variant="light"
-                                onClick={() =>
-                                  this.openRequirements_ModalWindow(
-                                    application.programId
-                                      .supplementary_form_requirements
-                                  )
-                                }
-                              >
-                                Supp. Form
                               </Button>
                             )}
                           </Col>

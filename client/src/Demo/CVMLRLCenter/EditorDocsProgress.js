@@ -677,7 +677,12 @@ class EditorDocsProgress extends React.Component {
                                   variant="secondary"
                                   onClick={() =>
                                     this.openRequirements_ModalWindow(
-                                      application.programId.ml_requirements
+                                      application.programId[
+                                        doc_reqired_key.replace(
+                                          'required',
+                                          'requirements'
+                                        )
+                                      ]
                                     )
                                   }
                                 >
@@ -771,7 +776,12 @@ class EditorDocsProgress extends React.Component {
                                     variant="secondary"
                                     onClick={() =>
                                       this.openRequirements_ModalWindow(
-                                        application.programId.ml_requirements
+                                        application.programId[
+                                          doc_reqired_key.replace(
+                                            'required',
+                                            'requirements'
+                                          )
+                                        ]
                                       )
                                     }
                                   >

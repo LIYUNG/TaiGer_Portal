@@ -11,7 +11,12 @@ import {
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { FiExternalLink } from 'react-icons/fi';
 import { DELETE_STYLE, REJECT_STYLE, convertDate } from '../Utils/contants';
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import {
+  is_TaiGer_Admin,
+  is_TaiGer_Editor,
+  is_TaiGer_Student,
+  showButtonIfMyStudent
+} from '../Utils/checking-functions';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 
 class ButtonSetAccepted extends React.Component {
@@ -194,7 +199,7 @@ class ButtonSetAccepted extends React.Component {
               style={{ cursor: 'pointer' }}
             />
           </a>
-          {this.props.role === 'Admin' && (
+          {is_TaiGer_Admin(this.props.user) && (
             <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
               [Edit]
             </a>
@@ -223,7 +228,8 @@ class ButtonSetAccepted extends React.Component {
           </Col>
         </td>
         <td></td>
-        {this.props.role === 'Editor' || this.props.role === 'Student' ? (
+        {is_TaiGer_Editor(this.props.user) ||
+        is_TaiGer_Student(this.props.user) ? (
           <>
             <td></td>
             <td></td>
@@ -463,7 +469,8 @@ class ButtonSetAccepted extends React.Component {
               </a>
             )}
             {!(
-              this.props.role === 'Editor' || this.props.role === 'Student'
+              is_TaiGer_Editor(this.props.user) ||
+              is_TaiGer_Student(this.props.user)
             ) && (
               <Form
                 onSubmit={(e) =>

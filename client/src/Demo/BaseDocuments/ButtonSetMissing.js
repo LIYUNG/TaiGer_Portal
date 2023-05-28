@@ -7,6 +7,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
   is_TaiGer_AdminAgent,
+  is_TaiGer_Student,
   showButtonIfMyStudent
 } from '../Utils/checking-functions';
 
@@ -125,16 +126,15 @@ class ButtonSetMissing extends React.Component {
               style={{ cursor: 'pointer' }}
             />
           </a>
-          {this.props.role === 'Admin' && (
+          {is_TaiGer_AdminAgent(this.props.user) && (
             <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
               [Edit]
             </a>
           )}
         </td>
         <td></td>
-        {this.props.role === 'Student' ||
-        this.props.role === 'Admin' ||
-        this.props.role === 'Agent' ? (
+        {is_TaiGer_Student(this.props.user) ||
+        is_TaiGer_AdminAgent(this.props.user) ? (
           <td>
             {!this.state.isLoaded ? (
               <div>

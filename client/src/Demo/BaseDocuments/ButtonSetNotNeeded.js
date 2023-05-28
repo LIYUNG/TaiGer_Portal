@@ -6,7 +6,11 @@ import { FiExternalLink } from 'react-icons/fi';
 import { convertDate } from '../Utils/contants';
 
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
-import { showButtonIfMyStudent } from '../Utils/checking-functions';
+import {
+  is_TaiGer_Admin,
+  is_TaiGer_Editor,
+  showButtonIfMyStudent
+} from '../Utils/checking-functions';
 
 class ButtonSetNotNeeded extends React.Component {
   state = {
@@ -116,14 +120,14 @@ class ButtonSetNotNeeded extends React.Component {
               style={{ cursor: 'pointer' }}
             />
           </a>
-          {this.props.role === 'Admin' && (
+          {is_TaiGer_Admin(this.props.user) && (
             <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
               [Edit]
             </a>
           )}
         </td>
         <td>{convertDate(this.props.time)}</td>
-        {this.props.role === 'Editor' ? (
+        {is_TaiGer_Editor(this.props.user) ? (
           <>
             <td></td>
             <td></td>

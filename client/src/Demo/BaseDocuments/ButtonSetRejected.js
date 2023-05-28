@@ -14,7 +14,10 @@ import FilePreview from '../../components/FilePreview/FilePreview';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
+  is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
+  is_TaiGer_Editor,
+  is_TaiGer_Student,
   showButtonIfMyStudent
 } from '../Utils/checking-functions';
 import { ACCEPT_STYLE, DELETE_STYLE, convertDate } from '../Utils/contants';
@@ -267,7 +270,7 @@ class ButtonSetRejected extends React.Component {
               style={{ cursor: 'pointer' }}
             />
           </a>
-          {this.props.role === 'Admin' && (
+          {is_TaiGer_Admin(this.props.user) && (
             <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
               [Edit]
             </a>
@@ -335,9 +338,8 @@ class ButtonSetRejected extends React.Component {
           </Button>
         </td>
         <td></td>
-        {this.props.role === 'Agent' ||
-        this.props.role === 'Admin' ||
-        this.props.role === 'Student' ? (
+        {is_TaiGer_AdminAgent(this.props.user) ||
+        is_TaiGer_Student(this.props.user) ? (
           <>
             <td>
               <Col>
@@ -468,7 +470,7 @@ class ButtonSetRejected extends React.Component {
             </Modal.Title>
           </Modal.Header>
 
-          {this.props.role === 'Student' ? (
+          {is_TaiGer_Student(this.props.user) ? (
             <>
               <Modal.Body>
                 <p>{this.state.comments}</p>
@@ -559,7 +561,8 @@ class ButtonSetRejected extends React.Component {
               </a>
             )}
             {!(
-              this.props.role === 'Editor' || this.props.role === 'Student'
+              is_TaiGer_Editor(this.props.user) ||
+              is_TaiGer_Student(this.props.user)
             ) && (
               <Form
                 onSubmit={(e) =>

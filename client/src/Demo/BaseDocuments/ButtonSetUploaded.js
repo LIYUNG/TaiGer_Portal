@@ -13,7 +13,10 @@ import {
 } from 'react-icons/ai';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
+  is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
+  is_TaiGer_Editor,
+  is_TaiGer_Student,
   showButtonIfMyStudent
 } from '../Utils/checking-functions';
 import {
@@ -220,7 +223,7 @@ class ButtonSetUploaded extends React.Component {
               style={{ cursor: 'pointer' }}
             />
           </a>
-          {this.props.role === 'Admin' && (
+          {is_TaiGer_Admin(this.props.user) && (
             <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
               [Edit]
             </a>
@@ -248,63 +251,20 @@ class ButtonSetUploaded extends React.Component {
             </Button>
           </Col>
         </td>
-        {this.props.role === 'Editor' || this.props.role === 'Student' ? (
+        {is_TaiGer_Editor(this.props.user) ||
+        is_TaiGer_Student(this.props.user) ? (
           <>
             <td></td>
             <td></td>
           </>
         ) : (
           <>
-            <td>
-              {/* <Col md>
-                {showButtonIfMyStudent(this.props.user, this.state.student) && (
-                  <Button
-                    variant={ACCEPT_STYLE}
-                    size="sm"
-                    type="submit"
-                    title="Mark as finshed"
-                    disabled={!this.state.isLoaded}
-                    onClick={(e) =>
-                      this.onUpdateProfileDocStatus(
-                        e,
-                        this.props.k,
-                        this.state.student_id,
-                        'accepted'
-                      )
-                    }
-                  >
-                    <AiOutlineCheck />
-                  </Button>
-                )}
-              </Col> */}
-            </td>
-            <td>
-              {/* <Col md>
-                {showButtonIfMyStudent(this.props.user, this.state.student) && (
-                  <Button
-                    variant={REJECT_STYLE}
-                    size="sm"
-                    type="submit"
-                    title="Mark as reject"
-                    disabled={!this.state.isLoaded}
-                    onClick={(e) =>
-                      this.onUpdateProfileDocStatus(
-                        e,
-                        this.props.k,
-                        this.state.student_id,
-                        'rejected'
-                      )
-                    }
-                  >
-                    <AiOutlineWarning size={16} />
-                  </Button>
-                )}
-              </Col> */}
-            </td>
+            <td></td>
+            <td></td>
           </>
         )}
         <td></td>
-        {this.props.role === 'Editor' ? (
+        {is_TaiGer_Editor(this.props.user) ? (
           <td></td>
         ) : (
           <td>
@@ -512,8 +472,7 @@ class ButtonSetUploaded extends React.Component {
               <>
                 <h4>
                   {base_documents_checklist[this.props.k] &&
-                    base_documents_checklist[this.props.k].length !==
-                      0 &&
+                    base_documents_checklist[this.props.k].length !== 0 &&
                     'Check list: Please check the following points so that you can flag this document as valid.'}
                 </h4>
                 <p>

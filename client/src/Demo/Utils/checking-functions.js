@@ -975,13 +975,14 @@ export const frequencyDistribution = (tasks) => {
   return map;
 };
 
+export const file_category_const = {
+  ml_required: 'ML',
+  essay_required: 'Essay',
+  portfolio_required: 'Portfolio',
+  supplementary_form_required: 'Supplementary_Form'
+};
+
 export const isDocumentsMissingAssign = (application) => {
-  const file_category_const = {
-    ml_required: 'ML',
-    essay_required: 'Essay',
-    portfolio_required: 'Portfolio',
-    supplementary_form_required: 'Supplementary_Form'
-  };
   const keys = Object.keys(file_category_const);
   let flag = false;
   for (let i = 0; i < keys.length; i += 1) {

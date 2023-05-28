@@ -325,7 +325,8 @@ class UniAssistListCard extends React.Component {
 
     const app_name = this.state.student.applications.map((application, i) => (
       <div key={i}>
-        {application.programId.uni_assist === 'Yes-FULL' &&
+        {application.programId.uni_assist &&
+          application.programId.uni_assist.includes('Yes') &&
           application.decided === 'O' && (
             <>
               <Row>
@@ -335,8 +336,8 @@ class UniAssistListCard extends React.Component {
                 >
                   <h4 className="text-info">
                     {application.programId.school}{' '}
-                    {application.programId.program_name}
-                    {' Yes-FULL'}
+                    {application.programId.program_name}{' '}
+                    {application.programId.uni_assist}
                   </h4>
                 </Link>
               </Row>
@@ -414,144 +415,6 @@ class UniAssistListCard extends React.Component {
                       )}
                     </Row>
                   </>
-                ) : (
-                  <>
-                    <Col md={2}>
-                      <a
-                        href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}`}
-                        target="_blank"
-                      >
-                        <Button
-                          title="Download"
-                          disabled={
-                            !this.state.isLoaded2[
-                              application.programId._id.toString()
-                            ]
-                          }
-                          size={'sm'}
-                        >
-                          <AiOutlineDownload size={16} />
-                        </Button>
-                      </a>
-                    </Col>
-                    <Col>
-                      {showButtonIfMyStudent(
-                        this.props.user,
-                        this.props.student
-                      ) && (
-                        <Button
-                          onClick={(e) =>
-                            this.onDeleteVPDFileWarningPopUp(
-                              e,
-                              this.state.student._id.toString(),
-                              application.programId._id.toString()
-                            )
-                          }
-                          disabled={
-                            !this.state.isLoaded2[
-                              application.programId._id.toString()
-                            ]
-                          }
-                          variant={'danger'}
-                          size={'sm'}
-                        >
-                          <AiOutlineDelete size={16} />
-                        </Button>
-                      )}
-                    </Col>
-                  </>
-                )}
-              </Row>
-            </>
-          )}
-        {application.programId.uni_assist === 'Yes-VPD' &&
-          application.decided === 'O' && (
-            <>
-              <Row>
-                <Link
-                  to={'/programs/' + application.programId._id.toString()}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <h4 className="text-info">
-                    {application.programId.school}{' '}
-                    {application.programId.program_name}
-                    {' Yes-VPD'}
-                  </h4>
-                </Link>
-              </Row>
-              <Row>
-                {!application.uni_assist ||
-                application.uni_assist.status === 'missing' ||
-                application.uni_assist.status === 'notstarted' ? (
-                  <>
-                    {this.state.isLoaded2[
-                      `${application.programId._id.toString()}`
-                    ] ? (
-                      <>
-                        <Col md={1}>
-                          {showButtonIfMyStudent(
-                            this.props.user,
-                            this.props.student
-                          ) && (
-                            <Form.Group
-                              controlId={`${application.programId._id.toString()}`}
-                            >
-                              <Form.Label>
-                                <IoMdCloudUpload
-                                  color={'lightgray'}
-                                  size={32}
-                                />
-                              </Form.Label>
-                              <Form.Control
-                                hidden
-                                type="file"
-                                onChange={(e) =>
-                                  this.handleUniAssistDocSubmit(
-                                    e,
-                                    this.state.student._id.toString(),
-                                    application.programId._id.toString()
-                                  )
-                                }
-                              />
-                            </Form.Group>
-                          )}
-                        </Col>
-                        <Col>
-                          {is_TaiGer_AdminAgent(this.props.user) &&
-                            showButtonIfMyStudent(
-                              this.props.user,
-                              this.props.student
-                            ) && (
-                              <Button
-                                size={'sm'}
-                                color={'lightgray'}
-                                onClick={(e) =>
-                                  this.opensetAsNotNeededWindow(
-                                    e,
-                                    this.state.student._id.toString(),
-                                    application.programId._id.toString()
-                                  )
-                                }
-                              >
-                                Set Not Needed
-                              </Button>
-                            )}
-                        </Col>
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <Spinner
-                            animation="border"
-                            role="status"
-                            variant="light"
-                          >
-                            <span className="visually-hidden"></span>
-                          </Spinner>
-                        </div>
-                      </>
-                    )}
-                  </>
                 ) : application.uni_assist &&
                   application.uni_assist.status === 'notneeded' ? (
                   <>
@@ -586,27 +449,22 @@ class UniAssistListCard extends React.Component {
                 ) : (
                   <>
                     <Col md={2}>
-                      {showButtonIfMyStudent(
-                        this.props.user,
-                        this.props.student
-                      ) && (
-                        <a
-                          href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}`}
-                          target="_blank"
+                      <a
+                        href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}`}
+                        target="_blank"
+                      >
+                        <Button
+                          title="Download"
+                          disabled={
+                            !this.state.isLoaded2[
+                              application.programId._id.toString()
+                            ]
+                          }
+                          size={'sm'}
                         >
-                          <Button
-                            title="Download"
-                            disabled={
-                              !this.state.isLoaded2[
-                                application.programId._id.toString()
-                              ]
-                            }
-                            size={'sm'}
-                          >
-                            <AiOutlineDownload size={16} />
-                          </Button>
-                        </a>
-                      )}
+                          <AiOutlineDownload size={16} />
+                        </Button>
+                      </a>
                     </Col>
                     <Col>
                       {showButtonIfMyStudent(

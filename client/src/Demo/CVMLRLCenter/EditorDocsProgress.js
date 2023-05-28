@@ -551,8 +551,13 @@ class EditorDocsProgress extends React.Component {
                   {isDocumentsMissingAssign(application) && (
                     <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
                       <Card.Body>
-                        The followings application documents are not started or
-                        finished yet:{' '}
+                        Please assign the following documents to the student
+                        for{' '}
+                        <b>
+                          {application.programId.school}{' '}
+                          {application.programId.program_name}
+                        </b>
+                        :{' '}
                         {application.programId.ml_required === 'yes' &&
                           application.doc_modification_thread.findIndex(
                             (thread) => thread.doc_thread_id.file_type === 'ML'

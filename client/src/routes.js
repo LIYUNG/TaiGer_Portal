@@ -33,6 +33,9 @@ const InternalDashboard = React.lazy(() =>
   import('./Demo/TaiGerOrg/InternalDashboard/index')
 );
 const Accounting = React.lazy(() => import('./Demo/Accounting/index'));
+const SingleBalanceSheetOverview = React.lazy(() =>
+  import('./Demo/Accounting/SingleBalanceSheetOverview')
+);
 const ProgramConflict = React.lazy(() =>
   import('./Demo/TaiGerOrg/ProgramConflict/index')
 );
@@ -43,6 +46,9 @@ const TaiGerOrgAdmin = React.lazy(() => import('./Demo/TaiGerOrg/AdminPage'));
 const ProgramList = React.lazy(() => import('./Demo/Program/ProgramList'));
 const ApplicationsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/index')
+);
+const LearningResources = React.lazy(() =>
+  import('./Demo/LearningResources/index')
 );
 const StudentApplications = React.lazy(() =>
   import('./Demo/StudentApplications/StudentApplicationsIndividual')
@@ -145,6 +151,12 @@ const routes = [
     exact: true,
     name: 'Program Table',
     component: ProgramList
+  },
+  {
+    path: '/resources',
+    exact: true,
+    name: 'Learning Resources',
+    component: LearningResources
   },
   {
     path: '/student-applications',
@@ -325,6 +337,12 @@ const routes = [
     exact: true,
     name: '',
     component: Accounting
+  },
+  {
+    path: '/internal/accounting/users/:taiger_user_id',
+    exact: true,
+    name: '',
+    component: SingleBalanceSheetOverview
   },
   {
     path: '/teams/agents/:user_id',

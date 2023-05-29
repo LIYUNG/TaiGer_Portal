@@ -1,97 +1,36 @@
-import React, { useState } from 'react';
-import { Row, Col, Card, Spinner, Collapse, Table } from 'react-bootstrap';
-import Aux from '../../hoc/_Aux';
-// import AdmissionsTable from './AdmissionsTable';
-import ErrorPage from '../Utils/ErrorPage';
-import { spinner_style } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import React from 'react';
+import { Card, Spinner, Row, Col } from 'react-bootstrap';
+import { Redirect, Link } from 'react-router-dom';
 
-import { getExpenses } from '../../api';
+import Aux from '../../hoc/_Aux';
+import { spinner_style } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+import { is_TaiGer_Admin, is_TaiGer_role } from '../Utils/checking-functions';
+
+import { getTeamMembers } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-
-function ExtendableTable({ data }) {
-  const [selectedRows, setSelectedRows] = useState([
-    new Array(data.length)
-      .fill()
-      .map((x, i) => (i === data.length - 1 ? i : -1))
-  ]);
-  const toggleRow = (index) => {
-    let selectedRows_temp = { ...selectedRows };
-    selectedRows_temp[index] = selectedRows_temp[index] !== index ? index : -1;
-    setSelectedRows(selectedRows_temp);
-  };
-  return (
-    <Table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th># Applications</th>
-          <th>Income</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, index) => (
-          <React.Fragment key={index}>
-            <tr
-              className="bg-secondary text-light"
-              onClick={() => toggleRow(index)}
-            >
-              <td>
-                <b>
-                  {item.firstname}
-                  {item.lastname}
-                </b>
-              </td>
-              <td>{item.applying_program_count}</td>
-              <td>{item.expenses}</td>
-            </tr>
-
-            <Collapse in={selectedRows[index] === index}>
-              <tr>
-                <td colSpan="4">
-                  <Table>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Column 2</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th>1</th>
-                        <th>b 2</th>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </td>
-              </tr>
-            </Collapse>
-          </React.Fragment>
-        ))}
-      </tbody>
-    </Table>
-  );
-}
 
 class Accounting extends React.Component {
   state = {
     error: '',
+    role: '',
     isLoaded: false,
-    students: [],
+    data: null,
     success: false,
+    teams: null,
     res_status: 0
   };
 
   componentDidMount() {
-    getExpenses().then(
+    getTeamMembers().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
-            students: data,
+            teams: data,
             success: success,
             res_status: status
           });
@@ -120,7 +59,7 @@ class Accounting extends React.Component {
     TabTitle('TaiGer Accounting');
     const { res_status, isLoaded } = this.state;
 
-    if (!isLoaded && !this.state.data) {
+    if (!isLoaded && !this.state.teams) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -133,23 +72,56 @@ class Accounting extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
-    if (this.state.success) {
-      return (
-        <Aux>
-          <Row>
-            <Col>
-              <Card>
-                <Card.Body>
-                  <h4>In Progress!</h4>
-                  <ExtendableTable data={this.state.students} />
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Aux>
-      );
-    }
+    const admins = this.state.teams.filter((member) => member.role === 'Admin');
+    const agents = this.state.teams.filter((member) => member.role === 'Agent');
+    const editors = this.state.teams.filter(
+      (member) => member.role === 'Editor'
+    );
+    return (
+      <Aux>
+        <Row className="sticky-top ">
+          <Col>
+            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header text={'dark'}>
+                <Card.Title>
+                  <Row>
+                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
+                  </Row>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+        <Card>
+          <Card.Body>
+            <h4>Agent:</h4>
+            {agents.map((agent, i) => (
+              <p key={i}>
+                <b>
+                  <Link
+                    to={`/internal/accounting/users/${agent._id.toString()}`}
+                  >
+                    {agent.firstname} {agent.lastname}{' '}
+                  </Link>
+                </b>
+              </p>
+            ))}
+            <h4>Editor:</h4>
+            {editors.map((editor, i) => (
+              <p key={i}>
+                <b>
+                  <Link
+                    to={`/internal/accounting/users/${editor._id.toString()}`}
+                  >
+                    {editor.firstname} {editor.lastname}{' '}
+                  </Link>
+                </b>
+              </p>
+            ))}
+          </Card.Body>
+        </Card>
+      </Aux>
+    );
   }
 }
 

@@ -183,6 +183,13 @@ export default {
           icon: 'feather icon-download'
         },
         {
+          id: 'learning-resources',
+          title: 'Learning Resources',
+          type: 'item',
+          icon: 'feather icon-book',
+          url: '/resources'
+        },
+        {
           id: 'admissions_overview',
           title: 'TaiGer Admissions',
           type: 'item',

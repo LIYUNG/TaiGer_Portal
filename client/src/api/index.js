@@ -371,6 +371,8 @@ export const getAgent = (agent_id) =>
   request.get(`/api/teams/agents/${agent_id}`);
 export const getEditor = (editor_id) =>
   request.get(`/api/teams/editors/${editor_id}`);
+export const getExpense = (taiger_user_id) =>
+  request.get(`/api/expenses/users/${taiger_user_id}`);
 
 //Personal Data:
 export const updatePersonalData = (personaldata) =>

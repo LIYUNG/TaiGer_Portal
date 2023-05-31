@@ -181,6 +181,80 @@ export const are_base_documents_missing = (student) => {
   return false;
 };
 
+export const are_base_documents_uploaded = (student) => {
+  let documentlist2_keys = Object.keys(profile_list);
+  let object_init = {};
+  for (let i = 0; i < documentlist2_keys.length; i++) {
+    object_init[documentlist2_keys[i]] = 'missing';
+  }
+  if (student.profile === undefined) {
+    return true;
+  }
+  if (student.profile.length === 0) {
+    return true;
+  }
+
+  for (let i = 0; i < student.profile.length; i++) {
+    if (student.profile[i].status === 'uploaded') {
+      object_init[student.profile[i].name] = 'uploaded';
+    } else if (student.profile[i].status === 'accepted') {
+      object_init[student.profile[i].name] = 'accepted';
+    } else if (student.profile[i].status === 'rejected') {
+      object_init[student.profile[i].name] = 'rejected';
+    } else if (student.profile[i].status === 'missing') {
+      object_init[student.profile[i].name] = 'missing';
+    } else if (student.profile[i].status === 'notneeded') {
+      object_init[student.profile[i].name] = 'notneeded';
+    }
+  }
+
+  for (let i = 0; i < documentlist2_keys.length; i++) {
+    if (object_init[documentlist2_keys[i]] === 'uploaded') {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const is_any_base_documents_uploaded = (students) => {
+  if (students) {
+    for (let i = 0; i < students.length; i += 1) {
+      let documentlist2_keys = Object.keys(profile_list);
+      let object_init = {};
+      for (let j = 0; j < documentlist2_keys.length; j += 1) {
+        object_init[documentlist2_keys[i]] = 'missing';
+      }
+      if (students[i].profile === undefined) {
+        return false;
+      }
+      if (students[i].profile.length === 0) {
+        return false;
+      }
+
+      for (let j = 0; j < students[i].profile.length; j += 1) {
+        if (students[i].profile[j].status === 'uploaded') {
+          object_init[students[i].profile[j].name] = 'uploaded';
+        } else if (students[i].profile[j].status === 'accepted') {
+          object_init[students[i].profile[j].name] = 'accepted';
+        } else if (students[i].profile[j].status === 'rejected') {
+          object_init[students[i].profile[j].name] = 'rejected';
+        } else if (students[i].profile[j].status === 'missing') {
+          object_init[students[i].profile[j].name] = 'missing';
+        } else if (students[i].profile[j].status === 'notneeded') {
+          object_init[students[i].profile[j].name] = 'notneeded';
+        }
+      }
+
+      for (let i = 0; i < documentlist2_keys.length; i++) {
+        if (object_init[documentlist2_keys[i]] === 'uploaded') {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
 export const to_register_application_portals = (student) => {
   for (const application of student.applications) {
     if (!application.credential_a_filled || !application.credential_b_filled) {

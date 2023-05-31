@@ -8,6 +8,7 @@ import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import AgentTasks from '../MainViewTab/AgentTasks/index';
 import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
 import VPDToSubmitTasks from '../MainViewTab/AgentTasks/VPDToSubmitTasks';
+import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
 
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -15,6 +16,7 @@ import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgen
 import { updateAgentBanner } from '../../../api';
 import { profile_list } from '../../Utils/contants';
 import {
+  is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
   is_any_vpd_missing
 } from '../../Utils/checking-functions';
@@ -117,7 +119,15 @@ class AgentMainView extends React.Component {
     const vpd_to_submit_tasks = this.props.students.map((student, i) => (
       <VPDToSubmitTasks key={i} role={this.props.role} student={student} />
     ));
-
+    const base_documents_checking_tasks = this.props.students.map(
+      (student, i) => (
+        <BaseDocumentCheckingTasks
+          key={i}
+          role={this.props.role}
+          student={student}
+        />
+      )
+    );
     const agent_tasks = this.props.students.map((student, i) => (
       <AgentTasks key={i} role={this.props.role} student={student} />
     ));
@@ -188,7 +198,7 @@ class AgentMainView extends React.Component {
                     <tr>
                       <th>Student</th>
                       <th>Deadline</th>
-                      <th>Semester - Degree - Description</th>
+                      <th>Semester - Degree - Program</th>
                     </tr>
                   </thead>
                   <tbody>{ready_to_submit_tasks}</tbody>
@@ -217,10 +227,40 @@ class AgentMainView extends React.Component {
                     <tr>
                       <th>Student</th>
                       <th>Deadline</th>
-                      <th>Semester - Degree - Description</th>
+                      <th>Program</th>
                     </tr>
                   </thead>
                   <tbody>{vpd_to_submit_tasks}</tbody>
+                </Table>
+              </Card>
+            </Col>
+          )}
+
+          {is_any_base_documents_uploaded(this.props.students) && (
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    <BsExclamationTriangle size={18} /> Check uploaded base documents:
+                  </Card.Title>
+                </Card.Header>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Base Document</th>
+                      <th>Upload Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>{base_documents_checking_tasks}</tbody>
                 </Table>
               </Card>
             </Col>

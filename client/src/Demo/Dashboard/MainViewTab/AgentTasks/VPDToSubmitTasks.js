@@ -15,7 +15,7 @@ class VPDToSubmitTasks extends React.Component {
           this.props.student.applications.map(
             (application, i) =>
               is_uni_assist_vpd_needed(application) && (
-                <tr>
+                <tr key={i}>
                   <td>
                     <Link
                       to={

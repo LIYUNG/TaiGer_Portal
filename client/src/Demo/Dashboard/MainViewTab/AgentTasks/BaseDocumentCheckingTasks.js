@@ -1,12 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  isCVFinished,
-  is_program_ml_rl_essay_ready,
-  is_the_uni_assist_vpd_uploaded,
-  is_program_closed,
-  application_deadline_calculator
-} from '../../../Utils/checking-functions';
+
 import { convertDate } from '../../../Utils/contants';
 
 class BaseDocumentCheckingTasks extends React.Component {

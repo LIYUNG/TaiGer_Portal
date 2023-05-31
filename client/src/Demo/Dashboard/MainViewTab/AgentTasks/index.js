@@ -6,12 +6,7 @@ import {
   isProgramNotSelectedEnough,
   check_applications_decision_from_student,
   isCVFinished,
-  is_cv_assigned,
-  is_all_uni_assist_vpd_uploaded,
-  is_program_ml_rl_essay_ready,
-  is_the_uni_assist_vpd_uploaded,
-  is_program_closed,
-  are_base_documents_missing
+  is_cv_assigned
 } from '../../../Utils/checking-functions';
 
 class AgentTasks extends React.Component {
@@ -172,30 +167,6 @@ class AgentTasks extends React.Component {
               <td></td>
             </tr>
           )}
-        {are_base_documents_missing(this.props.student) && (
-          <tr>
-            <td>
-              <Link
-                to={
-                  '/student-database/' +
-                  this.props.student._id.toString() +
-                  '/profile'
-                }
-                style={{ textDecoration: 'none' }}
-                className="text-info"
-              >
-                Base Documents
-              </Link>
-            </td>
-            <td>
-              <b>
-                {this.props.student.firstname} {this.props.student.lastname}
-              </b>{' '}
-              Base Documents not completed
-            </td>
-            <td></td>
-          </tr>
-        )}
         {/* TODO: add Portal register tasks */}
       </>
     );

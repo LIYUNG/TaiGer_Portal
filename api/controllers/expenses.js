@@ -76,6 +76,8 @@ const getExpense = asyncHandler(async (req, res) => {
       .lean()
       .exec();
     res.status(200).send({ success: true, data: { students, the_user } });
+  } else {
+    res.status(200).send({ success: true, data: { students: [], the_user } });
   }
 });
 

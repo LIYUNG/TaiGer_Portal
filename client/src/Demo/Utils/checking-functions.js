@@ -519,6 +519,34 @@ export const check_program_uni_assist_needed = (application) => {
   return false;
 };
 
+export const is_uni_assist_vpd_needed = (application) => {
+  if (
+    application.decided === 'O' &&
+    application.programId.uni_assist &&
+    application.programId.uni_assist.includes('VPD')
+  ) {
+    if (!application.uni_assist) {
+      return true;
+    }
+    if (
+      application.uni_assist &&
+      application.uni_assist.status === 'notneeded'
+    ) {
+      return false;
+    }
+
+    if (
+      application.uni_assist &&
+      (application.uni_assist.status !== 'uploaded' ||
+        application.uni_assist.vpd_file_path === '')
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export const check_uni_assist_needed = (student) => {
   if (!student.applications) {
     return false;
@@ -633,6 +661,62 @@ export const is_program_closed = (application) => {
   return false;
 };
 
+export const is_any_programs_ready_to_submit = (students) => {
+  if (students) {
+    for (let i = 0; i < students.length; i += 1) {
+      if (students[i].applications) {
+        for (let j = 0; j < students[i].applications.length; j += 1) {
+          if (
+            students[i].applications[j].decided === 'O' &&
+            isCVFinished(students[i]) &&
+            is_program_ml_rl_essay_ready(students[i].applications[j]) &&
+            is_the_uni_assist_vpd_uploaded(students[i].applications[j]) &&
+            !is_program_closed(students[i].applications[j])
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
+export const is_any_vpd_missing = (students) => {
+  if (students) {
+    for (let i = 0; i < students.length; i += 1) {
+      if (students[i].applications) {
+        for (let j = 0; j < students[i].applications.length; j += 1) {
+          if (
+            students[i].applications[j].decided === 'O' &&
+            students[i].applications[j].programId.uni_assist &&
+            students[i].applications[j].programId.uni_assist.includes('VPD')
+          ) {
+            if (!students[i].applications[j].uni_assist) {
+              return true;
+            }
+            if (
+              students[i].applications[j].uni_assist &&
+              students[i].applications[j].uni_assist.status === 'notneeded'
+            ) {
+              continue;
+            }
+            if (
+              students[i].applications[j].uni_assist &&
+              (students[i].applications[j].uni_assist.status !== 'uploaded' ||
+                students[i].applications[j].uni_assist.vpd_file_path === '')
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+  }
+  return false;
+};
+
 export const is_the_uni_assist_vpd_uploaded = (application) => {
   if (application === undefined) {
     return false;
@@ -674,8 +758,7 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
     if (
       student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
-      (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('FULL'))
+      student.applications[j].programId.uni_assist.includes('VPD')
     ) {
       if (!student.applications[j].uni_assist) {
         return false;

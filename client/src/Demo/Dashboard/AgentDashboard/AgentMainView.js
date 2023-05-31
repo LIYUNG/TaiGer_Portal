@@ -6,11 +6,18 @@ import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import AgentTasks from '../MainViewTab/AgentTasks/index';
+import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
+import VPDToSubmitTasks from '../MainViewTab/AgentTasks/VPDToSubmitTasks';
+
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 
 import { updateAgentBanner } from '../../../api';
 import { profile_list } from '../../Utils/contants';
+import {
+  is_any_programs_ready_to_submit,
+  is_any_vpd_missing
+} from '../../Utils/checking-functions';
 
 class AgentMainView extends React.Component {
   state = {
@@ -103,6 +110,14 @@ class AgentMainView extends React.Component {
       <AgentReviewing key={i} role={this.props.role} student={student} />
     ));
 
+    const ready_to_submit_tasks = this.props.students.map((student, i) => (
+      <ReadyToSubmitTasks key={i} role={this.props.role} student={student} />
+    ));
+
+    const vpd_to_submit_tasks = this.props.students.map((student, i) => (
+      <VPDToSubmitTasks key={i} role={this.props.role} student={student} />
+    ));
+
     const agent_tasks = this.props.students.map((student, i) => (
       <AgentTasks key={i} role={this.props.role} student={student} />
     ));
@@ -150,7 +165,67 @@ class AgentMainView extends React.Component {
             )
           )}
         <Row>
-          <Col>
+          {is_any_programs_ready_to_submit(this.props.students) && (
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    <BsExclamationTriangle size={18} /> Ready To Submit Tasks (
+                    ML/ RL/ Essay are finished. Please submit application
+                    asap.):
+                  </Card.Title>
+                </Card.Header>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Deadline</th>
+                      <th>Semester - Degree - Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>{ready_to_submit_tasks}</tbody>
+                </Table>
+              </Card>
+            </Col>
+          )}
+          {is_any_vpd_missing(this.props.students) && (
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    <BsExclamationTriangle size={18} /> VPD missing:
+                  </Card.Title>
+                </Card.Header>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Deadline</th>
+                      <th>Semester - Degree - Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>{vpd_to_submit_tasks}</tbody>
+                </Table>
+              </Card>
+            </Col>
+          )}
+          <Col md={6}>
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">

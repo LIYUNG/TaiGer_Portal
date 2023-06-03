@@ -30,7 +30,7 @@ const STUDENT_PROFILE_FOR_AGENT_URL = (studentId) =>
 const STUDENT_COURSE_URL = (studentId) =>
   new URL(`/my-courses/${studentId}`, ORIGIN).href;
 
-const TAIGER_SIGNATURE = '<p>Your TaiGer Consultancy Team</p>';
+const TAIGER_SIGNATURE = '<p><b>Your TaiGer Consultancy Team</b></p>';
 // const TAIGER_SIGNATURE = `<p>Your TaiGer Consultancy Team</p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
 //   <p>Facebook: <a href="https://www.facebook.com/profile.php?id=100063557155189">https://www.facebook.com/profile.php?id=100063557155189</a></p>`;
 const SPLIT_LINE = '-------------------------------------------------------';
@@ -491,10 +491,10 @@ const unsubmitted_applications_escalation_agent_summary = (student) => {
   return unsubmitted_applications;
 };
 
-const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
+const cv_rl_escalation_editor_list = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  let kk = 0;
   const today = new Date();
+
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
     const day_diff = parseInt(
       getNumberOfDays(
@@ -502,59 +502,79 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
         today
       )
     );
-    if (user.role === 'Editor') {
-      if (
-        !student.generaldocs_threads[i].isFinalVersion &&
-        student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
-        student.generaldocs_threads[i].latest_message_left_by_id !==
-          user._id.toString() &&
-        day_diff > trigger_days
-      ) {
-        if (kk === 0) {
-          missing_doc_list = `
-        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
-        <ul>
-        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-          kk += 1;
-        } else {
-          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-        }
-      }
-    } else if (user.role === 'Student') {
-      if (
-        !student.generaldocs_threads[i].isFinalVersion &&
-        student.generaldocs_threads[i].latest_message_left_by_id !==
-          user._id.toString() &&
-        day_diff > trigger_days
-      ) {
-        if (kk === 0) {
-          missing_doc_list = `
-        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
-        <ul>
-        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-          kk += 1;
-        } else {
-          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-        }
-      }
+    if (
+      !student.generaldocs_threads[i].isFinalVersion &&
+      student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
+      student.generaldocs_threads[i].latest_message_left_by_id !==
+        user._id.toString() &&
+      day_diff > trigger_days
+    ) {
+      missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+        i
+      ].doc_thread_id._id.toString()}">${
+        student.generaldocs_threads[i].doc_thread_id.file_type
+      }</a> - aged ${day_diff} days.</li>`;
     }
   }
+  return missing_doc_list;
+};
+
+const cv_rl_escalation_agent_list = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+  const today = new Date();
+
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    const day_diff = parseInt(
+      getNumberOfDays(
+        student.generaldocs_threads[i].doc_thread_id.updatedAt,
+        today
+      )
+    );
+    if (
+      !student.generaldocs_threads[i].isFinalVersion &&
+      day_diff > trigger_days
+    ) {
+      missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+        i
+      ].doc_thread_id._id.toString()}">${
+        student.generaldocs_threads[i].doc_thread_id.file_type
+      }</a> - aged ${day_diff} days.</li>`;
+    }
+  }
+  return missing_doc_list;
+};
+
+const cv_rl_escalation_student_list = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+  const today = new Date();
+
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    const day_diff = parseInt(
+      getNumberOfDays(
+        student.generaldocs_threads[i].doc_thread_id.updatedAt,
+        today
+      )
+    );
+    if (
+      !student.generaldocs_threads[i].isFinalVersion &&
+      student.generaldocs_threads[i].latest_message_left_by_id !==
+        user._id.toString() &&
+      day_diff > trigger_days
+    ) {
+      missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+        i
+      ].doc_thread_id._id.toString()}">${
+        student.generaldocs_threads[i].doc_thread_id.file_type
+      }</a> - aged ${day_diff} days.</li>`;
+    }
+  }
+  return missing_doc_list;
+};
+
+const ml_essay_escalation_editor_list = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+  const today = new Date();
+
   for (let i = 0; i < student.applications.length; i += 1) {
     if (student.applications[i].decided === 'O') {
       for (
@@ -569,269 +589,152 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
             today
           )
         );
-        if (user.role === 'Editor') {
-          if (
-            !student.applications[i].doc_modification_thread[j]
-              .isFinalVersion &&
-            student.applications[i].doc_modification_thread[j]
-              .latest_message_left_by_id !== '' &&
-            student.applications[i].doc_modification_thread[j]
-              .latest_message_left_by_id !== user._id.toString() &&
-            day_diff_2 > trigger_days
-          ) {
-            if (kk === 0) {
-              missing_doc_list = `
-        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
-        <ul>
-        <li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-              kk += 1;
-            } else {
-              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-            }
-          }
-        } else if (user.role === 'Student') {
-          if (
-            !student.applications[i].doc_modification_thread[j]
-              .isFinalVersion &&
-            student.applications[i].doc_modification_thread[j]
-              .latest_message_left_by_id !== user._id.toString() &&
-            day_diff_2 > trigger_days
-          ) {
-            if (kk === 0) {
-              missing_doc_list = `
-        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
-        <ul>
-        <li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-              kk += 1;
-            } else {
-              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-            }
-          }
-        } else if (user.role === 'Agent') {
-          if (
-            !student.applications[i].doc_modification_thread[j].isFinalVersion
-          ) {
-            if (kk === 0) {
-              missing_doc_list = `
-        The following documents are not finished:
-        <ul>
-        <li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-              kk += 1;
-            } else {
-              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-            }
-          }
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== '' &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString() &&
+          day_diff_2 > trigger_days
+        ) {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+            i
+          ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+            student.applications[i].programId.school
+          } ${student.applications[i].programId.program_name} ${
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .file_type
+          }</a> - aged ${day_diff_2} days.</li>`;
         }
       }
     }
   }
-  missing_doc_list += '</ul>';
+  return missing_doc_list;
+};
+
+const ml_essay_escalation_student_list = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+  const today = new Date();
+
+  for (let i = 0; i < student.applications.length; i += 1) {
+    if (student.applications[i].decided === 'O') {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        const day_diff_2 = parseInt(
+          getNumberOfDays(
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .updatedAt,
+            today
+          )
+        );
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString() &&
+          day_diff_2 > trigger_days
+        ) {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+            i
+          ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+            student.applications[i].programId.school
+          } ${student.applications[i].programId.program_name} ${
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .file_type
+          }</a> - aged ${day_diff_2} days.</li>`;
+        }
+      }
+    }
+  }
+  return missing_doc_list;
+};
+const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+  const today = new Date();
+
+  for (let i = 0; i < student.applications.length; i += 1) {
+    if (student.applications[i].decided === 'O') {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        const day_diff_2 = parseInt(
+          getNumberOfDays(
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .updatedAt,
+            today
+          )
+        );
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
+          student.applications[i].doc_modification_thread[j]
+            .latest_message_left_by_id !== user._id.toString() &&
+          day_diff_2 > trigger_days
+        ) {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+            i
+          ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+            student.applications[i].programId.school
+          } ${student.applications[i].programId.program_name} ${
+            student.applications[i].doc_modification_thread[j].doc_thread_id
+              .file_type
+          }</a> - aged ${day_diff_2} days.</li>`;
+        }
+      }
+    }
+  }
+  return missing_doc_list;
+};
+
+const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+  if (user.role === 'Editor') {
+    missing_doc_list = `
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
+        <ul>
+        ${cv_rl_escalation_editor_list(student, user, trigger_days)}
+        ${ml_essay_escalation_editor_list(student, user, trigger_days)}
+        </ul>`;
+  } else if (user.role === 'Student') {
+    missing_doc_list = `
+        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
+        <ul>
+        ${cv_rl_escalation_student_list(student, user, trigger_days)}
+        ${ml_essay_escalation_student_list(student, user, trigger_days)}
+        </ul>`;
+  }
   return missing_doc_list;
 };
 
 const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  let kk = 0;
-  const today = new Date();
-  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    const day_diff = parseInt(
-      getNumberOfDays(
-        student.generaldocs_threads[i].doc_thread_id.updatedAt,
-        today
-      )
-    );
-    if (user.role === 'Editor') {
-      if (
-        !student.generaldocs_threads[i].isFinalVersion &&
-        student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
-        student.generaldocs_threads[i].latest_message_left_by_id !==
-          user._id.toString() &&
-        day_diff > trigger_days
-      ) {
-        if (kk === 0) {
-          missing_doc_list = `
+  if (user.role === 'Editor') {
+    missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
-            student.firstname
-          } ${student.lastname}</a></b><br />
-
+      student.firstname
+    } ${student.lastname}</a></b><br />
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
-        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-          kk += 1;
-        } else {
-          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-        }
-      }
-    } else if (user.role === 'Agent') {
-      if (
-        !student.generaldocs_threads[i].isFinalVersion &&
-        day_diff > trigger_days
-      ) {
-        if (kk === 0) {
-          missing_doc_list = `
+        ${cv_rl_escalation_editor_list(student, user, trigger_days)}
+        ${ml_essay_escalation_editor_list(student, user, trigger_days)}
+        </ul>`;
+  }
+  if (user.role === 'Agent') {
+    missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
-            student.firstname
-          } ${student.lastname}</a></b><br />
+      student.firstname
+    } ${student.lastname}</a></b><br />
 
         The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
         <ul>
-        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-          kk += 1;
-        } else {
-          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
-            i
-          ].doc_thread_id._id.toString()}">${
-            student.generaldocs_threads[i].doc_thread_id.file_type
-          }</a> - aged ${day_diff} days.</li>`;
-        }
-      }
-    }
+        ${cv_rl_escalation_agent_list(student, user, trigger_days)}
+        ${ml_essay_escalation_agent_list(student, user, trigger_days)}
+        </ul>`;
   }
-  for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
-      for (
-        let j = 0;
-        j < student.applications[i].doc_modification_thread.length;
-        j += 1
-      ) {
-        const day_diff_2 = parseInt(
-          getNumberOfDays(
-            student.applications[i].doc_modification_thread[j].doc_thread_id
-              .updatedAt,
-            today
-          )
-        );
-        if (user.role === 'Editor') {
-          if (
-            !student.applications[i].doc_modification_thread[j]
-              .isFinalVersion &&
-            student.applications[i].doc_modification_thread[j]
-              .latest_message_left_by_id !== '' &&
-            student.applications[i].doc_modification_thread[j]
-              .latest_message_left_by_id !== user._id.toString() &&
-            day_diff_2 > trigger_days
-          ) {
-            if (kk === 0) {
-              missing_doc_list = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
-                student.firstname
-              } ${student.lastname}</a></b><br />
 
-        The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
-        <ul>
-        <li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-              kk += 1;
-            } else {
-              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-            }
-          }
-        } else if (user.role === 'Agent') {
-          if (
-            !student.applications[i].doc_modification_thread[j]
-              .isFinalVersion &&
-            day_diff_2 > trigger_days
-          ) {
-            if (kk === 0) {
-              missing_doc_list = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
-                student.firstname
-              } ${student.lastname}</a></b><br />
-        
-        The following documents are idle for a while, please <b>inform</b> student / editor as soon as possible:
-        <ul>
-        <li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-              kk += 1;
-            } else {
-              missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-                i
-              ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-                student.applications[i].programId.school
-              } ${student.applications[i].programId.program_name} ${
-                student.applications[i].doc_modification_thread[j].doc_thread_id
-                  .file_type
-              }</a> - aged ${day_diff_2} days.</li>`;
-            }
-          }
-        }
-      }
-    }
-  }
-  missing_doc_list += '</ul>';
   return missing_doc_list;
 };
 
@@ -1270,7 +1173,6 @@ const CVDeadline_Calculator = (student) => {
 };
 
 const cvmlrl_deadline_within30days_escalation_summary = (student) => {
-  let x = 0;
   const today = new Date();
   let missing_doc_list = '';
   let kk = 0;
@@ -1455,6 +1357,7 @@ module.exports = {
   unsubmitted_applications_escalation_summary,
   cvmlrl_deadline_within30days_escalation_summary,
   unsubmitted_applications_escalation_agent_summary,
+  cv_rl_escalation_editor_list,
   cv_ml_rl_escalation_summary,
   cv_ml_rl_editor_escalation_summary,
   cv_ml_rl_unfinished_summary,

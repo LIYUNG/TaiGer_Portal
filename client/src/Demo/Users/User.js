@@ -29,6 +29,19 @@ class User extends React.Component {
                 Set User as...
               </Dropdown.Item>
               <Dropdown.Item
+                eventKey="4"
+                onClick={() =>
+                  this.props.setModalArchiv(
+                    this.props.user.firstname,
+                    this.props.user.lastname,
+                    this.props.user._id.toString(),
+                    this.props.user.archiv
+                  )
+                }
+              >
+                {this.props.user.archiv === true ? 'Activate' : 'Archiv'}
+              </Dropdown.Item>
+              <Dropdown.Item
                 eventKey="3"
                 onClick={() =>
                   this.props.setModalShowDelete(

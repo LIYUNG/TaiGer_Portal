@@ -10,6 +10,7 @@ const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { Role } = require('../models/User');
 const {
   getUsers,
+  updateUserArchivStatus,
   addUser,
   updateUser,
   deleteUser
@@ -28,5 +29,12 @@ router
   .route('/:user_id')
   .post(filter_archiv_user, GeneralPOSTRequestRateLimiter, updateUser)
   .delete(filter_archiv_user, GeneralDELETERequestRateLimiter, deleteUser);
+router
+  .route('/archiv/:user_id')
+  .post(
+    filter_archiv_user,
+    GeneralPOSTRequestRateLimiter,
+    updateUserArchivStatus
+  );
 
 module.exports = router;

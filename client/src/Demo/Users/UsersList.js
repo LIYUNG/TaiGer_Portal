@@ -6,8 +6,9 @@ import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { deleteUser, changeUserRole } from '../../api';
+import { deleteUser, changeUserRole, updateArchivUser } from '../../api';
 import { UserlistHeader } from '../Utils/contants';
+import UserArchivWarning from './UserArchivWarning';
 
 class UsersList extends React.Component {
   state = {
@@ -18,9 +19,11 @@ class UsersList extends React.Component {
     lastname: '',
     selected_user_role: '',
     selected_user_id: '',
+    archiv: false,
     data: this.props.user,
     modalShowNewProgram: false,
     deleteUserWarning: false,
+    archivUserWarning: false,
     success: this.props.success,
     isLoaded: this.props.isLoaded,
     res_status: 0,
@@ -52,6 +55,11 @@ class UsersList extends React.Component {
     });
   };
 
+  setModalArchivHide = () => {
+    this.setState({
+      archivUserWarning: false
+    });
+  };
   setModalHideDDelete = () => {
     this.setState({
       deleteUserWarning: false,
@@ -67,7 +75,15 @@ class UsersList extends React.Component {
       selected_user_id: user_id
     });
   };
-
+  setModalArchiv = (user_firstname, user_lastname, user_id, archiv) => {
+    this.setState({
+      archivUserWarning: true,
+      firstname: user_firstname,
+      lastname: user_lastname,
+      selected_user_id: user_id,
+      archiv
+    });
+  };
   handleChange2 = (e) => {
     const { value } = e.target;
     this.setState((state) => ({
@@ -125,6 +141,9 @@ class UsersList extends React.Component {
   onChangeDeleteField = (e) => {
     this.setState({ delete_field: e.target.value });
   };
+  onChangeArchivField = (e) => {
+    this.setState({ delete_field: e.target.value });
+  };
   assignUserAs = (user_data) => {
     var updated_user = this.state.data.map((user) => {
       if (user._id === user_data._id) {
@@ -180,6 +199,43 @@ class UsersList extends React.Component {
     this.deleteUser(user_id);
   };
 
+  updateUserArchivStatus = (user_id, isArchived) => {
+    updateArchivUser(user_id, isArchived).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            archivUserWarning: false,
+            data: data,
+            success: success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
+    );
+  };
+
   ConfirmError = () => {
     this.setState((state) => ({
       ...state,
@@ -206,6 +262,7 @@ class UsersList extends React.Component {
         key={user._id}
         user={user}
         setModalShowDelete={this.setModalShowDelete}
+        setModalArchiv={this.setModalArchiv}
         setModalShow={this.setModalShow}
         success={this.state.success}
       />
@@ -252,6 +309,16 @@ class UsersList extends React.Component {
           lastname={this.state.lastname}
           selected_user_id={this.state.selected_user_id}
           RemoveUserHandler3={this.RemoveUserHandler3}
+        />
+        <UserArchivWarning
+          isLoaded={this.state.isLoaded}
+          archivUserWarning={this.state.archivUserWarning}
+          archiv={this.state.archiv}
+          setModalArchivHide={this.setModalArchivHide}
+          firstname={this.state.firstname}
+          lastname={this.state.lastname}
+          selected_user_id={this.state.selected_user_id}
+          updateUserArchivStatus={this.updateUserArchivStatus}
         />
       </>
     );

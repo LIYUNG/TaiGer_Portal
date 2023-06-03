@@ -151,6 +151,28 @@ const updateUser = asyncHandler(async (req, res) => {
   );
 });
 
+const updateUserArchivStatus = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { user_id },
+    body: { isArchived }
+  } = req;
+
+  // TODO: data validation for isArchived and user_id
+  let updated_user = await User.findByIdAndUpdate(
+    user_id,
+    {
+      archiv: isArchived
+    },
+    { new: true, strict: false }
+  )
+    .populate('editors')
+    .lean()
+    .exec();
+  const users = await User.find({}).lean();
+  res.status(200).send({ success: true, data: users });
+});
+
 const deleteUser = asyncHandler(async (req, res) => {
   const {
     params: { user_id }
@@ -253,6 +275,7 @@ module.exports = {
   UserS3GarbageCollector,
   addUser,
   getUsers,
+  updateUserArchivStatus,
   updateUser,
   deleteUser
 };

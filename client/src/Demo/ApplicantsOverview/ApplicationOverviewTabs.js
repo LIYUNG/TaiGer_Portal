@@ -21,8 +21,6 @@ import {
 import { applicationFileOverviewHeader, applicationOverviewHeader, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
-import { updateArchivStudents } from '../../api';
-
 function SortTable({ columns, data, user }) {
   const {
     getTableProps,
@@ -221,36 +219,6 @@ class ApplicationOverviewTabs extends React.Component {
     res_status: 0
   };
 
-  updateStudentArchivStatus = (studentId, isArchived) => {
-    updateArchivStudents(studentId, isArchived).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  };
   render() {
     const { res_status, isLoaded } = this.state;
 

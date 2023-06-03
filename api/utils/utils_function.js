@@ -11,9 +11,10 @@ const {
   EditorTasksReminderEmail,
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
   StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
-  EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
-  AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
-  AgentApplicationsDeadline_Within30Days_DailyReminderEmail
+  EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
+  AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail,
+  AgentApplicationsDeadline_Within30Days_DailyReminderEmail,
+  EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail
 } = require('../services/regular_system_emails');
 const logger = require('../services/logger');
 const {
@@ -214,8 +215,8 @@ const UrgentTasksReminderEmails_Student_core = async () => {
 const UrgentTasksReminderEmails_Agent_core = async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const trigger_days = 3;
-  const escalation_trigger_days = 7;
+  const escalation_trigger_10days = 10;
+  const escalation_trigger_3days = 3;
   const agents = await Agent.find();
 
   for (let j = 0; j < agents.length; j += 1) {
@@ -231,18 +232,56 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
       )
       .select('-notification');
     if (agent_students.length > 0) {
-      let temp_flag = false;
-      let temp_flag2 = false;
-      // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
+      let cv_ml_rl_10days_flag = false;
+      let cv_ml_rl_3days_flag = false;
+      let deadline_within30days_flag = false;
+      // (O) check any program within 30 days from agent's students?
       for (let x = 0; x < agent_students.length; x += 1) {
-        temp_flag |= is_cv_ml_rl_reminder_needed(
+        deadline_within30days_flag |= is_deadline_within30days_needed(
+          agent_students[x]
+        );
+        cv_ml_rl_10days_flag |= is_cv_ml_rl_reminder_needed(
           agent_students[x],
           agents[j],
-          escalation_trigger_days
+          escalation_trigger_10days
+        );
+        cv_ml_rl_3days_flag |= is_cv_ml_rl_reminder_needed(
+          agent_students[x],
+          agents[j],
+          escalation_trigger_3days
         );
       }
-      if (temp_flag) {
-        await AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail(
+      if (deadline_within30days_flag) {
+        if (cv_ml_rl_3days_flag) {
+          console.log(`Escalate: ${agents[j].firstname} ${agents[j].lastname}`);
+          await AgentApplicationsDeadline_Within30Days_DailyReminderEmail(
+            {
+              firstname: agents[j].firstname,
+              lastname: agents[j].lastname,
+              address: agents[j].email
+            },
+            { students: agent_students }
+          );
+          // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
+          await AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail(
+            {
+              firstname: agents[j].firstname,
+              lastname: agents[j].lastname,
+              address: agents[j].email
+            },
+            {
+              students: agent_students,
+              agent: agents[j],
+              trigger_days: escalation_trigger_3days
+            }
+          );
+        }
+        console.log(
+          `Daily urgent emails sent to ${agents[j].firstname} ${agents[j].lastname}`
+        );
+      } else if (cv_ml_rl_10days_flag) {
+        // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
+        await AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail(
           {
             firstname: agents[j].firstname,
             lastname: agents[j].lastname,
@@ -251,26 +290,8 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
           {
             students: agent_students,
             agent: agents[j],
-            trigger_days: escalation_trigger_days
+            trigger_days: escalation_trigger_10days
           }
-        );
-      }
-      // (O) check any program within 30 days from agent's students?
-      for (let x = 0; x < agent_students.length; x += 1) {
-        temp_flag2 |= is_deadline_within30days_needed(agent_students[x]);
-      }
-      if (temp_flag2) {
-        console.log(`Escalate: ${agents[j].firstname} ${agents[j].lastname}`);
-        await AgentApplicationsDeadline_Within30Days_DailyReminderEmail(
-          {
-            firstname: agents[j].firstname,
-            lastname: agents[j].lastname,
-            address: agents[j].email
-          },
-          { students: agent_students }
-        );
-        console.log(
-          `Daily urgent emails sent to ${agents[j].firstname} ${agents[j].lastname}`
         );
       }
     }
@@ -280,7 +301,8 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
 const UrgentTasksReminderEmails_Editor_core = async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const trigger_days = 3;
+  const editor_trigger_7days = 7;
+  const editor_trigger_3days = 3;
   const editors = await Editor.find();
 
   // (O): Check if editor no reply (need to response) more than 3 days (Should configurable)
@@ -297,23 +319,57 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
       )
       .select('-notification');
     if (editor_students.length > 0) {
-      let temp_flag = false;
+      let cv_ml_rl_7days_flag = false;
+      let cv_ml_rl_3days_flag = false;
+      let deadline_within30days_flag = false;
       for (let x = 0; x < editor_students.length; x += 1) {
-        temp_flag |= is_cv_ml_rl_reminder_needed(
+        deadline_within30days_flag |= is_deadline_within30days_needed(
+          editor_students[x]
+        );
+        cv_ml_rl_7days_flag |= is_cv_ml_rl_reminder_needed(
           editor_students[x],
           editors[j],
-          trigger_days
+          editor_trigger_7days
+        );
+        cv_ml_rl_3days_flag |= is_cv_ml_rl_reminder_needed(
+          editor_students[x],
+          editors[j],
+          editor_trigger_3days
         );
       }
-      if (temp_flag) {
+
+      if (deadline_within30days_flag) {
+        // TODO: editor only need to see deadline within 30 days tasks!
+        if (cv_ml_rl_3days_flag) {
+          console.log(
+            `Escalate: ${editors[j].firstname} ${editors[j].lastname}`
+          );
+          // TODO: list the document within 30 days deadline.
+          await EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail(
+            {
+              firstname: editors[j].firstname,
+              lastname: editors[j].lastname,
+              address: editors[j].email
+            },
+            { students: editor_students }
+          );
+        }
+        console.log(
+          `Daily urgent emails sent to ${editors[j].firstname} ${editors[j].lastname}`
+        );
+      } else if (cv_ml_rl_7days_flag) {
         console.log(`Escalate: ${editors[j].firstname} ${editors[j].lastname}`);
-        await EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail(
+        await EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail(
           {
             firstname: editors[j].firstname,
             lastname: editors[j].lastname,
             address: editors[j].email
           },
-          { students: editor_students, editor: editors[j], trigger_days }
+          {
+            students: editor_students,
+            editor: editors[j],
+            trigger_days: editor_trigger_7days
+          }
         );
       }
     }

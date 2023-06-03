@@ -24,7 +24,8 @@ const {
   getNumberOfDays,
   General_Docs,
   application_deadline_calculator,
-  isNotArchiv
+  isNotArchiv,
+  CVDeadline_Calculator
 } = require('../constants');
 
 const {
@@ -637,25 +638,7 @@ const getMessages = asyncHandler(async (req, res) => {
   ).populate('applications.programId');
   let deadline = 'x';
   if (General_Docs.includes(document_thread.file_type)) {
-    const today = new Date();
-    let daysLeftMin = 3000;
-    let CVDeadline = '';
-    for (let i = 0; i < student.applications.length; i += 1) {
-      if (student.applications[i].decided === 'O') {
-        const application_deadline_temp = application_deadline_calculator(
-          student,
-          student.applications[i]
-        );
-        const day_left = parseInt(
-          getNumberOfDays(today, application_deadline_temp)
-        );
-        if (daysLeftMin > day_left) {
-          daysLeftMin = day_left;
-          CVDeadline = application_deadline_temp;
-        }
-      }
-    }
-    deadline = daysLeftMin === 3000 ? '-' : CVDeadline;
+    deadline = CVDeadline_Calculator(student);
   } else {
     const application = student.applications.find(
       (app) =>

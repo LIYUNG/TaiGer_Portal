@@ -30,7 +30,8 @@ const {
   TAIGER_SIGNATURE,
   SPLIT_LINE,
   ENGLISH_BELOW,
-  CONTACT_AGENT
+  CONTACT_AGENT,
+  cvmlrl_deadline_within30days_escalation_summary
 } = require('../constants');
 
 const {
@@ -283,7 +284,7 @@ ${unread_cv_ml_rl_thread}
   return sendEmail(recipient, subject, message);
 };
 
-const EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
+const EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = async (
   recipient,
   payload
 ) => {
@@ -294,7 +295,7 @@ const EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
     ${cv_ml_rl_editor_escalation_summary(
       payload.students[i],
       payload.editor,
-      payload.trigger_days // after 3 days
+      payload.trigger_days // after 7 days
     )}`;
   }
   const message = `\
@@ -309,7 +310,7 @@ ${unread_cv_ml_rl_threads}
   return sendEmail(recipient, subject, message);
 };
 
-const AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = async (
+const AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail = async (
   recipient,
   payload
 ) => {
@@ -357,6 +358,30 @@ ${unsubmitted_applications_students}
 
   return sendEmail(recipient, subject, message);
 };
+// TODO: make sure no documents missing?
+const EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail = async (
+  recipient,
+  payload
+) => {
+  const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: These Tasks deadline very close!`;
+  let cvmlrl_deadline_soon = '';
+  for (let i = 0; i < payload.students.length; i += 1) {
+    cvmlrl_deadline_soon += `
+    ${cvmlrl_deadline_within30days_escalation_summary(payload.students[i])}`;
+  }
+
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+${cvmlrl_deadline_soon}
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const AgentUrgentTasksReminderEmail = async (recipient, payload) => {
   const subject = `[Action Required] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
   const unsubmitted_applications = unsubmitted_applications_escalation_summary(
@@ -393,8 +418,9 @@ module.exports = {
   EditorTasksReminderEmail,
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
   StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
-  EditorCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
-  AgentCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
+  EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
+  AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail,
+  EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail,
   AgentApplicationsDeadline_Within30Days_DailyReminderEmail,
   AgentUrgentTasksReminderEmail
 };

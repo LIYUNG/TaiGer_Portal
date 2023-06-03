@@ -176,7 +176,7 @@ const is_deadline_within30days_needed = (student) => {
       student.applications[k].decided === 'O' &&
       student.applications[k].closed !== 'O' &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
-      day_diff > -1
+      day_diff > -2
     ) {
       return true;
     }
@@ -455,7 +455,7 @@ const unsubmitted_applications_escalation_agent_summary = (student) => {
       student.applications[i].decided === 'O' &&
       student.applications[i].closed !== 'O' &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
-      day_diff > -1
+      day_diff > -2
     ) {
       if (x === 0) {
         unsubmitted_applications = `
@@ -1247,6 +1247,130 @@ const profile_name_list = {
   Others: 'Others'
 };
 
+const CVDeadline_Calculator = (student) => {
+  let daysLeftMin = 3000;
+  let CVDeadline = '';
+  const today = new Date();
+  for (let i = 0; i < student.applications.length; i += 1) {
+    if (student.applications[i].decided === 'O') {
+      const application_deadline_temp = application_deadline_calculator(
+        student,
+        student.applications[i]
+      );
+      const day_left = parseInt(
+        getNumberOfDays(today, application_deadline_temp)
+      );
+      if (daysLeftMin > day_left) {
+        daysLeftMin = day_left;
+        CVDeadline = application_deadline_temp;
+      }
+    }
+  }
+  return daysLeftMin === 3000 ? '-' : CVDeadline;
+};
+
+const cvmlrl_deadline_within30days_escalation_summary = (student) => {
+  let x = 0;
+  const today = new Date();
+  let missing_doc_list = '';
+  let kk = 0;
+  const CVDeadline = CVDeadline_Calculator(student);
+  const CV_day_diff = getNumberOfDays(today, CVDeadline);
+  for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
+    if (
+      CV_day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      CV_day_diff > -30
+    ) {
+      if (!student.generaldocs_threads[i].isFinalVersion) {
+        if (kk === 0) {
+          missing_doc_list = `
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+            student.firstname
+          } ${student.lastname}</a></b><br />
+
+        The following documents deadline are close, please <b>make sure</b> to close them as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - deadline ${CVDeadline_Calculator(
+            student
+          )} ${CV_day_diff} days left!</li>`;
+          kk += 1;
+        } else {
+          missing_doc_list += `<li><a href="${THREAD_URL}/${student.generaldocs_threads[
+            i
+          ].doc_thread_id._id.toString()}">${
+            student.generaldocs_threads[i].doc_thread_id.file_type
+          }</a> - deadline ${CVDeadline_Calculator(
+            student
+          )} - ${CV_day_diff} days left!</li>`;
+        }
+      }
+    }
+  }
+  for (let i = 0; i < student.applications.length; i += 1) {
+    const day_diff = getNumberOfDays(
+      today,
+      application_deadline_calculator(student, student.applications[i])
+    );
+    if (
+      student.applications[i].decided === 'O' &&
+      student.applications[i].closed !== 'O' &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      day_diff > -30
+    ) {
+      for (
+        let j = 0;
+        j < student.applications[i].doc_modification_thread.length;
+        j += 1
+      ) {
+        if (
+          !student.applications[i].doc_modification_thread[j].isFinalVersion
+        ) {
+          if (kk === 0) {
+            missing_doc_list = `
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+              student.firstname
+            } ${student.lastname}</a></b><br />
+
+        The following documents deadline are close, please <b>make sure</b> to close them as soon as possible:
+        <ul>
+        <li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a> - deadline ${application_deadline_calculator(
+              student,
+              student.applications[i]
+            )} ${day_diff} days left!</li>`;
+            kk += 1;
+          } else {
+            missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
+              i
+            ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
+              student.applications[i].programId.school
+            } ${student.applications[i].programId.program_name} ${
+              student.applications[i].doc_modification_thread[j].doc_thread_id
+                .file_type
+            }</a> - deadline ${application_deadline_calculator(
+              student,
+              student.applications[i]
+            )} ${day_diff} days left!</li>`;
+          }
+        }
+      }
+    }
+  }
+
+  missing_doc_list += '</ul>';
+  return missing_doc_list;
+};
+
 const base_documents_summary = (student) => {
   let rejected_base_documents = '';
   let missing_base_documents = '';
@@ -1329,6 +1453,7 @@ module.exports = {
   application_deadline_calculator,
   unsubmitted_applications_summary,
   unsubmitted_applications_escalation_summary,
+  cvmlrl_deadline_within30days_escalation_summary,
   unsubmitted_applications_escalation_agent_summary,
   cv_ml_rl_escalation_summary,
   cv_ml_rl_editor_escalation_summary,
@@ -1337,6 +1462,7 @@ module.exports = {
   profile_keys_list,
   profile_name_list,
   getNumberOfDays,
+  CVDeadline_Calculator,
   isNotArchiv,
   check_english_language_passed,
   check_german_language_passed,

@@ -442,7 +442,7 @@ class CVMLRLDashboard extends React.Component {
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
-                <SortTable
+                <SortTable2
                   columns={taskTashboardHeader}
                   data={cvmlrl_idle_tasks}
                   user={this.props.user}

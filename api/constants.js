@@ -92,7 +92,8 @@ const application_deadline_calculator = (student, application) => {
     student.application_preference.expected_application_date !== ''
   ) {
     application_year = parseInt(
-      student.application_preference.expected_application_date
+      student.application_preference.expected_application_date,
+      10
     );
   }
   if (!application_deadline) {
@@ -103,10 +104,12 @@ const application_deadline_calculator = (student, application) => {
     return `${application_year}-Rolling`;
   }
   let deadline_month = parseInt(
-    application.programId.application_deadline.split('-')[0]
+    application.programId.application_deadline.split('-')[0],
+    10
   );
   let deadline_day = parseInt(
-    application.programId.application_deadline.split('-')[1]
+    application.programId.application_deadline.split('-')[1],
+    10
   );
   if (semester === undefined) {
     return 'Err';
@@ -175,7 +178,7 @@ const is_deadline_within30days_needed = (student) => {
     if (
       student.applications[k].decided === 'O' &&
       student.applications[k].closed !== 'O' &&
-      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -2
     ) {
       return true;
@@ -290,7 +293,8 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
     const day_diff = parseInt(
-      getNumberOfDays(student.generaldocs_threads[i].updatedAt, today)
+      getNumberOfDays(student.generaldocs_threads[i].updatedAt, today),
+      10
     );
     if (user.role === 'Editor') {
       if (
@@ -332,7 +336,8 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
             student.applications[i].doc_modification_thread[j].doc_thread_id
               .updatedAt,
             today
-          )
+          ),
+          10
         );
         if (user.role === 'Editor') {
           if (
@@ -397,9 +402,8 @@ const unsubmitted_applications_summary = (student) => {
   return unsubmitted_applications;
 };
 
-const unsubmitted_applications_escalation_summary = (student) => {
-  let unsubmitted_applications = '';
-  let x = 0;
+const unsubmitted_applications_list = (student) => {
+  let unsubmitted_applications_li = '';
   const today = new Date();
   for (let i = 0; i < student.applications.length; i += 1) {
     const day_diff = getNumberOfDays(
@@ -409,85 +413,40 @@ const unsubmitted_applications_escalation_summary = (student) => {
     if (
       student.applications[i].decided === 'O' &&
       student.applications[i].closed !== 'O' &&
-      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -1
     ) {
-      if (x === 0) {
-        unsubmitted_applications = `
-        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
-        <ul>
-        <li>${student.applications[i].programId.school} ${
-          student.applications[i].programId.program_name
-        }: <b> Deadline ${application_deadline_calculator(
-          student,
-          student.applications[i]
-        )} </b> </li>`;
-        x += 1;
-      } else {
-        unsubmitted_applications += `<li>${
-          student.applications[i].programId.school
-        } - ${
-          student.applications[i].programId.program_name
-        }: <b> Deadline ${application_deadline_calculator(
-          student,
-          student.applications[i]
-        )} </b></li>`;
-      }
+      unsubmitted_applications_li += `<li>${
+        student.applications[i].programId.school
+      } ${
+        student.applications[i].programId.program_name
+      }: <b> Deadline ${application_deadline_calculator(
+        student,
+        student.applications[i]
+      )} </b></li>`;
     }
   }
-  if (unsubmitted_applications !== '') {
-    unsubmitted_applications += '</ul>';
-    unsubmitted_applications += `<p>If the applications are already submitted, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
-  }
+  return unsubmitted_applications_li;
+};
+const unsubmitted_applications_escalation_summary = (student) => {
+  let unsubmitted_applications = '';
+  unsubmitted_applications = `
+        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
+        <ul>
+        ${unsubmitted_applications_list(student)}
+        </ul>
+        <p>If the applications are already submitted, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
   return unsubmitted_applications;
 };
 
 const unsubmitted_applications_escalation_agent_summary = (student) => {
   let unsubmitted_applications = '';
-  let x = 0;
-  const today = new Date();
-  for (let i = 0; i < student.applications.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      today,
-      application_deadline_calculator(student, student.applications[i])
-    );
-    if (
-      student.applications[i].decided === 'O' &&
-      student.applications[i].closed !== 'O' &&
-      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
-      day_diff > -2
-    ) {
-      if (x === 0) {
-        unsubmitted_applications = `
+  unsubmitted_applications = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
-          student.firstname
-        } ${student.lastname}</a></b><br />
-        
-        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
-        <ul>
-        <li>${student.applications[i].programId.school} ${
-          student.applications[i].programId.program_name
-        }: <b> Deadline ${application_deadline_calculator(
-          student,
-          student.applications[i]
-        )} </b> </li>`;
-        x += 1;
-      } else {
-        unsubmitted_applications += `<li>${
-          student.applications[i].programId.school
-        } - ${
-          student.applications[i].programId.program_name
-        }: <b> Deadline ${application_deadline_calculator(
-          student,
-          student.applications[i]
-        )} </b></li>`;
-      }
-    }
-  }
-  if (unsubmitted_applications !== '') {
-    unsubmitted_applications += '</ul>';
-    unsubmitted_applications += `<p>If the applications are already submitted, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
-  }
+    student.firstname
+  } ${student.lastname}</a></b><br />
+  ${unsubmitted_applications_escalation_summary(student)}
+  `;
   return unsubmitted_applications;
 };
 
@@ -500,7 +459,8 @@ const cv_rl_escalation_editor_list = (student, user, trigger_days) => {
       getNumberOfDays(
         student.generaldocs_threads[i].doc_thread_id.updatedAt,
         today
-      )
+      ),
+      10
     );
     if (
       !student.generaldocs_threads[i].isFinalVersion &&
@@ -528,7 +488,8 @@ const cv_rl_escalation_agent_list = (student, user, trigger_days) => {
       getNumberOfDays(
         student.generaldocs_threads[i].doc_thread_id.updatedAt,
         today
-      )
+      ),
+      10
     );
     if (
       !student.generaldocs_threads[i].isFinalVersion &&
@@ -553,7 +514,8 @@ const cv_rl_escalation_student_list = (student, user, trigger_days) => {
       getNumberOfDays(
         student.generaldocs_threads[i].doc_thread_id.updatedAt,
         today
-      )
+      ),
+      10
     );
     if (
       !student.generaldocs_threads[i].isFinalVersion &&
@@ -587,7 +549,8 @@ const ml_essay_escalation_editor_list = (student, user, trigger_days) => {
             student.applications[i].doc_modification_thread[j].doc_thread_id
               .updatedAt,
             today
-          )
+          ),
+          10
         );
         if (
           !student.applications[i].doc_modification_thread[j].isFinalVersion &&
@@ -628,7 +591,8 @@ const ml_essay_escalation_student_list = (student, user, trigger_days) => {
             student.applications[i].doc_modification_thread[j].doc_thread_id
               .updatedAt,
             today
-          )
+          ),
+          10
         );
         if (
           !student.applications[i].doc_modification_thread[j].isFinalVersion &&
@@ -666,7 +630,8 @@ const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
             student.applications[i].doc_modification_thread[j].doc_thread_id
               .updatedAt,
             today
-          )
+          ),
+          10
         );
         if (
           !student.applications[i].doc_modification_thread[j].isFinalVersion &&
@@ -1161,7 +1126,8 @@ const CVDeadline_Calculator = (student) => {
         student.applications[i]
       );
       const day_left = parseInt(
-        getNumberOfDays(today, application_deadline_temp)
+        getNumberOfDays(today, application_deadline_temp),
+        10
       );
       if (daysLeftMin > day_left) {
         daysLeftMin = day_left;
@@ -1180,7 +1146,7 @@ const cvmlrl_deadline_within30days_escalation_summary = (student) => {
   const CV_day_diff = getNumberOfDays(today, CVDeadline);
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
     if (
-      CV_day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      CV_day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       CV_day_diff > -30
     ) {
       if (!student.generaldocs_threads[i].isFinalVersion) {
@@ -1220,7 +1186,7 @@ const cvmlrl_deadline_within30days_escalation_summary = (student) => {
     if (
       student.applications[i].decided === 'O' &&
       student.applications[i].closed !== 'O' &&
-      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER) &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -30
     ) {
       for (

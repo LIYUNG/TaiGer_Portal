@@ -31,7 +31,8 @@ const {
   SPLIT_LINE,
   ENGLISH_BELOW,
   CONTACT_AGENT,
-  cvmlrl_deadline_within30days_escalation_summary
+  cvmlrl_deadline_within30days_escalation_summary,
+  is_deadline_within30days_needed
 } = require('../constants');
 
 const {
@@ -344,7 +345,11 @@ const AgentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
   let unsubmitted_applications_students = '';
   for (let i = 0; i < payload.students.length; i += 1) {
     unsubmitted_applications_students += `
-    ${unsubmitted_applications_escalation_agent_summary(payload.students[i])}`;
+    ${
+      is_deadline_within30days_needed(payload.students[i])
+        ? unsubmitted_applications_escalation_agent_summary(payload.students[i])
+        : ''
+    }`;
   }
 
   const message = `\
@@ -382,34 +387,6 @@ ${cvmlrl_deadline_soon}
   return sendEmail(recipient, subject, message);
 };
 
-const AgentUrgentTasksReminderEmail = async (recipient, payload) => {
-  const subject = `[Action Required] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
-  const unsubmitted_applications = unsubmitted_applications_escalation_summary(
-    payload.student
-  );
-  let unread_cv_ml_rl_threads = '';
-  for (let i = 0; i < payload.students.length; i += 1) {
-    unread_cv_ml_rl_threads += `
-    ${cv_ml_rl_editor_escalation_summary(
-      payload.students[i],
-      payload.editor,
-      payload.trigger_days // after 3 days
-    )}`;
-  }
-  const message = `\
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-${unsubmitted_applications}
-
-${unread_cv_ml_rl_threads}
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`; // should be for admin/editor/agent/student
-
-  return sendEmail(recipient, subject, message);
-};
-
 module.exports = {
   verifySMTPConfig,
   sendEmail,
@@ -421,6 +398,5 @@ module.exports = {
   EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
   AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail,
   EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail,
-  AgentApplicationsDeadline_Within30Days_DailyReminderEmail,
-  AgentUrgentTasksReminderEmail
+  AgentApplicationsDeadline_Within30Days_DailyReminderEmail
 };

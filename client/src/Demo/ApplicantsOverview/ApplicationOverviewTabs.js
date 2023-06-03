@@ -18,7 +18,11 @@ import {
   programs_refactor,
   is_TaiGer_role
 } from '../Utils/checking-functions';
-import { applicationFileOverviewHeader, applicationOverviewHeader, spinner_style } from '../Utils/contants';
+import {
+  applicationFileOverviewHeader,
+  applicationOverviewHeader,
+  spinner_style
+} from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
 function SortTable({ columns, data, user }) {
@@ -65,8 +69,8 @@ function SortTable({ columns, data, user }) {
         {...getTableProps()}
       >
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+          {headerGroups.map((headerGroup, j) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={j}>
               {headerGroup.headers.map((column, i) => (
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
@@ -77,6 +81,7 @@ function SortTable({ columns, data, user }) {
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
                         )}
+                        key={i}
                       >
                         {column.render('Header')}
                         {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
@@ -95,6 +100,7 @@ function SortTable({ columns, data, user }) {
                   ) : (
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
+                      key={i}
                     >
                       {column.render('Header')}
                       {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
@@ -117,11 +123,11 @@ function SortTable({ columns, data, user }) {
           {firstPageRows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} key={i}>
                 {row.cells.map((cell, j) => {
                   return j === 0 ? (
                     is_TaiGer_role(user) ? (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <Link
                           to={`/student-applications/${row.original.student_id}`}
                           style={{ textDecoration: 'none' }}
@@ -138,7 +144,7 @@ function SortTable({ columns, data, user }) {
                         </Link>
                       </td>
                     ) : (
-                      <td>
+                      <td key={j}>
                         <Link
                           to={`/student-applications/${row.original.student_id}`}
                           style={{ textDecoration: 'none' }}
@@ -148,7 +154,7 @@ function SortTable({ columns, data, user }) {
                       </td>
                     )
                   ) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(j) ? (
-                    <td {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()} key={j}>
                       {row.original.decided === 'O' ? (
                         row.original.closed === 'O' ? (
                           <Link
@@ -183,18 +189,20 @@ function SortTable({ columns, data, user }) {
                     </td>
                   ) : j === 11 ? (
                     cell.value < 30 ? (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">
                           {cell.render('Cell')}
                         </p>
                       </td>
                     ) : (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-light my-0">{cell.render('Cell')}</p>
                       </td>
                     )
                   ) : (
-                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    <td {...cell.getCellProps()} key={j}>
+                      {cell.render('Cell')}
+                    </td>
                   );
                 })}
               </tr>

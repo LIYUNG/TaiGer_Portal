@@ -56,60 +56,11 @@ const emptyS3Directory = async (bucket, dir) => {
   if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
 };
 
-const TasksReminderEmails = async () => {
+const TasksReminderEmails_Editor_core = async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .select('-notification')
-    .lean(); // Only active student, not archiv
-  const agents = await Agent.find();
   const editors = await Editor.find();
 
-  for (let j = 0; j < students.length; j += 1) {
-    await StudentTasksReminderEmail(
-      {
-        firstname: students[j].firstname,
-        lastname: students[j].lastname,
-        address: students[j].email
-      },
-      { student: students[j] }
-    );
-  }
-  for (let j = 0; j < agents.length; j += 1) {
-    const agent_students = await Student.find({
-      agents: agents[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
-      .populate('agents editors', 'firstname lastname email')
-      .populate('applications.programId')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
-      .select('-notification')
-      .lean()
-      .exec();
-    if (agent_students.length > 0) {
-      if (isNotArchiv(agents[j])) {
-        await AgentTasksReminderEmail(
-          {
-            firstname: agents[j].firstname,
-            lastname: agents[j].lastname,
-            address: agents[j].email
-          },
-          { students: agent_students, agent: agents[j] }
-        );
-      }
-    }
-  }
   for (let j = 0; j < editors.length; j += 1) {
     const editor_students = await Student.find({
       editors: editors[j]._id,
@@ -137,14 +88,47 @@ const TasksReminderEmails = async () => {
       }
     }
   }
-  console.log('Reminder email sent');
+  console.log('Editor reminder email sent');
 };
 
-const UrgentTasksReminderEmails = async () => {
+const TasksReminderEmails_Agent_core = async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const trigger_days = 3;
-  const escalation_trigger_days = 7;
+  const agents = await Agent.find();
+
+  for (let j = 0; j < agents.length; j += 1) {
+    const agent_students = await Student.find({
+      agents: agents[j]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select('-notification')
+      .lean()
+      .exec();
+    if (agent_students.length > 0) {
+      if (isNotArchiv(agents[j])) {
+        await AgentTasksReminderEmail(
+          {
+            firstname: agents[j].firstname,
+            lastname: agents[j].lastname,
+            address: agents[j].email
+          },
+          { students: agent_students, agent: agents[j] }
+        );
+      }
+    }
+  }
+  console.log('Agent reminder email sent');
+};
+
+const TasksReminderEmails_Student_core = async () => {
+  // Only inform active student
+  // TODO: deactivate or change email frequency (default 1 week.)
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -156,8 +140,43 @@ const UrgentTasksReminderEmails = async () => {
     )
     .select('-notification')
     .lean(); // Only active student, not archiv
-  const agents = await Agent.find();
-  const editors = await Editor.find();
+
+  for (let j = 0; j < students.length; j += 1) {
+    await StudentTasksReminderEmail(
+      {
+        firstname: students[j].firstname,
+        lastname: students[j].lastname,
+        address: students[j].email
+      },
+      { student: students[j] }
+    );
+  }
+  console.log('Student reminder email sent');
+};
+
+// Weekly called.
+const TasksReminderEmails = async () => {
+  await TasksReminderEmails_Editor_core();
+  await TasksReminderEmails_Student_core();
+  await TasksReminderEmails_Agent_core();
+};
+
+const UrgentTasksReminderEmails_Student_core = async () => {
+  // Only inform active student
+  // TODO: deactivate or change email frequency (default 1 week.)
+  const trigger_days = 3;
+  const students = await Student.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select('-notification')
+    .lean(); // Only active student, not archiv
+
   // (O): Check if student applications deadline within 30 days
   for (let j = 0; j < students.length; j += 1) {
     if (is_deadline_within30days_needed(students[j])) {
@@ -190,6 +209,14 @@ const UrgentTasksReminderEmails = async () => {
       );
     }
   }
+};
+
+const UrgentTasksReminderEmails_Agent_core = async () => {
+  // Only inform active student
+  // TODO: deactivate or change email frequency (default 1 week.)
+  const trigger_days = 3;
+  const escalation_trigger_days = 7;
+  const agents = await Agent.find();
 
   for (let j = 0; j < agents.length; j += 1) {
     const agent_students = await Student.find({
@@ -248,9 +275,15 @@ const UrgentTasksReminderEmails = async () => {
       }
     }
   }
+};
+
+const UrgentTasksReminderEmails_Editor_core = async () => {
+  // Only inform active student
+  // TODO: deactivate or change email frequency (default 1 week.)
+  const trigger_days = 3;
+  const editors = await Editor.find();
 
   // (O): Check if editor no reply (need to response) more than 3 days (Should configurable)
-
   for (let j = 0; j < editors.length; j += 1) {
     const editor_students = await Student.find({
       editors: editors[j]._id,
@@ -285,6 +318,12 @@ const UrgentTasksReminderEmails = async () => {
       }
     }
   }
+};
+
+const UrgentTasksReminderEmails = async () => {
+  await UrgentTasksReminderEmails_Editor_core();
+  await UrgentTasksReminderEmails_Student_core();
+  await UrgentTasksReminderEmails_Agent_core();
 };
 
 const add_portals_registered_status = (student_input) => {
@@ -332,6 +371,7 @@ const add_portals_registered_status = (student_input) => {
   }
   return student;
 };
+
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,

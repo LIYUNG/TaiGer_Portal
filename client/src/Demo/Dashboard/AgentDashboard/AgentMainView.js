@@ -102,9 +102,15 @@ class AgentMainView extends React.Component {
     const students_agent_editor = this.props.students.map((student, i) => (
       <StudentsAgentEditor
         key={i}
+        user={this.props.user}
         role={this.props.role}
         student={student}
         documentslist={this.props.documentslist}
+        editAgent={this.props.editAgent}
+        agent_list={this.props.agent_list}
+        updateAgentList={this.props.updateAgentList}
+        handleChangeAgentlist={this.props.handleChangeAgentlist}
+        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
       />
     ));
 

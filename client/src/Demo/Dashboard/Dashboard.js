@@ -432,6 +432,12 @@ class Dashboard extends React.Component {
             user={this.props.user}
             role={this.props.user.role}
             students={this.state.students}
+            editAgent={this.editAgent}
+            agent_list={this.state.agent_list}
+            UpdateAgentlist={this.UpdateAgentlist}
+            updateAgentList={this.state.updateAgentList}
+            handleChangeAgentlist={this.handleChangeAgentlist}
+            submitUpdateAgentlist={this.submitUpdateAgentlist}
             updateStudentArchivStatus={this.updateStudentArchivStatus}
             isDashboard={this.state.isDashboard}
             onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}

@@ -6,11 +6,13 @@ const { protect, permit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
 
 const { getAgents } = require('../controllers/teams');
-const { permission_canAssignAgent_filter } = require('../middlewares/permission-filter');
+const {
+  permission_canAssignAgent_filter
+} = require('../middlewares/permission-filter');
 
 const router = Router();
 
-router.use(protect, permit(Role.Admin, Role.Manager));
+router.use(protect, permit(Role.Admin, Role.Manager, Role.Agent));
 
 router
   .route('/')

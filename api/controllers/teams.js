@@ -19,9 +19,20 @@ const s3 = new aws.S3({
 });
 
 const getTeamMembers = asyncHandler(async (req, res) => {
-  const users = await User.find({
-    role: { $in: ['Admin', 'Agent', 'Editor'] }
-  }).lean();
+  // const users = await User.find({
+  //   role: { $in: ['Admin', 'Agent', 'Editor'] }
+  // }).lean();
+  const users = await User.aggregate([
+    { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
+    {
+      $lookup: {
+        from: 'permissions',
+        localField: '_id',
+        foreignField: 'user_id',
+        as: 'permissions'
+      }
+    }
+  ]);
   res.status(200).send({ success: true, data: users });
 });
 

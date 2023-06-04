@@ -7,6 +7,7 @@ const async = require('async');
 
 const getExpenses = asyncHandler(async (req, res) => {
   const expenses = await Student.aggregate([
+    // { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
     {
       $lookup: {
         from: 'expenses',

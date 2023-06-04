@@ -101,6 +101,35 @@ const updateNotificationEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+const updatePermissionNotificationEmail = async (recipient, msg) => {
+  const subject =
+    '您的TaiGer Portal使用者權限已更新 / Your user role in TaiGer Portal updated';
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>您的 TaiGer Portal 使用者權限已更新。</p>
+
+<p>請至 <a href="${SETTINGS_URL}">Setting</a> 確認使用者身分角色。</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Your user role in TaiGer Portal has been changed.</p>
+
+<p>Please visit <a href="${SETTINGS_URL}">Setting</a> and make sure your user role.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const uploadTemplateSuccessEmail = async (recipient, msg) => {
   const subject = `Template ${msg.category_name} uploaded successfully!`;
   const message = `\
@@ -1755,6 +1784,7 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
+  updatePermissionNotificationEmail,
   sendEmail,
   deleteTemplateSuccessEmail,
   uploadTemplateSuccessEmail,

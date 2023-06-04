@@ -114,29 +114,57 @@ class AgentMainView extends React.Component {
       />
     ));
 
-    const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing key={i} role={this.props.role} student={student} />
-    ));
+    const agent_reviewing = this.props.students
+      .filter((student) =>
+        student.agents.some(
+          (agent) => agent._id === this.props.user._id.toString()
+        )
+      )
+      .map((student, i) => (
+        <AgentReviewing key={i} role={this.props.role} student={student} />
+      ));
 
-    const ready_to_submit_tasks = this.props.students.map((student, i) => (
-      <ReadyToSubmitTasks key={i} role={this.props.role} student={student} />
-    ));
+    const ready_to_submit_tasks = this.props.students
+      .filter((student) =>
+        student.agents.some(
+          (agent) => agent._id === this.props.user._id.toString()
+        )
+      )
+      .map((student, i) => (
+        <ReadyToSubmitTasks key={i} role={this.props.role} student={student} />
+      ));
 
-    const vpd_to_submit_tasks = this.props.students.map((student, i) => (
-      <VPDToSubmitTasks key={i} role={this.props.role} student={student} />
-    ));
-    const base_documents_checking_tasks = this.props.students.map(
-      (student, i) => (
+    const vpd_to_submit_tasks = this.props.students
+      .filter((student) =>
+        student.agents.some(
+          (agent) => agent._id === this.props.user._id.toString()
+        )
+      )
+      .map((student, i) => (
+        <VPDToSubmitTasks key={i} role={this.props.role} student={student} />
+      ));
+    const base_documents_checking_tasks = this.props.students
+      .filter((student) =>
+        student.agents.some(
+          (agent) => agent._id === this.props.user._id.toString()
+        )
+      )
+      .map((student, i) => (
         <BaseDocumentCheckingTasks
           key={i}
           role={this.props.role}
           student={student}
         />
+      ));
+    const agent_tasks = this.props.students
+      .filter((student) =>
+        student.agents.some(
+          (agent) => agent._id === this.props.user._id.toString()
+        )
       )
-    );
-    const agent_tasks = this.props.students.map((student, i) => (
-      <AgentTasks key={i} role={this.props.role} student={student} />
-    ));
+      .map((student, i) => (
+        <AgentTasks key={i} role={this.props.role} student={student} />
+      ));
     return (
       <>
         {this.state.user.agent_notification &&
@@ -181,7 +209,13 @@ class AgentMainView extends React.Component {
             )
           )}
         <Row>
-          {is_any_programs_ready_to_submit(this.props.students) && (
+          {is_any_programs_ready_to_submit(
+            this.props.students.filter((student) =>
+              student.agents.some(
+                (agent) => agent._id === this.props.user._id.toString()
+              )
+            )
+          ) && (
             <Col md={6}>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Header>
@@ -212,7 +246,13 @@ class AgentMainView extends React.Component {
               </Card>
             </Col>
           )}
-          {is_any_vpd_missing(this.props.students) && (
+          {is_any_vpd_missing(
+            this.props.students.filter((student) =>
+              student.agents.some(
+                (agent) => agent._id === this.props.user._id.toString()
+              )
+            )
+          ) && (
             <Col md={6}>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Header>
@@ -242,12 +282,19 @@ class AgentMainView extends React.Component {
             </Col>
           )}
 
-          {is_any_base_documents_uploaded(this.props.students) && (
+          {is_any_base_documents_uploaded(
+            this.props.students.filter((student) =>
+              student.agents.some(
+                (agent) => agent._id === this.props.user._id.toString()
+              )
+            )
+          ) && (
             <Col md={6}>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Header>
                   <Card.Title className="my-0 mx-0 text-light">
-                    <BsExclamationTriangle size={18} /> Check uploaded base documents:
+                    <BsExclamationTriangle size={18} /> Check uploaded base
+                    documents:
                   </Card.Title>
                 </Card.Header>
                 <Table
@@ -334,7 +381,13 @@ class AgentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        <TabProgramConflict students={this.props.students} />
+        <TabProgramConflict
+          students={this.props.students.filter((student) =>
+            student.agents.some(
+              (agent) => agent._id === this.props.user._id.toString()
+            )
+          )}
+        />
         <Row>
           <Col sm={12}>
             <Tabs

@@ -613,6 +613,7 @@ class SingleStudentPage extends React.Component {
                   <tbody>
                     <StudentsAgentEditor
                       role={this.props.user.role}
+                      user={this.props.user}
                       student={this.state.student}
                       editAgent={this.editAgent}
                       editEditor={this.editEditor}

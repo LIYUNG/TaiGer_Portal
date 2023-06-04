@@ -321,24 +321,67 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
       const students = await Student.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       })
-        .populate('applications.programId agents editors')
+        .populate('agents editors', 'firstname lastname email')
+        .populate('applications.programId')
+        .populate(
+          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+          '-messages'
+        )
+        .select(
+          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+        )
         .lean();
 
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Agent) {
-      const students = await Student.find({
-        agents: user._id,
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('applications.programId agents editors')
-        .lean()
-        .exec();
-      res.status(200).send({ success: true, data: students });
+      const permissions = await Permission.findOne({ user_id: user._id });
+      if (permissions && permissions.canAssignAgents) {
+        console.log('with permission');
+        console.log(permissions);
+        const students = await Student.find({
+          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        })
+          .populate('agents editors', 'firstname lastname email')
+          .populate('applications.programId')
+          .populate(
+            'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+            '-messages'
+          )
+          .select('-notification');
+
+        res.status(200).send({ success: true, data: students });
+      } else {
+        const students = await Student.find({
+          agents: user._id,
+          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        })
+          .populate('agents editors', 'firstname lastname email')
+          .populate('applications.programId')
+          .populate(
+            'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+            '-messages'
+          )
+          .select(
+            '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+          )
+          .lean();
+        res.status(200).send({ success: true, data: students });
+      }
     } else if (user.role === Role.Editor) {
       const students = await Student.find({
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      }).populate('applications.programId agents editors');
+      })
+        .populate('agents editors', 'firstname lastname email')
+        .populate('applications.programId')
+        .populate(
+          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+          '-messages'
+        )
+        .select(
+          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+        )
+        .lean();
       res.status(200).send({ success: true, data: students });
     }
     // (O): send editor email.

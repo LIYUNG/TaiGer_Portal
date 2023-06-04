@@ -116,6 +116,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     updateStudentsArchivStatus
   );
 

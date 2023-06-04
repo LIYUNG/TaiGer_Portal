@@ -32,7 +32,8 @@ const {
   ENGLISH_BELOW,
   CONTACT_AGENT,
   cvmlrl_deadline_within30days_escalation_summary,
-  is_deadline_within30days_needed
+  is_deadline_within30days_needed,
+  is_cv_ml_rl_reminder_needed
 } = require('../constants');
 
 const {
@@ -248,7 +249,9 @@ const StudentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
 ) => {
   const subject = `[Important] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
   const unsubmitted_applications = unsubmitted_applications_escalation_summary(
-    payload.student
+    payload.student,
+    payload.student,
+    payload.trigger_days
   );
 
   const message = `\
@@ -293,11 +296,20 @@ const EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = async (
   let unread_cv_ml_rl_threads = '';
   for (let i = 0; i < payload.students.length; i += 1) {
     unread_cv_ml_rl_threads += `
-    ${cv_ml_rl_editor_escalation_summary(
-      payload.students[i],
-      payload.editor,
-      payload.trigger_days // after 7 days
-    )}`;
+    ${
+      is_cv_ml_rl_reminder_needed(
+        payload.students[i],
+        payload.editor,
+        payload.trigger_days
+      )
+        ? cv_ml_rl_editor_escalation_summary(
+            payload.students[i],
+            payload.editor,
+            payload.trigger_days // after 7 days
+          )
+        : ''
+    }
+    `;
   }
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -319,11 +331,20 @@ const AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail = async (
   let unread_cv_ml_rl_threads = '';
   for (let i = 0; i < payload.students.length; i += 1) {
     unread_cv_ml_rl_threads += `
-    ${cv_ml_rl_editor_escalation_summary(
-      payload.students[i],
-      payload.agent,
-      payload.trigger_days // after 7 days
-    )}`;
+    ${
+      is_cv_ml_rl_reminder_needed(
+        payload.students[i],
+        payload.agent,
+        payload.trigger_days
+      )
+        ? cv_ml_rl_editor_escalation_summary(
+            payload.students[i],
+            payload.agent,
+            payload.trigger_days // after 7 days
+          )
+        : ''
+    }
+    `;
   }
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -347,7 +368,11 @@ const AgentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
     unsubmitted_applications_students += `
     ${
       is_deadline_within30days_needed(payload.students[i])
-        ? unsubmitted_applications_escalation_agent_summary(payload.students[i])
+        ? unsubmitted_applications_escalation_agent_summary(
+            payload.students[i],
+            payload.agent,
+            payload.trigger_days
+          )
         : ''
     }`;
   }
@@ -363,12 +388,12 @@ ${unsubmitted_applications_students}
 
   return sendEmail(recipient, subject, message);
 };
-// TODO: make sure no documents missing?
+
 const EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail = async (
   recipient,
   payload
 ) => {
-  const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: These Tasks deadline very close!`;
+  const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: These Tasks deadline very close!`;
   let cvmlrl_deadline_soon = '';
   for (let i = 0; i < payload.students.length; i += 1) {
     cvmlrl_deadline_soon += `

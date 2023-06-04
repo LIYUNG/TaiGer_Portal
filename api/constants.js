@@ -179,7 +179,7 @@ const is_deadline_within30days_needed = (student) => {
       student.applications[k].decided === 'O' &&
       student.applications[k].closed !== 'O' &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
-      day_diff > -2
+      day_diff > -30
     ) {
       return true;
     }
@@ -402,54 +402,6 @@ const unsubmitted_applications_summary = (student) => {
   return unsubmitted_applications;
 };
 
-const unsubmitted_applications_list = (student) => {
-  let unsubmitted_applications_li = '';
-  const today = new Date();
-  for (let i = 0; i < student.applications.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      today,
-      application_deadline_calculator(student, student.applications[i])
-    );
-    if (
-      student.applications[i].decided === 'O' &&
-      student.applications[i].closed !== 'O' &&
-      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
-      day_diff > -1
-    ) {
-      unsubmitted_applications_li += `<li>${
-        student.applications[i].programId.school
-      } ${
-        student.applications[i].programId.program_name
-      }: <b> Deadline ${application_deadline_calculator(
-        student,
-        student.applications[i]
-      )} </b></li>`;
-    }
-  }
-  return unsubmitted_applications_li;
-};
-const unsubmitted_applications_escalation_summary = (student) => {
-  let unsubmitted_applications = '';
-  unsubmitted_applications = `
-        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
-        <ul>
-        ${unsubmitted_applications_list(student)}
-        </ul>
-        <p>If the applications are already submitted, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
-  return unsubmitted_applications;
-};
-
-const unsubmitted_applications_escalation_agent_summary = (student) => {
-  let unsubmitted_applications = '';
-  unsubmitted_applications = `
-        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
-    student.firstname
-  } ${student.lastname}</a></b><br />
-  ${unsubmitted_applications_escalation_summary(student)}
-  `;
-  return unsubmitted_applications;
-};
-
 const cv_rl_escalation_editor_list = (student, user, trigger_days) => {
   let missing_doc_list = '';
   const today = new Date();
@@ -533,44 +485,56 @@ const cv_rl_escalation_student_list = (student, user, trigger_days) => {
   return missing_doc_list;
 };
 
-const ml_essay_escalation_editor_list = (student, user, trigger_days) => {
+const ml_essay_escalation_editor_single_program_list = (
+  student,
+  user,
+  trigger_days,
+  application
+) => {
   let missing_doc_list = '';
   const today = new Date();
 
-  for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
-      for (
-        let j = 0;
-        j < student.applications[i].doc_modification_thread.length;
-        j += 1
+  if (application.decided === 'O') {
+    for (let j = 0; j < application.doc_modification_thread.length; j += 1) {
+      const day_diff_2 = parseInt(
+        getNumberOfDays(
+          application.doc_modification_thread[j].doc_thread_id.updatedAt,
+          today
+        ),
+        10
+      );
+      if (
+        !application.doc_modification_thread[j].isFinalVersion &&
+        application.doc_modification_thread[j].latest_message_left_by_id !==
+          '' &&
+        application.doc_modification_thread[j].latest_message_left_by_id !==
+          user._id.toString() &&
+        day_diff_2 > trigger_days
       ) {
-        const day_diff_2 = parseInt(
-          getNumberOfDays(
-            student.applications[i].doc_modification_thread[j].doc_thread_id
-              .updatedAt,
-            today
-          ),
-          10
-        );
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== '' &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== user._id.toString() &&
-          day_diff_2 > trigger_days
-        ) {
-          missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-            i
-          ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-            student.applications[i].programId.school
-          } ${student.applications[i].programId.program_name} ${
-            student.applications[i].doc_modification_thread[j].doc_thread_id
-              .file_type
-          }</a> - aged ${day_diff_2} days.</li>`;
-        }
+        missing_doc_list += `<li><a href="${THREAD_URL}/${application.doc_modification_thread[
+          j
+        ].doc_thread_id._id.toString()}">${application.programId.school} ${
+          application.programId.program_name
+        } ${
+          application.doc_modification_thread[j].doc_thread_id.file_type
+        }</a> - aged ${day_diff_2} days.</li>`;
       }
     }
+  }
+
+  return missing_doc_list;
+};
+
+const ml_essay_escalation_editor_list = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+
+  for (let i = 0; i < student.applications.length; i += 1) {
+    missing_doc_list += ml_essay_escalation_editor_single_program_list(
+      student,
+      user,
+      trigger_days,
+      student.applications[i]
+    );
   }
   return missing_doc_list;
 };
@@ -614,42 +578,49 @@ const ml_essay_escalation_student_list = (student, user, trigger_days) => {
   }
   return missing_doc_list;
 };
-const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
+
+const ml_essay_escalation_agent_single_program_list = (
+  student,
+  user,
+  trigger_days,
+  application
+) => {
   let missing_doc_list = '';
   const today = new Date();
 
-  for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
-      for (
-        let j = 0;
-        j < student.applications[i].doc_modification_thread.length;
-        j += 1
-      ) {
-        const day_diff_2 = parseInt(
-          getNumberOfDays(
-            student.applications[i].doc_modification_thread[j].doc_thread_id
-              .updatedAt,
-            today
-          ),
-          10
-        );
-        if (
-          !student.applications[i].doc_modification_thread[j].isFinalVersion &&
-          student.applications[i].doc_modification_thread[j]
-            .latest_message_left_by_id !== user._id.toString() &&
-          day_diff_2 > trigger_days
-        ) {
-          missing_doc_list += `<li><a href="${THREAD_URL}/${student.applications[
-            i
-          ].doc_modification_thread[j].doc_thread_id._id.toString()}">${
-            student.applications[i].programId.school
-          } ${student.applications[i].programId.program_name} ${
-            student.applications[i].doc_modification_thread[j].doc_thread_id
-              .file_type
-          }</a> - aged ${day_diff_2} days.</li>`;
-        }
+  if (application.decided === 'O') {
+    for (let j = 0; j < application.doc_modification_thread.length; j += 1) {
+      const day_diff_2 = parseInt(
+        getNumberOfDays(
+          application.doc_modification_thread[j].doc_thread_id.updatedAt,
+          today
+        ),
+        10
+      );
+      if (!application.doc_modification_thread[j].isFinalVersion) {
+        missing_doc_list += `<li><a href="${THREAD_URL}/${application.doc_modification_thread[
+          j
+        ].doc_thread_id._id.toString()}">${application.programId.school} ${
+          application.programId.program_name
+        } ${
+          application.doc_modification_thread[j].doc_thread_id.file_type
+        }</a> - aged ${day_diff_2} days.</li>`;
       }
     }
+  }
+  return missing_doc_list;
+};
+
+const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
+  let missing_doc_list = '';
+
+  for (let i = 0; i < student.applications.length; i += 1) {
+    missing_doc_list += ml_essay_escalation_agent_single_program_list(
+      student,
+      user,
+      trigger_days,
+      student.applications[i]
+    );
   }
   return missing_doc_list;
 };
@@ -672,6 +643,76 @@ const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
         </ul>`;
   }
   return missing_doc_list;
+};
+
+const unsubmitted_applications_list = (student, user, trigger_days) => {
+  let unsubmitted_applications_li = '';
+  const today = new Date();
+  for (let i = 0; i < student.applications.length; i += 1) {
+    const day_diff = getNumberOfDays(
+      today,
+      application_deadline_calculator(student, student.applications[i])
+    );
+    if (
+      student.applications[i].decided === 'O' &&
+      student.applications[i].closed !== 'O' &&
+      day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
+      day_diff > -1
+    ) {
+      unsubmitted_applications_li += `<li>${
+        student.applications[i].programId.school
+      } ${
+        student.applications[i].programId.program_name
+      }: <b> Deadline ${application_deadline_calculator(
+        student,
+        student.applications[i]
+      )} </b>
+      <ul>
+      ${ml_essay_escalation_agent_single_program_list(
+        student,
+        user,
+        trigger_days,
+        student.applications[i]
+      )}
+      </ul>
+      </li>
+      `;
+    }
+  }
+  return unsubmitted_applications_li;
+};
+
+const unsubmitted_applications_escalation_summary = (
+  student,
+  user,
+  trigger_days
+) => {
+  let unsubmitted_applications = '';
+  unsubmitted_applications = `
+        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
+        <ul>
+        ${unsubmitted_applications_list(student, user, trigger_days)}
+        </ul>
+        <ul>
+        ${cv_rl_escalation_agent_list(student, user, trigger_days)}
+        </ul>
+        <p>If the applications are already submitted, please go to <a href="${STUDENT_APPLICATION_URL}">Applications Overview</a> and update them.</p>`;
+  return unsubmitted_applications;
+};
+
+const unsubmitted_applications_escalation_agent_summary = (
+  student,
+  user,
+  trigger_days
+) => {
+  let unsubmitted_applications = '';
+  unsubmitted_applications = `
+        <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
+    student.firstname
+  } ${student.lastname}</a></b><br />
+  ${unsubmitted_applications_escalation_summary(student, user, trigger_days)}
+  `;
+  return unsubmitted_applications;
 };
 
 const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
@@ -1173,7 +1214,7 @@ const cvmlrl_deadline_within30days_escalation_summary = (student) => {
             student.generaldocs_threads[i].doc_thread_id.file_type
           }</a> - deadline ${CVDeadline_Calculator(
             student
-          )} - ${CV_day_diff} days left!</li>`;
+          )} ${CV_day_diff} days left!</li>`;
         }
       }
     }

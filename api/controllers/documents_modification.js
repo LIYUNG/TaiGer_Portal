@@ -34,6 +34,7 @@ const {
   AWS_S3_BUCKET_NAME,
   API_ORIGIN
 } = require('../config');
+const Permission = require('../models/Permission');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -776,6 +777,7 @@ const postMessages = asyncHandler(async (req, res) => {
     // If no editor, inform agent to assign
     if (!student.editors || student.editors.length === 0) {
       for (let i = 0; i < student.agents.length; i += 1) {
+        // inform active-agent
         if (isNotArchiv(student)) {
           if (isNotArchiv(student.agents[i])) {
             sendAssignEditorReminderEmail(
@@ -790,6 +792,27 @@ const postMessages = asyncHandler(async (req, res) => {
               }
             );
           }
+        }
+      }
+      // inform editor-lead
+      const permissions = await Permission.find({
+        canAssignEditors: true
+      })
+        .populate('user_id', 'firstname lastname email')
+        .lean();
+      if (permissions) {
+        for (let x = 0; x < permissions.length; x += 1) {
+          sendAssignEditorReminderEmail(
+            {
+              firstname: permissions[x].user_id.firstname,
+              lastname: permissions[x].user_id.lastname,
+              address: permissions[x].user_id.email
+            },
+            {
+              student_firstname: student.firstname,
+              student_lastname: student.lastname
+            }
+          );
         }
       }
     } else {

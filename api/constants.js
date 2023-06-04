@@ -23,6 +23,7 @@ const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
 const SURVEY_URL_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 const SETTINGS_URL = new URL('/settings', ORIGIN).href;
+const TEAMS_URL = new URL('/teams', ORIGIN).href;
 const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 const STUDENT_PROFILE_FOR_AGENT_URL = (studentId) =>
@@ -1380,6 +1381,7 @@ module.exports = {
   missing_academic_background,
   ACCOUNT_ACTIVATION_URL,
   RESEND_ACTIVATION_URL,
+  TEAMS_URL,
   PASSWORD_RESET_URL,
   FORGOT_PASSWORD_URL,
   CVMLRL_CENTER_URL,

@@ -31,19 +31,20 @@ const updateUserPermission = asyncHandler(async (req, res) => {
   const permissions = await Permission.findOneAndUpdate({ user_id }, req.body, {
     upsert: true,
     new: true
-  }).lean();
-//   console.log(permissions);
+  })
+    .populate('user_id', 'firstname lastname email')
+    .lean();
   res.status(200).send({ success: true, data: permissions });
   // TODO: email inform user
   // Email inform user, the updated status
-  //   await updatePermissionNotificationEmail(
-  //     {
-  //       firstname: updated_user.firstname,
-  //       lastname: updated_user.lastname,
-  //       address: updated_user.email
-  //     },
-  //     {}
-  //   );
+  await updatePermissionNotificationEmail(
+    {
+      firstname: permissions.user_id.firstname,
+      lastname: permissions.user_id.lastname,
+      address: permissions.user_id.email
+    },
+    {}
+  );
 });
 
 module.exports = {

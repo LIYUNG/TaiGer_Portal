@@ -7,6 +7,7 @@ const {
   missing_academic_background,
   unsubmitted_applications_summary,
   ACCOUNT_ACTIVATION_URL,
+  TEAMS_URL,
   RESEND_ACTIVATION_URL,
   PASSWORD_RESET_URL,
   FORGOT_PASSWORD_URL,
@@ -103,7 +104,7 @@ const updateNotificationEmail = async (recipient, msg) => {
 
 const updatePermissionNotificationEmail = async (recipient, msg) => {
   const subject =
-    '您的TaiGer Portal使用者權限已更新 / Your user role in TaiGer Portal updated';
+    '您的TaiGer Portal使用者權限已更新 / Your user permissions in TaiGer Portal updated';
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -111,7 +112,7 @@ const updatePermissionNotificationEmail = async (recipient, msg) => {
 
 <p>您的 TaiGer Portal 使用者權限已更新。</p>
 
-<p>請至 <a href="${SETTINGS_URL}">Setting</a> 確認使用者身分角色。</p>
+<p>請至 <a href="${TEAMS_URL}">TaiGer Teams</a> 確認使用者權限。</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -119,9 +120,9 @@ const updatePermissionNotificationEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>Your user role in TaiGer Portal has been changed.</p>
+<p>Your user permissions in TaiGer Portal have been updated.</p>
 
-<p>Please visit <a href="${SETTINGS_URL}">Setting</a> and make sure your user role.</p>
+<p>Please visit <a href="${TEAMS_URL}">TaiGer Teams</a> and make sure your user permissions.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

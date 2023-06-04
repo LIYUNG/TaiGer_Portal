@@ -81,17 +81,14 @@ class ProgramListSubpage extends React.Component {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Assign{' '}
-            {program_names.map((program_name) => (
-              <h5>{program_name}</h5>
-            ))}{' '}
-            to
-          </Modal.Title>
-        </Modal.Header>
         <Modal.Body>
-          <h4>Student:</h4>
+          Assign{' '}
+          {program_names.map((program_name) => (
+            <p className='my-0'>
+              <b>{program_name}</b>
+            </p>
+          ))}
+          <p>to the student:</p>
           <table>
             <tbody>
               {this.state.students.map((student) => (
@@ -111,9 +108,7 @@ class ProgramListSubpage extends React.Component {
                     </div>
                   </th>
                   <td>
-                    <h4 className="mb-1">
-                      {student.firstname}, {student.lastname}
-                    </h4>
+                    {student.firstname}, {student.lastname}
                   </td>
                 </tr>
               ))}

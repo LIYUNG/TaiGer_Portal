@@ -193,11 +193,24 @@ class TaiGerOrg extends React.Component {
                         </Link>
                       </b>
                     </td>
-                    <td>x</td>
-                    <td>x</td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canAssignAgents
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canAssignEditors
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
                     <td>
                       <Button
                         size="sm"
+                        disabled={!is_TaiGer_Admin(this.props.user)}
                         onClick={() =>
                           this.setModalShow(
                             agent.firstname,
@@ -252,6 +265,7 @@ class TaiGerOrg extends React.Component {
                     <td>
                       <Button
                         size="sm"
+                        disabled={!is_TaiGer_Admin(this.props.user)}
                         onClick={() =>
                           this.setModalShow(
                             editor.firstname,

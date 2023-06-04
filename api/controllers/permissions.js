@@ -32,7 +32,7 @@ const updateUserPermission = asyncHandler(async (req, res) => {
     upsert: true,
     new: true
   }).lean();
-  console.log(permissions);
+//   console.log(permissions);
   res.status(200).send({ success: true, data: permissions });
   // TODO: email inform user
   // Email inform user, the updated status

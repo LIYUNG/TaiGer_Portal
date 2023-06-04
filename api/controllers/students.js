@@ -30,6 +30,7 @@ const {
   AWS_S3_ACCESS_KEY,
   AWS_S3_BUCKET_NAME
 } = require('../config');
+const Permission = require('../models/Permission');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -163,19 +164,40 @@ const getStudents = asyncHandler(async (req, res) => {
     }
     res.status(200).send({ success: true, data: students_new });
   } else if (user.role === Role.Editor) {
-    const students = await Student.find({
-      editors: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
-      .populate('agents editors', 'firstname lastname email')
-      .populate('applications.programId')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
-      .select('-notification');
+    const permissions = await Permission.findOne({ user_id: user._id });
+    if (permissions && permissions.canAssignEditors) {
+      console.log('with permission');
+      console.log(permissions);
 
-    res.status(200).send({ success: true, data: students });
+      const students = await Student.find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
+        .populate('agents editors', 'firstname lastname email')
+        .populate('applications.programId')
+        .populate(
+          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+          '-messages'
+        )
+        .select('-notification');
+
+      res.status(200).send({ success: true, data: students });
+    } else {
+      console.log('no permission');
+      console.log(permissions);
+      const students = await Student.find({
+        editors: user._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
+        .populate('agents editors', 'firstname lastname email')
+        .populate('applications.programId')
+        .populate(
+          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+          '-messages'
+        )
+        .select('-notification');
+
+      res.status(200).send({ success: true, data: students });
+    }
   } else if (user.role === Role.Student) {
     const student = await Student.findById(user._id)
       .populate('applications.programId')
@@ -800,15 +822,11 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   try {
     // remove uploaded files before remove program in database
     let messagesThreadId;
-    let directory;
     for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
       messagesThreadId =
         application.doc_modification_thread[i].doc_thread_id._id.toString();
-      directory = path.join(studentId, messagesThreadId);
       logger.info('Trying to delete message threads and S3 thread folders');
-      directory = directory.replace(/\\/g, '/');
-      // Because thread are empty: go to S3 is redundant
-      // emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+      // Because there are no non-empty threads. Safe to delete application.
 
       await Documentthread.findByIdAndDelete(messagesThreadId);
       await Student.findOneAndUpdate(

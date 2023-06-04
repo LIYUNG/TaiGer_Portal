@@ -8,7 +8,7 @@ class AssignEditorsPage extends React.Component {
     const no_editor_students = this.props.students.map((student, i) => (
       <NoEditorsStudentsCard
         key={i}
-        role={this.props.role}
+        user={this.props.user}
         student={student}
         editEditor={this.props.editEditor}
         editor_list={this.props.editor_list}

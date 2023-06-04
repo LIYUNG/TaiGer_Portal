@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
+import { is_TaiGer_role } from '../../../Utils/checking-functions';
 
 class NoEditorsStudentsCard extends React.Component {
   state = {
@@ -36,7 +37,7 @@ class NoEditorsStudentsCard extends React.Component {
       return (
         <>
           <tr>
-            {this.props.role === 'Admin' && !this.props.isArchivPage && (
+            {is_TaiGer_role(this.props.user) && !this.props.isArchivPage && (
               <td>
                 <DropdownButton
                   size="sm"
@@ -59,7 +60,7 @@ class NoEditorsStudentsCard extends React.Component {
             </td>
             <td>{this.props.student.email}</td>
           </tr>
-          {this.props.role === 'Admin' && (
+          {is_TaiGer_role(this.props.user) && (
             <>
               <EditEditorsSubpage
                 student={this.props.student}

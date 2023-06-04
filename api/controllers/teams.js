@@ -12,6 +12,7 @@ const {
   AWS_S3_ACCESS_KEY,
   AWS_S3_BUCKET_NAME
 } = require('../config');
+const Permission = require('../models/Permission');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -19,9 +20,6 @@ const s3 = new aws.S3({
 });
 
 const getTeamMembers = asyncHandler(async (req, res) => {
-  // const users = await User.find({
-  //   role: { $in: ['Admin', 'Agent', 'Editor'] }
-  // }).lean();
   const users = await User.aggregate([
     { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
     {
@@ -37,12 +35,6 @@ const getTeamMembers = asyncHandler(async (req, res) => {
 });
 
 const getStatistics = asyncHandler(async (req, res) => {
-  // const documents_all_open = await Documentthread.find({
-  //   isFinalVersion: false
-  // })
-  //   .populate('student_id', 'firstname lastname')
-  //   .populate('student_id', 'editors agents');
-  // console.log(documents_all_open);
   const documents_cv = await Documentthread.find({
     isFinalVersion: false,
     file_type: 'CV'
@@ -128,8 +120,25 @@ const getStatistics = asyncHandler(async (req, res) => {
 });
 
 const getAgents = asyncHandler(async (req, res, next) => {
-  const agents = await Agent.find().select('firstname lastname');
-  res.status(200).send({ success: true, data: agents });
+  const { user } = req;
+  if (user.role === 'Agent') {
+    const permissions = await Permission.findOne({
+      user_id: user._id.toString()
+    });
+    if (permissions && permissions.canAssignAgents) {
+      const agents = await Agent.find().select('firstname lastname');
+      res.status(200).send({ success: true, data: agents });
+    } else {
+      logger.error('getAgents: no permission');
+      throw new ErrorResponse(
+        403,
+        'You do not have the permission to do this action'
+      );
+    }
+  } else {
+    const agents = await Agent.find().select('firstname lastname');
+    res.status(200).send({ success: true, data: agents });
+  }
 });
 
 const getSingleAgent = asyncHandler(async (req, res, next) => {
@@ -153,8 +162,25 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
 });
 
 const getEditors = asyncHandler(async (req, res, next) => {
-  const editors = await Editor.find().select('firstname lastname');
-  res.status(200).send({ success: true, data: editors });
+  const { user } = req;
+  if (user.role === 'Editor') {
+    const permissions = await Permission.findOne({
+      user_id: user._id.toString()
+    });
+    if (permissions && permissions.canAssignEditors) {
+      const editors = await Editor.find().select('firstname lastname');
+      res.status(200).send({ success: true, data: editors });
+    } else {
+      logger.error('getEditors: no permission');
+      throw new ErrorResponse(
+        403,
+        'You do not have the permission to do this action'
+      );
+    }
+  } else {
+    const editors = await Editor.find().select('firstname lastname');
+    res.status(200).send({ success: true, data: editors });
+  }
 });
 
 const getSingleEditor = asyncHandler(async (req, res, next) => {

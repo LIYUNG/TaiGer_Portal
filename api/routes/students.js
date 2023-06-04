@@ -42,6 +42,10 @@ const {
   deleteProfileFile,
   deleteVPDFile
 } = require('../controllers/files');
+const {
+  permission_canAssignEditor_filter,
+  permission_canAssignAgent_filter
+} = require('../middlewares/permission-filter');
 
 const router = Router();
 
@@ -130,8 +134,9 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin),
+    permit(Role.Admin, Role.Manager, Role.Agent),
     multitenant_filter,
+    permission_canAssignAgent_filter,
     assignAgentToStudent
   );
 
@@ -140,8 +145,9 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager),
+    permit(Role.Admin, Role.Manager, Role.Editor),
     multitenant_filter,
+    permission_canAssignEditor_filter,
     assignEditorToStudent
   );
 

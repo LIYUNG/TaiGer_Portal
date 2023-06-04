@@ -10,6 +10,7 @@ import { spinner_style } from '../../Utils/contants';
 
 import { getStudents, getEditors, updateEditors } from '../../../api';
 import DEMO from '../../../store/constant';
+import { is_TaiGer_role } from '../../Utils/checking-functions';
 
 class AssignEditors extends React.Component {
   state = {
@@ -170,7 +171,7 @@ class AssignEditors extends React.Component {
   };
 
   render() {
-    if (this.props.user.role !== 'Admin') {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     const { isLoaded, res_status, res_modal_status, res_modal_message } =
@@ -200,7 +201,7 @@ class AssignEditors extends React.Component {
           />
         )}
         <AssignEditorsPage
-          role={this.props.user.role}
+          user={this.props.user}
           editEditor={this.editEditor}
           editor_list={this.state.editor_list}
           students={this.state.students}

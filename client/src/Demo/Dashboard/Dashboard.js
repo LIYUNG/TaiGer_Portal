@@ -458,6 +458,8 @@ class Dashboard extends React.Component {
             students={this.state.students}
             updateEditorList={this.state.updateEditorList}
             updateStudentArchivStatus={this.updateStudentArchivStatus}
+            handleChangeEditorlist={this.handleChangeEditorlist}
+            submitUpdateEditorlist={this.submitUpdateEditorlist}
             isDashboard={this.state.isDashboard}
           />
         </Aux>

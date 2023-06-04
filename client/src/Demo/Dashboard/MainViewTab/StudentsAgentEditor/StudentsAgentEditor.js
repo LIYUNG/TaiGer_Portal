@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
+import { is_TaiGer_Admin, is_TaiGer_role } from '../../../Utils/checking-functions';
 
 class StudentsAgentEditor extends React.Component {
   state = {
@@ -103,7 +104,7 @@ class StudentsAgentEditor extends React.Component {
       <>
         <tr>
           <td>
-            {this.props.role === 'Admin' && !this.props.isArchivPage && (
+            {is_TaiGer_role(this.props.user) && !this.props.isArchivPage && (
               <DropdownButton
                 size="sm"
                 title="Option"
@@ -149,7 +150,7 @@ class StudentsAgentEditor extends React.Component {
           <td>{studentsAgent}</td>
           <td>{studentsEditor}</td>
         </tr>
-        {this.props.role === 'Admin' && (
+        {is_TaiGer_role(this.props.user) && (
           <>
             <EditAgentsSubpage
               student={this.props.student}

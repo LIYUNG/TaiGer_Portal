@@ -14,6 +14,7 @@ class AdminMainView extends React.Component {
       <StudentsAgentEditor
         key={i}
         role={this.props.role}
+        user={this.props.user}
         student={student}
         updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         editAgent={this.props.editAgent}

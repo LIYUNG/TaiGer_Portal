@@ -9,7 +9,11 @@ import UnrespondedThreads from '../MainViewTab/NewUpdatedThreadFromStudent/Unres
 import EditorTODOTasks from '../MainViewTab/EditorTODOTasks/EditorTODOTasks';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
-import { frequencyDistribution, open_tasks_with_editors } from '../../Utils/checking-functions';
+import {
+  does_student_have_editors,
+  frequencyDistribution,
+  open_tasks_with_editors
+} from '../../Utils/checking-functions';
 
 class EditorMainView extends React.Component {
   render() {
@@ -27,10 +31,14 @@ class EditorMainView extends React.Component {
           {this.props.students.map((student, i) => (
             <StudentsAgentEditor
               key={student._id}
+              user={this.props.user}
               role={this.props.role}
               student={student}
-              agent_list={this.props.agent_list}
               editor_list={this.props.editor_list}
+              editEditor={this.props.editEditor}
+              updateEditorList={this.props.updateEditorList}
+              handleChangeEditorlist={this.props.handleChangeEditorlist}
+              submitUpdateEditorlist={this.props.submitUpdateEditorlist}
             />
           ))}
         </tbody>
@@ -47,14 +55,20 @@ class EditorMainView extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.students.map((student, i) => (
-            <UnrespondedThreads
-              user={this.props.user}
-              key={student._id}
-              role={this.props.role}
-              student={student}
-            />
-          ))}
+          {this.props.students
+            .filter((student) =>
+              student.editors.some(
+                (editor) => editor._id === this.props.user._id.toString()
+              )
+            )
+            .map((student, i) => (
+              <UnrespondedThreads
+                user={this.props.user}
+                key={student._id}
+                role={this.props.role}
+                student={student}
+              />
+            ))}
         </tbody>
       </>
     );
@@ -70,17 +84,24 @@ class EditorMainView extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.students.map((student, i) => (
-            <EditorTODOTasks
-              user={this.props.user}
-              key={student._id}
-              student={student}
-            />
-          ))}
+          {this.props.students
+            .filter((student) =>
+              student.editors.some(
+                (editor) => editor._id === this.props.user._id.toString()
+              )
+            )
+            .map((student, i) => (
+              <EditorTODOTasks
+                user={this.props.user}
+                key={student._id}
+                student={student}
+              />
+            ))}
         </tbody>
       </>
     );
-
+    console.log(this.props.user._id.toString());
+    console.log(this.props.students);
     const open_tasks_arr = open_tasks_with_editors(this.props.students);
     const task_distribution = open_tasks_arr
       .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
@@ -103,38 +124,78 @@ class EditorMainView extends React.Component {
     return (
       <>
         <Row>
-          <Col md={12}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">
-                      <b>
-                        {this.props.user.firstname} {this.props.user.lastname}
-                      </b>{' '}
-                      Open Tasks Distribution
-                    </Col>
-                  </Row>
+          <Card className="px-0 mb-2 mx-0">
+            <Card.Header text={'dark'}>
+              <Card.Title>
+                <Row>
+                  <Col className="my-0 mx-0">
+                    <b>
+                      {this.props.user.firstname} {this.props.user.lastname}
+                    </b>{' '}
+                    Open Tasks Distribution
+                  </Col>
+                </Row>
+              </Card.Title>
+            </Card.Header>
+            <Card.Body>
+              Tasks distribute among the date. Note that CVs, MLs, RLs, and
+              Essay are mixed together.
+              <p className="my-0">
+                <b style={{ color: 'red' }}>active:</b> students decide
+                programs. These will be shown in{' '}
+                <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+              </p>
+              <p className="my-0">
+                <b style={{ color: '#A9A9A9' }}>potentials:</b> students do not
+                decide programs yet. But the tasks will be potentially active
+                when they decided.
+              </p>
+              <TasksDistributionBarChart data={sorted_date_freq_pair} />
+            </Card.Body>
+          </Card>
+        </Row>
+        {!does_student_have_editors(this.props.students) && (
+          <Row>
+            <Card className="px-0 mb-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  <b>Assign Editor</b>{' '}
                 </Card.Title>
               </Card.Header>
-              <Card.Body>
-                Tasks distribute among the date. Note that CVs, MLs, RLs, and
-                Essay are mixed together.
-                <p className="my-0">
-                  <b style={{ color: 'red' }}>active:</b> students decide
-                  programs. These will be shown in{' '}
-                  <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
-                </p>
-                <p className="my-0">
-                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
-                  not decide programs yet. But the tasks will be potentially
-                  active when they decided.
-                </p>
-                <TasksDistributionBarChart data={sorted_date_freq_pair} />
-              </Card.Body>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+                size="sm"
+              >
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <Link
+                        to={'/assignment/editors'}
+                        style={{ textDecoration: 'none' }}
+                        className="text-info"
+                      >
+                        Assign Editors
+                      </Link>
+                    </td>
+                    <td>Please assign editors</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </Table>
             </Card>
-          </Col>
-        </Row>
+          </Row>
+        )}
         <Row>
           <Card className="px-0 mb-2 mx-0" bg={'danger'} text={'light'}>
             <Card.Header>

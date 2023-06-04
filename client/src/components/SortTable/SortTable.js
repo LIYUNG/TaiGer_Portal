@@ -67,36 +67,17 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
         {...getTableProps()}
       >
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, i) => (
+          {headerGroups.map((headerGroup, x) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={x}>
+              {headerGroup.headers.map((column, i) =>
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
-                <>
-                  {i === 1 ? (
-                    is_TaiGer_role(user) ? (
-                      <th
-                        {...column.getHeaderProps(
-                          column.getSortByToggleProps()
-                        )}
-                      >
-                        {column.render('Header')}
-                        {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
-                        {/* Add a sort direction indicator */}
-                        <span>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? ' 🔽'
-                              : ' 🔼'
-                            : ' ⮃'}
-                        </span>
-                      </th>
-                    ) : (
-                      <th></th>
-                    )
-                  ) : (
+
+                i === 1 ? (
+                  is_TaiGer_role(user) ? (
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
+                      key={i}
                     >
                       {column.render('Header')}
                       {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
@@ -109,13 +90,27 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                           : ' ⮃'}
                       </span>
                     </th>
-                  )}
-
-                  {/* <th {...column.getHeaderProps()}>
-                      {column.canFilter ? column.render('Filter') : null}
-                  </th> */}
-                </>
-              ))}
+                  ) : (
+                    <th key={i}></th>
+                  )
+                ) : (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    key={i}
+                  >
+                    {column.render('Header')}
+                    {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
+                    {/* Add a sort direction indicator */}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? ' 🔽'
+                          : ' 🔼'
+                        : ' ⮃'}
+                    </span>
+                  </th>
+                )
+              )}
             </tr>
           ))}
         </thead>
@@ -123,10 +118,10 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
           {firstPageRows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} key={i}>
                 {row.cells.map((cell, j) => {
                   return j === 0 ? (
-                    <td {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={`/student-database/${row.original.student_id}/profile`}
@@ -137,11 +132,11 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                       </Link>
                     </td>
                   ) : j === 2 ? (
-                    <td {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()} key={j}>
                       {return_thread_status2(user, row.original)}
                     </td>
                   ) : j === 5 ? (
-                    <td {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={'/document-modification/' + row.original.thread_id}
@@ -153,31 +148,31 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                     </td>
                   ) : j === 6 ? (
                     cell.value > 14 ? (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">
                           {cell.render('Cell')}
                         </p>
                       </td>
                     ) : (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-light my-0">{cell.render('Cell')}</p>
                       </td>
                     )
                   ) : j === 4 ? (
                     cell.value < 30 ? (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">
                           {cell.render('Cell')}
                         </p>
                       </td>
                     ) : (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-light my-0">{cell.render('Cell')}</p>
                       </td>
                     )
                   ) : j === 1 ? (
                     is_TaiGer_role(user) ? (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         {row.original.isFinalVersion ? (
                           <AiOutlineUndo
                             size={24}
@@ -216,10 +211,12 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                         )}
                       </td>
                     ) : (
-                      <td {...cell.getCellProps()}></td>
+                      <td {...cell.getCellProps()} key={j}></td>
                     )
                   ) : (
-                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    <td {...cell.getCellProps()} key={j}>
+                      {cell.render('Cell')}
+                    </td>
                   );
                 })}
               </tr>

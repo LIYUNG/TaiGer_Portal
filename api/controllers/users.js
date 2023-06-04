@@ -181,16 +181,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 
   // Delete Admin
   if (user_deleting.role === Role.Admin) {
-    // remove agent from students
-    // const students = await Student.updateMany(
-    //   {
-    //     agents: { $in: user_id },
-    //   },
-    //   {
-    //     $pull: { agents: user_id }
-    //   },
-    //   { multi: true }
-    // );
     await User.findByIdAndDelete(user_id);
   }
 
@@ -242,28 +232,6 @@ const deleteUser = asyncHandler(async (req, res) => {
     await Course.deleteMany({ student_id: user_id });
     logger.info('Courses deleted');
 
-    // remove student from agents
-    const agents = await Agent.updateMany(
-      {
-        students: { $in: user_id }
-      },
-      {
-        $pull: { students: user_id }
-      },
-      { multi: true }
-    );
-    logger.info('student from agent removed');
-    // remove student from editors
-    const editors = await Editor.updateMany(
-      {
-        students: { $in: user_id }
-      },
-      {
-        $pull: { students: user_id }
-      },
-      { multi: true }
-    );
-    logger.info('student from editor removed');
     // delete user in database
     await User.findByIdAndDelete(user_id);
     logger.info('studnet deleted');

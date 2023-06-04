@@ -100,8 +100,6 @@ class EditorMainView extends React.Component {
         </tbody>
       </>
     );
-    console.log(this.props.user._id.toString());
-    console.log(this.props.students);
     const open_tasks_arr = open_tasks_with_editors(this.props.students);
     const task_distribution = open_tasks_arr
       .filter(({ isFinalVersion, show }) => isFinalVersion !== true)

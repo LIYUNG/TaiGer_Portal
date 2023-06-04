@@ -101,29 +101,27 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
         {...getTableProps()}
       >
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+          {headerGroups.map((headerGroup, x) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={x}>
               {headerGroup.headers.map((column, i) => (
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
-                <>
-                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                    {column.render('Header')}
-                    {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
-                    {/* Add a sort direction indicator */}
-                    <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? ' 🔽'
-                          : ' 🔼'
-                        : ' ⮃'}
-                    </span>
-                  </th>
 
-                  {/* <th {...column.getHeaderProps()}>
-                      {column.canFilter ? column.render('Filter') : null}
-                  </th> */}
-                </>
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={i}
+                >
+                  {column.render('Header')}
+                  {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
+                  {/* Add a sort direction indicator */}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ' ⮃'}
+                  </span>
+                </th>
               ))}
             </tr>
           ))}
@@ -132,10 +130,10 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
           {firstPageRows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} key={i}>
                 {row.cells.map((cell, j) => {
                   return j === 0 ? (
-                    <td {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={`/student-database/${row.original.student_id}/profile`}
@@ -146,10 +144,11 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                       </Link>
                     </td>
                   ) : j === 1 ? (
-                    <td {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()} key={j}>
                       {cell.value && cell.value.length > 0 ? (
-                        cell.value.map((editor, i) => (
+                        cell.value.map((editor, u) => (
                           <Link
+                            key={u}
                             target="_blank"
                             to={`/teams/editors/${editor._id.toString()}`}
                             style={{ textDecoration: 'none' }}
@@ -166,7 +165,7 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                       )}
                     </td>
                   ) : j === 4 ? (
-                    <td {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={'/document-modification/' + row.original.thread_id}
@@ -178,30 +177,32 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                     </td>
                   ) : j === 5 ? (
                     cell.value > 14 ? (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">
                           {cell.render('Cell')}
                         </p>
                       </td>
                     ) : (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-light my-0">{cell.render('Cell')}</p>
                       </td>
                     )
                   ) : j === 3 ? (
                     cell.value < 30 ? (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">
                           {cell.render('Cell')}
                         </p>
                       </td>
                     ) : (
-                      <td {...cell.getCellProps()}>
+                      <td {...cell.getCellProps()} key={j}>
                         <p className="text-light my-0">{cell.render('Cell')}</p>
                       </td>
                     )
                   ) : (
-                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    <td {...cell.getCellProps()} key={j}>
+                      {cell.render('Cell')}
+                    </td>
                   );
                 })}
               </tr>

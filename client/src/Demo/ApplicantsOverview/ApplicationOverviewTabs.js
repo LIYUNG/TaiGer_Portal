@@ -71,33 +71,11 @@ function SortTable({ columns, data, user }) {
         <thead>
           {headerGroups.map((headerGroup, j) => (
             <tr {...headerGroup.getHeaderGroupProps()} key={j}>
-              {headerGroup.headers.map((column, i) => (
+              {headerGroup.headers.map((column, i) =>
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
-                <>
-                  {i === 0 ? (
-                    is_TaiGer_role(user) ? (
-                      <th
-                        {...column.getHeaderProps(
-                          column.getSortByToggleProps()
-                        )}
-                        key={i}
-                      >
-                        {column.render('Header')}
-                        {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
-                        {/* Add a sort direction indicator */}
-                        <span>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? ' 🔽'
-                              : ' 🔼'
-                            : ' ⮃'}
-                        </span>
-                      </th>
-                    ) : (
-                      <th></th>
-                    )
-                  ) : (
+                i === 0 ? (
+                  is_TaiGer_role(user) ? (
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                       key={i}
@@ -113,9 +91,27 @@ function SortTable({ columns, data, user }) {
                           : ' ⮃'}
                       </span>
                     </th>
-                  )}
-                </>
-              ))}
+                  ) : (
+                    <th></th>
+                  )
+                ) : (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    key={i}
+                  >
+                    {column.render('Header')}
+                    {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
+                    {/* Add a sort direction indicator */}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? ' 🔽'
+                          : ' 🔼'
+                        : ' ⮃'}
+                    </span>
+                  </th>
+                )
+              )}
             </tr>
           ))}
         </thead>

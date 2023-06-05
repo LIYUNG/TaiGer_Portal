@@ -462,30 +462,33 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   // TODO: Email notification
   let documentname = document_category;
   for (let i = 0; i < student.editors.length; i += 1) {
-    await assignDocumentTaskToEditorEmail(
+    if (isNotArchiv(student)) {
+      await assignDocumentTaskToEditorEmail(
+        {
+          firstname: student.editors[i].firstname,
+          lastname: student.editors[i].lastname,
+          address: student.editors[i].email
+        },
+        {
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          thread_id: new_doc_thread._id,
+          documentname,
+          updatedAt: new Date()
+        }
+      );
+    }
+  }
+  if (isNotArchiv(student)) {
+    await assignDocumentTaskToStudentEmail(
       {
-        firstname: student.editors[i].firstname,
-        lastname: student.editors[i].lastname,
-        address: student.editors[i].email
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
       },
-      {
-        student_firstname: student.firstname,
-        student_lastname: student.lastname,
-        thread_id: new_doc_thread._id,
-        documentname,
-        updatedAt: new Date()
-      }
+      { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
     );
   }
-
-  await assignDocumentTaskToStudentEmail(
-    {
-      firstname: student.firstname,
-      lastname: student.lastname,
-      address: student.email
-    },
-    { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
-  );
 });
 
 // (O) email inform Editor
@@ -579,29 +582,33 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
 
   const documentname = `${document_category} - ${application.programId.school} - ${application.programId.program_name}`;
   for (let i = 0; i < student.editors.length; i += 1) {
-    await assignDocumentTaskToEditorEmail(
+    if (isNotArchiv(student)) {
+      await assignDocumentTaskToEditorEmail(
+        {
+          firstname: student.editors[i].firstname,
+          lastname: student.editors[i].lastname,
+          address: student.editors[i].email
+        },
+        {
+          student_firstname: student2.firstname,
+          student_lastname: student2.lastname,
+          thread_id: new_doc_thread._id,
+          documentname,
+          updatedAt: new Date()
+        }
+      );
+    }
+  }
+  if (isNotArchiv(student2)) {
+    await assignDocumentTaskToStudentEmail(
       {
-        firstname: student.editors[i].firstname,
-        lastname: student.editors[i].lastname,
-        address: student.editors[i].email
+        firstname: student2.firstname,
+        lastname: student2.lastname,
+        address: student2.email
       },
-      {
-        student_firstname: student2.firstname,
-        student_lastname: student2.lastname,
-        thread_id: new_doc_thread._id,
-        documentname,
-        updatedAt: new Date()
-      }
+      { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
     );
   }
-  await assignDocumentTaskToStudentEmail(
-    {
-      firstname: student2.firstname,
-      lastname: student2.lastname,
-      address: student2.email
-    },
-    { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
-  );
 });
 
 const getMessages = asyncHandler(async (req, res) => {

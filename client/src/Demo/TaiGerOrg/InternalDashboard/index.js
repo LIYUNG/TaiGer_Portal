@@ -350,7 +350,7 @@ class InternalDashboard extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                Number of students per agent:
+                Number of active students per agent:
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={agents_data}
@@ -394,7 +394,7 @@ class InternalDashboard extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                Number of students per editor:
+                Number of active students per editor:
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={editors_data}

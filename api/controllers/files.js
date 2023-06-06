@@ -840,19 +840,21 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     if (new_task_flag) {
       for (let i = 0; i < student_updated.editors.length; i += 1) {
         if (isNotArchiv(student_updated.editors[i])) {
-          await NewMLRLEssayTasksEmail(
-            {
-              firstname: student_updated.editors[i].firstname,
-              lastname: student_updated.editors[i].lastname,
-              address: student_updated.editors[i].email
-            },
-            {
-              sender_firstname: student_updated.firstname,
-              sender_lastname: student_updated.lastname,
-              student_applications: student_updated.applications,
-              new_app_decided_idx: new_app_decided_idx
-            }
-          );
+          if (isNotArchiv(student_updated)) {
+            await NewMLRLEssayTasksEmail(
+              {
+                firstname: student_updated.editors[i].firstname,
+                lastname: student_updated.editors[i].lastname,
+                address: student_updated.editors[i].email
+              },
+              {
+                sender_firstname: student_updated.firstname,
+                sender_lastname: student_updated.lastname,
+                student_applications: student_updated.applications,
+                new_app_decided_idx: new_app_decided_idx
+              }
+            );
+          }
         }
       }
     }
@@ -876,21 +878,23 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     if (new_task_flag) {
       for (let i = 0; i < student_updated.editors.length; i += 1) {
         if (isNotArchiv(student_updated.editors[i])) {
-          await NewMLRLEssayTasksEmailFromTaiGer(
-            {
-              firstname: student_updated.editors[i].firstname,
-              lastname: student_updated.editors[i].lastname,
-              address: student_updated.editors[i].email
-            },
-            {
-              student_firstname: student_updated.firstname,
-              student_lastname: student_updated.lastname,
-              sender_firstname: user.firstname,
-              sender_lastname: user.lastname,
-              student_applications: student_updated.applications,
-              new_app_decided_idx: new_app_decided_idx
-            }
-          );
+          if (isNotArchiv(student_updated)) {
+            await NewMLRLEssayTasksEmailFromTaiGer(
+              {
+                firstname: student_updated.editors[i].firstname,
+                lastname: student_updated.editors[i].lastname,
+                address: student_updated.editors[i].email
+              },
+              {
+                student_firstname: student_updated.firstname,
+                student_lastname: student_updated.lastname,
+                sender_firstname: user.firstname,
+                sender_lastname: user.lastname,
+                student_applications: student_updated.applications,
+                new_app_decided_idx: new_app_decided_idx
+              }
+            );
+          }
         }
       }
     }

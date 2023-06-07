@@ -1763,17 +1763,25 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${payload.student_firstname} - ${payload.student_lastname} 上傳了一份文件至他的 CVMLRL Cetner，但他目前並無任何Editor。</p>
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } has uploaded some input in his/her CVMLRL Center, <b>but she/he did not have any Editor yet.</b></p>
 
-<p><b>請指派 Editor 給學生 ${payload.student_firstname} - ${payload.student_lastname}</b></p>
+<p><b>Please assign an Editor to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.student_firstname} - ${payload.student_lastname} has uploaded some input in his/her CVMLRL Center, <b>but she/he did not have any Editor yet.</b></p>
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } 上傳了一份文件至他的 CVMLRL Cetner，但他目前並無任何Editor。</p>
 
-<p><b>Please assign an Editor to the student ${payload.student_firstname} - ${payload.student_lastname}</b></p>
+<p><b>請指派 Editor 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

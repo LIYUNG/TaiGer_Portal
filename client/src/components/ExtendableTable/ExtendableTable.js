@@ -25,11 +25,12 @@ export function ExtendableTable({ data }) {
         {data.map((item, index) => (
           <React.Fragment key={index}>
             <tr
-              className="bg-secondary text-light"
+              className="bg-light text-dark"
               onClick={() => toggleRow(index)}
             >
               <td>
                 <b>
+                  {selectedRows[index] === index ? '🔽 ' : '▶️ '}
                   {item.firstname}
                   {item.lastname}
                 </b>

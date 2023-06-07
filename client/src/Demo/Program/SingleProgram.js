@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner, Button } from 'react-bootstrap';
+import { Spinner, Button, Card } from 'react-bootstrap';
 import { getProgram, updateProgram } from '../../api';
 import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
@@ -14,6 +14,7 @@ import {
 } from '../Utils/checking-functions';
 
 import { deleteProgram } from '../../api';
+import { Link } from 'react-router-dom';
 
 class SingleProgram extends React.Component {
   state = {
@@ -23,6 +24,7 @@ class SingleProgram extends React.Component {
     success: false,
     isEdit: false,
     deleteProgramWarning: false,
+    isDeleted: false,
     res_status: 0,
     students: [],
     res_modal_message: '',
@@ -73,6 +75,7 @@ class SingleProgram extends React.Component {
             res_modal_status: status
           });
         } else {
+          const { message } = resp.data;
           this.setState({
             isLoaded: true,
             res_modal_status: status,
@@ -118,17 +121,38 @@ class SingleProgram extends React.Component {
     });
   };
   RemoveProgramHandler = (program_id) => {
-    // this.setState({
-    //   deleteProgramWarning: false
-    // });
     deleteProgram(program_id).then(
       (resp) => {
-        console.log(resp);
-        this.setState({
-          deleteProgramWarning: false
-        });
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            deleteProgramWarning: false,
+            isDeleted: true,
+            success: success,
+            isEdit: !this.state.isEdit,
+            res_modal_status: status
+          });
+        } else {
+          const { message } = resp.data;
+          this.setState({
+            isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: message
+          });
+        }
       },
-      (error) => {}
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
     );
   };
 
@@ -136,6 +160,7 @@ class SingleProgram extends React.Component {
     const {
       res_status,
       isLoaded,
+      isDeleted,
       res_modal_status,
       res_modal_message,
       program,
@@ -155,6 +180,16 @@ class SingleProgram extends React.Component {
     }
     TabTitle(`${program.school} - ${program.program_name}`);
 
+    if (isDeleted) {
+      return (
+        <Card>
+          <Card.Header>The program is deleted</Card.Header>
+          <Card.Body>
+            <Link to={'/programs'}>Click me back to the program list</Link>
+          </Card.Body>
+        </Card>
+      );
+    }
     if (this.state.isEdit) {
       return (
         <>

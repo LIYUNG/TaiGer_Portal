@@ -160,7 +160,9 @@ const deleteProgram = asyncHandler(async (req, res) => {
     console.log('it can not be deleted!');
     console.log('The following students have these programs!');
     console.log(students);
-    // TODO: make sure delete failed to user (Admin)
+    // Make sure delete failed to user (Admin)
+    logger.error('deleteProgram: some students have these programs');
+    throw new ErrorResponse(423, 'This program can not be deleted!');
   }
   res.status(200).send({ success: true });
 });

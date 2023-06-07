@@ -795,6 +795,7 @@ const postMessages = asyncHandler(async (req, res) => {
               },
               {
                 student_firstname: student.firstname,
+                student_id: student._id.toString(),
                 student_lastname: student.lastname
               }
             );
@@ -817,6 +818,7 @@ const postMessages = asyncHandler(async (req, res) => {
             },
             {
               student_firstname: student.firstname,
+              student_id: student._id.toString(),
               student_lastname: student.lastname
             }
           );

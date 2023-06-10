@@ -293,38 +293,82 @@ class SingleProgramView extends React.Component {
                     <p className="my-0">{this.props.program.tuition_fees}</p>
                   </Col>
                 </Row>
-                <Row>
-                  <Col md={4}>
-                    <p className="my-0">
-                      <b>Portal Link 1</b>
-                    </p>
-                  </Col>
-                  <Col md={8}>
-                    <a
-                      className="my-0"
-                      href={this.props.program.application_portal_a}
-                      target="_blank"
-                    >
-                      Portal Link 1
-                    </a>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={4}>
-                    <p className="my-0">
-                      <b>Portal Link 2</b>
-                    </p>
-                  </Col>
-                  <Col md={8}>
-                    <a
-                      className="my-0"
-                      href={this.props.program.application_portal_b}
-                      target="_blank"
-                    >
-                      Portal Link 2
-                    </a>
-                  </Col>
-                </Row>
+                {this.props.program.application_portal_a && (
+                  <>
+                    <Row>
+                      <Col md={4}>
+                        <p className="my-0">
+                          <b>Portal Link 1</b>
+                        </p>
+                      </Col>
+                      <Col md={8}>
+                        <a
+                          className="my-0"
+                          href={this.props.program.application_portal_a}
+                          target="_blank"
+                        >
+                          Portal Link 1
+                        </a>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={4}>
+                        <p className="my-0">
+                          <b>Portal Instructions 1</b>
+                        </p>
+                      </Col>
+                      <Col md={8}>
+                        <a
+                          className="my-0"
+                          href={
+                            this.props.program.application_portal_a_instructions
+                          }
+                          target="_blank"
+                        >
+                          Portal Instructions 1
+                        </a>
+                      </Col>
+                    </Row>
+                  </>
+                )}
+                {this.props.program.application_portal_b && (
+                  <>
+                    <Row>
+                      <Col md={4}>
+                        <p className="my-0">
+                          <b>Portal Link 2</b>
+                        </p>
+                      </Col>
+                      <Col md={8}>
+                        <a
+                          className="my-0"
+                          href={this.props.program.application_portal_b}
+                          target="_blank"
+                        >
+                          Portal Link 2
+                        </a>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={4}>
+                        <p className="my-0">
+                          <b>Portal Instructions 2</b>
+                        </p>
+                      </Col>
+                      <Col md={8}>
+                        <a
+                          className="my-0"
+                          href={
+                            this.props.program.application_portal_b_instructions
+                          }
+                          target="_blank"
+                        >
+                          Portal Instructions 2
+                        </a>
+                      </Col>
+                    </Row>
+                  </>
+                )}
                 <Row>
                   <Col md={4}>
                     <p className="my-0">

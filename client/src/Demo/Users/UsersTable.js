@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Spinner, Card, Button } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 import Aux from '../../hoc/_Aux';
 import UsersList from './UsersList';
@@ -134,6 +135,11 @@ class UsersTable extends React.Component {
           />
         )}
         <Row>
+          <Button onClick={this.openAddUserModal}>
+            <AiOutlinePlus /> Add New User
+          </Button>
+        </Row>
+        <Row>
           <Col>
             <Card bg={'primary'} text="light">
               <Card.Header>
@@ -151,7 +157,9 @@ class UsersTable extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Button onClick={this.openAddUserModal}>Add New User</Button>
+          <Button onClick={this.openAddUserModal}>
+            <AiOutlinePlus /> Add New User
+          </Button>
         </Row>
         <AddUserModal
           isLoaded={this.state.isLoaded}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import { UserlistHeader, convertDate } from '../Utils/contants';
+import { Link } from 'react-router-dom';
 class User extends React.Component {
   render() {
     if (this.props.success) {
@@ -58,11 +59,36 @@ class User extends React.Component {
           </th>
           {UserlistHeader.map((y, k) => (
             <td key={k}>
-              {typeof this.props.user[y.prop] == 'boolean'
-                ? this.props.user[y.prop]
-                  ? 'Yes'
-                  : 'No'
-                : this.props.user[y.prop]}
+              {typeof this.props.user[y.prop] == 'boolean' ? (
+                this.props.user[y.prop] ? (
+                  'Yes'
+                ) : (
+                  'No'
+                )
+              ) : this.props.user.role === 'Student' ? (
+                <Link
+                  className="text-info"
+                  to={`/student-database/${this.props.user._id.toString()}/profile`}
+                >
+                  {this.props.user[y.prop]}
+                </Link>
+              ) : this.props.user.role === 'Agent' ? (
+                <Link
+                  className="text-info"
+                  to={`/teams/agents/${this.props.user._id.toString()}`}
+                >
+                  {this.props.user[y.prop]}
+                </Link>
+              ) : this.props.user.role === 'Editor' ? (
+                <Link
+                  className="text-info"
+                  to={`/teams/editors/${this.props.user._id.toString()}`}
+                >
+                  {this.props.user[y.prop]}
+                </Link>
+              ) : (
+                this.props.user[y.prop]
+              )}
             </td>
           ))}
           <td>{convertDate(this.props.user.lastLoginAt)}</td>

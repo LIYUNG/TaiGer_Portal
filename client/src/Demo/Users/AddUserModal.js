@@ -62,7 +62,6 @@ class AddUserModal extends React.Component {
             />
           </Form.Group>
         </Modal.Body>
-
         <Modal.Footer>
           <Button
             variant="primary"

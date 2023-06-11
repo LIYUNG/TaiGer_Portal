@@ -40,6 +40,8 @@ const Expense = require('../models/Expense');
 const Course = require('../models/Course');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const Docspage = require('../models/Docspage');
+const Internaldoc = require('../models/Internaldoc');
+const Note = require('../models/Note');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -282,6 +284,16 @@ const courses_transformer = (courses) => {
   return transformedDocuments;
 };
 
+const notes_transformer = (notes) => {
+  const transformedDocuments = notes.map((note) => ({
+    ...note,
+    _id: { $oid: note._id.toString() },
+    student_id: { $oid: note.student_id.toString() },
+    updatedAt: note.updatedAt && { $date: note.updatedAt }
+  }));
+  return transformedDocuments;
+};
+
 const basedocumentationslinks_transformer = (basedocumentationslinks) => {
   const transformedDocuments = basedocumentationslinks.map(
     (basedocumentationslink) => ({
@@ -364,6 +376,8 @@ const MongoDBDataBaseDailySnapshot = async () => {
     'programs',
     'documentthreads',
     'documentations',
+    'internaldocs',
+    'notes',
     'templates'
     // 'expenses'
   ];
@@ -379,6 +393,8 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const programs_raw = await Program.find().lean();
   const documentthreads_raw = await Documentthread.find().lean();
   const documentations_raw = await Documentation.find().lean();
+  const internaldocs_raw = await Internaldoc.find().lean();
+  const notes_raw = await Note.find().lean();
   const templates_raw = await Template.find().lean();
   const expenses_raw = await Expense.find().lean();
 
@@ -391,6 +407,8 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const programs = programs_transformer(programs_raw);
   const documentthreads = documentthreads_transformer(documentthreads_raw);
   const documentations = docspages_transformer(documentations_raw);
+  const internaldocs = docspages_transformer(internaldocs_raw);
+  const notes = notes_transformer(notes_raw);
   const templates = docspages_transformer(templates_raw);
   const data_json = {
     users,
@@ -400,6 +418,8 @@ const MongoDBDataBaseDailySnapshot = async () => {
     programs,
     documentthreads,
     documentations,
+    internaldocs,
+    notes,
     templates
     // expenses
   };

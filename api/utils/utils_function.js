@@ -282,18 +282,89 @@ const courses_transformer = (courses) => {
   return transformedDocuments;
 };
 
+const basedocumentationslinks_transformer = (basedocumentationslinks) => {
+  const transformedDocuments = basedocumentationslinks.map(
+    (basedocumentationslink) => ({
+      ...basedocumentationslink,
+      _id: { $oid: basedocumentationslink._id.toString() },
+      updatedAt: basedocumentationslink.updatedAt && {
+        $date: basedocumentationslink.updatedAt
+      }
+    })
+  );
+  return transformedDocuments;
+};
+
+const docspages_transformer = (docspages) => {
+  const transformedDocuments = docspages.map((docspage) => ({
+    ...docspage,
+    _id: { $oid: docspage._id.toString() },
+    updatedAt: docspage.updatedAt && {
+      $date: docspage.updatedAt
+    }
+  }));
+  return transformedDocuments;
+};
+
+const programs_transformer = (programs) => {
+  const transformedDocuments = programs.map((program) => ({
+    ...program,
+    _id: { $oid: program._id.toString() },
+    updatedAt: program.updatedAt && {
+      $date: program.updatedAt
+    }
+  }));
+  return transformedDocuments;
+};
+
+const documentthreads_transformer = (documentthreads) => {
+  const transformedDocuments = documentthreads.map((documentthread) => ({
+    ...documentthread,
+    _id: { $oid: documentthread._id.toString() },
+    student_id: { $oid: documentthread.student_id.toString() },
+    program_id: documentthread.program_id && {
+      $oid: documentthread.program_id.toString()
+    },
+    messages:
+      documentthread.messages &&
+      documentthread.messages.map((message) => ({
+        ...message,
+        _id: {
+          $oid: message._id.toString()
+        },
+        user_id: {
+          $oid: message.user_id.toString()
+        },
+        file:
+          message.file &&
+          message.file.map((f) => ({
+            ...f,
+            _id: {
+              $oid: f._id.toString()
+            }
+          })),
+        createdAt: message.createdAt && {
+          $date: message.createdAt
+        }
+      })),
+    updatedAt: documentthread.updatedAt && {
+      $date: documentthread.updatedAt
+    }
+  }));
+  return transformedDocuments;
+};
 // Daily called.
 const MongoDBDataBaseDailySnapshot = async () => {
   console.log('database snapshot');
   const data_category = [
     'users',
-    'courses'
-    // 'basedocumentationslinks',
-    // 'docspages',
-    // 'programs',
-    // 'documentthreads',
-    // 'documentations',
-    // 'templates',
+    'courses',
+    'basedocumentationslinks',
+    'docspages',
+    'programs',
+    'documentthreads',
+    'documentations',
+    'templates'
     // 'expenses'
   ];
   const users_raw = await User.find()
@@ -302,25 +373,34 @@ const MongoDBDataBaseDailySnapshot = async () => {
       '+password +applications.portal_credentials.application_portal_a +applications.portal_credentials.application_portal_b'
     );
   const courses_raw = await Course.find().lean();
-  const basedocumentationslinks = await Basedocumentationslink.find().lean();
-  const docspages = await Docspage.find().lean();
-  const programs = await Program.find().lean();
-  const documentthreads = await Documentthread.find().lean();
-  const documentations = await Documentation.find().lean();
-  const templates = await Template.find().lean();
-  const expenses = await Expense.find().lean();
+  const basedocumentationslinks_raw =
+    await Basedocumentationslink.find().lean();
+  const docspages_raw = await Docspage.find().lean();
+  const programs_raw = await Program.find().lean();
+  const documentthreads_raw = await Documentthread.find().lean();
+  const documentations_raw = await Documentation.find().lean();
+  const templates_raw = await Template.find().lean();
+  const expenses_raw = await Expense.find().lean();
 
   const users = users_transformer(users_raw);
   const courses = courses_transformer(courses_raw);
+  const basedocumentationslinks = basedocumentationslinks_transformer(
+    basedocumentationslinks_raw
+  );
+  const docspages = docspages_transformer(docspages_raw);
+  const programs = programs_transformer(programs_raw);
+  const documentthreads = documentthreads_transformer(documentthreads_raw);
+  const documentations = docspages_transformer(documentations_raw);
+  const templates = docspages_transformer(templates_raw);
   const data_json = {
     users,
-    courses
-    // basedocumentationslinks,
-    // docspages,
-    // programs,
-    // documentthreads,
-    // documentations,
-    // templates,
+    courses,
+    basedocumentationslinks,
+    docspages,
+    programs,
+    documentthreads,
+    documentations,
+    templates
     // expenses
   };
 

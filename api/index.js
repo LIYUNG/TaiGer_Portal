@@ -112,10 +112,10 @@ const launch = async () => {
     UrgentTasksReminderEmails
   );
 
-  // const job5 = schedule.scheduleJob(
-  //   DAILY_TASKS_REMINDER_SCHEDULE,
-  //   MongoDBDataBaseDailySnapshot
-  // );
+  const job5 = schedule.scheduleJob(
+    DAILY_TASKS_REMINDER_SCHEDULE,
+    MongoDBDataBaseDailySnapshot
+  );
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);

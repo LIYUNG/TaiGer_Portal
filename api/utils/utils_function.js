@@ -1,5 +1,6 @@
 const aws = require('aws-sdk');
 // const EJSON = require('ejson');
+const { ObjectID } = require('mongodb');
 const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
@@ -174,44 +175,153 @@ const TasksReminderEmails = async () => {
   await TasksReminderEmails_Agent_core();
 };
 
+const users_transformer = (users) => {
+  const transformedDocuments = users.map((user) => ({
+    ...user,
+    _id: { $oid: user._id.toString() },
+    lastLoginAt: user.lastLoginAt && { $date: user.lastLoginAt },
+    updatedAt: user.updatedAt && { $date: user.updatedAt },
+    createdAt: user.createdAt && { $date: user.createdAt },
+    // students are Deprecated
+    students:
+      user.students &&
+      user.students.map((agent) => ({ $oid: agent.toString() })),
+    agents:
+      user.agents && user.agents.map((agent) => ({ $oid: agent.toString() })),
+    agent_notification: user.agent_notification && {
+      ...user.agent_notification,
+      isRead_new_base_docs_uploaded:
+        user.agent_notification.isRead_new_base_docs_uploaded.map(
+          (is_new_bd_uploaded) => ({
+            ...is_new_bd_uploaded,
+            _id: { $oid: is_new_bd_uploaded._id.toString() }
+          })
+        )
+    },
+    editors:
+      user.editors &&
+      user.editors.map((editor) => ({
+        $oid: editor.toString()
+      })),
+    academic_background: user.academic_background && {
+      ...user.academic_background,
+      university: user.academic_background.university && {
+        ...user.academic_background.university,
+        updatedAt: user.academic_background.university.updatedAt && {
+          $date: user.academic_background.university.updatedAt
+        }
+      },
+      language: user.academic_background.language && {
+        ...user.academic_background.language,
+        updatedAt: user.academic_background.language.updatedAt && {
+          $date: user.academic_background.language.updatedAt
+        }
+      }
+    },
+    application_preference: user.application_preference && {
+      ...user.application_preference,
+      updatedAt: user.application_preference.updatedAt && {
+        $date: user.application_preference.updatedAt
+      }
+    },
+    applications:
+      user.applications &&
+      user.applications.map((application) => ({
+        ...application,
+        _id: { $oid: application._id.toString() },
+        programId: { $oid: application.programId.toString() },
+        uni_assist: {
+          ...application.uni_assist,
+          updatedAt: application.uni_assist.updatedAt && {
+            $date: application.uni_assist.updatedAt
+          }
+        },
+        doc_modification_thread: application.doc_modification_thread.map(
+          (thread) => ({
+            ...thread,
+            _id: { $oid: thread._id.toString() },
+            doc_thread_id: { $oid: thread.doc_thread_id.toString() },
+            updatedAt: thread.updatedAt && { $date: thread.updatedAt },
+            createdAt: thread.createdAt && { $date: thread.createdAt }
+          })
+        )
+      })),
+    generaldocs_threads:
+      user.generaldocs_threads &&
+      user.generaldocs_threads.map((general_doc) => ({
+        ...general_doc,
+        _id: { $oid: general_doc._id.toString() },
+        doc_thread_id: { $oid: general_doc.doc_thread_id.toString() },
+        updatedAt: general_doc.updatedAt && { $date: general_doc.updatedAt },
+        createdAt: general_doc.createdAt && { $date: general_doc.createdAt }
+      })),
+    profile:
+      user.profile &&
+      user.profile.map((prof) => ({
+        ...prof,
+        _id: { $oid: prof._id.toString() },
+        updatedAt: prof.updatedAt && { $date: prof.updatedAt }
+      }))
+  }));
+  return transformedDocuments;
+};
+
+const courses_transformer = (courses) => {
+  const transformedDocuments = courses.map((course) => ({
+    ...course,
+    _id: { $oid: course._id.toString() },
+    student_id: { $oid: course.student_id.toString() },
+    analysis: course.analysis && {
+      ...course.analysis,
+      updatedAt: course.analysis.updatedAt && {
+        $date: course.analysis.updatedAt
+      }
+    },
+    updatedAt: course.updatedAt && { $date: course.updatedAt }
+  }));
+  return transformedDocuments;
+};
+
 // Daily called.
 const MongoDBDataBaseDailySnapshot = async () => {
   console.log('database snapshot');
   const data_category = [
     'users',
-    'courses',
-    'basedocumentationslinks',
-    'docspages',
-    'programs',
-    'documentthreads',
-    'documentations',
-    'templates',
-    'expenses'
+    'courses'
+    // 'basedocumentationslinks',
+    // 'docspages',
+    // 'programs',
+    // 'documentthreads',
+    // 'documentations',
+    // 'templates',
+    // 'expenses'
   ];
-  const users = await User.find()
+  const users_raw = await User.find()
     .lean()
     .select(
       '+password +applications.portal_credentials.application_portal_a +applications.portal_credentials.application_portal_b'
     );
-  const courses = await Course.find();
-  const basedocumentationslinks = await Basedocumentationslink.find();
-  const docspages = await Docspage.find();
-  const programs = await Program.find();
-  const documentthreads = await Documentthread.find();
-  const documentations = await Documentation.find();
-  const templates = await Template.find();
-  const expenses = await Expense.find();
-  console.log(users[0]);
+  const courses_raw = await Course.find().lean();
+  const basedocumentationslinks = await Basedocumentationslink.find().lean();
+  const docspages = await Docspage.find().lean();
+  const programs = await Program.find().lean();
+  const documentthreads = await Documentthread.find().lean();
+  const documentations = await Documentation.find().lean();
+  const templates = await Template.find().lean();
+  const expenses = await Expense.find().lean();
+
+  const users = users_transformer(users_raw);
+  const courses = courses_transformer(courses_raw);
   const data_json = {
     users,
-    courses,
-    basedocumentationslinks,
-    docspages,
-    programs,
-    documentthreads,
-    documentations,
-    templates,
-    expenses
+    courses
+    // basedocumentationslinks,
+    // docspages,
+    // programs,
+    // documentthreads,
+    // documentations,
+    // templates,
+    // expenses
   };
 
   const currentDateTime = new Date();
@@ -230,7 +340,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
 
     // Convert JSON to string
     console.log(data_category[i]);
-    const jsonString = EJSON.stringify(jsonObject);
+    const jsonString = JSON.stringify(jsonObject);
     s3.putObject(
       {
         Bucket: `${AWS_S3_MONGODB_BACKUP_SNAPSHOT}/${year}-${month}-${day}/${hours}-${minutes}-${seconds}`,

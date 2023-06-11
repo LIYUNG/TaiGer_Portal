@@ -400,8 +400,10 @@ class DocModificationThreadPage extends Component {
     }
 
     // Only CV, ML RL has instructions and template.
-    let template_obj = templatelist.find(({ prop }) =>
-      prop.includes(this.state.thread.file_type.split('_')[0])
+    let template_obj = templatelist.find(
+      ({ prop, alias }) =>
+        prop.includes(this.state.thread.file_type.split('_')[0]) ||
+        alias.includes(this.state.thread.file_type.split('_')[0])
     );
     let docName;
     if (this.state.thread.program_id) {
@@ -510,16 +512,40 @@ class DocModificationThreadPage extends Component {
                         <p>
                           模板下載 Download template:{' '}
                           {template_obj ? (
-                            <b>
-                              <a
-                                href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
-                                target="_blank"
-                              >
-                                <Button size="sm" variant="secondary">
-                                  <b>Link [點我下載]</b>
-                                </Button>
-                              </a>
-                            </b>
+                            template_obj.prop.includes('RL') ||
+                            template_obj.alias.includes('Recommendation') ? (
+                              <b>
+                                教授：
+                                <a
+                                  href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
+                                  target="_blank"
+                                >
+                                  <Button size="sm" variant="secondary">
+                                    <b>Link [點我下載]</b>
+                                  </Button>
+                                </a>
+                                主管：
+                                <a
+                                  href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
+                                  target="_blank"
+                                >
+                                  <Button size="sm" variant="secondary">
+                                    <b>Link [點我下載]</b>
+                                  </Button>
+                                </a>
+                              </b>
+                            ) : (
+                              <b>
+                                <a
+                                  href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
+                                  target="_blank"
+                                >
+                                  <Button size="sm" variant="secondary">
+                                    <b>Link [點我下載]</b>
+                                  </Button>
+                                </a>
+                              </b>
+                            )
                           ) : (
                             <>Not available</>
                           )}

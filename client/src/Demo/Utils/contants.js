@@ -591,35 +591,43 @@ export const academic_background_header = {
 export const templatelist = [
   {
     name: 'CV Survey Template (履歷模板)',
-    prop: 'Example_CV_english'
+    prop: 'Example_CV_english',
+    alias: 'CV'
   },
   {
     name: 'ML (Motivation Letter) Survey Template (動機信模板)',
-    prop: 'ML_Survey'
+    prop: 'ML_Survey',
+    alias: 'ML'
   },
   {
     name: 'RL (Recommendation Letter) Survey Template (Academic) (教授推薦信模板(學術))',
-    prop: 'RL_academic_survey_lock'
+    prop: 'RL_academic_survey_lock',
+    alias: 'Recommendation'
   },
   {
     name: 'RL (Recommendation Letter) Survey Template (Employer) (主管推薦信模板(工作))',
-    prop: 'RL_employer_survey_lock'
+    prop: 'RL_employer_survey_lock',
+    alias: 'Recommendation'
   },
   {
     name: 'Internship Certificate (實習證明)',
-    prop: 'Internship_Certificate_Example'
+    prop: 'Internship_Certificate_Example',
+    alias: 'Internship'
   },
   {
     name: 'Employment Certificate (工作證明)',
-    prop: 'Employment_Template'
+    prop: 'Employment_Template',
+    alias: 'Employment'
   },
   {
     name: 'Module Description (課程描述)',
-    prop: 'Module_Catalog'
+    prop: 'Module_Catalog',
+    alias: 'Module'
   },
   {
     name: 'ECTS Conversion (台灣Credits轉換歐洲ECTS學分證明)',
-    prop: 'ECTS_Conv_example'
+    prop: 'ECTS_Conv_example',
+    alias: 'ECTS'
   }
 ];
 

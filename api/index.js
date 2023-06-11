@@ -27,7 +27,8 @@ const logger = require('./services/logger');
 // } = require('./controllers/documents_modification');
 const {
   TasksReminderEmails,
-  UrgentTasksReminderEmails
+  UrgentTasksReminderEmails,
+  MongoDBDataBaseDailySnapshot
 } = require('./utils/utils_function');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
@@ -110,6 +111,11 @@ const launch = async () => {
     DAILY_TASKS_REMINDER_SCHEDULE,
     UrgentTasksReminderEmails
   );
+
+  // const job5 = schedule.scheduleJob(
+  //   DAILY_TASKS_REMINDER_SCHEDULE,
+  //   MongoDBDataBaseDailySnapshot
+  // );
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);

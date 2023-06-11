@@ -1,10 +1,12 @@
 const aws = require('aws-sdk');
+// const EJSON = require('ejson');
 const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor } = require('../models/User');
+const { Role, Agent, Student, Editor, User } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
+const Documentation = require('../models/Documentation');
 const {
   StudentTasksReminderEmail,
   AgentTasksReminderEmail,
@@ -26,7 +28,17 @@ const {
   isNotArchiv
 } = require('../constants');
 
-const { AWS_S3_ACCESS_KEY_ID, AWS_S3_ACCESS_KEY } = require('../config');
+const {
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_MONGODB_BACKUP_SNAPSHOT
+} = require('../config');
+const { Program } = require('../models/Program');
+const { Template } = require('../models/Template');
+const Expense = require('../models/Expense');
+const Course = require('../models/Course');
+const { Basedocumentationslink } = require('../models/Basedocumentationslink');
+const Docspage = require('../models/Docspage');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -160,6 +172,81 @@ const TasksReminderEmails = async () => {
   await TasksReminderEmails_Editor_core();
   await TasksReminderEmails_Student_core();
   await TasksReminderEmails_Agent_core();
+};
+
+// Daily called.
+const MongoDBDataBaseDailySnapshot = async () => {
+  console.log('database snapshot');
+  const data_category = [
+    'users',
+    'courses',
+    'basedocumentationslinks',
+    'docspages',
+    'programs',
+    'documentthreads',
+    'documentations',
+    'templates',
+    'expenses'
+  ];
+  const users = await User.find()
+    .lean()
+    .select(
+      '+password +applications.portal_credentials.application_portal_a +applications.portal_credentials.application_portal_b'
+    );
+  const courses = await Course.find();
+  const basedocumentationslinks = await Basedocumentationslink.find();
+  const docspages = await Docspage.find();
+  const programs = await Program.find();
+  const documentthreads = await Documentthread.find();
+  const documentations = await Documentation.find();
+  const templates = await Template.find();
+  const expenses = await Expense.find();
+  console.log(users[0]);
+  const data_json = {
+    users,
+    courses,
+    basedocumentationslinks,
+    docspages,
+    programs,
+    documentthreads,
+    documentations,
+    templates,
+    expenses
+  };
+
+  const currentDateTime = new Date();
+
+  const year = currentDateTime.getUTCFullYear();
+  const month = currentDateTime.getUTCMonth() + 1; // Months are zero-based, so we add 1
+  const day = currentDateTime.getUTCDate();
+  const hours = currentDateTime.getUTCHours();
+  const minutes = currentDateTime.getUTCMinutes();
+  const seconds = currentDateTime.getUTCSeconds();
+
+  // Upload JSON data to S3
+  for (let i = 0; i < data_category.length; i += 1) {
+    // Replace `jsonObject` with your actual JSON data
+    const jsonObject = data_json[data_category[i]];
+
+    // Convert JSON to string
+    console.log(data_category[i]);
+    const jsonString = EJSON.stringify(jsonObject);
+    s3.putObject(
+      {
+        Bucket: `${AWS_S3_MONGODB_BACKUP_SNAPSHOT}/${year}-${month}-${day}/${hours}-${minutes}-${seconds}`,
+        Key: `${data_category[i]}.json`,
+        Body: jsonString,
+        ContentType: 'application/json'
+      },
+      (error, data) => {
+        if (error) {
+          console.log(`Error uploading ${data_category[i]}.json:`, error);
+        } else {
+          console.log(`${data_category[i]}.json uploaded successfully`);
+        }
+      }
+    );
+  }
 };
 
 const UrgentTasksReminderEmails_Student_core = async () => {
@@ -433,6 +520,7 @@ const add_portals_registered_status = (student_input) => {
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
+  MongoDBDataBaseDailySnapshot,
   UrgentTasksReminderEmails,
   add_portals_registered_status
 };

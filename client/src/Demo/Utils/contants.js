@@ -560,7 +560,8 @@ export const base_documents_checklist = {
   Bachelor_Transcript: [
     'Grading system existed ?',
     'GPA (1.7-4.3 system) and not 100-60 system ?',
-    'Date of referral ? (if graduated)'
+    'Date of referral ? (if graduated)',
+    'For Bachelor application: 34 credits must be achieved (if applicable)'
   ],
   Englisch_Certificate: ['Not expired ?'],
   German_Certificate: ['Not expired ?'],

@@ -1020,8 +1020,8 @@ class SurveyEditableComponent extends React.Component {
                         onChange={(e) => this.handleChange_Language(e)}
                       >
                         <option value="-">-</option>
-                        <option value="O">Yes</option>
-                        <option value="X">No</option>
+                        <option value="O">Yes (Provide Test Score)</option>
+                        <option value="X">No (Provide Test Date)</option>
                         <option value="--">Not Needed</option>
                       </Form.Control>
                     </Form.Group>
@@ -1156,8 +1156,8 @@ class SurveyEditableComponent extends React.Component {
                         onChange={(e) => this.handleChange_Language(e)}
                       >
                         <option value="-">-</option>
-                        <option value="O">Yes</option>
-                        <option value="X">No</option>
+                        <option value="O">Yes (Provide Test Score)</option>
+                        <option value="X">No (Provide Test Date)</option>
                         <option value="--">Not Needed</option>
                       </Form.Control>
                     </Form.Group>

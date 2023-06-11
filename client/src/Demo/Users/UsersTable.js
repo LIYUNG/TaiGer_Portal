@@ -65,6 +65,8 @@ class UsersTable extends React.Component {
       ...state,
       isLoaded: false
     }));
+    // Remove email space
+    user_information.email = user_information.email.trim();
     addUser(user_information).then(
       (resp) => {
         const { data, success } = resp.data;

@@ -8,6 +8,9 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import { is_TaiGer_role } from '../Utils/checking-functions';
+import { Link } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 class index extends React.Component {
   state = {
@@ -87,6 +90,20 @@ class index extends React.Component {
             </Card>
           </Col>
         </Row>
+        {!is_TaiGer_role(this.props.user) && (
+          <Card>
+            <Card.Body>
+              <h5>Instructions</h5>
+              若您為初次使用，可能無任何
+              Tasks。請聯絡您的顧問處理選校等，方能開始準備文件。
+              <br />
+              在此之前可以詳閱，了解之後與Editor之間的互動模式：
+              <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`} target="_blank">
+                <b className="text-info">Click me</b>
+              </Link>
+            </Card.Body>
+          </Card>
+        )}
         <CVMLRLOverview
           isLoaded={this.state.isLoaded}
           success={this.state.success}

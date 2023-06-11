@@ -16,6 +16,7 @@ import {
   profile_name_list,
   getNumberOfDays
 } from '../Utils/contants';
+import Banner from '../../components/Banner/Banner';
 class SurveyEditableComponent extends React.Component {
   state = {
     error: null,
@@ -1003,6 +1004,16 @@ class SurveyEditableComponent extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
+                <Banner
+                  ReadOnlyMode={true}
+                  bg={'primary'}
+                  title={'Info:'}
+                  path={'/'}
+                  text={'若還沒考過，請在 Passed 處選 No，並填上檢定以及預計考試時間。若不需要（如德語），請填 Not Needed。方便顧問了解你的進度。'}
+                  link_name={''}
+                  removeBanner={this.removeBanner}
+                  notification_key={'x'}
+                />
                 <Row>
                   <Col md={4}>
                     <Form.Group controlId="english_isPassed">

@@ -23,6 +23,7 @@ import {
   SetFileAsFinal
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
+import DEMO from '../../../store/constant';
 
 class DocModificationThreadPage extends Component {
   state = {
@@ -493,7 +494,7 @@ class DocModificationThreadPage extends Component {
                           Template，並在這個討論串夾帶在和您的 Editor
                           討論。回覆時請用 <b>英語(English)</b>{' '}
                           好讓外籍顧問方便溝通。有任何流程疑問{' '}
-                          <Link to="/docs/cv-ml-rl">
+                          <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
                             <Button size="sm" variant="info">
                               點我
                             </Button>
@@ -503,7 +504,7 @@ class DocModificationThreadPage extends Component {
                           template and reply in
                           <b> English</b> in this discussion. Any process
                           question:{' '}
-                          <Link to="/docs/cv-ml-rl">
+                          <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
                             <Button size="sm" variant="info">
                               Read More
                             </Button>

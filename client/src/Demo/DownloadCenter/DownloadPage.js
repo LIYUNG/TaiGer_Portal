@@ -10,6 +10,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { deleteTemplateFile, getTemplates, uploadtemplate } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import Banner from '../../components/Banner/Banner';
 
 class DownloadPage extends React.Component {
   state = {
@@ -203,22 +204,38 @@ class DownloadPage extends React.Component {
         )}
         <Row>
           <Col>
-            <Card className="my-0 mx-0" bg={'primary'} text={'white'}>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   Download TaiGer Document Templates
                 </Card.Title>
               </Card.Header>
-              <EditDownloadFiles
-                role={this.props.user.role}
-                user={this.props.user}
-                templates={this.state.templates}
-                submitFile={this.submitFile}
-                onFileChange={this.onFileChange}
-                templatelist={templatelist}
-                areLoaded={this.state.areLoaded}
-                onDeleteTemplateFile={this.onDeleteTemplateFile}
+              <Banner
+                ReadOnlyMode={true}
+                bg={'primary'}
+                title={'Info:'}
+                path={`${DEMO.CV_ML_RL_DOCS_LINK}`}
+                text={
+                  'This is TaiGer templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.'
+                }
+                link_name={'Test'}
+                removeBanner={this.removeBanner}
+                notification_key={'isRead_new_agent_assigned'}
               />
+              <Row>
+                <Col>
+                  <EditDownloadFiles
+                    role={this.props.user.role}
+                    user={this.props.user}
+                    templates={this.state.templates}
+                    submitFile={this.submitFile}
+                    onFileChange={this.onFileChange}
+                    templatelist={templatelist}
+                    areLoaded={this.state.areLoaded}
+                    onDeleteTemplateFile={this.onDeleteTemplateFile}
+                  />
+                </Col>
+              </Row>
             </Card>
           </Col>
         </Row>

@@ -10,7 +10,8 @@ import {
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing,
-  to_register_application_portals
+  to_register_application_portals,
+  is_personal_data_filled
 } from '../../../Utils/checking-functions';
 
 class StudentTasks extends React.Component {
@@ -164,7 +165,7 @@ class StudentTasks extends React.Component {
             <td></td>
           </tr>
         )}
-        {this.props.student.birthday === '' && (
+        {!is_personal_data_filled(this.props.student) && (
           <tr>
             <td>
               <Link
@@ -175,7 +176,7 @@ class StudentTasks extends React.Component {
                 Personal Data
               </Link>
             </td>
-            <td>Please go to Personal Data to fill your birthday.</td>
+            <td>Please go to Personal Data to fill your information.</td>
             <td></td>
           </tr>
         )}
@@ -208,7 +209,8 @@ class StudentTasks extends React.Component {
               </Link>
             </td>
             <td>
-              Some of Portals are still not registered. Please register and provide the credentials as soon as possible.
+              Some of Portals are still not registered. Please register and
+              provide the credentials as soon as possible.
             </td>
             <td></td>
           </tr>

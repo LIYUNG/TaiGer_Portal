@@ -824,6 +824,25 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
   return true;
 };
 
+export const is_personal_data_filled = (student) => {
+  if (
+    student.birthday === undefined ||
+    student.firstname_chinese === undefined ||
+    student.lastname_chinese === undefined
+  ) {
+    return false;
+  }
+  if (
+    student.birthday === '' ||
+    student.firstname_chinese === '' ||
+    student.lastname_chinese === ''
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 export const is_all_uni_assist_vpd_uploaded = (student) => {
   if (student.applications === undefined) {
     return false;

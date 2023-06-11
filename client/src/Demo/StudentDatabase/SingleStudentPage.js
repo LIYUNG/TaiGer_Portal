@@ -490,7 +490,7 @@ class SingleStudentPage extends React.Component {
       );
     }
     TabTitle(
-      `Student ${this.state.student.firstname} ${this.state.student.lastname}`
+      `Student ${this.state.student.firstname} ${this.state.student.lastname} | ${this.state.student.firstname_chinese} ${this.state.student.lastname_chinese}`
     );
     return (
       <>
@@ -526,6 +526,9 @@ class SingleStudentPage extends React.Component {
                     {this.state.student.firstname}
                     {' ,'}
                     {this.state.student.lastname}
+                    {' | '}
+                    {this.state.student.lastname_chinese}
+                    {this.state.student.firstname_chinese}
                     <span
                       className="text-light mb-1 me-2 "
                       style={{ float: 'right' }}

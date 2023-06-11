@@ -74,7 +74,7 @@ MGM_MARKETING_KEY_WORDS_EN = ['marketing']
 MGM_MARKETING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 MGM_OP_RESEARCH_KEY_WORDS_EN = ['operations research']
 MGM_OP_RESEARCH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-MGM_EP_RESEARCH_KEY_WORDS_EN = ['empirical', 'quantitative method']
+MGM_EP_RESEARCH_KEY_WORDS_EN = ['empirical', 'quantitative method', 'quantitative resear']
 MGM_EP_RESEARCH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 MGM_BASIC_CS_KEY_WORDS_EN = ['computer', 'data', 'operating system', 'program design', 'artificial intelligen',
                               'database', 'data structure', 'algorithm']

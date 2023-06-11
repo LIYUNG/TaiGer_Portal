@@ -1553,15 +1553,10 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
   } = req;
   const { _id } = user;
   try {
-    const updatedStudent = await User.findByIdAndUpdate(
-      _id,
-      {
-        firstname: personaldata.firstname,
-        lastname: personaldata.lastname,
-        birthday: personaldata.birthday
-      },
-      { upsert: true, new: true }
-    );
+    const updatedStudent = await User.findByIdAndUpdate(_id, personaldata, {
+      upsert: true,
+      new: true
+    });
     // const updatedStudent = await User.findById(_id);
     res.status(200).send({
       success: true,

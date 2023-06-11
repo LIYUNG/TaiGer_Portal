@@ -83,6 +83,9 @@ class StudDocsDashboard extends React.Component {
               style={{ textDecoration: 'none' }}
             >
               {this.props.student.firstname}, {this.props.student.lastname}
+              {' | '}
+              {this.props.student.lastname_chinese}
+              {this.props.student.firstname_chinese}
             </Link>
             <br />
             {this.props.student.email}

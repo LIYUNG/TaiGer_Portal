@@ -25,7 +25,15 @@ const UserSchema = new Schema(
       type: String,
       trim: true
     },
+    firstname_chinese: {
+      type: String,
+      trim: true
+    },
     lastname: {
+      type: String,
+      trim: true
+    },
+    lastname_chinese: {
       type: String,
       trim: true
     },

@@ -35,7 +35,7 @@ class TabStudBackgroundDashboard extends React.Component {
           <tr>
             <th></th>
             <th>
-              First-, Last Name <br /> Email
+              First-, Last Name | 姓名 <br /> Email
             </th>
             {header.map((name, index) => (
               <th key={index}>{name}</th>

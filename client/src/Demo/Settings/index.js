@@ -11,6 +11,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { is_personal_data_filled } from '../Utils/checking-functions';
 class Settings extends React.Component {
   state = {
     error: '',
@@ -22,7 +23,9 @@ class Settings extends React.Component {
     changed_personaldata: false,
     personaldata: {
       firstname: this.props.user.firstname,
+      firstname_chinese: this.props.user.firstname_chinese,
       lastname: this.props.user.lastname,
+      lastname_chinese: this.props.user.lastname_chinese,
       birthday: this.props.user.birthday
     },
     credentials: {
@@ -220,7 +223,7 @@ class Settings extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                {this.state.personaldata.birthday === '' && (
+                {!is_personal_data_filled(this.props.user) && (
                   <Row>
                     <Col>
                       <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
@@ -230,14 +233,7 @@ class Settings extends React.Component {
                         >
                           <BsExclamationTriangle size={18} />
                           <b className="mx-2">Reminder:</b> Please fill your
-                          birthday:{' '}
-                          <Link
-                            to={`${DEMO.SETTINGS}`}
-                            style={{ textDecoration: 'none' }}
-                            className="text-info"
-                          >
-                            Settings
-                          </Link>{' '}
+                          birthday / first name / last name
                         </p>
                       </Card>
                     </Col>
@@ -247,13 +243,26 @@ class Settings extends React.Component {
                   <Col>
                     <Form.Group controlId="firstname">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Firstname
+                        Firstname (English)
                       </Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="First name"
                         autoComplete="nope"
-                        defaultValue={this.state.personaldata.firstname}
+                        value={this.state.personaldata.firstname}
+                        onChange={(e) => this.handleChange_PersonalData(e)}
+                      />
+                    </Form.Group>
+                    <br />
+                    <Form.Group controlId="firstname_chinese">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        名 (中文)
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="小明"
+                        autoComplete="nope"
+                        defaultValue={this.state.personaldata.firstname_chinese}
                         onChange={(e) => this.handleChange_PersonalData(e)}
                       />
                     </Form.Group>
@@ -262,32 +271,41 @@ class Settings extends React.Component {
                       <Form.Label className="my-0 mx-0 text-light">
                         Email
                       </Form.Label>
-                      {/* <Form.Control
-                        plaintext
-                        readOnly
-                        defaultValue={this.props.user.email}
-                      /> */}
                       <p className="text-primary">{this.props.user.email}</p>
                     </Form.Group>
-
-                    {/* <p>{this.props.user.email}</p> */}
-                    {/* <Form.Group controlId="birthday">
-                      <Form.Label className="my-0 mx-0 text-light">Birthday Date</Form.Label>
-                      <Form.Control type="date" placeholder="Date of Birth" />
-                    </Form.Group> */}
                   </Col>
                   <Col md={6}>
-                    <Form.Group controlId="lastname">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Lastname
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Last name"
-                        defaultValue={this.state.personaldata.lastname}
-                        onChange={(e) => this.handleChange_PersonalData(e)}
-                      />
-                    </Form.Group>
+                    <Form autoComplete="nope">
+                      <Form.Group controlId="lastname">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Lastname (English)
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          autoComplete="nope"
+                          placeholder="Last name"
+                          defaultValue={this.state.personaldata.lastname}
+                          onChange={(e) => this.handleChange_PersonalData(e)}
+                        />
+                      </Form.Group>
+                    </Form>
+                    <br />
+                    <Form autoComplete="nope">
+                      <Form.Group controlId="lastname_chinese">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          姓 (中文)
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="王"
+                          autoComplete="nope"
+                          defaultValue={
+                            this.state.personaldata.lastname_chinese
+                          }
+                          onChange={(e) => this.handleChange_PersonalData(e)}
+                        />
+                      </Form.Group>
+                    </Form>
                     <Form.Group className="my-2" controlId="birthday">
                       <Form.Label className="my-0 mx-0 text-light">
                         Birthday
@@ -303,7 +321,9 @@ class Settings extends React.Component {
                       variant="primary"
                       disabled={
                         this.state.personaldata.firstname === '' ||
+                        this.state.personaldata.firstname_chinese === '' ||
                         this.state.personaldata.lastname === '' ||
+                        this.state.personaldata.lastname_chinese === '' ||
                         !this.state.changed_personaldata
                       }
                       onClick={(e) =>

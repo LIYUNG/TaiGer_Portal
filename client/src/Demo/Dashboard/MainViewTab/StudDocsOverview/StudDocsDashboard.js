@@ -32,7 +32,13 @@ class StudDocsDashboard extends React.Component {
       : '';
     return (
       <>
-        <tr>
+        <tr
+          style={{
+            backgroundColor:
+              this.props.student.archiv === true ? '#1de9b6' : ''
+          }}
+          title={this.props.student.archiv === true ? 'Closed' : 'Open'}
+        >
           <td>
             {this.props.isDashboard && this.props.user.role !== 'Editor' && (
               <DropdownButton
@@ -79,13 +85,15 @@ class StudDocsDashboard extends React.Component {
           <td>
             <Link
               to={'/student-database/' + this.props.student._id + '/background'}
-              className="text-info"
+              // className="text-info"
               style={{ textDecoration: 'none' }}
             >
-              {this.props.student.firstname}, {this.props.student.lastname}
-              {' | '}
-              {this.props.student.lastname_chinese}
-              {this.props.student.firstname_chinese}
+              <b>
+                {this.props.student.firstname}, {this.props.student.lastname}
+                {' | '}
+                {this.props.student.lastname_chinese}
+                {this.props.student.firstname_chinese}
+              </b>
             </Link>
             <br />
             {this.props.student.email}

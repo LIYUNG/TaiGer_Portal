@@ -24,15 +24,20 @@ class TabStudBackgroundDashboard extends React.Component {
       <Table
         size="sm"
         responsive
-        bordered
-        striped
+        // bordered
+        // striped
         hover
         className="px-0 py-0 mb-0 mx-0"
-        variant="dark"
-        text="light"
+        // variant="dark"
+        text="dark"
       >
         <thead>
-          <tr>
+          <tr
+            style={{
+              backgroundColor: 'black',
+              color: 'white'
+            }}
+          >
             <th></th>
             <th>
               First-, Last Name | 姓名 <br /> Email

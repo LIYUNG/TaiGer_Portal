@@ -110,7 +110,7 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
 const getAllStudents = asyncHandler(async (req, res) => {
   const students = await Student.find()
     .select(
-      'firstname lastname firstname_chinese lastname_chinese academic_background email'
+      'firstname lastname firstname_chinese lastname_chinese academic_background email archiv'
     )
     .lean();
 

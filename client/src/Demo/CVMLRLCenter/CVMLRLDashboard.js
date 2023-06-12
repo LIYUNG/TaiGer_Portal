@@ -20,6 +20,8 @@ import {
   usePagination
 } from 'react-table';
 import { Link } from 'react-router-dom';
+import { matchSorter } from 'match-sorter';
+
 import {
   spinner_style,
   is_started_tasks_status,
@@ -41,7 +43,108 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
 import SortTable from '../../components/SortTable/SortTable';
+
+// Define a default UI for filtering
+function GlobalFilter({
+  preGlobalFilteredRows,
+  globalFilter,
+  setGlobalFilter
+}) {
+  const count = preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState(globalFilter);
+  const onChange = useAsyncDebounce((value) => {
+    setGlobalFilter(value || undefined);
+  }, 200);
+
+  return (
+    <span>
+      Global Search:{' '}
+      <input
+        value={value || ''}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        // placeholder={`${count} records...`}
+        placeholder={` TUM, Xiao-Ming ...`}
+        style={{
+          fontSize: '0.9rem',
+          border: '0'
+        }}
+      />
+    </span>
+  );
+}
+
+function fuzzyTextFilterFn(rows, id, filterValue) {
+  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
+}
+
+// Let the table remove the filter if the string is empty
+fuzzyTextFilterFn.autoRemove = (val) => !val;
+
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef();
+    const resolvedRef = ref || defaultRef;
+
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
+
+    return (
+      <>
+        <input type="checkbox" ref={resolvedRef} {...rest} />
+      </>
+    );
+  }
+);
+
+// Define a default UI for filtering
+function DefaultColumnFilter({
+  column: { filterValue, preFilteredRows, setFilter }
+}) {
+  const count = preFilteredRows.length;
+
+  return (
+    <input
+      value={filterValue || ''}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+      }}
+      // size={10}
+      placeholder={`Search ${count} records...`}
+    />
+  );
+}
+
 function SortTable2({ columns, data, user, handleAsFinalFile }) {
+  const filterTypes = React.useMemo(
+    () => ({
+      // Add a new fuzzyTextFilterFn filter type.
+      fuzzyText: fuzzyTextFilterFn,
+      // Or, override the default text filter to use
+      // "startWith"
+      text: (rows, id, filterValue) => {
+        return rows.filter((row) => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
+            : true;
+        });
+      }
+    }),
+    []
+  );
+  const defaultColumn = React.useMemo(
+    () => ({
+      // Let's set up our default Filter UI
+      Filter: DefaultColumnFilter
+    }),
+    []
+  );
   const {
     getTableProps,
     getTableBodyProps,
@@ -62,9 +165,12 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
   } = useTable(
     {
       columns,
-      data
+      data,
+      defaultColumn, // Be sure to pass the defaultColumn option
+      filterTypes
     },
     useFilters, // useFilters!
+    useGlobalFilter, // useGlobalFilter!
     useSortBy
   );
 
@@ -123,6 +229,23 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                   </span>
                 </th>
               ))}
+            </tr>
+          ))}
+          {headerGroups.map((headerGroup, j) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={j}>
+              {headerGroup.headers.map((column, i) =>
+                // Add the sorting props to control sorting. For this example
+                // we can add them into the header props
+                [0, 2, 4, 7].includes(i) ? (
+                  <th>
+                    <div>
+                      {column.canFilter ? column.render('Filter') : null}
+                    </div>
+                  </th>
+                ) : (
+                  <th key={i}></th>
+                )
+              )}
             </tr>
           ))}
         </thead>

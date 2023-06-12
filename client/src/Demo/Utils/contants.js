@@ -676,11 +676,13 @@ export const taskTashboardHeader = [
   },
   {
     Header: 'Deadline',
-    accessor: 'deadline'
+    accessor: 'deadline',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Days left',
-    accessor: 'days_left'
+    accessor: 'days_left',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Documents',
@@ -689,11 +691,13 @@ export const taskTashboardHeader = [
   },
   {
     Header: 'Ages Days',
-    accessor: 'aged_days'
+    accessor: 'aged_days',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Last Update',
-    accessor: 'updatedAt'
+    accessor: 'updatedAt',
+    filter: 'fuzzyText'
   }
 ];
 

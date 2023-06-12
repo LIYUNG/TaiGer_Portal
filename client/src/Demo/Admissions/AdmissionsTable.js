@@ -333,6 +333,7 @@ function Table2({ header, data, userId }) {
     {
       columns,
       data,
+      initialState: { pageSize: 20 },
       defaultColumn, // Be sure to pass the defaultColumn option
       filterTypes
     },

@@ -710,11 +710,13 @@ export const applicationOverviewHeader = [
   },
   {
     Header: 'Degree',
-    accessor: 'degree'
+    accessor: 'degree',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Program',
-    accessor: 'program_name'
+    accessor: 'program_name',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Semester',
@@ -723,31 +725,38 @@ export const applicationOverviewHeader = [
   },
   {
     Header: 'TOEFL',
-    accessor: 'toefl'
+    accessor: 'toefl',
+    filter: 'fuzzyText'
   },
   {
     Header: 'IELTS',
-    accessor: 'ielts'
+    accessor: 'ielts',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Deadline',
-    accessor: 'application_deadline'
+    accessor: 'application_deadline',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Decided',
-    accessor: 'decided'
+    accessor: 'decided',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Submitted',
-    accessor: 'closed'
+    accessor: 'closed',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Offer',
-    accessor: 'admission'
+    accessor: 'admission',
+    filter: 'fuzzyText'
   },
   {
     Header: 'Days left',
-    accessor: 'days_left'
+    accessor: 'days_left',
+    filter: 'fuzzyText'
   }
 ];
 

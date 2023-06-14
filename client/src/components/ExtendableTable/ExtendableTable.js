@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Collapse, Table } from 'react-bootstrap';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 
 export function ExtendableTable({ data }) {
   const [selectedRows, setSelectedRows] = useState([
@@ -13,7 +14,7 @@ export function ExtendableTable({ data }) {
     setSelectedRows(selectedRows_temp);
   };
   return (
-    <Table>
+    <Table responsive>
       <thead>
         <tr>
           <th>Name</th>
@@ -22,21 +23,18 @@ export function ExtendableTable({ data }) {
         </tr>
       </thead>
       <tbody>
-        {data.map((item, index) => (
+        {data.map((student, index) => (
           <React.Fragment key={index}>
-            <tr
-              className="bg-light text-dark"
-              onClick={() => toggleRow(index)}
-            >
+            <tr className="bg-light text-dark" onClick={() => toggleRow(index)}>
               <td>
                 <b>
                   {selectedRows[index] === index ? '🔽 ' : '▶️ '}
-                  {item.firstname}
-                  {item.lastname}
+                  {student.firstname}
+                  {student.lastname}
                 </b>
               </td>
-              <td>{item.applying_program_count}</td>
-              <td>{item.expenses}</td>
+              <td>{student.applying_program_count}</td>
+              <td>{student.expenses}</td>
             </tr>
 
             <Collapse in={selectedRows[index] === index}>
@@ -45,15 +43,56 @@ export function ExtendableTable({ data }) {
                   <Table>
                     <thead>
                       <tr>
-                        <th>Name</th>
-                        <th>Column 2</th>
+                        <th>Status</th>
+                        <th>Document Name</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th>1</th>
-                        <th>b 2</th>
-                      </tr>
+                      {student.generaldocs_threads.map((thread, i) => (
+                        <tr>
+                          <th>
+                            <IoCheckmarkCircle
+                              size={24}
+                              color={
+                                thread.isFinalVersion
+                                  ? 'limegreen'
+                                  : 'lightgray'
+                              }
+                              title={
+                                thread.isFinalVersion
+                                  ? 'Finished'
+                                  : 'Not finished'
+                              }
+                            />
+                          </th>
+                          <th>{thread.doc_thread_id.file_type}</th>
+                        </tr>
+                      ))}
+                      {student.applications.map((application, i) =>
+                        application.doc_modification_thread.map(
+                          (thread, x) =>
+                            application.decided === 'O' && (
+                              <tr>
+                                <th>
+                                  <IoCheckmarkCircle
+                                    size={24}
+                                    color={
+                                      thread.isFinalVersion
+                                        ? 'limegreen'
+                                        : 'lightgray'
+                                    }
+                                    title={
+                                      thread.isFinalVersion
+                                        ? 'Finished'
+                                        : 'Not finished'
+                                    }
+                                  />
+                                </th>
+                                <th>{`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}</th>
+                              </tr>
+                            )
+                        )
+                      )}
                     </tbody>
                   </Table>
                 </td>

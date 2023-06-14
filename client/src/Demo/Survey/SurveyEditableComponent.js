@@ -197,7 +197,7 @@ class SurveyEditableComponent extends React.Component {
                     !this.props.academic_background.university
                       .attended_university && (
                       <li>
-                        <b>University Name</b>
+                        <b>University Name (English)</b>
                       </li>
                     )}
                   {this.props.academic_background &&
@@ -205,7 +205,7 @@ class SurveyEditableComponent extends React.Component {
                     !this.props.academic_background.university
                       .attended_university_program && (
                       <li>
-                        <b>University Program</b>
+                        <b>University Program (English)</b>
                       </li>
                     )}
                   {this.props.academic_background &&
@@ -352,7 +352,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="attended_high_school">
                       <Form.Label className="my-0 mx-0 text-light">
-                        High School Name
+                        High School Name (English)
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -443,7 +443,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="attended_university">
                       <Form.Label className="my-0 mx-0 text-light">
-                        University Name
+                        University Name (English)
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -464,7 +464,8 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="attended_university_program">
                       <Form.Label className="my-0 mx-0 text-light">
-                        University Program (Put together if double major)
+                        University Program (English) (Put together if double
+                        major)
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -1009,7 +1010,9 @@ class SurveyEditableComponent extends React.Component {
                   bg={'primary'}
                   title={'Info:'}
                   path={'/'}
-                  text={'若還沒考過，請在 Passed 處選 No，並填上檢定以及預計考試時間。若不需要（如德語），請填 Not Needed。方便顧問了解你的進度。'}
+                  text={
+                    '若還沒考過，請在 Passed 處選 No，並填上檢定以及預計考試時間。若不需要（如德語），請填 Not Needed。方便顧問了解你的進度。'
+                  }
                   link_name={''}
                   removeBanner={this.removeBanner}
                   notification_key={'x'}

@@ -20,6 +20,7 @@ export function ExtendableTable({ data }) {
           <th>Name</th>
           <th># Applications</th>
           <th>Income</th>
+          <th>Payment Readiness</th>
         </tr>
       </thead>
       <tbody>
@@ -35,8 +36,8 @@ export function ExtendableTable({ data }) {
               </td>
               <td>{student.applying_program_count}</td>
               <td>{student.expenses}</td>
+              <td>{student.isPaid}</td>
             </tr>
-
             <Collapse in={selectedRows[index] === index}>
               <tr>
                 <td colSpan="4">

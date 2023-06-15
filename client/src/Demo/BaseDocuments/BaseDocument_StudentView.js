@@ -6,7 +6,12 @@ import ButtonSetRejected from './ButtonSetRejected';
 import ButtonSetNotNeeded from './ButtonSetNotNeeded';
 import ButtonSetMissing from './ButtonSetMissing';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { spinner_style, convertDate, profile_wtih_doc_link_list, profile_list } from '../Utils/contants';
+import {
+  spinner_style,
+  convertDate,
+  profile_wtih_doc_link_list,
+  profile_list
+} from '../Utils/contants';
 
 import {
   uploadforstudent,
@@ -15,6 +20,7 @@ import {
   updateDocumentationHelperLink
 } from '../../api';
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
+import Banner from '../../components/Banner/Banner';
 
 class BaseDocument_StudentView extends React.Component {
   state = {
@@ -398,6 +404,32 @@ class BaseDocument_StudentView extends React.Component {
     return (
       <>
         <Row>
+          <Col>
+            <Banner
+              ReadOnlyMode={true}
+              bg={'primary'}
+              title={'Info:'}
+              path={'/'}
+              text={
+                '每個檔案都有注意事項。請務必上傳文件前，點選說明連結並查看。'
+              }
+              link_name={''}
+              removeBanner={this.removeBanner}
+              notification_key={'x'}
+            />
+            <Banner
+              ReadOnlyMode={true}
+              bg={'danger'}
+              title={'Attention:'}
+              path={'/'}
+              text={
+                '無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件'
+              }
+              link_name={''}
+              removeBanner={this.removeBanner}
+              notification_key={'x'}
+            />
+          </Col>
           <Table
             responsive
             bordered

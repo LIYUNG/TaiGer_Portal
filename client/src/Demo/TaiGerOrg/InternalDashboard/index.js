@@ -22,6 +22,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 import {
   frequencyDistribution,
   is_TaiGer_role,
+  numStudentYearDistribution,
   open_tasks,
   open_tasks_with_editors,
   programs_refactor
@@ -204,6 +205,19 @@ class InternalDashboard extends React.Component {
         potentials: open_distr[date].potentials
       });
     });
+
+    const students_years_arr = numStudentYearDistribution(students_details);
+    const students_years_pair = [];
+    let students_years = Object.keys(students_years_arr).sort();
+    students_years = students_years.slice(
+      Math.max(students_years.length - 5, 1) // 3 >> the last x year students 
+    );
+    students_years.forEach((date, i) => {
+      students_years_pair.push({
+        name: `${date}`,
+        uv: students_years_arr[date]
+      });
+    });
     const documents_data = [];
     const editor_tasks_distribution_data = [];
     const cat = ['ML', 'CV', 'RL', 'ESSAY'];
@@ -296,7 +310,33 @@ class InternalDashboard extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                Close: {students.isClose}. Open: {students.isOpen}
+                {/* Close: {students.isClose}. Open: {students.isOpen} */}
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={students_years_pair}
+                    margin={{
+                      top: 20,
+                      right: 0,
+                      left: 0,
+                      bottom: 5
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis allowDecimals={false} />
+                    {/* <Tooltip /> */}
+                    {/* <Legend /> */}
+                    <Bar
+                      dataKey="uv"
+                      fill="#8884d8"
+                      label={{ position: 'top' }}
+                    >
+                      {students_years_pair.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </Card.Body>
             </Card>
           </Col>

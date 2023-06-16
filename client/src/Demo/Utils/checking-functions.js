@@ -1131,6 +1131,22 @@ export const programs_refactor = (students) => {
   return applications;
 };
 
+export const numStudentYearDistribution = (students) => {
+  const map = {};
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].application_preference.expected_application_date) {
+      map[students[i].application_preference.expected_application_date] = map[
+        students[i].application_preference.expected_application_date
+      ]
+        ? map[students[i].application_preference.expected_application_date] + 1
+        : 1;
+    } else {
+      map['TBD'] = map['TBD'] ? map['TBD'] + 1 : 1;
+    }
+  }
+  return map;
+};
+
 export const frequencyDistribution = (tasks) => {
   const map = {};
   for (let i = 0; i < tasks.length; i++) {

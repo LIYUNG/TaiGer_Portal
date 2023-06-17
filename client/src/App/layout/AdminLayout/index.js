@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Route, Routes, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Fullscreen from 'react-full-screen';
 import windowSize from 'react-window-size';
@@ -163,7 +163,7 @@ function AdminLayout(props) {
       <Aux>
         <ScrollToTop>
           <Suspense fallback={<Loader />}>
-            <Routes>{menu3}</Routes>
+            <Switch>{menu3}</Switch>
           </Suspense>
         </ScrollToTop>
       </Aux>
@@ -174,10 +174,10 @@ function AdminLayout(props) {
       <Aux>
         <ScrollToTop>
           <Suspense fallback={<Loader />}>
-            <Routes>
+            <Switch>
               {menu2}
               <Redirect from="/" to="/" />
-            </Routes>
+            </Switch>
           </Suspense>
         </ScrollToTop>
       </Aux>
@@ -202,10 +202,10 @@ function AdminLayout(props) {
                   <div className="main-body">
                     <div className="page-wrapper">
                       <Suspense fallback={<Loader />}>
-                        <Routes>
+                        <Switch>
                           {menu}
                           <Redirect from="/" to={props.defaultPath} />
-                        </Routes>
+                        </Switch>
                       </Suspense>
                     </div>
                   </div>

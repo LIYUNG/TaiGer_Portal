@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { Routes } from "react-router-dom";
+import { Switch } from "react-router-dom";
 // import Loadable from "react-loadable";
 import Loader from "./layout/Loader";
 import Aux from "../hoc/_Aux";
@@ -11,9 +11,9 @@ function App() {
     <Aux>
       <ScrollToTop>
         <Suspense fallback={<Loader />}>
-          <Routes>
+          <Switch>
             <AdminLayout />
-          </Routes>
+          </Switch>
         </Suspense>
       </ScrollToTop>
     </Aux>

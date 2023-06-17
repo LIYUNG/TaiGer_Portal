@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getQueryResults } from '../../../../../../api';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 
 import './search.css';
 
-const NavSearch = () => {
+const NavSearch = (props) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isResultsVisible, setIsResultsVisible] = useState(false);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -25,11 +26,10 @@ const NavSearch = () => {
   const fetchSearchResults = async () => {
     try {
       setLoading(true);
-      //   getQueryResults(searchTerm).then();
       const response = await getQueryResults(searchTerm);
       console.log(response.data.data);
-      //   setSearchResults(response.data);
       setSearchResults(response.data.data);
+      setIsResultsVisible(true);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -41,16 +41,36 @@ const NavSearch = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleInputBlur = () => {
+    setIsResultsVisible(false);
+  };
+
   const onClickStudentHandler = (result) => {
-    history.push(`/student-database/${result._id.toString()}/profile`);
+    props.history.push(`/student-database/${result._id.toString()}/profile`);
 
     setSearchResults([]);
+    setIsResultsVisible(false);
+    setSearchTerm('');
+  };
+  const onClickAgentHandler = (result) => {
+    props.history.push(`/teams/agents/${result._id.toString()}`);
+
+    setSearchResults([]);
+    setIsResultsVisible(false);
+    setSearchTerm('');
+  };
+  const onClickEditorHandler = (result) => {
+    props.history.push(`/teams/editors/${result._id.toString()}`);
+
+    setSearchResults([]);
+    setIsResultsVisible(false);
     setSearchTerm('');
   };
   const onClickDocumentationHandler = (result) => {
-    history.push(`/student-database/${result._id.toString()}/profile`);
+    props.history.push(`/docs/search/${result._id.toString()}`);
 
     setSearchResults([]);
+    setIsResultsVisible(false);
     setSearchTerm('');
   };
 
@@ -62,27 +82,46 @@ const NavSearch = () => {
           className="search-input"
           placeholder="Search..."
           value={searchTerm}
+          // onBlur={handleInputBlur}
           onChange={handleInputChange}
         />
         {/* {loading && <div>Loading...</div>} */}
-        {searchResults.length > 0 && (
-          <div class="search-results result-list">
-            {searchResults.map((result, i) =>
-              result.role ? (
-                <li onClick={() => onClickStudentHandler(result)} key={i}>
-                  {`${result.firstname} ${result.lastname}`}
-                </li>
-              ) : (
-                <li onClick={() => onClickDocumentationHandler(result)} key={i}>
-                  {`${result.title}`}
-                </li>
-              )
+        {searchResults.length > 0
+          ? isResultsVisible && (
+              <div class="search-results result-list">
+                {searchResults.map((result, i) =>
+                  result.role === 'Student' ? (
+                    <li onClick={() => onClickStudentHandler(result)} key={i}>
+                      {`${result.firstname} ${result.lastname}`}
+                    </li>
+                  ) : result.role === 'Agent' ? (
+                    <li onClick={() => onClickAgentHandler(result)} key={i}>
+                      {`${result.firstname} ${result.lastname}`}
+                    </li>
+                  ) : result.role === 'Editor' ? (
+                    <li onClick={() => onClickEditorHandler(result)} key={i}>
+                      {`${result.firstname} ${result.lastname}`}
+                    </li>
+                  ) : (
+                    <li
+                      onClick={() => onClickDocumentationHandler(result)}
+                      key={i}
+                    >
+                      {`${result.title}`}
+                    </li>
+                  )
+                )}
+              </div>
+            )
+          : isResultsVisible && (
+              <div class="search-results result-list">
+                <li>No result</li>
+              </div>
             )}
-          </div>
-        )}
       </div>
     </div>
   );
 };
+export default withRouter(NavSearch);
 
-export default NavSearch;
+// export default NavSearch;

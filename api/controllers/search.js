@@ -17,7 +17,10 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
 
   // Use the regular expression pattern in the query
   const students = await User.find(
-    { $text: { $search: req.query.q } },
+    {
+      $text: { $search: req.query.q },
+      role: { $in: ['Student', 'Guest', 'Agent', 'Editor'] }
+    },
     { score: { $meta: 'textScore' } }
   )
     .sort({ score: { $meta: 'textScore' } })

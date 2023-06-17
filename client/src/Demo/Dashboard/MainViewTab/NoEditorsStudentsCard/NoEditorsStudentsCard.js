@@ -3,6 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
+import { Link } from 'react-router-dom';
 
 class NoEditorsStudentsCard extends React.Component {
   state = {
@@ -56,9 +57,32 @@ class NoEditorsStudentsCard extends React.Component {
               </td>
             )}
             <td>
-              {this.props.student.firstname}, {this.props.student.lastname}
+              <Link
+                className="text-info"
+                to={`/student-database/${this.props.student._id.toString()}/profile`}
+              >
+                {this.props.student.firstname}, {this.props.student.lastname}
+              </Link>
             </td>
             <td>{this.props.student.email}</td>
+            <td>
+              {this.props.student.application_preference
+                .expected_application_date || (
+                <p className="text-danger">TBD</p>
+              )}
+            </td>
+            <td>
+              {!this.props.student.agents ||
+              this.props.student.agents.length === 0 ? (
+                <p className="text-danger">
+                  <b>No Agent</b>
+                </p>
+              ) : (
+                this.props.student.agents.map(
+                  (agent, i) => `${agent.firstname} ${agent.lastname} `
+                )
+              )}
+            </td>
           </tr>
           {is_TaiGer_role(this.props.user) && (
             <>

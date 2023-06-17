@@ -66,9 +66,14 @@ class NoAgentsStudentsCard extends React.Component {
                 {', '}
                 {this.props.student.lastname}
               </Link>
-              {/* {this.props.student.firstname}, {this.props.student.lastname} */}
             </td>
             <td>{this.props.student.email}</td>
+            <td>
+              {this.props.student.application_preference
+                .expected_application_date || (
+                <p className="text-danger">TBD</p>
+              )}
+            </td>
           </tr>
           {this.props.role === 'Admin' && (
             <>

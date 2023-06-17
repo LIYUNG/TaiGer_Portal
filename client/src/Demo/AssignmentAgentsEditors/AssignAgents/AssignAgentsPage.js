@@ -43,6 +43,7 @@ class AssignAgentsPage extends React.Component {
                     <th></th>
                     <th>First-, Last Name</th>
                     <th>Email</th>
+                    <th>Target Year</th>
                   </tr>
                 </thead>
                 <tbody>{no_agent_students}</tbody>

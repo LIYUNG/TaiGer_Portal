@@ -376,7 +376,12 @@ export default function MyCourses(props) {
               <Card.Title>
                 <Row>
                   <Col className="my-0 mx-0 text-light">
-                    {statedata.student.firstname} {statedata.student.lastname}{' '}
+                    <Link
+                      className="text-warning"
+                      to={`/student-database/${statedata.student._id.toString()}/profile`}
+                    >
+                      {statedata.student.firstname} {statedata.student.lastname}{' '}
+                    </Link>
                     Courses
                   </Col>
                 </Row>

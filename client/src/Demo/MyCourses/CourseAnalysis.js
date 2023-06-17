@@ -14,6 +14,7 @@ import {
   WidgetanalyzedFileDownload
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import { Link } from 'react-router-dom';
 
 export default function CourseAnalysis(props) {
   let [statedata, setStatedata] = useState({
@@ -26,6 +27,7 @@ export default function CourseAnalysis(props) {
     success: false,
     student: null,
     excel_file: {},
+    student_id: '',
     file: '',
     analyzed_course: '',
     isAnalysing: false,
@@ -116,6 +118,7 @@ export default function CourseAnalysis(props) {
                 sheets,
                 student_name: student_name_temp,
                 excel_file: blob,
+                student_id,
                 isLoaded: true,
                 file_name: actualFileName,
                 LastModified,
@@ -270,7 +273,17 @@ export default function CourseAnalysis(props) {
               <Card.Title>
                 <Row>
                   <Col className="my-0 mx-0 text-light">
-                    {statedata.student_name} Courses Analysis
+                    {!props.match.params.admin_id ? (
+                      <Link
+                        className="text-warning"
+                        to={`/student-database/${statedata.student_id}/profile`}
+                      >
+                        {statedata.student_name}{' '}
+                      </Link>
+                    ) : (
+                      <>{statedata.student_name} </>
+                    )}
+                    Courses Analysis
                   </Col>
                 </Row>
               </Card.Title>

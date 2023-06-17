@@ -1759,7 +1759,7 @@ Some reminder email template.
 };
 
 const sendAssignEditorReminderEmail = async (recipient, payload) => {
-  const subject = '[Action Required] Assign Editor Reminder';
+  const subject = '[Urgent] Assign Editor Reminder';
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 

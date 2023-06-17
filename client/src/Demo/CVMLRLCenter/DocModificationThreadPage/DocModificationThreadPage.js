@@ -407,12 +407,9 @@ class DocModificationThreadPage extends Component {
         alias.includes(this.state.thread.file_type.split('_')[0])
     );
     let docName;
+    const student_name = `${this.state.thread.student_id.firstname} ${this.state.thread.student_id.lastname}`;
     if (this.state.thread.program_id) {
       docName =
-        this.state.thread.student_id.firstname +
-        ' ' +
-        this.state.thread.student_id.lastname +
-        ' - ' +
         this.state.thread.program_id.school +
         '-(' +
         this.state.thread.program_id.degree +
@@ -421,14 +418,9 @@ class DocModificationThreadPage extends Component {
         ' ' +
         this.state.thread.file_type;
     } else {
-      docName =
-        this.state.thread.student_id.firstname +
-        ' ' +
-        this.state.thread.student_id.lastname +
-        ' - ' +
-        this.state.thread.file_type;
+      docName = this.state.thread.file_type;
     }
-    TabTitle(docName);
+    TabTitle(`${student_name} ${docName}`);
     return (
       <Aux>
         {!isLoaded && (
@@ -442,6 +434,13 @@ class DocModificationThreadPage extends Component {
           <Card className="mb-2 mx-0">
             <Card.Header>
               <h4 className="mt-1 ms-0" style={{ textAlign: 'left' }}>
+                <Link
+                  className="text-primary"
+                  to={`/student-database/${this.state.thread.student_id._id.toString()}/profile`}
+                >
+                  <b>{student_name}</b>
+                </Link>
+                {'   '}
                 {docName}
                 {' Discussion thread'}
                 {'   '}
@@ -786,8 +785,11 @@ class DocModificationThreadPage extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Do you want to set {docName} as{' '}
-            {this.state.thread.isFinalVersion ? 'open' : 'final'}?
+            Do you want to set{' '}
+            <b>
+              {student_name} {docName}
+            </b>{' '}
+            as <b>{this.state.thread.isFinalVersion ? 'open' : 'final'}</b>?
           </Modal.Body>
           <Modal.Footer>
             <Button

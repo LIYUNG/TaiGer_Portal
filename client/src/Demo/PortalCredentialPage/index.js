@@ -14,7 +14,7 @@ import {
 import { getPortalCredentials, postPortalCredentials } from '../../api';
 import Banner from '../../components/Banner/Banner';
 import { TabTitle } from '../Utils/TabTitle';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
 
 export default function PortalCredentialPage(props) {
@@ -257,7 +257,12 @@ export default function PortalCredentialPage(props) {
               <Card.Title>
                 <Row>
                   <Col className="my-0 mx-0 text-light">
-                    {statedata.student.firstname} {statedata.student.lastname}{' '}
+                    <Link
+                      className="text-warning"
+                      to={`/student-database/${statedata.student._id.toString()}/profile`}
+                    >
+                      {statedata.student.firstname} {statedata.student.lastname}{' '}
+                    </Link>
                     Portal Credentials
                   </Col>
                 </Row>
@@ -275,7 +280,8 @@ export default function PortalCredentialPage(props) {
                   <p>
                     Please share your universities' application portals
                     credentials here. Your agent(s) can help you review your
-                    applications in universities' application portals, when you are blocked.
+                    applications in universities' application portals, when you
+                    are blocked.
                   </p>
                 </Col>
               </Row>

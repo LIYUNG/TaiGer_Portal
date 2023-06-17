@@ -35,28 +35,24 @@ class NavRight extends Component {
                   style={{ textDecoration: 'none' }}
                 ></Link>
               </li>
-              {/* <Button></Button> */}
               <li className="py-0">
                 <Dropdown variant="default">
                   <Dropdown.Toggle variant="default" id="dropdown-basic">
-                    {' '}
                     <Row>
-                      {/* {this.props.userdata.firstname}{' '}
-                    {this.props.userdata.lastname}{' '} */}
                       <Avatar
                         {...stringAvatar(
                           this.props.userdata.firstname +
                             ' ' +
                             this.props.userdata.lastname
                         )}
-                        className="mt-3 mx-2"
+                        className="mt-1 mx-2"
                         title={
                           this.props.userdata.firstname +
                           ' ' +
                           this.props.userdata.lastname
                         }
-                      />{' '}
-                      {`${this.props.userdata.firstname} ${this.props.userdata.lastname}`}
+                      />
+                      {/* {`${this.props.userdata.firstname} ${this.props.userdata.lastname}`} */}
                     </Row>
                   </Dropdown.Toggle>
 

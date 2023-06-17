@@ -22,6 +22,10 @@ export const resendActivation = ({ email }) =>
 
 export const verify = () => request.get('/auth/verify');
 
+// Search API
+export const getQueryResults = (keywords) =>
+  request.get(`/api/search?q=${keywords}`);
+
 // User APIs
 export const getUsers = () => request.get('/api/users');
 export const addUser = (user_information) =>
@@ -380,7 +384,6 @@ export const getExpense = (taiger_user_id) =>
   request.get(`/api/expenses/users/${taiger_user_id}`);
 export const updateUserPermission = (taiger_user_id, permissions) =>
   request.post(`/api/permissions/${taiger_user_id}`, permissions);
-
 
 //Personal Data:
 export const updatePersonalData = (personaldata) =>

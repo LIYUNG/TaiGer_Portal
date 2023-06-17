@@ -18,7 +18,6 @@ const Role = {
 };
 
 const options = { discriminatorKey: 'role', timestamps: true };
-
 const UserSchema = new Schema(
   {
     firstname: {
@@ -282,6 +281,8 @@ UserSchema.methods.toJSON = function () {
   delete user.password;
   return user;
 };
+
+UserSchema.index({ firstname: 'text', lastname: 'text' });
 
 const User = model('User', UserSchema);
 

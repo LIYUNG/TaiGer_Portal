@@ -65,8 +65,8 @@ export default function ResetPasswordRequest() {
                     <p className="text-muted">Login</p>
                   </NavLink>
                 </p>
+                <Footer />
               </div>
-              <Footer />
             </div>
           </div>
         </div>
@@ -87,6 +87,9 @@ export default function ResetPasswordRequest() {
                 />
                 <p className="mb-4"></p>
                 <h3 className="mb-4 text-light">Reset Password</h3>
+                <p className="mb-4 text-light">
+                  Please provide the email that you provided to us before.
+                </p>
                 <div className="input-group mb-3">
                   <input
                     type="text"
@@ -107,8 +110,8 @@ export default function ResetPasswordRequest() {
                 <NavLink to="/login">
                   <p className="text-muted">Login</p>
                 </NavLink>
+                <Footer />
               </div>
-              <Footer />
             </form>
           </div>
         </div>

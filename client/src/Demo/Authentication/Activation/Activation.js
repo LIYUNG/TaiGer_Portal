@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { NavLink, Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';

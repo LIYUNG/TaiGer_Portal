@@ -14,5 +14,8 @@ const documentationsSchema = new mongoose.Schema({
   country: { type: String, default: '' },
   updatedAt: Date
 });
+
+documentationsSchema.index({ title: 'text', text: 'text' });
+
 const Documentation = mongoose.model('Documentation', documentationsSchema);
 module.exports = Documentation;

@@ -17,6 +17,7 @@ const tasksRouter = require('./tasks');
 const notesRouter = require('./notes');
 const widgetsRouter = require('./widget');
 const admissionsRouter = require('./admissions');
+const searchesRouter = require('./searches');
 const teamsRouter = require('./teams');
 // const interviewsRouter = require('./interviews');
 
@@ -40,6 +41,8 @@ const router = (app) => {
   apiRouter.use('/notes', notesRouter);
   apiRouter.use('/widgets', widgetsRouter);
   apiRouter.use('/admissions', admissionsRouter);
+  apiRouter.use('/search', searchesRouter);
+
   apiRouter.use('/teams', teamsRouter);
   // apiRouter.use('/interviews', interviewsRouter);
 

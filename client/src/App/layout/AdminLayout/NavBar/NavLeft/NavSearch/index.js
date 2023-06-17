@@ -1,70 +1,88 @@
-import React, {Component} from 'react';
-import windowSize from 'react-window-size';
+import React, { useState, useEffect } from 'react';
+import { getQueryResults } from '../../../../../../api';
+import { Link, useHistory } from 'react-router-dom';
+import { Dropdown } from 'react-bootstrap';
 
-import Aux from "../../../../../../hoc/_Aux";
-import DEMO from "../../../../../../store/constant";
+import './search.css';
 
-class NavSearch extends Component {
-    state = {
-        searchWidth: (this.props.windowWidth < 992) ? 90 : 0,
-        searchString: (this.props.windowWidth < 992) ? '90px' : '',
-        isOpen: (this.props.windowWidth < 992)
-    };
+const NavSearch = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    searchOnHandler = () => {
-        this.setState({isOpen: true});
-        const searchInterval = setInterval(() => {
-            if (this.state.searchWidth >= 91) {
-                clearInterval(searchInterval);
-                return false;
-            }
-            this.setState(prevSate => {
-                return {
-                    searchWidth: prevSate.searchWidth + 15,
-                    searchString: prevSate.searchWidth + 'px'
-                }
-            });
-        }, 35);
-    };
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm) {
+        fetchSearchResults();
+      } else {
+        setSearchResults([]);
+      }
+    }, 500); // Adjust the delay as needed
 
-    searchOffHandler = () => {
-        const searchInterval = setInterval(() => {
-            if (this.state.searchWidth < 0) {
-                this.setState({isOpen: false});
-                clearInterval(searchInterval);
-                return false;
-            }
-            this.setState(prevSate => {
-                return {
-                    searchWidth: prevSate.searchWidth - 15,
-                    searchString: prevSate.searchWidth + 'px'
-                }
-            });
-        }, 35);
-    };
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm]);
 
-    render() {
-        let searchClass = ['main-search'];
-        if (this.state.isOpen) {
-            searchClass = [...searchClass, 'open'];
-        }
-
-        return (
-            <Aux>
-                <div id="main-search" className={searchClass.join(' ')}>
-                    <div className="input-group">
-                        <input type="text" id="m-search" className="form-control" placeholder="Search . . ." style={{width: this.state.searchString}}/>
-                        <a href={DEMO.BLANK_LINK} className="input-group-append search-close" onClick={this.searchOffHandler}>
-                            <i className="feather icon-x input-group-text"/>
-                        </a>
-                        <span className="input-group-append search-btn btn btn-primary" onClick={this.searchOnHandler}>
-                        <i className="feather icon-search input-group-text"/>
-                    </span>
-                    </div>
-                </div>
-            </Aux>
-        );
+  const fetchSearchResults = async () => {
+    try {
+      setLoading(true);
+      //   getQueryResults(searchTerm).then();
+      const response = await getQueryResults(searchTerm);
+      console.log(response.data.data);
+      //   setSearchResults(response.data);
+      setSearchResults(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
     }
-}
+  };
 
-export default windowSize(NavSearch);
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const onClickStudentHandler = (result) => {
+    history.push(`/student-database/${result._id.toString()}/profile`);
+
+    setSearchResults([]);
+    setSearchTerm('');
+  };
+  const onClickDocumentationHandler = (result) => {
+    history.push(`/student-database/${result._id.toString()}/profile`);
+
+    setSearchResults([]);
+    setSearchTerm('');
+  };
+
+  return (
+    <div className="ms-4">
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleInputChange}
+        />
+        {/* {loading && <div>Loading...</div>} */}
+        {searchResults.length > 0 && (
+          <div class="search-results result-list">
+            {searchResults.map((result, i) =>
+              result.role ? (
+                <li onClick={() => onClickStudentHandler(result)} key={i}>
+                  {`${result.firstname} ${result.lastname}`}
+                </li>
+              ) : (
+                <li onClick={() => onClickDocumentationHandler(result)} key={i}>
+                  {`${result.title}`}
+                </li>
+              )
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default NavSearch;

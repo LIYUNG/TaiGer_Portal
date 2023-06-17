@@ -178,22 +178,7 @@ export default function Signin1({ setUserdata }) {
                 <NavLink to="/forgot-password">
                   <p className="text-info">Reset</p>
                 </NavLink>
-                {/* <p className="mb-2 text-light">
-                  About us:
-                  <br />
-                  <a
-                    href="https://taigerconsultancy.com"
-                    target="_blank"
-                    className="text-muted"
-                  >
-                    TaiGer Consultancy
-                  </a>
-                </p> */}
                 <Footer />
-                {/* <p className="mb-2 text-light">New in TaiGer Portal?</p>
-                <NavLink to="/sign-up">
-                  <p className="text-muted">Sign up</p>
-                </NavLink> */}
               </div>
             </form>
           </div>

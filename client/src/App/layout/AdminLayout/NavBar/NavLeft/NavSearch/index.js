@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { getQueryResults } from '../../../../../../api';
 import { Link, withRouter } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
@@ -10,6 +10,7 @@ const NavSearch = (props) => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
+  const searchContainerRef = useRef(null);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -19,8 +20,11 @@ const NavSearch = (props) => {
         setSearchResults([]);
       }
     }, 500); // Adjust the delay as needed
-
-    return () => clearTimeout(delayDebounceFn);
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      clearTimeout(delayDebounceFn);
+    };
   }, [searchTerm]);
 
   const fetchSearchResults = async () => {
@@ -74,15 +78,26 @@ const NavSearch = (props) => {
     setSearchTerm('');
   };
 
+  const handleClickOutside = (event) => {
+    // Check if the click target is outside of the search container and result list
+    if (
+      searchContainerRef.current &&
+      !searchContainerRef.current.contains(event.target)
+    ) {
+      // Clicked outside, hide the result list
+      setIsResultsVisible(false);
+    }
+  };
+
   return (
     <div className="ms-4">
-      <div className="search-container">
+      <div className="search-container" ref={searchContainerRef}>
         <input
           type="text"
           className="search-input"
           placeholder="Search..."
           value={searchTerm}
-          // onBlur={handleInputBlur}
+          onMouseDown={handleInputBlur}
           onChange={handleInputChange}
         />
         {/* {loading && <div>Loading...</div>} */}

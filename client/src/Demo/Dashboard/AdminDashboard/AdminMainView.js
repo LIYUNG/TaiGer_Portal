@@ -4,7 +4,6 @@ import { BsExclamationTriangle } from 'react-icons/bs';
 
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
-import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
 
@@ -65,7 +64,6 @@ class AdminMainView extends React.Component {
             </Table>
           </Card>
         </Row>
-        <TabProgramConflict students={this.props.students} />
         <Row className="px-0 mb-2 my-2">
           <Card className="px-0 my-0 mx-0" bg={'dark'} text={'white'}>
             <Card.Header>
@@ -84,7 +82,8 @@ class AdminMainView extends React.Component {
             >
               <thead>
                 <tr>
-                  <th>First-/Lastname,Birthday,Target</th>
+                  <th>First-/Lastname,Birthday</th>
+                  <th>Target Year</th>
                   <th>Survey</th>
                   <th>Language</th>
                   <th>Base Documents</th>

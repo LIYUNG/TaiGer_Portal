@@ -126,12 +126,19 @@ class AgentReviewing extends React.Component {
               {this.props.student.lastname}
               {', '}
               {this.props.student.birthday}
-              {', '}
-              {' ( '}
-              {expected_application_year}
+            </Link>
+          </td>
+          <td>
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              className="text-info"
+              style={{ textDecoration: 'none' }}
+            >
+              {expected_application_year || <b className="text-danger">TBD</b>}
               {'/'}
-              {expected_application_semster}
-              {' )'}
+              {expected_application_semster || (
+                <b className="text-danger">TBD</b>
+              )}
             </Link>
           </td>
           <td>

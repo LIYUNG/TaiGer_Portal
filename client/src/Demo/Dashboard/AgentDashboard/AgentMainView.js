@@ -10,7 +10,6 @@ import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
 import VPDToSubmitTasks from '../MainViewTab/AgentTasks/VPDToSubmitTasks';
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
 
-import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 
 import { updateAgentBanner } from '../../../api';
@@ -365,7 +364,8 @@ class AgentMainView extends React.Component {
               >
                 <thead>
                   <tr>
-                    <th>First-/Lastname,Birthday,Target</th>
+                    <th>First-/Lastname,Birthday</th>
+                    <th>Target Year</th>
                     <th>Survey</th>
                     <th>Language</th>
                     <th>Base Documents</th>
@@ -381,13 +381,6 @@ class AgentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        <TabProgramConflict
-          students={this.props.students.filter((student) =>
-            student.agents.some(
-              (agent) => agent._id === this.props.user._id.toString()
-            )
-          )}
-        />
         <Row>
           <Col sm={12}>
             <Tabs

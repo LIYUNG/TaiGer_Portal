@@ -402,30 +402,6 @@ class StudentDashboard extends React.Component {
                 <tbody>{read_thread}</tbody>
               </Table>
             </Card>
-            {/* <Card className="my-0 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Agent Reviewing:
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Uploaded files will be reviewed by your agent:</th>
-                    <th>Please decide the programs:</th>
-                  </tr>
-                </thead>
-                <tbody>{agent_reviewing}</tbody>
-              </Table>
-            </Card> */}
           </Col>
         </Row>
       </>

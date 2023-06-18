@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getQueryResults } from '../../../../../../api';
-import { Link, withRouter } from 'react-router-dom';
-import { Dropdown } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 import ModalMain from '../../../../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
 
@@ -39,7 +38,7 @@ const NavSearch = (props) => {
     try {
       setLoading(true);
       const response = await getQueryResults(searchTerm);
-      if (response.success) {
+      if (response.data.success) {
         setSearchResults(response.data.data);
         setIsResultsVisible(true);
         setLoading(false);

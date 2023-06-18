@@ -299,6 +299,10 @@ const applicationSchema = new Schema({
       type: String,
       default: ''
     },
+    isPaid: {
+      type: String,
+      default: ''
+    },
     updatedAt: Date
   },
   portal_credentials: {

@@ -3,8 +3,8 @@ const {
   Schema,
   Types: { ObjectId }
 } = require('mongoose');
-const mongoose = require('mongoose');
-const documentationsSchema = new mongoose.Schema({
+
+const documentationsSchema = new Schema({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },
@@ -17,5 +17,5 @@ const documentationsSchema = new mongoose.Schema({
 
 documentationsSchema.index({ title: 'text', text: 'text' });
 
-const Documentation = mongoose.model('Documentation', documentationsSchema);
+const Documentation = model('Documentation', documentationsSchema);
 module.exports = Documentation;

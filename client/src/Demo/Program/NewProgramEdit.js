@@ -125,14 +125,14 @@ class NewProgramEdit extends React.Component {
               </Col>
               <Col md={4}>
                 <h5>
-                  <Form.Group controlId="language">
+                  <Form.Group controlId="lang">
                     <Form.Control
                       type="text"
                       placeholder="English"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.language
-                          ? this.state.program.language
+                        this.state.program.lang
+                          ? this.state.program.lang
                           : ''
                       }
                     />

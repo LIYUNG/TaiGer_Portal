@@ -728,7 +728,7 @@ function ProgramList(props) {
           },
           {
             Header: 'Language',
-            accessor: 'language'
+            accessor: 'lang'
             // Filter: NumberRangeColumnFilter,
             // filter: 'between'
           },

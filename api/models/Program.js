@@ -1,4 +1,8 @@
-const mongoose = require('mongoose');
+const {
+  model,
+  Schema,
+  Types: { ObjectId }
+} = require('mongoose');
 
 const Degree = {
   bachelor_sc: 'B.Sc',
@@ -14,25 +18,24 @@ const Languages = {
   german: 'German',
   denglish: 'GermanAndEnglish'
 };
-const programSchema = new mongoose.Schema(
+const programSchema = new Schema(
   {
-    // TODO: school might want it's own schema
     school: {
-      type: String
-      // required: true,
+      type: String,
+      default: ''
     },
     program_name: {
-      type: String
-      // required: true,
+      type: String,
+      default: ''
     },
     degree: {
       type: String
       // enum: Object.values(Degree),
     },
     semester: String, // TODO: enum?
-    language: {
-      type: String,
-      enum: Object.values(Languages)
+    lang: {
+      type: String
+      // enum: Object.values(Languages)
     },
     application_start: String,
     application_deadline: {
@@ -163,7 +166,9 @@ const programSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Program = mongoose.model('Program', programSchema);
+programSchema.index({ school: 'text', program_name: 'text' });
+
+const Program = model('Program', programSchema);
 
 module.exports = {
   Degree,

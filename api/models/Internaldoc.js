@@ -14,5 +14,8 @@ const internaldocsSchema = new mongoose.Schema({
   country: { type: String, default: '' },
   updatedAt: Date
 });
+
+internaldocsSchema.index({ title: 'text', text: 'text' });
+
 const Internaldoc = mongoose.model('Internaldoc', internaldocsSchema);
 module.exports = Internaldoc;

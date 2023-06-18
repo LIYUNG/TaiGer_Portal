@@ -61,6 +61,41 @@ class SingleProgram extends React.Component {
     );
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.match.params.programId !== this.props.match.params.programId
+    ) {
+      getProgram(this.props.match.params.programId).then(
+        (resp) => {
+          const { data, success, students } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              program: data,
+              students,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
+  }
+
   handleSubmit_Program = (program) => {
     updateProgram(program).then(
       (resp) => {
@@ -169,7 +204,7 @@ class SingleProgram extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    if (!isLoaded || !program) {
+    if (!isLoaded) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">

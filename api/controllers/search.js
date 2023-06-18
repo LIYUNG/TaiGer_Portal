@@ -9,6 +9,8 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { User } = require('../models/User');
 const Documentation = require('../models/Documentation');
+const Internaldoc = require('../models/Internaldoc');
+const { Program } = require('../models/Program');
 
 const getQueryResults = asyncHandler(async (req, res, next) => {
   const searchTerms = req.query.q.split(' ').filter(Boolean);
@@ -24,6 +26,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     { score: { $meta: 'textScore' } }
   )
     .sort({ score: { $meta: 'textScore' } })
+    .limit(5)
     .select('firstname lastname role');
 
   const documentations = await Documentation.find(
@@ -31,18 +34,36 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     { score: { $meta: 'textScore' } }
   )
     .sort({ score: { $meta: 'textScore' } })
+    .limit(5)
     .select('title');
 
+  const internaldocs = await Internaldoc.find(
+    { $text: { $search: req.query.q } },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(5)
+    .select('title internal');
+
+  const programs = await Program.find(
+    { $text: { $search: req.query.q } },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(5)
+    .select('school program_name');
   // TODO: use case define:
-  // firstname
-  // documentation search
-  // lastname
-  // TODO limit return length
+
+  // TODO: search for student
+  // search thread, cv ml rl, public doc,
 
   //   console.log(students);
-  res
-    .status(200)
-    .send({ success: true, data: students.concat(documentations) });
+  res.status(200).send({
+    success: true,
+    data: students
+      .concat(documentations, internaldocs, programs)
+      .sort((a, b) => b.score - a.score)
+  });
 });
 
 module.exports = {

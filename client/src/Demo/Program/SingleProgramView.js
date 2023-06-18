@@ -63,7 +63,7 @@ class SingleProgramView extends React.Component {
                     </p>
                   </Col>
                   <Col md={8}>
-                    <p className="my-0">{this.props.program.language}</p>
+                    <p className="my-0">{this.props.program.lang}</p>
                   </Col>
                 </Row>
                 <Row>
@@ -465,13 +465,17 @@ class SingleProgramView extends React.Component {
                               : '-'}
                           </td>
                           <td>
-                            {
-                              student.applications.find(
-                                (application) =>
-                                  application.programId.toString() ===
-                                  this.props.programId
-                              ).admission
-                            }
+                            {student.applications.find(
+                              (application) =>
+                                application.programId.toString() ===
+                                this.props.programId
+                            )
+                              ? student.applications.find(
+                                  (application) =>
+                                    application.programId.toString() ===
+                                    this.props.programId
+                                ).admission
+                              : ''}
                           </td>
                         </tr>
                       ))}

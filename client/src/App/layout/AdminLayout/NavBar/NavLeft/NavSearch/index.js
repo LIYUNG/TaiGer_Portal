@@ -98,8 +98,23 @@ const NavSearch = (props) => {
     setIsResultsVisible(false);
     setSearchTerm('');
   };
+  const onClickProgramHandler = (result) => {
+    props.history.push(`/programs/${result._id.toString()}`);
+
+    setSearchResults([]);
+    setIsResultsVisible(false);
+    setSearchTerm('');
+  };
   const onClickDocumentationHandler = (result) => {
     props.history.push(`/docs/search/${result._id.toString()}`);
+
+    setSearchResults([]);
+    setIsResultsVisible(false);
+    setSearchTerm('');
+  };
+
+  const onClickInternalDocumentationHandler = (result) => {
+    props.history.push(`/docs/internal/search/${result._id.toString()}`);
 
     setSearchResults([]);
     setIsResultsVisible(false);
@@ -161,6 +176,19 @@ const NavSearch = (props) => {
                   ) : result.role === 'Editor' ? (
                     <li onClick={() => onClickEditorHandler(result)} key={i}>
                       {`${result.firstname} ${result.lastname}`}
+                    </li>
+                  ) : result.school ? (
+                    <li onClick={() => onClickProgramHandler(result)} key={i}>
+                      {`${result.school} ${result.program_name}`}
+                    </li>
+                  ) : result.internal ? (
+                    <li
+                      onClick={() =>
+                        onClickInternalDocumentationHandler(result)
+                      }
+                      key={i}
+                    >
+                      {`${result.title}`}
                     </li>
                   ) : (
                     <li

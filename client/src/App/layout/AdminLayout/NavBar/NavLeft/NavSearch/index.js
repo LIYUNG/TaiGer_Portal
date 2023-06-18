@@ -2,11 +2,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import { getQueryResults } from '../../../../../../api';
 import { Link, withRouter } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
-
+import ModalMain from '../../../../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
 
 const NavSearch = (props) => {
+  let [statedata, setStatedata] = useState({
+    error: '',
+    res_status: 0,
+    res_modal_status: 0,
+    res_modal_message: ''
+  });
+
   const [searchTerm, setSearchTerm] = useState('');
+  const [isError, setIsErrorTerm] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
@@ -31,11 +39,33 @@ const NavSearch = (props) => {
     try {
       setLoading(true);
       const response = await getQueryResults(searchTerm);
-      setSearchResults(response.data.data);
-      setIsResultsVisible(true);
-      setLoading(false);
+      if (response.success) {
+        setSearchResults(response.data.data);
+        setIsResultsVisible(true);
+        setLoading(false);
+      } else {
+        setIsResultsVisible(false);
+        setStatedata((state) => ({
+          ...state,
+          res_modal_status: 401,
+          res_modal_message: 'Session expired. Please refresh.'
+        }));
+        setSearchTerm('');
+        setSearchResults([]);
+        setIsErrorTerm(true);
+        setLoading(false);
+      }
     } catch (error) {
       console.error(error);
+      setIsResultsVisible(false);
+      setStatedata((state) => ({
+        ...state,
+        res_modal_status: 403,
+        res_modal_message: error
+      }));
+      setSearchTerm('');
+      setSearchResults([]);
+      setIsErrorTerm(true);
       setLoading(false);
     }
   };
@@ -88,8 +118,25 @@ const NavSearch = (props) => {
     }
   };
 
+  const ConfirmError = () => {
+    window.location.reload(true);
+    // setIsErrorTerm(false);
+    // setStatedata((state) => ({
+    //   ...state,
+    //   res_modal_status: 0,
+    //   res_modal_message: ''
+    // }));
+  };
+
   return (
     <div className="ms-4">
+      {isError && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={statedata.res_modal_status}
+          res_modal_message={statedata.res_modal_message}
+        />
+      )}
       <div className="search-container" ref={searchContainerRef}>
         <input
           type="text"

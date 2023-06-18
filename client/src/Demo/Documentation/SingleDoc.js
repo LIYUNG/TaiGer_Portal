@@ -65,7 +65,55 @@ class SingleDoc extends React.Component {
       }
     );
   }
-
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.match.params.documentation_id !==
+      this.props.match.params.documentation_id
+    ) {
+      getDocumentation(this.props.match.params.documentation_id).then(
+        (resp) => {
+          const { data, success } = resp.data;
+          const { status } = resp;
+          if (!data) {
+            this.setState({ isLoaded: true, res_status: status });
+          }
+          if (success) {
+            var initialEditorState = null;
+            const author = data.author;
+            if (data.text) {
+              initialEditorState = JSON.parse(data.text);
+            } else {
+              initialEditorState = {};
+            }
+            initialEditorState = JSON.parse(data.text);
+            this.setState({
+              isLoaded: true,
+              document_title: data.title,
+              category: data.category,
+              editorState: initialEditorState,
+              author,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
+  }
+  
   handleClickEditToggle = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };

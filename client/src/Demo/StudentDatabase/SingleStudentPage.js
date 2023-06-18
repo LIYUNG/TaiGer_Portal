@@ -107,6 +107,54 @@ class SingleStudentPage extends React.Component {
     );
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.match.params.studentId !==
+      this.props.match.params.studentId
+    ) {
+      let keys2 = Object.keys(profile_wtih_doc_link_list);
+      let temp_isLoaded = {};
+      for (let i = 0; i < keys2.length; i++) {
+        temp_isLoaded[keys2[i]] = true;
+      }
+      getStudentAndDocLinks(this.props.match.params.studentId).then(
+        (resp) => {
+          const { survey_link, base_docs_link, data, success } = resp.data;
+          const { status } = resp;
+          if (success) {
+            const granding_system_doc_link = survey_link.find(
+              (link) => link.key === profile_name_list.Grading_System
+            );
+            this.setState({
+              isLoaded: temp_isLoaded,
+              isLoaded2: true,
+              student: data,
+              base_docs_link,
+              survey_link: granding_system_doc_link.link,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: temp_isLoaded,
+              isLoaded2: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: temp_isLoaded,
+            isLoaded2: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
+  }
+
   editAgent = (student) => {
     getAgents().then(
       (resp) => {

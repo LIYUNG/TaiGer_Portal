@@ -31,7 +31,6 @@ const NavSearch = (props) => {
     try {
       setLoading(true);
       const response = await getQueryResults(searchTerm);
-      console.log(response.data.data);
       setSearchResults(response.data.data);
       setIsResultsVisible(true);
       setLoading(false);
@@ -103,7 +102,7 @@ const NavSearch = (props) => {
         {/* {loading && <div>Loading...</div>} */}
         {searchResults.length > 0
           ? isResultsVisible && (
-              <div class="search-results result-list">
+              <div className="search-results result-list">
                 {searchResults.map((result, i) =>
                   result.role === 'Student' ? (
                     <li onClick={() => onClickStudentHandler(result)} key={i}>
@@ -129,7 +128,7 @@ const NavSearch = (props) => {
               </div>
             )
           : isResultsVisible && (
-              <div class="search-results result-list">
+              <div className="search-results result-list">
                 <li>No result</li>
               </div>
             )}

@@ -5,7 +5,11 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_categories, spinner_style, documentation_categories } from '../Utils/contants';
+import {
+  valid_categories,
+  spinner_style,
+  documentation_categories
+} from '../Utils/contants';
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_role
@@ -335,7 +339,7 @@ class DocCreatePage extends React.Component {
               <>
                 <Row className="mb-2">
                   {documentlist_key.map((catego, i) => (
-                    <Col md={4}>
+                    <Col md={4} key={i}>
                       <Card className="mb-1 mx-0">
                         <Card.Header>
                           <Card.Title className="my-0 mx-0">

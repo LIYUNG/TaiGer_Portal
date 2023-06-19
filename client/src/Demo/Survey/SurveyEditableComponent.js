@@ -41,7 +41,6 @@ class SurveyEditableComponent extends React.Component {
       prevProps.academic_background !== this.props.academic_background ||
       prevProps.application_preference !== this.props.application_preference
     ) {
-      console.log('Render2');
       this.setState((state) => ({
         ...state,
         academic_background: this.props.academic_background,

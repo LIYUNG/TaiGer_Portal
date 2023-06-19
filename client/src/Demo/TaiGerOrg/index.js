@@ -59,7 +59,6 @@ class TaiGerOrg extends React.Component {
   }
 
   setModalShow = (user_firstname, user_lastname, user_id, permissions) => {
-    console.log(permissions);
     this.setState({
       modalShow: true,
       firstname: user_firstname,
@@ -113,7 +112,6 @@ class TaiGerOrg extends React.Component {
         }));
       }
     );
-    console.log('onsubmit');
   };
 
   render() {

@@ -56,7 +56,6 @@ const PDFViewer = (student_id, path) => {
     setCurrentPage(newPage);
   };
 
-  console.log(pdfData);
   return (
     <div>
       {pdfData ? (

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Spinner, Button, Card } from 'react-bootstrap';
-import { getProgram, updateProgram } from '../../api';
+import { Spinner, Button, Card, Modal } from 'react-bootstrap';
+import { assignProgramToStudent, getProgram, updateProgram } from '../../api';
 import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
 import ProgramDeleteWarning from './ProgramDeleteWarning';
@@ -15,6 +15,7 @@ import {
 
 import { deleteProgram } from '../../api';
 import { Link } from 'react-router-dom';
+import ProgramListSubpage from './ProgramListSubpage';
 
 class SingleProgram extends React.Component {
   state = {
@@ -23,10 +24,13 @@ class SingleProgram extends React.Component {
     program: null,
     success: false,
     isEdit: false,
+    modalShowAssignSuccessWindow: false,
+    modalShowAssignWindow: false,
     deleteProgramWarning: false,
     isDeleted: false,
     res_status: 0,
     students: [],
+    student_id: '',
     res_modal_message: '',
     res_modal_status: 0
   };
@@ -95,6 +99,88 @@ class SingleProgram extends React.Component {
       );
     }
   }
+
+  assignProgram = (assign_data) => {
+    const { student_id, program_ids } = assign_data;
+    this.setState((state) => ({
+      ...state,
+      isAssgining: true
+    }));
+    assignProgramToStudent(student_id, program_ids).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            isAssgining: false,
+            modalShowAssignSuccessWindow: true,
+            modalShowAssignWindow: false,
+            success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            isAssgining: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        const { statusText } = resp;
+        setStatedataTable2((state) => ({
+          ...state,
+          isLoaded: true,
+          isAssgining: false,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
+    );
+  };
+
+  onSubmitAddToStudentProgramList = (e) => {
+    e.preventDefault();
+    const student_id = this.state.student_id;
+    this.assignProgram({
+      student_id,
+      program_ids: [this.state.program._id.toString()]
+    });
+  };
+
+  onHideAssignSuccessWindow = () => {
+    this.setState((state) => ({
+      ...state,
+      modalShowAssignSuccessWindow: false
+    }));
+  };
+
+  setModalShow2 = () => {
+    this.setState((state) => ({
+      ...state,
+      modalShowAssignWindow: true
+    }));
+  };
+
+  setModalHide = () => {
+    this.setState((state) => ({
+      ...state,
+      modalShowAssignWindow: false
+    }));
+  };
+  handleSetStudentId = (e) => {
+    const { value } = e.target;
+    this.setState((state) => ({
+      ...state,
+      student_id: value
+    }));
+  };
 
   handleSubmit_Program = (program) => {
     updateProgram(program).then(
@@ -265,6 +351,9 @@ class SingleProgram extends React.Component {
               <Button size="sm" onClick={() => this.handleClick()}>
                 Edit
               </Button>
+              <Button size="sm" variant='secondary' onClick={() => this.setModalShow2()}>
+                Assign
+              </Button>
               {is_TaiGer_Admin(this.props.user) && (
                 <Button
                   size="sm"
@@ -284,6 +373,37 @@ class SingleProgram extends React.Component {
             RemoveProgramHandler={this.RemoveProgramHandler}
             program_id={program._id.toString()}
           />
+          <ProgramListSubpage
+            userId={this.props.user._id.toString()}
+            show={this.state.modalShowAssignWindow}
+            setModalHide={this.setModalHide}
+            uni_name={[program.school]}
+            program_name={[program.program_name]}
+            handleChange2={this.handleSetStudentId}
+            isAssgining={this.state.isAssgining}
+            onSubmitAddToStudentProgramList={
+              this.onSubmitAddToStudentProgramList
+            }
+          />
+          <Modal
+            show={this.state.modalShowAssignSuccessWindow}
+            onHide={this.onHideAssignSuccessWindow}
+            size="m"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Header>
+              <Modal.Title id="contained-modal-title-vcenter">
+                Success
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Program(s) assigned to student successfully!
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.onHideAssignSuccessWindow}>Close</Button>
+            </Modal.Footer>
+          </Modal>
         </>
       );
     }

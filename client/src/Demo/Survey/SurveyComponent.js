@@ -45,7 +45,6 @@ class SurveyComponent extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     // 常見用法（別忘了比較 prop）：
     if (prevProps.student_id !== this.props.student_id) {
-      console.log('Render');
       this.setState((state) => ({
         ...state,
         student_id: this.props.student_id,

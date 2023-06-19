@@ -179,7 +179,7 @@ const NavSearch = (props) => {
                     </li>
                   ) : result.school ? (
                     <li onClick={() => onClickProgramHandler(result)} key={i}>
-                      {`${result.school} ${result.program_name}`}
+                      {`${result.school} ${result.program_name} ${result.degree} ${result.semester}`}
                     </li>
                   ) : result.internal ? (
                     <li

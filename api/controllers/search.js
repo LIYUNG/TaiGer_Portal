@@ -13,9 +13,9 @@ const Internaldoc = require('../models/Internaldoc');
 const { Program } = require('../models/Program');
 
 const getQueryResults = asyncHandler(async (req, res, next) => {
-  const searchTerms = req.query.q.split(' ').filter(Boolean);
+  //   const searchTerms = req.query.q.split(' ').filter(Boolean);
 
-  const regex = new RegExp(searchTerms.join('|'), 'i');
+  //   const regex = new RegExp(searchTerms.join('|'), 'i');
 
   // Use the regular expression pattern in the query
   const students = await User.find(
@@ -27,7 +27,8 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
   )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
-    .select('firstname lastname role');
+    .select('firstname lastname role')
+    .lean();
 
   const documentations = await Documentation.find(
     { $text: { $search: req.query.q } },
@@ -35,7 +36,8 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
   )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
-    .select('title');
+    .select('title')
+    .lean();
 
   const internaldocs = await Internaldoc.find(
     { $text: { $search: req.query.q } },
@@ -43,7 +45,8 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
   )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
-    .select('title internal');
+    .select('title internal')
+    .lean();
 
   const programs = await Program.find(
     { $text: { $search: req.query.q } },
@@ -51,7 +54,8 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
   )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
-    .select('school program_name');
+    .select('school program_name degree semester')
+    .lean();
   // TODO: use case define:
 
   // TODO: search for student

@@ -56,6 +56,7 @@ const permission_canAccessStudentDatabase_filter = async (req, res, next) => {
     if (!permission.canAccessStudentDatabase) {
       return next(new ErrorResponse(423, 'Operation forbidden.'));
     }
+    next();
   } else {
     next();
   }

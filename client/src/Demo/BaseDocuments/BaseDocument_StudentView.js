@@ -43,7 +43,22 @@ class BaseDocument_StudentView extends React.Component {
     for (let i = 0; i < keys2.length; i++) {
       temp_isLoaded[keys2[i]] = true;
     }
-    this.setState({ isLoaded: temp_isLoaded, ready: true });
+    this.setState({
+      isLoaded: temp_isLoaded,
+      student: this.props.student,
+      ready: true
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.student._id.toString() !== this.props.student._id.toString()
+    ) {
+      this.setState({
+        student: this.props.student,
+        ready: true
+      });
+    }
   }
 
   onUpdateProfileFilefromstudent = (category, student_id, status, feedback) => {

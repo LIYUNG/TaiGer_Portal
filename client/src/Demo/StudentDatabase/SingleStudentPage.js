@@ -718,7 +718,6 @@ class SingleStudentPage extends React.Component {
               </Tab>
               <Tab eventKey="background" title="Background">
                 <SurveyComponent
-                  role={this.props.user.role}
                   survey_link={this.state.survey_link}
                   user={this.props.user}
                   agents={this.state.student.agents}
@@ -729,7 +728,7 @@ class SingleStudentPage extends React.Component {
                   }
                   isLoaded={this.state.isLoaded2}
                   student={this.state.student}
-                  student_id={this.state.student._id}
+                  student_id={this.state.student._id.toString()}
                   singlestudentpage_fromtaiger={true}
                   handleSubmit_AcademicBackground_root={
                     this.handleSubmit_AcademicBackground_root

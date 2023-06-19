@@ -56,6 +56,15 @@ class EditorDocsProgress extends React.Component {
       isLoaded: true
     }));
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.student._id.toString() !== this.props.student._id.toString()
+    ) {
+      this.setState({
+        student: this.props.student
+      });
+    }
+  }
   closeSetProgramStatusModel = () => {
     this.setState((state) => ({
       ...state,

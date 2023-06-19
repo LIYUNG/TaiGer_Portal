@@ -16,7 +16,6 @@ import {
 class SurveyComponent extends React.Component {
   state = {
     error: '',
-    role: '',
     isLoaded: this.props.isLoaded,
     student_id: this.props.student_id,
     success: false,
@@ -43,14 +42,28 @@ class SurveyComponent extends React.Component {
       }));
     }
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     // 常見用法（別忘了比較 prop）：
+    if (prevProps.student_id !== this.props.student_id) {
+      console.log('Render');
+      this.setState((state) => ({
+        ...state,
+        student_id: this.props.student_id,
+        editors: this.props.editors,
+        agents: this.props.agents,
+        academic_background: this.props.academic_background,
+        application_preference: this.props.application_preference
+      }));
+    }
     if (
       prevProps.academic_background !== this.props.academic_background ||
       prevProps.application_preference !== this.props.application_preference
     ) {
       this.setState((state) => ({
         ...state,
+        student_id: this.props.student_id,
+        editors: this.props.editors,
+        agents: this.props.agents,
         academic_background: this.props.academic_background,
         application_preference: this.props.application_preference,
         updateconfirmed: this.props.updateconfirmed

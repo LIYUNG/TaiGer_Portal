@@ -45,6 +45,22 @@ class UniAssistListCard extends React.Component {
       isLoaded2: temp_isLoaded
     });
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.student._id.toString() !== this.props.student._id.toString()
+    ) {
+      let temp_isLoaded = {};
+      for (let i = 0; i < this.props.student.applications.length; i++) {
+        temp_isLoaded[
+          `${this.props.student.applications[i].programId._id.toString()}`
+        ] = true;
+      }
+      this.setState({
+        student: this.props.student,
+        isLoaded2: temp_isLoaded
+      });
+    }
+  }
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteVPDFileWarningModel: false }));
   };

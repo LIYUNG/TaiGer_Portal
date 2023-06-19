@@ -34,8 +34,20 @@ class SurveyEditableComponent extends React.Component {
     baseDocsflagOffcanvas: false,
     baseDocsflagOffcanvasButtonDisable: false
   };
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     // 常見用法（別忘了比較 prop）：
+    if (
+      prevProps.student_id !== this.props.student_id ||
+      prevProps.academic_background !== this.props.academic_background ||
+      prevProps.application_preference !== this.props.application_preference
+    ) {
+      console.log('Render2');
+      this.setState((state) => ({
+        ...state,
+        academic_background: this.props.academic_background,
+        application_preference: this.props.application_preference
+      }));
+    }
     if (
       prevProps.academic_background.university !==
       this.props.academic_background.university
@@ -359,7 +371,7 @@ class SurveyEditableComponent extends React.Component {
                         readOnly={isReadonly}
                         placeholder="Taipei First Girls' High School"
                         onChange={(e) => this.handleChange_Academic(e)}
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .attended_high_school
@@ -381,7 +393,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         as="select"
                         disabled={isReadonly}
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .high_school_isGraduated
@@ -419,7 +431,7 @@ class SurveyEditableComponent extends React.Component {
                             type="text"
                             readOnly={isReadonly}
                             placeholder="2022"
-                            defaultValue={
+                            value={
                               this.state.academic_background.university &&
                               this.state.academic_background.university
                                 .high_school_graduated_year
@@ -450,7 +462,7 @@ class SurveyEditableComponent extends React.Component {
                         placeholder="National Taiwan University / Not study yet"
                         readOnly={isReadonly}
                         onChange={(e) => this.handleChange_Academic(e)}
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .attended_university
@@ -471,7 +483,7 @@ class SurveyEditableComponent extends React.Component {
                         type="text"
                         readOnly={isReadonly}
                         placeholder="B.Sc, Mechanical Engineering / Not study yet"
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .attended_university_program
@@ -494,7 +506,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         as="select"
                         disabled={isReadonly}
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university.isGraduated
                             ? this.state.academic_background.university
@@ -554,7 +566,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         as="select"
                         disabled={isReadonly}
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .Has_Exchange_Experience
@@ -605,7 +617,7 @@ class SurveyEditableComponent extends React.Component {
                         type="number"
                         readOnly={isReadonly}
                         placeholder="4.3"
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .Highest_GPA_Uni
@@ -646,7 +658,7 @@ class SurveyEditableComponent extends React.Component {
                         type="number"
                         readOnly={isReadonly}
                         placeholder="1.7"
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university
                             .Passing_GPA_Uni
@@ -690,7 +702,7 @@ class SurveyEditableComponent extends React.Component {
                         type="number"
                         readOnly={isReadonly}
                         placeholder="3.8"
-                        defaultValue={
+                        value={
                           this.state.academic_background.university &&
                           this.state.academic_background.university.My_GPA_Uni
                         }
@@ -801,7 +813,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         as="select"
                         disabled={isReadonly}
-                        defaultValue={
+                        value={
                           this.state.application_preference &&
                           this.state.application_preference
                             .expected_application_date
@@ -827,7 +839,7 @@ class SurveyEditableComponent extends React.Component {
                       <Form.Control
                         as="select"
                         disabled={isReadonly}
-                        defaultValue={
+                        value={
                           this.state.application_preference &&
                           this.state.application_preference
                             .expected_application_semester
@@ -867,7 +879,7 @@ class SurveyEditableComponent extends React.Component {
                           maxLength={40}
                           readOnly={isReadonly}
                           placeholder="Data Science, Comupter Science, etc. (max. 40 characters)"
-                          defaultValue={
+                          value={
                             this.state.application_preference &&
                             this.state.application_preference
                               .target_application_field
@@ -890,7 +902,7 @@ class SurveyEditableComponent extends React.Component {
                         <Form.Control
                           disabled={isReadonly}
                           as="select"
-                          defaultValue={
+                          value={
                             this.state.application_preference &&
                             this.state.application_preference
                               .application_outside_germany
@@ -918,7 +930,7 @@ class SurveyEditableComponent extends React.Component {
                         <Form.Control
                           as="select"
                           disabled={isReadonly}
-                          defaultValue={
+                          value={
                             this.state.application_preference &&
                             this.state.application_preference
                               .considered_privat_universities
@@ -1403,7 +1415,7 @@ class SurveyEditableComponent extends React.Component {
               </Form.Label>
               <Form.Control
                 placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
-                defaultValue={this.state.survey_link}
+                value={this.state.survey_link}
                 onChange={(e) => this.onChangeURL(e)}
               />
             </Form.Group>

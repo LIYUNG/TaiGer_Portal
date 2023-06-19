@@ -116,9 +116,9 @@ const updateUser = asyncHandler(async (req, res) => {
   const fields = _.pick(req.body, ['name', 'email', 'role']);
   // TODO: check if email in use already and if role is valid
   if (fields.role === Role.Admin) {
-    logger.warn('User role is changed to ', fields.role);
+    logger.warn(`updateUser: User role is changed to ${fields.role}`);
+    throw new ErrorResponse(409, `Forbidden: User role is changed to ${fields.role}`);
   }
-  console.log(fields.role);
   // TODO: if Agent or editor change role, remove their belong students!
   // const students = await Student.updateMany(
   //   {

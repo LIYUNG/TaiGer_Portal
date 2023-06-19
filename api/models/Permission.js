@@ -16,6 +16,14 @@ const permissionSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    canModifyDocumentation: {
+      type: Boolean,
+      default: false
+    },
+    canAccessStudentDatabase: {
+      type: Boolean,
+      default: false
+    },
     updatedAt: Date
   },
   { timestamps: true }

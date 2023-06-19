@@ -5,7 +5,11 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/_Aux';
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_internal_categories, spinner_style, internal_documentation_categories } from '../Utils/contants';
+import {
+  valid_internal_categories,
+  spinner_style,
+  internal_documentation_categories
+} from '../Utils/contants';
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_role
@@ -19,6 +23,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 class InternalDocCreatePage extends React.Component {
   state = {
@@ -35,7 +40,9 @@ class InternalDocCreatePage extends React.Component {
     isEdit: false,
     expand: true,
     editorState: '',
-    res_status: 0
+    res_status: 0,
+    res_modal_status: 0,
+    res_modal_message: ''
   };
 
   componentDidMount() {
@@ -203,12 +210,20 @@ class InternalDocCreatePage extends React.Component {
     this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
   render() {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
-    const { res_status, isLoaded } = this.state;
+    const { res_status, res_modal_status, res_modal_message, isLoaded } =
+      this.state;
 
     if (!isLoaded) {
       return (
@@ -312,7 +327,9 @@ class InternalDocCreatePage extends React.Component {
                 <Card.Body>
                   {documentlist_key.map((catego, i) => (
                     <Row className="mb-4" key={i}>
-                      <h5>- {internal_documentation_categories[`${catego}`]}</h5>
+                      <h5>
+                        - {internal_documentation_categories[`${catego}`]}
+                      </h5>
                       {document_list(catego)}
                     </Row>
                   ))}
@@ -324,6 +341,13 @@ class InternalDocCreatePage extends React.Component {
             </Card>
           </Col>
         </Row>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
         <Modal
           show={this.state.SetDeleteDocModel}
           onHide={this.closeDeleteDocModalWindow}

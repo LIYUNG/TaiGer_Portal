@@ -178,6 +178,8 @@ class TaiGerOrg extends React.Component {
                   <th>Name</th>
                   <th>Can Assign Agents</th>
                   <th>Can Assign Editors</th>
+                  <th>Can Modify Docs</th>
+                  <th>Can Access Students</th>
                   <th>Permissions</th>
                 </tr>
               </thead>
@@ -201,6 +203,20 @@ class TaiGerOrg extends React.Component {
                     <td>
                       {agent.permissions.length > 0
                         ? agent.permissions[0].canAssignEditors
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canModifyDocumentation
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canAccessStudentDatabase
                           ? 'O'
                           : 'X'
                         : 'x'}
@@ -233,6 +249,8 @@ class TaiGerOrg extends React.Component {
                   <th>Name</th>
                   <th>Can Assign Agents</th>
                   <th>Can Assign Editors</th>
+                  <th>Can Modify Docs</th>
+                  <th>Can Access Students</th>
                   <th>Permissions</th>
                 </tr>
               </thead>
@@ -256,6 +274,20 @@ class TaiGerOrg extends React.Component {
                     <td>
                       {editor.permissions.length > 0
                         ? editor.permissions[0].canAssignEditors
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      {editor.permissions.length > 0
+                        ? editor.permissions[0].canModifyDocumentation
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      {editor.permissions.length > 0
+                        ? editor.permissions[0].canAccessStudentDatabase
                           ? 'O'
                           : 'X'
                         : 'x'}

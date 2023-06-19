@@ -36,11 +36,21 @@ const {
   deleteInternalDocumentation
 } = require('../controllers/documentations');
 
+const {
+  permission_canModifyDocs_filter
+} = require('../middlewares/permission-filter');
+
 const router = Router();
 
 router.use(protect);
 
-router.route('/').post(permit(Role.Admin, Role.Agent), createDocumentation);
+router
+  .route('/')
+  .post(
+    permit(Role.Admin, Role.Agent),
+    permission_canModifyDocs_filter,
+    createDocumentation
+  );
 
 // Internal Docs
 router
@@ -49,6 +59,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    permission_canModifyDocs_filter,
     createInternalDocumentation
   );
 router
@@ -73,12 +84,14 @@ router
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canModifyDocs_filter,
     updateInternalDocumentation
   )
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canModifyDocs_filter,
     deleteInternalDocumentation
   );
 
@@ -88,12 +101,14 @@ router
     filter_archiv_user,
     DocumentationGETRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    permission_canModifyDocs_filter,
     getInternalDocumentationsPage
   )
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    permission_canModifyDocs_filter,
     updateInternalDocumentationPage
   );
 
@@ -103,6 +118,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canModifyDocs_filter,
     imageUpload,
     uploadDocImage
   );
@@ -121,6 +137,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canModifyDocs_filter,
     documentationDocsUpload,
     uploadDocDocs
   );
@@ -137,6 +154,7 @@ router
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     prohibit(Role.Guest),
+    permission_canModifyDocs_filter,
     updateDocumentationPage
   );
 
@@ -166,12 +184,14 @@ router
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canModifyDocs_filter,
     updateDocumentation
   )
   .delete(
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canModifyDocs_filter,
     deleteDocumentation
   );
 

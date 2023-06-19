@@ -7,6 +7,7 @@ const {
   getAdmissionsYear
 } = require('../controllers/admissions');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
+const { permission_canAccessStudentDatabase_filter } = require('../middlewares/permission-filter');
 
 const router = Router();
 router.use(protect);
@@ -17,6 +18,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
     getAdmissions
   );
 
@@ -27,6 +29,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
     getAdmissionsYear
   );
 

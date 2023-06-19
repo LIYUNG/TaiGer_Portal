@@ -44,7 +44,8 @@ const {
 } = require('../controllers/files');
 const {
   permission_canAssignEditor_filter,
-  permission_canAssignAgent_filter
+  permission_canAssignAgent_filter,
+  permission_canAccessStudentDatabase_filter
 } = require('../middlewares/permission-filter');
 
 const router = Router();
@@ -63,6 +64,7 @@ router
       Role.Student,
       Role.Guest
     ),
+    permission_canAccessStudentDatabase_filter,
     getStudents
   );
 
@@ -72,6 +74,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     getAllStudents
   );
 router
@@ -80,6 +83,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canAccessStudentDatabase_filter,
     updateDocumentationHelperLink
   );
 
@@ -89,6 +93,7 @@ router
   .get(
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     getStudentsAndDocLinks
   );
 
@@ -98,6 +103,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     getStudentAndDocLinks
   );
@@ -108,6 +114,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     getArchivStudent
   )
@@ -115,6 +122,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateStudentsArchivStatus
@@ -126,6 +134,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     getStudent
   );
@@ -158,6 +167,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     createApplication
@@ -169,6 +179,7 @@ router
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     ToggleProgramStatus
@@ -180,6 +191,7 @@ router
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateVPDFileNecessity
@@ -188,6 +200,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     downloadVPDFile
   )
@@ -195,6 +208,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     VPDfileUpload,
@@ -204,6 +218,7 @@ router
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteVPDFile
@@ -214,6 +229,7 @@ router
   .delete(
     filter_archiv_user,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteApplication
@@ -225,6 +241,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     downloadProfileFileURL
   );
@@ -235,6 +252,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     ProfilefileUpload,
@@ -244,6 +262,7 @@ router
     filter_archiv_user,
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteProfileFile
@@ -255,6 +274,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canAccessStudentDatabase_filter,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateProfileDocumentStatus

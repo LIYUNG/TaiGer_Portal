@@ -17,6 +17,7 @@ const {
   getEditors,
   getSingleEditor
 } = require('../controllers/teams');
+const { permission_canAccessStudentDatabase_filter } = require('../middlewares/permission-filter');
 
 const router = Router();
 
@@ -27,7 +28,12 @@ router
   .get(filter_archiv_user, GeneralGETRequestRateLimiter, getTeamMembers);
 router
   .route('/statistics')
-  .get(filter_archiv_user, GeneralGETRequestRateLimiter, getStatistics);
+  .get(
+    filter_archiv_user,
+    GeneralGETRequestRateLimiter,
+    permission_canAccessStudentDatabase_filter,
+    getStatistics
+  );
 
 router
   .route('/archiv/:TaiGerStaffId')
@@ -35,6 +41,7 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
     getArchivStudents
   );
 

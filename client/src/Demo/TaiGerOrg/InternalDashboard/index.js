@@ -23,7 +23,6 @@ import {
   frequencyDistribution,
   is_TaiGer_role,
   numStudentYearDistribution,
-  open_tasks,
   open_tasks_with_editors,
   programs_refactor
 } from '../../Utils/checking-functions';
@@ -277,7 +276,7 @@ class InternalDashboard extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0">Tasks Distribution</Col>
+                    <Col className="my-0 mx-0">Open Tasks Distribution</Col>
                   </Row>
                 </Card.Title>
               </Card.Header>

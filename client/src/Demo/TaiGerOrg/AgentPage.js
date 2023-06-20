@@ -11,7 +11,6 @@ import { spinner_style } from '../Utils/contants';
 import {
   frequencyDistribution,
   is_TaiGer_role,
-  open_tasks_with_editors,
   programs_refactor
 } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';

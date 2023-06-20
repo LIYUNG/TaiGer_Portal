@@ -193,10 +193,22 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
   })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
+    .populate({
+      path: 'generaldocs_threads.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
+    .populate({
+      path: 'applications.doc_modification_thread.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
     .select('-notification');
   res.status(200).send({ success: true, data: { students, editor } });
 });

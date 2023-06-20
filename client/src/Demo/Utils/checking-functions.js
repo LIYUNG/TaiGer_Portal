@@ -892,59 +892,23 @@ export const check_generaldocs = (student) => {
 export const open_tasks = (students) => {
   const tasks = [];
   for (const student of students) {
-    const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
-    for (const thread of student.generaldocs_threads) {
-      tasks.push({
-        firstname_lastname: `${student.firstname}, ${student.lastname}`,
-        latest_message_left_by_id: thread.latest_message_left_by_id,
-        isFinalVersion: thread.isFinalVersion,
-        file_type: thread.doc_thread_id.file_type,
-        student_id: student._id.toString(),
-        thread_id: thread.doc_thread_id._id.toString(),
-        deadline: CVDeadline,
-        show: true,
-        aged_days: parseInt(
-          getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
-        ),
-        days_left: daysLeftMin,
-        document_name: `${thread.doc_thread_id.file_type}`,
-        latest_reply:
-          thread.doc_thread_id.messages.length > 0
-            ? `${
-                thread.doc_thread_id.messages[
-                  thread.doc_thread_id.messages.length - 1
-                ].user_id.firstname
-              } ${
-                thread.doc_thread_id.messages[
-                  thread.doc_thread_id.messages.length - 1
-                ].user_id.lastname
-              }`
-            : 'Empty',
-        updatedAt: convertDate(thread.doc_thread_id.updatedAt)
-      });
-    }
-    for (const application of student.applications) {
-      for (const thread of application.doc_modification_thread) {
+    if (student.archiv !== true) {
+      const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
+      for (const thread of student.generaldocs_threads) {
         tasks.push({
           firstname_lastname: `${student.firstname}, ${student.lastname}`,
           latest_message_left_by_id: thread.latest_message_left_by_id,
           isFinalVersion: thread.isFinalVersion,
           file_type: thread.doc_thread_id.file_type,
           student_id: student._id.toString(),
-          deadline: application_deadline_calculator(student, application),
+          thread_id: thread.doc_thread_id._id.toString(),
+          deadline: CVDeadline,
+          show: true,
           aged_days: parseInt(
             getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
           ),
-          days_left: parseInt(
-            getNumberOfDays(
-              new Date(),
-              application_deadline_calculator(student, application)
-            )
-          ),
-          program_id: application.programId._id.toString(),
-          show: application.decided === 'O' ? true : false,
-          thread_id: thread.doc_thread_id._id.toString(),
-          document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+          days_left: daysLeftMin,
+          document_name: `${thread.doc_thread_id.file_type}`,
           latest_reply:
             thread.doc_thread_id.messages.length > 0
               ? `${
@@ -960,6 +924,44 @@ export const open_tasks = (students) => {
           updatedAt: convertDate(thread.doc_thread_id.updatedAt)
         });
       }
+      for (const application of student.applications) {
+        for (const thread of application.doc_modification_thread) {
+          tasks.push({
+            firstname_lastname: `${student.firstname}, ${student.lastname}`,
+            latest_message_left_by_id: thread.latest_message_left_by_id,
+            isFinalVersion: thread.isFinalVersion,
+            file_type: thread.doc_thread_id.file_type,
+            student_id: student._id.toString(),
+            deadline: application_deadline_calculator(student, application),
+            aged_days: parseInt(
+              getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
+            ),
+            days_left: parseInt(
+              getNumberOfDays(
+                new Date(),
+                application_deadline_calculator(student, application)
+              )
+            ),
+            program_id: application.programId._id.toString(),
+            show: application.decided === 'O' ? true : false,
+            thread_id: thread.doc_thread_id._id.toString(),
+            document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+            latest_reply:
+              thread.doc_thread_id.messages.length > 0
+                ? `${
+                    thread.doc_thread_id.messages[
+                      thread.doc_thread_id.messages.length - 1
+                    ].user_id.firstname
+                  } ${
+                    thread.doc_thread_id.messages[
+                      thread.doc_thread_id.messages.length - 1
+                    ].user_id.lastname
+                  }`
+                : 'Empty',
+            updatedAt: convertDate(thread.doc_thread_id.updatedAt)
+          });
+        }
+      }
     }
   }
   return tasks;
@@ -968,42 +970,9 @@ export const open_tasks = (students) => {
 export const open_tasks_with_editors = (students) => {
   const tasks = [];
   for (const student of students) {
-    const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
-    for (const thread of student.generaldocs_threads) {
-      tasks.push({
-        firstname_lastname: `${student.firstname}, ${student.lastname}`,
-        latest_message_left_by_id: thread.latest_message_left_by_id,
-        isFinalVersion: thread.isFinalVersion,
-        file_type: thread.doc_thread_id.file_type,
-        student_id: student._id.toString(),
-        editors: student.editors,
-        agents: student.agents,
-        show: true,
-        thread_id: thread.doc_thread_id._id.toString(),
-        deadline: CVDeadline,
-        aged_days: parseInt(
-          getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
-        ),
-        days_left: daysLeftMin,
-        document_name: `${thread.doc_thread_id.file_type}`,
-        latest_reply:
-          thread.doc_thread_id.messages &&
-          thread.doc_thread_id.messages.length > 0
-            ? `${
-                thread.doc_thread_id.messages[
-                  thread.doc_thread_id.messages.length - 1
-                ].user_id.firstname
-              } ${
-                thread.doc_thread_id.messages[
-                  thread.doc_thread_id.messages.length - 1
-                ].user_id.lastname
-              }`
-            : 'Empty',
-        updatedAt: convertDate(thread.doc_thread_id.updatedAt)
-      });
-    }
-    for (const application of student.applications) {
-      for (const thread of application.doc_modification_thread) {
+    if (student.archiv !== true) {
+      const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
+      for (const thread of student.generaldocs_threads) {
         tasks.push({
           firstname_lastname: `${student.firstname}, ${student.lastname}`,
           latest_message_left_by_id: thread.latest_message_left_by_id,
@@ -1012,20 +981,14 @@ export const open_tasks_with_editors = (students) => {
           student_id: student._id.toString(),
           editors: student.editors,
           agents: student.agents,
-          deadline: application_deadline_calculator(student, application),
+          show: true,
+          thread_id: thread.doc_thread_id._id.toString(),
+          deadline: CVDeadline,
           aged_days: parseInt(
             getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
           ),
-          days_left: parseInt(
-            getNumberOfDays(
-              new Date(),
-              application_deadline_calculator(student, application)
-            )
-          ),
-          program_id: application.programId._id.toString(),
-          show: application.decided === 'O' ? true : false,
-          thread_id: thread.doc_thread_id._id.toString(),
-          document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+          days_left: daysLeftMin,
+          document_name: `${thread.doc_thread_id.file_type}`,
           latest_reply:
             thread.doc_thread_id.messages &&
             thread.doc_thread_id.messages.length > 0
@@ -1041,6 +1004,47 @@ export const open_tasks_with_editors = (students) => {
               : 'Empty',
           updatedAt: convertDate(thread.doc_thread_id.updatedAt)
         });
+      }
+      for (const application of student.applications) {
+        for (const thread of application.doc_modification_thread) {
+          tasks.push({
+            firstname_lastname: `${student.firstname}, ${student.lastname}`,
+            latest_message_left_by_id: thread.latest_message_left_by_id,
+            isFinalVersion: thread.isFinalVersion,
+            file_type: thread.doc_thread_id.file_type,
+            student_id: student._id.toString(),
+            editors: student.editors,
+            agents: student.agents,
+            deadline: application_deadline_calculator(student, application),
+            aged_days: parseInt(
+              getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
+            ),
+            days_left: parseInt(
+              getNumberOfDays(
+                new Date(),
+                application_deadline_calculator(student, application)
+              )
+            ),
+            program_id: application.programId._id.toString(),
+            show: application.decided === 'O' ? true : false,
+            thread_id: thread.doc_thread_id._id.toString(),
+            document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+            latest_reply:
+              thread.doc_thread_id.messages &&
+              thread.doc_thread_id.messages.length > 0
+                ? `${
+                    thread.doc_thread_id.messages[
+                      thread.doc_thread_id.messages.length - 1
+                    ].user_id.firstname
+                  } ${
+                    thread.doc_thread_id.messages[
+                      thread.doc_thread_id.messages.length - 1
+                    ].user_id.lastname
+                  }`
+                : 'Empty',
+            updatedAt: convertDate(thread.doc_thread_id.updatedAt)
+          });
+        }
       }
     }
   }

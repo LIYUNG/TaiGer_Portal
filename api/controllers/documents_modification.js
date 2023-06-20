@@ -286,10 +286,22 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
       'applications.programId',
       'school program_name degree application_deadline semester'
     )
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      'file_type isFinalVersion updatedAt'
-    )
+    .populate({
+      path: 'generaldocs_threads.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
+    .populate({
+      path: 'applications.doc_modification_thread.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
     .populate('editors agents', 'firstname lastname')
     .select(
       'applications generaldocs_threads firstname lastname application_preference '
@@ -311,14 +323,22 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         'applications.programId',
         'school program_name degree application_deadline semester'
       )
-      .populate(
-        'generaldocs_threads.doc_thread_id',
-        'file_type updatedAt isFinalVersion'
-      )
-      .populate(
-        'applications.doc_modification_thread.doc_thread_id',
-        'file_type isFinalVersion updatedAt'
-      )
+      .populate({
+        path: 'generaldocs_threads.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
+      .populate({
+        path: 'applications.doc_modification_thread.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
       .select(
         'applications generaldocs_threads firstname lastname application_preference '
       )
@@ -333,14 +353,22 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         'applications.programId',
         'school program_name degree application_deadline semester'
       )
-      .populate(
-        'generaldocs_threads.doc_thread_id',
-        'file_type updatedAt isFinalVersion'
-      )
-      .populate(
-        'applications.doc_modification_thread.doc_thread_id',
-        'file_type isFinalVersion updatedAt'
-      )
+      .populate({
+        path: 'generaldocs_threads.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
+      .populate({
+        path: 'applications.doc_modification_thread.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
       .select(
         'applications applications generaldocs_threads firstname lastname application_preference'
       )
@@ -357,14 +385,22 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         'applications.programId',
         'school program_name degree application_deadline semester'
       )
-      .populate(
-        'generaldocs_threads.doc_thread_id',
-        'file_type updatedAt isFinalVersion'
-      )
-      .populate(
-        'applications.doc_modification_thread.doc_thread_id',
-        'file_type isFinalVersion updatedAt'
-      )
+      .populate({
+        path: 'generaldocs_threads.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
+      .populate({
+        path: 'applications.doc_modification_thread.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
       .select(
         'applications applications generaldocs_threads firstname lastname application_preference'
       );
@@ -376,14 +412,22 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         'applications.programId',
         'school program_name degree application_deadline semester'
       )
-      .populate(
-        'generaldocs_threads.doc_thread_id',
-        'file_type updatedAt isFinalVersion'
-      )
-      .populate(
-        'applications.doc_modification_thread.doc_thread_id',
-        'file_type isFinalVersion updatedAt'
-      )
+      .populate({
+        path: 'generaldocs_threads.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
+      .populate({
+        path: 'applications.doc_modification_thread.doc_thread_id',
+        select: 'file_type isFinalVersion updatedAt',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
       .select(
         'applications applications generaldocs_threads firstname lastname application_preference'
       )

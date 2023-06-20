@@ -24,12 +24,6 @@ import { matchSorter } from 'match-sorter';
 
 import {
   spinner_style,
-  is_started_tasks_status,
-  is_not_started_tasks_status,
-  is_new_message_status,
-  is_pending_status,
-  return_thread_status2,
-  cvmlrlclosedlist,
   taskTashboardHeader,
   cvmlrl_overview_closed_header
 } from '../Utils/contants';
@@ -112,7 +106,7 @@ function DefaultColumnFilter({
       onChange={(e) => {
         setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
       }}
-      // size={10}
+      size={10}
       placeholder={`Search ${count} records...`}
     />
   );
@@ -287,7 +281,7 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                         </p>
                       )}
                     </td>
-                  ) : j === 4 ? (
+                  ) : j === 5 ? (
                     <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
@@ -298,7 +292,7 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                         {cell.render('Cell')}
                       </Link>
                     </td>
-                  ) : j === 5 ? (
+                  ) : j === 6 ? (
                     cell.value > 14 ? (
                       <td {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">
@@ -310,7 +304,7 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                         <p className="text-light my-0">{cell.render('Cell')}</p>
                       </td>
                     )
-                  ) : j === 3 ? (
+                  ) : j === 4 ? (
                     cell.value < 30 ? (
                       <td {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">

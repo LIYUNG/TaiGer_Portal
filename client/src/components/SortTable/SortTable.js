@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { is_TaiGer_role } from '../../Demo/Utils/checking-functions';
-import { return_thread_status2 } from '../../Demo/Utils/contants';
 
 function SortTable({ columns, data, user, handleAsFinalFile }) {
   const {
@@ -130,10 +129,6 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                       >
                         <b>{cell.render('Cell')}</b>
                       </Link>
-                    </td>
-                  ) : j === 2 ? (
-                    <td {...cell.getCellProps()} key={j}>
-                      {return_thread_status2(user, row.original)}
                     </td>
                   ) : j === 5 ? (
                     <td {...cell.getCellProps()} key={j}>

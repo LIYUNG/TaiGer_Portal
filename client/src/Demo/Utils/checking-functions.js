@@ -908,6 +908,18 @@ export const open_tasks = (students) => {
         ),
         days_left: daysLeftMin,
         document_name: `${thread.doc_thread_id.file_type}`,
+        latest_reply:
+          thread.doc_thread_id.messages.length > 0
+            ? `${
+                thread.doc_thread_id.messages[
+                  thread.doc_thread_id.messages.length - 1
+                ].user_id.firstname
+              } ${
+                thread.doc_thread_id.messages[
+                  thread.doc_thread_id.messages.length - 1
+                ].user_id.lastname
+              }`
+            : 'Empty',
         updatedAt: convertDate(thread.doc_thread_id.updatedAt)
       });
     }
@@ -933,6 +945,18 @@ export const open_tasks = (students) => {
           show: application.decided === 'O' ? true : false,
           thread_id: thread.doc_thread_id._id.toString(),
           document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+          latest_reply:
+            thread.doc_thread_id.messages.length > 0
+              ? `${
+                  thread.doc_thread_id.messages[
+                    thread.doc_thread_id.messages.length - 1
+                  ].user_id.firstname
+                } ${
+                  thread.doc_thread_id.messages[
+                    thread.doc_thread_id.messages.length - 1
+                  ].user_id.lastname
+                }`
+              : 'Empty',
           updatedAt: convertDate(thread.doc_thread_id.updatedAt)
         });
       }
@@ -962,6 +986,18 @@ export const open_tasks_with_editors = (students) => {
         ),
         days_left: daysLeftMin,
         document_name: `${thread.doc_thread_id.file_type}`,
+        latest_reply:
+          thread.doc_thread_id.messages.length > 0
+            ? `${
+                thread.doc_thread_id.messages[
+                  thread.doc_thread_id.messages.length - 1
+                ].user_id.firstname
+              } ${
+                thread.doc_thread_id.messages[
+                  thread.doc_thread_id.messages.length - 1
+                ].user_id.lastname
+              }`
+            : 'Empty',
         updatedAt: convertDate(thread.doc_thread_id.updatedAt)
       });
     }
@@ -989,6 +1025,18 @@ export const open_tasks_with_editors = (students) => {
           show: application.decided === 'O' ? true : false,
           thread_id: thread.doc_thread_id._id.toString(),
           document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+          latest_reply:
+            thread.doc_thread_id.messages.length > 0
+              ? `${
+                  thread.doc_thread_id.messages[
+                    thread.doc_thread_id.messages.length - 1
+                  ].user_id.firstname
+                } ${
+                  thread.doc_thread_id.messages[
+                    thread.doc_thread_id.messages.length - 1
+                  ].user_id.lastname
+                }`
+              : 'Empty',
           updatedAt: convertDate(thread.doc_thread_id.updatedAt)
         });
       }

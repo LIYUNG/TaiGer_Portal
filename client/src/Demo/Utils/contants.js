@@ -224,47 +224,6 @@ export const EXPECTATION_APPLICATION_YEARS = () => {
   );
 };
 
-export const compare = (a, b) => {
-  if (a.last_nom < b.last_nom) {
-    return -1;
-  }
-  if (a.last_nom > b.last_nom) {
-    return 1;
-  }
-  return 0;
-};
-
-export const return_thread_status2 = (user, thread) => {
-  if (thread.isFinalVersion) {
-    return <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />;
-  }
-  if (
-    thread.latest_message_left_by_id === undefined ||
-    thread.latest_message_left_by_id === ''
-  ) {
-    if (user.role !== 'Student') {
-      return (
-        <AiFillQuestionCircle
-          size={24}
-          color="lightgray"
-          title="Waiting feedback"
-        />
-      );
-    }
-  }
-  if (user._id.toString() === thread.latest_message_left_by_id) {
-    return (
-      <AiFillQuestionCircle
-        size={24}
-        color="lightgray"
-        title="Waiting feedback"
-      />
-    );
-  } else {
-    return <BiCommentDots size={24} color="red" title="New Message" />;
-  }
-};
-
 export const return_thread_status = (user, thread) => {
   if (thread.isFinalVersion) {
     return (
@@ -411,8 +370,8 @@ export const cvmlrl_overview_header = [
     filter: 'fuzzyText'
   },
   {
-    Header: 'Status',
-    accessor: 'status',
+    Header: 'Latest Reply',
+    accessor: 'latest_reply',
     filter: 'fuzzyText'
   },
   {
@@ -672,6 +631,11 @@ export const taskTashboardHeader = [
   {
     Header: 'Editor',
     accessor: 'editors',
+    filter: 'fuzzyText'
+  },
+  {
+    Header: 'Latest Reply',
+    accessor: 'latest_reply',
     filter: 'fuzzyText'
   },
   {

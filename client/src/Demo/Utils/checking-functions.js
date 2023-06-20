@@ -987,6 +987,7 @@ export const open_tasks_with_editors = (students) => {
         days_left: daysLeftMin,
         document_name: `${thread.doc_thread_id.file_type}`,
         latest_reply:
+          thread.doc_thread_id.messages &&
           thread.doc_thread_id.messages.length > 0
             ? `${
                 thread.doc_thread_id.messages[
@@ -1026,6 +1027,7 @@ export const open_tasks_with_editors = (students) => {
           thread_id: thread.doc_thread_id._id.toString(),
           document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
           latest_reply:
+            thread.doc_thread_id.messages &&
             thread.doc_thread_id.messages.length > 0
               ? `${
                   thread.doc_thread_id.messages[

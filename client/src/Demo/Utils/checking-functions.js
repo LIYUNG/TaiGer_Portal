@@ -621,6 +621,14 @@ export const is_uni_assist_vpd_needed = (application) => {
   return false;
 };
 
+export const is_uni_assist_paid_and_docs_uploaded = (application) => {
+  if (application.uni_assist && application.uni_assist.isPaid) {
+    return true;
+  }
+
+  return false;
+};
+
 export const check_uni_assist_needed = (student) => {
   if (!student.applications) {
     return false;

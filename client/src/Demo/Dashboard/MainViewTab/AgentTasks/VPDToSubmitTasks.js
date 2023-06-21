@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import {
   is_uni_assist_vpd_needed,
   is_all_uni_assist_vpd_uploaded,
-  application_deadline_calculator
+  application_deadline_calculator,
+  is_uni_assist_paid_and_docs_uploaded
 } from '../../../Utils/checking-functions';
 
 class VPDToSubmitTasks extends React.Component {
@@ -30,6 +31,13 @@ class VPDToSubmitTasks extends React.Component {
                       {this.props.student.lastname}
                     </Link>
                   </td>
+                  {is_uni_assist_paid_and_docs_uploaded(application) ? (
+                    <>
+                      <td className="text-warning">Paid, Waiting VPD</td>
+                    </>
+                  ) : (
+                    <td className="text-danger">Not paid</td>
+                  )}
                   <td>
                     <b>
                       {application_deadline_calculator(

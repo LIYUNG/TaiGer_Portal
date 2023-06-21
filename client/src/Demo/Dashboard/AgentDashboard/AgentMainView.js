@@ -271,6 +271,7 @@ class AgentMainView extends React.Component {
                   <thead>
                     <tr>
                       <th>Student</th>
+                      <th>Status</th>
                       <th>Deadline</th>
                       <th>Program</th>
                     </tr>

@@ -12,11 +12,7 @@ class ProgramListSingleStudentAssignSubpage extends React.Component {
     super(props);
     this.state = {
       error: '',
-      students: [],
-      isLoaded: false,
-      timeouterror: null,
-      unauthorizederror: null,
-      res_status: 0
+      students: []
     };
   }
 
@@ -25,22 +21,6 @@ class ProgramListSingleStudentAssignSubpage extends React.Component {
   }
 
   render() {
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
     let program_names = [];
     for (let i = 0; i < this.props.uni_name.length; i++) {
       program_names.push(
@@ -65,27 +45,7 @@ class ProgramListSingleStudentAssignSubpage extends React.Component {
           <p>to the student:</p>
           <table>
             <tbody>
-              {this.state.students.map((student, i) => (
-                <tr key={student._id} key={i}>
-                  <th>
-                    <div>
-                      <Form.Group>
-                        <Form.Check
-                          custom
-                          type="radio"
-                          name="student_id"
-                          value={student._id}
-                          id={student._id}
-                          onChange={this.props.handleChange2}
-                        />
-                      </Form.Group>
-                    </div>
-                  </th>
-                  <td>
-                    {student.firstname}, {student.lastname}
-                  </td>
-                </tr>
-              ))}
+              {`${this.props.student.firstname} ${this.props.student.lastname}`}
             </tbody>
           </table>
         </Modal.Body>

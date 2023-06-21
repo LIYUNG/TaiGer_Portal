@@ -17,7 +17,8 @@ import {
   uploadVPDforstudent,
   deleteVPDFile,
   downloadVPDProfile,
-  SetAsNotNeeded
+  SetAsNotNeeded,
+  SetUniAssistPaid
 } from '../../api';
 
 class UniAssistListCard extends React.Component {
@@ -80,6 +81,45 @@ class UniAssistListCard extends React.Component {
       student_id,
       program_id
     }));
+  };
+
+  onCheckHandler = (e, student_id, program_id, isPaid) => {
+    e.preventDefault();
+    const { value, checked } = e.target;
+    SetUniAssistPaid(student_id, program_id, isPaid).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            student: data,
+            success: success,
+            student_id: '',
+            program_id: '',
+            res_modal_status: status
+          });
+        } else {
+          const { message } = resp.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        const { statusText } = resp;
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
+    );
   };
 
   handleSetAsNotNeeded = (e) => {
@@ -394,6 +434,33 @@ class UniAssistListCard extends React.Component {
                                 />
                               </Form.Group>
                             )}
+                          </Col>
+                          <Col>
+                            {is_TaiGer_AdminAgent(this.props.user) &&
+                              showButtonIfMyStudent(
+                                this.props.user,
+                                this.props.student
+                              ) && (
+                                <>
+                                  <Form>
+                                    <Form.Check
+                                      type="checkbox"
+                                      className="text-light"
+                                      label={`Upload files and Paid`}
+                                      value={'Is_Paid'}
+                                      checked={application.uni_assist.isPaid}
+                                      onChange={(e) =>
+                                        this.onCheckHandler(
+                                          e,
+                                          this.state.student._id.toString(),
+                                          application.programId._id.toString(),
+                                          !application.uni_assist.isPaid
+                                        )
+                                      }
+                                    />
+                                  </Form>
+                                </>
+                              )}
                           </Col>
                           <Col>
                             {is_TaiGer_AdminAgent(this.props.user) &&

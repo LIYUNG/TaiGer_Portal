@@ -24,13 +24,18 @@ import {
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
-import { getNumberOfDays, programstatuslist, spinner_style } from '../Utils/contants';
+import {
+  getNumberOfDays,
+  programstatuslist,
+  spinner_style
+} from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import ProgramList from '../Program/ProgramList';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
@@ -46,6 +51,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     modalDeleteApplication: false,
     modalUpdatedApplication: false,
     show: false,
+    isProgramAssignMode: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -186,6 +192,18 @@ class StudentApplicationsTableTemplate extends React.Component {
         }));
       }
     );
+  };
+
+  onClickProgramAssignHandler = () => {
+    this.setState({
+      isProgramAssignMode: true
+    });
+  };
+
+  onClickBackToApplicationOverviewnHandler = () => {
+    this.setState({
+      isProgramAssignMode: false
+    });
   };
 
   ConfirmError = () => {
@@ -480,203 +498,237 @@ class StudentApplicationsTableTemplate extends React.Component {
             </Card>
           </Col>
         </Row>
-        {isProgramNotSelectedEnough([this.state.student]) && (
-          <Row>
-            <Col>
-              <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  {this.props.student.firstname} {this.props.student.lastname}{' '}
-                  did not choose enough programs.
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
-        {this.props.role === 'Admin' &&
-          is_num_Program_Not_specified(this.state.student) && (
-            <Row>
-              <Col>
-                <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                  <Card.Body>
-                    The number of student's applications is not specified!
-                    Please determine the number of the programs according to the
-                    contract
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          )}
-        <Row>
-          <Col>
-            <Card className="my-0 mx-0" bg={'info'} text={'white'}>
-              <Row bg={'info'}>
-                <Col md={4} className="mx-2 my-2">
-                  <h4>Applying Program Count: </h4>
-                </Col>
-                {this.props.role === 'Admin' ? (
-                  <Col md={2} className="mx-2 my-1">
-                    <Form.Group controlId="applying_program_count">
-                      <Form.Control
-                        as="select"
-                        defaultValue={this.state.student.applying_program_count}
-                        onChange={(e) => this.handleChangeProgramCount(e)}
-                      >
-                        <option value="0">Please Select</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                      </Form.Control>
-                    </Form.Group>
-                  </Col>
-                ) : (
-                  <>
-                    <Col md={2} className="mx-2 my-3">
-                      <h4>{this.state.student.applying_program_count}</h4>
-                    </Col>
-                  </>
-                )}
-              </Row>
+        {this.state.isProgramAssignMode ? (
+          <>
+            <ProgramList
+              user={this.props.user}
+              student={this.props.student}
+              isStudentApplicationPage={true}
+            />
+            {/* <Button variant='primary'>Assign</Button>*/}
+            <Button
+              variant="secondary"
+              onClick={this.onClickBackToApplicationOverviewnHandler}
+            >
+              Back
+            </Button>
+          </>
+        ) : (
+          <>
+            {isProgramNotSelectedEnough([this.state.student]) && (
               <Row>
                 <Col>
-                  <Banner
-                    ReadOnlyMode={true}
-                    bg={'primary'}
-                    to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                    title={'Info:'}
-                    text={
-                      'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
-                    }
-                    link_name={''}
-                    removeBanner={this.removeBanner}
-                    notification_key={''}
-                  />
-                  <Table
-                    size="sm"
-                    bordered
-                    hover
-                    responsive
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                  >
-                    <thead>
-                      <tr>
-                        {this.props.role !== 'Student' && <th></th>}
-                        {programstatuslist.map((doc, index) => (
-                          <th key={index}>{doc.name}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>{applying_university_info}</tbody>
-                  </Table>
+                  <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+                    <Card.Body>
+                      {this.props.student.firstname}{' '}
+                      {this.props.student.lastname} did not choose enough
+                      programs.
+                    </Card.Body>
+                  </Card>
                 </Col>
               </Row>
-            </Card>
-            <Row className="my-2 mx-0">
-              <Button
-                size="sm"
-                disabled={
-                  !this.state.application_status_changed || !this.state.isLoaded
-                }
-                onClick={(e) =>
-                  this.handleSubmit(
-                    e,
-                    this.state.student._id,
-                    this.state.student.applications
-                  )
-                }
-              >
-                {this.state.isLoaded ? (
-                  'Update'
-                ) : (
-                  <Spinner animation="border" size="sm" role="status">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                )}
-              </Button>
-            </Row>
-            {is_TaiGer_role(this.props.user) && (
-              <>
-                <Row>
-                  <p>
-                    <span style={{ display: 'flex', justifyContent: 'center' }}>
-                      You want to add more programs to{' '}
-                      {this.props.student.firstname}{' '}
-                      {this.props.student.lastname}?
-                    </span>
-                  </p>
-                </Row>
-                <Row className="mt-2 mx-0">
-                  <p>
-                    <span style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Link to={'/programs'}>
-                        <Button size="sm">Add New Programs</Button>{' '}
-                      </Link>
-                    </span>
-                  </p>
-                </Row>
-              </>
             )}
+            {this.props.role === 'Admin' &&
+              is_num_Program_Not_specified(this.state.student) && (
+                <Row>
+                  <Col>
+                    <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
+                      <Card.Body>
+                        The number of student's applications is not specified!
+                        Please determine the number of the programs according to
+                        the contract
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Row>
+              )}
+            <Row>
+              <Col>
+                <Card className="my-0 mx-0" bg={'info'} text={'white'}>
+                  <Row bg={'info'}>
+                    <Col md={4} className="mx-2 my-2">
+                      <h4>Applying Program Count: </h4>
+                    </Col>
+                    {this.props.role === 'Admin' ? (
+                      <Col md={2} className="mx-2 my-1">
+                        <Form.Group controlId="applying_program_count">
+                          <Form.Control
+                            as="select"
+                            defaultValue={
+                              this.state.student.applying_program_count
+                            }
+                            onChange={(e) => this.handleChangeProgramCount(e)}
+                          >
+                            <option value="0">Please Select</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                          </Form.Control>
+                        </Form.Group>
+                      </Col>
+                    ) : (
+                      <>
+                        <Col md={2} className="mx-2 my-3">
+                          <h4>{this.state.student.applying_program_count}</h4>
+                        </Col>
+                      </>
+                    )}
+                  </Row>
+                  <Row>
+                    <Col>
+                      <Banner
+                        ReadOnlyMode={true}
+                        bg={'primary'}
+                        to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                        title={'Info:'}
+                        text={
+                          'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
+                        }
+                        link_name={''}
+                        removeBanner={this.removeBanner}
+                        notification_key={''}
+                      />
+                      <Table
+                        size="sm"
+                        bordered
+                        hover
+                        responsive
+                        className="my-0 mx-0"
+                        variant="dark"
+                        text="light"
+                      >
+                        <thead>
+                          <tr>
+                            {this.props.role !== 'Student' && <th></th>}
+                            {programstatuslist.map((doc, index) => (
+                              <th key={index}>{doc.name}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>{applying_university_info}</tbody>
+                      </Table>
+                    </Col>
+                  </Row>
+                </Card>
+                <Row className="my-2 mx-0">
+                  <Button
+                    size="sm"
+                    disabled={
+                      !this.state.application_status_changed ||
+                      !this.state.isLoaded
+                    }
+                    onClick={(e) =>
+                      this.handleSubmit(
+                        e,
+                        this.state.student._id,
+                        this.state.student.applications
+                      )
+                    }
+                  >
+                    {this.state.isLoaded ? (
+                      'Update'
+                    ) : (
+                      <Spinner animation="border" size="sm" role="status">
+                        <span className="visually-hidden"></span>
+                      </Spinner>
+                    )}
+                  </Button>
+                </Row>
+                {is_TaiGer_role(this.props.user) && (
+                  <>
+                    <Row>
+                      <p>
+                        <span
+                          style={{ display: 'flex', justifyContent: 'center' }}
+                        >
+                          You want to add more programs to{' '}
+                          {this.props.student.firstname}{' '}
+                          {this.props.student.lastname}?
+                        </span>
+                      </p>
+                    </Row>
+                    <Row className="mt-2 mx-0">
+                      <p>
+                        <span
+                          style={{ display: 'flex', justifyContent: 'center' }}
+                        >
+                          {/* <Link to={'/programs'}> */}
+                          <Button
+                            size="sm"
+                            onClick={this.onClickProgramAssignHandler}
+                          >
+                            Add New Programs
+                          </Button>{' '}
+                          {/* </Link> */}
+                        </span>
+                      </p>
+                    </Row>
+                  </>
+                )}
 
-            <Modal
-              show={this.state.modalDeleteApplication}
-              onHide={this.onHideModalDeleteApplication}
-              size="m"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Modal.Header>
-                <Modal.Title id="contained-modal-title-vcenter">
-                  Warning: Delete an application
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                This will delete all message and editted files in discussion.
-                Are you sure?
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  disabled={!this.state.isLoaded}
-                  onClick={this.handleDeleteConfirm}
+                <Modal
+                  show={this.state.modalDeleteApplication}
+                  onHide={this.onHideModalDeleteApplication}
+                  size="m"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
                 >
-                  Yes
-                </Button>
-                <Button
-                  onClick={this.onHideModalDeleteApplication}
-                  variant="light"
+                  <Modal.Header>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                      Warning: Delete an application
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    This will delete all message and editted files in
+                    discussion. Are you sure?
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      disabled={!this.state.isLoaded}
+                      onClick={this.handleDeleteConfirm}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      onClick={this.onHideModalDeleteApplication}
+                      variant="light"
+                    >
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+                <Modal
+                  show={this.state.modalUpdatedApplication}
+                  onHide={this.onHideUpdatedApplicationWindow}
+                  size="m"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
                 >
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
-            <Modal
-              show={this.state.modalUpdatedApplication}
-              onHide={this.onHideUpdatedApplicationWindow}
-              size="m"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Modal.Header>
-                <Modal.Title id="contained-modal-title-vcenter">
-                  Info:
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>Applications status updated successfully!</Modal.Body>
-              <Modal.Footer>
-                <Button onClick={this.onHideUpdatedApplicationWindow}>
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </Col>
-        </Row>
+                  <Modal.Header>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                      Info:
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    Applications status updated successfully!
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button onClick={this.onHideUpdatedApplicationWindow}>
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </Col>
+            </Row>
+          </>
+        )}
       </Aux>
     );
   }

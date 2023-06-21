@@ -7,7 +7,7 @@ import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudents } from '../../api';
 
-class ProgramListSubpage extends React.Component {
+class ProgramListSingleStudentAssignSubpage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,33 +21,7 @@ class ProgramListSubpage extends React.Component {
   }
 
   componentDidMount() {
-    getStudents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            students: data,
-            success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
+    this.props.setStudentId(this.props.student._id.toString());
   }
 
   render() {
@@ -102,7 +76,7 @@ class ProgramListSubpage extends React.Component {
                           name="student_id"
                           value={student._id}
                           id={student._id}
-                          onChange={this.props.handleSetStudentId}
+                          onChange={this.props.handleChange2}
                         />
                       </Form.Group>
                     </div>
@@ -136,4 +110,4 @@ class ProgramListSubpage extends React.Component {
     );
   }
 }
-export default ProgramListSubpage;
+export default ProgramListSingleStudentAssignSubpage;

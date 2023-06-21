@@ -35,6 +35,7 @@ import {
 import { matchSorter } from 'match-sorter';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import ProgramListSingleStudentAssignSubpage from './ProgramListSingleStudentAssignSubpage';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -238,24 +239,8 @@ const IndeterminateCheckbox = React.forwardRef(
 );
 
 // Our table component
-function Table2({ columns, data, userId }) {
-  let [statedataTable2, setStatedataTable2] = useState({
-    success: false,
-    isloaded: false,
-    isAssgining: false,
-    error: null,
-    modalShowAssignWindow: false,
-    modalShowAssignSuccessWindow: false,
-    res_modal_status: 0,
-    res_modal_message: ''
-  });
-  let [programs, setPrograms] = useState({
-    programIds: [],
-    schools: [],
-    program_names: []
-  });
+function Table2(props) {
   // let [modalShowAssignWindow, setModalShow] = useState(false);
-  let [studentId, setStudentId] = useState('');
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -307,8 +292,8 @@ function Table2({ columns, data, userId }) {
     state: { pageIndex, pageSize, selectedRowIds }
   } = useTable(
     {
-      columns,
-      data,
+      columns: props.columns,
+      data: props.data,
       initialState: { pageSize: 20 },
       defaultColumn, // Be sure to pass the defaultColumn option
       filterTypes
@@ -350,107 +335,25 @@ function Table2({ columns, data, userId }) {
   // const firstPageRows = rows.slice(0, 12);
   useEffect(() => {
     const data_idxes = Object.keys(selectedRowIds);
-    setPrograms({
-      programIds: data_idxes.map((idx) => data[idx]._id),
-      schools: data_idxes.map((idx) => data[idx].school),
-      program_names: data_idxes.map((idx) => data[idx].program_name)
+    props.setPrograms({
+      programIds: data_idxes.map((idx) => props.data[idx]._id),
+      schools: data_idxes.map((idx) => props.data[idx].school),
+      program_names: data_idxes.map((idx) => props.data[idx].program_name)
     });
   }, [selectedRowIds]);
 
-  const assignProgram = (assign_data) => {
-    const { student_id, program_ids } = assign_data;
-    setStatedataTable2((state) => ({
+  useEffect(() => {
+    // TODO: The following 2 callback only triggered when program assigned. (How?)
+    setGlobalFilter([]);
+    toggleAllRowsSelected(false);
+    props.setTableStates((state) => ({
       ...state,
-      isAssgining: true
+      isAssgining: false
     }));
-    assignProgramToStudent(student_id, program_ids).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setGlobalFilter([]);
-          toggleAllRowsSelected(false);
-          setStatedataTable2((state) => ({
-            ...state,
-            isLoaded: true,
-            isAssgining: false,
-            modalShowAssignSuccessWindow: true,
-            modalShowAssignWindow: false,
-            success,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setStatedataTable2((state) => ({
-            ...state,
-            isLoaded: true,
-            isAssgining: false,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setStatedataTable2((state) => ({
-          ...state,
-          isLoaded: true,
-          isAssgining: false,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-  const setModalHide = () => {
-    // setModalShow(false);
-    setStatedataTable2((state) => ({
-      ...state,
-      modalShowAssignWindow: false
-    }));
-  };
-  const onHideAssignSuccessWindow = () => {
-    // setModalShow(false);
-    setStatedataTable2((state) => ({
-      ...state,
-      modalShowAssignSuccessWindow: false
-    }));
-  };
+  }, [props.isAssgining]);
 
-  const setModalShow2 = () => {
-    setStatedataTable2((state) => ({
-      ...state,
-      modalShowAssignWindow: true
-    }));
-  };
-  const onSubmitAddToStudentProgramList = (e) => {
-    e.preventDefault();
-    const student_id = studentId;
-    assignProgram({ student_id, program_ids: programs.programIds });
-  };
-
-  const handleSetStudentId = (e) => {
-    const { value } = e.target;
-    setStudentId(value);
-  };
-
-  const ConfirmError = () => {
-    setStatedataTable2((state) => ({
-      ...state,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-  };
   return (
     <>
-      {statedataTable2.res_modal_status >= 400 && (
-        <ModalMain
-          ConfirmError={ConfirmError}
-          res_modal_status={statedataTable2.res_modal_status}
-          res_modal_message={statedataTable2.res_modal_message}
-        />
-      )}
       <Table variant="dark" text="light" bordered hover size="sm">
         <thead>
           <tr>
@@ -460,21 +363,14 @@ function Table2({ columns, data, userId }) {
                 textAlign: 'left'
               }}
             >
-              <span
-                className="mx-2"
-                style={{ cursor: 'pointer' }}
-              >
-                {programs.programIds.length !== 0 && (
+              <span className="mx-2" style={{ cursor: 'pointer' }}>
+                {props.programs.programIds.length !== 0 && (
                   <i
                     className="feather icon-user-plus"
-                    onClick={setModalShow2}
+                    onClick={props.setModalShow2}
                   />
                 )}
               </span>
-              {/* {programs.programIds.length !== 0 &&
-                programs.programIds.length === 1 && (
-                  <i className="feather icon-trash-2" />
-                )} */}
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
@@ -605,31 +501,6 @@ function Table2({ columns, data, userId }) {
           </Col>
         </Row>
       </div>
-      <ProgramListSubpage
-        userId={userId}
-        show={statedataTable2.modalShowAssignWindow}
-        setModalHide={setModalHide}
-        uni_name={programs.schools}
-        program_name={programs.program_names}
-        handleChange2={handleSetStudentId}
-        isAssgining={statedataTable2.isAssgining}
-        onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-      />
-      <Modal
-        show={statedataTable2.modalShowAssignSuccessWindow}
-        onHide={onHideAssignSuccessWindow}
-        size="m"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Program(s) assigned to student successfully!</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHideAssignSuccessWindow}>Close</Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 }
@@ -649,6 +520,16 @@ function filterGreaterThan(rows, id, filterValue) {
 filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
 function ProgramList(props) {
+  let [tableStates, setTableStates] = useState({
+    success: false,
+    isloaded: false,
+    isAssgining: false,
+    error: null,
+    modalShowAssignWindow: false,
+    modalShowAssignSuccessWindow: false,
+    res_modal_status: 0,
+    res_modal_message: ''
+  });
   let [statedata, setStatedata] = useState({
     success: false,
     programs: null,
@@ -656,6 +537,13 @@ function ProgramList(props) {
     error: '',
     res_status: 0
   });
+
+  let [programs, setPrograms] = useState({
+    programIds: [],
+    schools: [],
+    program_names: []
+  });
+  let [studentId, setStudentId] = useState('');
 
   if (props.user.role !== 'Admin' && props.user.role !== 'Agent') {
     return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -691,6 +579,88 @@ function ProgramList(props) {
     );
   }, []);
 
+  const assignProgram = (assign_data) => {
+    const { student_id, program_ids } = assign_data;
+    setTableStates((state) => ({
+      ...state,
+      isAssgining: true
+    }));
+    assignProgramToStudent(student_id, program_ids).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setTableStates((state) => ({
+            ...state,
+            isLoaded: true,
+            isAssgining: false,
+            modalShowAssignSuccessWindow: true,
+            modalShowAssignWindow: false,
+            success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setTableStates((state) => ({
+            ...state,
+            isLoaded: true,
+            isAssgining: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        const { statusText } = resp;
+        setTableStates((state) => ({
+          ...state,
+          isLoaded: true,
+          isAssgining: false,
+          error,
+          res_modal_status: 500,
+          res_modal_message: statusText
+        }));
+      }
+    );
+  };
+  const setModalHide = () => {
+    setTableStates((state) => ({
+      ...state,
+      modalShowAssignWindow: false
+    }));
+  };
+  const onHideAssignSuccessWindow = () => {
+    setTableStates((state) => ({
+      ...state,
+      modalShowAssignSuccessWindow: false
+    }));
+  };
+
+  const onSubmitAddToStudentProgramList = (e) => {
+    e.preventDefault();
+    const student_id = studentId;
+    assignProgram({ student_id, program_ids: programs.programIds });
+  };
+
+  const handleSetStudentId = (e) => {
+    const { value } = e.target;
+    setStudentId(value);
+  };
+
+  const ConfirmError = () => {
+    setTableStates((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
+  const setModalShow2 = () => {
+    setTableStates((state) => ({
+      ...state,
+      modalShowAssignWindow: true
+    }));
+  };
   const columns = React.useMemo(
     () => [
       {
@@ -780,13 +750,70 @@ function ProgramList(props) {
   }
 
   return (
-    <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-      <Table2
-        columns={columns}
-        data={statedata.programs}
-        userId={props.user._id.toString()}
-      />
-    </Card>
+    <>
+      {tableStates.res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={tableStates.res_modal_status}
+          res_modal_message={tableStates.res_modal_message}
+        />
+      )}
+      <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+        <Table2
+          columns={columns}
+          data={statedata.programs}
+          programs={programs}
+          userId={props.user._id.toString()}
+          setModalShow2={setModalShow2}
+          setPrograms={setPrograms}
+          isAssgining={tableStates.isAssgining}
+          setTableStates={setTableStates}
+        />
+      </Card>
+      {props.isStudentApplicationPage ? (
+        <ProgramListSingleStudentAssignSubpage
+          userId={props.user._id.toString()}
+          student={props.student}
+          show={tableStates.modalShowAssignWindow}
+          assignProgram={assignProgram}
+          setModalHide={setModalHide}
+          setStudentId={setStudentId}
+          uni_name={programs.schools}
+          program_name={programs.program_names}
+          handleChange2={handleSetStudentId}
+          isAssgining={tableStates.isAssgining}
+          onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+        />
+      ) : (
+        <ProgramListSubpage
+          userId={props.user._id.toString()}
+          show={tableStates.modalShowAssignWindow}
+          assignProgram={assignProgram}
+          setModalHide={setModalHide}
+          uni_name={programs.schools}
+          program_name={programs.program_names}
+          handleSetStudentId={handleSetStudentId}
+          isAssgining={tableStates.isAssgining}
+          onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+        />
+      )}
+
+      <Modal
+        show={tableStates.modalShowAssignSuccessWindow}
+        onHide={onHideAssignSuccessWindow}
+        size="m"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Program(s) assigned to student successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={onHideAssignSuccessWindow}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 

@@ -125,6 +125,8 @@ export const deleteVPDFile = (studentId, program_id) =>
 export const SetAsNotNeeded = (studentId, program_id) =>
   request.put(`/api/students/${studentId}/vpd/${program_id}`);
 
+export const SetUniAssistPaid = (studentId, program_id, isPaid) =>
+  request.post(`/api/students/${studentId}/vpd/${program_id}/payments`, { isPaid });
 export const updateProfileDocumentStatus = (
   category,
   studentId,

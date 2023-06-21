@@ -387,6 +387,35 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
   }
 });
 
+const updateVPDPayment = asyncHandler(async (req, res) => {
+  const {
+    params: { studentId, program_id },
+    body: { isPaid }
+  } = req;
+
+  const student = await Student.findById(studentId).populate(
+    'applications.programId'
+  );
+
+  if (!student) {
+    logger.error('updateVPDPayment: Invalid student id!');
+    throw new ErrorResponse(403, 'Invalid student id');
+  }
+  const app = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+  if (!app) {
+    logger.error('updateVPDPayment: Invalid student id!');
+    throw new ErrorResponse(403, 'Invalid program_id id');
+  }
+
+  app.uni_assist.isPaid = isPaid;
+  app.uni_assist.updatedAt = new Date();
+  await student.save();
+
+  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+  res.status(201).send({ success: true, data: student });
+});
 // () email:
 
 const updateVPDFileNecessity = asyncHandler(async (req, res) => {
@@ -1594,6 +1623,7 @@ module.exports = {
   updateProfileDocumentStatus,
   UpdateStudentApplications,
   deleteProfileFile,
+  updateVPDPayment,
   updateVPDFileNecessity,
   deleteVPDFile,
   removeNotification,

@@ -300,8 +300,8 @@ const applicationSchema = new Schema({
       default: ''
     },
     isPaid: {
-      type: String,
-      default: ''
+      type: Boolean,
+      default: false
     },
     updatedAt: Date
   },

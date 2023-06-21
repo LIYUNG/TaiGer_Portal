@@ -40,7 +40,8 @@ const {
   downloadProfileFileURL,
   updateProfileDocumentStatus,
   deleteProfileFile,
-  deleteVPDFile
+  deleteVPDFile,
+  updateVPDPayment
 } = require('../controllers/files');
 const {
   permission_canAssignEditor_filter,
@@ -183,6 +184,18 @@ router
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     ToggleProgramStatus
+  );
+
+router
+  .route('/:studentId/vpd/:program_id/payments')
+  .post(
+    filter_archiv_user,
+    GeneralPUTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canAccessStudentDatabase_filter,
+    multitenant_filter,
+    InnerTaigerMultitenantFilter,
+    updateVPDPayment
   );
 
 router

@@ -569,20 +569,19 @@ class EditorDocsProgress extends React.Component {
                           {application.programId.program_name}
                         </b>
                         :{' '}
-                        {required_doc_keys.map((doc_reqired_key, i) => (
-                          <>
-                            {application.programId[doc_reqired_key] === 'yes' &&
-                              application.doc_modification_thread.findIndex(
-                                (thread) =>
-                                  thread.doc_thread_id.file_type ===
-                                  file_category_const[doc_reqired_key]
-                              ) === -1 && (
-                                <li>
-                                  <b>{file_category_const[doc_reqired_key]}</b>
-                                </li>
-                              )}
-                          </>
-                        ))}
+                        {required_doc_keys.map(
+                          (doc_reqired_key, i) =>
+                            application.programId[doc_reqired_key] === 'yes' &&
+                            application.doc_modification_thread.findIndex(
+                              (thread) =>
+                                thread.doc_thread_id.file_type ===
+                                file_category_const[doc_reqired_key]
+                            ) === -1 && (
+                              <li key={i}>
+                                <b>{file_category_const[doc_reqired_key]}</b>
+                              </li>
+                            )
+                        )}
                       </Card.Body>
                     </Card>
                   )}
@@ -676,11 +675,12 @@ class EditorDocsProgress extends React.Component {
                           </Link>
                         </Col>
                         <Col md={2}>
-                          {required_doc_keys.map((doc_reqired_key, i) => (
-                            <>
-                              {application.programId[doc_reqired_key] ===
+                          {required_doc_keys.map(
+                            (doc_reqired_key, i) =>
+                              application.programId[doc_reqired_key] ===
                                 'yes' && (
                                 <Button
+                                  key={i}
                                   size="sm"
                                   title={`${file_category_const[doc_reqired_key]}`}
                                   variant="secondary"
@@ -697,9 +697,8 @@ class EditorDocsProgress extends React.Component {
                                 >
                                   {file_category_const[doc_reqired_key]}
                                 </Button>
-                              )}
-                            </>
-                          ))}
+                              )
+                          )}
                           {application.programId.rl_required > 0 && (
                             <Button
                               size="sm"
@@ -775,11 +774,12 @@ class EditorDocsProgress extends React.Component {
                             </Link>
                           </Col>
                           <Col md={2}>
-                            {required_doc_keys.map((doc_reqired_key, i) => (
-                              <>
-                                {application.programId[doc_reqired_key] ===
+                            {required_doc_keys.map(
+                              (doc_reqired_key, i) =>
+                                application.programId[doc_reqired_key] ===
                                   'yes' && (
                                   <Button
+                                    key={i}
                                     size="sm"
                                     title={`${file_category_const[doc_reqired_key]}`}
                                     variant="secondary"
@@ -796,9 +796,8 @@ class EditorDocsProgress extends React.Component {
                                   >
                                     {file_category_const[doc_reqired_key]}
                                   </Button>
-                                )}
-                              </>
-                            ))}
+                                )
+                            )}
                             {application.programId.rl_required > 0 && (
                               <Button
                                 size="sm"

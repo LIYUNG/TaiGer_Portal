@@ -1,11 +1,6 @@
 import React from 'react';
-import { Form, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { Button, Spinner } from 'react-bootstrap';
-
-import { spinner_style } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
-
-import { getStudents } from '../../api';
 
 class ProgramListSingleStudentAssignSubpage extends React.Component {
   constructor(props) {
@@ -24,7 +19,7 @@ class ProgramListSingleStudentAssignSubpage extends React.Component {
     let program_names = [];
     for (let i = 0; i < this.props.uni_name.length; i++) {
       program_names.push(
-        this.props.uni_name[i] + ' - ' + this.props.program_name[i]
+        `${this.props.uni_name[i]}-${this.props.program_name[i]}-${this.props.degree[i]}-${this.props.semester[i]}`
       );
     }
     return (
@@ -36,7 +31,7 @@ class ProgramListSingleStudentAssignSubpage extends React.Component {
         centered
       >
         <Modal.Body>
-          Assign{' '}
+          <h4>Assign </h4>
           {program_names.map((program_name, i) => (
             <p className="my-0" key={i}>
               <b>{program_name}</b>
@@ -45,7 +40,7 @@ class ProgramListSingleStudentAssignSubpage extends React.Component {
           <p>to the student:</p>
           <table>
             <tbody>
-              {`${this.props.student.firstname} ${this.props.student.lastname}`}
+              <b>{`${this.props.student.firstname} ${this.props.student.lastname}`}</b>
             </tbody>
           </table>
         </Modal.Body>

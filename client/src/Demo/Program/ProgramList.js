@@ -338,7 +338,9 @@ function Table2(props) {
     props.setPrograms({
       programIds: data_idxes.map((idx) => props.data[idx]._id),
       schools: data_idxes.map((idx) => props.data[idx].school),
-      program_names: data_idxes.map((idx) => props.data[idx].program_name)
+      program_names: data_idxes.map((idx) => props.data[idx].program_name),
+      degree: data_idxes.map((idx) => props.data[idx].degree),
+      semester: data_idxes.map((idx) => props.data[idx].semester)
     });
   }, [selectedRowIds]);
 
@@ -541,7 +543,9 @@ function ProgramList(props) {
   let [programs, setPrograms] = useState({
     programIds: [],
     schools: [],
-    program_names: []
+    program_names: [],
+    degree: [],
+    semester: []
   });
   let [studentId, setStudentId] = useState('');
 
@@ -634,6 +638,9 @@ function ProgramList(props) {
       ...state,
       modalShowAssignSuccessWindow: false
     }));
+    if (props.isStudentApplicationPage) {
+      window.location.reload(true);
+    }
   };
 
   const onSubmitAddToStudentProgramList = (e) => {
@@ -780,6 +787,8 @@ function ProgramList(props) {
           setStudentId={setStudentId}
           uni_name={programs.schools}
           program_name={programs.program_names}
+          degree={programs.degree}
+          semester={programs.semester}
           handleChange2={handleSetStudentId}
           isAssgining={tableStates.isAssgining}
           onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}

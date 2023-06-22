@@ -26,7 +26,6 @@ import {
   initGeneralMessageThread,
   initApplicationMessageThread
 } from '../../api';
-import { List } from '@editorjs/list';
 
 class EditorDocsProgress extends React.Component {
   state = {

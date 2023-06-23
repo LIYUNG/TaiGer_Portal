@@ -49,11 +49,15 @@ const getMyInterview = asyncHandler(async (req, res) => {
     .populate('program_id', 'school program_name')
     .lean();
 
-  if (!interviews) {
-    logger.info('createInterview: this interview is already existed!');
-    throw new ErrorResponse(400, 'this interview is already existed!');
+  const student = await Student.findById(user._id.toString())
+    .populate('applications.programId', 'school program_name degree semester')
+    .lean();
+  if (!student) {
+    logger.info('getMyInterview: this student is not existed!');
+    throw new ErrorResponse(400, 'this student is not existed!');
   }
-  res.status(200).send({ success: true, data: interviews });
+
+  res.status(200).send({ success: true, data: interviews, student });
 });
 
 // () TODO: inform editor
@@ -61,7 +65,8 @@ const getMyInterview = asyncHandler(async (req, res) => {
 const createInterview = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { program_id, studentId }
+    params: { program_id, studentId },
+    body: payload
   } = req;
   const student = await Student.findById(studentId)
     .populate('applications.programId')
@@ -71,23 +76,27 @@ const createInterview = asyncHandler(async (req, res) => {
     logger.info('createInterview: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
-  const interview = await Interview.findOne({
-    student_id: studentId,
-    program_id
-  });
-
-  if (interview) {
-    logger.info('createInterview: this interview is already existed!');
-    throw new ErrorResponse(400, 'this interview is already existed!');
-  }
-  // const new_interview = new Interview();
-  await Interview.create({ student_id: studentId, program_id });
-  const new_interviews = await Interview.find({})
+  const interview = await Interview.findOneAndUpdate(
+    {
+      student_id: studentId,
+      program_id
+    },
+    payload,
+    { upsert: true, new: true }
+  )
     .populate('student_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name')
+    .populate('program_id', 'school program_name degree semester')
     .lean();
+
+  console.log(interview);
+  // const new_interview = new Interview();
+  // await Interview.create({ student_id: studentId, program_id });
+  // const new_interviews = await Interview.find({ student_id: studentId })
+  //   .populate('student_id', 'firstname lastname email')
+  //   .populate('program_id', 'school program_name degree semester')
+  //   .lean();
   // console.log(new_interview);
-  res.status(200).send({ success: true, data: new_interviews });
+  res.status(200).send({ success: true, data: interview });
 });
 
 module.exports = {

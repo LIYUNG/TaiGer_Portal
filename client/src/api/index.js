@@ -126,7 +126,9 @@ export const SetAsNotNeeded = (studentId, program_id) =>
   request.put(`/api/students/${studentId}/vpd/${program_id}`);
 
 export const SetUniAssistPaid = (studentId, program_id, isPaid) =>
-  request.post(`/api/students/${studentId}/vpd/${program_id}/payments`, { isPaid });
+  request.post(`/api/students/${studentId}/vpd/${program_id}/payments`, {
+    isPaid
+  });
 export const updateProfileDocumentStatus = (
   category,
   studentId,
@@ -398,9 +400,11 @@ export const updateCredentials = (credentials, email, password) =>
 export const getAllInterviews = () => request.get('/api/interviews');
 export const getInterview = (interview_id) =>
   request.get(`/api/interviews/${interview_id}`);
+export const deleteInterview = (interview_id) =>
+  request.delete(`/api/interviews/${interview_id}`);
+export const updateInterview = (interview_id, payload) =>
+  request.put(`/api/interviews/${interview_id}`, payload);
 export const getMyInterviews = () =>
   request.get(`/api/interviews/my-interviews`);
-export const createInterview = (program_id, student_id) =>
-  request.post(`/api/interviews/${program_id}/${student_id}`);
-export const getApplications = (studnet_id) =>
-  request.get(`/api/interviews/my-interviews`);
+export const createInterview = (program_id, student_id, payload) =>
+  request.post(`/api/interviews/${program_id}/${student_id}`, payload);

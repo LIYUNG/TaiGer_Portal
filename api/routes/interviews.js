@@ -25,11 +25,7 @@ router
   );
 router
   .route('/my-interviews')
-  .get(
-    filter_archiv_user,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    getMyInterview
-  );
+  .get(filter_archiv_user, permit(Role.Student), getMyInterview);
 
 router
   .route('/:interview_id')

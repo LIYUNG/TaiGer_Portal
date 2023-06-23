@@ -19,7 +19,6 @@ class NavItem extends Component {
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Charts' ||
-        itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Map' ||
         itemTitle === 'Tasks Overview'
@@ -36,7 +35,6 @@ class NavItem extends Component {
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
-        itemTitle === 'Interview Training' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
@@ -54,7 +52,6 @@ class NavItem extends Component {
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
-        itemTitle === 'Interview Training' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||
@@ -72,7 +69,6 @@ class NavItem extends Component {
         itemTitle === 'Statistics' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Program List' ||
-        itemTitle === 'Interview Training' ||
         itemTitle === 'Map' ||
         itemTitle === 'TaiGer Admissions' ||
         itemTitle === 'Internal Docs' ||

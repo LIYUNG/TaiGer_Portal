@@ -7,7 +7,8 @@ const {
   getAllInterviews,
   getInterview,
   getMyInterview,
-  createInterview
+  createInterview,
+  deleteInterview
 } = require('../controllers/interviews');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
@@ -20,7 +21,7 @@ router
   .route('/')
   .get(
     filter_archiv_user,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getAllInterviews
   );
 router
@@ -33,6 +34,11 @@ router
     filter_archiv_user,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getInterview
+  )
+  .delete(
+    filter_archiv_user,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    deleteInterview
   );
 
 router

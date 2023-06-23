@@ -11,10 +11,16 @@ import {
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { getMyInterviews, createInterview, deleteInterview } from '../../api';
+import {
+  getMyInterviews,
+  createInterview,
+  deleteInterview,
+  getAllInterviews
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import NotesEditor from '../Notes/NotesEditor';
+import InterviewItems from './InterviewItems';
 
 class InterviewTraining extends React.Component {
   state = {
@@ -23,8 +29,8 @@ class InterviewTraining extends React.Component {
     data: null,
     success: false,
     interviewslist: [],
-    doc_id_toBeDelete: '',
-    program_id_toBeDelete: '',
+    interview_id_toBeDelete: '',
+    interview_name_toBeDelete: '',
     program_id: '',
     intervewData: {},
     category: '',
@@ -38,34 +44,65 @@ class InterviewTraining extends React.Component {
   };
 
   componentDidMount() {
-    getMyInterviews().then(
-      (resp) => {
-        const { data, success, student } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
+    if (is_TaiGer_role(this.props.user)) {
+      getAllInterviews().then(
+        (resp) => {
+          const { data, success, student } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              interviewslist: data,
+              student: student,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            interviewslist: data,
-            student: student,
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
+            error,
+            res_status: 500
+          }));
         }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
+      );
+    } else {
+      getMyInterviews().then(
+        (resp) => {
+          const { data, success, student } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              interviewslist: data,
+              student: student,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
   }
 
   handleClick = () => {
@@ -73,14 +110,14 @@ class InterviewTraining extends React.Component {
   };
 
   handleDeleteInterview = (doc) => {
-    deleteInterview(this.state.doc_id_toBeDelete).then(
+    deleteInterview(this.state.interview_id_toBeDelete).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
           let interviewslist_temp = [...this.state.interviewslist];
           let to_be_delete_doc_idx = interviewslist_temp.findIndex(
-            (doc) => doc._id.toString() === this.state.doc_id_toBeDelete
+            (doc) => doc._id.toString() === this.state.interview_id_toBeDelete
           );
           if (to_be_delete_doc_idx > -1) {
             // only splice array when item is found
@@ -116,11 +153,11 @@ class InterviewTraining extends React.Component {
       }
     );
   };
-  openDeleteDocModalWindow = (doc) => {
+  openDeleteDocModalWindow = (interview) => {
     this.setState((state) => ({
       ...state,
-      doc_id_toBeDelete: doc._id,
-      program_id_toBeDelete: doc.title,
+      interview_id_toBeDelete: interview._id,
+      interview_name_toBeDelete: `${interview.program_id.school} ${interview.program_id.program_name}`,
       SetDeleteDocModel: true
     }));
   };
@@ -208,8 +245,8 @@ class InterviewTraining extends React.Component {
   };
 
   render() {
-    // if (!is_TaiGer_role(this.props.user)) {
-    //   return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+    // if (is_TaiGer_role(this.props.user)) {
+    //   return <Redirect to={`${DEMO.INTERVIEW_LINK}`} />;
     // }
 
     const {
@@ -234,25 +271,28 @@ class InterviewTraining extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
+    let available_interview_request_programs = [];
+    if (!is_TaiGer_role(this.props.user)) {
+      available_interview_request_programs = student.applications
+        .filter(
+          (application) =>
+            application.decided === 'O' &&
+            application.admission !== 'O' &&
+            application.admission !== 'X' &&
+            !interviewslist.find(
+              (interview) =>
+                interview.program_id._id.toString() ===
+                application.programId._id.toString()
+            )
+        )
+        .map((application) => {
+          return {
+            key: application.programId._id.toString(),
+            value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
+          };
+        });
+    }
 
-    const available_interview_request_programs = student.applications
-      .filter(
-        (application) =>
-          application.decided === 'O' &&
-          application.admission !== 'O' &&
-          application.admission !== 'X' &&
-          !interviewslist.find(
-            (interview) =>
-              interview.program_id._id.toString() ===
-              application.programId._id.toString()
-          )
-      )
-      .map((application) => {
-        return {
-          key: application.programId._id.toString(),
-          value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
-        };
-      });
     // console.log(available_interview_request_programs);
 
     TabTitle('Docs Database');
@@ -363,13 +403,14 @@ class InterviewTraining extends React.Component {
                                   <option value={''}>
                                     Select Document Category
                                   </option>
-                                  {available_interview_request_programs.map(
-                                    (cat, i) => (
-                                      <option value={cat.key} key={i}>
-                                        {cat.value}
-                                      </option>
-                                    )
-                                  )}
+                                  {!is_TaiGer_role(this.props.user) &&
+                                    available_interview_request_programs.map(
+                                      (cat, i) => (
+                                        <option value={cat.key} key={i}>
+                                          {cat.value}
+                                        </option>
+                                      )
+                                    )}
                                 </Form.Control>
                               </Form.Group>
                             </Form>
@@ -428,17 +469,17 @@ class InterviewTraining extends React.Component {
                   </Col>
                 </Row>
                 {interviewslist.map((interview, i) => (
-                  <Card key={i}>
-                    <Card.Body>
-                      {`${interview.program_id.school} - ${interview.program_id.program_name}`}{' '}
-                      <br />
-                      {`${interview.interview_date} - ${interview.interview_time}`}
-                    </Card.Body>
-                  </Card>
+                  <InterviewItems
+                    key={i}
+                    user={this.props.user}
+                    interview={interview}
+                    openDeleteDocModalWindow={this.openDeleteDocModalWindow}
+                  />
                 ))}
-                {available_interview_request_programs.length > 0 && (
-                  <Button onClick={this.handleClick}>Add</Button>
-                )}
+                {!is_TaiGer_role(this.props.user) &&
+                  available_interview_request_programs.length > 0 && (
+                    <Button onClick={this.handleClick}>Add</Button>
+                  )}
               </>
             )}
           </Col>
@@ -455,8 +496,8 @@ class InterviewTraining extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Do you want to delete documentation of title:{' '}
-            {this.state.program_id_toBeDelete}?
+            Do you want to delete the interview request of{' '}
+            <b>{this.state.interview_name_toBeDelete}</b>?
           </Modal.Body>
           <Modal.Footer>
             <Button disabled={!isLoaded} onClick={this.handleDeleteInterview}>

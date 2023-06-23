@@ -18,8 +18,7 @@ const getAllInterviews = asyncHandler(async (req, res) => {
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name')
     .lean();
-  // .populate("applications.programId agents editors");
-  // .lean();
+
   res.status(200).send({ success: true, data: interviews });
 });
 
@@ -38,6 +37,16 @@ const getInterview = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'this interview is already existed!');
   }
   res.status(200).send({ success: true, data: interview });
+});
+
+const deleteInterview = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { interview_id }
+  } = req;
+  await Interview.findByIdAndDelete(interview_id);
+
+  res.status(200).send({ success: true });
 });
 
 const getMyInterview = asyncHandler(async (req, res) => {
@@ -103,5 +112,6 @@ module.exports = {
   getAllInterviews,
   getMyInterview,
   getInterview,
+  deleteInterview,
   createInterview
 };

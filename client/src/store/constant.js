@@ -1,6 +1,8 @@
 const DEMO = {
   BLANK_LINK: '/dashboard/default',
   DASHBOARD_LINK: '/dashboard/default',
+  MY_INTERVIEW_LINK: '/interview-training/my-interviews',
+  INTERVIEW_LINK: '/interview-training',
   UNI_ASSIST_LINK: '/uni-assist',
   CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
   CV_ML_RL_DOCS_LINK: '/docs/cv-ml-rl',

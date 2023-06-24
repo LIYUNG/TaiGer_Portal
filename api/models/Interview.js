@@ -24,11 +24,23 @@ const interviewsSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
-    interview_date: Date,
-    interview_time: Date,
+    interview_date: {
+      type: String,
+      default: ''
+    },
+    interview_time: {
+      type: String,
+      default: ''
+    },
 
-    interview_trainig_date: Date,
-    interview_trainig_time: Date
+    interview_trainig_date: {
+      type: String,
+      default: ''
+    },
+    interview_trainig_time: {
+      type: String,
+      default: ''
+    }
   },
   { timestamps: true }
 );

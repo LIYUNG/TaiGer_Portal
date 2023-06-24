@@ -27,7 +27,7 @@ const getInterview = asyncHandler(async (req, res) => {
     user,
     params: { interview_id }
   } = req;
-  const interview = await Interview.find(interview_id)
+  const interview = await Interview.findById(interview_id)
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name')
     .lean();

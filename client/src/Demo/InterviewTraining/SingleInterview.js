@@ -7,7 +7,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { getDocumentation, updateDocumentation } from '../../api';
+import { getInterview, updateDocumentation } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 
 class SingleInterview extends React.Component {
@@ -23,7 +23,7 @@ class SingleInterview extends React.Component {
     res_modal_status: 0
   };
   componentDidMount() {
-    getDocumentation(this.props.match.params.interview_id).then(
+    getInterview(this.props.match.params.interview_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -33,12 +33,13 @@ class SingleInterview extends React.Component {
         if (success) {
           var initialEditorState = null;
           const author = data.author;
-          if (data.text) {
-            initialEditorState = JSON.parse(data.text);
+          if (data.interview_notes) {
+            initialEditorState = JSON.parse(data.interview_notes);
           } else {
             initialEditorState = {};
           }
-          initialEditorState = JSON.parse(data.text);
+          // console.log(data.interview_notes);
+          // initialEditorState = JSON.parse(data.interview_notes);
           this.setState({
             isLoaded: true,
             document_title: data.title,
@@ -70,7 +71,7 @@ class SingleInterview extends React.Component {
       prevProps.match.params.interview_id !==
       this.props.match.params.interview_id
     ) {
-      getDocumentation(this.props.match.params.interview_id).then(
+      getInterview(this.props.match.params.interview_id).then(
         (resp) => {
           const { data, success } = resp.data;
           const { status } = resp;
@@ -80,12 +81,12 @@ class SingleInterview extends React.Component {
           if (success) {
             var initialEditorState = null;
             const author = data.author;
-            if (data.text) {
-              initialEditorState = JSON.parse(data.text);
+            if (data.interview_notes) {
+              initialEditorState = JSON.parse(data.interview_notes);
             } else {
               initialEditorState = {};
             }
-            initialEditorState = JSON.parse(data.text);
+            // initialEditorState = JSON.parse(data.interview_notes);
             this.setState({
               isLoaded: true,
               document_title: data.title,

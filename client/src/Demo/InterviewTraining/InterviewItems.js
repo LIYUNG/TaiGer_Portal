@@ -26,7 +26,8 @@ class InterviewItems extends React.Component {
             >
               {`${this.props.interview.program_id.school} - ${this.props.interview.program_id.program_name}`}{' '}
               <br />
-              {`${this.props.interview_date} - ${this.props.interview.interview_time}`}
+              <i className="feather icon-calendar me-1" />
+              {`${this.props.interview.interview_date} - ${this.props.interview.interview_time}`}
             </Link>
           </Card.Body>
         </Card>

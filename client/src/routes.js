@@ -91,6 +91,10 @@ const InterviewTraining = React.lazy(() =>
   import('./Demo/InterviewTraining/index')
 );
 
+const SingleInterview = React.lazy(() =>
+  import('./Demo/InterviewTraining/SingleInterview')
+);
+
 const Download = React.lazy(() => import('./Demo/DownloadCenter/DownloadPage'));
 
 const AgentsAssignment = React.lazy(() =>
@@ -234,18 +238,18 @@ const routes = [
     name: 'InternalDocCreatePage',
     component: InternalDocCreatePage
   },
-  {
-    path: '/interview-training',
-    exact: true,
-    name: 'InterviewTraining',
-    component: InterviewTraining
-  },
-  {
-    path: '/interview-training/:interview_id',
-    exact: true,
-    name: 'InterviewTraining',
-    component: InterviewTraining
-  },
+  // {
+  //   path: '/interview-training',
+  //   exact: true,
+  //   name: 'InterviewTraining',
+  //   component: InterviewTraining
+  // },
+  // {
+  //   path: '/interview-training/:interview_id',
+  //   exact: true,
+  //   name: 'SingleInterview',
+  //   component: SingleInterview
+  // },
   {
     path: '/download',
     exact: true,

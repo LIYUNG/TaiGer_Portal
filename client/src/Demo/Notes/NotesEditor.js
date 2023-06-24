@@ -11,7 +11,6 @@ import {
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 
 function NotesEditor(props) {
-  const [show, setShow] = useState(false);
   let [statedata, setStatedata] = useState({
     editorState: props.editorState,
     buttonDisabled: props.buttonDisabled

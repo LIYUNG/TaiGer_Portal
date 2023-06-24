@@ -175,8 +175,6 @@ class InterviewTraining extends React.Component {
 
   handleClickSave = (e, editorState) => {
     e.preventDefault();
-
-    // Editorjs. editorState is in JSON form
     const message = JSON.stringify(editorState);
     const msg = {
       program_id: this.state.program_id,

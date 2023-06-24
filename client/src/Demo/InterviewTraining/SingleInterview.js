@@ -7,7 +7,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { getInterview, updateDocumentation } from '../../api';
+import { getInterview, updateInterview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 
 class SingleInterview extends React.Component {
@@ -16,6 +16,7 @@ class SingleInterview extends React.Component {
     author: '',
     isLoaded: false,
     success: false,
+    interview: {},
     editorState: null,
     isEdit: false,
     res_status: 0,
@@ -36,14 +37,12 @@ class SingleInterview extends React.Component {
           if (data.interview_notes) {
             initialEditorState = JSON.parse(data.interview_notes);
           } else {
-            initialEditorState = {};
+            initialEditorState = { time: new Date(), blocks: [] };
           }
-          // console.log(data.interview_notes);
-          // initialEditorState = JSON.parse(data.interview_notes);
+          console.log(initialEditorState);
           this.setState({
             isLoaded: true,
-            document_title: data.title,
-            category: data.category,
+            interview: data,
             editorState: initialEditorState,
             author,
             success: success,
@@ -84,13 +83,11 @@ class SingleInterview extends React.Component {
             if (data.interview_notes) {
               initialEditorState = JSON.parse(data.interview_notes);
             } else {
-              initialEditorState = {};
+              initialEditorState = { time: new Date(), blocks: [] };
             }
-            // initialEditorState = JSON.parse(data.interview_notes);
             this.setState({
               isLoaded: true,
-              document_title: data.title,
-              category: data.category,
+              interview: data,
               editorState: initialEditorState,
               author,
               success: success,
@@ -118,23 +115,22 @@ class SingleInterview extends React.Component {
   handleClickEditToggle = (e) => {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
-  handleClickSave = (e, category, doc_title, editorState) => {
+  handleClickSave = (e, interview, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
-    const msg = {
-      title: doc_title,
-      category,
-      prop: this.props.item,
-      text: message
-    };
-    updateDocumentation(this.props.match.params.interview_id, msg).then(
+    const interviewData_temp = interview;
+    interviewData_temp.interview_notes = message;
+    updateInterview(
+      this.props.match.params.interview_id,
+      interviewData_temp
+    ).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             success,
-            document_title: data.title,
+            interview: data,
             editorState,
             isEdit: !this.state.isEdit,
             author: data.author,
@@ -170,6 +166,7 @@ class SingleInterview extends React.Component {
     const {
       res_status,
       editorState,
+      interview,
       isLoaded,
       res_modal_status,
       res_modal_message
@@ -200,9 +197,9 @@ class SingleInterview extends React.Component {
             />
           )}
           <SingleInterviewEdit
+            user={this.props.user}
             category={this.state.category}
-            document={document}
-            document_title={this.state.document_title}
+            interview={interview}
             editorState={this.state.editorState}
             author={this.state.author}
             isLoaded={isLoaded}
@@ -223,8 +220,7 @@ class SingleInterview extends React.Component {
           )}
           <SingleInterviewView
             category={this.state.category}
-            document={document}
-            document_title={this.state.document_title}
+            interview={interview}
             editorState={this.state.editorState}
             author={this.state.author}
             isLoaded={isLoaded}

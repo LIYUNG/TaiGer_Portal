@@ -18,7 +18,6 @@ import {
   getAllInterviews
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import DEMO from '../../store/constant';
 import NotesEditor from '../Notes/NotesEditor';
 import InterviewItems from './InterviewItems';
 
@@ -32,7 +31,7 @@ class InterviewTraining extends React.Component {
     interview_id_toBeDelete: '',
     interview_name_toBeDelete: '',
     program_id: '',
-    intervewData: {},
+    interviewData: {},
     category: '',
     SetDeleteDocModel: false,
     isEdit: false,
@@ -182,10 +181,12 @@ class InterviewTraining extends React.Component {
       prop: this.props.item,
       interview_notes: message
     };
+    const interviewData_temp = this.state.interviewData;
+    interviewData_temp.interview_notes = message;
     createInterview(
-      this.state.intervewData.program_id,
+      this.state.interviewData.program_id,
       this.props.user._id.toString(),
-      this.state.intervewData
+      interviewData_temp
     ).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -226,11 +227,11 @@ class InterviewTraining extends React.Component {
   };
 
   handleChange_InterviewTraining = (e) => {
-    const intervewData_temp = { ...this.state.intervewData };
-    intervewData_temp[e.target.id] = e.target.value;
+    const interviewData_temp = { ...this.state.interviewData };
+    interviewData_temp[e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
-      intervewData: intervewData_temp
+      interviewData: interviewData_temp
     }));
   };
 

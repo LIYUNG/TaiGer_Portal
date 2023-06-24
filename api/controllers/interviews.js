@@ -49,6 +49,23 @@ const deleteInterview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
+const updateInterview = asyncHandler(async (req, res) => {
+  const {
+    params: { interview_id },
+    body: payload
+  } = req;
+
+  const interview = await Interview.findByIdAndUpdate(interview_id, payload, {
+    upsert: true,
+    new: true
+  })
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name degree semester')
+    .lean();
+
+  res.status(200).send({ success: true, data: interview });
+});
+
 const getMyInterview = asyncHandler(async (req, res) => {
   const { user } = req;
   const interviews = await Interview.find({
@@ -73,7 +90,6 @@ const getMyInterview = asyncHandler(async (req, res) => {
 // () TODO: business logic
 const createInterview = asyncHandler(async (req, res) => {
   const {
-    user,
     params: { program_id, studentId },
     body: payload
   } = req;
@@ -97,14 +113,6 @@ const createInterview = asyncHandler(async (req, res) => {
     .populate('program_id', 'school program_name degree semester')
     .lean();
 
-  console.log(interview);
-  // const new_interview = new Interview();
-  // await Interview.create({ student_id: studentId, program_id });
-  // const new_interviews = await Interview.find({ student_id: studentId })
-  //   .populate('student_id', 'firstname lastname email')
-  //   .populate('program_id', 'school program_name degree semester')
-  //   .lean();
-  // console.log(new_interview);
   res.status(200).send({ success: true, data: interview });
 });
 
@@ -112,6 +120,7 @@ module.exports = {
   getAllInterviews,
   getMyInterview,
   getInterview,
+  updateInterview,
   deleteInterview,
   createInterview
 };

@@ -17,8 +17,7 @@ const registerRateLimiter = rateLimit({
 const loginRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // Limit each IP to 10 requests per `window` (here, per 15 minutes)
-  message:
-    'Too many login, please try again after an hour',
+  message: 'Too many login, please try again after an hour',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -184,6 +183,20 @@ const DocumentationGETRateLimiter = rateLimit({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const InterviewGETRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 * 1 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const InterviewPUTRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 * 1 minutes
+  max: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 module.exports = {
   DownloadTemplateRateLimiter,
   GeneralGETRequestRateLimiter,
@@ -210,5 +223,7 @@ module.exports = {
   GetProgramRateLimiter,
   UpdateProgramRateLimiter,
   DeleteProgramRateLimiter,
-  DocumentationGETRateLimiter
+  DocumentationGETRateLimiter,
+  InterviewGETRateLimiter,
+  InterviewPUTRateLimiter
 };

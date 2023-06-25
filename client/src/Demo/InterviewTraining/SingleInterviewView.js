@@ -10,51 +10,65 @@ class SingleDocView extends React.Component {
       <>
         <Card className="mb-2 mx-0">
           <Card.Body>
-            <table>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Interview Date</td>
-                  <td>{this.props.interview.interview_date}</td>
-                </tr>
-                <tr>
-                  <td>Interview time</td>
-                  <td>{this.props.interview.interview_time}</td>
-                </tr>
-                <tr>
-                  <td>Interview duration</td>
-                  <td>{this.props.interview.interview_duration}</td>
-                </tr>
-                <tr>
-                  <td>Status</td>
-                  <td>{this.props.interview.status}</td>
-                </tr>
-                <tr>
-                  <td>Interview University</td>
-                  <td>
-                    {`${this.props.interview.program_id.school} - ${this.props.interview.program_id.program_name}`}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Interviewer</td>
-                  <td>{this.props.interview.interviewer}</td>
-                </tr>
-                <tr>Notes:</tr>
-                <tr>
-                  <EditorNew
-                    readOnly={true}
-                    handleClickSave={this.props.handleClickSave}
-                    handleClickEditToggle={this.props.handleClickEditToggle}
-                    editorState={this.props.editorState}
-                  />
-                </tr>
-              </tbody>
-            </table>
+            <Row>
+              <Col>
+                <table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Interview Date</td>
+                      <td>{this.props.interview.interview_date}</td>
+                    </tr>
+                    <tr>
+                      <td>Interview time</td>
+                      <td>{this.props.interview.interview_time}</td>
+                    </tr>
+                    <tr>
+                      <td>Interview duration</td>
+                      <td>{this.props.interview.interview_duration}</td>
+                    </tr>
+                    <tr>
+                      <td>Status</td>
+                      <td>{this.props.interview.status}</td>
+                    </tr>
+                    <tr>
+                      <td>Interview University</td>
+                      <td>
+                        {`${this.props.interview.program_id.school} - ${this.props.interview.program_id.program_name}`}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Interviewer</td>
+                      <td>{this.props.interview.interviewer}</td>
+                    </tr>
+                    <tr>Notes:</tr>
+                    <tr>
+                      <EditorNew
+                        readOnly={true}
+                        handleClickSave={this.props.handleClickSave}
+                        handleClickEditToggle={this.props.handleClickEditToggle}
+                        editorState={this.props.editorState}
+                      />
+                    </tr>
+                  </tbody>
+                </table>
+              </Col>
+              <Col>
+                <Row>
+                  Scheduled training date:{' '}
+                  {this.props.interview.interview_training_date}
+                </Row>
+                <Row>
+                  Scheduled training time:{' '}
+                  {this.props.interview.interview_training_time}
+                </Row>
+              </Col>
+            </Row>
 
             {is_TaiGer_AdminAgent(this.props.user) && (
               <>
@@ -78,14 +92,12 @@ class SingleDocView extends React.Component {
                 </Row>
               </>
             )}
-            {is_TaiGer_AdminAgent(this.props.user) && (
-              <Button
-                size="sm"
-                onClick={(e) => this.props.handleClickEditToggle(e)}
-              >
-                Edit
-              </Button>
-            )}
+            <Button
+              size="sm"
+              onClick={(e) => this.props.handleClickEditToggle(e)}
+            >
+              Edit
+            </Button>
           </Card.Body>
         </Card>
       </>

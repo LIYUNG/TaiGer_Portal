@@ -168,7 +168,7 @@ const storage_profile_s3 = multerS3({
         if (student) {
           let temp_name = `${student.lastname}_${student.firstname}_${
             req.params.category
-          }${path.extname(file.originalname)}`;
+          }${path.extname(file.originalname).toLowerCase()}`;
           temp_name = temp_name.replace(/\//g, '_');
 
           return {
@@ -385,7 +385,9 @@ const storage_messagesthread_file_s3 = multerS3({
               thread.student_id.firstname
             }_${program_name}_${
               thread.file_type
-            }_v${version_number.toString()}${path.extname(file.originalname)}`;
+            }_v${version_number.toString()}${path
+              .extname(file.originalname)
+              .toLowerCase()}`;
             temp_name = temp_name.replace(/ /g, '_');
             temp_name = temp_name.replace(/\//g, '_');
 

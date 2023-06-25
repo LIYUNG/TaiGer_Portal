@@ -9,16 +9,15 @@ import PDFViewer from '../../components/PDFViewer/index';
 const FilePreview = ({ path, student_id }) => {
   return (
     <>
-      {path.split('.')[1] === 'pdf' ? (
+      {path.split('.')[1] === 'pdf' || path.split('.')[1] === 'PDF' ? (
         <div>{PDFViewer(student_id, path)}</div>
-
+      ) : (
         // <embed
         //   src={`${BASE_URL}/api/students/${student_id}/files/${path}`}
         //   type="application/pdf"
         //   height={600}
         //   width="100%"
         // ></embed>
-      ) : (
         <div
           className="center"
           style={{

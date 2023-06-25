@@ -20,6 +20,7 @@ const admissionsRouter = require('./admissions');
 const searchesRouter = require('./searches');
 const teamsRouter = require('./teams');
 const interviewsRouter = require('./interviews');
+const googleapisRouter = require('./googleapis');
 
 const router = (app) => {
   const apiRouter = Router();
@@ -30,21 +31,22 @@ const router = (app) => {
   apiRouter.use('/agents', agentsRouter);
   apiRouter.use('/editors', editorsRouter);
 
-  apiRouter.use('/docs', documentationsRouter);
-  apiRouter.use('/expenses', expensesRouter);
-  apiRouter.use('/courses', coursesRouter);
-  apiRouter.use('/portal-informations', portalsRouter);
-  apiRouter.use('/programs', programsRouter);
-  apiRouter.use('/document-threads', docsModiRouter);
-  apiRouter.use('/permissions', permissionsRouter);
-  apiRouter.use('/tasks', tasksRouter);
-  apiRouter.use('/notes', notesRouter);
-  apiRouter.use('/widgets', widgetsRouter);
   apiRouter.use('/admissions', admissionsRouter);
-  apiRouter.use('/search', searchesRouter);
-
-  apiRouter.use('/teams', teamsRouter);
+  apiRouter.use('/courses', coursesRouter);
+  apiRouter.use('/docs', documentationsRouter);
+  apiRouter.use('/document-threads', docsModiRouter);
+  apiRouter.use('/expenses', expensesRouter);
+  apiRouter.use('/google', googleapisRouter);
   apiRouter.use('/interviews', interviewsRouter);
+  apiRouter.use('/notes', notesRouter);
+  apiRouter.use('/portal-informations', portalsRouter);
+  apiRouter.use('/permissions', permissionsRouter);
+  apiRouter.use('/programs', programsRouter);
+  apiRouter.use('/search', searchesRouter);
+  apiRouter.use('/tasks', tasksRouter);
+  apiRouter.use('/teams', teamsRouter);
+  apiRouter.use('/widgets', widgetsRouter);
+
 
   app.use('/api', apiRouter);
   app.use('/auth', authRouter);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import { Form, Card, Button } from 'react-bootstrap';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import NotesEditor from '../Notes/NotesEditor';
 
@@ -103,14 +103,14 @@ class SingleInterviewEdit extends React.Component {
                           onChange={(e) => this.handleChange(e)}
                         >
                           <option value={''}>Select Document Category</option>
-                          {!is_TaiGer_role(this.props.user) &&
+                          {/* {!is_TaiGer_role(this.props.user) &&
                             available_interview_request_programs.map(
                               (cat, i) => (
                                 <option value={cat.key} key={i}>
                                   {cat.value}
                                 </option>
                               )
-                            )}
+                            )} */}
                         </Form.Control>
                       </Form.Group>
                     </Form>

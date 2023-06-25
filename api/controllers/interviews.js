@@ -5,10 +5,6 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Interview } = require('../models/Interview');
-const {
-  sendNewApplicationMessageInThreadToEditorEmail
-  // sendSomeReminderEmail,
-} = require('../services/email');
 const logger = require('../services/logger');
 
 const getAllInterviews = asyncHandler(async (req, res) => {
@@ -16,7 +12,7 @@ const getAllInterviews = asyncHandler(async (req, res) => {
 
   const interviews = await Interview.find()
     .populate('student_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name')
+    .populate('program_id', 'school program_name degree')
     .lean();
 
   res.status(200).send({ success: true, data: interviews });
@@ -29,7 +25,7 @@ const getInterview = asyncHandler(async (req, res) => {
   } = req;
   const interview = await Interview.findById(interview_id)
     .populate('student_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name')
+    .populate('program_id', 'school program_name degree')
     .lean();
 
   if (!interview) {

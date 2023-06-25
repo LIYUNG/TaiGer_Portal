@@ -161,6 +161,10 @@ const UserSchema = new Schema(
         type: String,
         default: ''
       },
+      target_degree: {
+        type: String,
+        default: ''
+      },
       considered_privat_universities: {
         type: String,
         default: '-'

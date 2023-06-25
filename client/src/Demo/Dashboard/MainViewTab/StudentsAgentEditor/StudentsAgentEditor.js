@@ -184,6 +184,19 @@ class StudentsAgentEditor extends React.Component {
           <td>{studentsAgent}</td>
           <td>{studentsEditor}</td>
           <td>
+            {
+              this.props.student.application_preference
+                .expected_application_date
+            }
+          </td>
+          <td>
+            {
+              this.props.student.application_preference
+                .expected_application_semester
+            }
+          </td>
+          <td>{this.props.student.application_preference.target_degree}</td>
+          <td>
             <b>
               {
                 this.props.student.academic_background.university

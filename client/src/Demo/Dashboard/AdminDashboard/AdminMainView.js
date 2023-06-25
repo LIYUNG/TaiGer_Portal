@@ -149,6 +149,9 @@ class AdminMainView extends React.Component {
                 </th>
                 <th>Agents</th>
                 <th>Editors</th>
+                <th>Year</th>
+                <th>Semester</th>
+                <th>Degree</th>
                 {header.map((name, index) => (
                   <th key={index}>{name}</th>
                 ))}

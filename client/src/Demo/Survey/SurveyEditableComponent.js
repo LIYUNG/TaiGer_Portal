@@ -296,6 +296,12 @@ class SurveyEditableComponent extends React.Component {
                         <b>Expected Application Semester</b>
                       </li>
                     )}
+                  {this.props.application_preference &&
+                    !this.props.application_preference.target_degree && (
+                      <li>
+                        <b>Target Degree Programs</b>
+                      </li>
+                    )}
                 </Card.Body>
               </Card>
             </Col>
@@ -944,6 +950,32 @@ class SurveyEditableComponent extends React.Component {
                           <option value="-">Please Select</option>
                           <option>Yes</option>
                           <option>No</option>
+                        </Form.Control>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                  <Col md={6}>
+                    <Form>
+                      <Form.Group controlId="target_degree">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Target Degree Programs
+                        </Form.Label>
+                        <Form.Control
+                          as="select"
+                          disabled={isReadonly}
+                          value={
+                            this.state.application_preference &&
+                            this.state.application_preference.target_degree
+                              ? this.state.application_preference.target_degree
+                              : ''
+                          }
+                          onChange={(e) =>
+                            this.handleChange_ApplicationPreference(e)
+                          }
+                        >
+                          <option value="">Please Select</option>
+                          <option value="Bachelor">Bachelor</option>
+                          <option value="Master">Master</option>
                         </Form.Control>
                       </Form.Group>
                     </Form>

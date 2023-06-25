@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
-import { is_TaiGer_Admin, is_TaiGer_role } from '../../../Utils/checking-functions';
+import { is_TaiGer_role } from '../../../Utils/checking-functions';
 
 class StudentsAgentEditor extends React.Component {
   state = {
@@ -100,6 +100,9 @@ class StudentsAgentEditor extends React.Component {
         </div>
       ));
     }
+    const target_application_field = this.props.student.application_preference
+      ? this.props.student.application_preference.target_application_field
+      : '';
     return (
       <>
         <tr>
@@ -124,6 +127,34 @@ class StudentsAgentEditor extends React.Component {
                 >
                   Edit Editor
                 </Dropdown.Item>
+                {this.props.isDashboard &&
+                  this.props.user.role !== 'Editor' && (
+                    <Dropdown.Item
+                      eventKey="5"
+                      onClick={() =>
+                        this.props.updateStudentArchivStatus(
+                          this.props.student._id,
+                          true
+                        )
+                      }
+                    >
+                      Move to Archiv
+                    </Dropdown.Item>
+                  )}
+                {this.props.isArchivPage &&
+                  this.props.user.role !== 'Editor' && (
+                    <Dropdown.Item
+                      eventKey="6"
+                      onClick={() =>
+                        this.props.updateStudentArchivStatus(
+                          this.props.student._id,
+                          false
+                        )
+                      }
+                    >
+                      Move to Active
+                    </Dropdown.Item>
+                  )}
               </DropdownButton>
             )}
           </td>
@@ -139,7 +170,10 @@ class StudentsAgentEditor extends React.Component {
                   className="text-info"
                   style={{ textDecoration: 'none' }}
                 >
-                  {this.props.student.firstname}, {this.props.student.lastname}
+                  {this.props.student.firstname}, {this.props.student.lastname}{' '}
+                  {' | '}
+                  {this.props.student.lastname_chinese}
+                  {this.props.student.firstname_chinese}
                 </Link>
               </p>
               <p className="mb-0 text-muted">{this.props.student.email}</p>
@@ -149,6 +183,43 @@ class StudentsAgentEditor extends React.Component {
           )}
           <td>{studentsAgent}</td>
           <td>{studentsEditor}</td>
+          <td>
+            <b>
+              {
+                this.props.student.academic_background.university
+                  .attended_university
+              }
+            </b>
+            <br />
+
+            {
+              this.props.student.academic_background.university
+                .attended_university_program
+            }
+          </td>
+          <td>{target_application_field}</td>
+          <td>
+            {
+              this.props.student.academic_background.language
+                .english_certificate
+            }
+            <br />
+            {this.props.student.academic_background.language.german_certificate}
+          </td>
+          <td>
+            {this.props.student.academic_background.language.english_score}
+            <br />
+            {this.props.student.academic_background.language.german_score}
+          </td>
+          <td>
+            {this.props.student.academic_background.language
+              .english_isPassed === 'X' &&
+              this.props.student.academic_background.language.english_test_date}
+            <br />
+            {this.props.student.academic_background.language.german_isPassed ===
+              'X' &&
+              this.props.student.academic_background.language.german_test_date}
+          </td>
         </tr>
         {is_TaiGer_role(this.props.user) && (
           <>

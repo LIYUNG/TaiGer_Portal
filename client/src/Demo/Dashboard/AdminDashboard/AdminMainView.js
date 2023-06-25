@@ -6,28 +6,39 @@ import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudB
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
+import { academic_background_header } from '../../Utils/contants';
 
 class AdminMainView extends React.Component {
   render() {
-    const students_agent_editor = this.props.students.map((student, i) => (
-      <StudentsAgentEditor
-        key={i}
-        role={this.props.role}
-        user={this.props.user}
-        student={student}
-        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-        editAgent={this.props.editAgent}
-        editEditor={this.props.editEditor}
-        agent_list={this.props.agent_list}
-        editor_list={this.props.editor_list}
-        updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
-      />
-    ));
+    const students_agent_editor = this.props.students
+      .sort((a, b) =>
+        a.agents.length === 0 && a.agents.length < b.agents.length
+          ? -2
+          : a.editors.length < b.editors.length
+          ? -1
+          : 1
+      )
+      .map((student, i) => (
+        <StudentsAgentEditor
+          key={i}
+          role={this.props.role}
+          user={this.props.user}
+          student={student}
+          updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+          editAgent={this.props.editAgent}
+          editEditor={this.props.editEditor}
+          agent_list={this.props.agent_list}
+          editor_list={this.props.editor_list}
+          updateAgentList={this.props.updateAgentList}
+          handleChangeAgentlist={this.props.handleChangeAgentlist}
+          submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+          updateEditorList={this.props.updateEditorList}
+          handleChangeEditorlist={this.props.handleChangeEditorlist}
+          submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+          isDashboard={this.props.isDashboard}
+          updateStudentArchivStatus={this.props.updateStudentArchivStatus}
+        />
+      ));
 
     const agent_reviewing = this.props.students.map((student, i) => (
       <AgentReviewing key={i} role={this.props.role} student={student} />
@@ -35,6 +46,8 @@ class AdminMainView extends React.Component {
     const admin_tasks = (
       <AdminTasks role={this.props.role} students={this.props.students} />
     );
+    let header = Object.values(academic_background_header);
+
     return (
       <>
         <Row className="px-0 py-0 mb-2 my-0">
@@ -99,7 +112,7 @@ class AdminMainView extends React.Component {
           </Card>
         </Row>
         <Row>
-          <Tabs
+          {/* <Tabs
             defaultActiveKey="w"
             id="uncontrolled-tab-example"
             fill={true}
@@ -117,28 +130,32 @@ class AdminMainView extends React.Component {
                 isDashboard={this.props.isDashboard}
               />
             </Tab>
-            <Tab eventKey="dz" title="Agents and Editors">
-              <Table
-                size="sm"
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-              >
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th>Agents</th>
-                    <th>Editors</th>
-                  </tr>
-                </thead>
-                <tbody>{students_agent_editor}</tbody>
-              </Table>
-            </Tab>
-          </Tabs>
+            <Tab eventKey="dz" title="Agents and Editors"></Tab>
+          </Tabs> */}
+          <Table
+            size="sm"
+            responsive
+            bordered
+            hover
+            className="my-0 mx-0"
+            variant="dark"
+            text="light"
+          >
+            <thead>
+              <tr>
+                <th></th>
+                <th>
+                  First-, Last Name | 姓名 <br /> Email
+                </th>
+                <th>Agents</th>
+                <th>Editors</th>
+                {header.map((name, index) => (
+                  <th key={index}>{name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>{students_agent_editor}</tbody>
+          </Table>
         </Row>
       </>
     );

@@ -27,15 +27,62 @@ class StudDocsDashboard extends React.Component {
   };
 
   render() {
+    let studentsAgent;
+    let studentsEditor;
+    if (
+      this.props.student.agents === undefined ||
+      this.props.student.agents.length === 0
+    ) {
+      studentsAgent = <p className="text-danger">No Agent assigned</p>;
+    } else {
+      studentsAgent = this.props.student.agents.map((agent, i) => (
+        <div key={agent._id}>
+          <p className="mb-0 text-info">
+            <Link
+              to={`/teams/agents/${agent._id.toString()}`}
+              className="mb-0 text-info"
+            >
+              {agent.firstname}
+              {', '}
+              {agent.lastname}
+            </Link>
+          </p>
+          <p className="mb-0 text-muted">{agent.email}</p>
+        </div>
+      ));
+    }
+    if (
+      this.props.student.editors === undefined ||
+      this.props.student.editors.length === 0
+    ) {
+      studentsEditor = <p className="text-danger">No Editor assigned</p>;
+    } else {
+      studentsEditor = this.props.student.editors.map((editor, i) => (
+        <div key={editor._id}>
+          <p className="mb-0 text-info">
+            <Link
+              to={`/teams/editors/${editor._id.toString()}`}
+              className="mb-0 text-info"
+            >
+              {editor.firstname}
+              {', '}
+              {editor.lastname}
+            </Link>
+          </p>
+          <p className="mb-0 text-muted">{editor.email}</p>
+        </div>
+      ));
+    }
     const target_application_field = this.props.student.application_preference
-      ? this.props.student.application_preference.target_application_field
+      ? this.props.student.application_preference.target_application_field || (
+          <text className="text-danger">TBD</text>
+        )
       : '';
     return (
       <>
         <tr
           style={{
-            backgroundColor:
-              this.props.student.archiv === true ? '#1de9b6' : ''
+            backgroundColor: this.props.student.archiv === true ? '#1de9b6' : ''
           }}
           title={this.props.student.archiv === true ? 'Closed' : 'Open'}
         >
@@ -85,7 +132,7 @@ class StudDocsDashboard extends React.Component {
           <td>
             <Link
               to={'/student-database/' + this.props.student._id + '/background'}
-              // className="text-info"
+              className="text-info"
               style={{ textDecoration: 'none' }}
             >
               <b>
@@ -98,26 +145,40 @@ class StudDocsDashboard extends React.Component {
             <br />
             {this.props.student.email}
           </td>
+          <td>{studentsAgent}</td>
+          <td>{studentsEditor}</td>
+          <td>
+            {this.props.student.application_preference
+              .expected_application_date || <p className="text-danger">TBD</p>}
+          </td>
+          <td>
+            {this.props.student.application_preference
+              .expected_application_semester || (
+              <text className="text-danger">TBD</text>
+            )}
+          </td>
+          <td>
+            {this.props.student.application_preference.target_degree || (
+              <p className="text-danger">TBD</p>
+            )}
+          </td>
           <td>
             <b>
-              {
-                this.props.student.academic_background.university
-                  .attended_university
-              }
+              {this.props.student.academic_background.university
+                .attended_university || (
+                <text className="text-danger">TBD</text>
+              )}
             </b>
             <br />
-
-            {
-              this.props.student.academic_background.university
-                .attended_university_program
-            }
+            {this.props.student.academic_background.university
+              .attended_university_program || (
+              <text className="text-danger">TBD</text>
+            )}
           </td>
           <td>{target_application_field}</td>
           <td>
-            {
-              this.props.student.academic_background.language
-                .english_certificate
-            }
+            {this.props.student.academic_background.language
+              .english_certificate || <text className="text-danger">TBD</text>}
             <br />
             {this.props.student.academic_background.language.german_certificate}
           </td>

@@ -28,8 +28,8 @@ class TabStudBackgroundDashboard extends React.Component {
         // striped
         hover
         className="px-0 py-0 mb-0 mx-0"
-        // variant="dark"
-        text="dark"
+        variant="dark"
+        text="light"
       >
         <thead>
           <tr
@@ -42,6 +42,11 @@ class TabStudBackgroundDashboard extends React.Component {
             <th>
               First-, Last Name | 姓名 <br /> Email
             </th>
+            <th>Agents</th>
+            <th>Editors</th>
+            <th>Year</th>
+            <th>Semester</th>
+            <th>Degree</th>
             {header.map((name, index) => (
               <th key={index}>{name}</th>
             ))}

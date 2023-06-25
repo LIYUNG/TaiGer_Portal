@@ -112,6 +112,17 @@ class Dashboard extends React.Component {
     if (this.state.success) {
       return (
         <Aux>
+          <Row className="sticky-top">
+            <Col>
+              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    Students Database
+                  </Card.Title>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
           <Row>
             <Col>
               <Card className="my-0 mx-0">

@@ -109,8 +109,9 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
 
 const getAllStudents = asyncHandler(async (req, res) => {
   const students = await Student.find()
+    .populate('agents editors', 'firstname lastname')
     .select(
-      'firstname lastname firstname_chinese lastname_chinese academic_background email archiv'
+      'firstname lastname firstname_chinese lastname_chinese academic_background email archiv application_preference'
     )
     .lean();
 

@@ -217,13 +217,16 @@ const getArchivStudents = asyncHandler(async (req, res) => {
   const { TaiGerStaffId } = req.params;
   const user = await User.findById(TaiGerStaffId);
   if (user.role === Role.Admin) {
-    const students = await Student.find({ archiv: true }).exec();
+    const students = await Student.find({ archiv: true })
+      .populate('agents editors', 'firstname lastname')
+      .exec();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
       agents: TaiGerStaffId,
       archiv: true
     })
+      .populate('agents editors', 'firstname lastname')
       .populate('applications.programId')
       .lean()
       .exec();
@@ -233,7 +236,9 @@ const getArchivStudents = asyncHandler(async (req, res) => {
     const students = await Student.find({
       editors: TaiGerStaffId,
       archiv: true
-    }).populate('applications.programId');
+    })
+      .populate('agents editors', 'firstname lastname')
+      .populate('applications.programId');
     res.status(200).send({ success: true, data: students });
   } else {
     // Guest

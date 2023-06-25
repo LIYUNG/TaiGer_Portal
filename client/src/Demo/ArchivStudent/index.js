@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
+import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
@@ -159,6 +159,17 @@ class ArchivStudents extends React.Component {
     if (this.state.success) {
       return (
         <Aux>
+          <Row className="sticky-top">
+            <Col>
+              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    My Archived Students
+                  </Card.Title>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
           {res_modal_status >= 400 && (
             <ModalMain
               ConfirmError={this.ConfirmError}

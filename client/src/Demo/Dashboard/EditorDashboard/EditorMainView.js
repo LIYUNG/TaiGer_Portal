@@ -14,21 +14,21 @@ import {
   frequencyDistribution,
   open_tasks_with_editors
 } from '../../Utils/checking-functions';
+import { academic_background_header } from '../../Utils/contants';
 
 class EditorMainView extends React.Component {
   render() {
     const students_agent_editor = (
       <>
-        <thead>
-          <tr>
-            <th></th>
-            <th>First-, Last Name</th>
-            <th>Agents</th>
-            <th>Editors</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.students.map((student, i) => (
+        {this.props.students
+          .sort((a, b) =>
+            a.agents.length === 0 && a.agents.length < b.agents.length
+              ? -2
+              : a.editors.length < b.editors.length
+              ? -1
+              : 1
+          )
+          .map((student, i) => (
             <StudentsAgentEditor
               key={student._id}
               user={this.props.user}
@@ -39,9 +39,10 @@ class EditorMainView extends React.Component {
               updateEditorList={this.props.updateEditorList}
               handleChangeEditorlist={this.props.handleChangeEditorlist}
               submitUpdateEditorlist={this.props.submitUpdateEditorlist}
+              isDashboard={this.props.isDashboard}
+              updateStudentArchivStatus={this.props.updateStudentArchivStatus}
             />
           ))}
-        </tbody>
       </>
     );
     const unread_thread = (
@@ -118,6 +119,7 @@ class EditorMainView extends React.Component {
         potentials: open_distr[date].potentials
       });
     });
+    let header = Object.values(academic_background_header);
 
     return (
       <>
@@ -242,19 +244,7 @@ class EditorMainView extends React.Component {
             fill={true}
             justify={true}
           >
-            <Tab eventKey="dz" title="Agents and Editors">
-              <Table
-                size="sm"
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-              >
-                {students_agent_editor}
-              </Table>
-            </Tab>
+            <Tab eventKey="dz" title="Agents and Editors"></Tab>
             <Tab eventKey="y" title="Student Profile Overview">
               <TabStudBackgroundDashboard
                 students={this.props.students}
@@ -264,6 +254,35 @@ class EditorMainView extends React.Component {
               />
             </Tab>
           </Tabs>
+        </Row>
+        <Row>
+          <Table
+            size="sm"
+            responsive
+            bordered
+            hover
+            className="my-0 mx-0"
+            variant="dark"
+            text="light"
+          >
+            <thead>
+              <tr>
+                <th></th>
+                <th>
+                  First-, Last Name | 姓名 <br /> Email
+                </th>
+                <th>Agents</th>
+                <th>Editors</th>
+                <th>Year</th>
+                <th>Semester</th>
+                <th>Degree</th>
+                {header.map((name, index) => (
+                  <th key={index}>{name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>{students_agent_editor}</tbody>
+          </Table>
         </Row>
       </>
     );

@@ -101,7 +101,9 @@ class StudentsAgentEditor extends React.Component {
       ));
     }
     const target_application_field = this.props.student.application_preference
-      ? this.props.student.application_preference.target_application_field
+      ? this.props.student.application_preference.target_application_field || (
+          <text className="text-danger">TBD</text>
+        )
       : '';
     return (
       <>
@@ -184,54 +186,60 @@ class StudentsAgentEditor extends React.Component {
           <td>{studentsAgent}</td>
           <td>{studentsEditor}</td>
           <td>
-            {
-              this.props.student.application_preference
-                .expected_application_date
-            }
+            {this.props.student.application_preference
+              .expected_application_date || <p className="text-danger">TBD</p>}
           </td>
           <td>
-            {
-              this.props.student.application_preference
-                .expected_application_semester
-            }
+            {this.props.student.application_preference
+              .expected_application_semester || (
+              <p className="text-danger">TBD</p>
+            )}
           </td>
-          <td>{this.props.student.application_preference.target_degree}</td>
           <td>
-            <b>
-              {
-                this.props.student.academic_background.university
-                  .attended_university
-              }
+            {this.props.student.application_preference.target_degree || (
+              <p className="text-danger">TBD</p>
+            )}
+          </td>
+          <td>
+            <b className="my-0 py-0">
+              {this.props.student.academic_background.university
+                .attended_university || (
+                <text className="text-danger">TBD</text>
+              )}
             </b>
-            <br />
-
-            {
-              this.props.student.academic_background.university
-                .attended_university_program
-            }
+            <br className="my-0 py-0" />
+            {this.props.student.academic_background.university
+              .attended_university_program || (
+              <text className="text-danger">TBD</text>
+            )}
           </td>
           <td>{target_application_field}</td>
           <td>
-            {
-              this.props.student.academic_background.language
-                .english_certificate
-            }
-            <br />
-            {this.props.student.academic_background.language.german_certificate}
-          </td>
-          <td>
-            {this.props.student.academic_background.language.english_score}
-            <br />
-            {this.props.student.academic_background.language.german_score}
-          </td>
-          <td>
             {this.props.student.academic_background.language
-              .english_isPassed === 'X' &&
-              this.props.student.academic_background.language.english_test_date}
+              .english_certificate || <text className="text-danger">TBD</text>}
             <br />
-            {this.props.student.academic_background.language.german_isPassed ===
-              'X' &&
-              this.props.student.academic_background.language.german_test_date}
+            {this.props.student.academic_background.language
+              .german_certificate || <text className="text-danger">TBD</text>}
+          </td>
+          <td>
+            {this.props.student.academic_background.language.english_score || (
+              <text className="text-danger">TBD</text>
+            )}
+            <br />
+            {this.props.student.academic_background.language.german_score || (
+              <text className="text-danger">TBD</text>
+            )}
+          </td>
+          <td>
+            {(this.props.student.academic_background.language
+              .english_isPassed === 'X' &&
+              this.props.student.academic_background.language
+                .english_test_date) || <text className="text-danger">TBD</text>}
+            <br />
+            {(this.props.student.academic_background.language
+              .german_isPassed === 'X' &&
+              this.props.student.academic_background.language
+                .german_test_date) || <text className="text-danger">TBD</text>}
           </td>
         </tr>
         {is_TaiGer_role(this.props.user) && (

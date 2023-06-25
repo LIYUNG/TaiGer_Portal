@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Card, Table, Tabs, Tab } from 'react-bootstrap';
 import { BsExclamationTriangle } from 'react-icons/bs';
 
-import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
+// import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
@@ -36,7 +36,6 @@ class AdminMainView extends React.Component {
           handleChangeEditorlist={this.props.handleChangeEditorlist}
           submitUpdateEditorlist={this.props.submitUpdateEditorlist}
           isDashboard={this.props.isDashboard}
-          updateStudentArchivStatus={this.props.updateStudentArchivStatus}
         />
       ));
 

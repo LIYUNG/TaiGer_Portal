@@ -3,7 +3,7 @@ import { Row, Col, Table, Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
-import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
+// import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import AgentTasks from '../MainViewTab/AgentTasks/index';
 import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
@@ -13,7 +13,7 @@ import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentChe
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 
 import { updateAgentBanner } from '../../../api';
-import { profile_list } from '../../Utils/contants';
+import { academic_background_header, profile_list } from '../../Utils/contants';
 import {
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
@@ -110,6 +110,8 @@ class AgentMainView extends React.Component {
         updateAgentList={this.props.updateAgentList}
         handleChangeAgentlist={this.props.handleChangeAgentlist}
         submitUpdateAgentlist={this.props.submitUpdateAgentlist}
+        isDashboard={this.props.isDashboard}
+        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
       />
     ));
 
@@ -164,6 +166,9 @@ class AgentMainView extends React.Component {
       .map((student, i) => (
         <AgentTasks key={i} role={this.props.role} student={student} />
       ));
+
+    let header = Object.values(academic_background_header);
+
     return (
       <>
         {this.state.user.agent_notification &&
@@ -382,7 +387,7 @@ class AgentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col sm={12}>
             <Tabs
               defaultActiveKey="w"
@@ -405,29 +410,38 @@ class AgentMainView extends React.Component {
                   isDashboard={this.props.isDashboard}
                 />
               </Tab>
-              <Tab eventKey="dz" title="Agents and Editors">
-                <Table
-                  size="sm"
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                >
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th>First-, Last Name</th>
-                      <th>Agents</th>
-                      <th>Editors</th>
-                    </tr>
-                  </thead>
-                  <tbody>{students_agent_editor}</tbody>
-                </Table>
-              </Tab>
+              <Tab eventKey="dz" title="Agents and Editors"></Tab>
             </Tabs>
           </Col>
+        </Row> */}
+        <Row>
+          <Table
+            size="sm"
+            responsive
+            bordered
+            hover
+            className="my-0 mx-0"
+            variant="dark"
+            text="light"
+          >
+            <thead>
+              <tr>
+                <th></th>
+                <th>
+                  First-, Last Name | 姓名 <br /> Email
+                </th>
+                <th>Agents</th>
+                <th>Editors</th>
+                <th>Year</th>
+                <th>Semester</th>
+                <th>Degree</th>
+                {header.map((name, index) => (
+                  <th key={index}>{name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>{students_agent_editor}</tbody>
+          </Table>
         </Row>
       </>
     );

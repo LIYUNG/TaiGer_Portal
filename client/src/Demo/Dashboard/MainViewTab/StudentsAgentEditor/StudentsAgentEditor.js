@@ -116,6 +116,7 @@ class StudentsAgentEditor extends React.Component {
                 variant="primary"
                 id={`dropdown-variants-${this.props.student._id}`}
                 key={this.props.student._id}
+                drop="right"
               >
                 <Dropdown.Item
                   eventKey="1"

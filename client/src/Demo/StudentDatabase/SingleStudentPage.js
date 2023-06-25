@@ -26,7 +26,8 @@ import {
   spinner_style,
   convertDate,
   programstatuslist,
-  profile_wtih_doc_link_list
+  profile_wtih_doc_link_list,
+  academic_background_header
 } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
@@ -540,6 +541,7 @@ class SingleStudentPage extends React.Component {
     TabTitle(
       `Student ${this.state.student.firstname} ${this.state.student.lastname} | ${this.state.student.firstname_chinese} ${this.state.student.lastname_chinese}`
     );
+    let header = Object.values(academic_background_header);
     return (
       <>
         {res_modal_status >= 400 && (
@@ -647,7 +649,7 @@ class SingleStudentPage extends React.Component {
             >
               <Tab eventKey="profile" title="Profile Overview">
                 <Table
-                  // responsive
+                  responsive
                   className="px-0 py-0 mb-2 mx-0"
                   variant="dark"
                   text="light"
@@ -659,6 +661,12 @@ class SingleStudentPage extends React.Component {
                       <th>First-, Last Name</th>
                       <th>Agents</th>
                       <th>Editors</th>
+                      <th>Year</th>
+                      <th>Semester</th>
+                      <th>Degree</th>
+                      {header.map((name, index) => (
+                        <th key={index}>{name}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>

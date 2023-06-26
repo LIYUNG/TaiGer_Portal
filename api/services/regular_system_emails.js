@@ -113,55 +113,42 @@ ${unsubmitted_applications}
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
+  if (
+    survey_not_complete === '' &&
+    unread_cv_ml_rl_thread === '' &&
+    base_documents === '' &&
+    unsubmitted_applications === ''
+  ) {
+    return;
+  } else {
+    return sendEmail(recipient, subject, message);
+  }
 };
 
 const AgentTasksReminderEmail = async (recipient, payload) => {
   const subject = `TaiGer Agent Reminder: ${recipient.firstname} ${recipient.lastname}`;
   let student_i = '';
   for (let i = 0; i < payload.students.length; i += 1) {
-    if (i === 0) {
-      const base_documents = base_documents_summary(payload.students[i]);
-      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
-        payload.students[i],
-        payload.agent
-      );
-      // TODO
-      const missing_uni_assist = '';
-      const academic_background_not_complete = missing_academic_background(
-        payload.students[i],
-        payload.agent
-      );
-      const unsubmitted_applications = unsubmitted_applications_summary(
-        payload.students[i]
-      );
-      student_i = `
-      <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
-
-      ${academic_background_not_complete}
-
-      ${base_documents}
-      
-      ${unread_cv_ml_rl_thread}
-
-      ${unsubmitted_applications}
-
-`;
-    } else {
-      const base_documents = base_documents_summary(payload.students[i]);
-      const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
-        payload.students[i],
-        payload.agent
-      );
-      // TODO
-      const missing_uni_assist = '';
-      const academic_background_not_complete = missing_academic_background(
-        payload.students[i],
-        payload.agent
-      );
-      const unsubmitted_applications = unsubmitted_applications_summary(
-        payload.students[i]
-      );
+    const base_documents = base_documents_summary(payload.students[i]);
+    const unread_cv_ml_rl_thread = cv_ml_rl_unfinished_summary(
+      payload.students[i],
+      payload.agent
+    );
+    // TODO
+    const missing_uni_assist = '';
+    const academic_background_not_complete = missing_academic_background(
+      payload.students[i],
+      payload.agent
+    );
+    const unsubmitted_applications = unsubmitted_applications_summary(
+      payload.students[i]
+    );
+    if (
+      academic_background_not_complete !== '' ||
+      base_documents !== '' ||
+      unread_cv_ml_rl_thread !== '' ||
+      unsubmitted_applications !== ''
+    ) {
       student_i += `
       <p><b>${payload.students[i].firstname} ${payload.students[i].lastname}</b>,</p>
 
@@ -173,7 +160,7 @@ const AgentTasksReminderEmail = async (recipient, payload) => {
 
       ${unsubmitted_applications}
 
-    `;
+`;
     }
   }
 

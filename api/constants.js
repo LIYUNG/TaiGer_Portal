@@ -179,6 +179,7 @@ const is_deadline_within30days_needed = (student) => {
     if (
       student.applications[k].decided === 'O' &&
       student.applications[k].closed !== 'O' &&
+      student.applications[k].closed !== 'X' &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -30
     ) {
@@ -383,11 +384,12 @@ const unsubmitted_applications_summary = (student) => {
   for (let i = 0; i < student.applications.length; i += 1) {
     if (
       student.applications[i].decided === 'O' &&
-      student.applications[i].closed !== 'O'
+      student.applications[i].closed !== 'O' &&
+      student.applications[i].closed !== 'X'
     ) {
       if (x === 0) {
         unsubmitted_applications = `
-        The follow program are not submitted yet: 
+        The following program(s) are not submitted yet: 
         <ul>
         <li>${student.applications[i].programId.school} ${student.applications[i].programId.program_name}</li>`;
         x += 1;
@@ -657,6 +659,7 @@ const unsubmitted_applications_list = (student, user, trigger_days) => {
     if (
       student.applications[i].decided === 'O' &&
       student.applications[i].closed !== 'O' &&
+      student.applications[i].closed !== 'X' &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -1
     ) {
@@ -690,7 +693,7 @@ const unsubmitted_applications_escalation_summary = (
 ) => {
   let unsubmitted_applications = '';
   unsubmitted_applications = `
-        The follow program(s) are not submitted yet and very close to <b>deadline</b>: 
+        The following program(s) are not submitted yet and very close to <b>deadline</b>: 
         <ul>
         ${unsubmitted_applications_list(student, user, trigger_days)}
         </ul>
@@ -924,7 +927,9 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
       }
     }
   }
-  missing_doc_list += '</ul>';
+  if (missing_doc_list !== '') {
+    missing_doc_list += '</ul>';
+  }
   return missing_doc_list;
 };
 const profile_keys_list = [
@@ -1346,7 +1351,9 @@ const base_documents_summary = (student) => {
   if (missing_base_documents !== '' || rejected_base_documents !== '') {
     base_documents += `<p>Please go to <a href="${BASE_DOCUMENT_URL}">Base Documents</a> and upload them.</p>`;
   }
-  return base_documents;
+  return missing_base_documents !== '' || rejected_base_documents !== ''
+    ? base_documents
+    : '';
 };
 
 module.exports = {

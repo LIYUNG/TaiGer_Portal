@@ -8,7 +8,8 @@ const { Role } = require('../models/User');
 const {
   googleCalendarAPI,
   googleRedirectAPI,
-  googleScheduleEvent
+  googleScheduleEvent,
+  awsSendEmail
 } = require('../controllers/googleapis');
 const {
   permission_canAssignAgent_filter
@@ -23,7 +24,6 @@ router.use(protect, permit(Role.Admin, Role.Manager, Role.Agent, Role.Student));
 //   .get(
 //     filter_archiv_user,
 //     GeneralGETRequestRateLimiter,
-//     permission_canAssignAgent_filter,
 //     googleCalendarAPI
 //   );
 
@@ -32,15 +32,9 @@ router.use(protect, permit(Role.Admin, Role.Manager, Role.Agent, Role.Student));
 //   .get(
 //     filter_archiv_user,
 //     GeneralGETRequestRateLimiter,
-//     permission_canAssignAgent_filter,
 //     googleRedirectAPI
 //   );
 // router
 //   .route('/schedule-event')
-//   .get(
-//     filter_archiv_user,
-//     GeneralGETRequestRateLimiter,
-//     permission_canAssignAgent_filter,
-//     googleScheduleEvent
-//   );
+//   .get(filter_archiv_user, GeneralGETRequestRateLimiter, googleScheduleEvent);
 module.exports = router;

@@ -88,7 +88,7 @@ const UserSchema = new Schema(
       },
       isRead_base_documents_rejected: {
         type: Boolean,
-        default: false
+        default: true
       },
       isRead_new_programs_assigned: {
         type: Boolean,

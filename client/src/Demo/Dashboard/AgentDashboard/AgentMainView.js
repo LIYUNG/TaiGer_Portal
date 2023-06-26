@@ -14,6 +14,7 @@ import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgen
 import { updateAgentBanner } from '../../../api';
 import { academic_background_header, profile_list } from '../../Utils/contants';
 import {
+  DocumentStatus,
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
   is_any_vpd_missing
@@ -31,27 +32,27 @@ class AgentMainView extends React.Component {
       let keys = Object.keys(profile_list);
       let object_init = {};
       for (let i = 0; i < keys.length; i++) {
-        object_init[keys[i]] = 'missing';
+        object_init[keys[i]] = DocumentStatus.Missing;
       }
 
       if (student.profile) {
         for (let i = 0; i < student.profile.length; i++) {
-          if (student.profile[i].status === 'uploaded') {
-            object_init[student.profile[i].name] = 'uploaded';
-          } else if (student.profile[i].status === 'accepted') {
-            object_init[student.profile[i].name] = 'accepted';
-          } else if (student.profile[i].status === 'rejected') {
-            object_init[student.profile[i].name] = 'rejected';
-          } else if (student.profile[i].status === 'missing') {
-            object_init[student.profile[i].name] = 'missing';
-          } else if (student.profile[i].status === 'notneeded') {
-            object_init[student.profile[i].name] = 'notneeded';
+          if (student.profile[i].status === DocumentStatus.Uploaded) {
+            object_init[student.profile[i].name] = DocumentStatus.Uploaded;
+          } else if (student.profile[i].status === DocumentStatus.Accepted) {
+            object_init[student.profile[i].name] = DocumentStatus.Accepted;
+          } else if (student.profile[i].status === DocumentStatus.Rejected) {
+            object_init[student.profile[i].name] = DocumentStatus.Rejected;
+          } else if (student.profile[i].status === DocumentStatus.Missing) {
+            object_init[student.profile[i].name] = DocumentStatus.Missing;
+          } else if (student.profile[i].status === DocumentStatus.NotNeeded) {
+            object_init[student.profile[i].name] = DocumentStatus.NotNeeded;
           }
         }
       } else {
       }
       for (let i = 0; i < keys.length; i += 1) {
-        if (object_init[keys[i]] === 'uploaded') {
+        if (object_init[keys[i]] === DocumentStatus.Uploaded) {
           return true;
         }
       }

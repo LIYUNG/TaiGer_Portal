@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom';
 import { BASE_URL } from '../../api/request';
 import {
   showButtonIfMyStudent,
-  is_TaiGer_AdminAgent
+  is_TaiGer_AdminAgent,
+  DocumentStatus
 } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -399,7 +400,7 @@ class UniAssistListCard extends React.Component {
               </Row>
               <Row>
                 {!application.uni_assist ||
-                application.uni_assist.status === 'missing' ||
+                application.uni_assist.status === DocumentStatus.Missing ||
                 application.uni_assist.status === 'notstarted' ? (
                   <>
                     <Row>

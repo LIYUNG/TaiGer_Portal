@@ -9,15 +9,7 @@ import {
 } from 'react-table';
 import { Link } from 'react-router-dom';
 
-import {
-  Button,
-  Table,
-  Row,
-  Col,
-  Card,
-  Tabs,
-  Tab
-} from 'react-bootstrap';
+import { Button, Table, Row, Col, Card, Tabs, Tab } from 'react-bootstrap';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
 
@@ -222,19 +214,7 @@ const IndeterminateCheckbox = React.forwardRef(
 );
 
 // Our table component
-function Table2({ header, data, userId }) {
-  let [statedataTable2, setStatedataTable2] = useState({
-    modalShowAssignWindow: false,
-    modalShowAssignSuccessWindow: false
-  });
-  let [programs, setPrograms] = useState({
-    programIds: [],
-    schools: [],
-    program_names: []
-  });
-  // let [modalShowAssignWindow, setModalShow] = useState(false);
-  let [studentId, setStudentId] = useState('');
-
+function Table2({ header, data }) {
   const columns = React.useMemo(
     () => [
       {
@@ -592,7 +572,7 @@ function AdmissionsTable(props) {
               semester: application.programId.semester
             });
           }
-        } else {
+        } else if (application.closed === '-') {
           not_yet_closed_table.push({
             _id: student._id,
             firstname: student.firstname,
@@ -626,7 +606,6 @@ function AdmissionsTable(props) {
               <Table2
                 header={'Admissions'}
                 data={admissions_table}
-                userId={props.userId}
               />
             </Card>
           </Row>
@@ -637,7 +616,6 @@ function AdmissionsTable(props) {
               <Table2
                 header={'Rejections '}
                 data={rejections_table}
-                userId={props.userId}
               />
             </Card>
           </Row>
@@ -648,7 +626,6 @@ function AdmissionsTable(props) {
               <Table2
                 header={'Pending'}
                 data={pending_table}
-                userId={props.userId}
               />
             </Card>
           </Row>
@@ -659,7 +636,6 @@ function AdmissionsTable(props) {
               <Table2
                 header={'Not Closed Yet'}
                 data={not_yet_closed_table}
-                userId={props.userId}
               />
             </Card>
           </Row>

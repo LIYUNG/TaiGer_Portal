@@ -8,7 +8,13 @@ export const is_TaiGer_Editor = (user) => user.role === 'Editor';
 export const is_TaiGer_Agent = (user) => user.role === 'Agent';
 export const is_TaiGer_Student = (user) => user.role === 'Student';
 export const is_TaiGer_Guest = (user) => user.role === 'Guest';
-
+export const DocumentStatus = {
+  Uploaded: 'uploaded',
+  Missing: 'missing',
+  Accepted: 'accepted',
+  Rejected: 'rejected',
+  NotNeeded: 'notneeded'
+};
 export const showButtonIfMyStudent = (user, student) => {
   if (
     is_TaiGer_Admin(user) ||
@@ -143,73 +149,43 @@ export const check_german_language_Notneeded = (academic_background) => {
   return false;
 };
 
-export const are_base_documents_missing = (student) => {
+export const based_documents_init = (student) => {
   let documentlist2_keys = Object.keys(profile_list);
   let object_init = {};
   for (let i = 0; i < documentlist2_keys.length; i++) {
-    object_init[documentlist2_keys[i]] = 'missing';
+    object_init[documentlist2_keys[i]] = DocumentStatus.Missing;
   }
+
+  for (let i = 0; i < student.profile.length; i++) {
+    if (student.profile[i].status === DocumentStatus.Uploaded) {
+      object_init[student.profile[i].name] = DocumentStatus.Uploaded;
+    } else if (student.profile[i].status === DocumentStatus.Accepted) {
+      object_init[student.profile[i].name] = DocumentStatus.Accepted;
+    } else if (student.profile[i].status === DocumentStatus.Rejected) {
+      object_init[student.profile[i].name] = DocumentStatus.Rejected;
+    } else if (student.profile[i].status === DocumentStatus.Missing) {
+      object_init[student.profile[i].name] = DocumentStatus.Missing;
+    } else if (student.profile[i].status === DocumentStatus.NotNeeded) {
+      object_init[student.profile[i].name] = DocumentStatus.NotNeeded;
+    }
+  }
+  return { object_init, documentlist2_keys };
+};
+
+export const are_base_documents_missing = (student) => {
   if (student.profile === undefined) {
     return true;
   }
   if (student.profile.length === 0) {
     return true;
   }
-
-  for (let i = 0; i < student.profile.length; i++) {
-    if (student.profile[i].status === 'uploaded') {
-      object_init[student.profile[i].name] = 'uploaded';
-    } else if (student.profile[i].status === 'accepted') {
-      object_init[student.profile[i].name] = 'accepted';
-    } else if (student.profile[i].status === 'rejected') {
-      object_init[student.profile[i].name] = 'rejected';
-    } else if (student.profile[i].status === 'missing') {
-      object_init[student.profile[i].name] = 'missing';
-    } else if (student.profile[i].status === 'notneeded') {
-      object_init[student.profile[i].name] = 'notneeded';
-    }
-  }
+  const { object_init, documentlist2_keys } = based_documents_init(student);
 
   for (let i = 0; i < documentlist2_keys.length; i++) {
     if (
-      object_init[documentlist2_keys[i]] !== 'accepted' &&
-      object_init[documentlist2_keys[i]] !== 'notneeded'
+      object_init[documentlist2_keys[i]] !== DocumentStatus.Accepted &&
+      object_init[documentlist2_keys[i]] !== DocumentStatus.NotNeeded
     ) {
-      return true;
-    }
-  }
-  return false;
-};
-
-export const are_base_documents_uploaded = (student) => {
-  let documentlist2_keys = Object.keys(profile_list);
-  let object_init = {};
-  for (let i = 0; i < documentlist2_keys.length; i++) {
-    object_init[documentlist2_keys[i]] = 'missing';
-  }
-  if (student.profile === undefined) {
-    return true;
-  }
-  if (student.profile.length === 0) {
-    return true;
-  }
-
-  for (let i = 0; i < student.profile.length; i++) {
-    if (student.profile[i].status === 'uploaded') {
-      object_init[student.profile[i].name] = 'uploaded';
-    } else if (student.profile[i].status === 'accepted') {
-      object_init[student.profile[i].name] = 'accepted';
-    } else if (student.profile[i].status === 'rejected') {
-      object_init[student.profile[i].name] = 'rejected';
-    } else if (student.profile[i].status === 'missing') {
-      object_init[student.profile[i].name] = 'missing';
-    } else if (student.profile[i].status === 'notneeded') {
-      object_init[student.profile[i].name] = 'notneeded';
-    }
-  }
-
-  for (let i = 0; i < documentlist2_keys.length; i++) {
-    if (object_init[documentlist2_keys[i]] === 'uploaded') {
       return true;
     }
   }
@@ -222,7 +198,7 @@ export const is_any_base_documents_uploaded = (students) => {
       let documentlist2_keys = Object.keys(profile_list);
       let object_init = {};
       for (let j = 0; j < documentlist2_keys.length; j += 1) {
-        object_init[documentlist2_keys[i]] = 'missing';
+        object_init[documentlist2_keys[i]] = DocumentStatus.Missing;
       }
       if (students[i].profile === undefined) {
         return false;
@@ -232,21 +208,21 @@ export const is_any_base_documents_uploaded = (students) => {
       }
 
       for (let j = 0; j < students[i].profile.length; j += 1) {
-        if (students[i].profile[j].status === 'uploaded') {
-          object_init[students[i].profile[j].name] = 'uploaded';
-        } else if (students[i].profile[j].status === 'accepted') {
-          object_init[students[i].profile[j].name] = 'accepted';
-        } else if (students[i].profile[j].status === 'rejected') {
-          object_init[students[i].profile[j].name] = 'rejected';
-        } else if (students[i].profile[j].status === 'missing') {
-          object_init[students[i].profile[j].name] = 'missing';
-        } else if (students[i].profile[j].status === 'notneeded') {
-          object_init[students[i].profile[j].name] = 'notneeded';
+        if (students[i].profile[j].status === DocumentStatus.Uploaded) {
+          object_init[students[i].profile[j].name] = DocumentStatus.Uploaded;
+        } else if (students[i].profile[j].status === DocumentStatus.Accepted) {
+          object_init[students[i].profile[j].name] = DocumentStatus.Accepted;
+        } else if (students[i].profile[j].status === DocumentStatus.Rejected) {
+          object_init[students[i].profile[j].name] = DocumentStatus.Rejected;
+        } else if (students[i].profile[j].status === DocumentStatus.Missing) {
+          object_init[students[i].profile[j].name] = DocumentStatus.Missing;
+        } else if (students[i].profile[j].status === DocumentStatus.NotNeeded) {
+          object_init[students[i].profile[j].name] = DocumentStatus.NotNeeded;
         }
       }
 
       for (let i = 0; i < documentlist2_keys.length; i++) {
-        if (object_init[documentlist2_keys[i]] === 'uploaded') {
+        if (object_init[documentlist2_keys[i]] === DocumentStatus.Uploaded) {
           return true;
         }
       }
@@ -265,33 +241,16 @@ export const to_register_application_portals = (student) => {
 };
 
 export const isBaseDocumentsRejected = (student) => {
-  let documentlist2_keys = Object.keys(profile_list);
-  let object_init = {};
-  for (let i = 0; i < documentlist2_keys.length; i++) {
-    object_init[documentlist2_keys[i]] = 'missing';
-  }
   if (student.profile === undefined) {
     return false;
   }
   if (student.profile.length === 0) {
     return false;
   }
-  for (let i = 0; i < student.profile.length; i++) {
-    if (student.profile[i].status === 'uploaded') {
-      object_init[student.profile[i].name] = 'uploaded';
-    } else if (student.profile[i].status === 'accepted') {
-      object_init[student.profile[i].name] = 'accepted';
-    } else if (student.profile[i].status === 'rejected') {
-      object_init[student.profile[i].name] = 'rejected';
-    } else if (student.profile[i].status === 'missing') {
-      object_init[student.profile[i].name] = 'missing';
-    } else if (student.profile[i].status === 'notneeded') {
-      object_init[student.profile[i].name] = 'notneeded';
-    }
-  }
+  const { object_init, documentlist2_keys } = based_documents_init(student);
 
   for (let i = 0; i < documentlist2_keys.length; i++) {
-    if (object_init[documentlist2_keys[i]] === 'rejected') {
+    if (object_init[documentlist2_keys[i]] === DocumentStatus.Rejected) {
       return true;
     }
   }
@@ -436,7 +395,11 @@ export const check_application_preference_filled = (application_preference) => {
   // TODO: can add more mandatory field
   if (
     !application_preference.expected_application_date ||
-    !application_preference.expected_application_semester
+    !application_preference.expected_application_semester ||
+    !application_preference.target_application_field ||
+    !application_preference.target_degree ||
+    application_preference.considered_privat_universities === '-' ||
+    application_preference.application_outside_germany === '-'
   ) {
     return false;
   }
@@ -604,14 +567,14 @@ export const is_uni_assist_vpd_needed = (application) => {
     }
     if (
       application.uni_assist &&
-      application.uni_assist.status === 'notneeded'
+      application.uni_assist.status === DocumentStatus.NotNeeded
     ) {
       return false;
     }
 
     if (
       application.uni_assist &&
-      (application.uni_assist.status !== 'uploaded' ||
+      (application.uni_assist.status !== DocumentStatus.Uploaded ||
         application.uni_assist.vpd_file_path === '')
     ) {
       return true;
@@ -656,8 +619,8 @@ export const num_uni_assist_vpd_uploaded = (student) => {
       (application.programId.uni_assist.includes('VPD') ||
         application.programId.uni_assist.includes('FULL')) &&
       application.uni_assist &&
-      application.uni_assist.status !== 'notneeded' &&
-      (application.uni_assist.status === 'uploaded' ||
+      application.uni_assist.status !== DocumentStatus.NotNeeded &&
+      (application.uni_assist.status === DocumentStatus.Uploaded ||
         application.uni_assist.vpd_file_path)
     ) {
       counter += 1;
@@ -683,7 +646,7 @@ export const num_uni_assist_vpd_needed = (student) => {
       }
       if (
         student.applications[j].uni_assist &&
-        student.applications[j].uni_assist.status === 'notneeded'
+        student.applications[j].uni_assist.status === DocumentStatus.NotNeeded
       ) {
         continue;
       }
@@ -780,13 +743,14 @@ export const is_any_vpd_missing = (students) => {
             }
             if (
               students[i].applications[j].uni_assist &&
-              students[i].applications[j].uni_assist.status === 'notneeded'
+              students[i].applications[j].uni_assist.status === DocumentStatus.NotNeeded
             ) {
               continue;
             }
             if (
               students[i].applications[j].uni_assist &&
-              (students[i].applications[j].uni_assist.status !== 'uploaded' ||
+              (students[i].applications[j].uni_assist.status !==
+                DocumentStatus.Uploaded ||
                 students[i].applications[j].uni_assist.vpd_file_path === '')
             ) {
               return true;
@@ -819,8 +783,8 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
       return false;
     }
     if (
-      application.uni_assist.status === 'uploaded' ||
-      application.uni_assist.status === 'notneeded'
+      application.uni_assist.status === DocumentStatus.Uploaded ||
+      application.uni_assist.status === DocumentStatus.NotNeeded
     ) {
       return true;
     }
@@ -866,13 +830,14 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
       }
       if (
         student.applications[j].uni_assist &&
-        student.applications[j].uni_assist.status === 'notneeded'
+        student.applications[j].uni_assist.status === DocumentStatus.NotNeeded
       ) {
         continue;
       }
       if (
         student.applications[j].uni_assist &&
-        (student.applications[j].uni_assist.status !== 'uploaded' ||
+        (student.applications[j].uni_assist.status !==
+          DocumentStatus.Uploaded ||
           student.applications[j].uni_assist.vpd_file_path === '')
       ) {
         return false;
@@ -1068,29 +1033,29 @@ export const programs_refactor = (students) => {
     let keys = Object.keys(profile_list);
     let object_init = {};
     for (let i = 0; i < keys.length; i++) {
-      object_init[keys[i]] = 'missing';
+      object_init[keys[i]] = DocumentStatus.Missing;
     }
 
     if (student.profile) {
       for (let i = 0; i < student.profile.length; i++) {
-        if (student.profile[i].status === 'uploaded') {
-          object_init[student.profile[i].name] = 'uploaded';
-        } else if (student.profile[i].status === 'accepted') {
-          object_init[student.profile[i].name] = 'accepted';
-        } else if (student.profile[i].status === 'rejected') {
-          object_init[student.profile[i].name] = 'rejected';
-        } else if (student.profile[i].status === 'missing') {
-          object_init[student.profile[i].name] = 'missing';
-        } else if (student.profile[i].status === 'notneeded') {
-          object_init[student.profile[i].name] = 'notneeded';
+        if (student.profile[i].status === DocumentStatus.Uploaded) {
+          object_init[student.profile[i].name] = DocumentStatus.Uploaded;
+        } else if (student.profile[i].status === DocumentStatus.Accepted) {
+          object_init[student.profile[i].name] = DocumentStatus.Accepted;
+        } else if (student.profile[i].status === DocumentStatus.Rejected) {
+          object_init[student.profile[i].name] = DocumentStatus.Rejected;
+        } else if (student.profile[i].status === DocumentStatus.Missing) {
+          object_init[student.profile[i].name] = DocumentStatus.Missing;
+        } else if (student.profile[i].status === DocumentStatus.NotNeeded) {
+          object_init[student.profile[i].name] = DocumentStatus.NotNeeded;
         }
       }
     } else {
     }
     for (let i = 0; i < keys.length; i += 1) {
       if (
-        object_init[keys[i]] !== 'accepted' &&
-        object_init[keys[i]] !== 'notneeded'
+        object_init[keys[i]] !== DocumentStatus.Accepted &&
+        object_init[keys[i]] !== DocumentStatus.NotNeeded
       ) {
         isMissingBaseDocs = true;
         break;
@@ -1158,7 +1123,7 @@ export const programs_refactor = (students) => {
               ? '-'
               : check_program_uni_assist_needed(application)
               ? application.uni_assist &&
-                application.uni_assist.status === 'uploaded'
+                application.uni_assist.status === DocumentStatus.Uploaded
                 ? 'O'
                 : 'X'
               : 'Not Needed',
@@ -1179,7 +1144,8 @@ export const programs_refactor = (students) => {
                   (!check_program_uni_assist_needed(application) ||
                     (check_program_uni_assist_needed(application) &&
                       application.uni_assist &&
-                      application.uni_assist.status === 'uploaded')) &&
+                      application.uni_assist.status ===
+                        DocumentStatus.Uploaded)) &&
                   is_cv_done &&
                   is_program_ml_rl_essay_finished(application)
                 ? 'Ready!'

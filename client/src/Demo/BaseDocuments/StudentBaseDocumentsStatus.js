@@ -8,6 +8,7 @@ import {
 } from 'react-icons/ai';
 import { BsDash } from 'react-icons/bs';
 import { profile_list } from '../Utils/contants';
+import { DocumentStatus } from '../Utils/checking-functions';
 
 class StudentBaseDocumentsStatus extends React.Component {
   state = {
@@ -21,7 +22,7 @@ class StudentBaseDocumentsStatus extends React.Component {
     let keys2 = Object.keys(profile_list);
     let object_init = {};
     keys2.forEach((key) => {
-      object_init[key] = 'missing';
+      object_init[key] = DocumentStatus.Missing;
     });
 
     if (this.props.student.profile) {
@@ -29,20 +30,20 @@ class StudentBaseDocumentsStatus extends React.Component {
         const { status, name, feedback, updatedAt } =
           this.props.student.profile[i];
         switch (status) {
-          case 'uploaded':
-            object_init[name] = 'uploaded';
+          case DocumentStatus.Uploaded:
+            object_init[name] = DocumentStatus.Uploaded;
             break;
-          case 'accepted':
-            object_init[name] = 'accepted';
+          case DocumentStatus.Accepted:
+            object_init[name] = DocumentStatus.Accepted;
             break;
-          case 'rejected':
-            object_init[name] = 'rejected';
+          case DocumentStatus.Rejected:
+            object_init[name] = DocumentStatus.Rejected;
             break;
-          case 'notneeded':
-            object_init[name] = 'notneeded';
+          case DocumentStatus.NotNeeded:
+            object_init[name] = DocumentStatus.NotNeeded;
             break;
-          case 'missing':
-            object_init[name] = 'missing';
+          case DocumentStatus.Missing:
+            object_init[name] = DocumentStatus.Missing;
             break;
         }
       }
@@ -64,9 +65,9 @@ class StudentBaseDocumentsStatus extends React.Component {
     var file_information;
     for (var i = 0; i < profile_list_keys.length; i++) {
       if (
-        object_init[profile_list_keys[i]] === 'uploaded' ||
-        object_init[profile_list_keys[i]] === 'rejected' ||
-        object_init[profile_list_keys[i]] === 'missing'
+        object_init[profile_list_keys[i]] === DocumentStatus.Uploaded ||
+        object_init[profile_list_keys[i]] === DocumentStatus.Rejected ||
+        object_init[profile_list_keys[i]] === DocumentStatus.Missing
       ) {
         current_style = style_missing;
         current_title = title_missing;
@@ -74,7 +75,7 @@ class StudentBaseDocumentsStatus extends React.Component {
       }
     }
     file_information = profile_list_keys.map((k, i) => {
-      if (object_init[k] === 'uploaded') {
+      if (object_init[k] === DocumentStatus.Uploaded) {
         return (
           <td key={i}>
             <Link
@@ -90,7 +91,7 @@ class StudentBaseDocumentsStatus extends React.Component {
             </Link>
           </td>
         );
-      } else if (object_init[k] === 'accepted') {
+      } else if (object_init[k] === DocumentStatus.Accepted) {
         return (
           <td key={i}>
             <Link
@@ -106,7 +107,7 @@ class StudentBaseDocumentsStatus extends React.Component {
             </Link>
           </td>
         );
-      } else if (object_init[k] === 'rejected') {
+      } else if (object_init[k] === DocumentStatus.Rejected) {
         return (
           <td key={i}>
             <Link
@@ -122,7 +123,7 @@ class StudentBaseDocumentsStatus extends React.Component {
             </Link>
           </td>
         );
-      } else if (object_init[k] === 'notneeded') {
+      } else if (object_init[k] === DocumentStatus.NotNeeded) {
         // TODO: render or hide?
         return (
           <td key={i}>

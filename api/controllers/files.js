@@ -715,6 +715,8 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   }
 
   if (status === DocumentStatus.Rejected) {
+    // rejected file notification set
+    student.notification.isRead_base_documents_rejected = false;
     document.feedback = feedback;
   }
   if (status === DocumentStatus.Accepted) {

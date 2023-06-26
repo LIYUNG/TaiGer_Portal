@@ -147,7 +147,6 @@ class StudentMyself extends React.Component {
         );
       }
     });
-    // return <StudentDashboard studentDocOverview={studentDocOverview} />;
     return <>{studentDocOverview}</>;
   }
 }

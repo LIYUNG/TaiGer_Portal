@@ -12,6 +12,31 @@ const Documentation = require('../models/Documentation');
 const Internaldoc = require('../models/Internaldoc');
 const { Program } = require('../models/Program');
 
+const getQueryPublicResults = asyncHandler(async (req, res, next) => {
+  const documentations = await Documentation.find(
+    {
+      $text: { $search: req.query.q },
+      category: { $not: { $regex: new RegExp('portal-instruction', 'i') } }
+    },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(5)
+    .select('title')
+    .lean();
+
+  // TODO: use case define:
+
+  // TODO: search for student
+  // search thread, cv ml rl, public doc,
+
+  //   console.log(students);
+  res.status(200).send({
+    success: true,
+    data: documentations.sort((a, b) => b.score - a.score)
+  });
+});
+
 const getQueryResults = asyncHandler(async (req, res, next) => {
   //   const searchTerms = req.query.q.split(' ').filter(Boolean);
 
@@ -69,7 +94,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
       .sort((a, b) => b.score - a.score)
   });
 });
-
 module.exports = {
+  getQueryPublicResults,
   getQueryResults
 };

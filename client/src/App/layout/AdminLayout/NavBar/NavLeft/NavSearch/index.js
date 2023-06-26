@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getQueryResults } from '../../../../../../api';
+import { getQueryPublicResults, getQueryResults } from '../../../../../../api';
 import { withRouter } from 'react-router-dom';
 import ModalMain from '../../../../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
+import { is_TaiGer_role } from '../../../../../../Demo/Utils/checking-functions';
 
 const NavSearch = (props) => {
   let [statedata, setStatedata] = useState({
@@ -37,7 +38,9 @@ const NavSearch = (props) => {
   const fetchSearchResults = async () => {
     try {
       setLoading(true);
-      const response = await getQueryResults(searchTerm);
+      const response = is_TaiGer_role(props.user)
+        ? await getQueryResults(searchTerm)
+        : await getQueryPublicResults(searchTerm);
       if (response.data.success) {
         setSearchResults(response.data.data);
         setIsResultsVisible(true);

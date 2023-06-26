@@ -9,7 +9,10 @@ import { Link } from 'react-router-dom';
 import * as actionTypes from '../../../../store/actions';
 import taiger_logo_small from '../../../../assets/images/taiger_logo_small.png';
 import NavSearch from './NavLeft/NavSearch';
-import { is_TaiGer_role } from '../../../../Demo/Utils/checking-functions';
+import {
+  is_TaiGer_Student,
+  is_TaiGer_role
+} from '../../../../Demo/Utils/checking-functions';
 
 class NavBar extends Component {
   render() {
@@ -63,7 +66,11 @@ class NavBar extends Component {
           </a>
           <div className="collapse navbar-collapse">
             {/* <NavLeft /> */}
-            {is_TaiGer_role(this.props.userdata) && <NavSearch />}
+            {/* // TODO: when public documents ready, then enable
+             */}
+            {is_TaiGer_role(this.props.userdata) && (
+              <NavSearch user={this.props.userdata} />
+            )}
             <NavRight
               rtlLayout={this.props.rtlLayout}
               userdata={this.props.userdata}

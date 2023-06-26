@@ -25,6 +25,8 @@ export const verify = () => request.get('/auth/verify');
 // Search API
 export const getQueryResults = (keywords) =>
   request.get(`/api/search?q=${keywords}`);
+export const getQueryPublicResults = (keywords) =>
+  request.get(`/api/search/public?q=${keywords}`);
 
 // User APIs
 export const getUsers = () => request.get('/api/users');

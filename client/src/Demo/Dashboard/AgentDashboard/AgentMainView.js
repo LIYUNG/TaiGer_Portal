@@ -3,7 +3,6 @@ import { Row, Col, Table, Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
-// import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import AgentTasks from '../MainViewTab/AgentTasks/index';
 import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
@@ -102,7 +101,6 @@ class AgentMainView extends React.Component {
       <StudentsAgentEditor
         key={i}
         user={this.props.user}
-        role={this.props.role}
         student={student}
         documentslist={this.props.documentslist}
         editAgent={this.props.editAgent}
@@ -122,7 +120,7 @@ class AgentMainView extends React.Component {
         )
       )
       .map((student, i) => (
-        <AgentReviewing key={i} role={this.props.role} student={student} />
+        <AgentReviewing key={i} role={this.props.user.role} student={student} />
       ));
 
     const ready_to_submit_tasks = this.props.students
@@ -132,7 +130,11 @@ class AgentMainView extends React.Component {
         )
       )
       .map((student, i) => (
-        <ReadyToSubmitTasks key={i} role={this.props.role} student={student} />
+        <ReadyToSubmitTasks
+          key={i}
+          role={this.props.user.role}
+          student={student}
+        />
       ));
 
     const vpd_to_submit_tasks = this.props.students
@@ -142,7 +144,11 @@ class AgentMainView extends React.Component {
         )
       )
       .map((student, i) => (
-        <VPDToSubmitTasks key={i} role={this.props.role} student={student} />
+        <VPDToSubmitTasks
+          key={i}
+          role={this.props.user.role}
+          student={student}
+        />
       ));
     const base_documents_checking_tasks = this.props.students
       .filter((student) =>
@@ -153,7 +159,7 @@ class AgentMainView extends React.Component {
       .map((student, i) => (
         <BaseDocumentCheckingTasks
           key={i}
-          role={this.props.role}
+          role={this.props.user.role}
           student={student}
         />
       ));
@@ -164,7 +170,7 @@ class AgentMainView extends React.Component {
         )
       )
       .map((student, i) => (
-        <AgentTasks key={i} role={this.props.role} student={student} />
+        <AgentTasks key={i} role={this.props.user.role} student={student} />
       ));
 
     let header = Object.values(academic_background_header);
@@ -387,33 +393,6 @@ class AgentMainView extends React.Component {
             </Card>
           </Col>
         </Row>
-        {/* <Row>
-          <Col sm={12}>
-            <Tabs
-              defaultActiveKey="w"
-              id="uncontrolled-tab-example"
-              fill={true}
-              justify={true}
-            >
-              <Tab
-                eventKey="w"
-                title="Student Background Overview"
-                className="my-0 mx-0"
-              >
-                <TabStudBackgroundDashboard
-                  students={this.props.students}
-                  user={this.props.user}
-                  startEditingProgram={this.props.startEditingProgram}
-                  updateStudentArchivStatus={
-                    this.props.updateStudentArchivStatus
-                  }
-                  isDashboard={this.props.isDashboard}
-                />
-              </Tab>
-              <Tab eventKey="dz" title="Agents and Editors"></Tab>
-            </Tabs>
-          </Col>
-        </Row> */}
         <Row>
           <Table
             size="sm"

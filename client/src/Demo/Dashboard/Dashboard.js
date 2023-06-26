@@ -21,6 +21,12 @@ import {
   updateEditors
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import {
+  is_TaiGer_Admin,
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  is_TaiGer_Student
+} from '../Utils/checking-functions';
 
 class Dashboard extends React.Component {
   state = {
@@ -388,7 +394,7 @@ class Dashboard extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    if (this.props.user.role === 'Admin') {
+    if (is_TaiGer_Admin(this.props.user)) {
       return (
         <Aux>
           {res_modal_status >= 400 && (
@@ -400,7 +406,6 @@ class Dashboard extends React.Component {
           )}
           <AdminMainView
             user={this.props.user}
-            role={this.props.user.role}
             editAgent={this.editAgent}
             editEditor={this.editEditor}
             agent_list={this.state.agent_list}
@@ -418,7 +423,7 @@ class Dashboard extends React.Component {
           />
         </Aux>
       );
-    } else if (this.props.user.role === 'Agent') {
+    } else if (is_TaiGer_Agent(this.props.user)) {
       return (
         <Aux>
           {res_modal_status >= 400 && (
@@ -430,7 +435,6 @@ class Dashboard extends React.Component {
           )}
           <AgentMainView
             user={this.props.user}
-            role={this.props.user.role}
             students={this.state.students}
             editAgent={this.editAgent}
             agent_list={this.state.agent_list}
@@ -444,7 +448,7 @@ class Dashboard extends React.Component {
           />
         </Aux>
       );
-    } else if (this.props.user.role === 'Editor') {
+    } else if (is_TaiGer_Editor(this.props.user)) {
       return (
         <Aux>
           {res_modal_status >= 400 && (
@@ -456,7 +460,6 @@ class Dashboard extends React.Component {
           )}
           <EditorMainView
             user={this.props.user}
-            role={this.props.user.role}
             editAgent={this.editAgent}
             editEditor={this.editEditor}
             agent_list={this.state.agent_list}
@@ -470,7 +473,7 @@ class Dashboard extends React.Component {
           />
         </Aux>
       );
-    } else if (this.props.user.role === 'Student') {
+    } else if (is_TaiGer_Student(this.props.user)) {
       return (
         <Aux>
           {res_modal_status >= 400 && (

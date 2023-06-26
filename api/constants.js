@@ -992,27 +992,42 @@ const check_languages_filled = (academic_background) => {
 const missing_academic_background = (student, user) => {
   let missing_background_fields = '';
   if (
-    (!student.academic_background ||
-      !student.academic_background.university ||
-      !student.academic_background.language) &&
+    !student.academic_background ||
+    !student.academic_background.university ||
+    !student.academic_background.language ||
     !student.application_preference
   ) {
     missing_background_fields = `<p>The following fields in Survey not finished yet:</p>
-    <ul>
+    <ul>`;
+    if (
+      student.academic_background ||
+      !student.academic_background.university
+    ) {
+      missing_background_fields += `
     <li>High School Name</li>
     <li>High School already graduated?</li>
     <li>High School Graduate Year</li>
     <li>University Name</li>
     <li>University Program</li>
-    <li>Already Bachelor graduated?</li>`;
-    missing_background_fields += '<li>Expected Application Year</li>';
-    missing_background_fields += '<li>Expected Application Semester</li>';
+    <li>Already Bachelor graduated?</li>
+    <li>Exchange student experience ?</li>`;
+    }
+    if (!student.application_preference) {
+      missing_background_fields += `
+    <li>Expected Application Year</li>
+    <li>Expected Application Semester</li>
+    <li>Target Application Fields</li>
+    <li>Target Degree Programs</li>`;
+    }
+    if (student.academic_background || !student.academic_background.language) {
+      missing_background_fields += `
+    <li><b>English passed?</b></li>
+    <li>English Certificate?</li>
+    <li><b>German passed?</b></li>
+    <li>German Certificate?</li>`;
+    }
     missing_background_fields += '</ul>';
-    if (
-      user.role === 'Agent' ||
-      user.role === 'Admin' ||
-      user.role === 'Agent'
-    ) {
+    if (user.role === 'Admin' || user.role === 'Agent') {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and <b>update</b> them.</p>`;
@@ -1026,6 +1041,7 @@ const missing_academic_background = (student, user) => {
     !student.academic_background.university.attended_high_school ||
     !student.academic_background.university.high_school_isGraduated ||
     student.academic_background.university.high_school_isGraduated === '-' ||
+    !student.academic_background.university.high_school_graduated_year ||
     !student.academic_background.university.attended_university ||
     !student.academic_background.university.attended_university_program ||
     !student.academic_background.university.isGraduated ||
@@ -1034,6 +1050,8 @@ const missing_academic_background = (student, user) => {
     student.academic_background.university.Has_Exchange_Experience === '-' ||
     !student.application_preference.expected_application_date ||
     !student.application_preference.expected_application_semester ||
+    !student.application_preference.target_application_field ||
+    !student.application_preference.target_degree ||
     student.academic_background.language.english_isPassed === '-' ||
     student.academic_background.language.english_isPassed === 'X' ||
     student.academic_background.language.german_isPassed === '-' ||
@@ -1067,17 +1085,23 @@ const missing_academic_background = (student, user) => {
     ) {
       missing_background_fields += ' <li>Already Bachelor graduated?</li>';
     }
-    if (!student.application_preference.expected_application_date) {
-      missing_background_fields += '<li>Expected Application Year</li>';
-    }
     if (
       !student.academic_background.university.Has_Exchange_Experience ||
       student.academic_background.university.Has_Exchange_Experience === '-'
     ) {
       missing_background_fields += ' <li>Exchange student experience ?</li>';
     }
+    if (!student.application_preference.expected_application_date) {
+      missing_background_fields += '<li>Expected Application Year</li>';
+    }
     if (!student.application_preference.expected_application_semester) {
       missing_background_fields += '<li>Expected Application Semester</li>';
+    }
+    if (!student.application_preference.target_application_field) {
+      missing_background_fields += '<li>Target Application Fields</li>';
+    }
+    if (!student.application_preference.target_degree) {
+      missing_background_fields += '<li>Target Degree Programs</li>';
     }
     if (student.academic_background.language.english_isPassed === '-') {
       missing_background_fields += '<li><b>English passed?</b></li>';

@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Card, Table, Tabs, Tab } from 'react-bootstrap';
 import { BsExclamationTriangle } from 'react-icons/bs';
 
-// import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
@@ -21,7 +20,6 @@ class AdminMainView extends React.Component {
       .map((student, i) => (
         <StudentsAgentEditor
           key={i}
-          role={this.props.role}
           user={this.props.user}
           student={student}
           updateStudentArchivStatus={this.props.updateStudentArchivStatus}
@@ -40,10 +38,10 @@ class AdminMainView extends React.Component {
       ));
 
     const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing key={i} role={this.props.role} student={student} />
+      <AgentReviewing key={i} role={this.props.user.role} student={student} />
     ));
     const admin_tasks = (
-      <AdminTasks role={this.props.role} students={this.props.students} />
+      <AdminTasks role={this.props.user.role} students={this.props.students} />
     );
     let header = Object.values(academic_background_header);
 
@@ -111,26 +109,6 @@ class AdminMainView extends React.Component {
           </Card>
         </Row>
         <Row>
-          {/* <Tabs
-            defaultActiveKey="w"
-            id="uncontrolled-tab-example"
-            fill={true}
-            justify={true}
-          >
-            <Tab
-              eventKey="w"
-              title="Student Background Overview"
-              className="my-0 mx-0 py-0"
-            >
-              <TabStudBackgroundDashboard
-                students={this.props.students}
-                user={this.props.user}
-                updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-                isDashboard={this.props.isDashboard}
-              />
-            </Tab>
-            <Tab eventKey="dz" title="Agents and Editors"></Tab>
-          </Tabs> */}
           <Table
             size="sm"
             responsive

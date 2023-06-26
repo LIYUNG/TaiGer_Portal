@@ -976,6 +976,9 @@ class SurveyEditableComponent extends React.Component {
                           <option value="">Please Select</option>
                           <option value="Bachelor">Bachelor</option>
                           <option value="Master">Master</option>
+                          <option value="BachelorMaster">
+                            Bachelor and Master
+                          </option>
                         </Form.Control>
                       </Form.Group>
                     </Form>

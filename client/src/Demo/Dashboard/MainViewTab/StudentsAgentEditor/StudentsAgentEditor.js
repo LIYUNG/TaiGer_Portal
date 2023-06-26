@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
-import { is_TaiGer_role } from '../../../Utils/checking-functions';
+import {
+  is_TaiGer_Editor,
+  is_TaiGer_role
+} from '../../../Utils/checking-functions';
+import { is_TaiGer_Student } from '../../../Utils/checking-functions';
 
 class StudentsAgentEditor extends React.Component {
   state = {
@@ -131,7 +135,7 @@ class StudentsAgentEditor extends React.Component {
                   Edit Editor
                 </Dropdown.Item>
                 {this.props.isDashboard &&
-                  this.props.user.role !== 'Editor' && (
+                  !is_TaiGer_Editor(this.props.user) && (
                     <Dropdown.Item
                       eventKey="5"
                       onClick={() =>
@@ -145,7 +149,7 @@ class StudentsAgentEditor extends React.Component {
                     </Dropdown.Item>
                   )}
                 {this.props.isArchivPage &&
-                  this.props.user.role !== 'Editor' && (
+                  !is_TaiGer_Editor(this.props.user) && (
                     <Dropdown.Item
                       eventKey="6"
                       onClick={() =>
@@ -161,7 +165,7 @@ class StudentsAgentEditor extends React.Component {
               </DropdownButton>
             )}
           </td>
-          {this.props.role !== 'Student' ? (
+          {!is_TaiGer_Student(this.props.user) ? (
             <td>
               <p className="mb-1">
                 <Link

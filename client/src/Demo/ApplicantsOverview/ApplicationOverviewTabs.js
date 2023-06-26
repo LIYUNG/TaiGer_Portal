@@ -7,9 +7,7 @@ import {
   useSortBy,
   useFilters,
   useGlobalFilter,
-  useAsyncDebounce,
-  useRowSelect,
-  usePagination
+  useAsyncDebounce
 } from 'react-table';
 import { Link } from 'react-router-dom';
 import { matchSorter } from 'match-sorter';
@@ -162,7 +160,14 @@ function SortTable({ columns, data, user }) {
 
   return (
     <>
-      <Table className="my-0" variant="dark" text="light" bordered hover size="sm">
+      <Table
+        className="my-0"
+        variant="dark"
+        text="light"
+        bordered
+        hover
+        size="sm"
+      >
         <thead>
           <tr>
             <th
@@ -365,34 +370,8 @@ function SortTable({ columns, data, user }) {
 }
 
 class ApplicationOverviewTabs extends React.Component {
-  state = {
-    error: '',
-    isLoaded: this.props.isLoaded,
-    data: null,
-    success: this.props.success,
-    students: this.props.students,
-    status: '', //reject, accept... etc
-    res_status: 0
-  };
-
   render() {
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    const listStudentProgramNotSelected = this.state.students.map(
+    const listStudentProgramNotSelected = this.props.students.map(
       (student, i) => (
         <div key={i}>
           {student.applications &&
@@ -405,7 +384,7 @@ class ApplicationOverviewTabs extends React.Component {
       )
     );
 
-    const applications_arr = programs_refactor(this.state.students);
+    const applications_arr = programs_refactor(this.props.students);
 
     return (
       <>
@@ -414,7 +393,7 @@ class ApplicationOverviewTabs extends React.Component {
             eventKey="application_status"
             title="Application Progress Overview"
           >
-            {isProgramNotSelectedEnough(this.state.students) && (
+            {isProgramNotSelectedEnough(this.props.students) && (
               <Row>
                 <Col>
                   <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>

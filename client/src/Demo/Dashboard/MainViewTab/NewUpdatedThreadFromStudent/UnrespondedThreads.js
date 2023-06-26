@@ -5,7 +5,9 @@ import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../Utils/contants';
 import {
   application_deadline_calculator,
-  GetCVDeadline
+  GetCVDeadline,
+  is_TaiGer_Guest,
+  is_TaiGer_Student
 } from '../../../Utils/checking-functions';
 
 class UnrespondedThreads extends React.Component {
@@ -32,8 +34,8 @@ class UnrespondedThreads extends React.Component {
                   <td>
                     <Link
                       to={
-                        this.props.role === 'Student' ||
-                        this.props.role === 'Guest'
+                        is_TaiGer_Student(this.props.user) ||
+                        is_TaiGer_Guest(this.props.user)
                           ? `${DEMO.CV_ML_RL_CENTER_LINK}`
                           : '/student-database/' +
                             this.props.student._id +
@@ -80,8 +82,8 @@ class UnrespondedThreads extends React.Component {
                       <td>
                         <Link
                           to={
-                            this.props.role === 'Student' ||
-                            this.props.role === 'Guest'
+                            is_TaiGer_Student(this.props.user) ||
+                            is_TaiGer_Guest(this.props.user)
                               ? `${DEMO.CV_ML_RL_CENTER_LINK}`
                               : '/student-database/' +
                                 this.props.student._id +

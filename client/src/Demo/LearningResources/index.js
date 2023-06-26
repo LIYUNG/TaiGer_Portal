@@ -3,9 +3,7 @@ import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
-// import ApplicationOverviewTabs from './ApplicationOverviewTabs';
 import { spinner_style } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudents } from '../../api';
@@ -98,12 +96,6 @@ class LearningResources extends React.Component {
           </Card.Header>
           <Card.Body>Comming soon!</Card.Body>
         </Card>
-        {/* <ApplicationOverviewTabs
-          isLoaded={this.state.isLoaded}
-          user={this.props.user}
-          success={this.state.success}
-          students={this.state.students}
-        /> */}
       </Aux>
     );
   }

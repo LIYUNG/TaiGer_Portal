@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import { Row, Col, Spinner, Card, Tabs } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
@@ -95,7 +95,6 @@ class ApplicantSOverview extends React.Component {
           </Col>
         </Row>
         <ApplicationOverviewTabs
-          isLoaded={this.state.isLoaded}
           user={this.props.user}
           success={this.state.success}
           students={this.state.students}

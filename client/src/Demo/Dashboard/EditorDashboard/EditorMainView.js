@@ -32,7 +32,6 @@ class EditorMainView extends React.Component {
             <StudentsAgentEditor
               key={student._id}
               user={this.props.user}
-              role={this.props.role}
               student={student}
               editor_list={this.props.editor_list}
               editEditor={this.props.editEditor}
@@ -66,7 +65,6 @@ class EditorMainView extends React.Component {
               <UnrespondedThreads
                 user={this.props.user}
                 key={student._id}
-                role={this.props.role}
                 student={student}
               />
             ))}

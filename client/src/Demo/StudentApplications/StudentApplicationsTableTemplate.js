@@ -408,9 +408,9 @@ class StudentApplicationsTableTemplate extends React.Component {
                       }
                       value={application.closed}
                     >
-                      <option value={'-'}>-</option>
-                      <option value={'X'}>No</option>
-                      <option value={'O'}>Yes</option>
+                      <option value={'-'}>Not Yet</option>
+                      <option value={'X'}>Withdraw</option>
+                      <option value={'O'}>Submitted</option>
                     </Form.Control>
                   </Form.Group>
                 ) : (

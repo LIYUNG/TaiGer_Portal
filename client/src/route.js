@@ -17,7 +17,8 @@ const AccountActivation = React.lazy(() =>
 );
 
 const route = [
-  { path: '/sign-up', exact: true, name: 'Signup 1', component: SignUp1 },
+  // activate when ready
+  // { path: '/sign-up', exact: true, name: 'Signup 1', component: SignUp1 },
   {
     path: '/account/activation',
     exact: true,

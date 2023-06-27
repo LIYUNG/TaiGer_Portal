@@ -110,8 +110,7 @@ class SingleStudentPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      prevProps.match.params.studentId !==
-      this.props.match.params.studentId
+      prevProps.match.params.studentId !== this.props.match.params.studentId
     ) {
       let keys2 = Object.keys(profile_wtih_doc_link_list);
       let temp_isLoaded = {};
@@ -132,6 +131,7 @@ class SingleStudentPage extends React.Component {
               student: data,
               base_docs_link,
               survey_link: granding_system_doc_link.link,
+              updateconfirmed: false,
               success: success,
               res_status: status
             });

@@ -351,7 +351,11 @@ class SingleProgram extends React.Component {
               <Button size="sm" onClick={() => this.handleClick()}>
                 Edit
               </Button>
-              <Button size="sm" variant='secondary' onClick={() => this.setModalShow2()}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => this.setModalShow2()}
+              >
                 Assign
               </Button>
               {is_TaiGer_Admin(this.props.user) && (
@@ -379,7 +383,7 @@ class SingleProgram extends React.Component {
             setModalHide={this.setModalHide}
             uni_name={[program.school]}
             program_name={[program.program_name]}
-            handleChange2={this.handleSetStudentId}
+            handleSetStudentId={this.handleSetStudentId}
             isAssgining={this.state.isAssgining}
             onSubmitAddToStudentProgramList={
               this.onSubmitAddToStudentProgramList

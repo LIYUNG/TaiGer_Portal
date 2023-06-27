@@ -4,15 +4,14 @@ const {
   Types: { ObjectId }
 } = require('mongoose');
 
-const ExpensesSchema = new Schema({
+const IncomesSchema = new Schema({
   student_id: { type: ObjectId, ref: 'User' },
-  receiver_id: { type: ObjectId, ref: 'User' },
-  expense_type: { type: String, default: '' },
+  income_type: { type: String, default: '' },
   amount: { type: Number, default: 0 },
   currency: { type: String, default: 'NTD' },
   status: { type: String, default: 'open' },
   description: { type: String, default: '' },
   updatedAt: Date
 });
-const Expense = model('Expense', ExpensesSchema);
-module.exports = Expense;
+const Income = model('Income', IncomesSchema);
+module.exports = Income;

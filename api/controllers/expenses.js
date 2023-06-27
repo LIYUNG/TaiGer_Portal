@@ -6,8 +6,8 @@ const logger = require('../services/logger');
 const async = require('async');
 
 const getExpenses = asyncHandler(async (req, res) => {
-  const expenses = await Student.aggregate([
-    // { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
+  const studentsWithExpenses = await Student.aggregate([
+    { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
     {
       $lookup: {
         from: 'expenses',
@@ -17,7 +17,7 @@ const getExpenses = asyncHandler(async (req, res) => {
       }
     }
   ]);
-  res.status(200).send({ success: true, data: expenses });
+  res.status(200).send({ success: true, data: studentsWithExpenses });
 });
 
 const getExpense = asyncHandler(async (req, res) => {
@@ -34,7 +34,7 @@ const getExpense = asyncHandler(async (req, res) => {
     logger.error('getExpense: not TaiGer user!');
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
-  const expense = await Student.aggregate([
+  const studentsWithExpenses = await Student.aggregate([
     {
       $lookup: {
         from: 'expenses',
@@ -59,9 +59,17 @@ const getExpense = asyncHandler(async (req, res) => {
         '-messages'
       )
       .select('-notification')
-      .lean()
-      .exec();
-    res.status(200).send({ success: true, data: { students, the_user } });
+      .lean();
+    // Merge the results
+    const mergedResults = students.map((student) => {
+      const aggregateData = studentsWithExpenses.find(
+        (item) => item._id.toString() === student._id.toString()
+      );
+      return { ...aggregateData, ...student };
+    });
+    res
+      .status(200)
+      .send({ success: true, data: { students: mergedResults, the_user } });
   } else if (the_user.role === 'Editor') {
     const students = await Student.find({
       editors: the_user._id.toString(),

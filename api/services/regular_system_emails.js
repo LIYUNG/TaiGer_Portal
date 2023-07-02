@@ -383,8 +383,9 @@ const EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail = async (
   const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: These Tasks deadline very close!`;
   let cvmlrl_deadline_soon = '';
   for (let i = 0; i < payload.students.length; i += 1) {
-    cvmlrl_deadline_soon += `
-    ${cvmlrl_deadline_within30days_escalation_summary(payload.students[i])}`;
+    cvmlrl_deadline_soon += `${cvmlrl_deadline_within30days_escalation_summary(
+      payload.students[i]
+    )}`;
   }
 
   const message = `\
@@ -395,8 +396,9 @@ ${cvmlrl_deadline_soon}
 <p>${TAIGER_SIGNATURE}</p>
 
 `;
-
-  return sendEmail(recipient, subject, message);
+  if (cvmlrl_deadline_soon !== '') {
+    return sendEmail(recipient, subject, message);
+  }
 };
 
 module.exports = {

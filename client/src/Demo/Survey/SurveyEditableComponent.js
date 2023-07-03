@@ -902,7 +902,7 @@ class SurveyEditableComponent extends React.Component {
                         className="my-4 mx-0"
                       >
                         <Form.Label className="my-0 mx-0 text-light">
-                          Considering universities outsid Germany?
+                          Considering universities outside Germany?
                         </Form.Label>
                         <Form.Control
                           disabled={isReadonly}

@@ -112,14 +112,16 @@ const launch = async () => {
     UrgentTasksReminderEmails
   );
 
-  const job5 = schedule.scheduleJob(
-    DAILY_TASKS_REMINDER_SCHEDULE,
-    MongoDBDataBaseDailySnapshot
-  );
+  // TODO:
+  // Remind editor lead when input provided, but no editors.
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);
   if (isProd()) {
+    const job5 = schedule.scheduleJob(
+      DAILY_TASKS_REMINDER_SCHEDULE,
+      MongoDBDataBaseDailySnapshot
+    );
     // launch http server
     app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);

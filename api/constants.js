@@ -31,9 +31,10 @@ const STUDENT_PROFILE_FOR_AGENT_URL = (studentId) =>
 const STUDENT_COURSE_URL = (studentId) =>
   new URL(`/my-courses/${studentId}`, ORIGIN).href;
 
-const TAIGER_SIGNATURE = '<p><b>Your TaiGer Consultancy Team</b></p>';
-// const TAIGER_SIGNATURE = `<p>Your TaiGer Consultancy Team</p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
-//   <p>Facebook: <a href="https://www.facebook.com/profile.php?id=100063557155189">https://www.facebook.com/profile.php?id=100063557155189</a></p>`;
+// const TAIGER_SIGNATURE = '<p><b>Your TaiGer Consultancy Team</b></p>';
+const TAIGER_SIGNATURE = `<p><b>Your TaiGer Consultancy Team</b></p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
+  <p>Facebook: <a href="https://www.facebook.com/profile.php?id=100063557155189">https://www.facebook.com/profile.php?id=100063557155189</a></p>\
+  <p>Instagram: <a href="https://www.instagram.com/taiger_study_abroad/?hl=de">https://www.instagram.com/taiger_study_abroad/?hl=de</a></p>`;
 const SPLIT_LINE = '-------------------------------------------------------';
 const ENGLISH_BELOW = '(English version below)';
 const CONTACT_AGENT = '如果您有任何疑問，請聯絡您的顧問。';

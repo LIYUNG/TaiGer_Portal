@@ -195,9 +195,9 @@ const deleteTemplateSuccessEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+// TODO
 const sendInvitationReminderEmail = async (recipient, payload) => {
-  const subject =
-    'TaiGer Portal 開通提醒 / TaiGer Portal Activation Reminder';
+  const subject = 'TaiGer Portal 開通提醒 / TaiGer Portal Activation Reminder';
   const activationLink = queryString.stringifyUrl({
     url: ACCOUNT_ACTIVATION_URL,
     query: { email: recipient.address, token: payload.token }
@@ -812,7 +812,7 @@ const informEditorArchivedStudentEmail = async (recipient, msg) => {
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.std_firstname} ${msg.std_lastname} is close! No further tasks needed for the student.</p>
+<p>${msg.std_firstname} ${msg.std_lastname} is closed! No further tasks needed for the student.</p>
 
 <p>Please go to ${ARCHIVED_STUDENTS_URL} , and see the archived student!</p>
 
@@ -838,7 +838,7 @@ const informStudentArchivedStudentEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>Your service in TaiGer Portal is close! </p>
+<p>Your service in TaiGer Portal is closed! </p>
 
 <p>Thank you! We wish you success in your future endeavors</p>
 
@@ -870,7 +870,7 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
 
 <p>如果有任何的技術上問題，請詢問您的顧問作協助。</p>
 
-<p>在 Portal 的文件修改討論船，請用<b>英文</b>溝通。</p>
+<p>在 Portal 的文件修改討論串，請用<b>英文</b>溝通。</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1265,7 +1265,7 @@ ${applications_name}
 
 const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} 新增了訊息 > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has a new update > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has a new update > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1302,7 +1302,7 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} 給了了新訊息 > ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}!`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 

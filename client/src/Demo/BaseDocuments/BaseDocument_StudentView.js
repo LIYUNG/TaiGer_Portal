@@ -54,7 +54,13 @@ class BaseDocument_StudentView extends React.Component {
     if (
       prevProps.student._id.toString() !== this.props.student._id.toString()
     ) {
+      let keys2 = Object.keys(profile_wtih_doc_link_list);
+      let temp_isLoaded = {};
+      for (let i = 0; i < keys2.length; i++) {
+        temp_isLoaded[keys2[i]] = true;
+      }
       this.setState({
+        isLoaded: temp_isLoaded,
         student: this.props.student,
         ready: true
       });

@@ -382,10 +382,15 @@ const EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail = async (
 ) => {
   const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: These Tasks deadline very close!`;
   let cvmlrl_deadline_soon = '';
+  let hasContent = false;
   for (let i = 0; i < payload.students.length; i += 1) {
-    cvmlrl_deadline_soon += `${cvmlrl_deadline_within30days_escalation_summary(
+    const temp_text = cvmlrl_deadline_within30days_escalation_summary(
       payload.students[i]
-    )}`;
+    );
+    if (temp_text !== '') {
+      cvmlrl_deadline_soon += `${temp_text}`;
+      hasContent = true;
+    }
   }
 
   const message = `\
@@ -396,7 +401,7 @@ ${cvmlrl_deadline_soon}
 <p>${TAIGER_SIGNATURE}</p>
 
 `;
-  if (cvmlrl_deadline_soon !== '') {
+  if (hasContent) {
     return sendEmail(recipient, subject, message);
   }
 };

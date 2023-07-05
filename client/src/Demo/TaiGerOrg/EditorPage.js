@@ -60,6 +60,39 @@ class EditorPage extends React.Component {
     );
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
+      getEditor(this.props.match.params.user_id).then(
+        (resp) => {
+          const { data, success } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              editor: data.editor,
+              students: data.students,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
+  }
+
   render() {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;

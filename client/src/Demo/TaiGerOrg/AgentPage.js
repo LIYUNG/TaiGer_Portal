@@ -60,6 +60,39 @@ class AgentPage extends React.Component {
     );
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
+      getAgent(this.props.match.params.user_id).then(
+        (resp) => {
+          const { data, success } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              students: data.students,
+              agent: data.agent,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
+  }
+
   render() {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -146,8 +179,8 @@ class AgentPage extends React.Component {
                 </p>
                 <p className="my-0">
                   <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
-                  not decide programs yet. But the applications will be potentially
-                  activated when they would decide.
+                  not decide programs yet. But the applications will be
+                  potentially activated when they would decide.
                 </p>
                 <TasksDistributionBarChart data={sorted_date_freq_pair} />
               </Card.Body>

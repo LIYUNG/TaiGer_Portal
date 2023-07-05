@@ -286,7 +286,12 @@ UserSchema.methods.toJSON = function () {
   return user;
 };
 
-UserSchema.index({ firstname: 'text', lastname: 'text' });
+UserSchema.index({
+  firstname: 'text',
+  lastname: 'text',
+  lastname_chinese: 'text',
+  firstname_chinese: 'text'
+});
 
 const User = model('User', UserSchema);
 

@@ -52,7 +52,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
   )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
-    .select('firstname lastname role')
+    .select('firstname lastname firstname_chinese lastname_chinese role')
     .lean();
 
   const documentations = await Documentation.find(

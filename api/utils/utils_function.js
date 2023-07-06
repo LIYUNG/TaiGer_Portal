@@ -42,6 +42,8 @@ const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const Docspage = require('../models/Docspage');
 const Internaldoc = require('../models/Internaldoc');
 const Note = require('../models/Note');
+const { sendAssignEditorReminderEmail } = require('../services/email');
+const Permission = require('../models/Permission');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -675,6 +677,90 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
   }
 };
 
+const AssignEditorTasksReminderEmails = async () => {
+  const students = await Student.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .populate('agents editors', 'firstname lastname email archiv')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select('-notification')
+    .lean(); // Only active student, not archiv
+  for (let i = 0; i < students.length; i += 1) {
+    if (!students[i].editors || students[i].editors.length === 0) {
+      for (let j = 0; j < students[i].agents.length; j += 1) {
+        // inform active-agent
+        if (isNotArchiv(students[i])) {
+          if (isNotArchiv(students[i].agents[j])) {
+            // TODO : check if any input and then sent email
+            const editor_trigger_3days = 3;
+
+            let cv_ml_rl_3days_flag = false;
+            cv_ml_rl_3days_flag |= is_cv_ml_rl_reminder_needed(
+              students[i],
+              { _id: '0', role: 'Editor' },
+              editor_trigger_3days
+            );
+
+            if (cv_ml_rl_3days_flag) {
+              sendAssignEditorReminderEmail(
+                {
+                  firstname: students[i].agents[j].firstname,
+                  lastname: students[i].agents[j].lastname,
+                  address: students[i].agents[j].email
+                },
+                {
+                  student_firstname: students[i].firstname,
+                  student_id: students[i]._id.toString(),
+                  student_lastname: students[i].lastname
+                }
+              );
+            }
+          }
+        }
+      }
+      // inform editor-lead
+      const permissions = await Permission.find({
+        canAssignEditors: true
+      })
+        .populate('user_id', 'firstname lastname email')
+        .lean();
+      if (permissions) {
+        for (let x = 0; x < permissions.length; x += 1) {
+          // TODO : check if any input and then sent email
+          const editor_trigger_3days = 3;
+
+          let cv_ml_rl_3days_flag = false;
+          cv_ml_rl_3days_flag |= is_cv_ml_rl_reminder_needed(
+            students[i],
+            { _id: '0', role: 'Editor' },
+            editor_trigger_3days
+          );
+
+          if (cv_ml_rl_3days_flag) {
+            sendAssignEditorReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: students[i].firstname,
+                student_id: students[i]._id.toString(),
+                student_lastname: students[i].lastname
+              }
+            );
+          }
+        }
+      }
+    }
+  }
+  console.log('Assign editor reminded');
+};
+
 const UrgentTasksReminderEmails = async () => {
   await UrgentTasksReminderEmails_Editor_core();
   await UrgentTasksReminderEmails_Student_core();
@@ -731,6 +817,7 @@ module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
   MongoDBDataBaseDailySnapshot,
+  AssignEditorTasksReminderEmails,
   UrgentTasksReminderEmails,
   add_portals_registered_status
 };

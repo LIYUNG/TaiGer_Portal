@@ -28,7 +28,8 @@ const logger = require('./services/logger');
 const {
   TasksReminderEmails,
   UrgentTasksReminderEmails,
-  MongoDBDataBaseDailySnapshot
+  MongoDBDataBaseDailySnapshot,
+  AssignEditorTasksReminderEmails
 } = require('./utils/utils_function');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
@@ -114,6 +115,11 @@ const launch = async () => {
 
   // TODO:
   // Remind editor lead when input provided, but no editors.
+
+  const job6 = schedule.scheduleJob(
+    DAILY_TASKS_REMINDER_SCHEDULE,
+    AssignEditorTasksReminderEmails
+  );
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);

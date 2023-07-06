@@ -475,7 +475,7 @@ class InternalDashboard extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                Number of tasks per editor:
+                Number of open and potential tasks per editor:
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={editor_tasks_distribution_data}

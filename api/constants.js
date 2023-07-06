@@ -1306,8 +1306,9 @@ const cvmlrl_deadline_within30days_escalation_summary = (student) => {
       }
     }
   }
-
-  missing_doc_list += '</ul>';
+  if (missing_doc_list !== '') {
+    missing_doc_list += '</ul>';
+  }
   return missing_doc_list;
 };
 

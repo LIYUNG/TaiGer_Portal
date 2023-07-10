@@ -37,8 +37,6 @@ class CommunicationSinglePage extends Component {
     buttonDisabled: false,
     editorState: {},
     expand: true,
-    editors: [],
-    agents: [],
     deadline: '',
     SetAsFinalFileModel: false,
     accordionKeys: [0], // to expand all]
@@ -49,17 +47,14 @@ class CommunicationSinglePage extends Component {
   componentDidMount() {
     getCommunicationThread(this.props.match.params.communication_id).then(
       (resp) => {
-        const { success, data, deadline } = resp.data;
+        const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             success,
             thread: data,
-            editors,
-            agents,
-            deadline,
             isLoaded: true,
-            documentsthreadId: this.props.match.params.documentsthreadId,
+            communication_id: this.props.match.params.communication_id,
             file: null,
             // accordionKeys: new Array(data.messages.length)
             //   .fill()
@@ -203,7 +198,7 @@ class CommunicationSinglePage extends Component {
     formData.append('message', message);
 
     SubmitMessageWithAttachment(
-      this.state.documentsthreadId,
+      this.state.communication_id,
       this.state.thread.student_id._id,
       formData
     ).then(
@@ -318,7 +313,7 @@ class CommunicationSinglePage extends Component {
       ...state,
       isLoaded: false
     }));
-    deleteAMessageInThread(this.state.documentsthreadId, message_id).then(
+    deleteAMessageInThread(this.state.communication_id, message_id).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
@@ -400,27 +395,9 @@ class CommunicationSinglePage extends Component {
       widths = [10, 2];
     }
 
-    // Only CV, ML RL has instructions and template.
-    let template_obj = templatelist.find(
-      ({ prop, alias }) =>
-        prop.includes(this.state.thread.file_type.split('_')[0]) ||
-        alias.includes(this.state.thread.file_type.split('_')[0])
-    );
-    let docName;
     const student_name = `${this.state.thread.student_id.firstname} ${this.state.thread.student_id.lastname}`;
-    if (this.state.thread.program_id) {
-      docName =
-        this.state.thread.program_id.school +
-        '-(' +
-        this.state.thread.program_id.degree +
-        ') ' +
-        this.state.thread.program_id.program_name +
-        ' ' +
-        this.state.thread.file_type;
-    } else {
-      docName = this.state.thread.file_type;
-    }
-    TabTitle(`${student_name} ${docName}`);
+
+    TabTitle(`${student_name}`);
     return (
       <Aux>
         {!isLoaded && (
@@ -441,7 +418,6 @@ class CommunicationSinglePage extends Component {
                   <b>{student_name}</b>
                 </Link>
                 {'   '}
-                {docName}
                 {' Discussion thread'}
                 {'   '}
                 <span
@@ -486,84 +462,6 @@ class CommunicationSinglePage extends Component {
                 <Row>
                   <Col md={widths[0]}>
                     <h5>Instruction</h5>
-                    {template_obj ? (
-                      <>
-                        <p>
-                          請填好我們的 TaiGer
-                          Template，並在這個討論串夾帶在和您的 Editor
-                          討論。回覆時請用 <b>英語(English)</b>{' '}
-                          好讓外籍顧問方便溝通。有任何流程疑問{' '}
-                          <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
-                            <Button size="sm" variant="info">
-                              點我
-                            </Button>
-                          </Link>
-                          <br />
-                          Please fill our TaiGer template and attach the filled
-                          template and reply in
-                          <b> English</b> in this discussion. Any process
-                          question:{' '}
-                          <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
-                            <Button size="sm" variant="info">
-                              Read More
-                            </Button>
-                          </Link>
-                        </p>
-                        <p>
-                          模板下載 Download template:{' '}
-                          {template_obj ? (
-                            template_obj.prop.includes('RL') ||
-                            template_obj.alias.includes('Recommendation') ? (
-                              <b>
-                                教授：
-                                <a
-                                  href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
-                                  target="_blank"
-                                >
-                                  <Button size="sm" variant="secondary">
-                                    <b>Link [點我下載]</b>
-                                  </Button>
-                                </a>
-                                主管：
-                                <a
-                                  href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
-                                  target="_blank"
-                                >
-                                  <Button size="sm" variant="secondary">
-                                    <b>Link [點我下載]</b>
-                                  </Button>
-                                </a>
-                              </b>
-                            ) : (
-                              <b>
-                                <a
-                                  href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
-                                  target="_blank"
-                                >
-                                  <Button size="sm" variant="secondary">
-                                    <b>Link [點我下載]</b>
-                                  </Button>
-                                </a>
-                              </b>
-                            )
-                          ) : (
-                            <>Not available</>
-                          )}
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <p>
-                          {this.state.thread.file_type === 'Portfolio'
-                            ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
-                            : this.state.thread.file_type ===
-                              'Supplementary_Form'
-                            ? '請填好這個 program 的 Supplementory Form / Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                            : '-'}
-                        </p>
-                      </>
-                    )}
-
                     <h6>
                       <b>Requirements:</b>
                       {is_TaiGer_AdminAgent(this.props.user) &&
@@ -583,61 +481,7 @@ class CommunicationSinglePage extends Component {
                       <p>No</p>
                     )}
                   </Col>
-                  <Col md={widths[1]}>
-                    <h6>
-                      <b>Agent:</b>
-                      {this.state.agents.map((agent, i) => (
-                        <p>
-                          {is_TaiGer_role(this.props.user) ? (
-                            <Link
-                              to={`/teams/agents/${agent._id.toString()}`}
-                              target="_blank"
-                            >
-                              {agent.firstname} {agent.lastname}
-                            </Link>
-                          ) : (
-                            <>
-                              {agent.firstname} {agent.lastname}
-                            </>
-                          )}
-                        </p>
-                      ))}
-                    </h6>
-                    <h6>
-                      <b>Editor:</b>
-                      {this.state.editors.map((editor, i) => (
-                        <p>
-                          {is_TaiGer_role(this.props.user) ? (
-                            <Link
-                              to={`/teams/editors/${editor._id.toString()}`}
-                              target="_blank"
-                            >
-                              {editor.firstname} {editor.lastname}
-                            </Link>
-                          ) : (
-                            <>
-                              {editor.firstname} {editor.lastname}
-                            </>
-                          )}
-                        </p>
-                      ))}
-                    </h6>
 
-                    <h6>
-                      <b>Deadline:</b>
-                      {is_TaiGer_AdminAgent(this.props.user) &&
-                        this.state.thread.program_id && (
-                          <Link
-                            to={`/programs/${this.state.thread.program_id._id.toString()}`}
-                            target="_blank"
-                          >
-                            {' '}
-                            [Update]
-                          </Link>
-                        )}
-                    </h6>
-                    <p>{this.state.deadline}</p>
-                  </Col>
                   {this.state.thread.file_type === 'CV' && (
                     <Col md={widths[2]}>
                       <h6>
@@ -661,7 +505,7 @@ class CommunicationSinglePage extends Component {
         </Row>
         <Row>
           <MessageList
-            documentsthreadId={this.state.documentsthreadId}
+            communication_id={this.state.communication_id}
             accordionKeys={this.state.accordionKeys}
             singleExpandtHandler={this.singleExpandtHandler}
             thread={this.state.thread}
@@ -785,11 +629,8 @@ class CommunicationSinglePage extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Do you want to set{' '}
-            <b>
-              {student_name} {docName}
-            </b>{' '}
-            as <b>{this.state.thread.isFinalVersion ? 'open' : 'final'}</b>?
+            Do you want to set <b>{student_name}</b> as{' '}
+            <b>{this.state.thread.isFinalVersion ? 'open' : 'final'}</b>?
           </Modal.Body>
           <Modal.Footer>
             <Button

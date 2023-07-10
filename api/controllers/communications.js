@@ -24,53 +24,51 @@ const Permission = require('../models/Permission');
 const getMessages = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { communicationThreadId }
+    params: { studentId }
   } = req;
-  const communication_thread = await Communication.findById(
-    communicationThreadId
+
+  const student = await Student.findById(studentId).populate(
+    'applications.programId'
+  );
+  if (!student) {
+    logger.error('getMessages: Invalid student id!');
+    throw new ErrorResponse(403, 'Invalid student id');
+  }
+  let communication_thread;
+  communication_thread = await Communication.findOne({
+    student_id: studentId
+  })
+    .populate('student_id', 'firstname lastname role agents editors')
+    .populate('messages.user_id', 'firstname lastname role')
+    .lean()
+    .exec();
+
+  if (communication_thread) {
+    // Thread already exists, return it
+    return res.status(200).send({ success: true, data: communication_thread });
+  }
+  // Initialize a new communication thread
+
+  communication_thread = await Communication.findOneAndUpdate(
+    {
+      student_id: studentId
+    },
+    {},
+    { new: true, upsert: true }
   )
     .populate('student_id', 'firstname lastname role agents editors')
     .populate('messages.user_id', 'firstname lastname role')
     .lean()
     .exec();
 
-  if (!communication_thread) {
-    logger.error('getMessages: Invalid message thread id!');
-    // await Communication.findOneAndUpdate(communicationThreadId, {
-    //   //   student_id:
-    // });
-    throw new ErrorResponse(403, 'Invalid message thread id');
-  }
-
   // Multitenant-filter: Check student can only access their own thread!!!!
   if (user.role === Role.Student) {
-    if (
-      communication_thread.student_id._id.toString() !== user._id.toString()
-    ) {
+    if (communication_thread.student_id._id.toString() !== user._id.toString()) {
       logger.error('getMessages: Unauthorized request!');
       throw new ErrorResponse(403, 'Unauthorized request');
     }
   }
-
-  const student = await Student.findById(
-    communication_thread.student_id._id.toString()
-  ).populate('applications.programId');
-  let deadline = 'x';
-  if (General_Docs.includes(communication_thread.file_type)) {
-    deadline = CVDeadline_Calculator(student);
-  } else {
-    const application = student.applications.find(
-      (app) =>
-        app.programId._id.toString() ===
-        communication_thread.program_id._id.toString()
-    );
-    deadline = application_deadline_calculator(student, application);
-  }
-  res.status(200).send({
-    success: true,
-    data: communication_thread,
-    deadline
-  });
+  return res.status(200).send({ success: true, data: communication_thread });
 });
 
 // (O) notification email works

@@ -55,7 +55,7 @@ router
 
 // Multitenant-filter in call-back function
 router
-  .route('/:communicationThreadId')
+  .route('/:studentId')
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),

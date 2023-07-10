@@ -11,6 +11,9 @@ const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
 const UIBasicBreadcrumbPagination = React.lazy(() =>
   import('./Demo/UIElements/Basic/BreadcrumbPagination')
 );
+const CommunicationSinglePage = React.lazy(() =>
+  import('./Demo/Communications/CommunicationSinglePage')
+);
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
 const PortalCredentialPage = React.lazy(() =>
   import('./Demo/PortalCredentialPage/index')
@@ -321,6 +324,12 @@ const routes = [
     exact: true,
     name: 'CV/ML/RL Center',
     component: CVMLRLOverview
+  },
+  {
+    path: '/communications/:communication_id',
+    exact: true,
+    name: 'My Chat',
+    component: CommunicationSinglePage
   },
   {
     path: '/settings',

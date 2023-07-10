@@ -311,6 +311,26 @@ export const getMessageFileDownload = (documentsthreadId, messageId, fileId) =>
       responseType: 'blob'
     }
   );
+export const getCommunicationThread = (communication_id) =>
+  request.get(`/api/communications/${communication_id}`);
+export const postCommunicationThread = (communication_id, studentId, message) =>
+  request.post(`/api/communications/${communication_id}/${studentId}`, message);
+export const updateAMessageInCommunicationThread = (
+  communication_id,
+  communication_messageId,
+  message
+) =>
+  request.put(
+    `/api/communications/delete/${communication_id}/${communication_messageId}`,
+    message
+  );
+export const deleteAMessageInCommunicationThread = (
+  communication_id,
+  communication_messageId
+) =>
+  request.delete(
+    `/api/communications/delete/${communication_id}/${communication_messageId}`
+  );
 
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);
@@ -318,6 +338,7 @@ export const deleteAMessageInThread = (documentsthreadId, messageId) =>
   request.delete(
     `/api/document-threads/delete/${documentsthreadId}/${messageId}`
   );
+
 export const initGeneralMessageThread = (studentId, document_catgory) =>
   request.post(
     `/api/document-threads/init/general/${studentId}/${document_catgory}`

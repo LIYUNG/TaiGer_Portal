@@ -7,10 +7,6 @@ const {
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 
-const {
-  doc_thread_ops_validator
-} = require('../middlewares/docs_thread_operation_validation');
-
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
 
@@ -18,7 +14,8 @@ const {
   getMessages,
   updateAMessageInThread,
   deleteAMessageInThread,
-  postMessages
+  postMessages,
+  getMyMessages
 } = require('../controllers/communications');
 
 const router = Router();
@@ -32,7 +29,6 @@ router
     postMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
-    doc_thread_ops_validator,
     postMessages
   );
 // TODO: multitenancy: check user id match user_id in message
@@ -60,6 +56,13 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getMessages
+  );
+router
+  .route('/all')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getMyMessages
   );
 
 module.exports = router;

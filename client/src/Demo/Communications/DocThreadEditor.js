@@ -57,16 +57,6 @@ function DocThreadEditor(props) {
         </Col>
       </Row>
       <Row>
-        <Col md={8}>
-          <Form.Group controlId="formFile" className="mb-2">
-            <Form.Control type="file" multiple onChange={(e) => props.onFileChange(e)} />
-          </Form.Group>
-        </Col>
-        <Col className="mt-2" md={4}>
-          (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and overall 2MB!)
-        </Col>
-      </Row>
-      <Row>
         <Col className="my-0 mx-0">
           {!statedata.editorState.blocks ||
           statedata.editorState.blocks.length === 0 ||

@@ -20,7 +20,9 @@ import {
   SubmitMessageWithAttachment,
   getCommunicationThread,
   deleteAMessageInThread,
-  SetFileAsFinal
+  SetFileAsFinal,
+  postCommunicationThread,
+  deleteAMessageInCommunicationThread
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -45,7 +47,7 @@ class CommunicationSinglePage extends Component {
     res_modal_message: ''
   };
   componentDidMount() {
-    getCommunicationThread(this.props.match.params.communication_id).then(
+    getCommunicationThread(this.props.match.params.student_id).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
@@ -54,7 +56,7 @@ class CommunicationSinglePage extends Component {
             success,
             thread: data,
             isLoaded: true,
-            communication_id: this.props.match.params.communication_id,
+            student_id: this.props.match.params.student_id,
             file: null,
             // accordionKeys: new Array(data.messages.length)
             //   .fill()
@@ -139,68 +141,15 @@ class CommunicationSinglePage extends Component {
     }));
   };
 
-  getRequirement = (thread) => {
-    if (thread.file_type.includes('Essay')) {
-      return (
-        <p>
-          {thread.program_id.essay_required === 'yes'
-            ? this.state.thread.program_id.essay_requirements || 'No'
-            : 'No'}
-        </p>
-      );
-    } else if (thread.file_type.includes('ML')) {
-      if (thread.program_id.ml_required === 'yes') {
-        return <p>{this.state.thread.program_id.ml_requirements || 'No'}</p>;
-      } else {
-        return <p>No</p>;
-      }
-    } else if (thread.file_type.includes('Portfolio')) {
-      if (thread.program_id.portfolio_required === 'yes') {
-        return (
-          <p>{this.state.thread.program_id.portfolio_requirements || 'No'}</p>
-        );
-      } else {
-        return <p>No</p>;
-      }
-    } else if (thread.file_type.includes('Supplementary_Form')) {
-      if (thread.program_id.supplementary_form_required === 'yes') {
-        return (
-          <p>
-            {this.state.thread.program_id.supplementary_form_requirements ||
-              'No'}
-          </p>
-        );
-      } else {
-        return <p>No</p>;
-      }
-    } else if (thread.file_type.includes('RL')) {
-      if (['1', '2', '3'].includes(thread.program_id.rl_required)) {
-        return <p>{this.state.thread.program_id.rl_requirements || 'No'}</p>;
-      } else {
-        return <p>No</p>;
-      }
-    }
-  };
-
   handleClickSave = (e, editorState) => {
     e.preventDefault();
     this.setState({ buttonDisabled: true });
     var message = JSON.stringify(editorState);
-    const formData = new FormData();
 
-    if (this.state.file) {
-      this.state.file.forEach((file) => {
-        formData.append('files', file);
-      });
-    }
-
-    // formData.append('files', this.state.file);
-    formData.append('message', message);
-
-    SubmitMessageWithAttachment(
-      this.state.communication_id,
-      this.state.thread.student_id._id,
-      formData
+    postCommunicationThread(
+      this.state.thread._id.toString(),
+      this.state.thread.student_id._id.toString(),
+      message
     ).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -313,7 +262,10 @@ class CommunicationSinglePage extends Component {
       ...state,
       isLoaded: false
     }));
-    deleteAMessageInThread(this.state.communication_id, message_id).then(
+    deleteAMessageInCommunicationThread(
+      this.state.thread._id.toString(),
+      message_id
+    ).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
@@ -418,7 +370,7 @@ class CommunicationSinglePage extends Component {
                   <b>{student_name}</b>
                 </Link>
                 {'   '}
-                {' Discussion thread'}
+                {' Communication with Agent'}
                 {'   '}
                 <span
                   className="text-light mb-0 me-2 "
@@ -464,40 +416,8 @@ class CommunicationSinglePage extends Component {
                     <h5>Instruction</h5>
                     <h6>
                       <b>Requirements:</b>
-                      {is_TaiGer_AdminAgent(this.props.user) &&
-                        this.state.thread.program_id && (
-                          <Link
-                            to={`/programs/${this.state.thread.program_id._id.toString()}`}
-                            target="_blank"
-                          >
-                            {' '}
-                            [Update]
-                          </Link>
-                        )}
                     </h6>
-                    {this.state.thread.program_id ? (
-                      <>{this.getRequirement(this.state.thread)}</>
-                    ) : (
-                      <p>No</p>
-                    )}
                   </Col>
-
-                  {this.state.thread.file_type === 'CV' && (
-                    <Col md={widths[2]}>
-                      <h6>
-                        <b>Profile photo:</b>
-                        <img
-                          // className="d-block w-100"
-                          src={`${BASE_URL}/api/students/${this.state.thread.student_id._id}/files/Passport_Photo`}
-                          height="100%"
-                          width="100%"
-                        />
-                      </h6>
-                      If image not shown, please go to{' '}
-                      <a href="/base-documents">Base Documents</a> and upload
-                      the Passport Photo.
-                    </Col>
-                  )}
                 </Row>
               </Card.Body>
             </Card>
@@ -505,7 +425,6 @@ class CommunicationSinglePage extends Component {
         </Row>
         <Row>
           <MessageList
-            communication_id={this.state.communication_id}
             accordionKeys={this.state.accordionKeys}
             singleExpandtHandler={this.singleExpandtHandler}
             thread={this.state.thread}
@@ -561,62 +480,6 @@ class CommunicationSinglePage extends Component {
             </Card>
           </Row>
         )}
-        {is_TaiGer_role(this.props.user) &&
-          (!this.state.thread.isFinalVersion ? (
-            <Row className="mt-2">
-              {showButtonIfMyStudentB(
-                this.props.user,
-                this.state.thread.student_id
-              ) && (
-                <Button
-                  variant="success"
-                  onClick={(e) =>
-                    this.handleAsFinalFile(
-                      this.state.thread._id,
-                      this.state.thread.student_id._id,
-                      this.state.thread.program_id,
-                      this.state.thread.isFinalVersion
-                    )
-                  }
-                >
-                  {isSubmissionLoaded ? (
-                    'Mark as finished'
-                  ) : (
-                    <Spinner animation="border" role="status" size="sm">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  )}
-                </Button>
-              )}
-            </Row>
-          ) : (
-            <Row className="mt-2">
-              {showButtonIfMyStudentB(
-                this.props.user,
-                this.state.thread.student_id
-              ) && (
-                <Button
-                  variant="danger"
-                  onClick={(e) =>
-                    this.handleAsFinalFile(
-                      this.state.thread._id,
-                      this.state.thread.student_id._id,
-                      this.state.thread.program_id,
-                      this.state.thread.isFinalVersion
-                    )
-                  }
-                >
-                  {isSubmissionLoaded ? (
-                    'Mark as open'
-                  ) : (
-                    <Spinner animation="border" role="status" size="sm">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  )}
-                </Button>
-              )}
-            </Row>
-          ))}
         <Modal
           show={this.state.SetAsFinalFileModel}
           onHide={this.closeSetAsFinalFileModelWindow}

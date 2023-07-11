@@ -326,7 +326,7 @@ const routes = [
     component: CVMLRLOverview
   },
   {
-    path: '/communications/:communication_id',
+    path: '/communications/:student_id',
     exact: true,
     name: 'My Chat',
     component: CommunicationSinglePage

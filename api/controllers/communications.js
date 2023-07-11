@@ -3,23 +3,63 @@ const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor } = require('../models/User');
+const { Role, Agent, Student, Editor, User } = require('../models/User');
 const { one_month_cache } = require('../cache/node-cache');
 const { Communication } = require('../models/Communication');
-const {
-  sendNewApplicationMessageInThreadEmail,
-  sendAssignEditorReminderEmail,
-  sendNewGeneraldocMessageInThreadEmail
-} = require('../services/email');
+const { sendAssignEditorReminderEmail } = require('../services/email');
 const logger = require('../services/logger');
-const {
-  General_Docs,
-  application_deadline_calculator,
-  isNotArchiv,
-  CVDeadline_Calculator
-} = require('../constants');
+const { isNotArchiv } = require('../constants');
 
-const Permission = require('../models/Permission');
+const getMyMessages = asyncHandler(async (req, res) => {
+  const {
+    params: { taiger_user_id }
+  } = req;
+  const the_user = await User.findById(taiger_user_id).select(
+    'firstname lastname role'
+  );
+  if (
+    the_user.role !== 'Admin' &&
+    the_user.role !== 'Agent' &&
+    the_user.role !== 'Editor'
+  ) {
+    logger.error('getMyMessages: not TaiGer user!');
+    throw new ErrorResponse(401, 'Invalid TaiGer user');
+  }
+  const studentsWithExpenses = await Student.aggregate([
+    {
+      $lookup: {
+        from: 'communications',
+        localField: '_id',
+        foreignField: 'student_id',
+        as: 'communications'
+      }
+    }
+  ]);
+
+  const students = await Student.find({
+    agents: the_user._id.toString(),
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select('-notification')
+    .lean();
+  // Merge the results
+  const mergedResults = students.map((student) => {
+    const aggregateData = studentsWithExpenses.find(
+      (item) => item._id.toString() === student._id.toString()
+    );
+    return { ...aggregateData, ...student };
+  });
+
+  return res
+    .status(200)
+    .send({ success: true, data: { students: mergedResults, the_user } });
+});
 
 const getMessages = asyncHandler(async (req, res) => {
   const {
@@ -53,7 +93,11 @@ const getMessages = asyncHandler(async (req, res) => {
     {
       student_id: studentId
     },
-    {},
+    {
+      $push: {
+        readBy: user._id.toString()
+      }
+    },
     { new: true, upsert: true }
   )
     .populate('student_id', 'firstname lastname role agents editors')
@@ -63,7 +107,9 @@ const getMessages = asyncHandler(async (req, res) => {
 
   // Multitenant-filter: Check student can only access their own thread!!!!
   if (user.role === Role.Student) {
-    if (communication_thread.student_id._id.toString() !== user._id.toString()) {
+    if (
+      communication_thread.student_id._id.toString() !== user._id.toString()
+    ) {
       logger.error('getMessages: Unauthorized request!');
       throw new ErrorResponse(403, 'Unauthorized request');
     }
@@ -75,13 +121,13 @@ const getMessages = asyncHandler(async (req, res) => {
 const postMessages = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { communicationThreadId }
+    params: { communicationThreadId, studentId }
   } = req;
   const { message } = req.body;
-
+  console.log(message);
   const communication_thread = await Communication.findById(
     communicationThreadId
-  ).populate('student_id program_id');
+  ).populate('student_id messages.user_id', 'firstname lastname');
   if (!communication_thread) {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
@@ -109,11 +155,11 @@ const postMessages = asyncHandler(async (req, res) => {
   // TODO: prevent abuse! if communication_thread.messages.length > 30, too much message in a thread!
   communication_thread.messages.push(new_message);
   communication_thread.updatedAt = new Date();
+  communication_thread.readBy = [user._id.toString()];
   await communication_thread.save();
   const communication_thread2 = await Communication.findById(
     communicationThreadId
-  ).populate('student_id messages.user_id');
-  // in student (User) collections.
+  ).populate('student_id messages.user_id', 'firstname lastname');
   const student = await Student.findById(communication_thread.student_id)
     .populate('applications.programId')
     .populate('editors agents', 'firstname lastname email archiv');
@@ -123,39 +169,15 @@ const postMessages = asyncHandler(async (req, res) => {
 
   if (user.role === Role.Student) {
     // If no editor, inform agent to assign
-    if (!student.editors || student.editors.length === 0) {
-      for (let i = 0; i < student.agents.length; i += 1) {
-        // inform active-agent
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.agents[i])) {
-            sendAssignEditorReminderEmail(
-              {
-                firstname: student.agents[i].firstname,
-                lastname: student.agents[i].lastname,
-                address: student.agents[i].email
-              },
-              {
-                student_firstname: student.firstname,
-                student_id: student._id.toString(),
-                student_lastname: student.lastname
-              }
-            );
-          }
-        }
-      }
-      // inform editor-lead
-      const permissions = await Permission.find({
-        canAssignEditors: true
-      })
-        .populate('user_id', 'firstname lastname email')
-        .lean();
-      if (permissions) {
-        for (let x = 0; x < permissions.length; x += 1) {
+    for (let i = 0; i < student.agents.length; i += 1) {
+      // inform active-agent
+      if (isNotArchiv(student)) {
+        if (isNotArchiv(student.agents[i])) {
           sendAssignEditorReminderEmail(
             {
-              firstname: permissions[x].user_id.firstname,
-              lastname: permissions[x].user_id.lastname,
-              address: permissions[x].user_id.email
+              firstname: student.agents[i].firstname,
+              lastname: student.agents[i].lastname,
+              address: student.agents[i].email
             },
             {
               student_firstname: student.firstname,
@@ -164,199 +186,6 @@ const postMessages = asyncHandler(async (req, res) => {
             }
           );
         }
-      }
-    } else {
-      // Inform Editor
-      for (let i = 0; i < student.editors.length; i += 1) {
-        if (communication_thread.program_id) {
-          if (isNotArchiv(student)) {
-            if (isNotArchiv(student.editors[i])) {
-              sendNewApplicationMessageInThreadEmail(
-                {
-                  firstname: student.editors[i].firstname,
-                  lastname: student.editors[i].lastname,
-                  address: student.editors[i].email
-                },
-                {
-                  writer_firstname: user.firstname,
-                  writer_lastname: user.lastname,
-                  student_firstname: student.firstname,
-                  student_lastname: student.lastname,
-                  uploaded_documentname: communication_thread.file_type,
-                  school: communication_thread.program_id.school,
-                  program_name: communication_thread.program_id.program_name,
-                  thread_id: communication_thread._id.toString(),
-                  uploaded_updatedAt: new Date(),
-                  message
-                }
-              );
-            }
-          }
-        } else {
-          if (isNotArchiv(student)) {
-            if (isNotArchiv(student.editors[i])) {
-              sendNewGeneraldocMessageInThreadEmail(
-                {
-                  firstname: student.editors[i].firstname,
-                  lastname: student.editors[i].lastname,
-                  address: student.editors[i].email
-                },
-                {
-                  writer_firstname: user.firstname,
-                  writer_lastname: user.lastname,
-                  student_firstname: student.firstname,
-                  student_lastname: student.lastname,
-                  thread_id: communication_thread._id.toString(),
-                  uploaded_updatedAt: new Date(),
-                  message
-                }
-              );
-            }
-          }
-        }
-      }
-    }
-  }
-  if (user.role === Role.Editor) {
-    // Inform student
-    if (communication_thread.program_id) {
-      if (isNotArchiv(communication_thread.student_id)) {
-        sendNewApplicationMessageInThreadEmail(
-          {
-            firstname: communication_thread.student_id.firstname,
-            lastname: communication_thread.student_id.lastname,
-            address: communication_thread.student_id.email
-          },
-          {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            uploaded_documentname: communication_thread.file_type,
-            school: communication_thread.program_id.school,
-            thread_id: communication_thread._id.toString(),
-            program_name: communication_thread.program_id.program_name,
-            uploaded_updatedAt: new Date(),
-            message
-          }
-        );
-      }
-    } else {
-      if (isNotArchiv(communication_thread.student_id)) {
-        sendNewGeneraldocMessageInThreadEmail(
-          {
-            firstname: communication_thread.student_id.firstname,
-            lastname: communication_thread.student_id.lastname,
-            address: communication_thread.student_id.email
-          },
-          {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            uploaded_documentname: communication_thread.file_type,
-            thread_id: communication_thread._id.toString(),
-            uploaded_updatedAt: new Date(),
-            message
-          }
-        );
-      }
-    }
-  }
-  if (user.role === Role.Agent || user.role === Role.Admin) {
-    // Inform Editor
-    // const student = user;
-    for (let i = 0; i < student.editors.length; i += 1) {
-      if (communication_thread.program_id) {
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.editors[i])) {
-            sendNewApplicationMessageInThreadEmail(
-              {
-                firstname: student.editors[i].firstname,
-                lastname: student.editors[i].lastname,
-                address: student.editors[i].email
-              },
-              {
-                writer_firstname: user.firstname,
-                writer_lastname: user.lastname,
-                student_firstname: student.firstname,
-                student_lastname: student.lastname,
-                uploaded_documentname: communication_thread.file_type,
-                school: communication_thread.program_id.school,
-                program_name: communication_thread.program_id.program_name,
-                thread_id: communication_thread._id.toString(),
-                uploaded_updatedAt: new Date(),
-                message
-              }
-            );
-          }
-        }
-      } else {
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.editors[i])) {
-            sendNewGeneraldocMessageInThreadEmail(
-              {
-                firstname: student.editors[i].firstname,
-                lastname: student.editors[i].lastname,
-                address: student.editors[i].email
-              },
-              {
-                writer_firstname: user.firstname,
-                writer_lastname: user.lastname,
-                student_firstname: student.firstname,
-                student_lastname: student.lastname,
-                uploaded_documentname: communication_thread.file_type,
-                thread_id: communication_thread._id.toString(),
-                uploaded_updatedAt: new Date(),
-                message
-              }
-            );
-          }
-        }
-      }
-    }
-    // Inform student
-    if (communication_thread.program_id) {
-      if (isNotArchiv(communication_thread.student_id)) {
-        sendNewApplicationMessageInThreadEmail(
-          {
-            firstname: communication_thread.student_id.firstname,
-            lastname: communication_thread.student_id.lastname,
-            address: communication_thread.student_id.email
-          },
-          {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            uploaded_documentname: communication_thread.file_type,
-            school: communication_thread.program_id.school,
-            thread_id: communication_thread._id.toString(),
-            program_name: communication_thread.program_id.program_name,
-            uploaded_updatedAt: new Date(),
-            message
-          }
-        );
-      }
-    } else {
-      if (isNotArchiv(communication_thread.student_id)) {
-        sendNewGeneraldocMessageInThreadEmail(
-          {
-            firstname: communication_thread.student_id.firstname,
-            lastname: communication_thread.student_id.lastname,
-            address: communication_thread.student_id.email
-          },
-          {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            uploaded_documentname: communication_thread.file_type,
-            thread_id: communication_thread._id.toString(),
-            uploaded_updatedAt: new Date(),
-            message
-          }
-        );
       }
     }
   }
@@ -413,10 +242,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     logger.error('deleteAMessageInThread : Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
   }
-  if (thread.isFinalVersion) {
-    logger.error('deleteAMessageInThread : FinalVersion is read only');
-    throw new ErrorResponse(423, 'FinalVersion is read only');
-  }
+
   const msg = thread.messages.find(
     (message) => message._id.toString() === messageId
   );
@@ -433,18 +259,6 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(409, 'You can only delete your own message.');
   }
 
-  // Messageid + extension (because extension is unique per message id)
-  for (let i = 0; i < msg.file.length; i += 1) {
-    const cache_key = `${messageId}${encodeURIComponent(
-      msg.file[i].name.split('.')[1]
-    )}`;
-    // console.log(cache_key);
-    const value = one_month_cache.del(cache_key);
-    // console.log(value);
-    if (value === 1) {
-      console.log('file cache key deleted successfully');
-    }
-  }
   // Don't need so delete in S3 , will delete by garbage collector
   await Communication.findByIdAndUpdate(communicationThreadId, {
     $pull: {
@@ -456,6 +270,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  getMyMessages,
   getMessages,
   postMessages,
   updateAMessageInThread,

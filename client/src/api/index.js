@@ -314,7 +314,9 @@ export const getMessageFileDownload = (documentsthreadId, messageId, fileId) =>
 export const getCommunicationThread = (communication_id) =>
   request.get(`/api/communications/${communication_id}`);
 export const postCommunicationThread = (communication_id, studentId, message) =>
-  request.post(`/api/communications/${communication_id}/${studentId}`, message);
+  request.post(`/api/communications/${communication_id}/${studentId}`, {
+    message
+  });
 export const updateAMessageInCommunicationThread = (
   communication_id,
   communication_messageId,

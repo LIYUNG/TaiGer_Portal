@@ -89,56 +89,6 @@ class Message extends Component {
         : false
       : false;
     const full_name = `${firstname} ${lastname}`;
-    const files_info = this.props.message.file.map((file, i) => (
-      <Card key={i} className="my-0">
-        <Card.Body className="py-2 px-0">
-          <Row>
-            <Col>
-              <span>
-                {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
-                <a
-                  href={`${BASE_URL}/api/document-threads/${
-                    this.props.documentsthreadId
-                  }/${this.props.message._id.toString()}/${
-                    file.path.replace(/\\/g, '/').split('/')[2]
-                  }`}
-                  target="_blank"
-                >
-                  <svg
-                    width="36"
-                    height="36"
-                    viewBox="0 0 36 36"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="mx-2"
-                  >
-                    <FileIcon
-                      extension={file.name.split('.').pop()}
-                      {...defaultStyles[file.name.split('.').pop()]}
-                    />
-                  </svg>
-                  {file.name}
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
-                      stroke="#000"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    ></path>
-                  </svg>
-                </a>
-              </span>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-    ));
 
     return (
       <>
@@ -216,7 +166,6 @@ class Message extends Component {
                 editorState={this.state.editorState}
                 defaultHeight={0}
               />
-              {files_info}
             </Card.Body>
           </Collapse>
         </Card>

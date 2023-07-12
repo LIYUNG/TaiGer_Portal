@@ -14,7 +14,7 @@ const navLogo = (props) => {
     <Aux>
       <div className="navbar-brand header-logo">
         <a
-          href={DEMO.BLANK_LINK}
+          href={DEMO.DASHBOARD_LINK}
           className="b-brand mx-2"
           style={{ textDecoration: 'none' }}
         >

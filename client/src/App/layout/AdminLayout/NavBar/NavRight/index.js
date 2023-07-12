@@ -1,76 +1,114 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Container,
-  Col,
-  Row,
-  Dropdown
-} from 'react-bootstrap';
+import { Col, Row, Dropdown, Button } from 'react-bootstrap';
 import { Avatar } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
 
 import { stringAvatar } from '../../../../../Demo/Utils/contants';
-// import ChatList from './ChatList';
+import ChatList from './ChatList';
 import Aux from '../../../../../hoc/_Aux';
 import DEMO from '../../../../../store/constant';
 
 class NavRight extends Component {
   state = {
-    listOpen: false
+    listOpen: false,
+    dropdownShow: false
   };
 
   handleOnClick(e) {
     this.props.handleOnClickLogout(e);
   }
 
+  handleOpenChat = (e) => {
+    // e.preventDefaults();
+    this.setState({ listOpen: true });
+  };
+
+  handleClick = (path) => {
+    history.push(path);
+  };
+  handleDropdownSelect = (eventKey) => {
+    this.setState({ dropdownShow: false });
+  };
+  handleDropdownToggle = (isOpen) => {
+    this.setState({ dropdownShow: isOpen });
+  };
   render() {
+    const user_name = `${this.props.userdata.firstname} ${this.props.userdata.lastname}`;
     return (
       <Aux>
-        <Container className="my-0 py-0 pb-0 mb-0">
-          <Col>
-            <ul className="navbar-nav ml-auto my-0 py-0">
-              <li className={this.props.rtlLayout ? 'mr-0' : 'm-l-0'}>
-                <Link
-                  to={DEMO.SETTINGS}
-                  style={{ textDecoration: 'none' }}
-                ></Link>
-              </li>
-              <li className="py-0">
-                <Dropdown variant="default">
-                  <Dropdown.Toggle variant="default" id="dropdown-basic">
-                    <Row>
-                      <Avatar
-                        {...stringAvatar(
-                          this.props.userdata.firstname +
-                            ' ' +
-                            this.props.userdata.lastname
-                        )}
-                        className="mt-1 mx-2"
-                        title={
-                          this.props.userdata.firstname +
-                          ' ' +
-                          this.props.userdata.lastname
-                        }
-                      />
-                      {/* {`${this.props.userdata.firstname} ${this.props.userdata.lastname}`} */}
-                    </Row>
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <Link to="/settings">
-                      <Dropdown.Item href="#/action-2">
-                        My Settings
+        <Col>
+          <ul className="navbar-nav ml-auto my-0 py-0">
+            <li className={this.props.rtlLayout ? 'mr-0' : 'm-l-0'}>
+              <Button size="sm" onClick={this.handleOpenChat}>
+                {/* <Link
+                    to={`/communications/${this.props.userdata._id.toString()}`}
+                  > */}
+                <i className="feather icon-mail" />
+                test
+                {/* </Link> */}
+              </Button>
+            </li>
+            <li className="py-0">
+              <Dropdown
+                alignRight
+                className="drp-user"
+                show={this.state.dropdownShow}
+                onSelect={this.handleDropdownSelect}
+                onToggle={this.handleDropdownToggle}
+              >
+                <Dropdown.Toggle variant="dafault" id="dropdown-basic">
+                  <Row>
+                    <Avatar
+                      {...stringAvatar(user_name)}
+                      className="mt-1 mx-2"
+                      title={user_name}
+                    />
+                  </Row>
+                </Dropdown.Toggle>
+                <Dropdown.Menu alignRight className="profile-notification">
+                  <div className="pro-head">
+                    <span>{user_name}</span>
+                  </div>
+                  <ul className="pro-body">
+                    <li>
+                      <Link
+                        to={DEMO.PROFILE}
+                        className="dropdown-item"
+                        onClick={() => this.setState({ dropdownShow: false })}
+                      >
+                        <i className="feather icon-user" /> Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={DEMO.SETTINGS}
+                        className="dropdown-item"
+                        onClick={() => this.setState({ dropdownShow: false })}
+                      >
+                        <i
+                          className="feather icon-settings"
+                          href="#/action-2"
+                        />{' '}
+                        Settings
+                      </Link>
+                    </li>
+                    <li>
+                      <Dropdown.Item onClick={(e) => this.handleOnClick(e)}>
+                        <i className="feather icon-log-out" /> Log Out
                       </Dropdown.Item>
-                    </Link>
-                    <Dropdown.Item onClick={(e) => this.handleOnClick(e)}>
-                      Sign Out
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-            </ul>
-          </Col>
-        </Container>
+                    </li>
+                  </ul>
+                </Dropdown.Menu>
+              </Dropdown>
+            </li>
+          </ul>
+        </Col>
+        <ChatList
+          listOpen={this.state.listOpen}
+          closed={() => {
+            this.setState({ listOpen: false });
+          }}
+        />
       </Aux>
     );
   }

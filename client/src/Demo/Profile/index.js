@@ -10,9 +10,8 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import DEMO from '../../store/constant';
 import { is_personal_data_filled } from '../Utils/checking-functions';
-class Settings extends React.Component {
+class Profile extends React.Component {
   state = {
     error: '',
     role: '',
@@ -215,116 +214,138 @@ class Settings extends React.Component {
           />
         )}
         <Row>
-          <Col md={6}>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
+          <Col>
+            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Reset Login Password
+                  Personal Data
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                <Row className="my-0 mx-0">
+                {!is_personal_data_filled(this.props.user) && (
+                  <Row>
+                    <Col>
+                      <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                        <p
+                          className="text-light my-3 mx-3"
+                          style={{ textAlign: 'left' }}
+                        >
+                          <BsExclamationTriangle size={18} />
+                          <b className="mx-2">Reminder:</b> Please fill your
+                          birthday / first name / last name
+                        </p>
+                      </Card>
+                    </Col>
+                  </Row>
+                )}
+                <Row>
                   <Col>
-                    {/* <Form> */}
-                    <Form.Group controlId="current_password">
+                    <Form.Group controlId="firstname">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Current Password
+                        Firstname (English)
                       </Form.Label>
                       <Form.Control
-                        type="password"
-                        onChange={(e) => this.handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Row className="my-4 mx-0">
-                  <Col>
-                    <Form.Group controlId="new_password">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        New Password
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        onChange={(e) => this.handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Row className="my-0 mx-0">
-                  <Col>
-                    <Form.Group controlId="new_password_again">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Enter New Password Again
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        // placeholder="Text"
-                        // readOnly={true}
-                        // value={this.props.user.lastname}
-                        onChange={(e) => this.handleChange_Credentials(e)}
+                        type="text"
+                        placeholder="First name"
+                        autoComplete="nope"
+                        value={this.state.personaldata.firstname}
+                        onChange={(e) => this.handleChange_PersonalData(e)}
                       />
                     </Form.Group>
                     <br />
+                    <Form.Group controlId="firstname_chinese">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        名 (中文)
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="小明"
+                        autoComplete="nope"
+                        defaultValue={this.state.personaldata.firstname_chinese}
+                        onChange={(e) => this.handleChange_PersonalData(e)}
+                      />
+                    </Form.Group>
+                    <br />
+                    <Form.Group className="mb-2">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Email
+                      </Form.Label>
+                      <p className="text-primary">{this.props.user.email}</p>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form autoComplete="nope">
+                      <Form.Group controlId="lastname">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Lastname (English)
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          autoComplete="nope"
+                          placeholder="Last name"
+                          defaultValue={this.state.personaldata.lastname}
+                          onChange={(e) => this.handleChange_PersonalData(e)}
+                        />
+                      </Form.Group>
+                    </Form>
+                    <br />
+                    <Form autoComplete="nope">
+                      <Form.Group controlId="lastname_chinese">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          姓 (中文)
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="王"
+                          autoComplete="nope"
+                          defaultValue={
+                            this.state.personaldata.lastname_chinese
+                          }
+                          onChange={(e) => this.handleChange_PersonalData(e)}
+                        />
+                      </Form.Group>
+                    </Form>
+                    <Form.Group className="my-2" controlId="birthday">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Birthday
+                      </Form.Label>
+                      <Form.Control
+                        type="date"
+                        placeholder="1999/01/01"
+                        defaultValue={this.state.personaldata.birthday}
+                        onChange={(e) => this.handleChange_PersonalData(e)}
+                      />
+                    </Form.Group>
                     <Button
-                      disabled={
-                        this.state.credentials.current_password === '' ||
-                        this.state.credentials.new_password === '' ||
-                        this.state.credentials.new_password_again === ''
-                      }
                       variant="primary"
+                      disabled={
+                        this.state.personaldata.firstname === '' ||
+                        this.state.personaldata.firstname_chinese === '' ||
+                        this.state.personaldata.lastname === '' ||
+                        this.state.personaldata.lastname_chinese === '' ||
+                        !this.state.changed_personaldata
+                      }
                       onClick={(e) =>
-                        this.handleSubmit_Credentials(
+                        this.handleSubmit_PersonalData(
                           e,
-                          this.state.credentials,
-                          this.props.user.email
+                          this.state.personaldata
                         )
                       }
                     >
-                      Reset Password
+                      Update
                     </Button>
                   </Col>
                 </Row>
               </Card.Body>
             </Card>
+            {!isLoaded && (
+              <div style={spinner_style}>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            )}
           </Col>
-          {/* 
-          <Col md={6}>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Email Settings
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Row className="my-0 mx-0">
-                  <Col></Col>
-                </Row>
-                <Row className="my-0 mx-0">
-                  <Col>
-                    <h4 className='text-info'>Coming soon</h4>
-                    <br />
-                    <Button
-                      disabled={
-                        this.state.credentials.current_password === '' ||
-                        this.state.credentials.new_password === '' ||
-                        this.state.credentials.new_password_again === ''
-                      }
-                      variant="primary"
-                      // onClick={(e) =>
-                      //   this.handleSubmit_Credentials(
-                      //     e,
-                      //     this.state.credentials,
-                      //     this.props.user.email
-                      //   )
-                      // }
-                    >
-                      Save
-                    </Button>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col> */}
         </Row>
         <Modal
           show={this.state.updateconfirmed}
@@ -369,4 +390,4 @@ class Settings extends React.Component {
   }
 }
 
-export default Settings;
+export default Profile;

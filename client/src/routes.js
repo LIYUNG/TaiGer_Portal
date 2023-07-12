@@ -60,6 +60,7 @@ const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
 const UsersTable = React.lazy(() => import('./Demo/Users/UsersTable'));
 const Survey = React.lazy(() => import('./Demo/Survey/index'));
 const Settings = React.lazy(() => import('./Demo/Settings/index'));
+const Profile = React.lazy(() => import('./Demo/Profile/index'));
 const Admissions = React.lazy(() => import('./Demo/Admissions/Admissions'));
 const StudentDatabase = React.lazy(() =>
   import('./Demo/StudentDatabase/index')
@@ -336,6 +337,12 @@ const routes = [
     exact: true,
     name: 'Settings',
     component: Settings
+  },
+  {
+    path: '/profile',
+    exact: true,
+    name: 'Profile',
+    component: Profile
   },
   {
     path: '/survey',

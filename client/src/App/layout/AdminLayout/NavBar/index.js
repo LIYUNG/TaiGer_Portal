@@ -43,7 +43,7 @@ class NavBar extends Component {
               <span />
             </a>
             <a
-              href={DEMO.BLANK_LINK}
+              href={DEMO.DASHBOARD_LINK}
               className="b-brand mx-2"
               style={{ textDecoration: 'none' }}
             >

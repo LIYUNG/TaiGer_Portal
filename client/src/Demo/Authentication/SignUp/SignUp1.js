@@ -166,12 +166,6 @@ export default function SignUp1({ userData }) {
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                   />
                 </div>
-                {/* <div className="form-group text-left">
-                                <div className="checkbox checkbox-fill d-inline">
-                                    <input type="checkbox" name="checkbox-fill-2" id="checkbox-fill-2" />
-                                    <label htmlFor="checkbox-fill-2" className="cr">Send me the <a href={DEMO.BLANK_LINK}> Newsletter</a> weekly.</label>
-                                </div>
-                            </div> */}
                 <button
                   className="btn btn-success shadow-2 mb-3"
                   disabled={buttondisable}

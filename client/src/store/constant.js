@@ -1,5 +1,5 @@
 const DEMO = {
-  BLANK_LINK: '/dashboard/default',
+  BLANK_LINK: '#',
   DASHBOARD_LINK: '/dashboard/default',
   MY_INTERVIEW_LINK: '/interview-training/my-interviews',
   INTERVIEW_LINK: '/interview-training',
@@ -10,7 +10,8 @@ const DEMO = {
   PORTALS_MANAGEMENT_LINK: '/portal-informations',
   SURVEY_LINK: '/survey',
   STUDENT_APPLICATIONS_LINK: '/student-applications',
-  SETTINGS: '/settings'
+  SETTINGS: '/settings',
+  PROFILE: '/profile'
 };
 
 export default DEMO;

@@ -3,11 +3,10 @@ import Message from './Message';
 
 class MessageList extends Component {
   render() {
-    const thread = this.props.thread.messages.map((message, i) => (
+    const thread = this.props.thread.map((message, i) => (
       <Message
         accordionKeys={this.props.accordionKeys}
         singleExpandtHandler={this.props.singleExpandtHandler}
-        id={message._id}
         idx={i}
         key={i}
         message={message}

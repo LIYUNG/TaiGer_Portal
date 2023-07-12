@@ -49,7 +49,7 @@ class CommunicationSinglePage extends Component {
   componentDidMount() {
     getCommunicationThread(this.props.match.params.student_id).then(
       (resp) => {
-        const { success, data } = resp.data;
+        const { success, data, student } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
@@ -57,13 +57,14 @@ class CommunicationSinglePage extends Component {
             thread: data,
             isLoaded: true,
             student_id: this.props.match.params.student_id,
+            student,
             file: null,
-            // accordionKeys: new Array(data.messages.length)
+            // accordionKeys: new Array(data.length)
             //   .fill()
             //   .map((x, i) => i) // to expand all
-            accordionKeys: new Array(data.messages.length)
+            accordionKeys: new Array(data.length)
               .fill()
-              .map((x, i) => (i === data.messages.length - 1 ? i : -1)), // to collapse all
+              .map((x, i) => (i === data.length - 1 ? i : -1)), // to collapse all
             res_status: status
           });
         } else {
@@ -125,7 +126,7 @@ class CommunicationSinglePage extends Component {
     this.setState((state) => ({
       ...state,
       expand: false,
-      accordionKeys: new Array(this.state.thread.messages.length)
+      accordionKeys: new Array(this.state.thread.length)
         .fill()
         .map((x, i) => -1) // to collapse all]
     }));
@@ -135,9 +136,7 @@ class CommunicationSinglePage extends Component {
     this.setState((state) => ({
       ...state,
       expand: true,
-      accordionKeys: new Array(this.state.thread.messages.length)
-        .fill()
-        .map((x, i) => i) // to expand all]
+      accordionKeys: new Array(this.state.thread.length).fill().map((x, i) => i) // to expand all]
     }));
   };
 
@@ -146,11 +145,7 @@ class CommunicationSinglePage extends Component {
     this.setState({ buttonDisabled: true });
     var message = JSON.stringify(editorState);
 
-    postCommunicationThread(
-      this.state.thread._id.toString(),
-      this.state.thread.student_id._id.toString(),
-      message
-    ).then(
+    postCommunicationThread(this.state.student._id.toString(), message).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
@@ -162,10 +157,7 @@ class CommunicationSinglePage extends Component {
             thread: data,
             isLoaded: true,
             buttonDisabled: false,
-            accordionKeys: [
-              ...this.state.accordionKeys,
-              data.messages.length - 1
-            ],
+            accordionKeys: [...this.state.accordionKeys, data.length - 1],
             res_modal_status: status
           });
         } else {
@@ -180,77 +172,12 @@ class CommunicationSinglePage extends Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
         this.setState((state) => ({
           ...state,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
-  };
-
-  handleAsFinalFile = (doc_thread_id, student_id, program_id) => {
-    this.setState((state) => ({
-      ...state,
-      doc_thread_id,
-      student_id,
-      program_id,
-      SetAsFinalFileModel: true
-    }));
-  };
-
-  ConfirmSetAsFinalFileHandler = (e) => {
-    e.preventDefault();
-    this.setState((state) => ({
-      ...state,
-      isSubmissionLoaded: false // false to reload everything
-    }));
-    const temp_program_id = this.state.program_id
-      ? this.state.program_id._id.toString()
-      : undefined;
-    SetFileAsFinal(
-      this.state.doc_thread_id,
-      this.state.student_id,
-      temp_program_id
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            isSubmissionLoaded: true,
-            thread: {
-              ...state.thread,
-              isFinalVersion: data.isFinalVersion,
-              updatedAt: data.updatedAt
-            },
-            success: success,
-            SetAsFinalFileModel: false,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          this.setState({
-            isLoaded: true,
-            isSubmissionLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          });
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: error
         }));
       }
     );
@@ -262,34 +189,29 @@ class CommunicationSinglePage extends Component {
       ...state,
       isLoaded: false
     }));
-    deleteAMessageInCommunicationThread(
-      this.state.thread._id.toString(),
-      message_id
-    ).then(
+    deleteAMessageInCommunicationThread(message_id).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
           // TODO: remove that message
-          var new_messages = [...this.state.thread.messages];
-          let idx = this.state.thread.messages.findIndex(
+          const new_messages = [...this.state.thread];
+          let idx = new_messages.findIndex(
             (message) => message._id.toString() === message_id
           );
           if (idx !== -1) {
             new_messages.splice(idx, 1);
           }
+          console.log(new_messages);
           this.setState((state) => ({
             ...state,
             success,
             isLoaded: true,
-            thread: {
-              ...this.state.thread,
-              messages: new_messages
-            },
+            thread: new_messages,
             buttonDisabled: false,
             // accordionKeys: [
             //   ...this.state.accordionKeys,
-            //   new_messages.length - 1
+            //   new_length - 1
             // ],
             res_modal_status: status
           }));
@@ -315,7 +237,6 @@ class CommunicationSinglePage extends Component {
         }));
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
   render() {
@@ -340,14 +261,8 @@ class CommunicationSinglePage extends Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    let widths = [];
-    if (this.state.thread.file_type === 'CV') {
-      widths = [9, 2, 1];
-    } else {
-      widths = [10, 2];
-    }
 
-    const student_name = `${this.state.thread.student_id.firstname} ${this.state.thread.student_id.lastname}`;
+    const student_name = `${this.state.student.firstname} ${this.state.student.lastname}`;
 
     TabTitle(`${student_name}`);
     return (
@@ -365,7 +280,7 @@ class CommunicationSinglePage extends Component {
               <h4 className="mt-1 ms-0" style={{ textAlign: 'left' }}>
                 <Link
                   className="text-primary"
-                  to={`/student-database/${this.state.thread.student_id._id.toString()}/profile`}
+                  to={`/student-database/${this.state.student._id.toString()}/profile`}
                 >
                   <b>{student_name}</b>
                 </Link>
@@ -412,7 +327,7 @@ class CommunicationSinglePage extends Component {
             <Card className="my-0 mx-0">
               <Card.Body>
                 <Row>
-                  <Col md={widths[0]}>
+                  <Col>
                     <h5>Instruction</h5>
                     <h6>
                       <b>Requirements:</b>
@@ -480,37 +395,6 @@ class CommunicationSinglePage extends Component {
             </Card>
           </Row>
         )}
-        <Modal
-          show={this.state.SetAsFinalFileModel}
-          onHide={this.closeSetAsFinalFileModelWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to set <b>{student_name}</b> as{' '}
-            <b>{this.state.thread.isFinalVersion ? 'open' : 'final'}</b>?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded || !isSubmissionLoaded}
-              onClick={(e) => this.ConfirmSetAsFinalFileHandler(e)}
-            >
-              {isSubmissionLoaded ? (
-                'Yes'
-              ) : (
-                <Spinner animation="border" role="status" size="sm">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              )}
-            </Button>
-            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={this.ConfirmError}

@@ -22,15 +22,6 @@ const router = Router();
 
 router.use(protect);
 
-router
-  .route('/:communicationThreadId/:studentId')
-  .post(
-    filter_archiv_user,
-    postMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    multitenant_filter,
-    postMessages
-  );
 // TODO: multitenancy: check user id match user_id in message
 router
   .route('/:communicationThreadId/:messageId')
@@ -41,7 +32,7 @@ router
     updateAMessageInThread
   );
 router
-  .route('/delete/:communicationThreadId/:messageId')
+  .route('/:messageId')
   .delete(
     filter_archiv_user,
     postMessagesImageRateLimiter,
@@ -52,6 +43,13 @@ router
 // Multitenant-filter in call-back function
 router
   .route('/:studentId')
+  .post(
+    filter_archiv_user,
+    postMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
+    postMessages
+  )
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),

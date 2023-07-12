@@ -9,6 +9,7 @@ const { Communication } = require('../models/Communication');
 const { sendAssignEditorReminderEmail } = require('../services/email');
 const logger = require('../services/logger');
 const { isNotArchiv } = require('../constants');
+const { ObjectId } = require('mongodb');
 
 const getMyMessages = asyncHandler(async (req, res) => {
   const {
@@ -67,105 +68,69 @@ const getMessages = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
 
-  const student = await Student.findById(studentId).populate(
-    'applications.programId'
+  const student = await Student.findById(studentId).select(
+    'firstname lastname'
   );
   if (!student) {
     logger.error('getMessages: Invalid student id!');
     throw new ErrorResponse(403, 'Invalid student id');
   }
+  const pageSize = 5;
+  const pageNumber = 1;
+  const skipAmount = (pageNumber - 1) * pageSize;
   let communication_thread;
-  communication_thread = await Communication.findOne({
+  communication_thread = await Communication.find({
     student_id: studentId
   })
-    .populate('student_id', 'firstname lastname role agents editors')
-    .populate('messages.user_id', 'firstname lastname role')
-    .lean()
-    .exec();
-
-  if (communication_thread) {
-    // Thread already exists, return it
-    return res.status(200).send({ success: true, data: communication_thread });
-  }
-  // Initialize a new communication thread
-
-  communication_thread = await Communication.findOneAndUpdate(
-    {
-      student_id: studentId
-    },
-    {
-      $push: {
-        readBy: user._id.toString()
-      }
-    },
-    { new: true, upsert: true }
-  )
-    .populate('student_id', 'firstname lastname role agents editors')
-    .populate('messages.user_id', 'firstname lastname role')
-    .lean()
-    .exec();
+    .populate('student_id user_id', 'firstname lastname role agents editors')
+    .sort({ timestamp: -1 })
+    .skip(skipAmount)
+    .limit(pageSize);
 
   // Multitenant-filter: Check student can only access their own thread!!!!
-  if (user.role === Role.Student) {
-    if (
-      communication_thread.student_id._id.toString() !== user._id.toString()
-    ) {
-      logger.error('getMessages: Unauthorized request!');
-      throw new ErrorResponse(403, 'Unauthorized request');
-    }
-  }
-  return res.status(200).send({ success: true, data: communication_thread });
+
+  return res
+    .status(200)
+    .send({ success: true, data: communication_thread, student });
 });
 
 // (O) notification email works
 const postMessages = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { communicationThreadId, studentId }
+    params: { studentId }
   } = req;
   const { message } = req.body;
   console.log(message);
-  const communication_thread = await Communication.findById(
-    communicationThreadId
-  ).populate('student_id messages.user_id', 'firstname lastname');
-  if (!communication_thread) {
-    logger.info('postMessages: Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
-  }
 
   try {
     JSON.parse(message);
   } catch (e) {
     throw new ErrorResponse(400, 'message collapse');
   }
-  // Check student can only access their own thread!!!!
-  if (user.role === Role.Student) {
-    if (
-      communication_thread.student_id._id.toString() !== user._id.toString()
-    ) {
-      logger.error('getMessages: Unauthorized request!');
-      throw new ErrorResponse(403, 'Unauthorized request');
-    }
-  }
-  const new_message = {
+  // [TODO] Check student can only access their own thread!!!!
+
+  const new_message = new Communication({
+    student_id: studentId,
     user_id: user._id,
     message,
+    readBy: [new ObjectId(user._id.toString())],
     createdAt: new Date()
-  };
-  // TODO: prevent abuse! if communication_thread.messages.length > 30, too much message in a thread!
-  communication_thread.messages.push(new_message);
-  communication_thread.updatedAt = new Date();
-  communication_thread.readBy = [user._id.toString()];
-  await communication_thread.save();
-  const communication_thread2 = await Communication.findById(
-    communicationThreadId
-  ).populate('student_id messages.user_id', 'firstname lastname');
-  const student = await Student.findById(communication_thread.student_id)
-    .populate('applications.programId')
-    .populate('editors agents', 'firstname lastname email archiv');
+  });
 
-  await student.save();
-  res.status(200).send({ success: true, data: communication_thread2 });
+  // TODO: prevent abuse! if communication_thread.messages.length > 30, too much message in a thread!
+
+  await new_message.save();
+  const communication_thread = await Communication.find({
+    student_id: studentId
+  }).populate('student_id user_id', 'firstname lastname');
+
+  res.status(200).send({ success: true, data: communication_thread });
+
+  const student = await Student.findById(studentId).populate(
+    'editors agents',
+    'firstname lastname email archiv'
+  );
 
   if (user.role === Role.Student) {
     // If no editor, inform agent to assign
@@ -234,39 +199,16 @@ const updateAMessageInThread = asyncHandler(async (req, res) => {
 const deleteAMessageInThread = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { communicationThreadId, messageId }
+    params: { messageId }
   } = req;
 
-  const thread = await Communication.findById(communicationThreadId);
-  if (!thread) {
-    logger.error('deleteAMessageInThread : Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
-  }
-
-  const msg = thread.messages.find(
-    (message) => message._id.toString() === messageId
-  );
-
-  if (!msg) {
-    logger.error('deleteAMessageInThread : Invalid message id');
-    throw new ErrorResponse(403, 'Invalid message id');
-  }
   // Prevent multitenant
-  if (msg.user_id.toString() !== user._id.toString()) {
-    logger.error(
-      'deleteAMessageInThread : You can only delete your own message.'
-    );
-    throw new ErrorResponse(409, 'You can only delete your own message.');
+  try {
+    await Communication.findByIdAndDelete(messageId);
+    res.status(200).send({ success: true });
+  } catch (e) {
+    throw new ErrorResponse(400, 'message collapse');
   }
-
-  // Don't need so delete in S3 , will delete by garbage collector
-  await Communication.findByIdAndUpdate(communicationThreadId, {
-    $pull: {
-      messages: { _id: messageId }
-    }
-  });
-
-  res.status(200).send({ success: true });
 });
 
 module.exports = {

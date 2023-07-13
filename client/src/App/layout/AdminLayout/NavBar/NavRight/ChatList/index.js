@@ -41,6 +41,7 @@ const chatList = (props) => {
                 <Friends
                   listOpen={props.listOpen}
                   handleCloseChat={props.handleCloseChat}
+                  user={props.user}
                 />
               </PerfectScrollbar>
             </div>

@@ -86,7 +86,7 @@ class Friends extends Component {
           <Friend
             key={f.id}
             data={f}
-            activeId={this.state.user.id}
+            activeId={this.props.user._id.toString()}
             clicked={this.props.handleCloseChat}
           />
         );

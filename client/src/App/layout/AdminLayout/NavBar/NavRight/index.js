@@ -117,6 +117,7 @@ class NavRight extends Component {
         <ChatList
           listOpen={this.state.listOpen}
           handleCloseChat={this.handleCloseChat}
+          user={this.props.userdata}
           closed={() => {
             this.setState({ listOpen: false });
           }}

@@ -34,9 +34,9 @@ const friend = (props) => {
       >
         <div
           className={
-            props.activeId === props.data.id
-              ? 'media userlist-box ripple active'
-              : 'media userlist-box ripple'
+            props.data.latestCommunication.readBy.includes(props.activeId)
+              ? 'media userlist-box ripple'
+              : 'media userlist-box ripple active'
           }
           onClick={props.clicked}
         >

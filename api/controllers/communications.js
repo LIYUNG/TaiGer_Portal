@@ -101,7 +101,13 @@ const getMessages = asyncHandler(async (req, res) => {
     .limit(pageSize);
 
   // Multitenant-filter: Check student can only access their own thread!!!!
-
+  if (communication_thread.length > 0) {
+    const lastElement = communication_thread[communication_thread.length - 1];
+    if (!lastElement.readBy.includes(new ObjectId(user._id.toString()))) {
+      lastElement.readBy.push(new ObjectId(user._id.toString()));
+      await lastElement.save();
+    }
+  }
   return res
     .status(200)
     .send({ success: true, data: communication_thread, student });

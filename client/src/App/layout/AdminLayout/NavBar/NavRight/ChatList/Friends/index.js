@@ -3,32 +3,108 @@ import React, { Component } from 'react';
 import friend from './friends';
 import Friend from './Friend';
 import Chat from './Chat';
-import Aux from "../../../../../../../hoc/_Aux";
+import Aux from '../../../../../../../hoc/_Aux';
+import { getMyCommunicationThread } from '../../../../../../../api';
+import { Spinner } from 'react-bootstrap';
+import { spinner_style } from '../../../../../../../Demo/Utils/contants';
 
 class Friends extends Component {
-    state = {
-        chatOpen: false,
-        user: []
-    };
+  state = {
+    chatOpen: false,
+    user: [],
+    students: [],
+    isLoaded: false
+  };
 
-    // componentWillReceiveProps = (nextProps) => {
-    UNSAFE_componentWillReceiveProps = (nextProps) => {
-        if (!nextProps.listOpen) {
-            this.setState({ chatOpen: false, user: [] });
+  componentDidMount() {
+    getMyCommunicationThread().then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState({
+            success,
+            students: data.students,
+            isLoaded: true,
+            file: null,
+            res_status: status
+          });
+        } else {
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
         }
-    };
-
-    render() {
-        const friendList = (friend).map(f => {
-            return <Friend key={f.id} data={f} activeId={this.state.user.id} clicked={() => this.setState({ chatOpen: true, user: f })} />;
-        });
-        return (
-            <Aux>
-                {friendList}
-                <Chat user={this.state.user} chatOpen={this.state.chatOpen} listOpen={this.props.listOpen} closed={() => this.setState({ chatOpen: false, user: [] })} />
-            </Aux>
-        );
+      },
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  }
+  // componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
+    if (!nextProps.listOpen) {
+      this.setState({ chatOpen: false, user: [] });
     }
+  };
+
+  render() {
+    const {
+      isLoaded,
+      students,
+      res_status,
+      res_modal_status,
+      res_modal_message
+    } = this.state;
+    if (!isLoaded && !students) {
+      return (
+        <div style={spinner_style}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden"></span>
+          </Spinner>
+        </div>
+      );
+    }
+    // const friendList = friend.map((f) => {
+    //   return (
+    //     <Friend
+    //       key={f.id}
+    //       data={f}
+    //       activeId={this.state.user.id}
+    //       clicked={() => this.setState({ chatOpen: true, user: f })}
+    //     />
+    //   );
+    // });
+    const friendList = this.state.students.map((f) => {
+      if (f.latestCommunication) {
+        return (
+          <Friend
+            key={f.id}
+            data={f}
+            activeId={this.state.user.id}
+            clicked={this.props.handleCloseChat}
+          />
+        );
+      }
+    });
+
+    return (
+      <Aux>
+        {friendList}
+        {/* <Chat
+          user={this.state.user}
+          chatOpen={this.state.chatOpen}
+          listOpen={this.props.listOpen}
+          closed={() => this.setState({ chatOpen: false, user: [] })}
+        /> */}
+      </Aux>
+    );
+  }
 }
 
 export default Friends;

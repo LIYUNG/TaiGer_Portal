@@ -7,6 +7,8 @@ import { stringAvatar } from '../../../../../Demo/Utils/contants';
 import ChatList from './ChatList';
 import Aux from '../../../../../hoc/_Aux';
 import DEMO from '../../../../../store/constant';
+import { AiOutlineMail } from 'react-icons/ai';
+import { is_TaiGer_Student } from '../../../../../Demo/Utils/checking-functions';
 
 class NavRight extends Component {
   state = {
@@ -21,6 +23,10 @@ class NavRight extends Component {
   handleOpenChat = (e) => {
     // e.preventDefaults();
     this.setState({ listOpen: true });
+  };
+  handleCloseChat = (e) => {
+    // e.preventDefaults();
+    this.setState({ listOpen: false });
   };
 
   handleClick = (path) => {
@@ -38,16 +44,21 @@ class NavRight extends Component {
       <Aux>
         <Col>
           <ul className="navbar-nav ml-auto my-0 py-0">
-            <li className={this.props.rtlLayout ? 'mr-0' : 'm-l-0'}>
-              <Button size="sm" onClick={this.handleOpenChat}>
-                {/* <Link
-                    to={`/communications/${this.props.userdata._id.toString()}`}
-                  > */}
-                <i className="feather icon-mail" />
-                test
-                {/* </Link> */}
-              </Button>
-            </li>
+            {is_TaiGer_Student(this.props.userdata) ? (
+              <li>
+                <Link
+                  to={`/communications/${this.props.userdata._id.toString()}`}
+                  className="dropdown-item"
+                  onClick={() => this.setState({ dropdownShow: false })}
+                >
+                  <AiOutlineMail size={24} />
+                </Link>
+              </li>
+            ) : (
+              <li className="mail-icon" onClick={this.handleOpenChat}>
+                <AiOutlineMail size={24} center />
+              </li>
+            )}
             <li className="py-0">
               <Dropdown
                 alignRight
@@ -105,6 +116,7 @@ class NavRight extends Component {
         </Col>
         <ChatList
           listOpen={this.state.listOpen}
+          handleCloseChat={this.handleCloseChat}
           closed={() => {
             this.setState({ listOpen: false });
           }}

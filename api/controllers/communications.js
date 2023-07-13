@@ -13,20 +13,22 @@ const { ObjectId } = require('mongodb');
 
 const getMyMessages = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { taiger_user_id }
   } = req;
   const the_user = await User.findById(taiger_user_id).select(
     'firstname lastname role'
   );
   if (
-    the_user.role !== 'Admin' &&
-    the_user.role !== 'Agent' &&
-    the_user.role !== 'Editor'
+    user.role !== 'Admin' &&
+    user.role !== 'Agent' &&
+    user.role !== 'Editor'
   ) {
     logger.error('getMyMessages: not TaiGer user!');
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
-  const studentsWithExpenses = await Student.aggregate([
+  // Get only the last communication
+  const studentsWithCommunications = await Student.aggregate([
     {
       $lookup: {
         from: 'communications',
@@ -34,24 +36,35 @@ const getMyMessages = asyncHandler(async (req, res) => {
         foreignField: 'student_id',
         as: 'communications'
       }
+    },
+    {
+      $project: {
+        firstname: 1,
+        lastname: 1,
+        role: 1,
+        latestCommunication: {
+          $arrayElemAt: ['$communications', -1]
+        }
+        // communications: {
+        //   _id: 1,
+        //   user_id: 1,
+        //   message: 1,
+        //   readBy: 1
+        //   // Include only the fields you want to retrieve
+        // }
+      }
     }
   ]);
 
   const students = await Student.find({
-    agents: the_user._id.toString(),
+    agents: user._id.toString(),
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .select('-notification')
+    .select('firstname lastname role')
     .lean();
   // Merge the results
   const mergedResults = students.map((student) => {
-    const aggregateData = studentsWithExpenses.find(
+    const aggregateData = studentsWithCommunications.find(
       (item) => item._id.toString() === student._id.toString()
     );
     return { ...aggregateData, ...student };
@@ -59,7 +72,7 @@ const getMyMessages = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .send({ success: true, data: { students: mergedResults, the_user } });
+    .send({ success: true, data: { students: mergedResults, user } });
 });
 
 const getMessages = asyncHandler(async (req, res) => {

@@ -311,6 +311,8 @@ export const getMessageFileDownload = (documentsthreadId, messageId, fileId) =>
       responseType: 'blob'
     }
   );
+export const getMyCommunicationThread = () =>
+  request.get('/api/communications/all');
 export const getCommunicationThread = (studentId) =>
   request.get(`/api/communications/${studentId}`);
 export const postCommunicationThread = (studentId, message) =>

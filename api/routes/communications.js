@@ -22,6 +22,13 @@ const router = Router();
 
 router.use(protect);
 
+router
+  .route('/all')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getMyMessages
+  );
 // TODO: multitenancy: check user id match user_id in message
 router
   .route('/:communicationThreadId/:messageId')
@@ -54,13 +61,6 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getMessages
-  );
-router
-  .route('/all')
-  .get(
-    getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    getMyMessages
   );
 
 module.exports = router;

@@ -85,6 +85,49 @@ class CommunicationSinglePage extends Component {
     );
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.match.params.student_id !== this.props.match.params.student_id
+    ) {
+      getCommunicationThread(this.props.match.params.student_id).then(
+        (resp) => {
+          const { success, data, student } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              success,
+              thread: data,
+              isLoaded: true,
+              student_id: this.props.match.params.student_id,
+              student,
+              file: null,
+              // accordionKeys: new Array(data.length)
+              //   .fill()
+              //   .map((x, i) => i) // to expand all
+              accordionKeys: new Array(data.length)
+                .fill()
+                .map((x, i) => (i === data.length - 1 ? i : -1)), // to collapse all
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
+  }
+
   closeSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,

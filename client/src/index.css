@@ -16,3 +16,19 @@ body {
 .image-tool--withBackground {
   width: 100%;
 }
+
+.mail-icon {
+  /* Default styles */
+  color: black;
+  background-color: transparent;
+}
+
+.mail-icon:hover {
+  /* Add your hover effect styles here */
+  /* Example styles: */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(212, 212, 212);
+}

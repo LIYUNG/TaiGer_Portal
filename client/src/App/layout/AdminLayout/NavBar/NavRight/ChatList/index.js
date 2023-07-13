@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import Friends from './Friends';
@@ -6,6 +6,23 @@ import Aux from '../../../../../../hoc/_Aux';
 import DEMO from '../../../../../../store/constant';
 
 const chatList = (props) => {
+  const componentRef = useRef();
+
+  useEffect(() => {
+    // Add event listener when the component mounts
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  const handleClickOutside = (event) => {
+    if (componentRef.current && !componentRef.current.contains(event.target)) {
+      // Clicked outside the component, trigger props.closed
+      props.closed();
+    }
+  };
   let listClass = ['header-user-list'];
   if (props.listOpen) {
     listClass = [...listClass, 'open'];
@@ -13,7 +30,7 @@ const chatList = (props) => {
 
   return (
     <Aux>
-      <div className={listClass.join(' ')}>
+      <div className={listClass.join(' ')} ref={componentRef}>
         <div className="h-list-header">
           <div className="input-group">
             <input
@@ -25,13 +42,13 @@ const chatList = (props) => {
           </div>
         </div>
         <div className="h-list-body">
-          <a
+          {/* <a
             href={DEMO.BLANK_LINK}
             className="h-close-text"
             onClick={props.closed}
           >
             <i className="feather icon-chevrons-right" />
-          </a>
+          </a> */}
           <div className="main-friend-cont scroll-div">
             <div
               className="main-friend-list"

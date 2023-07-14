@@ -1579,12 +1579,12 @@ const updateApplicationPreferenceSkill = asyncHandler(
 // (O) email : self notification
 const updatePersonalData = asyncHandler(async (req, res, next) => {
   const {
+    params: { user_id },
     user,
     body: { personaldata }
   } = req;
-  const { _id } = user;
   try {
-    const updatedStudent = await User.findByIdAndUpdate(_id, personaldata, {
+    const updatedStudent = await User.findByIdAndUpdate(user_id, personaldata, {
       upsert: true,
       new: true
     });
@@ -1593,7 +1593,9 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
       success: true,
       data: {
         firstname: updatedStudent.firstname,
+        firstname_chinese: updatedStudent.firstname_chinese,
         lastname: updatedStudent.lastname,
+        lastname_chinese: updatedStudent.lastname_chinese,
         birthday: personaldata.birthday
       }
     });

@@ -45,6 +45,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { AiFillEdit } from 'react-icons/ai';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -579,6 +580,12 @@ class SingleStudentPage extends React.Component {
                     {' | '}
                     {this.state.student.lastname_chinese}
                     {this.state.student.firstname_chinese}
+                    <Link
+                      to={'/profile/' + this.state.student._id}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <AiFillEdit color="red" size={24} />
+                    </Link>
                     <span
                       className="text-light mb-1 me-2 "
                       style={{ float: 'right' }}

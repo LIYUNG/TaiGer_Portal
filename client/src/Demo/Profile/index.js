@@ -8,7 +8,12 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { updatePersonalData, updateCredentials, logout } from '../../api';
+import {
+  updatePersonalData,
+  updateCredentials,
+  logout,
+  getUser
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_personal_data_filled } from '../Utils/checking-functions';
 class Profile extends React.Component {
@@ -20,13 +25,23 @@ class Profile extends React.Component {
     success: false,
     user: {},
     changed_personaldata: false,
-    personaldata: {
-      firstname: this.props.user.firstname,
-      firstname_chinese: this.props.user.firstname_chinese,
-      lastname: this.props.user.lastname,
-      lastname_chinese: this.props.user.lastname_chinese,
-      birthday: this.props.user.birthday
-    },
+    personaldata: this.props.match.params.user_id
+      ? {
+          firstname: '',
+          firstname_chinese: '',
+          lastname: '',
+          lastname_chinese: '',
+          birthday: '',
+          email: ''
+        }
+      : {
+          firstname: this.props.user.firstname,
+          firstname_chinese: this.props.user.firstname_chinese,
+          lastname: this.props.user.lastname,
+          lastname_chinese: this.props.user.lastname_chinese,
+          birthday: this.props.user.birthday,
+          email: this.props.user.email
+        },
     credentials: {
       current_password: '',
       new_password: '',
@@ -40,12 +55,61 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: true,
-      success: true
-    }));
+    this.getUser_function();
   }
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
+      this.getUser_function();
+    }
+  }
+
+  getUser_function = () => {
+    if (this.props.match.params.user_id) {
+      getUser(this.props.match.params.user_id).then(
+        (resp) => {
+          const { success, data } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              success,
+              isLoaded: true,
+              personaldata: {
+                firstname: data.firstname,
+                firstname_chinese: data.firstname_chinese,
+                lastname: data.lastname,
+                lastname_chinese: data.lastname_chinese,
+                birthday: data.birthday,
+                email: data.email
+              },
+              user_id: this.props.match.params.user_id
+                ? this.props.match.params.user_id
+                : this.props.user._id.toString(),
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    } else {
+      this.setState((state) => ({
+        ...state,
+        isLoaded: true,
+        success: true
+      }));
+    }
+  };
 
   handleChange_PersonalData = (e) => {
     var personaldata_temp = { ...this.state.personaldata };
@@ -58,7 +122,12 @@ class Profile extends React.Component {
   };
 
   handleSubmit_PersonalData = (e, personaldata) => {
-    updatePersonalData(personaldata).then(
+    updatePersonalData(
+      this.props.match.params.user_id
+        ? this.state.user_id
+        : this.props.user._id.toString(),
+      personaldata
+    ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -218,7 +287,17 @@ class Profile extends React.Component {
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Personal Data
+                  {this.props.match.params.user_id ? (
+                    <Link
+                      to={`/student-database/${this.props.match.params.user_id}/profile`}
+                      className="text-info"
+                    >
+                      {`${this.state.personaldata.firstname} ${this.state.personaldata.lastname} | ${this.state.personaldata.firstname_chinese} ${this.state.personaldata.lastname_chinese}`}{' '}
+                      Personal Data
+                    </Link>
+                  ) : (
+                    <>Personal Data</>
+                  )}
                 </Card.Title>
               </Card.Header>
               <Card.Body>
@@ -261,7 +340,7 @@ class Profile extends React.Component {
                         type="text"
                         placeholder="小明"
                         autoComplete="nope"
-                        defaultValue={this.state.personaldata.firstname_chinese}
+                        value={this.state.personaldata.firstname_chinese}
                         onChange={(e) => this.handleChange_PersonalData(e)}
                       />
                     </Form.Group>
@@ -270,7 +349,9 @@ class Profile extends React.Component {
                       <Form.Label className="my-0 mx-0 text-light">
                         Email
                       </Form.Label>
-                      <p className="text-primary">{this.props.user.email}</p>
+                      <p className="text-info">
+                        {this.state.personaldata.email}
+                      </p>
                     </Form.Group>
                   </Col>
                   <Col md={6}>
@@ -283,7 +364,7 @@ class Profile extends React.Component {
                           type="text"
                           autoComplete="nope"
                           placeholder="Last name"
-                          defaultValue={this.state.personaldata.lastname}
+                          value={this.state.personaldata.lastname}
                           onChange={(e) => this.handleChange_PersonalData(e)}
                         />
                       </Form.Group>
@@ -298,9 +379,7 @@ class Profile extends React.Component {
                           type="text"
                           placeholder="王"
                           autoComplete="nope"
-                          defaultValue={
-                            this.state.personaldata.lastname_chinese
-                          }
+                          value={this.state.personaldata.lastname_chinese}
                           onChange={(e) => this.handleChange_PersonalData(e)}
                         />
                       </Form.Group>
@@ -312,7 +391,7 @@ class Profile extends React.Component {
                       <Form.Control
                         type="date"
                         placeholder="1999/01/01"
-                        defaultValue={this.state.personaldata.birthday}
+                        value={this.state.personaldata.birthday}
                         onChange={(e) => this.handleChange_PersonalData(e)}
                       />
                     </Form.Group>

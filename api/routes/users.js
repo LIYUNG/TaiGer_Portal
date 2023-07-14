@@ -13,28 +13,49 @@ const {
   updateUserArchivStatus,
   addUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUser
 } = require('../controllers/users');
 
 const router = Router();
 
-router.use(protect, permit(Role.Admin));
+router.use(protect, permit(Role.Admin, Role.Agent, Role.Editor));
 
 router
   .route('/')
-  .get(filter_archiv_user, GeneralGETRequestRateLimiter, getUsers)
-  .post(filter_archiv_user, GeneralPOSTRequestRateLimiter, addUser);
+  .get(
+    filter_archiv_user,
+    permit(Role.Admin),
+    GeneralGETRequestRateLimiter,
+    getUsers
+  )
+  .post(
+    filter_archiv_user,
+    permit(Role.Admin),
+    GeneralPOSTRequestRateLimiter,
+    addUser
+  );
 
 router
   .route('/:user_id')
-  .post(filter_archiv_user, GeneralPOSTRequestRateLimiter, updateUser)
-  .delete(filter_archiv_user, GeneralDELETERequestRateLimiter, deleteUser);
-router
-  .route('/archiv/:user_id')
   .post(
     filter_archiv_user,
+    permit(Role.Admin),
     GeneralPOSTRequestRateLimiter,
-    updateUserArchivStatus
+    updateUser
+  )
+  .get(filter_archiv_user, GeneralGETRequestRateLimiter, getUser)
+  .delete(
+    filter_archiv_user,
+    permit(Role.Admin),
+    GeneralDELETERequestRateLimiter,
+    deleteUser
   );
+router.route('/archiv/:user_id').post(
+  filter_archiv_user,
+  permit(Role.Admin),
+  GeneralPOSTRequestRateLimiter,
+  updateUserArchivStatus
+);
 
 module.exports = router;

@@ -30,6 +30,7 @@ export const getQueryPublicResults = (keywords) =>
 
 // User APIs
 export const getUsers = () => request.get('/api/users');
+export const getUser = (user_id) => request.get(`/api/users/${user_id}`);
 export const addUser = (user_information) =>
   request.post('/api/users', user_information);
 
@@ -414,8 +415,8 @@ export const updateUserPermission = (taiger_user_id, permissions) =>
   request.post(`/api/permissions/${taiger_user_id}`, permissions);
 
 //Personal Data:
-export const updatePersonalData = (personaldata) =>
-  request.post(`/api/account/profile`, { personaldata });
+export const updatePersonalData = (user_id, personaldata) =>
+  request.post(`/api/account/profile/${user_id}`, { personaldata });
 
 export const updateCredentials = (credentials, email, password) =>
   request.post(`/api/account/credentials`, { credentials, email, password });

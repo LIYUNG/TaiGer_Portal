@@ -108,6 +108,13 @@ const getUsers = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: users });
 });
 
+const getUser = asyncHandler(async (req, res) => {
+  const { user_id } = req.params;
+  const user = await User.findById(user_id).lean();
+
+  res.status(200).send({ success: true, data: user });
+});
+
 // (O) TODO email notify user
 const updateUser = asyncHandler(async (req, res) => {
   const {
@@ -117,7 +124,10 @@ const updateUser = asyncHandler(async (req, res) => {
   // TODO: check if email in use already and if role is valid
   if (fields.role === Role.Admin) {
     logger.warn(`updateUser: User role is changed to ${fields.role}`);
-    throw new ErrorResponse(409, `Forbidden: User role is changed to ${fields.role}`);
+    throw new ErrorResponse(
+      409,
+      `Forbidden: User role is changed to ${fields.role}`
+    );
   }
   // TODO: if Agent or editor change role, remove their belong students!
   // const students = await Student.updateMany(
@@ -243,6 +253,7 @@ module.exports = {
   UserS3GarbageCollector,
   addUser,
   getUsers,
+  getUser,
   updateUserArchivStatus,
   updateUser,
   deleteUser

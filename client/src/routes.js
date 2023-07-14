@@ -345,6 +345,12 @@ const routes = [
     component: Profile
   },
   {
+    path: '/profile/:user_id',
+    exact: true,
+    name: 'Profile',
+    component: Profile
+  },
+  {
     path: '/survey',
     exact: true,
     name: '',

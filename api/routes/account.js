@@ -203,7 +203,7 @@ router
   );
 
 router
-  .route('/profile')
+  .route('/profile/:user_id')
   .post(
     filter_archiv_user,
     updatePersonalInformationRateLimiter,

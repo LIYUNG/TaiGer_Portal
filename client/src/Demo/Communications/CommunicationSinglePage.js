@@ -7,22 +7,13 @@ import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { spinner_style, templatelist } from '../Utils/contants';
+import { spinner_style } from '../Utils/contants';
 
 import {
-  is_TaiGer_AdminAgent,
-  is_TaiGer_role,
-  showButtonIfMyStudentB
-} from '../Utils/checking-functions';
-import { BASE_URL } from '../../api/request';
-
-import {
-  SubmitMessageWithAttachment,
   getCommunicationThread,
-  deleteAMessageInThread,
-  SetFileAsFinal,
   postCommunicationThread,
-  deleteAMessageInCommunicationThread
+  deleteAMessageInCommunicationThread,
+  loadCommunicationThread
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -30,11 +21,7 @@ import DEMO from '../../store/constant';
 class CommunicationSinglePage extends Component {
   state = {
     error: '',
-    file: null,
     isLoaded: false,
-    isSubmissionLoaded: true,
-    articles: [],
-    isEdit: false,
     thread: null,
     buttonDisabled: false,
     editorState: {},
@@ -54,11 +41,10 @@ class CommunicationSinglePage extends Component {
         if (success) {
           this.setState({
             success,
-            thread: data,
+            thread: data.reverse(),
             isLoaded: true,
             student_id: this.props.match.params.student_id,
             student,
-            file: null,
             // accordionKeys: new Array(data.length)
             //   .fill()
             //   .map((x, i) => i) // to expand all
@@ -96,11 +82,10 @@ class CommunicationSinglePage extends Component {
           if (success) {
             this.setState({
               success,
-              thread: data,
+              thread: data.reverse(),
               isLoaded: true,
               student_id: this.props.match.params.student_id,
               student,
-              file: null,
               // accordionKeys: new Array(data.length)
               //   .fill()
               //   .map((x, i) => i) // to expand all
@@ -133,19 +118,6 @@ class CommunicationSinglePage extends Component {
       ...state,
       SetAsFinalFileModel: false
     }));
-  };
-
-  onFileChange = (e) => {
-    e.preventDefault();
-    const file_num = e.target.files.length;
-    if (file_num <= 3) {
-      this.setState({ file: Array.from(e.target.files) });
-    } else {
-      this.setState({
-        res_modal_message: 'You can only select up to 3 files.',
-        res_modal_status: 423
-      });
-    }
   };
 
   ConfirmError = () => {
@@ -183,6 +155,42 @@ class CommunicationSinglePage extends Component {
     }));
   };
 
+  handleLoadMessages = () => {
+    loadCommunicationThread(this.props.match.params.student_id, 2).then(
+      (resp) => {
+        const { success, data, student } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState({
+            success,
+            thread: [...data.reverse(), ...this.state.thread],
+            isLoaded: true,
+            student,
+            accordionKeys: [
+              ...new Array(data.length).fill().map((x, i) => i), // to collapse all,
+              ...this.state.accordionKeys.map((x, i) =>
+                x !== -1 ? x + data.length : -1
+              )
+            ], // to collapse all
+            res_status: status
+          });
+        } else {
+          this.setState({
+            isLoaded: true,
+            res_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  };
   handleClickSave = (e, editorState) => {
     e.preventDefault();
     this.setState({ buttonDisabled: true });
@@ -195,7 +203,6 @@ class CommunicationSinglePage extends Component {
         if (success) {
           this.setState({
             success,
-            file: null,
             editorState: {},
             thread: data,
             isLoaded: true,
@@ -252,10 +259,6 @@ class CommunicationSinglePage extends Component {
             isLoaded: true,
             thread: new_messages,
             buttonDisabled: false,
-            // accordionKeys: [
-            //   ...this.state.accordionKeys,
-            //   new_length - 1
-            // ],
             res_modal_status: status
           }));
         } else {
@@ -285,7 +288,6 @@ class CommunicationSinglePage extends Component {
   render() {
     const {
       isLoaded,
-      isSubmissionLoaded,
       res_status,
       res_modal_status,
       res_modal_message
@@ -381,6 +383,7 @@ class CommunicationSinglePage extends Component {
             </Card>
           </Col>
         </Row>
+        <Button onClick={this.handleLoadMessages}>Load</Button>
         <Row>
           <MessageList
             accordionKeys={this.state.accordionKeys}
@@ -415,8 +418,6 @@ class CommunicationSinglePage extends Component {
                         doc_title={'this.state.doc_title'}
                         editorState={this.state.editorState}
                         handleClickSave={this.handleClickSave}
-                        file={this.state.file}
-                        onFileChange={this.onFileChange}
                       />
                     </Col>
                   </Row>

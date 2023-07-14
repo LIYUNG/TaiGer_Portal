@@ -42,13 +42,6 @@ const chatList = (props) => {
           </div>
         </div>
         <div className="h-list-body">
-          {/* <a
-            href={DEMO.BLANK_LINK}
-            className="h-close-text"
-            onClick={props.closed}
-          >
-            <i className="feather icon-chevrons-right" />
-          </a> */}
           <div className="main-friend-cont scroll-div">
             <div
               className="main-friend-list"

@@ -315,6 +315,8 @@ export const getMyCommunicationThread = () =>
   request.get('/api/communications/all');
 export const getCommunicationThread = (studentId) =>
   request.get(`/api/communications/${studentId}`);
+export const loadCommunicationThread = (studentId, pageNumber) =>
+  request.get(`/api/communications/${studentId}/pages/${pageNumber}`);
 export const postCommunicationThread = (studentId, message) =>
   request.post(`/api/communications/${studentId}`, {
     message

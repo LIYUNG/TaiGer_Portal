@@ -15,7 +15,8 @@ const {
   updateAMessageInThread,
   deleteAMessageInThread,
   postMessages,
-  getMyMessages
+  getMyMessages,
+  loadMessages
 } = require('../controllers/communications');
 
 const router = Router();
@@ -61,6 +62,13 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getMessages
+  );
+router
+  .route('/:studentId/pages/:pageNumber')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    loadMessages
   );
 
 module.exports = router;

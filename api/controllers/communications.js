@@ -10,6 +10,7 @@ const { sendAssignEditorReminderEmail } = require('../services/email');
 const logger = require('../services/logger');
 const { isNotArchiv } = require('../constants');
 const { ObjectId } = require('mongodb');
+const pageSize = 2;
 
 const getMyMessages = asyncHandler(async (req, res) => {
   const {
@@ -75,6 +76,35 @@ const getMyMessages = asyncHandler(async (req, res) => {
     .send({ success: true, data: { students: mergedResults, user } });
 });
 
+const loadMessages = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { studentId, pageNumber }
+  } = req;
+
+  const student = await Student.findById(studentId).select(
+    'firstname lastname'
+  );
+  if (!student) {
+    logger.error('getMessages: Invalid student id!');
+    throw new ErrorResponse(403, 'Invalid student id');
+  }
+  const skipAmount = (pageNumber - 1) * pageSize;
+  const communication_thread = await Communication.find({
+    student_id: studentId
+  })
+    .populate('student_id user_id', 'firstname lastname role agents editors')
+    .sort({ createdAt: -1 })
+    .skip(skipAmount) //skip first x items.
+    .limit(pageSize); // show only first y limit items after skip.
+
+  // Multitenant-filter: Check student can only access their own thread!!!!
+
+  return res
+    .status(200)
+    .send({ success: true, data: communication_thread, student });
+});
+
 const getMessages = asyncHandler(async (req, res) => {
   const {
     user,
@@ -88,17 +118,13 @@ const getMessages = asyncHandler(async (req, res) => {
     logger.error('getMessages: Invalid student id!');
     throw new ErrorResponse(403, 'Invalid student id');
   }
-  const pageSize = 5;
-  const pageNumber = 1;
-  const skipAmount = (pageNumber - 1) * pageSize;
   let communication_thread;
   communication_thread = await Communication.find({
     student_id: studentId
   })
     .populate('student_id user_id', 'firstname lastname role agents editors')
-    .sort({ timestamp: -1 })
-    .skip(skipAmount)
-    .limit(pageSize);
+    .sort({ createdAt: -1 })
+    .limit(pageSize); // show only first y limit items after skip.
 
   // Multitenant-filter: Check student can only access their own thread!!!!
   if (communication_thread.length > 0) {
@@ -232,6 +258,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 
 module.exports = {
   getMyMessages,
+  loadMessages,
   getMessages,
   postMessages,
   updateAMessageInThread,

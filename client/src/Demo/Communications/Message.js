@@ -18,7 +18,6 @@ import { Avatar } from '@mui/material';
 class Message extends Component {
   state = {
     editorState: null,
-    ConvertedContent: '',
     message_id: '',
     isLoaded: false,
     deleteMessageModalShow: false
@@ -37,7 +36,6 @@ class Message extends Component {
     this.setState((state) => ({
       ...state,
       editorState: initialEditorState,
-      ConvertedContent: initialEditorState,
       isLoaded: this.props.isLoaded,
       deleteMessageModalShow: false
     }));
@@ -57,7 +55,6 @@ class Message extends Component {
       this.setState((state) => ({
         ...state,
         editorState: initialEditorState,
-        ConvertedContent: initialEditorState,
         isLoaded: this.props.isLoaded,
         deleteMessageModalShow: false
       }));
@@ -163,12 +160,6 @@ class Message extends Component {
                   </span>
                 </p>
               </Col>
-              {/* <Col>
-              <p className="ps-0">
-                <span style={{ float: 'right', cursor: 'pointer' }}>
-                <span style={{ float: 'right' }}></span>
-              </p>
-            </Col> */}
             </Row>
           </Card.Header>
           <Collapse

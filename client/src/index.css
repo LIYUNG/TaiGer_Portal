@@ -6,6 +6,12 @@ body {
   max-width: unset;
 }
 
+.ct__content:not(.ct__content > *) {
+  /* Your styles for .ct__content */
+  background-color: rgb(255, 255, 255);
+  color: black;
+}
+
 .image-tool__caption {
   display: none;
 }

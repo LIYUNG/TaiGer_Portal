@@ -7,7 +7,7 @@ class MessageList extends Component {
       <Message
         accordionKeys={this.props.accordionKeys}
         singleExpandtHandler={this.props.singleExpandtHandler}
-        idx={i}
+        idx={this.props.thread.length - i - 1}
         key={i}
         message={message}
         onTrashClick={this.props.onTrashClick}

@@ -56,26 +56,7 @@ const EditorSimple = (props) => {
           class: List,
           inlineToolbar: true
         },
-        Marker: {
-          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
-          config: {
-            colorCollections: [
-              '#000000',
-              '#FF0000',
-              '#00FF00',
-              '#0000FF',
-              '#999999',
-              '#00FFFF',
-              '#FF00FF',
-              '#800080',
-              '#FFF'
-            ],
-            defaultColor: '#FFF',
-            type: 'marker'
-          }
-        },
-
-        underline: Underline,
+        underline: { class: Underline, inlineToolbar: true },
         code: CodeTool,
         // quote: Quote,
         table: {
@@ -101,6 +82,24 @@ const EditorSimple = (props) => {
               '#FFF'
             ],
             type: 'text'
+          }
+        },
+        Marker: {
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            defaultColor: '#FFF',
+            type: 'marker'
           }
         },
         textAlign: TextAlign,
@@ -188,25 +187,6 @@ const EditorSimple = (props) => {
           class: List,
           inlineToolbar: true
         },
-        Marker: {
-          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
-          config: {
-            colorCollections: [
-              '#000000',
-              '#FF0000',
-              '#00FF00',
-              '#0000FF',
-              '#999999',
-              '#00FFFF',
-              '#FF00FF',
-              '#800080',
-              '#FFF'
-            ],
-            defaultColor: '#FFF',
-            type: 'marker'
-          }
-        },
-
         underline: Underline,
         code: CodeTool,
         // quote: Quote,
@@ -233,6 +213,24 @@ const EditorSimple = (props) => {
               '#FFF'
             ],
             type: 'text'
+          }
+        },
+        Marker: {
+          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+          config: {
+            colorCollections: [
+              '#000000',
+              '#FF0000',
+              '#00FF00',
+              '#0000FF',
+              '#999999',
+              '#00FFFF',
+              '#FF00FF',
+              '#800080',
+              '#FFF'
+            ],
+            defaultColor: '#FFF',
+            type: 'marker'
           }
         },
         textAlign: TextAlign,

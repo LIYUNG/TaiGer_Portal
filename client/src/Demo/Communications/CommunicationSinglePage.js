@@ -26,9 +26,11 @@ class CommunicationSinglePage extends Component {
     buttonDisabled: false,
     editorState: {},
     expand: true,
+    pageNumber: 1,
     deadline: '',
     SetAsFinalFileModel: false,
     accordionKeys: [0], // to expand all]
+    loadButtonDisabled: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -50,7 +52,9 @@ class CommunicationSinglePage extends Component {
             //   .map((x, i) => i) // to expand all
             accordionKeys: new Array(data.length)
               .fill()
-              .map((x, i) => (i === data.length - 1 ? i : -1)), // to collapse all
+              .map((x, i) =>
+                i === data.length - 1 ? data.length - i - 1 : -1
+              ), // to collapse all
             res_status: status
           });
         } else {
@@ -91,7 +95,9 @@ class CommunicationSinglePage extends Component {
               //   .map((x, i) => i) // to expand all
               accordionKeys: new Array(data.length)
                 .fill()
-                .map((x, i) => (i === data.length - 1 ? i : -1)), // to collapse all
+                .map((x, i) =>
+                  i === data.length - 1 ? data.length - i - 1 : -1
+                ), // to collapse all
               res_status: status
             });
           } else {
@@ -151,12 +157,20 @@ class CommunicationSinglePage extends Component {
     this.setState((state) => ({
       ...state,
       expand: true,
-      accordionKeys: new Array(this.state.thread.length).fill().map((x, i) => i) // to expand all]
+      accordionKeys: new Array(this.state.thread.length)
+        .fill()
+        .map((x, i) => this.state.thread.length - i - 1) // to expand all]
     }));
   };
 
   handleLoadMessages = () => {
-    loadCommunicationThread(this.props.match.params.student_id, 2).then(
+    this.setState({
+      loadButtonDisabled: true
+    });
+    loadCommunicationThread(
+      this.props.match.params.student_id,
+      this.state.pageNumber + 1
+    ).then(
       (resp) => {
         const { success, data, student } = resp.data;
         const { status } = resp;
@@ -166,12 +180,14 @@ class CommunicationSinglePage extends Component {
             thread: [...data.reverse(), ...this.state.thread],
             isLoaded: true,
             student,
+            pageNumber: this.state.pageNumber + 1,
             accordionKeys: [
-              ...new Array(data.length).fill().map((x, i) => i), // to collapse all,
-              ...this.state.accordionKeys.map((x, i) =>
-                x !== -1 ? x + data.length : -1
-              )
+              ...new Array(data.length)
+                .fill()
+                .map((x, i) => data.length - i - 1 + this.state.thread.length), // to collapse all,
+              ...this.state.accordionKeys
             ], // to collapse all
+            loadButtonDisabled: data.length === 0 ? true : false,
             res_status: status
           });
         } else {
@@ -286,12 +302,8 @@ class CommunicationSinglePage extends Component {
   };
 
   render() {
-    const {
-      isLoaded,
-      res_status,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
+    const { isLoaded, res_status, res_modal_status, res_modal_message } =
+      this.state;
 
     if (!isLoaded && !this.state.thread) {
       return (
@@ -383,7 +395,12 @@ class CommunicationSinglePage extends Component {
             </Card>
           </Col>
         </Row>
-        <Button onClick={this.handleLoadMessages}>Load</Button>
+        <Button
+          onClick={this.handleLoadMessages}
+          disabled={this.state.loadButtonDisabled}
+        >
+          Load
+        </Button>
         <Row>
           <MessageList
             accordionKeys={this.state.accordionKeys}

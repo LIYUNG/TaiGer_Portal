@@ -9,6 +9,7 @@ import {
   Col
 } from 'react-bootstrap';
 import { RiCloseFill } from 'react-icons/ri';
+import Output from 'editorjs-react-renderer';
 import { BASE_URL } from '../../api/request';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { FileIcon, defaultStyles } from 'react-file-icon';
@@ -168,8 +169,8 @@ class Message extends Component {
             <Card.Body>
               {/* {JSON.stringify(this.state.editorState)} */}
               {/* <section>
-              <Output data={this.state.editorState} />
-            </section> */}
+                <Output data={this.state.editorState} />
+              </section> */}
               <EditorSimple
                 holder={`${this.props.message._id.toString()}`}
                 readOnly={true}

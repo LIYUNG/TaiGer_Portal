@@ -743,7 +743,8 @@ export const is_any_vpd_missing = (students) => {
             }
             if (
               students[i].applications[j].uni_assist &&
-              students[i].applications[j].uni_assist.status === DocumentStatus.NotNeeded
+              students[i].applications[j].uni_assist.status ===
+                DocumentStatus.NotNeeded
             ) {
               continue;
             }
@@ -799,14 +800,18 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
 export const is_personal_data_filled = (student) => {
   if (
     student.birthday === undefined ||
+    student.firstname === undefined ||
     student.firstname_chinese === undefined ||
+    student.lastname === undefined ||
     student.lastname_chinese === undefined
   ) {
     return false;
   }
   if (
     student.birthday === '' ||
+    student.firstname === '' ||
     student.firstname_chinese === '' ||
+    student.lastname === '' ||
     student.lastname_chinese === ''
   ) {
     return false;

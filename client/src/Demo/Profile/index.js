@@ -301,7 +301,7 @@ class Profile extends React.Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                {!is_personal_data_filled(this.props.user) && (
+                {!is_personal_data_filled(this.state.personaldata) && (
                   <Row>
                     <Col>
                       <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
@@ -311,7 +311,23 @@ class Profile extends React.Component {
                         >
                           <BsExclamationTriangle size={18} />
                           <b className="mx-2">Reminder:</b> Please fill your
-                          birthday / first name / last name
+                          <ul>
+                            {!this.state.personaldata.firstname && (
+                              <li>Firstname(English)</li>
+                            )}
+                            {!this.state.personaldata.lastname && (
+                              <li>Lastname(English)</li>
+                            )}
+                            {!this.state.personaldata.firstname_chinese && (
+                              <li>名 (中文)</li>
+                            )}
+                            {!this.state.personaldata.lastname_chinese && (
+                              <li>姓 (中文)</li>
+                            )}
+                            {!this.state.personaldata.birthday && (
+                              <li>birthday</li>
+                            )}
+                          </ul>
                         </p>
                       </Card>
                     </Col>

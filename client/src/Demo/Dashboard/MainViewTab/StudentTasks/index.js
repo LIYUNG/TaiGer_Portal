@@ -169,7 +169,7 @@ class StudentTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={`${DEMO.SETTINGS}`}
+                to={`${DEMO.PROFILE}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >

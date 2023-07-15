@@ -4,10 +4,13 @@ const { Role } = require('../models/User');
 const multitenant_filter = (req, res, next) => {
   const {
     user,
-    params: { studentId }
+    params: { studentId, user_id }
   } = req;
   if (user.role === Role.Student || user.role === Role.Guest) {
-    if (user._id.toString() !== studentId) {
+    if (
+      (studentId && user._id.toString() !== studentId) ||
+      (user_id && user._id.toString() !== user_id)
+    ) {
       return next(
         new ErrorResponse(403, 'Not allowed to access other resource.')
       );

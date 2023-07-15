@@ -255,7 +255,10 @@ class CommunicationSinglePage extends Component {
       ...state,
       isLoaded: false
     }));
-    deleteAMessageInCommunicationThread(message_id).then(
+    deleteAMessageInCommunicationThread(
+      this.props.match.params.student_id,
+      message_id
+    ).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;

@@ -13,7 +13,7 @@ const { protect, permit } = require('../middlewares/auth');
 const {
   getMessages,
   updateAMessageInThread,
-  deleteAMessageInThread,
+  deleteAMessageInCommunicationThread,
   postMessages,
   getMyMessages,
   loadMessages
@@ -30,25 +30,24 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getMyMessages
   );
-// TODO: multitenancy: check user id match user_id in message
+
 router
-  .route('/:communicationThreadId/:messageId')
+  .route('/:studentId/:messageId')
   .put(
     filter_archiv_user,
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     updateAMessageInThread
-  );
-router
-  .route('/:messageId')
+  )
   .delete(
     filter_archiv_user,
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    deleteAMessageInThread
+    multitenant_filter,
+    deleteAMessageInCommunicationThread
   );
 
-// Multitenant-filter in call-back function
 router
   .route('/:studentId')
   .post(
@@ -61,6 +60,7 @@ router
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     getMessages
   );
 router
@@ -68,6 +68,7 @@ router
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
     loadMessages
   );
 

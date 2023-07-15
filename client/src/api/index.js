@@ -331,8 +331,8 @@ export const updateAMessageInCommunicationThread = (
     `/api/communications/delete/${communication_id}/${communication_messageId}`,
     message
   );
-export const deleteAMessageInCommunicationThread = (message_id) =>
-  request.delete(`/api/communications/${message_id}`);
+export const deleteAMessageInCommunicationThread = (student_id, message_id) =>
+  request.delete(`/api/communications/${student_id}/${message_id}`);
 
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);

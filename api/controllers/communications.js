@@ -123,12 +123,12 @@ const getMessages = asyncHandler(async (req, res) => {
     student_id: studentId
   })
     .populate('student_id user_id', 'firstname lastname role agents editors')
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize); // show only first y limit items after skip.
 
   // Multitenant-filter: Check student can only access their own thread!!!!
   if (communication_thread.length > 0) {
-    const lastElement = communication_thread[communication_thread.length - 1];
+    const lastElement = communication_thread[0];
     if (!lastElement.readBy.includes(new ObjectId(user._id.toString()))) {
       lastElement.readBy.push(new ObjectId(user._id.toString()));
       await lastElement.save();
@@ -205,12 +205,12 @@ const postMessages = asyncHandler(async (req, res) => {
 const updateAMessageInThread = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { communicationThreadId, messageId }
+    params: { messageId }
   } = req;
 
-  const thread = await Communication.findById(communicationThreadId);
+  const thread = await Communication.findById(messageId);
   if (!thread) {
-    logger.error('deleteAMessageInThread : Invalid message thread id');
+    logger.error('updateAMessageInThread : Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
   }
 
@@ -219,19 +219,19 @@ const updateAMessageInThread = asyncHandler(async (req, res) => {
   );
 
   if (!msg) {
-    logger.error('deleteAMessageInThread : Invalid message id');
+    logger.error('updateAMessageInThread : Invalid message id');
     throw new ErrorResponse(403, 'Invalid message id');
   }
   // Prevent multitenant
   if (msg.user_id.toString() !== user._id.toString()) {
     logger.error(
-      'deleteAMessageInThread : You can only delete your own message.'
+      'updateAMessageInThread : You can only delete your own message.'
     );
     throw new ErrorResponse(409, 'You can only delete your own message.');
   }
 
   // TODO: update message
-  //   await Communication.findByIdAndUpdate(communicationThreadId, {
+  //   await Communication.findByIdAndUpdate(studentId, {
   //     $pull: {
   //       messages: { _id: messageId }
   //     }
@@ -241,7 +241,7 @@ const updateAMessageInThread = asyncHandler(async (req, res) => {
 });
 
 // (-) TODO email : no notification needed
-const deleteAMessageInThread = asyncHandler(async (req, res) => {
+const deleteAMessageInCommunicationThread = asyncHandler(async (req, res) => {
   const {
     user,
     params: { messageId }
@@ -262,5 +262,5 @@ module.exports = {
   getMessages,
   postMessages,
   updateAMessageInThread,
-  deleteAMessageInThread
+  deleteAMessageInCommunicationThread
 };

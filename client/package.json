@@ -31,7 +31,7 @@
     "bootstrap": "^5.2.2",
     "dompurify": "^2.4.0",
     "draft-js": "^0.11.7",
-    "editorjs-react-renderer": "^3.4.0",
+    "editorjs-react-renderer": "^3.5.1",
     "editorjs-text-color-plugin": "^2.0.4",
     "font-awesome": "^4.7.0",
     "google-maps-react": "^2.0.6",

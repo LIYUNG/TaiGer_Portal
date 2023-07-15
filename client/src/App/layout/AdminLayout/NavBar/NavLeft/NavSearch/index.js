@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import ModalMain from '../../../../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
 import { is_TaiGer_role } from '../../../../../../Demo/Utils/checking-functions';
+import { Role } from '../../../../../../Demo/Utils/contants';
 
 const NavSearch = (props) => {
   let [statedata, setStatedata] = useState({
@@ -172,11 +173,11 @@ const NavSearch = (props) => {
                     <li onClick={() => onClickStudentHandler(result)} key={i}>
                       {`${result.firstname} ${result.lastname} ${result.firstname_chinese} ${result.lastname_chinese}`}
                     </li>
-                  ) : result.role === 'Agent' ? (
+                  ) : result.role === Role.Agent ? (
                     <li onClick={() => onClickAgentHandler(result)} key={i}>
                       {`${result.firstname} ${result.lastname}`}
                     </li>
-                  ) : result.role === 'Editor' ? (
+                  ) : result.role === Role.Editor ? (
                     <li onClick={() => onClickEditorHandler(result)} key={i}>
                       {`${result.firstname} ${result.lastname}`}
                     </li>

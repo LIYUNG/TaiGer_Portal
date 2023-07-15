@@ -1,7 +1,5 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { BsExclamationTriangle } from 'react-icons/bs';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
@@ -10,8 +8,6 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { updatePersonalData, updateCredentials, logout } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import DEMO from '../../store/constant';
-import { is_personal_data_filled } from '../Utils/checking-functions';
 class Settings extends React.Component {
   state = {
     error: '',
@@ -33,7 +29,6 @@ class Settings extends React.Component {
       new_password: '',
       new_password_again: ''
     },
-    updateconfirmed: false,
     updatecredentialconfirmed: false,
     res_status: 0,
     res_modal_message: '',
@@ -47,53 +42,6 @@ class Settings extends React.Component {
       success: true
     }));
   }
-
-  handleChange_PersonalData = (e) => {
-    var personaldata_temp = { ...this.state.personaldata };
-    personaldata_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
-      changed_personaldata: true,
-      personaldata: personaldata_temp
-    }));
-  };
-
-  handleSubmit_PersonalData = (e, personaldata) => {
-    updatePersonalData(personaldata).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            personaldata: data,
-            success: success,
-            changed_personaldata: false,
-            updateconfirmed: true,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          this.setState({
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          });
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
 
   handleChange_Credentials = (e) => {
     var credentials_temp = { ...this.state.credentials };
@@ -147,15 +95,9 @@ class Settings extends React.Component {
     );
   };
 
-  onHide = () => {
-    this.setState({
-      updateconfirmed: false
-    });
-  };
-
   onHideCredential = () => {
     this.setState({
-      updateconfirmed: false
+      updatecredentialconfirmed: false
     });
   };
 
@@ -262,9 +204,6 @@ class Settings extends React.Component {
                         </Form.Label>
                         <Form.Control
                           type="password"
-                          // placeholder="Text"
-                          // readOnly={true}
-                          // value={this.props.user.lastname}
                           onChange={(e) => this.handleChange_Credentials(e)}
                         />
                       </Form.Group>
@@ -292,65 +231,10 @@ class Settings extends React.Component {
               </Card.Body>
             </Card>
           </Col>
-          {/* 
-          <Col md={6}>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Email Settings
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Row className="my-0 mx-0">
-                  <Col></Col>
-                </Row>
-                <Row className="my-0 mx-0">
-                  <Col>
-                    <h4 className='text-info'>Coming soon</h4>
-                    <br />
-                    <Button
-                      disabled={
-                        this.state.credentials.current_password === '' ||
-                        this.state.credentials.new_password === '' ||
-                        this.state.credentials.new_password_again === ''
-                      }
-                      variant="primary"
-                      // onClick={(e) =>
-                      //   this.handleSubmit_Credentials(
-                      //     e,
-                      //     this.state.credentials,
-                      //     this.props.user.email
-                      //   )
-                      // }
-                    >
-                      Save
-                    </Button>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col> */}
         </Row>
         <Modal
-          show={this.state.updateconfirmed}
-          onHide={this.onHide}
-          size="sm"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Update Success
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Personal Data is updated successfully!</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.setmodalhide}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
           show={this.state.updatecredentialconfirmed}
-          onHide={this.onHideCredential}
+          onHide={this.setmodalhideUpdateCredentials}
           size="sm"
           aria-labelledby="contained-modal-title-vcenter"
           centered

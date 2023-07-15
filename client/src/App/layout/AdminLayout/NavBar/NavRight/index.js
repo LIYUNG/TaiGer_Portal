@@ -8,7 +8,10 @@ import ChatList from './ChatList';
 import Aux from '../../../../../hoc/_Aux';
 import DEMO from '../../../../../store/constant';
 import { AiOutlineMail } from 'react-icons/ai';
-import { is_TaiGer_Student } from '../../../../../Demo/Utils/checking-functions';
+import {
+  is_TaiGer_AdminAgent,
+  is_TaiGer_Student
+} from '../../../../../Demo/Utils/checking-functions';
 
 class NavRight extends Component {
   state = {
@@ -44,7 +47,7 @@ class NavRight extends Component {
       <Aux>
         <Col>
           <ul className="navbar-nav ml-auto my-0 py-0">
-            {is_TaiGer_Student(this.props.userdata) ? (
+            {is_TaiGer_Student(this.props.userdata) && (
               <li>
                 <Link
                   to={`/communications/${this.props.userdata._id.toString()}`}
@@ -54,7 +57,8 @@ class NavRight extends Component {
                   <AiOutlineMail size={24} />
                 </Link>
               </li>
-            ) : (
+            )}
+            {is_TaiGer_AdminAgent(this.props.userdata) && (
               <li className="mail-icon" onClick={this.handleOpenChat}>
                 <AiOutlineMail size={24} center />
               </li>

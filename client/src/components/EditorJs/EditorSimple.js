@@ -39,6 +39,8 @@ const EditorSimple = (props) => {
           props.handleEditorChange(outputData);
         });
       },
+      placeholder:
+        'Please organize your questions and expected help concretely.',
       readOnly: props.readOnly,
       autofocus: true,
       minHeight: props.defaultHeight,
@@ -146,6 +148,9 @@ const EditorSimple = (props) => {
           config: {
             services: {
               youtube: true,
+              instagram: true,
+              imgur: true,
+              facebook: true,
               coub: true
             }
           }
@@ -266,11 +271,7 @@ const EditorSimple = (props) => {
     editor = new EditorJS(configuration);
   };
 
-  return (
-    <React.Fragment>
-      <div id={`${props.holder}`}></div>
-    </React.Fragment>
-  );
+  return <div id={`${props.holder}`}></div>;
 };
 
 export default EditorSimple;

@@ -1,16 +1,16 @@
 const aws = require('aws-sdk');
 const async = require('async');
-const path = require('path');
+const { ObjectId } = require('mongodb');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor, User } = require('../models/User');
-const { one_month_cache } = require('../cache/node-cache');
 const { Communication } = require('../models/Communication');
 const { sendAssignEditorReminderEmail } = require('../services/email');
 const logger = require('../services/logger');
 const { isNotArchiv } = require('../constants');
-const { ObjectId } = require('mongodb');
-const pageSize = 2;
+
+const pageSize = 5;
 
 const getMyMessages = asyncHandler(async (req, res) => {
   const {
@@ -21,9 +21,9 @@ const getMyMessages = asyncHandler(async (req, res) => {
     'firstname lastname role'
   );
   if (
-    user.role !== 'Admin' &&
-    user.role !== 'Agent' &&
-    user.role !== 'Editor'
+    user.role !== Role.Admin &&
+    user.role !== Role.Agent &&
+    user.role !== Role.Editor
   ) {
     logger.error('getMyMessages: not TaiGer user!');
     throw new ErrorResponse(401, 'Invalid TaiGer user');
@@ -56,7 +56,24 @@ const getMyMessages = asyncHandler(async (req, res) => {
       }
     }
   ]);
+  if (user.role === 'Admin') {
+    const students = await Student.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .select('firstname lastname role')
+      .lean();
+    // Merge the results
+    const mergedResults = students.map((student) => {
+      const aggregateData = studentsWithCommunications.find(
+        (item) => item._id.toString() === student._id.toString()
+      );
+      return { ...aggregateData, ...student };
+    });
 
+    return res
+      .status(200)
+      .send({ success: true, data: { students: mergedResults, user } });
+  }
   const students = await Student.find({
     agents: user._id.toString(),
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -95,7 +112,7 @@ const loadMessages = asyncHandler(async (req, res) => {
   })
     .populate('student_id user_id', 'firstname lastname role agents editors')
     .sort({ createdAt: -1 })
-    .skip(skipAmount) //skip first x items.
+    .skip(skipAmount) // skip first x items.
     .limit(pageSize); // show only first y limit items after skip.
 
   // Multitenant-filter: Check student can only access their own thread!!!!
@@ -146,7 +163,6 @@ const postMessages = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
   const { message } = req.body;
-  console.log(message);
 
   try {
     JSON.parse(message);
@@ -166,11 +182,13 @@ const postMessages = asyncHandler(async (req, res) => {
   // TODO: prevent abuse! if communication_thread.messages.length > 30, too much message in a thread!
 
   await new_message.save();
-  const communication_thread = await Communication.find({
+  const communication_latest = await Communication.find({
     student_id: studentId
-  }).populate('student_id user_id', 'firstname lastname');
-
-  res.status(200).send({ success: true, data: communication_thread });
+  })
+    .populate('student_id user_id', 'firstname lastname')
+    .sort({ createdAt: -1 }) // 0: latest!
+    .limit(1);
+  res.status(200).send({ success: true, data: communication_latest });
 
   const student = await Student.findById(studentId).populate(
     'editors agents',

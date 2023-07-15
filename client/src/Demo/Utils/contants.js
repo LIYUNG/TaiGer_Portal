@@ -318,6 +318,14 @@ export const documentation_categories = {
   uniassist: 'Uni-Assist Instruction',
   visa: 'Visa Instruction'
 };
+export const Role = {
+  Admin: 'Admin',
+  Manager: 'Manager',
+  Guest: 'Guest',
+  Agent: 'Agent',
+  Editor: 'Editor',
+  Student: 'Student'
+};
 
 export const internal_documentation_categories = {
   agents: 'Agents',

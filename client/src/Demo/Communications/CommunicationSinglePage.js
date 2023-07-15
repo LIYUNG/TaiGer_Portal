@@ -23,12 +23,14 @@ class CommunicationSinglePage extends Component {
     error: '',
     isLoaded: false,
     thread: null,
+    upperThread: [],
     buttonDisabled: false,
     editorState: {},
     expand: true,
     pageNumber: 1,
     deadline: '',
     SetAsFinalFileModel: false,
+    uppderaccordionKeys: [], // to expand all]
     accordionKeys: [0], // to expand all]
     loadButtonDisabled: false,
     res_status: 0,
@@ -134,6 +136,15 @@ class CommunicationSinglePage extends Component {
     }));
   };
 
+  singleExpandtUpperHandler = (idx) => {
+    let uppderaccordionKeys = [...this.state.uppderaccordionKeys];
+    uppderaccordionKeys[idx] = uppderaccordionKeys[idx] !== idx ? idx : -1;
+    this.setState((state) => ({
+      ...state,
+      uppderaccordionKeys: uppderaccordionKeys
+    }));
+  };
+
   singleExpandtHandler = (idx) => {
     let accordionKeys = [...this.state.accordionKeys];
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
@@ -177,16 +188,22 @@ class CommunicationSinglePage extends Component {
         if (success) {
           this.setState({
             success,
-            thread: [...data.reverse(), ...this.state.thread],
+            upperThread: [...data.reverse(), ...this.state.upperThread],
             isLoaded: true,
             student,
             pageNumber: this.state.pageNumber + 1,
-            accordionKeys: [
+            uppderaccordionKeys: [
+              ...new Array(this.state.uppderaccordionKeys.length)
+                .fill()
+                .map((x, i) => i),
               ...new Array(data.length)
                 .fill()
-                .map((x, i) => data.length - i - 1 + this.state.thread.length), // to collapse all,
-              ...this.state.accordionKeys
-            ], // to collapse all
+                .map((x, i) =>
+                  this.state.uppderaccordionKeys !== -1
+                    ? i + this.state.uppderaccordionKeys.length
+                    : -1
+                )
+            ],
             loadButtonDisabled: data.length === 0 ? true : false,
             res_status: status
           });
@@ -220,10 +237,13 @@ class CommunicationSinglePage extends Component {
           this.setState({
             success,
             editorState: {},
-            thread: data,
+            thread: [...this.state.thread, ...data],
             isLoaded: true,
             buttonDisabled: false,
-            accordionKeys: [...this.state.accordionKeys, data.length - 1],
+            accordionKeys: [
+              ...this.state.accordionKeys,
+              this.state.accordionKeys.length
+            ],
             res_modal_status: status
           });
         } else {
@@ -271,11 +291,19 @@ class CommunicationSinglePage extends Component {
           if (idx !== -1) {
             new_messages.splice(idx, 1);
           }
-          console.log(new_messages);
+          const new_upper_messages = [...this.state.upperThread];
+          let idx2 = new_upper_messages.findIndex(
+            (message) => message._id.toString() === message_id
+          );
+          if (idx2 !== -1) {
+            new_upper_messages.splice(idx2, 1);
+          }
+          console.log(new_upper_messages);
           this.setState((state) => ({
             ...state,
             success,
             isLoaded: true,
+            upperThread: new_upper_messages,
             thread: new_messages,
             buttonDisabled: false,
             res_modal_status: status
@@ -405,8 +433,20 @@ class CommunicationSinglePage extends Component {
           Load
         </Button>
         <Row>
+          {this.state.upperThread.length > 0 && (
+            <MessageList
+              accordionKeys={this.state.uppderaccordionKeys}
+              isUpperMessagList={true}
+              singleExpandtHandler={this.singleExpandtUpperHandler}
+              thread={this.state.upperThread}
+              isLoaded={this.state.isLoaded}
+              user={this.props.user}
+              onDeleteSingleMessage={this.onDeleteSingleMessage}
+            />
+          )}
           <MessageList
             accordionKeys={this.state.accordionKeys}
+            isUpperMessagList={false}
             singleExpandtHandler={this.singleExpandtHandler}
             thread={this.state.thread}
             isLoaded={this.state.isLoaded}

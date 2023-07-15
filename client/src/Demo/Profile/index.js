@@ -313,10 +313,10 @@ class Profile extends React.Component {
                           <b className="mx-2">Reminder:</b> Please fill your
                           <ul>
                             {!this.state.personaldata.firstname && (
-                              <li>Firstname(English)</li>
+                              <li>First Name(English)</li>
                             )}
                             {!this.state.personaldata.lastname && (
-                              <li>Lastname(English)</li>
+                              <li>Last Name(English)</li>
                             )}
                             {!this.state.personaldata.firstname_chinese && (
                               <li>名 (中文)</li>
@@ -337,7 +337,7 @@ class Profile extends React.Component {
                   <Col>
                     <Form.Group controlId="firstname">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Firstname (English)
+                        First Name (English)
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -374,7 +374,7 @@ class Profile extends React.Component {
                     <Form autoComplete="nope">
                       <Form.Group controlId="lastname">
                         <Form.Label className="my-0 mx-0 text-light">
-                          Lastname (English)
+                          Last Name (English)
                         </Form.Label>
                         <Form.Control
                           type="text"

@@ -12,7 +12,7 @@ import { Link, Redirect } from 'react-router-dom';
 import ProgramListSubpage from './ProgramListSubpage';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { spinner_style } from '../Utils/contants';
+import { Role, spinner_style } from '../Utils/contants';
 
 import {
   Button,
@@ -549,7 +549,7 @@ function ProgramList(props) {
   });
   let [studentId, setStudentId] = useState('');
 
-  if (props.user.role !== 'Admin' && props.user.role !== 'Agent') {
+  if (props.user.role !== Role.Admin && props.user.role !== Role.Agent) {
     return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   TabTitle('Program List');

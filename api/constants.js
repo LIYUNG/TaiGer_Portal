@@ -1,4 +1,5 @@
 const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
+const { Role } = require('./models/User');
 
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
@@ -23,6 +24,7 @@ const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
 const SURVEY_URL_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 const SETTINGS_URL = new URL('/settings', ORIGIN).href;
+const PROFILE_URL = new URL('/profile', ORIGIN).href;
 const TEAMS_URL = new URL('/teams', ORIGIN).href;
 const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/background`, ORIGIN).href;
@@ -229,7 +231,7 @@ const does_editor_have_pending_tasks = (students, editor) => {
 
 const is_cv_ml_rl_task_response_needed = (student, user) => {
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    if (user.role === 'Editor') {
+    if (user.role === Role.Editor) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -238,7 +240,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
       ) {
         return true;
       }
-    } else if (user.role === 'Student') {
+    } else if (user.role === Role.Student) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -246,7 +248,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
       ) {
         return true;
       }
-    } else if (user.role === 'Agent') {
+    } else if (user.role === Role.Agent) {
       if (!student.generaldocs_threads[i].isFinalVersion) {
         return true;
       }
@@ -259,7 +261,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        if (user.role === 'Editor') {
+        if (user.role === Role.Editor) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -270,7 +272,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
           ) {
             return true;
           }
-        } else if (user.role === 'Student') {
+        } else if (user.role === Role.Student) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -279,7 +281,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
           ) {
             return true;
           }
-        } else if (user.role === 'Agent') {
+        } else if (user.role === Role.Agent) {
           if (
             !student.applications[i].doc_modification_thread[j].isFinalVersion
           ) {
@@ -299,7 +301,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       getNumberOfDays(student.generaldocs_threads[i].updatedAt, today),
       10
     );
-    if (user.role === 'Editor') {
+    if (user.role === Role.Editor) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -309,7 +311,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       ) {
         return true;
       }
-    } else if (user.role === 'Student') {
+    } else if (user.role === Role.Student) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -318,7 +320,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       ) {
         return true;
       }
-    } else if (user.role === 'Agent') {
+    } else if (user.role === Role.Agent) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         day_diff > trigger_days
@@ -342,7 +344,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           ),
           10
         );
-        if (user.role === 'Editor') {
+        if (user.role === Role.Editor) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -354,7 +356,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           ) {
             return true;
           }
-        } else if (user.role === 'Student') {
+        } else if (user.role === Role.Student) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -364,7 +366,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           ) {
             return true;
           }
-        } else if (user.role === 'Agent') {
+        } else if (user.role === Role.Agent) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -631,14 +633,14 @@ const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
 
 const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  if (user.role === 'Editor') {
+  if (user.role === Role.Editor) {
     missing_doc_list = `
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         ${cv_rl_escalation_editor_list(student, user, trigger_days)}
         ${ml_essay_escalation_editor_list(student, user, trigger_days)}
         </ul>`;
-  } else if (user.role === 'Student') {
+  } else if (user.role === Role.Student) {
     missing_doc_list = `
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
@@ -722,7 +724,7 @@ const unsubmitted_applications_escalation_agent_summary = (
 
 const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  if (user.role === 'Editor') {
+  if (user.role === Role.Editor) {
     missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
       student.firstname
@@ -733,7 +735,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
         ${ml_essay_escalation_editor_list(student, user, trigger_days)}
         </ul>`;
   }
-  if (user.role === 'Agent') {
+  if (user.role === Role.Agent) {
     missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
       student.firstname
@@ -753,7 +755,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
   let missing_doc_list = '';
   let kk = 0;
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    if (user.role === 'Editor') {
+    if (user.role === Role.Editor) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -778,7 +780,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           }</a></li>`;
         }
       }
-    } else if (user.role === 'Student') {
+    } else if (user.role === Role.Student) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -802,7 +804,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           }</a></li>`;
         }
       }
-    } else if (user.role === 'Agent') {
+    } else if (user.role === Role.Agent) {
       if (!student.generaldocs_threads[i].isFinalVersion) {
         if (kk === 0) {
           missing_doc_list = `
@@ -832,7 +834,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        if (user.role === 'Editor') {
+        if (user.role === Role.Editor) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -865,7 +867,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
               }</a></li>`;
             }
           }
-        } else if (user.role === 'Student') {
+        } else if (user.role === Role.Student) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -896,7 +898,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
               }</a></li>`;
             }
           }
-        } else if (user.role === 'Agent') {
+        } else if (user.role === Role.Agent) {
           if (
             !student.applications[i].doc_modification_thread[j].isFinalVersion
           ) {
@@ -1028,7 +1030,7 @@ const missing_academic_background = (student, user) => {
     <li>German Certificate?</li>`;
     }
     missing_background_fields += '</ul>';
-    if (user.role === 'Admin' || user.role === 'Agent') {
+    if (user.role === 'Admin' || user.role === Role.Agent) {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and <b>update</b> them.</p>`;
@@ -1156,7 +1158,7 @@ const missing_academic_background = (student, user) => {
         }
       }
     }
-    if (user.role === 'Agent' || user.role === 'Admin') {
+    if (user.role === Role.Agent || user.role === 'Admin') {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and update them.</p>`;
@@ -1429,6 +1431,7 @@ module.exports = {
   STUDENT_APPLICATION_URL,
   STUDENT_SURVEY_URL,
   SETTINGS_URL,
+  PROFILE_URL,
   STUDENT_BACKGROUND_FOR_AGENT_URL,
   STUDENT_PROFILE_FOR_AGENT_URL,
   STUDENT_COURSE_URL,

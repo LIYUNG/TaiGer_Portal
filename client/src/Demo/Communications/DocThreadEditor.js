@@ -46,7 +46,7 @@ function DocThreadEditor(props) {
                 thread={props.thread}
                 defaultHeight={0}
                 readOnly={false}
-                imageEnable={true}
+                imageEnable={false}
                 handleEditorChange={handleEditorChange}
                 handleClickSave={props.handleClickSave}
                 editorState={props.editorState}

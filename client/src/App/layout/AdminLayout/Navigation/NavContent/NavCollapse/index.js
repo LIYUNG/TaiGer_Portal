@@ -9,6 +9,7 @@ import NavIcon from './../NavIcon';
 import NavBadge from './../NavBadge';
 import NavItem from '../NavItem';
 import LoopNavCollapse from './index';
+import { Role } from '../../../../../../Demo/Utils/contants';
 
 class NavCollapse extends Component {
   componentDidMount() {
@@ -32,7 +33,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.role === 'Agent') {
+      if (this.props.role === Role.Agent) {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Tools' ||
@@ -43,7 +44,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.role === 'Editor') {
+      if (this.props.role === Role.Editor) {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Tools' ||

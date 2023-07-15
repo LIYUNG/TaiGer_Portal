@@ -4,7 +4,6 @@ import {
   Row,
   Col,
   Button,
-  Form,
   OverlayTrigger,
   Tooltip,
   Card
@@ -30,8 +29,7 @@ function DocThreadEditor(props) {
 
   const renderTooltip = (props) => (
     <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and
-      understanding.
+      Please write some text to improve the communication and understanding.
     </Tooltip>
   );
 

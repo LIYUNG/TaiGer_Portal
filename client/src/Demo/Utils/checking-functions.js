@@ -301,6 +301,10 @@ export const check_academic_background_filled = (academic_background) => {
     academic_background.university.high_school_isGraduated === '-' ||
     !academic_background.university.Has_Exchange_Experience ||
     academic_background.university.Has_Exchange_Experience === '-' ||
+    !academic_background.university.Has_Internship_Experience ||
+    academic_background.university.Has_Internship_Experience === '-' ||
+    !academic_background.university.Has_Working_Experience ||
+    academic_background.university.Has_Working_Experience === '-' ||
     !academic_background.university.attended_university ||
     !academic_background.university.attended_university_program
     // ||
@@ -444,6 +448,26 @@ export const check_applications_decision_from_student = (student) => {
 };
 
 export const check_applications_to_decided = (student) => {
+  if (!student.applications) {
+    return true;
+  }
+  if (student.applications.length === 0) {
+    return true;
+  }
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      !student.applications[j].decided ||
+      (student.applications[j].decided !== undefined &&
+        student.applications[j].decided === '-')
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const is_mycourses_finished = (student) => {
   if (!student.applications) {
     return true;
   }

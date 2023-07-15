@@ -58,7 +58,7 @@ const EditorSimple = (props) => {
           class: List,
           inlineToolbar: true
         },
-        underline: { class: Underline, inlineToolbar: true },
+        underline: Underline,
         code: CodeTool,
         // quote: Quote,
         table: {
@@ -141,7 +141,7 @@ const EditorSimple = (props) => {
             }
           }
         },
-        elimiter: Delimiter,
+        delimiter: Delimiter,
         embed: {
           class: Embed,
           inlineToolbar: false,
@@ -175,6 +175,8 @@ const EditorSimple = (props) => {
           props.handleEditorChange(outputData);
         });
       },
+      placeholder:
+        'Please organize your questions and expected help concretely.',
       readOnly: props.readOnly,
       autofocus: true,
       minHeight: props.defaultHeight,
@@ -239,7 +241,7 @@ const EditorSimple = (props) => {
           }
         },
         textAlign: TextAlign,
-        elimiter: Delimiter,
+        delimiter: Delimiter,
         embed: {
           class: Embed,
           inlineToolbar: false,

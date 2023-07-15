@@ -21,6 +21,7 @@ import {
   SetAsNotNeeded,
   SetUniAssistPaid
 } from '../../api';
+import { FiExternalLink } from 'react-icons/fi';
 
 class UniAssistListCard extends React.Component {
   state = {
@@ -395,6 +396,10 @@ class UniAssistListCard extends React.Component {
                     {application.programId.school}{' '}
                     {application.programId.program_name}{' '}
                     {application.programId.uni_assist}
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
                   </h4>
                 </Link>
               </Row>
@@ -590,6 +595,10 @@ class UniAssistListCard extends React.Component {
                 <h4 className="text-info">
                   {application.programId.school}{' '}
                   {application.programId.program_name}
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
                 </h4>
               </Link>
               <p className="text-light">
@@ -602,7 +611,11 @@ class UniAssistListCard extends React.Component {
             <>
               <h4 className="text-info">
                 {application.programId.school}{' '}
-                {application.programId.program_name}{' '}
+                {application.programId.program_name}
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
               </h4>
               <p className="text-light">
                 This program does NOT require Uni-Assist.

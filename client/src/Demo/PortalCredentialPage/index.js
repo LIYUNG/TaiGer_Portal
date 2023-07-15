@@ -278,6 +278,11 @@ export default function PortalCredentialPage(props) {
               <Row>
                 <Col>
                   <p>
+                    請到下列各學校網站 (Link)
+                    申請該校的申請平台帳號密碼，並在此葉提供帳號密碼，方便日後Agent為您登入檢查上傳文件正確性。若有
+                    Instructions 連結，請點入TaiGer連結，依照裡面教學完成。
+                  </p>
+                  <p>
                     Please share your universities' application portals
                     credentials here. Your agent(s) can help you review your
                     applications in universities' application portals, when you

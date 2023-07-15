@@ -1,5 +1,6 @@
 const DEMO = {
   BLANK_LINK: '#',
+  COURSES_LINK: '/my-courses',
   DASHBOARD_LINK: '/dashboard/default',
   MY_INTERVIEW_LINK: '/interview-training/my-interviews',
   INTERVIEW_LINK: '/interview-training',

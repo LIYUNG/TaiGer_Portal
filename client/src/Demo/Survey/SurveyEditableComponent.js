@@ -182,7 +182,7 @@ class SurveyEditableComponent extends React.Component {
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
-                  請盡速填好以下問卷問題
+                  <b>請盡速填好以下問卷問題，這將會影響Agent處理您的申請進度</b>
                   <br />
                   The followings information are still missing:{' '}
                   {this.props.academic_background &&
@@ -236,6 +236,26 @@ class SurveyEditableComponent extends React.Component {
                         .Has_Exchange_Experience === '-') && (
                       <li>
                         <b>Exchange Student Experience</b>
+                      </li>
+                    )}
+                  {this.props.academic_background &&
+                    this.props.academic_background.university &&
+                    (!this.props.academic_background.university
+                      .Has_Internship_Experience ||
+                      this.props.academic_background.university
+                        .Has_Internship_Experience === '-') && (
+                      <li>
+                        <b>Internship Experience</b>
+                      </li>
+                    )}
+                  {this.props.academic_background &&
+                    this.props.academic_background.university &&
+                    (!this.props.academic_background.university
+                      .Has_Working_Experience ||
+                      this.props.academic_background.university
+                        .Has_Working_Experience === '-') && (
+                      <li>
+                        <b>Full-Time Job Experience</b>
                       </li>
                     )}
                   {this.props.academic_background &&
@@ -312,7 +332,9 @@ class SurveyEditableComponent extends React.Component {
             <Col>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
                 <Card.Body>
-                  請盡速更新您的語言檢定資訊
+                  <b>
+                    請盡速更新您的語言檢定資訊，這將會影響Agent了解您的申請時程
+                  </b>
                   <br />
                   You <b>language skills</b> information are still missing or
                   not up-to-date.
@@ -521,9 +543,11 @@ class SurveyEditableComponent extends React.Component {
                         onChange={(e) => this.handleChange_Academic(e)}
                       >
                         <option value="-">-</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                        <option value="pending">Not finished yet</option>
+                        <option value="Yes">Yes 已畢業</option>
+                        <option value="No">No 未開始就讀</option>
+                        <option value="pending">
+                          Not finished yet 就讀中，尚未畢業
+                        </option>
                       </Form.Control>
                     </Form.Group>
                     <br />
@@ -566,7 +590,7 @@ class SurveyEditableComponent extends React.Component {
                   <Col md={6}>
                     <Form.Group controlId="Has_Exchange_Experience">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Exchange student experience ?
+                        Exchange Student Experience ?
                       </Form.Label>
                       <Form.Control
                         as="select"
@@ -577,6 +601,58 @@ class SurveyEditableComponent extends React.Component {
                             .Has_Exchange_Experience
                             ? this.state.academic_background.university
                                 .Has_Exchange_Experience
+                            : '-'
+                        }
+                        onChange={(e) => this.handleChange_Academic(e)}
+                      >
+                        <option value="-">-</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="Has_Internship_Experience">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Internship Experience ?
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        disabled={isReadonly}
+                        value={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university
+                            .Has_Internship_Experience
+                            ? this.state.academic_background.university
+                                .Has_Internship_Experience
+                            : '-'
+                        }
+                        onChange={(e) => this.handleChange_Academic(e)}
+                      >
+                        <option value="-">-</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <br />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="Has_Working_Experience">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        Full-Time Job Experience ?
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        disabled={isReadonly}
+                        value={
+                          this.state.academic_background.university &&
+                          this.state.academic_background.university
+                            .Has_Working_Experience
+                            ? this.state.academic_background.university
+                                .Has_Working_Experience
                             : '-'
                         }
                         onChange={(e) => this.handleChange_Academic(e)}

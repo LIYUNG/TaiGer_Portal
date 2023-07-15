@@ -1018,8 +1018,11 @@ const missing_academic_background = (student, user) => {
     <li>High School Graduate Year</li>
     <li>University Name</li>
     <li>University Program</li>
-    <li>Already Bachelor graduated?</li>
-    <li>Exchange student experience ?</li>`;
+    <li>Already Bachelor graduated ?</li>
+    <li>Exchange Student Experience ?</li>
+    <li>Internship Experience ?</li>
+    <li>Full-Time Job Experience ?</li>
+    `;
     }
     if (!student.application_preference) {
       missing_background_fields += `
@@ -1057,6 +1060,10 @@ const missing_academic_background = (student, user) => {
     student.academic_background.university.isGraduated === '-' ||
     !student.academic_background.university.Has_Exchange_Experience ||
     student.academic_background.university.Has_Exchange_Experience === '-' ||
+    !student.academic_background.university.Has_Internship_Experience ||
+    student.academic_background.university.Has_Internship_Experience === '-' ||
+    !student.academic_background.university.Has_Working_Experience ||
+    student.academic_background.university.Has_Working_Experience === '-' ||
     !student.application_preference.expected_application_date ||
     !student.application_preference.expected_application_semester ||
     !student.application_preference.target_application_field ||
@@ -1098,7 +1105,19 @@ const missing_academic_background = (student, user) => {
       !student.academic_background.university.Has_Exchange_Experience ||
       student.academic_background.university.Has_Exchange_Experience === '-'
     ) {
-      missing_background_fields += ' <li>Exchange student experience ?</li>';
+      missing_background_fields += ' <li>Exchange Student Experience ?</li>';
+    }
+    if (
+      !student.academic_background.university.Has_Internship_Experience ||
+      student.academic_background.university.Has_Internship_Experience === '-'
+    ) {
+      missing_background_fields += ' <li>Internship Experience ?</li>';
+    }
+    if (
+      !student.academic_background.university.Has_Working_Experience ||
+      student.academic_background.university.Has_Working_Experience === '-'
+    ) {
+      missing_background_fields += ' <li>Full-Time Job Experience ?</li>';
     }
     if (!student.application_preference.expected_application_date) {
       missing_background_fields += '<li>Expected Application Year</li>';

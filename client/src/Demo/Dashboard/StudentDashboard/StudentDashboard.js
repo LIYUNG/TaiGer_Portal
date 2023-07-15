@@ -20,6 +20,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
 import { programstatuslist } from '../../Utils/contants';
+import { FiExternalLink } from 'react-icons/fi';
 
 class StudentDashboard extends React.Component {
   state = {
@@ -129,7 +130,15 @@ class StudentDashboard extends React.Component {
               title={'Reminder:'}
               path={`${DEMO.SURVEY_LINK}`}
               text={'It looks like you did not finish survey. See'}
-              link_name={'Survey'}
+              link_name={
+                <>
+                  Survey
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </>
+              }
               removeBanner={this.removeBanner}
               notification_key={'isRead_survey_not_complete'}
             />
@@ -144,7 +153,15 @@ class StudentDashboard extends React.Component {
               title={'Reminder:'}
               path={`${DEMO.UNI_ASSIST_LINK}`}
               text={'Please go to Uni-Assist to apply or to get VPD'}
-              link_name={'Uni-Assist'}
+              link_name={
+                <>
+                  Uni-Assist
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </>
+              }
               removeBanner={this.removeBanner}
               notification_key={'isRead_uni_assist_task_assigned'}
             />
@@ -186,7 +203,15 @@ class StudentDashboard extends React.Component {
               title={'Reminder:'}
               path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
               text={'New feedback from your Editor. See'}
-              link_name={'CV/ML/RL Center'}
+              link_name={
+                <>
+                  CV/ML/RL Center
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </>
+              }
               removeBanner={this.removeBanner}
               notification_key={'isRead_new_cvmlrl_messsage'}
             />
@@ -200,7 +225,15 @@ class StudentDashboard extends React.Component {
               title={'Reminder:'}
               path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
               text={'New tasks are assigned to you. See'}
-              link_name={'CV/ML/RL Center'}
+              link_name={
+                <>
+                  CV/ML/RL Center
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </>
+              }
               removeBanner={this.removeBanner}
               notification_key={'isRead_new_cvmlrl_tasks_created'}
             />
@@ -214,7 +247,15 @@ class StudentDashboard extends React.Component {
               title={'Reminder:'}
               path={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
               text={'It looks like you did not decide programs'}
-              link_name={'Application Overview'}
+              link_name={
+                <>
+                  Application Overview
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </>
+              }
               removeBanner={this.removeBanner}
               notification_key={'isRead_new_programs_assigned'}
             />
@@ -228,7 +269,15 @@ class StudentDashboard extends React.Component {
               title={'Reminder:'}
               path={`${DEMO.BASE_DOCUMENTS_LINK}`}
               text={'Some of Base Documents are still missing'}
-              link_name={'Base Documents'}
+              link_name={
+                <>
+                  Base Documents
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </>
+              }
               removeBanner={this.removeBanner}
               notification_key={'isRead_base_documents_missing'}
             />
@@ -242,7 +291,15 @@ class StudentDashboard extends React.Component {
               title={'Reminder:'}
               path={`${DEMO.BASE_DOCUMENTS_LINK}`}
               text={'Some of Base Documents are rejected'}
-              link_name={'Base Documents'}
+              link_name={
+                <>
+                  Base Documents
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </>
+              }
               removeBanner={this.removeBanner}
               notification_key={'isRead_base_documents_rejected'}
             />

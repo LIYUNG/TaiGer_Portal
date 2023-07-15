@@ -212,6 +212,14 @@ const UserSchema = new Schema(
           type: String,
           default: '-'
         },
+        Has_Internship_Experience: {
+          type: String,
+          default: '-'
+        },
+        Has_Working_Experience: {
+          type: String,
+          default: '-'
+        },
         Passing_GPA_Uni: {
           type: Number
         },

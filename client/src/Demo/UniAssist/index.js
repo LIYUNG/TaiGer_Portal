@@ -9,6 +9,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { getStudent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { FiExternalLink } from 'react-icons/fi';
 
 class UniAssistList extends React.Component {
   state = {
@@ -88,7 +89,11 @@ class UniAssistList extends React.Component {
               <Card.Body className="my-0 mx-0 text-light">
                 Instructions: Follow the documentations in{' '}
                 <Link to="/docs/uniassist" className="text-info">
-                  Uni-Assist
+                  Uni-Assist{' '}
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
                 </Link>
               </Card.Body>
             </Card>

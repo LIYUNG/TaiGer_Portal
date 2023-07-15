@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FiExternalLink } from 'react-icons/fi';
 
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../Utils/contants';
@@ -11,7 +12,8 @@ import {
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing,
   to_register_application_portals,
-  is_personal_data_filled
+  is_personal_data_filled,
+  is_mycourses_finished
 } from '../../../Utils/checking-functions';
 
 class StudentTasks extends React.Component {
@@ -128,9 +130,32 @@ class StudentTasks extends React.Component {
                 className="text-info"
               >
                 Survey
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
               </Link>
             </td>
-            <td>It looks like you did not finish survey</td>
+            <td>請完成問卷，您的Agent才能了解您的狀況</td>
+            <td></td>
+          </tr>
+        )}
+        {!is_mycourses_finished(this.props.student) && (
+          <tr>
+            <td>
+              <Link
+                to={`${DEMO.COURSES_LINK}`}
+                style={{ textDecoration: 'none' }}
+                className="text-info"
+              >
+                My Courses
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
+              </Link>
+            </td>
+            <td>請完成大學修課表，Agent將會為您提供課程分析以及修課建議</td>
             <td></td>
           </tr>
         )}
@@ -143,6 +168,10 @@ class StudentTasks extends React.Component {
                 className="text-info"
               >
                 My Applications
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
               </Link>
             </td>
             <td>Please decide YES or NO</td>
@@ -159,6 +188,10 @@ class StudentTasks extends React.Component {
                 className="text-info"
               >
                 Uni-Assist
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
               </Link>
             </td>
             <td>Please go to Uni-Assist to apply and get VPD</td>
@@ -174,9 +207,15 @@ class StudentTasks extends React.Component {
                 className="text-info"
               >
                 Personal Data
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
               </Link>
             </td>
-            <td>Please go to Personal Data to fill your information.</td>
+            <td>
+              請務必更新你中英文姓名、生日資料。這會影響Editor為您正式文件準備。
+            </td>
             <td></td>
           </tr>
         )}
@@ -189,11 +228,13 @@ class StudentTasks extends React.Component {
                 className="text-info"
               >
                 Base Documents
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
               </Link>
             </td>
-            <td>
-              Some of Base Documents are still missing. Please upload them.
-            </td>
+            <td>請盡速上傳各類成績單和證書等的文件。Agent才能了解你學術背景</td>
             <td></td>
           </tr>
         )}
@@ -206,11 +247,14 @@ class StudentTasks extends React.Component {
                 className="text-info"
               >
                 Portals Management
+                <FiExternalLink
+                  className="mx-1 mb-1"
+                  style={{ cursor: 'pointer' }}
+                />
               </Link>
             </td>
             <td>
-              Some of Portals are still not registered. Please register and
-              provide the credentials as soon as possible.
+              請到各學校網站辦理帳號並提供您的帳號密碼，方便Agent日後為您做送出前檢查
             </td>
             <td></td>
           </tr>

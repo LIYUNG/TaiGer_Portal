@@ -16,7 +16,6 @@ import {
   loadCommunicationThread
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import DEMO from '../../store/constant';
 
 class CommunicationSinglePage extends Component {
   state = {
@@ -351,7 +350,9 @@ class CommunicationSinglePage extends Component {
     }
 
     const student_name = `${this.state.student.firstname} ${this.state.student.lastname}`;
-
+    const template_input = JSON.parse(
+      `{"time":1689452160435,"blocks":[{"id":"WHsFbpmWmH","type":"paragraph","data":{"text":"<b>我的問題：</b>"}},{"id":"F8K_f07R8l","type":"paragraph","data":{"text":"&lt;Example&gt; 我想選課，不知道下學期要選什麼"}},{"id":"yYUL0bYWSB","type":"paragraph","data":{"text":"<b>我想和顧問討論</b>："}},{"id":"wJu56jmAKC","type":"paragraph","data":{"text":"&lt;Example&gt; 課程符合度最佳化"}}],"version":"2.27.2"}`
+    );
     TabTitle(`${student_name}`);
     return (
       <Aux>
@@ -484,12 +485,11 @@ class CommunicationSinglePage extends Component {
                     </Col>
                   </Row>
                 ) : (
-                  <Row style={{ textDecoration: 'none' }}>
+                  <Row>
                     <Col className="my-0 mx-0">
                       <DocThreadEditor
                         thread={this.state.thread}
                         buttonDisabled={this.state.buttonDisabled}
-                        doc_title={'this.state.doc_title'}
                         editorState={this.state.editorState}
                         handleClickSave={this.handleClickSave}
                       />

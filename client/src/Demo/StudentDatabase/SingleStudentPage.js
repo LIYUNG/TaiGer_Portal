@@ -779,6 +779,10 @@ class SingleStudentPage extends React.Component {
               <Tab eventKey="Notes" title="Notes">
                 <Card className="my-0 mx-0">
                   <Card.Body>
+                    <h5>
+                      <b>This is internal notes. Student won't see this note.</b>
+                    </h5>
+                    <br />
                     <Notes
                       user={this.props.user}
                       student_id={this.state.student._id.toString()}

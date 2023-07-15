@@ -379,7 +379,7 @@ class CommunicationSinglePage extends Component {
                   className="text-light mb-0 me-2 "
                   style={{ float: 'right' }}
                 >
-                  {this.state.expand ? (
+                  {/* {this.state.expand ? (
                     <Button
                       className="btn-sm float-right"
                       onClick={() => this.AllCollapsetHandler()}
@@ -393,7 +393,7 @@ class CommunicationSinglePage extends Component {
                     >
                       Expand
                     </Button>
-                  )}
+                  )} */}
                 </span>
               </h4>
             </Card.Header>
@@ -416,9 +416,23 @@ class CommunicationSinglePage extends Component {
               <Card.Body>
                 <Row>
                   <Col>
-                    <h5>Instruction</h5>
                     <h6>
-                      <b>Requirements:</b>
+                      <b>Requirements:</b> <br />
+                      <br />
+                      <p>
+                        TaiGer顧問皆位於中歐時區，無法及時回復，為確保有
+                        <b>效率溝通</b>，留言時請注意以下幾點：
+                        <ul>
+                          <li>
+                            1.
+                            描述你的問題，請盡量一次列出所有問題，顧問可以一次回答，TaiGer顧問會盡可能一天內回覆
+                          </li>
+                          <li>2. 你想要完成事項。</li>
+                          <li>
+                            註：或想一次處理，請準備好所有問題，並和顧問約時間通話。
+                          </li>
+                        </ul>
+                      </p>
                     </h6>
                   </Col>
                 </Row>

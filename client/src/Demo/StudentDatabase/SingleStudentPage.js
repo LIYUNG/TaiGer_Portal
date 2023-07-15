@@ -45,7 +45,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { AiFillEdit } from 'react-icons/ai';
+import { AiFillEdit, AiFillMessage } from 'react-icons/ai';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -583,8 +583,16 @@ class SingleStudentPage extends React.Component {
                     <Link
                       to={'/profile/' + this.state.student._id}
                       style={{ textDecoration: 'none' }}
+                      className="mx-1"
                     >
                       <AiFillEdit color="red" size={24} />
+                    </Link>
+                    <Link
+                      to={'/communications/' + this.state.student._id}
+                      style={{ textDecoration: 'none' }}
+                      className="mx-1"
+                    >
+                      <AiFillMessage color="lightblue" size={24} />
                     </Link>
                     <span
                       className="text-light mb-1 me-2 "

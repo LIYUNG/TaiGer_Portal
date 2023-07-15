@@ -1843,6 +1843,38 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
+const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
+  const subject = '[DO NOT IGNORE] Assign Editor Reminder';
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } sent new message(s)</p>
+
+<p><b>Please assign an Editor to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } 傳了一則新訊息。</p>
+
+<p><b>請指派 Editor 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -1889,5 +1921,6 @@ module.exports = {
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
   updateCoursesDataAgentEmail,
-  sendAssignEditorReminderEmail
+  sendAssignEditorReminderEmail,
+  sendAgentNewMessageReminderEmail
 };

@@ -45,19 +45,42 @@ const getProgram = asyncHandler(async (req, res) => {
       throw new ErrorResponse(403, 'Invalid program id in your applications');
     }
   }
+  if (PROGRAMS_CACHE === 'true') {
+    const value = one_month_cache.get(req.originalUrl);
+    if (value === undefined) {
+      // cache miss
+      const program = await Program.findById(req.params.programId);
+      if (!program) {
+        logger.error('getProgram: Invalid program id');
+        throw new ErrorResponse(403, 'Invalid program id');
+      }
+      const success = one_month_cache.set(req.originalUrl, program);
+      if (success) {
+        console.log('programs cache set successfully');
+      }
+      if (
+        user.role === 'Admin' ||
+        user.role === 'Agent' ||
+        user.role === 'Editor'
+      ) {
+        const students = await Student.find({
+          applications: {
+            $elemMatch: {
+              programId: req.params.programId,
+              decided: 'O',
+              closed: 'O'
+            }
+          }
+        }).select(
+          'firstname lastname applications application_preference.expected_application_date'
+        );
 
-  const value = one_month_cache.get(req.originalUrl);
-  if (value === undefined) {
-    // cache miss
-    const program = await Program.findById(req.params.programId);
-    if (!program) {
-      logger.error('getProgram: Invalid program id');
-      throw new ErrorResponse(403, 'Invalid program id');
+        return res.send({ success: true, data: program, students });
+      }
+      return res.send({ success: true, data: program });
     }
-    const success = one_month_cache.set(req.originalUrl, program);
-    if (success) {
-      console.log('programs cache set successfully');
-    }
+    console.log('programs cache hit');
+
     if (
       user.role === 'Admin' ||
       user.role === 'Agent' ||
@@ -75,13 +98,11 @@ const getProgram = asyncHandler(async (req, res) => {
         'firstname lastname applications application_preference.expected_application_date'
       );
 
-      return res.send({ success: true, data: program, students });
+      res.send({ success: true, data: value, students });
+    } else {
+      res.send({ success: true, data: value });
     }
-    return res.send({ success: true, data: program });
-  }
-  console.log('programs cache hit');
-
-  if (
+  } else if (
     user.role === 'Admin' ||
     user.role === 'Agent' ||
     user.role === 'Editor'
@@ -97,10 +118,19 @@ const getProgram = asyncHandler(async (req, res) => {
     }).select(
       'firstname lastname applications application_preference.expected_application_date'
     );
-
-    res.send({ success: true, data: value, students });
+    const program = await Program.findById(req.params.programId);
+    if (!program) {
+      logger.error('getProgram: Invalid program id');
+      throw new ErrorResponse(403, 'Invalid program id');
+    }
+    res.send({ success: true, data: program, students });
   } else {
-    res.send({ success: true, data: value });
+    const program = await Program.findById(req.params.programId);
+    if (!program) {
+      logger.error('getProgram: Invalid program id');
+      throw new ErrorResponse(403, 'Invalid program id');
+    }
+    res.send({ success: true, data: program });
   }
 });
 
@@ -120,11 +150,25 @@ const updateProgram = asyncHandler(async (req, res) => {
 
   fields.updatedAt = new Date();
   fields.whoupdated = `${user.firstname} ${user.lastname}`;
+  const fields_root = { ...fields };
+  delete fields_root._id;
+  delete fields_root.semester;
+  delete fields_root.application_start;
+  delete fields_root.application_deadline;
+  // Update same program but other semester common data
+  await Program.updateMany(
+    {
+      school: fields.school,
+      program_name: fields.program_name,
+      degree: fields.degree
+    },
+    fields_root,
+    {}
+  );
   const program = await Program.findByIdAndUpdate(
     req.params.programId,
     fields,
     {
-      upsert: true,
       new: true
     }
   );

@@ -2,7 +2,8 @@ const { Router } = require('express');
 const {
   getMessagesRateLimiter,
   postMessagesRateLimiter,
-  postMessagesImageRateLimiter
+  postMessagesImageRateLimiter,
+  GeneralGETSearchRequestRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -16,12 +17,20 @@ const {
   deleteAMessageInCommunicationThread,
   postMessages,
   getMyMessages,
-  loadMessages
+  loadMessages,
+  getSearchUserMessages
 } = require('../controllers/communications');
 
 const router = Router();
 
 router.use(protect);
+router
+  .route('/')
+  .get(
+    GeneralGETSearchRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getSearchUserMessages
+  );
 
 router
   .route('/all')

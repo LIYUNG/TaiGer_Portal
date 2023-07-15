@@ -27,7 +27,8 @@ export const getQueryResults = (keywords) =>
   request.get(`/api/search?q=${keywords}`);
 export const getQueryPublicResults = (keywords) =>
   request.get(`/api/search/public?q=${keywords}`);
-
+export const getQueryStudentResults = (keywords) =>
+  request.get(`/api/communications?q=${keywords}`);
 // User APIs
 export const getUsers = () => request.get('/api/users');
 export const getUser = (user_id) => request.get(`/api/users/${user_id}`);

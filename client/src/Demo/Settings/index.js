@@ -225,45 +225,50 @@ class Settings extends React.Component {
               <Card.Body>
                 <Row className="my-0 mx-0">
                   <Col>
-                    {/* <Form> */}
-                    <Form.Group controlId="current_password">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Current Password
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        onChange={(e) => this.handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
+                    <Form>
+                      <Form.Group controlId="current_password">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Current Password
+                        </Form.Label>
+                        <Form.Control
+                          type="password"
+                          onChange={(e) => this.handleChange_Credentials(e)}
+                        />
+                      </Form.Group>
+                    </Form>
                   </Col>
                 </Row>
                 <Row className="my-4 mx-0">
                   <Col>
-                    <Form.Group controlId="new_password">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        New Password
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        onChange={(e) => this.handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
+                    <Form>
+                      <Form.Group controlId="new_password">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          New Password
+                        </Form.Label>
+                        <Form.Control
+                          type="password"
+                          onChange={(e) => this.handleChange_Credentials(e)}
+                        />
+                      </Form.Group>
+                    </Form>
                   </Col>
                 </Row>
                 <Row className="my-0 mx-0">
                   <Col>
-                    <Form.Group controlId="new_password_again">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Enter New Password Again
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        // placeholder="Text"
-                        // readOnly={true}
-                        // value={this.props.user.lastname}
-                        onChange={(e) => this.handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
+                    <Form>
+                      <Form.Group controlId="new_password_again">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Enter New Password Again
+                        </Form.Label>
+                        <Form.Control
+                          type="password"
+                          // placeholder="Text"
+                          // readOnly={true}
+                          // value={this.props.user.lastname}
+                          onChange={(e) => this.handleChange_Credentials(e)}
+                        />
+                      </Form.Group>
+                    </Form>
                     <br />
                     <Button
                       disabled={

@@ -467,26 +467,6 @@ export const check_applications_to_decided = (student) => {
   return true;
 };
 
-export const is_mycourses_finished = (student) => {
-  if (!student.applications) {
-    return true;
-  }
-  if (student.applications.length === 0) {
-    return true;
-  }
-  for (let j = 0; j < student.applications.length; j += 1) {
-    if (
-      !student.applications[j].decided ||
-      (student.applications[j].decided !== undefined &&
-        student.applications[j].decided === '-')
-    ) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
 export const check_application_selection = (student) => {
   if (!student.applications) {
     return false;

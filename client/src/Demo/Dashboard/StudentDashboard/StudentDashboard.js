@@ -115,7 +115,11 @@ class StudentDashboard extends React.Component {
     );
 
     const student_tasks = (
-      <StudentTasks role={this.props.role} student={this.state.student} />
+      <StudentTasks
+        role={this.props.role}
+        student={this.state.student}
+        isCoursesFilled={this.props.isCoursesFilled}
+      />
     );
     const student = this.state.student;
 

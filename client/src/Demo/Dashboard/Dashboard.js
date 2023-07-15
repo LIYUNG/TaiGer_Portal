@@ -40,6 +40,7 @@ class Dashboard extends React.Component {
     success: false,
     isDashboard: true,
     file: '',
+    isCoursesFilled: false,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -48,12 +49,13 @@ class Dashboard extends React.Component {
   componentDidMount() {
     getStudents().then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { data, success, isCoursesFilled } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             students: data,
+            isCoursesFilled: isCoursesFilled,
             success: success,
             res_status: status
           });
@@ -485,6 +487,7 @@ class Dashboard extends React.Component {
           )}
           <StudentDashboard
             user={this.props.user}
+            isCoursesFilled={this.state.isCoursesFilled}
             role={this.props.user.role}
             student={this.state.students[0]}
             SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}

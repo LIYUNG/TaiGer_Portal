@@ -12,8 +12,7 @@ import {
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing,
   to_register_application_portals,
-  is_personal_data_filled,
-  is_mycourses_finished
+  is_personal_data_filled
 } from '../../../Utils/checking-functions';
 
 class StudentTasks extends React.Component {
@@ -140,25 +139,29 @@ class StudentTasks extends React.Component {
             <td></td>
           </tr>
         )}
-        {!is_mycourses_finished(this.props.student) && (
-          <tr>
-            <td>
-              <Link
-                to={`${DEMO.COURSES_LINK}`}
-                style={{ textDecoration: 'none' }}
-                className="text-info"
-              >
-                My Courses
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </Link>
-            </td>
-            <td>請完成大學修課表，Agent將會為您提供課程分析以及修課建議</td>
-            <td></td>
-          </tr>
-        )}
+        {!this.props.isCoursesFilled &&
+          (this.props.student.academic_background?.university?.isGraduated ===
+            'pending' ||
+            this.props.student.academic_background?.university?.isGraduated ===
+              'Yes') && (
+            <tr>
+              <td>
+                <Link
+                  to={`${DEMO.COURSES_LINK}`}
+                  style={{ textDecoration: 'none' }}
+                  className="text-info"
+                >
+                  My Courses
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Link>
+              </td>
+              <td>請完成大學修課表，Agent將會為您提供課程分析以及修課建議</td>
+              <td></td>
+            </tr>
+          )}
         {!check_applications_to_decided(this.props.student) && (
           <tr>
             <td>
@@ -174,7 +177,9 @@ class StudentTasks extends React.Component {
                 />
               </Link>
             </td>
-            <td>Please decide YES or NO</td>
+            <td>
+              請參考Agent提供的Program，並到學校學程網站了解詳細資訊，於申請季開始前完成選校
+            </td>
             <td></td>
           </tr>
         )}
@@ -194,7 +199,7 @@ class StudentTasks extends React.Component {
                 />
               </Link>
             </td>
-            <td>Please go to Uni-Assist to apply and get VPD</td>
+            <td>請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD</td>
             <td></td>
           </tr>
         )}

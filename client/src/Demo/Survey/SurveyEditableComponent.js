@@ -554,7 +554,9 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   {this.state.academic_background.university &&
                     this.state.academic_background.university.isGraduated !==
-                      '-' && (
+                      '-' &&
+                    this.state.academic_background.university.isGraduated !==
+                      'No' && (
                       <Col md={6}>
                         <Form.Group controlId="expected_grad_date">
                           <Form.Label className="my-0 mx-0 text-light">

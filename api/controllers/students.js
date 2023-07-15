@@ -31,6 +31,7 @@ const {
   AWS_S3_BUCKET_NAME
 } = require('../config');
 const Permission = require('../models/Permission');
+const Course = require('../models/Course');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -230,7 +231,17 @@ const getStudents = asyncHandler(async (req, res) => {
       .lean();
 
     const student_new = add_portals_registered_status(student);
-    res.status(200).send({ success: true, data: [student_new] });
+    // TODO Get My Courses
+    let isCoursesFilled = true;
+    const courses = await Course.findOne({
+      student_id: user._id.toString()
+    }).lean();
+    if (!courses) {
+      isCoursesFilled = false;
+    }
+    res
+      .status(200)
+      .send({ success: true, data: [student_new], isCoursesFilled });
   } else {
     // Guest
     res.status(200).send({ success: true, data: [user] });

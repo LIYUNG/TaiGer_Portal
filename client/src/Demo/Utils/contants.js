@@ -680,6 +680,11 @@ export const applicationOverviewHeader = [
     filter: 'fuzzyText'
   },
   {
+    Header: 'Deadline',
+    accessor: 'application_deadline',
+    filter: 'fuzzyText'
+  },
+  {
     Header: 'University',
     accessor: 'school',
     filter: 'fuzzyText'
@@ -709,11 +714,7 @@ export const applicationOverviewHeader = [
     accessor: 'ielts',
     filter: 'fuzzyText'
   },
-  {
-    Header: 'Deadline',
-    accessor: 'application_deadline',
-    filter: 'fuzzyText'
-  },
+
   {
     Header: 'Decided',
     accessor: 'decided',

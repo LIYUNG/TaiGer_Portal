@@ -4,7 +4,7 @@ const { ObjectId } = require('mongodb');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor, User } = require('../models/User');
+const { Role, Student, User } = require('../models/User');
 const { Communication } = require('../models/Communication');
 const { sendAssignEditorReminderEmail } = require('../services/email');
 const logger = require('../services/logger');
@@ -13,13 +13,8 @@ const { isNotArchiv } = require('../constants');
 const pageSize = 5;
 
 const getMyMessages = asyncHandler(async (req, res) => {
-  const {
-    user,
-    params: { taiger_user_id }
-  } = req;
-  const the_user = await User.findById(taiger_user_id).select(
-    'firstname lastname role'
-  );
+  const { user } = req;
+
   if (
     user.role !== Role.Admin &&
     user.role !== Role.Agent &&

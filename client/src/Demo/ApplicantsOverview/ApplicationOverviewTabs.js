@@ -92,8 +92,8 @@ function DefaultColumnFilter({
       onChange={(e) => {
         setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
       }}
-      // size={10}
-      placeholder={`Search ${count} records...`}
+      size={9}
+      placeholder={`Filter ${count} records...`}
     />
   );
 }
@@ -255,11 +255,7 @@ function SortTable({ columns, data, user }) {
                       </div>
                     </th>
                   ) : (
-                    <th>
-                      <div>
-                        {column.canFilter ? column.render('Filter') : null}
-                      </div>
-                    </th>
+                    <th></th>
                   )
                 ) : (
                   <th key={i}>

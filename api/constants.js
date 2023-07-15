@@ -1,6 +1,12 @@
 const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
-const { Role } = require('./models/User');
-
+const Role = {
+  Admin: 'Admin',
+  Manager: 'Manager',
+  Guest: 'Guest',
+  Agent: 'Agent',
+  Editor: 'Editor',
+  Student: 'Student'
+};
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
   .href;
@@ -1030,7 +1036,7 @@ const missing_academic_background = (student, user) => {
     <li>German Certificate?</li>`;
     }
     missing_background_fields += '</ul>';
-    if (user.role === 'Admin' || user.role === Role.Agent) {
+    if (user.role === Role.Admin || user.role === Role.Agent) {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and <b>update</b> them.</p>`;

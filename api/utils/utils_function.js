@@ -5,7 +5,7 @@ const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor, User } = require('../models/User');
+const { Agent, Student, Editor, User } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const Documentation = require('../models/Documentation');
 const {

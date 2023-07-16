@@ -117,6 +117,12 @@ export function ExtendableTable({ data }) {
         </tbody>
       </Table>
       <Modal centered size="xl" show={readinessModalShow} onHide={closeModal}>
+        <Modal.Header>
+          <Modal.Title id="std-name">
+            {singleStudent.firstname}
+            {singleStudent.lastname}
+          </Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <Table>
             <thead>
